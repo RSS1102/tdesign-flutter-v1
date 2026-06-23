@@ -87,9 +87,9 @@ enum TButtonColorScheme { defaultTheme, primary, danger, light }
 | `isBlock: true` | 🗑️ → 外包 `SizedBox` | — |
 | `style: TButtonStyle(...)` | `style: ButtonStyle(...)` | **同名不同型** |
 | `activeStyle: TButtonStyle(...)` | 🗑️ → Theme `TButtonThemeData.filledStyle` 等 | 迁入 Theme |
-| `disableStyle: TButtonStyle(...)` | 🗑️ → Theme + WidgetStateProperty | 迁入 Theme |
-| `textStyle: TextStyle(...)` | 🗑️ → Theme `TButtonThemeData.textStyle` | 迁入 Theme |
-| `disableTextStyle: TextStyle(...)` | 🗑️ → Theme + WidgetStateProperty | 迁入 Theme |
+| `disableStyle: TButtonStyle(...)` | 🗑️ → Theme + `WidgetStateProperty`（`filledStyle` 等 P2 色板） | 迁入 Theme |
+| `textStyle: TextStyle(...)` | 🗑️ → resolve 内部按 `size` 补默认字形 | 见 [button.md §1.2](./button.md#12-文案--textstyle)；**非** Theme 公开字段 |
+| `disableTextStyle: TextStyle(...)` | 🗑️ → `onPressed: null` + `foregroundColor` disabled | 见 [button.md §1.2](./button.md#12-文案--textstyle)；**非** 单独 API |
 | `onTap: () {}` | `onPressed: () {}` | 改名 + 改型 |
 | `icon: Icons.xxx` (IconData) | `icon: Icon(Icons.xxx)` (Widget?) | 改型 |
 | `iconWidget: xxx` (Widget) | 合并到 `icon` | 合并 |
@@ -123,7 +123,7 @@ TButton(
 SizedBox(
   width: double.infinity, // 替代 isBlock
   child: TButton(
-    child: Text('填充按钮'), // 替代 text
+    child: TText('填充按钮'), // 推荐 TText；裸 Text 亦可
     size: TButtonSize.large,
     variant: TButtonVariant.fill, // 替代 type
     colorScheme: TButtonColorScheme.primary, // 替代 theme
@@ -159,7 +159,8 @@ SizedBox(
 | `margin` | `EdgeInsetsGeometry?` | — | 外边距 |
 | `iconSpacing` | `double?` | `8` | 图标文案间距 |
 | `gradient` | `Gradient?` | — | 渐变装饰 |
-| `textStyle` | `TextStyle?` | — | 默认文案样式 |
+
+> `textStyle` / `disableTextStyle`：**不**作为 `TButtonThemeData` 公开字段。默认字形与禁用色由 resolve 内 `ButtonStyle.textStyle` + `foregroundColor`（`WidgetStateProperty`）承担 → [button.md §1.2](./button.md#12-文案--textstyle)。
 
 ---
 
@@ -170,7 +171,7 @@ SizedBox(
 **职责：** 唯一 `ButtonStyle` merge 入口，按优先级链：
 
 ```
-shape §3 → P2 色板 → colorScheme 覆色 → size 尺寸 → Theme padding → P0 style
+shape §3.5 → P2 色板 → colorScheme 覆色 → size（含 §1.2 内部 textStyle）→ Theme padding → P0 style
 ```
 
 **核心函数签名：**

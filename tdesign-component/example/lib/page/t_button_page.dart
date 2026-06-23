@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tdesign_flutter/src/components/button/t_button_theme_data.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 import '../../annotation/demo.dart';
 import '../../base/example_widget.dart';
@@ -82,7 +83,10 @@ class _TButtonPageState extends State<TButtonPage> {
                   ),
                 );
               }),
-          ExampleItem(ignoreCode: true, desc: '组合按钮', builder: (_) => CodeWrapper(builder: _buildCombinationButtons)),
+          ExampleItem(
+              ignoreCode: true,
+              desc: '组合按钮',
+              builder: (_) => CodeWrapper(builder: _buildCombinationButtons)),
           ExampleItem(desc: '通栏按钮', builder: _buildBlockFillButton),
         ]),
         ExampleModule(title: '组件状态', children: [
@@ -124,20 +128,22 @@ class _TButtonPageState extends State<TButtonPage> {
           ExampleItem(
               ignoreCode: true,
               desc: '按钮形状',
+              center: false,
               builder: (context) {
-                return Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 16, // 主轴方向间距
-                  runSpacing: 16, // 交叉轴方向间距
-                  children: [
-                    CodeWrapper(
-                      builder: _buildPrimaryFillButton,
-                    ),
-                    CodeWrapper(builder: _buildSquareIconButton),
-                    CodeWrapper(builder: _buildRoundButton),
-                    CodeWrapper(builder: _buildCircleButton),
-                    CodeWrapper(builder: _buildFilledButton)
-                  ],
+                return Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Wrap(
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: [
+                      CodeWrapper(builder: _buildRectangleShapeButton),
+                      CodeWrapper(builder: _buildSquareIconButton),
+                      CodeWrapper(builder: _buildRoundButton),
+                      CodeWrapper(builder: _buildCircleButton),
+                      CodeWrapper(builder: _buildFilledButton),
+                    ],
+                  ),
                 );
               }),
           ExampleItem(
@@ -190,7 +196,8 @@ class _TButtonPageState extends State<TButtonPage> {
             builder: (context) {
               return Container(
                 color: TTheme.of(context).bgColorContainer,
-                padding: const EdgeInsets.only(top: 16, bottom: 16, left: 16, right: 16),
+                padding: const EdgeInsets.only(
+                    top: 16, bottom: 16, left: 16, right: 16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -236,7 +243,8 @@ class _TButtonPageState extends State<TButtonPage> {
                 ),
               );
             }),
-        ExampleItem(ignoreCode: true, desc: '各种按钮状态测试', builder: _buildStatusDisplay),
+        ExampleItem(
+            ignoreCode: true, desc: '各种按钮状态测试', builder: _buildStatusDisplay),
         ExampleItem(
             ignoreCode: true,
             desc: '按钮中路由跳转',
@@ -245,7 +253,8 @@ class _TButtonPageState extends State<TButtonPage> {
                 child: const Text('点击跳转'),
                 size: TButtonSize.large,
                 onPressed: () async {
-                  var result = await Navigator.of(context).pushNamedAndRemoveUntil('divider', (router) {
+                  var result = await Navigator.of(context)
+                      .pushNamedAndRemoveUntil('divider', (router) {
                     return true;
                   });
                   print('pushNamedAndRemoveUntil result: $result');
@@ -272,8 +281,21 @@ class _TButtonPageState extends State<TButtonPage> {
     TToast.showText('点击了按钮', context: context);
   }
 
+  /// 为子树注入 [TButtonThemeData.shape]（v1.0 外形走 Theme）
+  Widget _withButtonShape(
+    BuildContext context,
+    TButtonShape shape,
+    Widget child,
+  ) {
+    return Theme(
+      data: _mergeButtonTheme(context, TButtonThemeData(shape: shape)),
+      child: child,
+    );
+  }
+
   /// 合并 TButtonThemeData 到当前 Theme 子树（替代 mergeExtension）
-  static ThemeData _mergeButtonTheme(BuildContext context, TButtonThemeData buttonTheme) {
+  static ThemeData _mergeButtonTheme(
+      BuildContext context, TButtonThemeData buttonTheme) {
     final existingExtensions = List<ThemeExtension>.from(
       Theme.of(context).extensions.values,
     );
@@ -285,155 +307,185 @@ class _TButtonPageState extends State<TButtonPage> {
 
   @Demo(group: 'button')
   TButton _buildLightTextButton(BuildContext context) {
-    return const TButton(
-      child: Text('文字按钮'),
+    return TButton(
+      child: const Text('文字按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.text,
       colorScheme: TButtonColorScheme.light,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildLightStrokeButton(BuildContext context) {
-    return const TButton(
-      child: Text('描边按钮'),
+    return TButton(
+      child: const Text('描边按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.outline,
       colorScheme: TButtonColorScheme.light,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildDangerTextButton(BuildContext context) {
-    return const TButton(
-      child: Text('文字按钮'),
+    return TButton(
+      child: const Text('文字按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.text,
       colorScheme: TButtonColorScheme.danger,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildDangerStrokeButton(BuildContext context) {
-    return const TButton(
-      child: Text('描边按钮'),
+    return TButton(
+      child: const Text('描边按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.outline,
       colorScheme: TButtonColorScheme.danger,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildDangerFillButton(BuildContext context) {
-    return const TButton(
-      child: Text('填充按钮'),
+    return TButton(
+      child: const Text('填充按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.fill,
       colorScheme: TButtonColorScheme.danger,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildDefaultTextButton(BuildContext context) {
-    return const TButton(
-      child: Text('文字按钮'),
+    return TButton(
+      child: const Text('文字按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.text,
       colorScheme: TButtonColorScheme.defaultTheme,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildDefaultStrokeButton(BuildContext context) {
-    return const TButton(
-      child: Text('描边按钮'),
+    return TButton(
+      child: const Text('描边按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.outline,
       colorScheme: TButtonColorScheme.defaultTheme,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
-  TButton _buildFilledButton(BuildContext context) {
-    return const TButton(
-      child: Text('填充按钮'),
-      size: TButtonSize.large,
-      variant: TButtonVariant.fill,
-      colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+  Widget _buildRectangleShapeButton(BuildContext context) {
+    return _withButtonShape(
+      context,
+      TButtonShape.rectangle,
+      TButton(
+        child: const Text('矩形'),
+        size: TButtonSize.large,
+        variant: TButtonVariant.fill,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: _onTap,
+      ),
     );
   }
 
   @Demo(group: 'button')
-  TButton _buildCircleButton(BuildContext context) {
-    return const TButton(
-      icon: Icon(TIcons.app),
-      size: TButtonSize.large,
-      variant: TButtonVariant.fill,
-      colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+  Widget _buildFilledButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: _withButtonShape(
+        context,
+        TButtonShape.filled,
+        TButton(
+          child: const Text('直角通栏'),
+          size: TButtonSize.large,
+          variant: TButtonVariant.fill,
+          colorScheme: TButtonColorScheme.primary,
+          onPressed: _onTap,
+        ),
+      ),
     );
   }
 
   @Demo(group: 'button')
-  TButton _buildRoundButton(BuildContext context) {
-    return const TButton(
-      child: Text('填充按钮'),
-      size: TButtonSize.large,
-      variant: TButtonVariant.fill,
-      colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+  Widget _buildCircleButton(BuildContext context) {
+    return _withButtonShape(
+      context,
+      TButtonShape.circle,
+      TButton(
+        icon: const Icon(TIcons.app),
+        size: TButtonSize.large,
+        variant: TButtonVariant.fill,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: _onTap,
+      ),
+    );
+  }
+
+  @Demo(group: 'button')
+  Widget _buildRoundButton(BuildContext context) {
+    return _withButtonShape(
+      context,
+      TButtonShape.round,
+      TButton(
+        child: const Text('圆角'),
+        size: TButtonSize.large,
+        variant: TButtonVariant.fill,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: _onTap,
+      ),
     );
   }
 
   @Demo(group: 'button')
   TButton _buildExtraSmallButton(BuildContext context) {
-    return const TButton(
-      child: Text('按钮28'),
+    return TButton(
+      child: const Text('按钮28'),
       size: TButtonSize.extraSmall,
       variant: TButtonVariant.fill,
       colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildSmallButton(BuildContext context) {
-    return const TButton(
-      child: Text('按钮32'),
+    return TButton(
+      child: const Text('按钮32'),
       size: TButtonSize.small,
       variant: TButtonVariant.fill,
       colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildMediumButton(BuildContext context) {
-    return const TButton(
-      child: Text('按钮40'),
+    return TButton(
+      child: const Text('按钮40'),
       size: TButtonSize.medium,
       variant: TButtonVariant.fill,
       colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildLargeButton(BuildContext context) {
-    return const TButton(
-      child: Text('按钮48'),
+    return TButton(
+      child: const Text('按钮48'),
       size: TButtonSize.large,
       variant: TButtonVariant.fill,
       colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
@@ -494,60 +546,64 @@ class _TButtonPageState extends State<TButtonPage> {
 
   @Demo(group: 'button')
   Widget _buildBlockFillButton(BuildContext context) {
-    return const SizedBox(
+    return SizedBox(
       width: double.infinity,
       child: TButton(
-        child: Text('填充按钮'),
-        icon: Icon(TIcons.app),
+        child: const Text('填充按钮'),
+        icon: const Icon(TIcons.app),
         size: TButtonSize.large,
         variant: TButtonVariant.fill,
         colorScheme: TButtonColorScheme.primary,
-        onPressed: null,
+        onPressed: _onTap,
       ),
     );
   }
 
   @Demo(group: 'button')
   TButton _buildDefaultGhostButton(BuildContext context) {
-    return const TButton(
-      child: Text('幽灵按钮'),
+    return TButton(
+      child: const Text('幽灵按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.ghost,
       colorScheme: TButtonColorScheme.defaultTheme,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildDangerGhostButton(BuildContext context) {
-    return const TButton(
-      child: Text('幽灵按钮'),
+    return TButton(
+      child: const Text('幽灵按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.ghost,
       colorScheme: TButtonColorScheme.danger,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildPrimaryGhostButton(BuildContext context) {
-    return const TButton(
-      child: Text('幽灵按钮'),
+    return TButton(
+      child: const Text('幽灵按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.ghost,
       colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
-  TButton _buildSquareIconButton(BuildContext context) {
-    return const TButton(
-      icon: Icon(TIcons.app),
-      size: TButtonSize.large,
-      variant: TButtonVariant.fill,
-      colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+  Widget _buildSquareIconButton(BuildContext context) {
+    return _withButtonShape(
+      context,
+      TButtonShape.square,
+      TButton(
+        icon: const Icon(TIcons.app),
+        size: TButtonSize.large,
+        variant: TButtonVariant.fill,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: _onTap,
+      ),
     );
   }
 
@@ -563,101 +619,100 @@ class _TButtonPageState extends State<TButtonPage> {
       size: TButtonSize.large,
       variant: TButtonVariant.fill,
       colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildRectangleIconButton(BuildContext context) {
-    return const TButton(
-      child: Text('填充按钮'),
-      icon: Icon(TIcons.app),
+    return TButton(
+      child: const Text('填充按钮'),
+      icon: const Icon(TIcons.app),
       size: TButtonSize.large,
       variant: TButtonVariant.fill,
       colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildPrimaryTextButton(BuildContext context) {
-    return const TButton(
-      child: Text('文字按钮'),
+    return TButton(
+      child: const Text('文字按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.text,
       colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildPrimaryStrokeButton(BuildContext context) {
-    return const TButton(
-      child: Text('描边按钮'),
+    return TButton(
+      child: const Text('描边按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.outline,
       colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildDefaultFillButton(BuildContext context) {
-    return const TButton(
-      child: Text('填充按钮'),
+    return TButton(
+      child: const Text('填充按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.fill,
       colorScheme: TButtonColorScheme.defaultTheme,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
-  @Demo(group: 'button')
   TButton _buildPrimaryFillButton(BuildContext context) {
-    return const TButton(
-      child: Text('填充按钮'),
+    return TButton(
+      child: const Text('填充按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.fill,
       colorScheme: TButtonColorScheme.primary,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   TButton _buildLightFillButton(BuildContext context) {
-    return const TButton(
-      child: Text('填充按钮'),
+    return TButton(
+      child: const Text('填充按钮'),
       size: TButtonSize.large,
       variant: TButtonVariant.fill,
       colorScheme: TButtonColorScheme.light,
-      onPressed: null,
+      onPressed: _onTap,
     );
   }
 
   @Demo(group: 'button')
   Widget _buildCombinationButtons(BuildContext context) {
-    return const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           children: [
             Expanded(
               child: TButton(
-                child: Text('填充按钮'),
+                child: const Text('填充按钮'),
                 size: TButtonSize.large,
                 variant: TButtonVariant.fill,
                 colorScheme: TButtonColorScheme.light,
-                onPressed: null,
+                onPressed: _onTap,
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: TButton(
-                child: Text('填充按钮'),
+                child: const Text('填充按钮'),
                 size: TButtonSize.large,
                 variant: TButtonVariant.fill,
                 colorScheme: TButtonColorScheme.primary,
-                onPressed: null,
+                onPressed: _onTap,
               ),
             ),
           ],
@@ -682,32 +737,32 @@ class _TButtonPageState extends State<TButtonPage> {
       spacing: 16,
       runSpacing: 16,
       alignment: WrapAlignment.center,
-      children: const [
+      children: [
         TButton(
-          child: Text('填充按钮'),
-          icon: Icon(TIcons.app),
+          child: const Text('填充按钮'),
+          icon: const Icon(TIcons.app),
           size: TButtonSize.large,
           variant: TButtonVariant.fill,
           colorScheme: TButtonColorScheme.primary,
           iconPosition: TButtonIconPosition.right,
-          onPressed: null,
+          onPressed: _onTap,
         ),
         TButton(
-          icon: Icon(TIcons.app),
+          icon: const Icon(TIcons.app),
           size: TButtonSize.large,
           variant: TButtonVariant.fill,
           colorScheme: TButtonColorScheme.primary,
           iconPosition: TButtonIconPosition.right,
-          onPressed: null,
+          onPressed: _onTap,
         ),
         TButton(
-          child: Text('间距20'),
-          icon: Icon(TIcons.app),
+          child: const Text('间距20'),
+          icon: const Icon(TIcons.app),
           size: TButtonSize.large,
           variant: TButtonVariant.fill,
           colorScheme: TButtonColorScheme.primary,
           iconPosition: TButtonIconPosition.right,
-          onPressed: null,
+          onPressed: _onTap,
         )
       ],
     );
@@ -727,14 +782,14 @@ class _TButtonPageState extends State<TButtonPage> {
               gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
             ),
           ),
-          child: const TButton(
-            child: Text('填充按钮'),
-            icon: Icon(TIcons.app),
+          child: TButton(
+            child: const Text('填充按钮'),
+            icon: const Icon(TIcons.app),
             size: TButtonSize.large,
             variant: TButtonVariant.fill,
             colorScheme: TButtonColorScheme.primary,
             iconPosition: TButtonIconPosition.right,
-            onPressed: null,
+            onPressed: _onTap,
           ),
         ),
         Theme(
@@ -747,13 +802,13 @@ class _TButtonPageState extends State<TButtonPage> {
                   end: Alignment.bottomCenter),
             ),
           ),
-          child: const TButton(
-            icon: Icon(TIcons.app),
+          child: TButton(
+            icon: const Icon(TIcons.app),
             size: TButtonSize.large,
             variant: TButtonVariant.fill,
             colorScheme: TButtonColorScheme.primary,
             iconPosition: TButtonIconPosition.right,
-            onPressed: null,
+            onPressed: _onTap,
           ),
         ),
         Theme(
@@ -766,14 +821,14 @@ class _TButtonPageState extends State<TButtonPage> {
                   end: Alignment.centerLeft),
             ),
           ),
-          child: const TButton(
-            child: Text('间距20'),
-            icon: Icon(TIcons.app),
+          child: TButton(
+            child: const Text('间距20'),
+            icon: const Icon(TIcons.app),
             size: TButtonSize.large,
             variant: TButtonVariant.fill,
             colorScheme: TButtonColorScheme.primary,
             iconPosition: TButtonIconPosition.right,
-            onPressed: null,
+            onPressed: _onTap,
           ),
         )
       ],
@@ -787,82 +842,106 @@ class _TButtonPageState extends State<TButtonPage> {
       padding: EdgeInsets.zero,
       children: [
         // fill 变体
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.fill,
-          colorScheme: TButtonColorScheme.primary,
-        ), context),
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.fill,
-          colorScheme: TButtonColorScheme.light,
-        ), context),
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.fill,
-          colorScheme: TButtonColorScheme.defaultTheme,
-        ), context),
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.fill,
-          colorScheme: TButtonColorScheme.danger,
-        ), context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.fill,
+              colorScheme: TButtonColorScheme.primary,
+            ),
+            context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.fill,
+              colorScheme: TButtonColorScheme.light,
+            ),
+            context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.fill,
+              colorScheme: TButtonColorScheme.defaultTheme,
+            ),
+            context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.fill,
+              colorScheme: TButtonColorScheme.danger,
+            ),
+            context),
 
         // outline 变体
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.outline,
-          colorScheme: TButtonColorScheme.primary,
-        ), context),
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.outline,
-          colorScheme: TButtonColorScheme.light,
-        ), context),
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.outline,
-          colorScheme: TButtonColorScheme.defaultTheme,
-        ), context),
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.outline,
-          colorScheme: TButtonColorScheme.danger,
-        ), context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.outline,
+              colorScheme: TButtonColorScheme.primary,
+            ),
+            context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.outline,
+              colorScheme: TButtonColorScheme.light,
+            ),
+            context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.outline,
+              colorScheme: TButtonColorScheme.defaultTheme,
+            ),
+            context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.outline,
+              colorScheme: TButtonColorScheme.danger,
+            ),
+            context),
 
         // text 变体
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.text,
-          colorScheme: TButtonColorScheme.primary,
-        ), context),
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.text,
-          colorScheme: TButtonColorScheme.light,
-        ), context),
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.text,
-          colorScheme: TButtonColorScheme.defaultTheme,
-        ), context),
-        _buildStatusRow(const TButton(
-          icon: Icon(TIcons.app),
-          child: Text('Button'),
-          variant: TButtonVariant.text,
-          colorScheme: TButtonColorScheme.danger,
-        ), context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.text,
+              colorScheme: TButtonColorScheme.primary,
+            ),
+            context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.text,
+              colorScheme: TButtonColorScheme.light,
+            ),
+            context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.text,
+              colorScheme: TButtonColorScheme.defaultTheme,
+            ),
+            context),
+        _buildStatusRow(
+            const TButton(
+              icon: Icon(TIcons.app),
+              child: Text('Button'),
+              variant: TButtonVariant.text,
+              colorScheme: TButtonColorScheme.danger,
+            ),
+            context),
 
         // ghost 变体（深色背景）
         ..._buildGhostStatusRows(context),
@@ -949,7 +1028,8 @@ class _TButtonPageState extends State<TButtonPage> {
 }
 
 extension _TButtonCopy on TButton {
-  TButton copyWithColorScheme(TButtonColorScheme scheme, {VoidCallback? onPressed}) {
+  TButton copyWithColorScheme(TButtonColorScheme scheme,
+      {VoidCallback? onPressed}) {
     return TButton(
       icon: icon,
       child: child,

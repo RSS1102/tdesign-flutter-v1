@@ -20,7 +20,7 @@ Material 薄包装 · `onPressed: null` = 禁用 · `TButtonThemeData` 全量 re
 | `colorScheme` | 构造器 | Theme |
 | `shape` | `TButtonThemeData.shape`（内部枚举） | `rectangle` |
 
-**style**：`*Style` 色板（P2，无 `shape`）→ resolve `ButtonStyle` → P0 `style` 覆盖。`shape` 配 Theme，展开进 resolved `ButtonStyle`，不写入 `*Style`。
+**style**：`*Style` 色板（P2，无 `shape`）→ resolve `ButtonStyle`（含 §1.2 内部 `textStyle`）→ P0 `style` 覆盖。`shape` 配 Theme，展开进 resolved `ButtonStyle`，不写入 `*Style`。
 
 ---
 
@@ -34,7 +34,7 @@ Material 薄包装 · `onPressed: null` = 禁用 · `TButtonThemeData` 全量 re
 
 | 决策 | 参数 / 方法 | 层级 | 类型 | 默认 | 说明 |
 | --- | --- | --- | --- | --- | --- |
-| | `child` | L2 | `Widget?` | — | 内容；纯文案用 `Text('…')` |
+| | `child` | L2 | `Widget?` | — | 内容；推荐 `TText('…')`；见 **§1.2 文案 / TextStyle** |
 | | `size` | L1 | `TButtonSize` | `medium` | 未传用 `defaultSize` |
 | ✏️ | `variant` | L1 | `TButtonVariant?` | `defaultVariant` | fill · outline · text · ghost |
 | ✏️ | `colorScheme` | L1 | `TButtonColorScheme?` | Theme | defaultTheme · primary · danger · light |
@@ -51,6 +51,68 @@ Material 薄包装 · `onPressed: null` = 禁用 · `TButtonThemeData` 全量 re
 | `Icon` 已设 `size` / `color` | 以传入为准 |
 | 自定义 `Widget` | 调用方自管 |
 | 升级 `IconData` | 改为 `Icon(Icons.xxx)` |
+
+#### §1.2 文案 / TextStyle
+
+**分工**：`TButton` 管按钮皮（variant / colorScheme / size / shape / 禁用）；**字形**默认由 resolve **内部**按 `size` 写入 `ButtonStyle.textStyle`（**不对外暴露** `textStyle` / `disableTextStyle` API）。推荐 `child: TText('…')`；富文本、远程字体等走 [TText](./text.md)。
+
+与 §1.1 `icon` 对称：
+
+| `child` 传入 | 字形 / 颜色 |
+| --- | --- |
+| `TText` / `Text` 未设 `font` / `style` / `textColor` | 组件按 `size` 补默认 **TextStyle**（Token 字体）；颜色由 `foregroundColor` 下发（含禁用） |
+| `TText` 已设 `font` / `style` / `textColor`，或 `Text` 已设 `style` | 以传入为准 |
+| 自定义 `Widget` | 调用方自管 |
+
+**`size` → 默认字体 Token**（resolve 内部，实现于 `t_button_resolve.dart`）：
+
+| `TButtonSize` | 默认 `Font` Token |
+| --- | --- |
+| `large` | `fontBodyLarge` |
+| `medium` | `fontBodyMedium` |
+| `small` | `fontBodySmall` |
+| `extraSmall` | `fontBodyExtraSmall` |
+
+**正常 / 禁用**：不设两套公开 `TextStyle` API。
+
+| 态 | 字形 | 颜色 |
+| --- | --- | --- |
+| 正常（`onPressed` 非 null） | 上表按 `size` | `foregroundColor` ← `variant` × `colorScheme` × Token |
+| 禁用（`onPressed: null`） | 与正常态相同（字号/字重不变） | `foregroundColor` ← `WidgetState.disabled`（如 `textDisabledColor`；ghost 等 variant 走 resolve 特例） |
+
+`ElevatedButton` 将 `foregroundColor` 合并进子树 `DefaultTextStyle`，故 **禁用变灰不靠 `disableTextStyle` 构造器**，而靠 A 类 `onPressed: null`。若设计稿要求禁用态额外改字重/透明度，仅在 resolve 的 `textStyle` **`WidgetState.disabled` 分支**内处理（不新增 Theme 字段）。
+
+**覆盖优先级**（后者赢）：
+
+```
+TText.style / TText.font / Text.style  >  resolve 内部 textStyle（按 size）  >  Material labelLarge
+Text.style.color / TText.textColor     >  foregroundColor（含 disabled）
+P0 style: ButtonStyle?                 >  上述 resolve 结果
+```
+
+**示例**：
+
+```dart
+// 推荐：默认字形 + 颜色均由 Button 内补
+TButton(
+  size: TButtonSize.large,
+  colorScheme: TButtonColorScheme.primary,
+  onPressed: _submit,
+  child: TText('提交'),
+)
+
+// 裸 Text 可用，同样继承 Button 默认 TextStyle
+TButton(child: Text('确定'), onPressed: _submit)
+
+// 特例：单颗按钮改字形
+TButton(
+  onPressed: _submit,
+  child: TText('删除', font: TTheme.of(context).fontTitleSmall),
+)
+
+// 禁用：仅 onPressed: null，文案自动走 disabled 前景色
+TButton(child: TText('提交'), onPressed: null)
+```
 
 ### 类型
 
@@ -95,7 +157,7 @@ Material 薄包装 · `onPressed: null` = 禁用 · `TButtonThemeData` 全量 re
 | 0.2.x | v1.0 | 怎么改 |
 | --- | --- | --- |
 | `icon` + `iconWidget` | `icon`（`Widget?`） | `IconData` → `Icon(...)`；§1.1 |
-| `text` | `child: Text(…)` | 删 `text` 参数；**非**改名为 `child` |
+| `text` | `child: TText(…)` 或 `Text(…)` | 删 `text` 参数；**非**改名为 `child`；默认 TextStyle 见 **§1.2** |
 
 ### 🗑️ 移除
 
@@ -105,6 +167,8 @@ Material 薄包装 · `onPressed: null` = 禁用 · `TButtonThemeData` 全量 re
 | `onLongPress` | — | 外包手势 |
 | `TButtonStatus` | 不 export | 内部类型 |
 | `isBlock` | — | **布局外包**；见下表 **§2.1** |
+| `textStyle` | — | resolve 内部按 `size` 补默认字形；见 **§1.2** |
+| `disableTextStyle` | — | 并入 `foregroundColor` + `WidgetState.disabled`；见 **§1.2** |
 
 #### §2.1 `isBlock` 迁移（通栏布局）
 
@@ -176,7 +240,8 @@ Padding(
 | 📦 | `margin` | 外边距 | `margin` |
 | 📦 | `iconSpacing` | 图标文案间距 | `iconTextSpacing` |
 | 📦 | `gradient` | 装饰层（非 `ButtonStyle` 字段） | `gradient` |
-| 📦 | `textStyle` | 默认文案 | `textStyle` / `disableTextStyle` |
+
+> **文案 / TextStyle 不进 Theme 公开字段**：0.2.x `textStyle` / `disableTextStyle` 不再迁入 `TButtonThemeData`；默认字形与禁用色由 resolve 内 `ButtonStyle.textStyle` + `foregroundColor`（`WidgetStateProperty`）承担，规则见 **§1.2**。
 
 ### 3.5 `shape` 解析
 
@@ -198,9 +263,9 @@ Padding(
 | small | 32 | 7 |
 | extraSmall | 28 | 5 |
 
-**resolve**：`variant` → 控件 + 色板 → `colorScheme` → `shape`+`size` → 扩展层 → P0 `style`
+**resolve**：`variant` → 控件 + 色板 → `colorScheme` → `shape`+`size`（含 §1.2 内部 `textStyle`）→ 扩展层 → P0 `style`
 
-**冲突优先级**（后者赢）：`shape` §3.5 → `*Style` → P0 · `minimumSize` `size`/§3.5 → `*Style` → P0 · `padding` §3.5 → Theme `padding` → P0 · 颜色 `colorScheme` → `*Style` → P0
+**冲突优先级**（后者赢）：`shape` §3.5 → `*Style` → P0 · `minimumSize` / `textStyle` `size`/§1.2/§3.5 → `*Style` → P0 · `padding` §3.5 → Theme `padding` → P0 · 颜色 `colorScheme` → `*Style` → P0 · 文案显式 `TText`/`Text.style` → resolve 内 `textStyle`（§1.2）
 
 ---
 
@@ -225,6 +290,7 @@ Padding(
 | A 类禁用 | `onPressed: null` → 不可点；**无** `disabled` 构造器 |
 | `variant` × `colorScheme` | fill / outline / text / ghost × 至少 primary、defaultTheme 各一态 |
 | §1.1 `icon` | 未设 `size`/`color` 时按 `size` 补齐；已设则尊重传入 |
+| §1.2 文案 | 未设 `font`/`style`/`textColor` 时按 `size` 补 Token 字体；`onPressed: null` 时前景色走 disabled |
 | `iconPosition` | left / right 布局 |
 | §3.5 `shape` | rectangle · round · square · circle · filled 展开进 `ButtonStyle.shape` |
 | `size` | large / medium / small / extraSmall → §3.5 等边 padding / `minimumSize` |
