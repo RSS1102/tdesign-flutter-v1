@@ -45,9 +45,6 @@ class TButtonThemeData extends ThemeExtension<TButtonThemeData> {
   /// 渐变背景色（装饰层，非 ButtonStyle 字段）
   final Gradient? gradient;
 
-  /// 默认文案样式
-  final TextStyle? textStyle;
-
   const TButtonThemeData({
     this.defaultVariant = TButtonVariant.fill,
     this.defaultSize = TButtonSize.medium,
@@ -60,7 +57,6 @@ class TButtonThemeData extends ThemeExtension<TButtonThemeData> {
     this.margin,
     this.iconSpacing,
     this.gradient,
-    this.textStyle,
   });
 
   @override
@@ -76,7 +72,6 @@ class TButtonThemeData extends ThemeExtension<TButtonThemeData> {
     EdgeInsetsGeometry? margin,
     double? iconSpacing,
     Gradient? gradient,
-    TextStyle? textStyle,
   }) {
     return TButtonThemeData(
       defaultVariant: defaultVariant ?? this.defaultVariant,
@@ -90,7 +85,6 @@ class TButtonThemeData extends ThemeExtension<TButtonThemeData> {
       margin: margin ?? this.margin,
       iconSpacing: iconSpacing ?? this.iconSpacing,
       gradient: gradient ?? this.gradient,
-      textStyle: textStyle ?? this.textStyle,
     );
   }
 
@@ -111,7 +105,6 @@ class TButtonThemeData extends ThemeExtension<TButtonThemeData> {
       margin: EdgeInsetsGeometry.lerp(margin, other.margin, t),
       iconSpacing: lerpDouble(iconSpacing, other.iconSpacing, t),
       gradient: t < 0.5 ? gradient : other.gradient,
-      textStyle: TextStyle.lerp(textStyle, other.textStyle, t),
     );
   }
 

@@ -372,13 +372,13 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
         return Align(
             alignment: Alignment.center,
             child: TLink(
-              label: widget.link.name,
-              style: TLinkStyle.primary,
-              type: TLinkType.basic,
+              child: Text(widget.link.name),
+              colorScheme: TLinkColorScheme.primary,
+              variant: TLinkType.basic,
               uri: widget.link.uri,
               size: TLinkSize.medium,
               color: widget.link.color ?? TTheme.of(context).brandNormalColor,
-              linkClick: (link) => clickLink(),
+              onPressed: clickLink,
             ));
       } else if (widget.link is String) {
         return Align(

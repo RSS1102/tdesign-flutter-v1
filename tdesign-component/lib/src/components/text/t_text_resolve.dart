@@ -1,0 +1,270 @@
+import 'package:flutter/material.dart';
+
+import '../../../tdesign_flutter.dart';
+import 't_text_theme_data.dart';
+
+/// Text 样式解析器
+///
+/// 将 v0.2.x 中 [TText.getTextStyle] 与 [TTextSpan._getTextStyle] 两套独立逻辑
+/// 合并为唯一入口，确保纯文本与富文本样式一致性。
+///
+/// 优先级链：
+/// P0 [TextStyle] style 实例
+///  > 构造器糖（font/textColor/fontWeight/fontFamily/isTextThrough 等）
+///  > [TTextConfiguration]（globalFontFamily · paddingConfig）
+///  > [TTextThemeData]（ThemeExtension）
+///  > [TextTheme] / DefaultTextStyle（Material P2）
+///  > Token 默认值（P4）
+class TTextResolve {
+  TTextResolve._();
+
+  /// 解析 [TText] 的最终 [TextStyle]
+  ///
+  /// 含完整覆盖链：P0 style > 构造器糖 > TTextConfiguration > TTextThemeData > Token。
+  static TextStyle resolve({
+    required BuildContext context,
+    // P0 实例
+    TextStyle? style,
+    // 构造器糖
+    Font? font,
+    FontWeight? fontWeight,
+    FontFamily? fontFamily,
+    Color? textColor,
+    bool isTextThrough = false,
+    Color? lineThroughColor,
+    String? package,
+    bool isInFontLoader = false,
+    // 强制居中时由 build 传入覆写 height
+    double? overrideHeight,
+    // TextStyle.backgroundColor（TText 不以此为块背景，但与 forceVerticalCenter 分支共用 Container 时传入）
+    Color? textStyleBackgroundColor,
+  }) {
+    final tTheme = TTheme.of(context);
+    final themeExtension = Theme.of(context).extension<TTextThemeData>();
+    final configuration =
+        context.dependOnInheritedWidgetOfExactType<TTextConfiguration>();
+
+    // 1. 基准 Font：构造器 > Theme > Token
+    final textFont = font ??
+        themeExtension?.defaultFont ??
+        tTheme.fontBodyLarge ??
+        Font(size: 16, lineHeight: 24);
+
+    // 2. fontSize：P0 style > 构造器糖（font.size）> Theme > Token
+    final fontSize = style?.fontSize ?? textFont.size;
+
+    // 3. height：overrideHeight（forceVerticalCenter 分支传入）> P0 style.height > 构造器糖（font.height）> Token
+    final resolvedHeight = overrideHeight ?? style?.height ?? textFont.height;
+
+    // 4. fontWeight：P0 style > 构造器糖 > Token
+    final resolvedFontWeight =
+        style?.fontWeight ?? fontWeight ?? textFont.fontWeight;
+
+    // 5. 字体族解析（含 globalFontFamily 注入 + iOS PingFang 回退）
+    final resolvedFontFamily = _resolveFontFamily(
+      style: style,
+      fontFamily: fontFamily,
+      configuration: configuration,
+      resolvedFontWeight: resolvedFontWeight,
+    );
+    final resolvedPackage = _resolvePackage(
+      package: package,
+      fontFamily: fontFamily,
+      configuration: configuration,
+      isInFontLoader: isInFontLoader,
+    );
+
+    // 6. 颜色：P0 style.color > 构造器糖 textColor > Theme > Token
+    final color = style?.color ??
+        textColor ??
+        themeExtension?.defaultTextColor ??
+        tTheme.textColorPrimary;
+
+    // 7. 删除线：P0 style.decoration > 构造器糖 isTextThrough > Theme
+    final decoration = style?.decoration ??
+        ((isTextThrough || (themeExtension?.isTextThrough ?? false))
+            ? TextDecoration.lineThrough
+            : TextDecoration.none);
+    final decorationColor = style?.decorationColor ??
+        lineThroughColor ??
+        themeExtension?.lineThroughColor ??
+        color;
+
+    return TextStyle(
+      inherit: style?.inherit ?? true,
+      color: color,
+      // TText 不用 TextStyle.backgroundColor 做块背景（改用 Container），
+      // 仅 forceVerticalCenter 分支 Container 传入时作为 TextStyle 背景（非块背景用途）
+      backgroundColor: textStyleBackgroundColor,
+      fontSize: fontSize,
+      fontWeight: resolvedFontWeight,
+      fontStyle: style?.fontStyle,
+      letterSpacing: style?.letterSpacing,
+      wordSpacing: style?.wordSpacing,
+      textBaseline: style?.textBaseline,
+      height: resolvedHeight,
+      leadingDistribution: style?.leadingDistribution,
+      locale: style?.locale,
+      foreground: style?.foreground,
+      background: style?.background,
+      shadows: style?.shadows,
+      fontFeatures: style?.fontFeatures,
+      decoration: decoration,
+      decorationColor: decorationColor,
+      decorationStyle: style?.decorationStyle,
+      decorationThickness: style?.decorationThickness,
+      debugLabel: style?.debugLabel,
+      fontFamily: resolvedFontFamily,
+      fontFamilyFallback: style?.fontFamilyFallback,
+      package: resolvedPackage,
+    );
+  }
+
+  /// 解析 [TTextSpan] 的最终 [TextStyle]
+  ///
+  /// Span 无 TTextConfiguration 子树上下文（不继承 globalFontFamily），
+  /// 但仍获取 TTextThemeData 做 P1 默认值。
+  static TextStyle resolveSpan({
+    BuildContext? context,
+    // P0 实例
+    TextStyle? style,
+    // 构造器糖
+    Font? font,
+    FontWeight? fontWeight,
+    FontFamily? fontFamily,
+    Color? textColor,
+    bool isTextThrough = false,
+    Color? lineThroughColor,
+    String? package,
+  }) {
+    // Token 默认值（context 可能为 null，此时用硬编码回退）
+    final tTheme = context != null ? TTheme.of(context) : null;
+    final themeExtension = context != null
+        ? Theme.of(context).extension<TTextThemeData>()
+        : null;
+
+    // 基准 Font
+    final textFont = font ??
+        themeExtension?.defaultFont ??
+        tTheme?.fontBodyLarge ??
+        Font(size: 16, lineHeight: 24);
+
+    final fontSize = style?.fontSize ?? textFont.size;
+    final resolvedFontWeight =
+        style?.fontWeight ?? fontWeight ?? textFont.fontWeight;
+
+    // Span 不注入 globalFontFamily（无 TTextConfiguration 上下文）
+    final resolvedFontFamily = _resolveSpanFontFamily(
+      style: style,
+      fontFamily: fontFamily,
+      resolvedFontWeight: resolvedFontWeight,
+    );
+
+    final color = style?.color ??
+        textColor ??
+        themeExtension?.defaultTextColor ??
+        tTheme?.textColorPrimary;
+
+    final decoration = style?.decoration ??
+        ((isTextThrough || (themeExtension?.isTextThrough ?? false))
+            ? TextDecoration.lineThrough
+            : TextDecoration.none);
+    final decorationColor = style?.decorationColor ??
+        lineThroughColor ??
+        themeExtension?.lineThroughColor ??
+        color;
+
+    return TextStyle(
+      inherit: style?.inherit ?? true,
+      color: color,
+      backgroundColor: style?.backgroundColor,
+      fontSize: fontSize,
+      fontWeight: resolvedFontWeight,
+      fontStyle: style?.fontStyle,
+      letterSpacing: style?.letterSpacing,
+      wordSpacing: style?.wordSpacing,
+      textBaseline: style?.textBaseline,
+      height: style?.height ?? textFont.height,
+      leadingDistribution: style?.leadingDistribution,
+      locale: style?.locale,
+      foreground: style?.foreground,
+      background: style?.background,
+      shadows: style?.shadows,
+      fontFeatures: style?.fontFeatures,
+      decoration: decoration,
+      decorationColor: decorationColor,
+      decorationStyle: style?.decorationStyle,
+      decorationThickness: style?.decorationThickness,
+      debugLabel: style?.debugLabel,
+      fontFamily: resolvedFontFamily,
+      fontFamilyFallback: style?.fontFamilyFallback,
+      package: package ?? fontFamily?.package,
+    );
+  }
+
+  // ---- 内部辅助 ----
+
+  /// 解析 TText 的 fontFamily（含 globalFontFamily 注入 + iOS PingFang 回退）
+  static String? _resolveFontFamily({
+    required TextStyle? style,
+    required FontFamily? fontFamily,
+    TTextConfiguration? configuration,
+    required FontWeight? resolvedFontWeight,
+  }) {
+    var styleFontFamily = style?.fontFamily ?? fontFamily?.fontFamily;
+
+    // globalFontFamily 注入（替代 v0.2.x 的 kTextNeedGlobalFontFamily 全局变量）
+    final globalFontFamily = configuration?.globalFontFamily;
+    styleFontFamily ??= globalFontFamily?.fontFamily;
+
+    // iOS FontWeight≤w500 且无 fontFamily → 回退 PingFang SC
+    if (PlatformUtil.isIOS &&
+        (styleFontFamily == null || styleFontFamily.isEmpty) &&
+        resolvedFontWeight != null &&
+        resolvedFontWeight.value <= FontWeight.w500.value) {
+      return 'PingFang SC';
+    }
+
+    return styleFontFamily;
+  }
+
+  /// 解析 TTextSpan 的 fontFamily（不含 globalFontFamily，仅 iOS PingFang）
+  static String? _resolveSpanFontFamily({
+    required TextStyle? style,
+    required FontFamily? fontFamily,
+    required FontWeight? resolvedFontWeight,
+  }) {
+    var styleFontFamily = style?.fontFamily ?? fontFamily?.fontFamily;
+
+    // iOS PingFang 回退
+    if (PlatformUtil.isIOS &&
+        (styleFontFamily == null || styleFontFamily.isEmpty) &&
+        resolvedFontWeight != null &&
+        resolvedFontWeight.value <= FontWeight.w500.value) {
+      return 'PingFang SC';
+    }
+
+    return styleFontFamily;
+  }
+
+  /// 解析 package（全局字体 package 回退 + isInFontLoader 时清空）
+  static String? _resolvePackage({
+    String? package,
+    FontFamily? fontFamily,
+    TTextConfiguration? configuration,
+    required bool isInFontLoader,
+  }) {
+    var stylePackage = package ?? fontFamily?.package;
+
+    // 全局字体 package 回退
+    final globalFontFamily = configuration?.globalFontFamily;
+    stylePackage ??= globalFontFamily?.package;
+
+    // 字体懒加载模式下清空 package，避免引擎查找未注册字体
+    if (isInFontLoader) {
+      stylePackage = null;
+    }
+
+    return stylePackage;
+  }
+}

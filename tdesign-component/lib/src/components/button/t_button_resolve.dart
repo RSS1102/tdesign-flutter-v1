@@ -21,6 +21,7 @@ class TButtonResolve {
     required TButtonThemeData? theme,
     required ButtonStyle? instanceStyle,
     required BuildContext context,
+    required bool hasGradient,
   }) {
     final tTheme = TTheme.of(context);
     final effectiveShape = theme?.effectiveShape ?? TButtonShape.rectangle;
@@ -69,6 +70,19 @@ class TButtonResolve {
       resolved = resolved.merge(paddingStyle);
     }
     resolved = resolved.merge(iconSpacingStyle);
+
+    // 渐变存在时强制背景 null（触发 MaterialType.transparency），阻止 M3 默认样式污染渐变效果（在 P0 之前，允许 P0 覆盖）
+    if (hasGradient) {
+      resolved = resolved.merge(
+        ButtonStyle(
+          // 设为 null 而非 Colors.transparent，确保 ButtonStyleButton 使用 MaterialType.transparency
+          backgroundColor: const WidgetStatePropertyAll<Color?>(null),
+          overlayColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+          surfaceTintColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+          shadowColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+        ),
+      );
+    }
 
     // P0：实例 style 覆盖所有
     if (instanceStyle != null) {
@@ -146,7 +160,10 @@ class TButtonResolve {
         }
         return fg;
       }),
-      elevation: WidgetStatePropertyAll<double>(0),
+      overlayColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      surfaceTintColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      shadowColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      elevation: const WidgetStatePropertyAll<double>(0),
     );
   }
 
@@ -190,7 +207,10 @@ class TButtonResolve {
         }
         return BorderSide(color: borderColor ?? tTheme.componentBorderColor, width: 1);
       }),
-      elevation: WidgetStatePropertyAll<double>(0),
+      overlayColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      surfaceTintColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      shadowColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      elevation: const WidgetStatePropertyAll<double>(0),
     );
   }
 
@@ -223,7 +243,10 @@ class TButtonResolve {
         }
         return fg;
       }),
-      elevation: WidgetStatePropertyAll<double>(0),
+      overlayColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      surfaceTintColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      shadowColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      elevation: const WidgetStatePropertyAll<double>(0),
     );
   }
 
@@ -244,7 +267,7 @@ class TButtonResolve {
     }
 
     return ButtonStyle(
-      backgroundColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+      backgroundColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
       foregroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
           return tTheme.fontWhColor4;
@@ -257,7 +280,10 @@ class TButtonResolve {
             : fg;
         return BorderSide(color: color, width: 1);
       }),
-      elevation: WidgetStatePropertyAll<double>(0),
+      overlayColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      surfaceTintColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      shadowColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      elevation: const WidgetStatePropertyAll<double>(0),
     );
   }
 
@@ -268,10 +294,13 @@ class TButtonResolve {
     required TThemeData tTheme,
   }) {
     final OutlinedBorder shape = switch (effectiveShape) {
-      TButtonShape.rectangle || TButtonShape.square => RoundedRectangleBorder(
+      TButtonShape.rectangle => RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(tTheme.radiusDefault),
           ),
+        ),
+      TButtonShape.square => const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
         ),
       TButtonShape.round => RoundedRectangleBorder(
           borderRadius: BorderRadius.all(

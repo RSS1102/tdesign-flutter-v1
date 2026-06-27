@@ -109,8 +109,7 @@ class _TBadgePageState extends State<TBadgePage> {
         )
       ],
       floatingActionButton: TFab(
-          theme: TFabTheme.primary,
-          onClick: () {
+          onPressed: () {
             setState(() {
               num = num + 1;
             });

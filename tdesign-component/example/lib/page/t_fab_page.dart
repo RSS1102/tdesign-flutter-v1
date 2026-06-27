@@ -12,170 +12,163 @@ class TFabPage extends StatefulWidget {
 }
 
 class _TFabPageState extends State<TFabPage> {
-  bool showBorder = false;
-
   @override
   Widget build(BuildContext context) {
     return ExamplePage(title: tTitle(), exampleCodeGroup: 'fab', children: [
       ExampleModule(title: '组件类型', children: [
-        ExampleItem(desc: 'Icon Fab 纯图标悬浮按钮', builder: _buildPureIconFab),
-        ExampleItem(
-            desc: 'Icon Fab with Text 图标加文字悬浮按钮', builder: _buildTextFab)
+        ExampleItem(desc: '纯图标悬浮按钮（圆形）', builder: _buildPureIconFab),
+        ExampleItem(desc: '图标加文字悬浮按钮（胶囊形）', builder: _buildTextFab),
       ]),
       ExampleModule(title: '组件状态', children: [
-        ExampleItem(desc: 'Fab Theme 悬浮按钮主题', builder: _buildThemeFab),
-        ExampleItem(desc: 'Fab Shape 悬浮按钮形状', builder: _buildShapeFab),
-        ExampleItem(desc: 'Fab Size 悬浮按钮尺寸', builder: _buildSizeFab)
-      ])
+        ExampleItem(desc: '配色方案', builder: _buildColorSchemeFab),
+        ExampleItem(desc: '悬浮按钮尺寸', builder: _buildSizeFab),
+      ]),
+      ExampleModule(title: '交互能力', children: [
+        ExampleItem(
+            desc: '可拖拽悬浮按钮（在卡片内拖动试试）',
+            builder: _buildDraggableFab),
+      ]),
     ]);
+  }
+
+  /// 横排对比 demo 容器：多个 TFab 在各自的 Stack 小卡片中横向排列
+  ///
+  /// 每个 TFab 必须放在 Stack 内（TFab 自带 Positioned 定位，见 fab.md §1.5）
+  Widget _buildRowDemo(List<Widget> fabs, {double cardSize = 96}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: fabs
+              .map((fab) => Container(
+                    width: cardSize,
+                    height: cardSize,
+                    margin: const EdgeInsets.only(right: 12),
+                    decoration: BoxDecoration(
+                      color: TTheme.of(context).bgColorSecondaryContainer,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    // TFab 返回 Positioned，必须放在 Stack 内
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [fab],
+                    ),
+                  ))
+              .toList(),
+        ),
+      ),
+    );
+  }
+
+  /// 真实页面 demo 容器：大 Stack 模拟页面悬浮效果
+  ///
+  /// TFab 自带 Positioned 定位，放在 Stack 顶层即可悬浮在右下角
+  Widget _buildPageDemo({
+    required Widget fab,
+    double height = 180,
+  }) {
+    return Container(
+      height: height,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: TTheme.of(context).bgColorSecondaryContainer,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          // 占位内容，表示这是一个"页面"
+          Center(
+            child: TText(
+              '页面内容区域',
+              textColor: TTheme.of(context).textColorPlaceholder,
+            ),
+          ),
+          // TFab 悬浮在右下角
+          fab,
+        ],
+      ),
+    );
   }
 
   @Demo(group: 'fab')
   Widget _buildPureIconFab(BuildContext context) {
-    return _buildRowDemo([
-      const TFab(
-        theme: TFabTheme.primary,
-      )
-    ]);
+    return _buildPageDemo(
+      fab: const TFab(right: 16, bottom: 16),
+    );
   }
 
   @Demo(group: 'fab')
   Widget _buildTextFab(BuildContext context) {
+    return _buildPageDemo(
+      fab: const TFab(text: 'Floating', right: 16, bottom: 16),
+    );
+  }
+
+  @Demo(group: 'fab')
+  Widget _buildColorSchemeFab(BuildContext context) {
     return _buildRowDemo([
+      const TFab(right: 8, bottom: 8),
       const TFab(
-        theme: TFabTheme.primary,
-        text: 'Floating',
-      )
-    ]);
-  }
-
-  @Demo(group: 'fab')
-  Widget _buildThemeFab(BuildContext context) {
-    return _buildRowDemoWidthDescription([
-      {
-        'component': const TFab(
-          theme: TFabTheme.primary,
+        right: 8,
+        bottom: 8,
+        buttonProps: TButtonProps(
+          colorScheme: TButtonColorScheme.defaultTheme,
         ),
-        'desc': 'Primary'
-      },
-      {
-        'component': const TFab(
-          theme: TFabTheme.defaultTheme,
+      ),
+      const TFab(
+        right: 8,
+        bottom: 8,
+        buttonProps: TButtonProps(
+          colorScheme: TButtonColorScheme.light,
         ),
-        'desc': 'Default'
-      },
-      {
-        'component': const TFab(
-          theme: TFabTheme.light,
+      ),
+      const TFab(
+        right: 8,
+        bottom: 8,
+        buttonProps: TButtonProps(
+          colorScheme: TButtonColorScheme.danger,
         ),
-        'desc': 'Light'
-      },
-      {
-        'component': const TFab(
-          theme: TFabTheme.danger,
-        ),
-        'desc': 'Danger'
-      },
-    ]);
-  }
-
-  @Demo(group: 'fab')
-  Widget _buildShapeFab(BuildContext context) {
-    return _buildRowDemoWidthDescription([
-      {
-        'component': const TFab(
-          theme: TFabTheme.primary,
-          shape: TFabShape.circle,
-        ),
-        'desc': 'Circle'
-      },
-      {
-        'component': const TFab(
-          theme: TFabTheme.primary,
-          shape: TFabShape.square,
-        ),
-        'desc': 'Square'
-      },
+      ),
     ]);
   }
 
   @Demo(group: 'fab')
   Widget _buildSizeFab(BuildContext context) {
-    return _buildRowDemoWidthDescription([
-      {
-        'component': const TFab(
-          theme: TFabTheme.primary,
-          size: TFabSize.large,
-        ),
-        'desc': 'Large'
-      },
-      {
-        'component': const TFab(
-          theme: TFabTheme.primary,
-          size: TFabSize.medium,
-        ),
-        'desc': 'Medium'
-      },
-      {
-        'component': const TFab(
-          theme: TFabTheme.primary,
-          size: TFabSize.small,
-        ),
-        'desc': 'Small'
-      },
-      {
-        'component': const TFab(
-          theme: TFabTheme.primary,
-          size: TFabSize.extraSmall,
-        ),
-        'desc': 'extraSmall'
-      },
+    return _buildRowDemo([
+      const TFab(
+        right: 8,
+        bottom: 8,
+        buttonProps: TButtonProps(size: TButtonSize.large),
+      ),
+      const TFab(
+        right: 8,
+        bottom: 8,
+        buttonProps: TButtonProps(size: TButtonSize.medium),
+      ),
+      const TFab(
+        right: 8,
+        bottom: 8,
+        buttonProps: TButtonProps(size: TButtonSize.small),
+      ),
+      const TFab(
+        right: 8,
+        bottom: 8,
+        buttonProps: TButtonProps(size: TButtonSize.extraSmall),
+      ),
     ]);
   }
 
-  Widget _buildRowDemo(List<TFab> fabs) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: 16,
-      ),
-      child: Row(
-        children: fabs
-            .map((fab) => Padding(
-                  padding: const EdgeInsets.only(right: 80),
-                  child: fab,
-                ))
-            .toList(),
-      ),
-    );
-  }
-
-  Widget _buildRowDemoWidthDescription(List<Map<String, dynamic>> fabs) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 4, right: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: fabs
-            .map(
-              (fab) => Padding(
-                padding: const EdgeInsets.only(right: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  // spacing: 24,
-                  children: [
-                    SizedBox(
-                      height: 48,
-                      child: Column(children: [fab['component']]),
-                    ),
-                    const SizedBox(height: 24),
-                    TText(
-                      fab['desc'],
-                      style: const TextStyle(fontSize: 14),
-                    )
-                  ],
-                ),
-              ),
-            )
-            .toList(),
+  @Demo(group: 'fab')
+  Widget _buildDraggableFab(BuildContext context) {
+    return _buildPageDemo(
+      height: 280,
+      fab: const TFab(
+        right: 16,
+        bottom: 16,
+        draggable: true,
+        magnet: true,
       ),
     );
   }

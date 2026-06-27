@@ -97,8 +97,8 @@ class TConfirmDialog extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const TDivider(height: 23, color: Colors.transparent),
-          const TDivider(height: 1),
+          const SizedBox(height: 23),
+          const TDivider(),
           TDialogButton(
             buttonText: buttonText ?? context.resource.knew,
             buttonTextColor: buttonTextColor,

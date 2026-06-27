@@ -109,7 +109,7 @@ class TImageDialog extends StatelessWidget {
         content: content,
         contentColor: contentColor,
       ),
-      const TDivider(height: 24, color: Colors.transparent),
+      const SizedBox(height: 24),
       _horizontalButtons(context),
     ]);
   }
@@ -131,7 +131,7 @@ class TImageDialog extends StatelessWidget {
           child: _buildImage(context),
         ),
       ),
-      const TDivider(height: 24, color: Colors.transparent),
+      const SizedBox(height: 24),
       _horizontalButtons(context),
     ]);
   }
@@ -144,7 +144,7 @@ class TImageDialog extends StatelessWidget {
             topRight: Radius.circular(radius)),
         child: _buildImage(context),
       ),
-      const TDivider(height: 24, color: Colors.transparent),
+      const SizedBox(height: 24),
       _horizontalButtons(context),
     ]);
   }

@@ -13,6 +13,14 @@ import 'page/sidebar/t_sidebar_page_unselected_color.dart';
 */
 // V1.0 Button 示例
 import 'page/t_button_page.dart';
+// V1.0 Divider 示例
+import 'page/t_divider_page.dart';
+// V1.0 FAB 示例
+import 'page/t_fab_page.dart';
+// V1.0 Link 示例
+import 'page/t_link_page.dart';
+// V1.0 Text 示例
+import 'page/t_text_page.dart';
 /*
 import 'page/t_action_sheet_page.dart';
 import 'page/t_avatar_page.dart';
@@ -90,11 +98,23 @@ Map<String, List<ExamplePageModel>> exampleMap = {
         text: 'Button 按钮 (V1.0)',
         name: 'button',
         pageBuilder: _wrapInheritedTheme((context) => const TButtonPage())),
-    /*
     ExamplePageModel(
-        text: 'Divider 分割线',
+        text: 'Divider 分割线 (V1.0)',
         name: 'divider',
         pageBuilder: _wrapInheritedTheme((context) => const TDividerPage())),
+    ExamplePageModel(
+        text: 'Fab 悬浮按钮 (V1.0)',
+        name: 'fab',
+        pageBuilder: _wrapInheritedTheme((context) => const TFabPage())),
+    ExamplePageModel(
+        text: 'Link 链接 (V1.0)',
+        name: 'link',
+        pageBuilder: _wrapInheritedTheme((context) => const TLinkViewPage())),
+    ExamplePageModel(
+        text: 'Text 文本 (V1.0)',
+        name: 'text',
+        pageBuilder: _wrapInheritedTheme((context) => const TTextPage())),
+    /*
     ExamplePageModel(
         text: 'Fab 悬浮按钮',
         name: 'fab',

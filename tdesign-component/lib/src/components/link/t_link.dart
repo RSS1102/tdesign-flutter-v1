@@ -1,270 +1,299 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
+import 't_link_resolve.dart';
 
-/// 限制Function类型，防止传递错误的Function，导致参数对不上
-typedef LinkClick = Function(Uri? uri);
-
+/// 链接形态
 enum TLinkType {
+  /// 纯文本链接
   basic,
-  withUnderline,
-  withPrefixIcon,
-  withSuffixIcon,
+
+  /// 下划线链接
+  underline,
+
+  /// 带图标链接（通过 [prefixIcon] / [suffixIcon] 区分前后）
+  icon,
 }
 
-enum TLinkStyle {
+/// 语义颜色方案（对齐 Button colorScheme）
+enum TLinkColorScheme {
   primary,
-  defaultStyle,
+  defaultTheme,
   danger,
   warning,
   success,
 }
 
-enum TLinkState {
-  normal,
-  active,
-  disabled,
-}
-
+/// 链接尺寸
 enum TLinkSize {
   small,
   medium,
   large,
 }
 
+/// 文字超链接用于跳转一个新页面，如当前项目跳转、友情链接等。
+///
+/// 基于 Material [InkWell] + [Text] 薄包装。
 class TLink extends StatelessWidget {
   const TLink({
     Key? key,
-    required this.label,
+    this.child,
     this.uri,
     this.prefixIcon,
     this.suffixIcon,
-    this.linkClick,
-    this.type = TLinkType.basic,
-    this.style = TLinkStyle.defaultStyle,
-    this.state = TLinkState.normal,
+    this.variant = TLinkType.basic,
+    this.colorScheme,
     this.size = TLinkSize.medium,
     this.color,
     this.iconSize,
     this.fontSize,
     this.leftGapWithIcon,
     this.rightGapWithIcon,
+    this.onPressed,
+    this.semanticLabel,
+    this.tooltip,
   }) : super(key: key);
 
-  /// link 展示的文本
-  final String label;
+  /// 链接内容，一般是 [Text]
+  final Widget? child;
 
-  /// link 跳转的uri
+  /// 跳转 URI
   final Uri? uri;
 
-  /// link 类型
-  final TLinkType type;
+  /// 链接形态
+  final TLinkType variant;
 
-  /// link 风格
-  final TLinkStyle style;
+  /// 语义颜色方案
+  final TLinkColorScheme? colorScheme;
 
-  /// link 状态
-  final TLinkState state;
-
-  /// link 大小
+  /// 尺寸
   final TLinkSize size;
 
-  /// 前置 icon
-  final Icon? prefixIcon;
+  /// 前置图标（仅在 [variant] 为 [TLinkType.icon] 时生效）
+  final Widget? prefixIcon;
 
-  /// 后置 icon
-  final Icon? suffixIcon;
+  /// 后置图标（仅在 [variant] 为 [TLinkType.icon] 时生效）
+  final Widget? suffixIcon;
 
-  /// link 文本的颜色，如果不设置则根据状态和风格进行计算
+  /// 自定义链接文本颜色（覆盖 [colorScheme] 计算色）
   final Color? color;
 
-  /// link icon 大小，如果不设置则根据状态和风格进行计算
+  /// 自定义图标尺寸
   final double? iconSize;
 
-  /// link 文本的字体大小，如果不设置则根据状态和风格进行计算
+  /// 自定义字体大小
   final double? fontSize;
 
-  /// 前置icon和文本之间的间隔，如果不设置则根据状态和风格进行计算
+  /// 前置图标与文本间距
   final double? leftGapWithIcon;
 
-  /// 后置icon和文本之间的间隔，如果不设置则根据状态和风格进行计算
+  /// 后置图标与文本间距
   final double? rightGapWithIcon;
 
-  /// link 被点击之后所采取的动作，会将uri当做参数传入到该方法当中
-  final LinkClick? linkClick;
+  /// 点击回调。为 null 时链接为禁用态
+  final VoidCallback? onPressed;
+
+  /// 语义标签（无障碍）
+  final String? semanticLabel;
+
+  /// 悬浮提示
+  final String? tooltip;
+
+  /// 是否禁用
+  bool get _isDisabled => onPressed == null;
 
   @override
   Widget build(BuildContext context) {
-    if (type == TLinkType.withPrefixIcon) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          prefixIcon == null ? _getDefaultIcon(context) : prefixIcon!,
-          SizedBox(
-            width: _getLeftGapSize(context),
-          ),
-          _buildLink(context),
-        ],
-      );
-    } else if (type == TLinkType.withSuffixIcon) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildLink(context),
-          SizedBox(
-            width: _getRightGapSize(context),
-          ),
-          suffixIcon == null ? _getDefaultIcon(context) : suffixIcon!,
-        ],
+    final theme = _resolveTheme(context);
+    final isDisabled = _isDisabled;
+
+    // resolve 颜色
+    final effectiveColor = TLinkResolve.resolveColor(
+      context: context,
+      colorScheme: colorScheme ?? theme?.defaultColorScheme,
+      theme: theme,
+      isDisabled: isDisabled,
+      instanceColor: color,
+    );
+
+    // 构建链接文本
+    final text = _buildLinkText(
+      context: context,
+      theme: theme,
+      effectiveColor: effectiveColor,
+    );
+
+    // 带图标时组装 Row
+    if (variant == TLinkType.icon) {
+      return _buildIconRow(context, text, effectiveColor, theme);
+    }
+
+    // 纯文本 / 下划线：直接返回 InkWell 包裹的文本
+    final Widget link = InkWell(
+      onTap: onPressed,
+      child: text,
+    );
+
+    if (isDisabled) {
+      return IgnorePointer(child: link);
+    }
+    return link;
+  }
+
+  /// 构建链接文本（含下划线样式）
+  Widget _buildLinkText({
+    required BuildContext context,
+    required TLinkThemeData? theme,
+    required Color effectiveColor,
+  }) {
+    final effectiveFontSize = TLinkResolve.resolveFontSize(
+      size: size,
+      theme: theme,
+      instanceFontSize: fontSize,
+    );
+
+    final hasUnderline = variant == TLinkType.underline;
+
+    final defaultChild = child ?? const SizedBox.shrink();
+
+    // 如果 child 是纯文本 Text（data 非空），重新构建以注入样式
+    if (defaultChild is Text && defaultChild.data != null) {
+      return Text(
+        defaultChild.data!,
+        style: defaultChild.style?.copyWith(
+              fontSize: effectiveFontSize,
+              color: effectiveColor,
+              decoration: hasUnderline ? TextDecoration.underline : null,
+              decorationColor: hasUnderline ? effectiveColor : null,
+            ) ??
+            TextStyle(
+              fontSize: effectiveFontSize,
+              color: effectiveColor,
+              decoration: hasUnderline ? TextDecoration.underline : null,
+              decorationColor: hasUnderline ? effectiveColor : null,
+            ),
+        semanticsLabel: semanticLabel ?? defaultChild.semanticsLabel,
       );
     }
 
-    return _buildLink(context);
-  }
-
-  /// 提取成方法，允许业务定义自己的 TLinkConfiguration
-  TLinkConfiguration? getConfiguration(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<TLinkConfiguration>();
-  }
-
-  Color getColor(BuildContext context) {
-    if (color != null) {
-      return color!;
-    }
-
-    final theme = TTheme.of(context);
-    final colorMap = <TLinkState, Map<TLinkStyle, Color>>{
-      TLinkState.normal: {
-        TLinkStyle.primary: theme.brandNormalColor,
-        TLinkStyle.danger: theme.errorNormalColor,
-        TLinkStyle.warning: theme.warningNormalColor,
-        TLinkStyle.success: theme.successNormalColor,
-        TLinkStyle.defaultStyle: theme.textColorPrimary,
-      },
-      TLinkState.active: {
-        TLinkStyle.primary: theme.brandClickColor,
-        TLinkStyle.danger: theme.errorClickColor,
-        TLinkStyle.warning: theme.warningClickColor,
-        TLinkStyle.success: theme.successClickColor,
-        TLinkStyle.defaultStyle: theme.brandClickColor,
-      },
-      TLinkState.disabled: {
-        TLinkStyle.primary: theme.brandDisabledColor,
-        TLinkStyle.danger: theme.errorDisabledColor,
-        TLinkStyle.warning: theme.warningDisabledColor,
-        TLinkStyle.success: theme.successDisabledColor,
-        TLinkStyle.defaultStyle: theme.textDisabledColor,
-      },
-    };
-
-    return colorMap[state]?[style] ?? theme.textColorPrimary;
-  }
-
-  Widget _getDefaultIcon(BuildContext context) {
-    return Icon(
-      type == TLinkType.withPrefixIcon ? TIcons.link : TIcons.jump,
-      size: _getIconSize(context),
-      color: getColor(context),
+    // Text.rich 或其他 Widget：用 DefaultTextStyle 包裹注入样式
+    return DefaultTextStyle.merge(
+      style: TextStyle(
+        fontSize: effectiveFontSize,
+        color: effectiveColor,
+        decoration: hasUnderline ? TextDecoration.underline : null,
+        decorationColor: hasUnderline ? effectiveColor : null,
+      ),
+      child: defaultChild,
     );
   }
 
-  Widget _buildLink(BuildContext context) {
+  /// 带图标时组装 Row
+  Widget _buildIconRow(
+    BuildContext context,
+    Widget text,
+    Color effectiveColor,
+    TLinkThemeData? theme,
+  ) {
+    final (leftGap, rightGap) = TLinkResolve.resolveGap(
+      size: size,
+      theme: theme,
+      instanceLeftGap: leftGapWithIcon,
+      instanceRightGap: rightGapWithIcon,
+    );
+
+    final effectiveIconSize = TLinkResolve.resolveIconSize(
+      size: size,
+      theme: theme,
+      instanceIconSize: iconSize,
+    );
+
+    // 构建图标（优先用户传入，否则使用默认图标）
+    Widget? resolvedPrefix;
+    Widget? resolvedSuffix;
+
+    final hasPrefix = prefixIcon != null;
+    final hasSuffix = suffixIcon != null;
+
+    if (hasPrefix) {
+      resolvedPrefix = prefixIcon;
+    } else if (hasSuffix) {
+      // 只有 suffix 时，prefix 使用默认链接图标
+      resolvedPrefix = _defaultIcon(context, TIcons.link, effectiveIconSize,
+          effectiveColor);
+    } else {
+      // 两者都没传：默认显示链接图标 + 跳转图标
+      resolvedPrefix = _defaultIcon(context, TIcons.link, effectiveIconSize,
+          effectiveColor);
+      resolvedSuffix = _defaultIcon(context, TIcons.jump, effectiveIconSize,
+          effectiveColor);
+    }
+
+    resolvedSuffix ??= suffixIcon;
+
+    final rowChildren = <Widget>[];
+    if (resolvedPrefix != null) {
+      rowChildren.add(resolvedPrefix);
+      rowChildren.add(SizedBox(width: leftGap));
+    }
+    rowChildren.add(Flexible(child: text));
+    if (resolvedSuffix != null) {
+      rowChildren.add(SizedBox(width: rightGap));
+      rowChildren.add(resolvedSuffix);
+    }
+
+    final row = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: rowChildren,
+    );
+
+    final wrapped = tooltip != null
+        ? Tooltip(message: tooltip!, child: row)
+        : row;
+
+    if (_isDisabled) {
+      return IgnorePointer(child: wrapped);
+    }
+
     return InkWell(
-        onTap: () {
-          if (state == TLinkState.disabled) {
-            return;
-          }
-          if (linkClick != null) {
-            linkClick!(uri);
-          } else {
-            var tLinkConfig = getConfiguration(context);
-
-            if (tLinkConfig != null && tLinkConfig.linkClick != null) {
-              tLinkConfig.linkClick!(uri);
-            }
-          }
-        },
-        child: TText(
-          label,
-          style: TextStyle(
-            fontSize: _getFontSize(context),
-            color: getColor(context),
-            decoration: type == TLinkType.withUnderline
-                ? TextDecoration.underline
-                : null,
-            decorationColor: getColor(context),
-          ),
-          forceVerticalCenter: true,
-        ));
+      onTap: onPressed,
+      child: wrapped,
+    );
   }
 
-  double _getIconSize(BuildContext context) {
-    if (iconSize != null) {
-      return iconSize!;
-    }
-    switch (size) {
-      case TLinkSize.large:
-        return 18;
-      case TLinkSize.small:
-        return 14;
-      case TLinkSize.medium:
-        return 16;
-    }
+  /// 构建默认图标
+  Widget _defaultIcon(BuildContext context, IconData icon, double size,
+      Color color) {
+    return Icon(icon, size: size, color: color);
   }
 
-  double _getFontSize(BuildContext context) {
-    if (fontSize != null) {
-      return fontSize!;
-    }
-    switch (size) {
-      case TLinkSize.large:
-        return 16;
-      case TLinkSize.small:
-        return 12;
-      case TLinkSize.medium:
-        return 14;
-    }
-  }
-
-  double _getLeftGapSize(BuildContext context) {
-    if (leftGapWithIcon != null) {
-      return leftGapWithIcon!;
-    }
-    switch (size) {
-      case TLinkSize.large:
-        return 8;
-      case TLinkSize.small:
-        return 6.05;
-      case TLinkSize.medium:
-        return 6.34;
-    }
-  }
-
-  double _getRightGapSize(BuildContext context) {
-    if (rightGapWithIcon != null) {
-      return rightGapWithIcon!;
-    }
-    switch (size) {
-      case TLinkSize.large:
-        return 8;
-      case TLinkSize.small:
-        return 6.63;
-      case TLinkSize.medium:
-        return 7;
-    }
+  /// 获取当前上下文中的 TLinkThemeData
+  TLinkThemeData? _resolveTheme(BuildContext context) {
+    return Theme.of(context).extension<TLinkThemeData>();
   }
 }
 
-/// 存储可以自定义TLink跳转算法的控件
+/// 存储可以自定义 TLink 跳转算法的控件（保留 v0.2.x 兼容）
+///
+/// 用法：
+/// ```dart
+/// TLinkConfiguration(
+///   onTapAll: (uri) { /* 统一处理所有链接跳转 */ },
+///   child: MaterialApp(...),
+/// )
+/// ```
 class TLinkConfiguration extends InheritedWidget {
-  /// 统一跳转的函数
-  final LinkClick? linkClick;
+  /// 统一跳转回调
+  final void Function(Uri? uri)? onTapAll;
 
-  const TLinkConfiguration({this.linkClick, Key? key, required Widget child})
-      : super(key: key, child: child);
+  const TLinkConfiguration({
+    Key? key,
+    required Widget child,
+    this.onTapAll,
+  }) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(covariant TLinkConfiguration oldWidget) {
-    return linkClick != oldWidget.linkClick;
+    return onTapAll != oldWidget.onTapAll;
   }
 }

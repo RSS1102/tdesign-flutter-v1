@@ -255,11 +255,7 @@ class HorizontalNormalButtons extends StatelessWidget {
               },
             ),
           ),
-          const TDivider(
-            height: 0.5,
-            width: 12,
-            color: Colors.transparent,
-          ),
+          const SizedBox(width: 12),
           Expanded(
             child: TDialogButton(
               buttonText: rightBtn.title,
@@ -304,7 +300,7 @@ class HorizontalTextButtons extends StatelessWidget {
     // 标题和内容不能同时为空
     return Column(
       children: [
-        const TDivider(height: 0.5),
+        const TDivider(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -328,9 +324,9 @@ class HorizontalTextButtons extends StatelessWidget {
                 },
               ),
             ),
-            const TDivider(
-              width: 0.5,
+            const SizedBox(
               height: 56,
+              child: TDivider(layout: TDividerLayout.vertical),
             ),
             Expanded(
               child: TDialogButton(

@@ -31,6 +31,7 @@ class TTextPage extends StatelessWidget {
               desc: '中文居中:（带有英文可能不居中）', builder: _buildVerticalCenterText),
           ExampleItem(desc: '自定义内部padding:', builder: _buildCustomPaddingText),
           ExampleItem(desc: '删除线:', builder: _buildTextThrough),
+          ExampleItem(desc: 'v1.0 Theme默认:', builder: _buildThemeDemo),
         ]),
       ],
       test: [
@@ -158,6 +159,40 @@ class TTextPage extends StatelessWidget {
   Widget _buildTextThrough(BuildContext context) {
     return TText(exampleTxt, isTextThrough: true);
   }
+
+  @Demo(group: 'text')
+  Widget _buildThemeDemo(BuildContext context) {
+    // v1.0 新增：通过 TTextThemeData 统一控制子树 TText 默认样式
+    return Theme(
+      data: Theme.of(context).copyWith(
+        extensions: [
+          ...Theme.of(context).extensions.values,
+          TTextThemeData(
+            defaultTextColor: TTheme.of(context).brandNormalColor,
+            forceVerticalCenter: true,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            color: TTheme.of(context).brandFocusColor,
+            child: TText(exampleTxt),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '↑ 继承 TTextThemeData 默认颜色和强制居中',
+            style: TextStyle(
+              fontSize: 12,
+              color: TTheme.of(context).textColorSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// 自定义控件，内部的context可拿到外部TTextConfiguration的配置信息
@@ -188,8 +223,16 @@ class CustomPaddingText extends StatelessWidget {
 /// 重写内部padding方法
 class CustomTextPaddingConfig extends TTextPaddingConfig {
   @override
-  EdgeInsetsGeometry getPadding(String? data, double fontSize, double height) {
-    var supperPadding = super.getPadding(data, fontSize, height);
+  EdgeInsetsGeometry getPadding(String? data, double fontSize, double height,
+      {String? fontFamily,
+      FontWeight? fontWeight,
+      double? textScale,
+      TTextPaddingConfig? paddingConfig}) {
+    var supperPadding = super.getPadding(data, fontSize, height,
+        fontFamily: fontFamily,
+        fontWeight: fontWeight,
+        textScale: textScale,
+        paddingConfig: paddingConfig);
     return EdgeInsets.only(left: 30, top: supperPadding.vertical.toDouble());
   }
 }

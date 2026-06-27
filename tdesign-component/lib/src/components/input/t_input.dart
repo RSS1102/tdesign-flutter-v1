@@ -519,10 +519,11 @@ class TInput extends StatelessWidget {
         if (showBottomDivider)
           Visibility(
             visible: type != TInputType.cardStyle,
-            child: TDivider(
-              margin: EdgeInsets.only(
+            child: Padding(
+              padding: EdgeInsets.only(
                 left: _getBottomDividerMarginLeft(leftLabelWidth),
               ),
+              child: const TDivider(),
             ),
           ),
       ],
@@ -720,10 +721,11 @@ class TInput extends StatelessWidget {
             ],
           ),
           if (showBottomDivider)
-            TDivider(
-              margin: EdgeInsets.only(
+            Padding(
+              padding: EdgeInsets.only(
                 left: _getBottomDividerMarginLeft(leftLabelWidth),
               ),
+              child: const TDivider(),
             ),
         ],
       ),
@@ -757,10 +759,11 @@ class TInput extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                     )),
                 if (showBottomDivider)
-                  TDivider(
-                    margin: EdgeInsets.only(
+                  Padding(
+                    padding: EdgeInsets.only(
                       left: _getBottomDividerMarginLeft(0),
                     ),
+                    child: const TDivider(),
                   ),
               ],
             ),
@@ -908,10 +911,11 @@ class TInput extends StatelessWidget {
         ),
         if (showBottomDivider)
           Visibility(
-            child: TDivider(
-              margin: EdgeInsets.only(
+            child: Padding(
+              padding: EdgeInsets.only(
                 left: _getBottomDividerMarginLeft(leftLabelWidth),
               ),
+              child: const TDivider(),
             ),
           ),
       ],

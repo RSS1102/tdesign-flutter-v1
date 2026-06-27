@@ -1,0 +1,41 @@
+00:00 +0: loading e:/tdesign-flutter-v1/tdesign-component/test/components/link/t_link_test.dart
+00:00 +0: T01 - 基础渲染：纯文本链接
+00:00 +1: T02 - 下划线链接
+00:00 +2: T03 - 带图标链接（默认图标）
+00:00 +3: T04 - 带前缀图标链接
+00:00 +4: T05 - 带后缀图标链接
+00:00 +5: T06 - 禁用态（onPressed: null）
+
+Warning: A call to tap() with finder "Found 1 widget with text "禁用链接": [
+  Text("禁用链接", inherit: true, color: Color(alpha: 1.0000, red: 0.7098, green: 0.7804, blue: 1.0000, colorSpace: ColorSpace.sRGB), size: 14.0, dependencies: [DefaultSelectionStyle, DefaultTextStyle, MediaQuery]),
+]" derived an Offset (Offset(400.0, 300.0)) that would not hit test on the specified widget.
+Maybe the widget is actually off-screen, or another widget is obscuring it, or the widget cannot receive pointer events.
+The finder corresponds to this RenderBox: RenderParagraph#1f0b7 relayoutBoundary=up7
+The hit test result at that offset is: HitTestResult(_RenderInkFeatures#d748d@Offset(400.0, 300.0), RenderPhysicalModel#4e986@Offset(400.0, 300.0), RenderSemanticsAnnotations#ff894@Offset(400.0, 300.0), RenderRepaintBoundary#c09c8@Offset(400.0, 300.0), RenderIgnorePointer#bddf7@Offset(400.0, 300.0), RenderAnimatedOpacity#d7681@Offset(400.0, 300.0), RenderAnimatedOpacity#251bd@Offset(400.0, 300.0), _RenderColoredBox#85b1a@Offset(400.0, 300.0), RenderAnimatedOpacity#61a27@Offset(400.0, 300.0), RenderIgnorePointer#08022@Offset(400.0, 300.0), RenderAnimatedOpacity#f7ffe@Offset(400.0, 300.0), RenderRepaintBoundary#3c272@Offset(400.0, 300.0), RenderSemanticsAnnotations#0369e@Offset(400.0, 300.0), RenderOffstage#cdbe4@Offset(400.0, 300.0), RenderSemanticsAnnotations#b939c@Offset(400.0, 300.0), _RenderTheater#68928@Offset(400.0, 300.0), RenderAbsorbPointer#979e5@Offset(400.0, 300.0), RenderPointerListener#5a28a@Offset(400.0, 300.0), RenderSemanticsAnnotations#b8d0d@Offset(400.0, 300.0), RenderCustomPaint#5df9f@Offset(400.0, 300.0), RenderSemanticsAnnotations#60eaa@Offset(400.0, 300.0), RenderSemanticsAnnotations#9dbde@Offset(400.0, 300.0), RenderSemanticsAnnotations#f5459@Offset(400.0, 300.0), RenderTapRegionSurface#385c8@Offset(400.0, 300.0), RenderSemanticsAnnotations#951b4@Offset(400.0, 300.0), RenderSemanticsAnnotations#aab09@Offset(400.0, 300.0), HitTestEntry<HitTestTarget>#0b04a(_ReusableRenderView#ef582), HitTestEntry<HitTestTarget>#26053(<AutomatedTestWidgetsFlutterBinding>))
+#0      WidgetController._getElementPoint (package:flutter_test/src/controller.dart:2158:25)
+#1      WidgetController.getCenter (package:flutter_test/src/controller.dart:1942:12)
+#2      WidgetController.tap (package:flutter_test/src/controller.dart:1075:7)
+#3      main.<anonymous closure> (file:///e:/tdesign-flutter-v1/tdesign-component/test/components/link/t_link_test.dart:100:18)
+<asynchronous suspension>
+#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+#6      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+<asynchronous suspension>
+To silence this warning, pass "warnIfMissed: false" to "tap()".
+To make this warning fatal, set WidgetController.hitTestWarningShouldBeFatal to true.
+
+00:00 +6: T07 - 点击回调
+00:00 +7: T08 - colorScheme 颜色映射
+00:00 +8: T09 - size 三档字号
+00:00 +9: T10 - 自定义颜色覆盖 colorScheme
+00:00 +10: T11 - 自定义字号覆盖
+00:00 +11: T12 - TLinkThemeData 子树注入
+00:00 +12: T13 - TLinkThemeData copyWith
+00:00 +13: T14 - TLinkThemeData lerp
+00:00 +14: T15 - Resolve 优先级
+00:00 +15: T16 - 构造器 fontSize 覆盖
+00:00 +16: T17 - 非 Text child
+00:00 +17: T18 - TLinkConfiguration 存在性
+00:00 +18: All tests passed!

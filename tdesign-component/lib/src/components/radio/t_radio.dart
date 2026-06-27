@@ -379,8 +379,10 @@ class TRadioGroup extends TCheckboxGroup {
                                       ),
                                       if (showDivider)
                                         divider ??
-                                            const TDivider(
-                                              margin: EdgeInsets.only(left: 16),
+                                            const Padding(
+                                              padding:
+                                                  EdgeInsets.only(left: 16),
+                                              child: TDivider(),
                                             )
                                     ],
                                   ),

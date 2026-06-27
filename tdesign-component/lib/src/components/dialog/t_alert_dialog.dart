@@ -149,7 +149,7 @@ class TAlertDialog extends StatelessWidget {
             contentMaxHeight: contentMaxHeight,
             padding: padding,
           ),
-          const TDivider(height: 24, color: Colors.transparent),
+          const SizedBox(height: 24),
           _vertical ? _verticalButtons(context) : _horizontalButtons(context),
         ]));
   }
@@ -198,7 +198,7 @@ class TAlertDialog extends StatelessWidget {
       );
       widgets.add(btn);
       if (index < _buttons!.length - 1) {
-        widgets.add(const TDivider(height: 12, color: Colors.transparent));
+        widgets.add(const SizedBox(height: 12));
       }
     });
 

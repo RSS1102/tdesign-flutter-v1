@@ -318,8 +318,9 @@ class TCheckboxState extends State<TCheckbox> {
                 ),
                 Visibility(
                     visible: !widget.cardMode && widget.showDivider,
-                    child: const TDivider(
-                      margin: EdgeInsets.only(left: 16),
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 16),
+                      child: TDivider(),
                     ))
               ],
             );
@@ -377,8 +378,9 @@ class TCheckboxState extends State<TCheckbox> {
                 ),
                 Visibility(
                     visible: !widget.cardMode && widget.showDivider,
-                    child: const TDivider(
-                      margin: EdgeInsets.only(left: 48),
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 48),
+                      child: TDivider(),
                     ))
               ],
             );
