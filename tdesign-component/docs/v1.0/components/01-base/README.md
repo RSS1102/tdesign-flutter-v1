@@ -3,7 +3,7 @@
 > 与 [官网 · 基础](https://tdesign.tencent.com/flutter/overview) 对齐。  
 > 返回 [v1.0 文档索引](../../README.md)
 
-**共 5 篇**。TButton 为 S1 参考实现，建议本类首个落地；[text.md](./text.md) 为架构专篇（非标准三板）。
+**共 6 篇**。TButton 为 S1 参考实现；[text.md](./text.md) 为架构专篇。
 
 ## 组件清单
 
@@ -12,6 +12,7 @@
 | 实现 | 组件 | 文档 | Sprint |
 |---|---|---|---|
 | [ ] | TButton | [button.md](./button.md) | S1 |
+| [ ] | TIcon | [icon.md](./icon.md) | S2 |
 | [ ] | TFab | [fab.md](./fab.md) | S2 |
 | [ ] | TDivider | [divider.md](./divider.md) | S2 |
 | [ ] | TLink | [link.md](./link.md) | S2 |
