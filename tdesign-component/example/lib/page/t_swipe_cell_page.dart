@@ -57,9 +57,11 @@ class TSwipeCellPage extends StatelessWidget {
               .toList(),
           builder: (context, cell, index) {
             return TSwipeCell(
-              slidableKey: ValueKey(list[index]['id']),
-              groupTag: 'test',
-              onChange: (direction, open) {
+              themeData: TSwipeCellThemeData(
+                slidableKey: ValueKey(list[index]['id']),
+                groupTag: 'test',
+              ),
+              onChanged: (direction, open) {
                 print('打开方向：$direction');
                 print('打开转态$open');
               },
@@ -97,7 +99,7 @@ class TSwipeCellPage extends StatelessWidget {
     // 屏幕宽度
     var screenWidth = MediaQuery.of(context).size.width;
     return TSwipeCell(
-      groupTag: 'test',
+      themeData: const TSwipeCellThemeData(groupTag: 'test'),
       right: TSwipeCellPanel(
         extentRatio: 120 / screenWidth,
         children: [
@@ -120,7 +122,7 @@ class TSwipeCellPage extends StatelessWidget {
     // 屏幕宽度
     var screenWidth = MediaQuery.of(context).size.width;
     return TSwipeCell(
-      groupTag: 'test',
+      themeData: const TSwipeCellThemeData(groupTag: 'test'),
       right: TSwipeCellPanel(
         extentRatio: 180 / screenWidth,
         children: [
@@ -147,7 +149,7 @@ class TSwipeCellPage extends StatelessWidget {
     // 屏幕宽度
     var screenWidth = MediaQuery.of(context).size.width;
     return TSwipeCell(
-      groupTag: 'test',
+      themeData: const TSwipeCellThemeData(groupTag: 'test'),
       left: TSwipeCellPanel(
         extentRatio: 60 / screenWidth,
         children: [
@@ -166,7 +168,7 @@ class TSwipeCellPage extends StatelessWidget {
     // 屏幕宽度
     var screenWidth = MediaQuery.of(context).size.width;
     return TSwipeCell(
-      groupTag: 'test',
+      themeData: const TSwipeCellThemeData(groupTag: 'test'),
       left: TSwipeCellPanel(
         extentRatio: 60 / screenWidth,
         children: [
@@ -202,7 +204,7 @@ class TSwipeCellPage extends StatelessWidget {
       // spacing: 16,
       children: [
         TSwipeCell(
-          groupTag: 'test',
+          themeData: const TSwipeCellThemeData(groupTag: 'test'),
           right: TSwipeCellPanel(
             extentRatio: 160 / screenWidth,
             children: [
@@ -222,7 +224,7 @@ class TSwipeCellPage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         TSwipeCell(
-          groupTag: 'test',
+          themeData: const TSwipeCellThemeData(groupTag: 'test'),
           right: TSwipeCellPanel(
             extentRatio: 120 / screenWidth,
             children: [
@@ -240,7 +242,7 @@ class TSwipeCellPage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         TSwipeCell(
-          groupTag: 'test',
+          themeData: const TSwipeCellThemeData(groupTag: 'test'),
           right: TSwipeCellPanel(
             extentRatio: 120 / screenWidth,
             children: [
@@ -272,7 +274,7 @@ class TSwipeCellPage extends StatelessWidget {
     // 屏幕宽度
     var screenWidth = MediaQuery.of(context).size.width;
     return TSwipeCell(
-      groupTag: 'test',
+      themeData: const TSwipeCellThemeData(groupTag: 'test'),
       right: TSwipeCellPanel(
         extentRatio: 120 / screenWidth,
         children: [

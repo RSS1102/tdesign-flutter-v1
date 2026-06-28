@@ -191,7 +191,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
                       controller != null && !allCheck && length > 0;
                   return getAllIcon(allCheck, halfSelected);
                 },
-                onCheckBoxChanged: (checked) {
+                onChanged: (checked) {
                   if (checked) {
                     controller?.toggleAll(true);
                   } else {
@@ -210,7 +210,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
                     ? '描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息'
                     : null,
                 subTitleMaxLine: 2,
-                onCheckBoxChanged: (checked) {
+                onChanged: (checked) {
                   var length = controller!.allChecked().length -
                       (controller!.checked('index:0') ? 1 : 0);
                   var allCheck = itemCount - 1 == length;
@@ -239,13 +239,13 @@ class TCheckboxPageState extends State<TCheckboxPage> {
             id: '0',
             title: '选项禁用-已选',
             style: TCheckboxStyle.circle,
-            enable: false,
+            enabled: false,
           ),
           TCheckbox(
             id: '1',
             title: '选项禁用-默认',
             style: TCheckboxStyle.circle,
-            enable: false,
+            enabled: false,
           ),
         ],
       ),
@@ -432,7 +432,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
             id: '0',
             title: '选项禁用-已选',
             style: TCheckboxStyle.circle,
-            enable: false,
+            enabled: false,
           ),
           TCheckbox(
             selectColor: TTheme.of(context).errorColor3,
@@ -479,7 +479,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
             title: '选项禁用-已选',
             subTitle: '描述文本',
             style: TCheckboxStyle.circle,
-            enable: false,
+            enabled: false,
             titleFont: TTheme.of(context).fontBodySmall,
             subTitleFont: TTheme.of(context).fontBodyExtraSmall,
           ),

@@ -307,7 +307,7 @@ class _TPickerPageState extends State<TPickerPage> {
           context,
           child: TPicker(
               items: cityItems,
-              onChange: (_, v) => setState(() => selectedCity = v.labels.first)),
+              onChanged: (_, v) => setState(() => selectedCity = v.labels.first)),
         ),
       ],
     );
@@ -335,7 +335,7 @@ class _TPickerPageState extends State<TPickerPage> {
           child: TPicker(
             items: _monthDayItems,
             initialValue: const [1, 1],
-            onChange: (_, v) =>
+            onChanged: (_, v) =>
                 setState(() => selectedMonthDay = v.labels.join(' / ')),
           ),
         ),
@@ -357,7 +357,7 @@ class _TPickerPageState extends State<TPickerPage> {
           child: TPicker(
               items: timeItems,
               itemCount: 5,
-              onChange: (_, v) => setState(() => selectedTime =
+              onChanged: (_, v) => setState(() => selectedTime =
                   '${v.values[0]}:${v.values[1].toString().padLeft(2, '0')}:${v.values[2].toString().padLeft(2, '0')}')),
         ),
       ],
@@ -398,7 +398,7 @@ class _TPickerPageState extends State<TPickerPage> {
               '1.1.1.1',
               '1.1.1.1.1',
             ],
-            onChange: (_, v) =>
+            onChanged: (_, v) =>
                 setState(() => selectedFiveLevel = v.labels.join(' / ')),
           ),
         ),
@@ -427,7 +427,7 @@ class _TPickerPageState extends State<TPickerPage> {
           child: TPicker(
               items: itemDisabledItems,
               initialValue: const ['M', 'A5'],
-              onChange: (_, v) => setState(() =>
+              onChanged: (_, v) => setState(() =>
                   selectedItemDisabled = '${v.labels.first} ${v.labels.last}')),
         ),
       ],
@@ -460,7 +460,7 @@ class _TPickerPageState extends State<TPickerPage> {
           child: TPicker(
               items: cityItems,
               initialValue: const ['GZ'],
-              onChange: (_, v) => debugPrint('选中: $v'),
+              onChanged: (_, v) => debugPrint('选中: $v'),
               disabled: globalDisabled),
         ),
         const SizedBox(height: 4),
@@ -501,7 +501,7 @@ class _TPickerPageState extends State<TPickerPage> {
           picker: TPicker(
             items: linkedItems,
             initialValue: initial,
-            onChange: (_, value) => draft = value,
+            onChanged: (_, value) => draft = value,
           ),
         );
       },
@@ -715,7 +715,7 @@ class _TPickerPageState extends State<TPickerPage> {
           child: TPicker(
             items: _customKeysItems,
             initialValue: _kCustomKeysInitial,
-            onChange: (_, v) => setState(() => _customKeysValue = v),
+            onChanged: (_, v) => setState(() => _customKeysValue = v),
           ),
         ),
       ],
@@ -741,7 +741,7 @@ class _TPickerPageState extends State<TPickerPage> {
             items: cityItems,
             height: 350,
             itemCount: 7,
-            onChange: (_, v) => debugPrint('选中: ${v.labels.first}'),
+            onChanged: (_, v) => debugPrint('选中: ${v.labels.first}'),
           ),
         ),
       ],
@@ -801,7 +801,7 @@ class _TPickerPageState extends State<TPickerPage> {
                 ),
               );
             },
-            onChange: (_, v) =>
+            onChanged: (_, v) =>
                 setState(() => _customItemBuilderValue = v.labels.first),
           ),
         ),

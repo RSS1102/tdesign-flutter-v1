@@ -4,15 +4,6 @@ import '../../../tdesign_flutter.dart';
 import '../../util/auto_size.dart';
 
 ///
-/// 选择框的样式
-///
-enum TCheckboxStyle {
-  circle, // 圆形
-  square, // 方形
-  check, // 无背景勾选样式
-}
-
-///
 /// 内容相对icon的位置，上、下、左、右，默认内容在icon的右边
 ///
 enum TContentDirection {
@@ -36,8 +27,6 @@ typedef IconBuilder = Widget? Function(BuildContext context, bool checked);
 typedef ContentBuilder = Widget Function(
     BuildContext context, bool checked, String? content);
 
-typedef OnCheckValueChanged = void Function(bool selected);
-
 ///
 /// 复选框组件。
 ///
@@ -53,8 +42,8 @@ class TCheckbox extends StatefulWidget {
       this.subTitle,
       this.titleFont,
       this.subTitleFont,
-      this.enable = true,
-      this.checked = false,
+      this.enabled = true,
+      this.value = false,
       this.titleMaxLine,
       this.subTitleMaxLine = 1,
       this.customIconBuilder,
@@ -69,7 +58,7 @@ class TCheckbox extends StatefulWidget {
       this.cardMode = false,
       this.showDivider = true,
       this.contentDirection = TContentDirection.right,
-      this.onCheckBoxChanged,
+      this.onChanged,
       this.titleColor,
       this.subTitleColor,
       this.checkBoxLeftSpace,
@@ -93,11 +82,11 @@ class TCheckbox extends StatefulWidget {
   final Font? subTitleFont;
 
   /// 不可用
-  final bool enable;
+  final bool enabled;
 
   /// 选中状态。默认为`false`
   /// 当FuiCheckBox嵌入到FuiCheckBoxGroup的时候，这个值表示初始状态，后续的状态会由Group管理
-  final bool checked;
+  final bool value;
 
   /// 标题的行数
   final int? titleMaxLine;
@@ -127,7 +116,7 @@ class TCheckbox extends StatefulWidget {
   final TContentDirection contentDirection;
 
   /// 切换监听
-  final OnCheckValueChanged? onCheckBoxChanged;
+  final ValueChanged<bool>? onChanged;
 
   /// 自定义Checkbox显示样式
   final IconBuilder? customIconBuilder;
@@ -186,7 +175,7 @@ class TCheckbox extends StatefulWidget {
                   ? TIcons.check
                   : TIcons.check,
       size: size,
-      color: !enable
+      color: !enabled
           ? (isChecked
               ? (disableColor ?? theme.brandDisabledColor)
               : deSelectedColor)
@@ -207,13 +196,13 @@ class TCheckboxState extends State<TCheckbox> {
 
   @override
   void initState() {
-    checked = widget.checked;
+    checked = widget.value;
     super.initState();
   }
 
   @override
   void didUpdateWidget(TCheckbox oldWidget) {
-    checked = widget.checked;
+    checked = widget.value;
     super.didUpdateWidget(oldWidget);
   }
 
@@ -306,7 +295,7 @@ class TCheckboxState extends State<TCheckbox> {
                           child: TText(widget.subTitle ?? '',
                               maxLines: widget.subTitleMaxLine,
                               overflow: TextOverflow.ellipsis,
-                              textColor: widget.enable
+                              textColor: widget.enabled
                                   ? (widget.subTitleColor ??
                                       TTheme.of(context).textColorPlaceholder)
                                   : TTheme.of(context).textDisabledColor,
@@ -365,7 +354,7 @@ class TCheckboxState extends State<TCheckbox> {
                           child: TText(widget.subTitle ?? '',
                               maxLines: widget.subTitleMaxLine,
                               overflow: TextOverflow.ellipsis,
-                              textColor: widget.enable
+                              textColor: widget.enabled
                                   ? (widget.subTitleColor ??
                                       TTheme.of(context).textColorPlaceholder)
                                   : TTheme.of(context).textDisabledColor,
@@ -452,7 +441,7 @@ class TCheckboxState extends State<TCheckbox> {
 
   /// 点击效果
   void _pressState(bool pressed) {
-    if (!widget.enable) {
+    if (!widget.enabled) {
       return;
     }
     _pressed = pressed;
@@ -465,7 +454,7 @@ class TCheckboxState extends State<TCheckbox> {
     bool value,
     TCheckboxGroupState? groupState,
   ) {
-    if (!widget.enable) {
+    if (!widget.enabled) {
       return;
     }
     setState(() {
@@ -473,7 +462,7 @@ class TCheckboxState extends State<TCheckbox> {
       if (groupState != null && id != null) {
         groupState.toggle(id, checked);
       }
-      widget.onCheckBoxChanged?.call(checked);
+      widget.onChanged?.call(checked);
     });
   }
 
@@ -495,7 +484,7 @@ class TCheckboxState extends State<TCheckbox> {
         content = TText(title,
             maxLines: widget.titleMaxLine ?? groupState?.widget.titleMaxLine,
             overflow: TextOverflow.ellipsis,
-            textColor: widget.enable
+            textColor: widget.enabled
                 ? (widget.titleColor ?? TTheme.of(context).textColorPrimary)
                 : TTheme.of(context).textDisabledColor,
             font: widget.titleFont ??

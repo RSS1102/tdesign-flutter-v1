@@ -14,7 +14,7 @@
 | customIconBuilder | IconBuilder? | - | - |
 | customSpace | EdgeInsetsGeometry? | - | - |
 | disableColor | Color? | - | - |
-| enable | bool | true | - |
+| enabled | bool | true | - |
 | id | String? | - | - |
 | insetSpacing | double? | - | - |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
@@ -53,7 +53,7 @@ cardMode: 使用卡片样式，需要配合direction 和 directionalTdRadios 使
 | directionalTdRadios | List<TRadio>? | - | - |
 | divider | Widget? | - | 自定义下划线 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| onRadioGroupChange | OnRadioGroupChange? | - | - |
+| onChanged | ValueChanged? | - | - |
 | passThrough | bool? | - | - |
 | radioCheckStyle | TRadioStyle? | - | 勾选样式 |
 | rowCount | int | 1 | 每行几列 |
@@ -76,9 +76,9 @@ cardMode: 使用卡片样式，需要配合direction 和 directionalTdRadios 使
 | hollowCircle | - |
 
 
-### OnRadioGroupChange
+### ValueChanged
 #### 类型定义
 
 ```dart
-typedef OnRadioGroupChange = void Function(String? selectedId);
+typedef ValueChanged = void Function(String? selectedId);
 ```

@@ -9,7 +9,7 @@ import 't_action_sheet_list.dart';
 
 export 't_action_sheet_item.dart';
 
-typedef TActionSheetItemCallback = void Function(
+typedef TActionSheetOnChanged = void Function(
     TActionSheetItem item, int index);
 
 enum TActionSheetTheme { list, grid, group }
@@ -26,7 +26,7 @@ class TActionSheet {
     this.rows = 2,
     this.itemHeight = 96.0,
     this.itemMinWidth = 80.0,
-    this.description,
+    this.subtitle,
     required this.items,
     this.showCancel = true,
     this.showPagination = false,
@@ -35,7 +35,7 @@ class TActionSheet {
     this.visible = false,
     this.onCancel,
     this.onClose,
-    this.onSelected,
+    this.onChanged,
     this.showOverlay = true,
     this.closeOnOverlayClick = true,
     this.useSafeArea = true,
@@ -73,7 +73,7 @@ class TActionSheet {
 
   /// 描述文本
   /// 当[theme]等于[TActionSheetTheme.grid]或[theme]等于[TActionSheetTheme.list]时有效
-  final String? description;
+  final String? subtitle;
 
   /// ActionSheet的项目列表
   final List<TActionSheetItem> items;
@@ -108,7 +108,7 @@ class TActionSheet {
   final VoidCallback? onClose;
 
   /// 选择项目时的回调函数
-  final TActionSheetItemCallback? onSelected;
+  final TActionSheetOnChanged? onChanged;
 
   /// 使用安全区域
   final bool useSafeArea;
@@ -123,7 +123,7 @@ class TActionSheet {
     String? cancelText,
     bool showCancel = true,
     VoidCallback? onCancel,
-    TActionSheetItemCallback? onSelected,
+    TActionSheetOnChanged? onChanged,
     bool showOverlay = true,
     bool closeOnOverlayClick = true,
     VoidCallback? onClose,
@@ -136,7 +136,7 @@ class TActionSheet {
       align: align,
       cancelText: cancelText,
       showCancel: showCancel,
-      onSelected: onSelected,
+      onChanged: onChanged,
       onCancel: onCancel,
       showOverlay: showOverlay,
       closeOnOverlayClick: closeOnOverlayClick,
@@ -152,7 +152,7 @@ class TActionSheet {
     TActionSheetAlign align = TActionSheetAlign.center,
     String? cancelText,
     bool showCancel = true,
-    TActionSheetItemCallback? onSelected,
+    TActionSheetOnChanged? onChanged,
     bool showOverlay = true,
     bool closeOnOverlayClick = true,
     int count = 8,
@@ -162,7 +162,7 @@ class TActionSheet {
     bool scrollable = false,
     bool showPagination = false,
     VoidCallback? onCancel,
-    String? description,
+    String? subtitle,
     VoidCallback? onClose,
     bool useSafeArea = true,
   }) {
@@ -173,7 +173,7 @@ class TActionSheet {
       align: align,
       cancelText: cancelText,
       showCancel: showCancel,
-      onSelected: onSelected,
+      onChanged: onChanged,
       onCancel: onCancel,
       showOverlay: showOverlay,
       closeOnOverlayClick: closeOnOverlayClick,
@@ -183,7 +183,7 @@ class TActionSheet {
       itemMinWidth: itemMinWidth,
       scrollable: scrollable,
       showPagination: showPagination,
-      description: description,
+      subtitle: subtitle,
       onClose: onClose,
       useSafeArea: useSafeArea,
     );
@@ -196,7 +196,7 @@ class TActionSheet {
     TActionSheetAlign align = TActionSheetAlign.left,
     String? cancelText,
     bool showCancel = true,
-    TActionSheetItemCallback? onSelected,
+    TActionSheetOnChanged? onChanged,
     bool showOverlay = true,
     bool closeOnOverlayClick = true,
     double itemHeight = 96.0,
@@ -212,7 +212,7 @@ class TActionSheet {
       align: align,
       cancelText: cancelText,
       showCancel: showCancel,
-      onSelected: onSelected,
+      onChanged: onChanged,
       onCancel: onCancel,
       showOverlay: showOverlay,
       closeOnOverlayClick: closeOnOverlayClick,
@@ -232,7 +232,7 @@ class TActionSheet {
       align: align,
       cancelText: cancelText,
       showCancel: showCancel,
-      onSelected: onSelected,
+      onChanged: onChanged,
       onCancel: onCancel,
       showOverlay: showOverlay,
       closeOnOverlayClick: closeOnOverlayClick,
@@ -242,7 +242,7 @@ class TActionSheet {
       itemMinWidth: itemMinWidth,
       scrollable: scrollable,
       showPagination: showPagination,
-      description: description,
+      subtitle: subtitle,
       onClose: onClose,
       useSafeArea: useSafeArea,
     );
@@ -265,7 +265,7 @@ class TActionSheet {
     TActionSheetAlign align = TActionSheetAlign.center,
     String? cancelText,
     bool showCancel = true,
-    TActionSheetItemCallback? onSelected,
+    TActionSheetOnChanged? onChanged,
     bool showOverlay = true,
     bool closeOnOverlayClick = true,
     int count = 8,
@@ -275,7 +275,7 @@ class TActionSheet {
     bool scrollable = false,
     bool showPagination = false,
     VoidCallback? onCancel,
-    String? description,
+    String? subtitle,
     VoidCallback? onClose,
     bool useSafeArea = true,
   }) {
@@ -292,10 +292,10 @@ class TActionSheet {
           items: items,
           align: align,
           cancelText: cancelText,
-          description: description,
+          subtitle: subtitle,
           showCancel: showCancel,
           onCancel: onCancel,
-          onSelected: onSelected,
+          onChanged: onChanged,
           useSafeArea: useSafeArea,
         );
         break;
@@ -303,12 +303,12 @@ class TActionSheet {
         sheetChild = TActionSheetGrid(
           items: items,
           align: align,
-          onSelected: onSelected,
+          onChanged: onChanged,
           showCancel: showCancel,
           showPagination: showPagination,
           scrollable: scrollable,
           cancelText: cancelText,
-          description: description,
+          subtitle: subtitle,
           count: count,
           rows: rows,
           onCancel: onCancel,
@@ -324,7 +324,7 @@ class TActionSheet {
           cancelText: cancelText,
           showCancel: showCancel,
           onCancel: onCancel,
-          onSelected: onSelected,
+          onChanged: onChanged,
           itemHeight: itemHeight,
           itemMinWidth: itemMinWidth,
           useSafeArea: useSafeArea,

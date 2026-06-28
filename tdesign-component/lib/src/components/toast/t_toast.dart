@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
 import '../../util/auto_size.dart';
+import '../loading/t_circle_indicator.dart';
 import '../../util/context_extension.dart';
 
 enum IconTextDirection {
@@ -14,23 +15,6 @@ enum IconTextDirection {
 }
 
 /// Toast配置类，支持独立样式定制
-class TToastConfig {
-  final Color? backgroundColor;
-  final TextStyle? textStyle;
-  final double? iconSize;
-  final Color? iconColor;
-  final Duration duration;
-  final bool preventTap;
-
-  const TToastConfig({
-    this.backgroundColor,
-    this.textStyle,
-    this.iconSize,
-    this.iconColor,
-    this.duration = const Duration(milliseconds: 3000),
-    this.preventTap = false,
-  });
-}
 
 /// Toast实例管理类
 class _ToastInstance {
@@ -83,7 +67,7 @@ class TToast {
         maxLines: maxLines,
         constraints: constraints,
         customWidget: customWidget,
-        config: TToastConfig(
+        config: TToastThemeData(
           backgroundColor: backgroundColor,
           textStyle: textStyle,
           duration: duration,
@@ -120,7 +104,7 @@ class TToast {
         iconData: icon,
         iconTextDirection: direction,
         maxLines: maxLines,
-        config: TToastConfig(
+        config: TToastThemeData(
           backgroundColor: backgroundColor,
           textStyle: textStyle,
           iconSize: iconSize,
@@ -245,7 +229,7 @@ class TToast {
       _TToastLoading(
         text: text,
         customWidget: customWidget,
-        config: TToastConfig(
+        config: TToastThemeData(
           backgroundColor: backgroundColor,
           textStyle: textStyle,
           iconSize: iconSize,
@@ -275,7 +259,7 @@ class TToast {
     final id = toastId ?? _generateToastId();
     _showOverlay(
       _TToastLoadingWithoutText(
-        config: TToastConfig(
+        config: TToastThemeData(
           backgroundColor: backgroundColor,
           iconSize: iconSize,
           iconColor: iconColor,
@@ -389,7 +373,7 @@ class _TIconTextToast extends StatelessWidget {
   final IconData? iconData;
   final IconTextDirection iconTextDirection;
   final int? maxLines;
-  final TToastConfig config;
+  final TToastThemeData config;
 
   const _TIconTextToast({
     this.text,
@@ -478,7 +462,7 @@ class _TIconTextToast extends StatelessWidget {
 class _TToastLoading extends StatelessWidget {
   final String? text;
   final Widget? customWidget;
-  final TToastConfig config;
+  final TToastThemeData config;
 
   const _TToastLoading({
     this.text,
@@ -522,7 +506,7 @@ class _TToastLoading extends StatelessWidget {
 }
 
 class _TToastLoadingWithoutText extends StatelessWidget {
-  final TToastConfig config;
+  final TToastThemeData config;
 
   const _TToastLoadingWithoutText({
     required this.config,
@@ -553,7 +537,7 @@ class _TTextToast extends StatelessWidget {
   final int? maxLines;
   final BoxConstraints? constraints;
   final Widget? customWidget;
-  final TToastConfig config;
+  final TToastThemeData config;
 
   const _TTextToast({
     this.text,

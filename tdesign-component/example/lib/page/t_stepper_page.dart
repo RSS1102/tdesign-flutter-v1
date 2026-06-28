@@ -15,7 +15,7 @@ class _TStepperPageState extends State<TStepperPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPressed: () {
+      onTap: () {
         var currentFocus = FocusScope.of(context);
 
         if (!currentFocus.hasPrimaryFocus &&
@@ -51,7 +51,7 @@ class _TStepperPageState extends State<TStepperPage> {
   Widget _buildStepperWithBase(BuildContext context) {
     return _buildRow(context, [
       const TStepper(
-        theme: TStepperTheme.filled,
+        theme: TStepperColorScheme.filled,
       )
     ]);
   }
@@ -59,8 +59,8 @@ class _TStepperPageState extends State<TStepperPage> {
   @Demo(group: 'stepper')
   Widget _buildStepperWithMaxMinStatus(BuildContext context) {
     return _buildRow(context, [
-      const TStepper(theme: TStepperTheme.filled, value: 0, min: 0),
-      const TStepper(theme: TStepperTheme.filled, value: 999, max: 999),
+      const TStepper(theme: TStepperColorScheme.filled, value: 0, min: 0),
+      const TStepper(theme: TStepperColorScheme.filled, value: 999, max: 999),
     ]);
   }
 
@@ -68,16 +68,16 @@ class _TStepperPageState extends State<TStepperPage> {
   Widget _buildStepperWithDisableStatus(BuildContext context) {
     return _buildRow(context, [
       const TStepper(
-        theme: TStepperTheme.filled,
-        onPressed: null,
+        theme: TStepperColorScheme.filled,
+        disabled: true,
       ),
       const TStepper(
-        theme: TStepperTheme.outline,
-        onPressed: null,
+        theme: TStepperColorScheme.outline,
+        disabled: true,
       ),
       const TStepper(
-        theme: TStepperTheme.normal,
-        onPressed: null,
+        theme: TStepperColorScheme.normal,
+        disabled: true,
       ),
     ]);
   }
@@ -85,9 +85,9 @@ class _TStepperPageState extends State<TStepperPage> {
   @Demo(group: 'stepper')
   Widget _buildStepperWithTheme(BuildContext context) {
     return _buildRow(context, [
-      const TStepper(theme: TStepperTheme.filled, value: 3),
-      const TStepper(theme: TStepperTheme.outline, value: 3),
-      const TStepper(theme: TStepperTheme.normal, value: 3),
+      const TStepper(theme: TStepperColorScheme.filled, value: 3),
+      const TStepper(theme: TStepperColorScheme.outline, value: 3),
+      const TStepper(theme: TStepperColorScheme.normal, value: 3),
     ]);
   }
 
@@ -95,11 +95,11 @@ class _TStepperPageState extends State<TStepperPage> {
   Widget _buildStepperWithSize(BuildContext context) {
     return _buildRow(context, [
       const TStepper(
-          size: TStepperSize.large, theme: TStepperTheme.filled, value: 3),
+          size: TStepperSize.large, theme: TStepperColorScheme.filled, value: 3),
       const TStepper(
-          size: TStepperSize.medium, theme: TStepperTheme.filled, value: 3),
+          size: TStepperSize.medium, theme: TStepperColorScheme.filled, value: 3),
       const TStepper(
-          size: TStepperSize.small, theme: TStepperTheme.filled, value: 3),
+          size: TStepperSize.small, theme: TStepperColorScheme.filled, value: 3),
     ]);
   }
 
@@ -136,7 +136,7 @@ class _TStepperPageState extends State<TStepperPage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           TStepper(
-            theme: TStepperTheme.filled,
+            theme: TStepperColorScheme.filled,
             controller: controller,
           ),
           TButton(

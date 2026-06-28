@@ -44,8 +44,8 @@ class TTreeSelect extends StatefulWidget {
   const TTreeSelect({
     Key? key,
     this.options = const [],
-    this.defaultValue = const [],
-    this.onChange,
+    this.value = const [],
+    this.onChanged,
     this.multiple = false,
     this.style = TTreeSelectStyle.normal,
     this.height = 336,
@@ -56,10 +56,10 @@ class TTreeSelect extends StatefulWidget {
   final List<TSelectOption> options;
 
   /// 初始值，对应options中的value值
-  final List<dynamic> defaultValue;
+  final List<dynamic> value;
 
   /// 选中值发生变化
-  final TTreeSelectChangeEvent? onChange;
+  final TTreeSelectChangeEvent? onChanged;
 
   /// 高度
   final double height;
@@ -111,7 +111,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
   void initState() {
     super.initState();
 
-    values = List.from(widget.defaultValue);
+    values = List.from(widget.value);
     if (values.isEmpty && widget.options.isNotEmpty) {
       final option = widget.options[0];
       values.add(
@@ -130,8 +130,8 @@ class _TTreeSelectState extends State<TTreeSelect> {
   void didUpdateWidget(TTreeSelect oldWidget) {
     super.didUpdateWidget(oldWidget);
     // 外部传入的 defaultValue 发生变化时，更新 values
-    if (widget.defaultValue != oldWidget.defaultValue) {
-      values = List.from(widget.defaultValue);
+    if (widget.value != oldWidget.value) {
+      values = List.from(widget.value);
     }
   }
 
@@ -188,7 +188,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             controller2.jumpTo(0);
                           }
                         }
-                        widget.onChange?.call(values, 1);
+                        widget.onChanged?.call(values, 1);
                       });
                     },
                     child: Stack(
@@ -406,7 +406,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             }
                         }
                       }
-                      widget.onChange?.call(values, level);
+                      widget.onChanged?.call(values, level);
                     });
                   },
                   child: ConstrainedBox(

@@ -46,8 +46,8 @@ class _TSearchBarPageState extends State<TSearchBarPage> {
   @Demo(group: 'search')
   Widget _buildDefaultSearchBar(BuildContext context) {
     return TSearchBar(
-      placeHolder: '搜索预设文案',
-      onTextChanged: (String text) {
+      hintText: '搜索预设文案',
+      onChanged: (String text) {
         setState(() {
           inputText = text;
         });
@@ -58,7 +58,7 @@ class _TSearchBarPageState extends State<TSearchBarPage> {
   @Demo(group: 'search')
   Widget _buildFocusSearchBar(BuildContext context) {
     return const TSearchBar(
-      placeHolder: '搜索预设文案',
+      hintText: '搜索预设文案',
       needCancel: true,
       autoFocus: true,
     );
@@ -70,10 +70,10 @@ class _TSearchBarPageState extends State<TSearchBarPage> {
       // spacing: 16,
       children: [
         TSearchBar(
-          placeHolder: '搜索预设文案',
+          hintText: '搜索预设文案',
           // 方形
-          style: TSearchStyle.square,
-          onTextChanged: (String text) {
+          style: TSearchBarStyle.square,
+          onChanged: (String text) {
             setState(() {
               inputText = text;
             });
@@ -81,10 +81,10 @@ class _TSearchBarPageState extends State<TSearchBarPage> {
         ),
         const SizedBox(height: 16),
         TSearchBar(
-          placeHolder: '搜索预设文案',
+          hintText: '搜索预设文案',
           // 圆形
-          style: TSearchStyle.round,
-          onTextChanged: (String text) {
+          style: TSearchBarStyle.round,
+          onChanged: (String text) {
             setState(() {
               inputText = text;
             });
@@ -97,9 +97,9 @@ class _TSearchBarPageState extends State<TSearchBarPage> {
   @Demo(group: 'search')
   Widget _buildCenterSearchBar(BuildContext context) {
     return TSearchBar(
-      placeHolder: '搜索预设文案',
-      alignment: TSearchAlignment.center,
-      onTextChanged: (String text) {
+      hintText: '搜索预设文案',
+      alignment: TSearchBarAlignment.center,
+      onChanged: (String text) {
         setState(() {
           inputText = text;
         });
@@ -113,15 +113,15 @@ class _TSearchBarPageState extends State<TSearchBarPage> {
       // spacing: 16,
       children: [
         TSearchBar(
-          placeHolder: '搜索预设文案',
-          alignment: TSearchAlignment.left,
+          hintText: '搜索预设文案',
+          alignment: TSearchBarAlignment.left,
           action: '搜索',
           onActionClick: (String text) {
             setState(() {
               searchText = text;
             });
           },
-          onTextChanged: (String text) {
+          onChanged: (String text) {
             setState(() {
               inputText = text;
             });
@@ -140,7 +140,7 @@ class _TSearchBarPageState extends State<TSearchBarPage> {
   @Demo(group: 'search')
   Widget _buildFocusSearchBarWithAction(BuildContext context) {
     return TSearchBar(
-      placeHolder: '搜索预设文案',
+      hintText: '搜索预设文案',
       action: '搜索',
       needCancel: true,
       controller: inputController,

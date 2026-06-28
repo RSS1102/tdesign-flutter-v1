@@ -76,11 +76,10 @@ Padding body(BuildContext context) {
         //   ),
         // ),
         TInput(
-          // leftLabel: '标签文字',
+          // label: '标签文字',
           // controller: controller[0],
-          type: TInputType.cardStyle,
+          layout: TInputLayout.cardStyle,
           backgroundColor: Colors.white,
-          cardStyle: TCardStyle.topTextWithBlueBorder,
           hintText: '请输入文字',
           cardStyleTopText: '标签文字',
           // onChanged: (text) {
@@ -128,14 +127,14 @@ PreferredSizeWidget _buildAppBar(BuildContext context) {
         autoHeight: true,
         backgroundColor: Colors.transparent,
         padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-        placeHolder: '搜索预设文案',
+        hintText: '搜索预设文案',
         mediumStyle: true,
-        style: TSearchStyle.round,
-        onTextChanged: (String text) {
+        style: TSearchBarStyle.round,
+        onChanged: (String text) {
           print('input：$text');
         },
       ),
-      rightBarItems: [
+      actions: [
         TNavBarItem(icon: TIcons.home, iconSize: 24),
         TNavBarItem(icon: TIcons.ellipsis, iconSize: 24)
       ]);

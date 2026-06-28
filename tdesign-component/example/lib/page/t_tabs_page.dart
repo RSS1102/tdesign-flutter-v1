@@ -251,7 +251,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     var tabs = [
       const TTab(text: '选中'),
       const TTab(text: '默认'),
-      const TTab(text: '禁用', enable: false),
+      const TTab(text: '禁用', enabled: false),
     ];
     return TTabBar(
       tabs: tabs,
@@ -300,7 +300,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     ];
     return TTabBar(
       tabs: tabs,
-      outlineType: TTabBarOutlineType.capsule,
+      variant: TTabBarVariant.capsule,
       controller: TabController(length: tabs.length, vsync: this),
       showIndicator: false,
     );
@@ -316,7 +316,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     ];
     return TTabBar(
       tabs: tabs,
-      outlineType: TTabBarOutlineType.card,
+      variant: TTabBarVariant.card,
       controller: TabController(length: tabs.length, vsync: this),
       showIndicator: false,
     );
@@ -363,7 +363,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
       tabs: subList(2),
       controller: _tabController1,
       backgroundColor: Colors.red,
-      outlineType: TTabBarOutlineType.capsule,
+      variant: TTabBarVariant.capsule,
     );
   }
 }

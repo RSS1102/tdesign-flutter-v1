@@ -76,3 +76,15 @@
 | --- | --- | --- |
 | onTapAll | void Function(Uri? uri)? | 统一跳转回调 |
 | child | Widget | 子树 |
+
+
+### TLinkResolve（v1.0 新增）
+
+样式解析器，提供 `resolveColor`、`resolveFontSize`、`resolveIconSize`、`resolveGap` 四个静态入口，
+统一 v0.2.x build 内联计算为单一路径。
+
+**优先级链**：构造器参数 > `TLinkThemeData` > Token 默认值（size 映射）
+
+**内部职责**：
+- 颜色映射：`TLinkColorScheme` × 禁用态 → `TTheme` 对应 token
+- 尺寸映射：`TLinkSize` → 字号（12/14/16）、图标（14/16/18）、间距

@@ -10,13 +10,13 @@ import 'wheel_column.dart';
 const double _kDisabledOpacity = 0.5;
 
 /// 纯滚轮选择器。数据用 [TPickerColumns]（多列独立）或 [TPickerLinked]（联动）。
-/// 选中变化通过 [onChange]；列底分页建议用 [onColumnScrollEnd]。弹窗确认请配合 [TPopup]。
+/// 选中变化通过 [onChanged]；列底分页建议用 [onColumnScrollEnd]。弹窗确认请配合 [TPopup]。
 class TPicker extends StatefulWidget {
   const TPicker({
     super.key,
     required this.items,
     this.initialValue,
-    this.onChange,
+    this.onChanged,
     this.onColumnScrollEnd,
     this.height = 200,
     this.itemCount = 5,
@@ -27,11 +27,11 @@ class TPicker extends StatefulWidget {
   /// 数据源（必填）。独立选 [TPickerColumns]，内存联动树选 [TPickerLinked]；接口/字面量用对应 `fromRaw`。
   final TPickerItems items;
 
-  /// 初始选中（按各列 `value` 匹配），仅首次构建生效；运行期请用 [onChange] 维护选中态。
+  /// 初始选中（按各列 `value` 匹配），仅首次构建生效；运行期请用 [onChanged] 维护选中态。
   final List<dynamic>? initialValue;
 
   /// 值改变回调（滚动实时触发，非确认）。`col` 为触发列；`value` 为各列选中快照。
-  final void Function(int col, TPickerValue value)? onChange;
+  final void Function(int col, TPickerValue value)? onChanged;
 
   /// 列滚动结束回调（滚停时触发，适合列底分页）。`col` 为滚停列；`value` 为当前选中快照。
   final void Function(int col, TPickerValue value)? onColumnScrollEnd;
@@ -69,10 +69,10 @@ class _TPickerState extends State<TPicker> {
   // 各列项数快照：检测原地 addAll（共享 List 引用时 == 漏判）及列替换筛选
   List<int> _columnLengths = [];
 
-  // 联动刷新窗口内用户手滚列；屏蔽下游 attach 噪声，保证 onChange 的 col 语义
+  // 联动刷新窗口内用户手滚列；屏蔽下游 attach 噪声，保证 onChanged 的 col 语义
   int? _linkedNotifyOriginCol;
 
-  // 联动模式：同帧 onChange 是否已排队（合并多次选中事件）
+  // 联动模式：同帧 onChanged 是否已排队（合并多次选中事件）
   bool _linkedNotifyScheduled = false;
 
   double get _itemHeight => widget.height / widget.itemCount;
@@ -99,7 +99,7 @@ class _TPickerState extends State<TPicker> {
     // initialValue 严格 initState-only：它在 didUpdateWidget 中不被读取，
     // 也**不**参与重建判断。即便父级回灌一个新 initialValue，TPicker 也不
     // 重建 controller —— 因为重建会 dispose 正在动画的 ScrollController，
-    // 把滚轮钉死。这条约束让"onChange → setState → 父级重建"的反馈环
+    // 把滚轮钉死。这条约束让"onChanged → setState → 父级重建"的反馈环
     // 不再破坏滚动惯性。
     //
     // 若需要"重置"语义，配合 `Key` 强制重建本组件；或修改 [items] 触发
@@ -450,7 +450,7 @@ class _TPickerState extends State<TPicker> {
     }
   }
 
-  // 联动模式：下一帧再通知，同帧合并为一次 onChange
+  // 联动模式：下一帧再通知，同帧合并为一次 onChanged
   void _scheduleLinkedNotify() {
     if (_linkedNotifyScheduled) {
       return;
@@ -475,7 +475,7 @@ class _TPickerState extends State<TPicker> {
         col > _linkedNotifyOriginCol!) {
       return;
     }
-    // 动画完成后触发 onChange
+    // 动画完成后触发 onChanged
     _notifyChange(col);
   }
 
@@ -596,7 +596,7 @@ class _TPickerState extends State<TPicker> {
   }
 
   void _notifyChange(int col) {
-    widget.onChange?.call(col, _buildValue());
+    widget.onChanged?.call(col, _buildValue());
   }
 }
 

@@ -23,15 +23,10 @@ enum TUploadFileStatus {
   retry, // 重试
 }
 
-enum TUploadType {
+enum TUploadAction {
   add, // 添加
   remove, // 删除
   replace, // 替换
-}
-
-enum TUploadBoxType {
-  roundedSquare, // 圆角方形
-  circle, // 圆形
 }
 
 class TUploadFile {
@@ -62,7 +57,7 @@ class TUploadFile {
 typedef TUploadErrorEvent = void Function(Object e);
 typedef TUploadClickEvent = void Function(int value);
 typedef TUploadValueChangedEvent = void Function(
-    List<TUploadFile> files, TUploadType type);
+    List<TUploadFile> files, TUploadAction type);
 typedef TUploadValidatorEvent = void Function(TUploadValidatorError e);
 
 class TUpload extends StatefulWidget {
@@ -74,14 +69,14 @@ class TUpload extends StatefulWidget {
     this.onCancel,
     this.onError,
     this.onValidate,
-    this.onClick,
+    this.onPressed,
     this.onMaxLimitReached,
     required this.files,
-    this.onChange,
+    this.onChanged,
     this.multiple = false,
     this.width = 80.0,
     this.height = 80.0,
-    this.type = TUploadBoxType.roundedSquare,
+    this.type = TUploadVariant.roundedSquare,
     this.disabled = false,
     this.enabledReplaceType = false,
     this.wrapSpacing,
@@ -115,13 +110,13 @@ class TUpload extends StatefulWidget {
   final TUploadValidatorEvent? onValidate;
 
   /// 监听点击图片位
-  final TUploadClickEvent? onClick;
+  final TUploadClickEvent? onPressed;
 
   /// 监听文件超过最大数量
   final VoidCallback? onMaxLimitReached;
 
   /// 监听添加, 删除和替换media事件
-  final TUploadValueChangedEvent? onChange;
+  final TUploadValueChangedEvent? onChanged;
 
   /// 图片宽度
   final double? width;
@@ -130,7 +125,7 @@ class TUpload extends StatefulWidget {
   final double? height;
 
   /// Box类型
-  final TUploadBoxType type;
+  final TUploadVariant type;
 
   /// 是否启用replace功能
   final bool? enabledReplaceType;
@@ -163,9 +158,9 @@ class _TUploadState extends State<TUpload> {
   final ImagePicker _picker = ImagePicker();
 
   // 类型映射
-  final Map<TUploadBoxType, TImageType> _imageTypeMap = {
-    TUploadBoxType.roundedSquare: TImageType.roundedSquare,
-    TUploadBoxType.circle: TImageType.circle,
+  final Map<TUploadVariant, TImageType> _imageTypeMap = {
+    TUploadVariant.roundedSquare: TImageType.roundedSquare,
+    TUploadVariant.circle: TImageType.circle,
   };
 
   @override
@@ -260,8 +255,8 @@ class _TUploadState extends State<TUpload> {
           assetPath: files[i].path));
     }
 
-    if (widget.onChange != null) {
-      widget.onChange!(newFiles, TUploadType.add);
+    if (widget.onChanged != null) {
+      widget.onChanged!(newFiles, TUploadAction.add);
     }
   }
 
@@ -283,8 +278,8 @@ class _TUploadState extends State<TUpload> {
     var newFile = TUploadFile(
         key: oldFile.key, file: File(files[0].path), assetPath: files[0].path);
 
-    if (widget.onChange != null) {
-      widget.onChange!([newFile], TUploadType.replace);
+    if (widget.onChanged != null) {
+      widget.onChanged!([newFile], TUploadAction.replace);
     }
   }
 
@@ -321,8 +316,8 @@ class _TUploadState extends State<TUpload> {
 
   // 删除资源
   void onDelete(TUploadFile file) {
-    if (widget.onChange != null) {
-      widget.onChange!([file], TUploadType.remove);
+    if (widget.onChanged != null) {
+      widget.onChanged!([file], TUploadAction.remove);
     }
   }
 
@@ -364,7 +359,7 @@ class _TUploadState extends State<TUpload> {
             child: Container(
               width: widget.width,
               height: widget.height,
-              decoration: widget.type == TUploadBoxType.circle
+              decoration: widget.type == TUploadVariant.circle
                   ? BoxDecoration(
                       shape: BoxShape.circle,
                       color: TTheme.of(context).bgColorSecondaryContainer,
@@ -385,8 +380,8 @@ class _TUploadState extends State<TUpload> {
   Widget _buildImageBox(BuildContext context, TUploadFile file) {
     return GestureDetector(
       onTap: () async {
-        if (widget.onClick != null) {
-          widget.onClick!(file.key);
+        if (widget.onPressed != null) {
+          widget.onPressed!(file.key);
         }
         // 替换资源
         if (widget.enabledReplaceType ?? false) {
@@ -420,7 +415,7 @@ class _TUploadState extends State<TUpload> {
                     child: Container(
                       width: 20,
                       height: 20,
-                      decoration: widget.type == TUploadBoxType.circle
+                      decoration: widget.type == TUploadVariant.circle
                           ? BoxDecoration(
                               shape: BoxShape.circle,
                               color: TTheme.of(context).textDisabledColor,
@@ -464,7 +459,7 @@ class _TUploadState extends State<TUpload> {
     return Container(
       width: widget.width,
       height: widget.height,
-      decoration: widget.type == TUploadBoxType.circle
+      decoration: widget.type == TUploadVariant.circle
           ? BoxDecoration(
               shape: BoxShape.circle,
               color: TTheme.of(context).fontGyColor3,
@@ -484,7 +479,7 @@ class _TUploadState extends State<TUpload> {
                 child: const TLoading(
                   size: TLoadingSize.large,
                   icon: TLoadingIcon.circle,
-                  iconColor: Colors.white,
+                  themeData: const TLoadingThemeData(iconColor: Colors.white),
                 ),
               ),
               Visibility(

@@ -5,27 +5,28 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import '../../util/context_extension.dart';
+import 't_refresh_theme_data.dart';
 
 /// TDesign刷新头部
 /// 结合EasyRefresh类实现下拉刷新,继承自Header类，字段含义与父类一致
 class TRefreshHeader extends Header {
   TRefreshHeader({
+    TRefreshThemeData? themeData,
     this.key,
-    this.extent = 48.0,
-    double? triggerOffset,
-    this.triggerDistance = 48.0,
+    double? extent,
+    double? triggerDistance,
     bool? clamping,
-    this.float = false,
+    bool? float,
     Duration? processedDuration,
-    this.completeDuration,
+    Duration? completeDuration,
     bool? hapticFeedback,
     this.enableHapticFeedback = true,
-    this.infiniteOffset,
+    double? infiniteOffset,
     this.enableInfiniteRefresh = false,
     bool? infiniteHitOver,
-    this.overScroll = true,
-    this.loadingIcon = TLoadingIcon.circle,
-    this.backgroundColor,
+    bool? overScroll,
+    TLoadingIcon? loadingIcon,
+    Color? backgroundColor,
     super.spring,
     super.horizontalSpring,
     super.readySpringBuilder,
@@ -46,58 +47,76 @@ class TRefreshHeader extends Header {
     super.triggerWhenRelease,
     super.triggerWhenReleaseNoWait,
     super.maxOverOffset,
-  })  : assert((triggerOffset ?? triggerDistance) > 0.0),
-        assert(extent != null && extent >= 0.0),
+  })  : finalExtent = extent ?? themeData?.extent ?? 48.0,
+        finalTriggerDistance =
+            triggerDistance ?? themeData?.triggerDistance ?? 48.0,
+        finalFloat = float ?? themeData?.float ?? false,
+        finalCompleteDuration =
+            completeDuration ?? themeData?.completeDuration,
+        finalOverScroll = overScroll ?? themeData?.overScroll ?? true,
+        finalLoadingIcon =
+            loadingIcon ?? themeData?.loadingIcon ?? TLoadingIcon.circle,
+        finalBackgroundColor = backgroundColor ?? themeData?.backgroundColor,
+        this.themeData = themeData,
         assert(
-            extent != null &&
-                ((clamping ?? float) ||
-                    (triggerOffset ?? triggerDistance) >= extent),
+            (triggerDistance ?? themeData?.triggerDistance ?? 48.0) > 0.0),
+        assert(
+            (extent ?? themeData?.extent ?? 48.0) >= 0.0,
+            'extent must be non-negative'),
+        assert(
+            (clamping ?? float ?? themeData?.float ?? false) ||
+                (triggerDistance ?? themeData?.triggerDistance ?? 48.0) >=
+                    (extent ?? themeData?.extent ?? 48.0),
             'The refresh indicator cannot take more space in its final state '
             'than the amount initially created by overscrolling.'),
         super(
-          triggerOffset: triggerOffset ?? triggerDistance,
-          clamping: clamping ?? float,
+          triggerOffset:
+              triggerDistance ?? themeData?.triggerDistance ?? 48.0,
+          clamping: clamping ?? float ?? themeData?.float ?? false,
           processedDuration: processedDuration ??
               completeDuration ??
+              themeData?.completeDuration ??
               const Duration(seconds: 1),
           hapticFeedback: hapticFeedback ?? enableHapticFeedback,
-          infiniteOffset: enableInfiniteRefresh ? infiniteOffset : null,
-          infiniteHitOver: infiniteHitOver ?? overScroll,
+          infiniteOffset: enableInfiniteRefresh
+              ? (infiniteOffset ?? themeData?.infiniteOffset)
+              : null,
+          infiniteHitOver:
+              infiniteHitOver ?? overScroll ?? themeData?.overScroll ?? true,
         );
 
   /// Key
   final Key? key;
 
-  /// loading样式
-  final TLoadingIcon loadingIcon;
+  /// 组件级主题配置，优先级高于 Theme Extension
+  final TRefreshThemeData? themeData;
 
-  /// 背景颜色
-  final Color? backgroundColor;
+  /// Header容器高度（从 themeData 或参数合并后的最终值）
+  final double finalExtent;
 
-  /// Header容器高度
-  final double? extent;
+  /// 触发刷新任务的偏移量（从 themeData 或参数合并后的最终值）
+  final double finalTriggerDistance;
 
-  /// 触发刷新任务的偏移量，同[triggerOffset]
-  final double triggerDistance;
+  /// 是否悬浮（从 themeData 或参数合并后的最终值）
+  final bool finalFloat;
 
-  /// 是否悬浮
-  final bool float;
+  /// 完成延时（从 themeData 或参数合并后的最终值）
+  final Duration? finalCompleteDuration;
 
-  /// 完成延时
-  final Duration? completeDuration;
+  /// 越界滚动（从 themeData 或参数合并后的最终值）
+  final bool finalOverScroll;
 
-  /// 开启震动反馈
+  /// loading样式（从 themeData 或参数合并后的最终值）
+  final TLoadingIcon finalLoadingIcon;
+
+  /// 背景颜色（从 themeData 或参数合并后的最终值）
+  final Color? finalBackgroundColor;
+
+  /// 开启震动反馈（保留实例，≠ 禁用）
   final bool enableHapticFeedback;
 
-  /// 是否开启无限刷新
+  /// 是否开启无限刷新（保留实例，≠ 禁用）
   final bool enableInfiniteRefresh;
-
-  /// 无限刷新偏移量
-  @override
-  final double? infiniteOffset;
-
-  /// 越界滚动([enableInfiniteRefresh]为true或[infiniteOffset]有值时生效)
-  final bool overScroll;
 
   @override
   Widget build(BuildContext context, IndicatorState state) {
@@ -109,10 +128,10 @@ class TRefreshHeader extends Header {
     );
     return TGIconHeaderWidget(
       key: key,
-      loadingIcon: loadingIcon,
-      backgroundColor: backgroundColor,
+      loadingIcon: finalLoadingIcon,
+      backgroundColor: finalBackgroundColor,
       state: state,
-      refreshIndicatorExtent: extent ?? state.triggerOffset,
+      refreshIndicatorExtent: finalExtent,
     );
   }
 }
@@ -160,10 +179,12 @@ class TGIconHeaderWidgetState extends State<TGIconHeaderWidget>
   Widget _buildLoading() => TLoading(
         size: TLoadingSize.medium,
         icon: widget.loadingIcon,
-        iconColor: TTheme.of(context).brandNormalColor,
-        axis: Axis.horizontal,
+        themeData: TLoadingThemeData(
+          iconColor: TTheme.of(context).brandNormalColor,
+          axis: Axis.horizontal,
+          textColor: TTheme.of(context).textColorPlaceholder,
+        ),
         text: context.resource.refreshing,
-        textColor: TTheme.of(context).textColorPlaceholder,
       );
 
   @override

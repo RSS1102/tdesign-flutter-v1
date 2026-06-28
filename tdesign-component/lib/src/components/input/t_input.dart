@@ -2,135 +2,167 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../tdesign_flutter.dart';
-import '../dialog/t_dialog_widget.dart';
 
-enum TInputType {
-  normal,
-  twoLine,
-  longText,
-  special,
-  normalMaxTwoLine,
-  cardStyle
-}
-
-enum TInputSize { small, large }
-
-// 提供三种默认样式，也可以自定义decoration和上下文字。
-enum TCardStyle { topText, topTextWithBlueBorder, errorStyle }
-
+/// TInput 输入框组件
+///
+/// 基于 Material [TextField] 薄包装，提供六种布局形态。
+/// D 类禁用：`enabled: false` / `readOnly: true`。
 class TInput extends StatelessWidget {
-  TInput({
-    Key? key,
+  const TInput({
+    super.key,
     this.width,
-    this.textStyle,
-    this.backgroundColor,
-    this.decoration,
-    this.leftIcon, // leftIcon is default designed 24 in size.
-    this.leftLabel,
-    this.leftLabelStyle,
-    this.leftLabelSpace,
-    this.required,
-    this.readOnly = false,
-    this.autofocus = false,
-    this.obscureText = false,
-    this.onEditingComplete,
+    this.controller,
+    this.focusNode,
+    this.onChanged,
     this.onSubmitted,
+    this.onEditingComplete,
     this.hintText,
     this.inputType,
-    this.onChanged,
-    this.inputFormatters,
-    this.inputDecoration,
     this.maxLines = 1,
-    this.focusNode,
-    this.controller,
-    this.cursorColor,
-    this.rightBtn,
-    this.hintTextStyle,
-    this.onBtnTap,
-    this.labelWidget,
-    this.leftInfoWidth,
-    this.leftContentSpace,
-    this.textInputBackgroundColor,
-    this.contentPadding,
-    this.type = TInputType.normal,
-    this.size = TInputSize.large,
-    this.maxLength = 500,
-    this.additionInfo = '',
-    this.additionInfoColor,
+    this.maxLength,
+    this.autofocus = false,
+    this.obscureText = false,
+    this.readOnly = false,
+    this.inputFormatters,
     this.textAlign,
-    this.clearIconSize,
+    this.label,
+    this.prefix,
+    this.suffix,
+    this.onBtnTap,
+    this.rightBtn,
     this.onClearTap,
-    this.needClear = true,
-    this.clearBtnColor,
-    this.contentAlignment = TextAlign.start,
-    this.rightWidget,
-    this.showBottomDivider = true,
-    this.cardStyle,
-    this.cardStyleTopText,
     this.inputAction,
-    TInputSpacer? spacer,
-    this.cardStyleBottomText,
+    this.required,
+    this.labelWidget,
+    this.decoration,
+    this.inputDecoration,
+    this.additionInfo,
     this.onTapOutside,
     this.selectionControls,
     this.contextMenuBuilder,
     this.enableInteractiveSelection,
-  }) : spacer = spacer ?? TInputSpacer.generateDefault();
+    // L4 参数（P0 优先级，覆盖 Theme）
+    this.textStyle,
+    this.hintTextStyle,
+    this.labelStyle,
+    this.backgroundColor,
+    this.textInputBackgroundColor,
+    this.cursorColor,
+    this.clearBtnColor,
+    this.additionInfoColor,
+    this.contentPadding,
+    this.layout = TInputLayout.normal,
+    this.size = TInputSize.large,
+    this.contentAlignment = TextAlign.start,
+    this.cardStyleTopText,
+    this.cardStyleBottomText,
+    this.showBottomDivider,
+    this.showClearButton,
+    this.clearIconSize,
+    this.leftInfoWidth,
+    this.spacer,
+  });
 
-  /// 输入框宽度(TCardStyle时必须设置该参数)
+  // ---- L1 语义属性 ----
+
+  /// 输入框布局形态
+  final TInputLayout layout;
+
+  /// 输入框尺寸
+  final TInputSize size;
+
+  // ---- L2 内容属性 ----
+
+  /// 输入框宽度
   final double? width;
 
-  /// 输入框背景色
-  final Color? backgroundColor;
+  /// 左侧标签文案
+  final String? label;
 
-  /// 输入框样式
-  final Decoration? decoration;
+  /// 左侧图标
+  final Widget? prefix;
 
-  /// 输入框左侧文案
-  final String? leftLabel;
+  /// 右侧自定义组件
+  final Widget? suffix;
 
-  /// 输入框左侧文案间距
-  final double? leftLabelSpace;
-
-  /// 输入框内容左侧间距
-  final double? leftContentSpace;
-
-  /// 是否必填标志（红色*）
-  final bool? required;
-
-  /// 带图标的输入框
-  final Widget? leftIcon;
-
-  /// leftLabel右侧组件，支持自定义
+  /// label右侧组件，支持自定义
   final Widget? labelWidget;
 
-  /// 是否只读
-  final bool readOnly;
+  /// 标签文本样式
+  final TextStyle? labelStyle;
+
+  /// 文本样式
+  final TextStyle? textStyle;
+
+  /// 提示文本样式
+  final TextStyle? hintTextStyle;
+
+  /// 右侧按钮
+  final Widget? rightBtn;
 
   /// 提示文案
   final String? hintText;
 
-  /// 键盘类型，数字、字母
-  final TextInputType? inputType;
+  /// 是否必填标志（红色*）
+  final bool? required;
 
-  /// 输入文本变化时回调
-  final ValueChanged<String>? onChanged;
+  /// 错误提示信息
+  final String? additionInfo;
 
-  /// 显示输入内容，如限制长度(LengthLimitingTextInputFormatter(6))
-  final List<TextInputFormatter>? inputFormatters;
+  /// 输入框背景色
+  final Color? backgroundColor;
 
-  /// controller 用户获取或者赋值输入内容
-  final TextEditingController? controller;
+  /// 文本框背景色
+  final Color? textInputBackgroundColor;
 
-  /// 最大输入行数
-  final int? maxLines;
+  /// 游标颜色
+  final Color? cursorColor;
 
-  /// 获取或者取消焦点使用
-  final FocusNode? focusNode;
+  /// 清除按钮颜色
+  final Color? clearBtnColor;
+
+  /// 附加信息颜色
+  final Color? additionInfoColor;
+
+  /// 文本对齐方向
+  final TextAlign? textAlign;
+
+  /// 内容对齐方向
+  final TextAlign contentAlignment;
+
+  /// 清除图标大小
+  final double? clearIconSize;
+
+  /// 是否显示清除按钮
+  final bool? showClearButton;
+
+  /// 输入框左侧的宽度
+  final double? leftInfoWidth;
+
+  /// 卡片模式上方文字
+  final String? cardStyleTopText;
+
+  /// 卡片模式下方文字
+  final String? cardStyleBottomText;
+
+  /// 是否展示底部分割线
+  final bool? showBottomDivider;
+
+  /// 内边距
+  final EdgeInsetsGeometry? contentPadding;
+
+  /// 组件各模块间间距
+  final TInputSpacer? spacer;
+
+  // ---- L3 行为属性 ----
+
+  /// 是否只读
+  final bool readOnly;
 
   /// 是否自动获取焦点
   final bool autofocus;
 
-  /// 是否隐藏输入的文字，一般用在密码输入框中
+  /// 是否隐藏输入的文字
   final bool obscureText;
 
   /// 点击键盘完成按钮时触发的回调
@@ -139,32 +171,23 @@ class TInput extends StatelessWidget {
   /// 点击键盘完成按钮时触发的回调, 参数值为输入的内容
   final ValueChanged<String>? onSubmitted;
 
-  /// 自定义输入框样式，默认圆角
-  final InputDecoration? inputDecoration;
+  /// 输入文本变化时回调
+  final ValueChanged<String>? onChanged;
 
-  /// 文本颜色
-  final TextStyle? textStyle;
+  /// 键盘类型
+  final TextInputType? inputType;
 
-  /// 提示文本颜色，默认为文本颜色
-  final TextStyle? hintTextStyle;
+  /// 键盘动作类型
+  final TextInputAction? inputAction;
 
-  /// 卡片模式上方文字
-  final String? cardStyleTopText;
+  /// 最大输入行数
+  final int? maxLines;
 
-  /// 卡片模式下方文字
-  final String? cardStyleBottomText;
+  /// 最大字数限制
+  final int? maxLength;
 
-  /// 文本框背景色
-  final Color? textInputBackgroundColor;
-
-  /// 游标颜色
-  final Color? cursorColor;
-
-  /// 清除按钮图标大小
-  final double? clearIconSize;
-
-  /// 右侧按钮
-  final Widget? rightBtn;
+  /// 输入格式化器
+  final List<TextInputFormatter>? inputFormatters;
 
   /// 右侧按钮点击
   final GestureTapCallback? onBtnTap;
@@ -172,56 +195,17 @@ class TInput extends StatelessWidget {
   /// 右侧删除点击
   final GestureTapCallback? onClearTap;
 
-  /// 是否需要右侧按钮变为删除
-  final bool needClear;
+  /// controller
+  final TextEditingController? controller;
 
-  /// 右侧删除按钮颜色
-  final Color? clearBtnColor;
+  /// focusNode
+  final FocusNode? focusNode;
 
-  /// textInput内边距
-  final EdgeInsetsGeometry? contentPadding;
+  /// 自定义输入框样式
+  final InputDecoration? inputDecoration;
 
-  /// 输入框类型
-  final TInputType type;
-
-  /// 卡片默认样式
-  final TCardStyle? cardStyle;
-
-  /// 输入框规格
-  final TInputSize size;
-
-  /// 输入框左侧的宽度（输入框有16dp的左侧padding，因而左侧部分不用考虑这16dp）
-  final double? leftInfoWidth;
-
-  /// 最大字数限制
-  final int? maxLength;
-
-  /// 错误提示信息
-  final String? additionInfo;
-
-  /// 错误提示颜色
-  final Color? additionInfoColor;
-
-  /// 文字对齐方向
-  final TextAlign? textAlign;
-
-  /// 右侧自定义组件 特殊类型时生效
-  final Widget? rightWidget;
-
-  /// 是否展示底部分割线
-  final bool showBottomDivider;
-
-  /// 内容对齐方向
-  final TextAlign contentAlignment;
-
-  /// 左侧标签样式 设置该值是若出现像素溢出，请设置letterSpacing: 0
-  final TextStyle? leftLabelStyle;
-
-  /// 键盘动作类型
-  final TextInputAction? inputAction;
-
-  /// 组件各模块间间距
-  final TInputSpacer spacer;
+  /// 自定义容器装饰（P0 逃逸舱）
+  final Decoration? decoration;
 
   /// 点击输入框外部区域回调
   final TapRegionCallback? onTapOutside;
@@ -235,35 +219,37 @@ class TInput extends StatelessWidget {
   /// 是否启用交互式选择
   final bool? enableInteractiveSelection;
 
-  /// 获取输入框规格
-  double getInputPadding() {
-    switch (size) {
-      case TInputSize.small:
-        return 12;
-      case TInputSize.large:
-        return 16;
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<TInputThemeData>();
+    final resolvedSpacer =
+        TInputResolve.resolveSpacer(theme: theme, instanceSpacer: spacer);
+    return SizedBox(
+      width: width ?? MediaQuery.of(context).size.width,
+      child: buildInputView(context, theme, resolvedSpacer),
+    );
+  }
+
+  Widget buildInputView(
+      BuildContext context, TInputThemeData? theme, TInputSpacer spacer) {
+    final leftLabelWidth = _calculateLeftInfoWidth(context, theme, spacer);
+    switch (layout) {
+      case TInputLayout.normal:
+        return buildNormalInput(context, leftLabelWidth, theme, spacer);
+      case TInputLayout.twoLine:
+        return buildTwoLineInput(context, leftLabelWidth, theme, spacer);
+      case TInputLayout.special:
+        return buildSpecialInput(context, leftLabelWidth, theme, spacer);
+      case TInputLayout.longText:
+        return buildLongTextInput(context, theme, spacer);
+      case TInputLayout.normalMaxTwoLine:
+        return buildNormalInput(context, leftLabelWidth, theme, spacer);
+      case TInputLayout.cardStyle:
+        return buildCardStyleInput(context, leftLabelWidth, theme, spacer);
     }
   }
 
-  /// 计算输入框左侧信息总宽度
-  /// 图标间距：若存在左侧图标 取间距配置值（默认4）
-  /// 图标宽度：24px图标尺寸 + 图标间距
-  /// 标签宽度：通过文本测量函数获取精确文本渲染宽度
-  /// 必填标识：当 required=true 时增加14px宽度（含4px间距）
-  /// 安全边距：最终增加4px防止截断
-  double _calculateLeftInfoWidth(BuildContext context) {
-    final iconSpace = leftIcon != null ? (spacer.iconLabelSpace ?? 4) : 0;
-    final iconWidth = leftIcon != null ? 24 + iconSpace : 0;
-    final labelWidth = _measureTextWidth(leftLabel, leftLabelStyle, context);
-    final requiredWidth = (required ?? false) ? 14 : 0;
-    return iconWidth + labelWidth + requiredWidth + (leftContentSpace ?? 4);
-  }
-
   /// 计算文本渲染宽度
-  /// text: 待测量文本（null/空字符串返回0）
-  /// style: 文本样式（继承主题字体尺寸）
-  /// 排版控制：letterSpacing=0消除字间距，height=1.0避免行高影响
-  /// 默认最大行数排版为1行
   double _measureTextWidth(
       String? text, TextStyle? style, BuildContext context) {
     if (text == null || text.isEmpty) {
@@ -282,36 +268,29 @@ class TInput extends StatelessWidget {
     return textPainter.width + 2;
   }
 
-  Widget buildInputView(BuildContext context) {
-    var leftLabelWidth = _calculateLeftInfoWidth(context);
-    switch (type) {
-      case TInputType.normal:
-        return buildNormalInput(context, leftLabelWidth);
-      case TInputType.twoLine:
-        return buildTwoLineInput(context, leftLabelWidth);
-      case TInputType.special:
-        return buildSpecialInput(context, leftLabelWidth);
-      case TInputType.longText:
-        return buildLongTextInput(context);
-      case TInputType.normalMaxTwoLine:
-        return buildNormalInput(context, leftLabelWidth);
-      case TInputType.cardStyle:
-        return buildCardStyleInput(context, leftLabelWidth);
-    }
+  /// 计算输入框左侧信息总宽度
+  double _calculateLeftInfoWidth(
+      BuildContext context, TInputThemeData? theme, TInputSpacer spacer) {
+    final iconSpace = prefix != null ? (spacer.iconLabelSpace ?? 4) : 0;
+    final iconWidth = prefix != null ? 24 + iconSpace : 0;
+    final labelWidth = _measureTextWidth(label, labelStyle, context);
+    final requiredWidth = (required ?? false) ? 14 : 0;
+    return iconWidth + labelWidth + requiredWidth + (leftInfoWidth ?? 4);
   }
 
-  double _getBottomDividerMarginLeft(double leftLabelWidth) {
-    switch (type) {
-      case TInputType.normal:
-      case TInputType.twoLine:
-      case TInputType.normalMaxTwoLine:
-      case TInputType.cardStyle:
+  double _getBottomDividerMarginLeft(
+      double leftLabelWidth, TInputSpacer spacer) {
+    switch (layout) {
+      case TInputLayout.normal:
+      case TInputLayout.twoLine:
+      case TInputLayout.normalMaxTwoLine:
+      case TInputLayout.cardStyle:
         if (contentPadding != null && contentPadding is EdgeInsets) {
           return (contentPadding as EdgeInsets).left;
         }
         return spacer.labelInputSpace ?? 16;
-      case TInputType.special:
-      case TInputType.longText:
+      case TInputLayout.special:
+      case TInputLayout.longText:
         if (contentPadding != null && contentPadding is EdgeInsets) {
           return (contentPadding as EdgeInsets).left;
         }
@@ -319,10 +298,45 @@ class TInput extends StatelessWidget {
     }
   }
 
-  Widget buildNormalInput(BuildContext context, double leftLabelWidth) {
-    var cardStyleDecoration = _getCardStylePreDecoration(context);
-    var hasLeftWidget =
-        leftLabel != null || leftIcon != null || (required ?? false);
+  Widget buildNormalInput(BuildContext context, double leftLabelWidth,
+      TInputThemeData? theme, TInputSpacer spacer) {
+    final cardStyleDecoration = TInputResolve.resolveCardStyleDecoration(
+      context: context,
+      layout: layout,
+      theme: theme,
+      cardStyle: layout == TInputLayout.cardStyle ? theme?.cardStyle : null,
+      instanceDecoration: decoration,
+    );
+    final hasLeftWidget =
+        label != null || prefix != null || (required ?? false);
+    final padding = TInputResolve.resolveContentPadding(
+      context: context,
+      layout: layout,
+      size: size,
+      theme: theme,
+      instancePadding: contentPadding,
+      additionInfo: additionInfo,
+      spacer: spacer,
+    );
+    final textStyle = TInputResolve.resolveTextStyle(
+        context: context, theme: theme, instanceStyle: this.textStyle);
+    final hintTextStyle = TInputResolve.resolveHintTextStyle(
+        context: context, theme: theme, instanceStyle: this.hintTextStyle);
+    final cursorColor = TInputResolve.resolveCursorColor(
+        context: context, theme: theme, instanceColor: this.cursorColor);
+    final clearBtnColor = TInputResolve.resolveClearBtnColor(
+        context: context, theme: theme, instanceColor: this.clearBtnColor);
+    final additionInfoColor = TInputResolve.resolveAdditionInfoColor(
+        context: context,
+        theme: theme,
+        instanceColor: this.additionInfoColor);
+    final bgColor = TInputResolve.resolveBackgroundColor(
+        context: context, theme: theme, instanceColor: backgroundColor);
+    final showDivider = showBottomDivider ?? theme?.showBottomDivider ?? true;
+    final showClear =
+        showClearButton ?? theme?.showClearButton ?? true;
+    final clearSize = clearIconSize ?? theme?.clearIconSize;
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -330,18 +344,16 @@ class TInput extends StatelessWidget {
           alignment: Alignment.centerLeft,
           color: (cardStyleDecoration != null || decoration != null)
               ? null
-              : (backgroundColor ?? TTheme.of(context).bgColorContainer),
+              : (bgColor ?? TTheme.of(context).bgColorContainer),
           decoration: cardStyleDecoration ?? decoration,
           child: Row(
-            crossAxisAlignment: additionInfo != ''
+            crossAxisAlignment: additionInfo != null && additionInfo!.isNotEmpty
                 ? CrossAxisAlignment.start
                 : CrossAxisAlignment.center,
             children: <Widget>[
               Visibility(
                 visible: hasLeftWidget,
-                child: SizedBox(
-                  width: leftLabelSpace ?? 16,
-                ),
+                child: SizedBox(width: spacer.labelInputSpace ?? 16),
               ),
               SizedBox(
                 width: leftLabelWidth,
@@ -349,27 +361,31 @@ class TInput extends StatelessWidget {
                   child: Row(
                     children: [
                       Visibility(
-                        visible: leftIcon != null,
+                        visible: prefix != null,
                         child: SizedBox(
                           width: 24,
-                          child: leftIcon ?? const SizedBox.shrink(),
+                          child: prefix ?? const SizedBox.shrink(),
                         ),
                       ),
                       Visibility(
-                        visible: leftLabel != null,
+                        visible: label != null,
                         child: Container(
                           padding: EdgeInsets.only(
-                              left: leftIcon != null
-                                  ? (spacer.iconLabelSpace ?? 4)
-                                  : 0,
-                              top: getInputPadding(),
-                              bottom: getInputPadding()),
+                            left: prefix != null
+                                ? (spacer.iconLabelSpace ?? 4)
+                                : 0,
+                            top: TInputResolve.getInputPadding(size),
+                            bottom: TInputResolve.getInputPadding(size),
+                          ),
                           child: TText(
-                            leftLabel,
+                            label,
                             maxLines: 1,
                             overflow: TextOverflow.visible,
-                            style: leftLabelStyle ??
-                                const TextStyle(letterSpacing: 0),
+                            style: TInputResolve.resolveLabelStyle(
+                              context: context,
+                              theme: theme,
+                              instanceStyle: labelStyle,
+                            ),
                             font: TTheme.of(context).fontBodyLarge,
                             fontWeight: FontWeight.w400,
                           ),
@@ -380,18 +396,19 @@ class TInput extends StatelessWidget {
                         child: labelWidget ?? const SizedBox.shrink(),
                       ),
                       Visibility(
-                          visible: required ?? false,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 4.0),
-                            child: TText(
-                              '*',
-                              maxLines: 1,
-                              style: TextStyle(
-                                  color: TTheme.of(context).errorColor6),
-                              font: TTheme.of(context).fontBodyLarge,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          )),
+                        visible: required ?? false,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4.0),
+                          child: TText(
+                            '*',
+                            maxLines: 1,
+                            style: TextStyle(
+                                color: TTheme.of(context).errorColor6),
+                            font: TTheme.of(context).fontBodyLarge,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -402,9 +419,7 @@ class TInput extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TInputView(
-                      textStyle: textStyle ??
-                          TextStyle(
-                              color: TTheme.of(context).textColorPrimary),
+                      textStyle: textStyle,
                       readOnly: readOnly,
                       autofocus: autofocus,
                       obscureText: obscureText,
@@ -421,21 +436,14 @@ class TInput extends StatelessWidget {
                       focusNode: focusNode,
                       isCollapsed: true,
                       textAlign: contentAlignment,
-                      hintTextStyle: hintTextStyle ??
-                          TextStyle(
-                              color: TTheme.of(context).textColorPlaceholder),
+                      hintTextStyle: hintTextStyle,
                       cursorColor: cursorColor,
-                      textInputBackgroundColor: textInputBackgroundColor,
+                      textInputBackgroundColor:
+                          TInputResolve.resolveTextInputBackgroundColor(
+                              theme: theme,
+                              instanceColor: textInputBackgroundColor),
                       controller: controller,
-                      contentPadding: contentPadding ??
-                          EdgeInsets.only(
-                              left: spacer.labelInputSpace ?? 16,
-                              right: spacer.inputRightSpace != null
-                                  ? spacer.inputRightSpace! / 2
-                                  : 16,
-                              bottom:
-                                  additionInfo != '' ? 4 : getInputPadding(),
-                              top: getInputPadding()),
+                      contentPadding: padding,
                       inputAction: inputAction,
                       selectionControls: selectionControls,
                       contextMenuBuilder: contextMenuBuilder,
@@ -447,67 +455,73 @@ class TInput extends StatelessWidget {
                         padding: EdgeInsets.only(
                             left: spacer.additionInfoSpace ?? 16,
                             right: TextAlign.end == contentAlignment ? 8 : 0,
-                            bottom: getInputPadding()),
+                            bottom: TInputResolve.getInputPadding(size)),
                         child: TText(
                           additionInfo,
                           font: TTheme.of(context).fontBodySmall,
                           textAlign: contentAlignment != TextAlign.center
                               ? contentAlignment
                               : TextAlign.start,
-                          textColor: additionInfoColor ??
-                              TTheme.of(context).textColorPlaceholder,
+                          textColor: additionInfoColor,
                         ),
                       ),
-                      visible: additionInfo != '',
+                      visible:
+                          additionInfo != null && additionInfo!.isNotEmpty,
                     )
                   ],
                 ),
               ),
               Visibility(
-                visible: rightWidget != null,
+                visible: suffix != null,
                 child: Container(
                   margin: EdgeInsets.only(
-                      top: getInputPadding(),
-                      bottom: getInputPadding(),
+                      top: TInputResolve.getInputPadding(size),
+                      bottom: TInputResolve.getInputPadding(size),
                       right: 16),
-                  child: rightWidget,
+                  child: suffix,
                 ),
               ),
               Visibility(
                 visible: controller != null &&
                     controller!.text.isNotEmpty &&
-                    needClear &&
-                    rightWidget == null,
+                    showClear &&
+                    suffix == null,
                 child: GestureDetector(
-                    child: Container(
-                      margin: EdgeInsets.only(
-                          left: spacer.inputRightSpace != null
-                              ? spacer.inputRightSpace! / 2
-                              : 8,
-                          right: spacer.rightSpace ?? 16,
-                          top: additionInfo != '' ? getInputPadding() : 0),
-                      child: Icon(
-                        size: clearIconSize,
-                        TIcons.close_circle_filled,
-                        color: clearBtnColor ??
-                            TTheme.of(context).textColorPlaceholder,
-                      ),
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      left: spacer.inputRightSpace != null
+                          ? spacer.inputRightSpace! / 2
+                          : 8,
+                      right: spacer.rightSpace ?? 16,
+                      top: additionInfo != null && additionInfo!.isNotEmpty
+                          ? TInputResolve.getInputPadding(size)
+                          : 0,
                     ),
-                    onTap: onClearTap ??
-                        () {
-                          controller?.text = '';
-                        }),
+                    child: Icon(
+                      size: clearSize,
+                      TIcons.close_circle_filled,
+                      color: clearBtnColor,
+                    ),
+                  ),
+                  onTap: onClearTap ??
+                      () {
+                        controller?.text = '';
+                      },
+                ),
                 replacement: Visibility(
                   visible: rightBtn != null,
                   child: GestureDetector(
                     onTap: onBtnTap,
                     child: Container(
                       margin: EdgeInsets.only(
-                          left: spacer.inputRightSpace != null
-                              ? spacer.inputRightSpace! / 2
-                              : 8,
-                          right: spacer.rightSpace ?? 16,
-                          top: additionInfo != '' ? getInputPadding() : 0),
+                        left: spacer.inputRightSpace != null
+                            ? spacer.inputRightSpace! / 2
+                            : 8,
+                        right: spacer.rightSpace ?? 16,
+                        top: additionInfo != null && additionInfo!.isNotEmpty
+                            ? TInputResolve.getInputPadding(size)
+                            : 0,
+                      ),
                       child: rightBtn,
                     ),
                   ),
@@ -516,12 +530,12 @@ class TInput extends StatelessWidget {
             ],
           ),
         ),
-        if (showBottomDivider)
+        if (showDivider)
           Visibility(
-            visible: type != TInputType.cardStyle,
+            visible: layout != TInputLayout.cardStyle,
             child: Padding(
               padding: EdgeInsets.only(
-                left: _getBottomDividerMarginLeft(leftLabelWidth),
+                left: _getBottomDividerMarginLeft(leftLabelWidth, spacer),
               ),
               child: const TDivider(),
             ),
@@ -530,51 +544,37 @@ class TInput extends StatelessWidget {
     );
   }
 
-  BoxDecoration? _getCardStylePreDecoration(BuildContext context) {
-    var cardStyleDecoration;
-    if (type == TInputType.cardStyle) {
-      switch (cardStyle) {
-        case TCardStyle.topText:
-          cardStyleDecoration = BoxDecoration(
-              color: TTheme.of(context).bgColorContainer,
-              border:
-                  Border.all(color: TTheme.of(context).componentStrokeColor),
-              borderRadius:
-                  BorderRadius.circular(TTheme.of(context).radiusDefault));
-          break;
-        case TCardStyle.topTextWithBlueBorder:
-          cardStyleDecoration = BoxDecoration(
-              color: TTheme.of(context).bgColorContainer,
-              border: Border.all(
-                  color: TTheme.of(context).brandNormalColor, width: 1.5),
-              borderRadius:
-                  BorderRadius.circular(TTheme.of(context).radiusDefault));
-          break;
-        case TCardStyle.errorStyle:
-          cardStyleDecoration = BoxDecoration(
-              color: TTheme.of(context).bgColorContainer,
-              border: Border.all(
-                  color: TTheme.of(context).errorColor6, width: 1.5),
-              borderRadius:
-                  BorderRadius.circular(TTheme.of(context).radiusDefault));
-          break;
-        default:
-          cardStyleDecoration = BoxDecoration(
-              color: TTheme.of(context).bgColorContainer,
-              borderRadius:
-                  BorderRadius.circular(TTheme.of(context).radiusDefault));
-          break;
-      }
-    }
-    return cardStyleDecoration;
-  }
+  Widget buildTwoLineInput(BuildContext context, double leftLabelWidth,
+      TInputThemeData? theme, TInputSpacer spacer) {
+    final textStyle = TInputResolve.resolveTextStyle(
+        context: context, theme: theme, instanceStyle: this.textStyle);
+    final hintTextStyle = TInputResolve.resolveHintTextStyle(
+        context: context, theme: theme, instanceStyle: this.hintTextStyle);
+    final cursorColor = TInputResolve.resolveCursorColor(
+        context: context, theme: theme, instanceColor: this.cursorColor);
+    final clearBtnColor = TInputResolve.resolveClearBtnColor(
+        context: context, theme: theme, instanceColor: this.clearBtnColor);
+    final bgColor = TInputResolve.resolveBackgroundColor(
+        context: context, theme: theme, instanceColor: backgroundColor);
+    final showDivider = showBottomDivider ?? theme?.showBottomDivider ?? true;
+    final showClear =
+        showClearButton ?? theme?.showClearButton ?? true;
+    final clearSize = clearIconSize ?? theme?.clearIconSize;
+    final padding = TInputResolve.resolveContentPadding(
+      context: context,
+      layout: layout,
+      size: size,
+      theme: theme,
+      instancePadding: contentPadding,
+      additionInfo: additionInfo,
+      spacer: spacer,
+    );
 
-  Widget buildTwoLineInput(BuildContext context, double leftLabelWidth) {
     return Container(
       alignment: Alignment.centerLeft,
       color: decoration != null
           ? null
-          : (backgroundColor ?? TTheme.of(context).bgColorContainer),
+          : (bgColor ?? TTheme.of(context).bgColorContainer),
       decoration: decoration,
       child: Stack(
         alignment: Alignment.bottomCenter,
@@ -583,50 +583,55 @@ class TInput extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Visibility(
-                  visible: leftLabel != null,
-                  child: Row(
-                    children: [
-                      Visibility(
-                        visible: leftLabel != null,
-                        child: Container(
-                          constraints: BoxConstraints(
-                              maxWidth:
-                                  leftLabelWidth + (leftLabelSpace ?? 12)),
-                          padding: EdgeInsets.only(
-                              left: leftLabelSpace ?? 12.0, top: 10.0),
-                          child: Column(
-                            children: [
-                              TText(
-                                leftLabel,
-                                maxLines: 2,
-                                style: leftLabelStyle ??
-                                    const TextStyle(letterSpacing: 0),
-                                font: TTheme.of(context).fontBodyLarge,
-                                fontWeight: FontWeight.w400,
+                visible: label != null,
+                child: Row(
+                  children: [
+                    Visibility(
+                      visible: label != null,
+                      child: Container(
+                        constraints: BoxConstraints(
+                            maxWidth: leftLabelWidth +
+                                (spacer.labelInputSpace ?? 12)),
+                        padding: EdgeInsets.only(
+                            left: spacer.labelInputSpace ?? 12.0, top: 10.0),
+                        child: Column(
+                          children: [
+                            TText(
+                              label,
+                              maxLines: 2,
+                              style: TInputResolve.resolveLabelStyle(
+                                context: context,
+                                theme: theme,
+                                instanceStyle: labelStyle,
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Visibility(
-                        visible: labelWidget != null,
-                        child: labelWidget ?? const SizedBox.shrink(),
-                      ),
-                      Visibility(
-                          visible: required ?? false,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 1.0),
-                            child: TText(
-                              '*',
-                              maxLines: 1,
-                              style: TextStyle(
-                                  color: TTheme.of(context).errorColor6),
                               font: TTheme.of(context).fontBodyLarge,
                               fontWeight: FontWeight.w400,
                             ),
-                          )),
-                    ],
-                  )),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: labelWidget != null,
+                      child: labelWidget ?? const SizedBox.shrink(),
+                    ),
+                    Visibility(
+                      visible: required ?? false,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 1.0),
+                        child: TText(
+                          '*',
+                          maxLines: 1,
+                          style: TextStyle(
+                              color: TTheme.of(context).errorColor6),
+                          font: TTheme.of(context).fontBodyLarge,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Container(
                 padding: const EdgeInsets.only(bottom: 12, top: 7),
                 alignment: Alignment.center,
@@ -641,9 +646,7 @@ class TInput extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: TInputView(
-                        textStyle: textStyle ??
-                            TextStyle(
-                                color: TTheme.of(context).textColorPrimary),
+                        textStyle: textStyle,
                         readOnly: readOnly,
                         autofocus: autofocus,
                         obscureText: obscureText,
@@ -658,20 +661,14 @@ class TInput extends StatelessWidget {
                         isCollapsed: true,
                         maxLines: maxLines,
                         focusNode: focusNode,
-                        hintTextStyle: hintTextStyle ??
-                            TextStyle(
-                                color:
-                                    TTheme.of(context).textColorPlaceholder),
+                        hintTextStyle: hintTextStyle,
                         cursorColor: cursorColor,
-                        textInputBackgroundColor: textInputBackgroundColor,
+                        textInputBackgroundColor:
+                            TInputResolve.resolveTextInputBackgroundColor(
+                                theme: theme,
+                                instanceColor: textInputBackgroundColor),
                         controller: controller,
-                        contentPadding: contentPadding ??
-                            EdgeInsets.only(
-                              left: spacer.labelInputSpace ?? 16,
-                              right: spacer.inputRightSpace != null
-                                  ? spacer.inputRightSpace! / 2
-                                  : 8,
-                            ),
+                        contentPadding: padding,
                         inputAction: inputAction,
                         selectionControls: selectionControls,
                         contextMenuBuilder: contextMenuBuilder,
@@ -681,7 +678,7 @@ class TInput extends StatelessWidget {
                     Visibility(
                       visible: controller != null &&
                           controller!.text.isNotEmpty &&
-                          needClear,
+                          showClear,
                       child: GestureDetector(
                         child: Container(
                           margin: EdgeInsets.only(
@@ -691,10 +688,9 @@ class TInput extends StatelessWidget {
                             right: spacer.rightSpace ?? 16,
                           ),
                           child: Icon(
-                            size: clearIconSize,
+                            size: clearSize,
                             TIcons.close_circle_filled,
-                            color: clearBtnColor ??
-                                TTheme.of(context).textColorPlaceholder,
+                            color: clearBtnColor,
                           ),
                         ),
                         onTap: onClearTap,
@@ -720,10 +716,10 @@ class TInput extends StatelessWidget {
               ),
             ],
           ),
-          if (showBottomDivider)
+          if (showDivider)
             Padding(
               padding: EdgeInsets.only(
-                left: _getBottomDividerMarginLeft(leftLabelWidth),
+                left: _getBottomDividerMarginLeft(leftLabelWidth, spacer),
               ),
               child: const TDivider(),
             ),
@@ -732,36 +728,57 @@ class TInput extends StatelessWidget {
     );
   }
 
-  Widget buildLongTextInput(BuildContext context) {
+  Widget buildLongTextInput(
+      BuildContext context, TInputThemeData? theme, TInputSpacer spacer) {
+    final textStyle = TInputResolve.resolveTextStyle(
+        context: context, theme: theme, instanceStyle: this.textStyle);
+    final hintTextStyle = TInputResolve.resolveHintTextStyle(
+        context: context, theme: theme, instanceStyle: this.hintTextStyle);
+    final cursorColor = TInputResolve.resolveCursorColor(
+        context: context, theme: theme, instanceColor: this.cursorColor);
+    final bgColor = TInputResolve.resolveBackgroundColor(
+        context: context, theme: theme, instanceColor: backgroundColor);
+    final showDivider = showBottomDivider ?? theme?.showBottomDivider ?? true;
+    final padding = TInputResolve.resolveContentPadding(
+      context: context,
+      layout: layout,
+      size: size,
+      theme: theme,
+      instancePadding: contentPadding,
+      additionInfo: additionInfo,
+      spacer: spacer,
+    );
+
     return Container(
       alignment: Alignment.centerLeft,
       color: decoration != null
           ? null
-          : (backgroundColor ?? TTheme.of(context).bgColorContainer),
+          : (bgColor ?? TTheme.of(context).bgColorContainer),
       decoration: decoration,
-      height: leftLabel != null ? 197 : 148,
+      height: label != null ? 197 : 148,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Visibility(
-            visible: leftLabel != null,
+            visible: label != null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                    padding: EdgeInsets.only(
-                        left: 16,
-                        top: getInputPadding(),
-                        bottom: getInputPadding()),
-                    child: TText(
-                      leftLabel,
-                      maxLines: 2,
-                      fontWeight: FontWeight.w400,
-                    )),
-                if (showBottomDivider)
+                  padding: EdgeInsets.only(
+                      left: 16,
+                      top: TInputResolve.getInputPadding(size),
+                      bottom: TInputResolve.getInputPadding(size)),
+                  child: TText(
+                    label,
+                    maxLines: 2,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                if (showDivider)
                   Padding(
                     padding: EdgeInsets.only(
-                      left: _getBottomDividerMarginLeft(0),
+                      left: _getBottomDividerMarginLeft(0, spacer),
                     ),
                     child: const TDivider(),
                   ),
@@ -771,8 +788,7 @@ class TInput extends StatelessWidget {
           Expanded(
             flex: 1,
             child: TInputView(
-              textStyle: textStyle ??
-                  TextStyle(color: TTheme.of(context).textColorPrimary),
+              textStyle: textStyle,
               readOnly: readOnly,
               autofocus: autofocus,
               obscureText: obscureText,
@@ -787,14 +803,13 @@ class TInput extends StatelessWidget {
               inputDecoration: inputDecoration,
               maxLines: maxLines,
               focusNode: focusNode,
-              hintTextStyle: hintTextStyle ??
-                  TextStyle(color: TTheme.of(context).textColorPlaceholder),
+              hintTextStyle: hintTextStyle,
               cursorColor: cursorColor,
-              textInputBackgroundColor: textInputBackgroundColor,
+              textInputBackgroundColor: TInputResolve
+                  .resolveTextInputBackgroundColor(
+                      theme: theme, instanceColor: textInputBackgroundColor),
               controller: controller,
-              contentPadding: contentPadding ??
-                  const EdgeInsets.only(
-                      left: 16, right: 16, top: 12, bottom: 12),
+              contentPadding: padding,
               inputAction: inputAction,
               selectionControls: selectionControls,
               contextMenuBuilder: contextMenuBuilder,
@@ -815,7 +830,27 @@ class TInput extends StatelessWidget {
     );
   }
 
-  Widget buildSpecialInput(BuildContext context, double leftLabelWidth) {
+  Widget buildSpecialInput(BuildContext context, double leftLabelWidth,
+      TInputThemeData? theme, TInputSpacer spacer) {
+    final textStyle = TInputResolve.resolveTextStyle(
+        context: context, theme: theme, instanceStyle: this.textStyle);
+    final hintTextStyle = TInputResolve.resolveHintTextStyle(
+        context: context, theme: theme, instanceStyle: this.hintTextStyle);
+    final cursorColor = TInputResolve.resolveCursorColor(
+        context: context, theme: theme, instanceColor: this.cursorColor);
+    final bgColor = TInputResolve.resolveBackgroundColor(
+        context: context, theme: theme, instanceColor: backgroundColor);
+    final showDivider = showBottomDivider ?? theme?.showBottomDivider ?? true;
+    final padding = TInputResolve.resolveContentPadding(
+      context: context,
+      layout: layout,
+      size: size,
+      theme: theme,
+      instancePadding: contentPadding,
+      additionInfo: additionInfo,
+      spacer: spacer,
+    );
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -823,30 +858,30 @@ class TInput extends StatelessWidget {
           alignment: Alignment.centerLeft,
           color: decoration != null
               ? null
-              : (backgroundColor ?? TTheme.of(context).bgColorContainer),
+              : (bgColor ?? TTheme.of(context).bgColorContainer),
           decoration: decoration,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Visibility(
-                visible: leftLabel != null,
+                visible: label != null,
                 child: Padding(
                   padding: EdgeInsets.only(
-                      left: leftLabelSpace ?? 16,
-                      top: getInputPadding(),
-                      bottom: getInputPadding()),
+                      left: spacer.labelInputSpace ?? 16,
+                      top: TInputResolve.getInputPadding(size),
+                      bottom: TInputResolve.getInputPadding(size)),
                   child: leftInfoWidth != null
                       ? SizedBox(
                           width: leftLabelWidth,
                           child: TText(
-                            leftLabel,
+                            label,
                             maxLines: 1,
                             font: TTheme.of(context).fontBodyLarge,
                             fontWeight: FontWeight.w400,
                           ),
                         )
                       : TText(
-                          leftLabel,
+                          label,
                           maxLines: 1,
                           font: TTheme.of(context).fontBodyLarge,
                           fontWeight: FontWeight.w400,
@@ -860,10 +895,10 @@ class TInput extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Padding(
-                  padding: EdgeInsets.only(left: spacer.labelInputSpace!),
+                  padding: EdgeInsets.only(
+                      left: spacer.labelInputSpace ?? 16),
                   child: TInputView(
-                    textStyle: textStyle ??
-                        TextStyle(color: TTheme.of(context).textColorPrimary),
+                    textStyle: textStyle,
                     readOnly: readOnly,
                     autofocus: autofocus,
                     obscureText: obscureText,
@@ -877,18 +912,15 @@ class TInput extends StatelessWidget {
                     maxLines: maxLines,
                     focusNode: focusNode,
                     isCollapsed: true,
-                    hintTextStyle: hintTextStyle ??
-                        TextStyle(
-                            color: TTheme.of(context).textColorPlaceholder),
+                    hintTextStyle: hintTextStyle,
                     cursorColor: cursorColor,
-                    textInputBackgroundColor: textInputBackgroundColor,
+                    textInputBackgroundColor:
+                        TInputResolve.resolveTextInputBackgroundColor(
+                            theme: theme,
+                            instanceColor: textInputBackgroundColor),
                     controller: controller,
                     textAlign: textAlign,
-                    contentPadding: contentPadding ??
-                        EdgeInsets.only(
-                            right: spacer.inputRightSpace!,
-                            bottom: getInputPadding(),
-                            top: getInputPadding()),
+                    contentPadding: padding,
                     inputAction: inputAction,
                     selectionControls: selectionControls,
                     contextMenuBuilder: contextMenuBuilder,
@@ -897,23 +929,23 @@ class TInput extends StatelessWidget {
                 ),
               ),
               Visibility(
-                visible: rightWidget != null,
+                visible: suffix != null,
                 child: Container(
                   margin: EdgeInsets.only(
-                      top: getInputPadding(),
-                      bottom: getInputPadding(),
-                      right: spacer.rightSpace!),
-                  child: rightWidget,
+                      top: TInputResolve.getInputPadding(size),
+                      bottom: TInputResolve.getInputPadding(size),
+                      right: spacer.rightSpace ?? 16),
+                  child: suffix,
                 ),
               ),
             ],
           ),
         ),
-        if (showBottomDivider)
+        if (showDivider)
           Visibility(
             child: Padding(
               padding: EdgeInsets.only(
-                left: _getBottomDividerMarginLeft(leftLabelWidth),
+                left: _getBottomDividerMarginLeft(leftLabelWidth, spacer),
               ),
               child: const TDivider(),
             ),
@@ -922,56 +954,35 @@ class TInput extends StatelessWidget {
     );
   }
 
-  Size getTextSize(String text, [TextStyle? style]) {
-    var painter = TextPainter(
-      text: TextSpan(text: text, style: style),
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-      ellipsis: '...',
-    );
-    painter.layout();
-    return painter.size;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var screenWidth = MediaQuery.of(context).size.width;
-    return SizedBox(
-      child: buildInputView(context),
-      width: width ?? screenWidth,
-    );
-  }
-
-  Widget buildCardStyleInput(BuildContext context, double leftLabelWidth) {
+  Widget buildCardStyleInput(BuildContext context, double leftLabelWidth,
+      TInputThemeData? theme, TInputSpacer spacer) {
+    final topText = cardStyleTopText ?? theme?.cardStyleTopText;
+    final bottomText = cardStyleBottomText ?? theme?.cardStyleBottomText;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Visibility(
-          visible: cardStyleTopText != null,
+          visible: topText != null,
           child: Column(
             children: [
               Text(
-                cardStyleTopText ?? '',
+                topText ?? '',
                 style: TextStyle(
                     fontSize: TTheme.of(context).fontBodyMedium!.size,
                     height: TTheme.of(context).fontBodyMedium!.height),
               ),
-              const SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 8),
             ],
           ),
         ),
-        buildNormalInput(context, leftLabelWidth),
+        buildNormalInput(context, leftLabelWidth, theme, spacer),
         Visibility(
-          visible: cardStyleBottomText != null,
+          visible: bottomText != null,
           child: Column(
             children: [
-              const SizedBox(
-                height: 8,
-              ),
+              const SizedBox(height: 8),
               Text(
-                cardStyleBottomText ?? '',
+                bottomText ?? '',
                 style: TextStyle(
                     color: TTheme.of(context).errorColor6,
                     fontSize: TTheme.of(context).fontBodySmall!.size,
@@ -982,47 +993,5 @@ class TInput extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-/// 中文算作两个字符类型的TextInputFormatter
-class Chinese2Formatter extends TextInputFormatter {
-  final int maxLength;
-
-  Chinese2Formatter(this.maxLength);
-
-  final _regExp = r'^[\u4E00-\u9FA5A-Za-z0-9_]+$';
-
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    var newValueLength = newValue.text.length;
-    var count = 0;
-    if (newValueLength == 0) {
-      return newValue;
-    }
-    if (maxLength > 0) {
-      for (var i = 0; i < newValueLength; i++) {
-        if (newValue.text.codeUnitAt(i) > 122) {
-          ///中文字符按照2个计算
-          count++;
-        }
-        if (i > 0 && count + i > maxLength - 1) {
-          var text = newValue.text.substring(0, i);
-          return newValue.copyWith(
-              text: text,
-              composing: TextRange.empty,
-              selection: TextSelection.fromPosition(
-                  TextPosition(offset: i, affinity: TextAffinity.downstream)));
-        }
-      }
-    }
-    if (newValueLength > 0 &&
-        RegExp(_regExp).firstMatch(newValue.text) != null) {
-      if (newValueLength + count <= maxLength) {
-        return newValue;
-      }
-    }
-    return oldValue;
   }
 }

@@ -113,7 +113,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
               timeMode: TimeMode.minute,
             ),
             initialValue: _kInlineInitialValue,
-            onChange: (result) => _inlineSelectedNotifier.value = result,
+            onChanged: (result) => _inlineSelectedNotifier.value = result,
           ),
         ],
       ),
@@ -189,7 +189,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
           picker: TDateTimePicker(
             mode: DateTimePickerMode(dateMode: DateMode.date),
             initialValue: _baseSelected,
-            onChange: (result) => setState(() => _baseSelected = result),
+            onChanged: (result) => setState(() => _baseSelected = result),
           ),
         );
       },
@@ -210,7 +210,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
           picker: TDateTimePicker(
             mode: DateTimePickerMode(dateMode: DateMode.month),
             initialValue: _yearMonthSelected,
-            onChange: (result) => setState(() => _yearMonthSelected = result),
+            onChanged: (result) => setState(() => _yearMonthSelected = result),
           ),
         );
       },
@@ -231,7 +231,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
           picker: TDateTimePicker(
             mode: DateTimePickerMode(timeMode: TimeMode.minute),
             initialValue: _timeSelected,
-            onChange: (result) => setState(() => _timeSelected = result),
+            onChanged: (result) => setState(() => _timeSelected = result),
           ),
         );
       },
@@ -257,7 +257,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
             start: _kRangeStart,
             end: _kRangeEnd,
             initialValue: _rangeSelected ?? _kRangeInitial,
-            onChange: (result) => setState(() => _rangeSelected = result),
+            onChanged: (result) => setState(() => _rangeSelected = result),
           ),
         );
       },
@@ -279,7 +279,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
             mode: DateTimePickerMode(dateMode: DateMode.date),
             showWeek: true,
             initialValue: _weekSelected,
-            onChange: (result) => setState(() => _weekSelected = result),
+            onChanged: (result) => setState(() => _weekSelected = result),
           ),
         );
       },

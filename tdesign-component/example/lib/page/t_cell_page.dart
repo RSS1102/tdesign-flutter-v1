@@ -61,7 +61,7 @@ Widget _buildSimple(BuildContext context) {
       const TCell(
         arrow: false,
         title: '单行标题',
-        rightIconWidget: TSwitch(isOn: true),
+        rightIconWidget: TSwitch(value: true),
       ),
       const TCell(
         arrow: true,
@@ -97,7 +97,7 @@ Widget _buildDesSimple(BuildContext context) {
           arrow: false,
           title: '单行标题',
           description: '一段很长很长的内容文字',
-          rightIconWidget: TSwitch(isOn: true)),
+          rightIconWidget: TSwitch(value: true)),
       TCell(
           arrow: true, title: '单行标题', description: '一段很长很长的内容文字', note: '辅助信息'),
       TCell(

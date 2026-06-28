@@ -16,7 +16,7 @@ import 't_dialog_widget.dart';
 class TConfirmDialog extends StatelessWidget {
   const TConfirmDialog({
     Key? key,
-    this.action,
+    this.onPressed,
     this.backgroundColor,
     this.radius = 12.0,
     this.title,
@@ -64,7 +64,7 @@ class TConfirmDialog extends StatelessWidget {
   final Color? buttonTextColor;
 
   /// 点击
-  final Function()? action;
+  final Function()? onPressed;
 
   /// 背景颜色
   final Color? backgroundColor;
@@ -107,8 +107,8 @@ class TConfirmDialog extends StatelessWidget {
             height: 56,
             buttonStyle: buttonStyleCustom,
             onPressed: () {
-              if (action != null) {
-                action!();
+              if (onPressed != null) {
+                onPressed!();
               } else {
                 Navigator.pop(context);
               }
@@ -125,8 +125,8 @@ class TConfirmDialog extends StatelessWidget {
           buttonColorScheme: TButtonColorScheme.primary,
           buttonStyle: buttonStyleCustom,
           onPressed: () {
-            if (action != null) {
-              action!();
+            if (onPressed != null) {
+              onPressed!();
             } else {
               Navigator.pop(context);
             }

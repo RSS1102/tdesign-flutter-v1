@@ -13,12 +13,12 @@ class TActionSheetItemWidget extends StatelessWidget {
     super.key,
     this.item,
     required this.index,
-    this.onSelected,
+    this.onChanged,
   });
 
   final TActionSheetItem? item;
   final int index;
-  final TActionSheetItemCallback? onSelected;
+  final TActionSheetOnChanged? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class TActionSheetItemWidget extends StatelessWidget {
       onTap: item!.disabled
           ? null
           : () {
-              onSelected?.call(item!, index);
+              onChanged?.call(item!, index);
               Navigator.maybePop(context);
             },
       child: Column(

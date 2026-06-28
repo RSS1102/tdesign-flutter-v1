@@ -10,7 +10,7 @@ class TActionSheetItem {
     this.textStyle,
     this.icon,
     this.badge,
-    this.description,
+    this.subtitle,
     this.disabled = false,
     this.iconSize,
     this.group,
@@ -40,6 +40,6 @@ class TActionSheetItem {
   final String? group;
 
   /// 描述信息
-  final String? description;
+  final String? subtitle;
 }
 

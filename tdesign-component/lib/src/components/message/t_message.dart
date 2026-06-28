@@ -4,8 +4,8 @@ import 'package:flutter/src/scheduler/binding.dart';
 import '../../../tdesign_flutter.dart';
 
 /// 链接设置
-class MessageLink {
-  MessageLink({
+class TMessageLink {
+  TMessageLink({
     required this.name,
     required this.uri,
     this.color,
@@ -22,8 +22,8 @@ class MessageLink {
 }
 
 /// 跑马灯配置
-class MessageMarquee {
-  MessageMarquee({this.speed, this.loop, this.delay});
+class TMessageMarquee {
+  TMessageMarquee({this.speed, this.loop, this.delay});
 
   /// 速度
   final int? speed;
@@ -33,21 +33,6 @@ class MessageMarquee {
 
   /// 延迟时间(毫秒)
   final int? delay;
-}
-
-/// 定义消息主题枚举
-enum MessageTheme {
-  /// 普通通知
-  info,
-
-  /// 成功通知
-  success,
-
-  /// 警示通知
-  warning,
-
-  /// 错误通知
-  error
 }
 
 /// TMessage 组件
@@ -61,7 +46,7 @@ class TMessage extends StatefulWidget {
     this.link,
     this.marquee,
     this.offset,
-    this.theme = MessageTheme.info,
+    this.variant = TMessageVariant.info,
     this.visible = true,
     this.onCloseBtnClick,
     this.onDurationEnd,
@@ -87,13 +72,13 @@ class TMessage extends StatefulWidget {
   final dynamic closeBtn;
 
   /// 跑马灯效果
-  final MessageMarquee? marquee;
+  final TMessageMarquee? marquee;
 
   /// 相对于 placement 的偏移量
   final List<double>? offset;
 
   /// 消息组件风格 info/success/warning/error
-  final MessageTheme? theme;
+  final TMessageVariant? variant;
 
   /// 点击关闭按钮触发
   final VoidCallback? onCloseBtnClick;
@@ -115,9 +100,9 @@ class TMessage extends StatefulWidget {
     dynamic closeBtn,
     dynamic icon,
     dynamic link,
-    MessageMarquee? marquee,
+    TMessageMarquee? marquee,
     List<double>? offset,
-    MessageTheme? theme,
+    TMessageVariant? theme,
     VoidCallback? onCloseBtnClick,
     VoidCallback? onDurationEnd,
     VoidCallback? onLinkClick,
@@ -134,7 +119,7 @@ class TMessage extends StatefulWidget {
         link: link,
         marquee: marquee,
         offset: offset,
-        theme: theme,
+        variant: theme,
         onDurationEnd: () {
           onDurationEnd?.call();
           overlayEntry.remove();
@@ -307,23 +292,23 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
       if (widget.icon is Widget) {
         return widget.icon;
       } else {
-        switch (widget.theme) {
-          case MessageTheme.info:
+        switch (widget.variant) {
+          case TMessageVariant.info:
             return Icon(
               TIcons.error_circle_filled,
               color: TTheme.of(context).brandNormalColor,
             );
-          case MessageTheme.success:
+          case TMessageVariant.success:
             return Icon(
               TIcons.check_circle_filled,
               color: TTheme.of(context).successNormalColor,
             );
-          case MessageTheme.warning:
+          case TMessageVariant.warning:
             return Icon(
               TIcons.error_circle_filled,
               color: TTheme.of(context).warningNormalColor,
             );
-          case MessageTheme.error:
+          case TMessageVariant.error:
             return Icon(
               TIcons.error_circle_filled,
               color: TTheme.of(context).errorNormalColor,
@@ -368,7 +353,7 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
     }
 
     Widget getLink(BuildContext context) {
-      if (widget.link is MessageLink) {
+      if (widget.link is TMessageLink) {
         return Align(
             alignment: Alignment.center,
             child: TLink(

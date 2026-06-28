@@ -19,17 +19,19 @@ class TNoticeBarPage extends StatelessWidget {
       title: tTitle(context),
       exampleCodeGroup: 'noticeBar',
       desc: '在导航栏下方，用于给用户显示提示消息。',
-      children: const [
+      children: [
         ExampleModule(title: '组件类型', children: [
           ExampleItem(desc: '纯文字的公告栏', builder: _textNoticeBar),
           ExampleItem(desc: '可滚动的公告栏', builder: _scrollNoticeBar),
           ExampleItem(
-              padding: EdgeInsets.only(top: 16), builder: _scrollIconNoticeBar),
+              padding: const EdgeInsets.only(top: 16),
+              builder: _scrollIconNoticeBar),
           ExampleItem(desc: '带图标的公告栏', builder: _iconNoticeBar),
           ExampleItem(desc: '带关闭的公告栏', builder: _closeNoticeBar),
           ExampleItem(desc: '带入口的公告栏', builder: _entranceNoticeBar1),
           ExampleItem(
-              padding: EdgeInsets.only(top: 16), builder: _entranceNoticeBar2),
+              padding: const EdgeInsets.only(top: 16),
+              builder: _entranceNoticeBar2),
           ExampleItem(desc: '自定义样式的公告栏', builder: _customNoticeBar),
         ]),
         ExampleModule(title: '组件状态', children: [
@@ -62,8 +64,7 @@ Widget _textNoticeBar(BuildContext context) {
 Widget _scrollNoticeBar(BuildContext context) {
   return const TNoticeBar(
     content: '提示文字描述提示文字描述提示文字描述提示文字描述提示文字',
-    marquee: true,
-    speed: 50,
+    themeData: TNoticeBarThemeData(marquee: true, speed: 50),
   );
 }
 
@@ -71,9 +72,11 @@ Widget _scrollNoticeBar(BuildContext context) {
 Widget _scrollIconNoticeBar(BuildContext context) {
   return const TNoticeBar(
     content: '提示文字描述提示文字描述提示文字描述提示文字描述提示文字',
-    speed: 50,
-    prefixIcon: TIcons.sound,
-    marquee: true,
+    themeData: TNoticeBarThemeData(
+      speed: 50,
+      prefixIcon: TIcons.sound,
+      marquee: true,
+    ),
   );
 }
 
@@ -81,7 +84,7 @@ Widget _scrollIconNoticeBar(BuildContext context) {
 Widget _iconNoticeBar(BuildContext context) {
   return const TNoticeBar(
     content: '这是一条普通的通知信息',
-    prefixIcon: TIcons.error_circle_filled,
+    themeData: TNoticeBarThemeData(prefixIcon: TIcons.error_circle_filled),
   );
 }
 
@@ -89,8 +92,10 @@ Widget _iconNoticeBar(BuildContext context) {
 Widget _closeNoticeBar(BuildContext context) {
   return const TNoticeBar(
     content: '这是一条普通的通知信息',
-    prefixIcon: TIcons.error_circle_filled,
-    suffixIcon: TIcons.close,
+    themeData: TNoticeBarThemeData(
+      prefixIcon: TIcons.error_circle_filled,
+      suffixIcon: TIcons.close,
+    ),
   );
 }
 
@@ -98,14 +103,12 @@ Widget _closeNoticeBar(BuildContext context) {
 Widget _entranceNoticeBar1(BuildContext context) {
   return const TNoticeBar(
     content: '这是一条普通的通知信息',
-    prefixIcon: TIcons.error_circle_filled,
+    themeData: TNoticeBarThemeData(prefixIcon: TIcons.error_circle_filled),
     right: TButton(
       child: Text('文字按钮'),
       variant: TButtonVariant.text,
       colorScheme: TButtonColorScheme.primary,
       size: TButtonSize.extraSmall,
-      height: 22,
-      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
     ),
   );
 }
@@ -114,8 +117,10 @@ Widget _entranceNoticeBar1(BuildContext context) {
 Widget _entranceNoticeBar2(BuildContext context) {
   return const TNoticeBar(
     content: '这是一条普通的通知信息',
-    prefixIcon: TIcons.error_circle_filled,
-    suffixIcon: TIcons.chevron_right,
+    themeData: TNoticeBarThemeData(
+      prefixIcon: TIcons.error_circle_filled,
+      suffixIcon: TIcons.chevron_right,
+    ),
   );
 }
 
@@ -123,10 +128,12 @@ Widget _entranceNoticeBar2(BuildContext context) {
 Widget _customNoticeBar(BuildContext context) {
   return TNoticeBar(
     content: '这是一条普通的通知信息',
-    prefixIcon: TIcons.notification,
-    suffixIcon: TIcons.chevron_right,
-    style: TNoticeBarStyle.generateTheme(context, theme: TNoticeBarTheme.info)
-      ..backgroundColor = TTheme.of(context).bgColorComponent,
+    themeData: TNoticeBarThemeData(
+      variant: TNoticeBarVariant.info,
+      prefixIcon: TIcons.notification,
+      suffixIcon: TIcons.chevron_right,
+      backgroundColor: TTheme.of(context).bgColorComponent,
+    ),
   );
 }
 
@@ -134,8 +141,10 @@ Widget _customNoticeBar(BuildContext context) {
 Widget _normalNoticeBar(BuildContext context) {
   return const TNoticeBar(
     content: '这是一条普通的通知信息',
-    prefixIcon: TIcons.error_circle_filled,
-    theme: TNoticeBarTheme.info,
+    themeData: TNoticeBarThemeData(
+      variant: TNoticeBarVariant.info,
+      prefixIcon: TIcons.error_circle_filled,
+    ),
   );
 }
 
@@ -143,8 +152,10 @@ Widget _normalNoticeBar(BuildContext context) {
 Widget _successNoticeBar(BuildContext context) {
   return const TNoticeBar(
     content: '这是一条成功的通知信息',
-    prefixIcon: TIcons.check_circle_filled,
-    theme: TNoticeBarTheme.success,
+    themeData: TNoticeBarThemeData(
+      variant: TNoticeBarVariant.success,
+      prefixIcon: TIcons.check_circle_filled,
+    ),
   );
 }
 
@@ -152,8 +163,10 @@ Widget _successNoticeBar(BuildContext context) {
 Widget _warningNoticeBar(BuildContext context) {
   return const TNoticeBar(
     content: '这是一条警示的通知信息',
-    prefixIcon: TIcons.error_circle_filled,
-    theme: TNoticeBarTheme.warning,
+    themeData: TNoticeBarThemeData(
+      variant: TNoticeBarVariant.warning,
+      prefixIcon: TIcons.error_circle_filled,
+    ),
   );
 }
 
@@ -161,18 +174,24 @@ Widget _warningNoticeBar(BuildContext context) {
 Widget _errorNoticeBar(BuildContext context) {
   return const TNoticeBar(
     content: '这是一条错误的通知信息',
-    prefixIcon: TIcons.error_circle_filled,
-    theme: TNoticeBarTheme.error,
+    themeData: TNoticeBarThemeData(
+      variant: TNoticeBarVariant.error,
+      prefixIcon: TIcons.error_circle_filled,
+    ),
   );
 }
 
 @Demo(group: 'noticeBar')
 Widget _cardNoticeBar(BuildContext context) {
   var size = MediaQuery.of(context).size;
+  final resolvedBg =
+      const TNoticeBarThemeData(variant: TNoticeBarVariant.info)
+          .resolve(context)
+          .backgroundColor;
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 16),
     decoration: BoxDecoration(
-      color: TNoticeBarStyle.generateTheme(context).backgroundColor,
+      color: resolvedBg,
       borderRadius: const BorderRadius.all(Radius.circular(12)),
       boxShadow: const [
         BoxShadow(
@@ -205,8 +224,10 @@ Widget _cardNoticeBar(BuildContext context) {
           clipBehavior: Clip.hardEdge,
           child: const TNoticeBar(
             content: '这是一条普通的通知信息',
-            prefixIcon: TIcons.error_circle_filled,
-            suffixIcon: TIcons.chevron_right,
+            themeData: TNoticeBarThemeData(
+              prefixIcon: TIcons.error_circle_filled,
+              suffixIcon: TIcons.chevron_right,
+            ),
           ),
         ),
         Container(
@@ -225,8 +246,10 @@ Widget _cardNoticeBar(BuildContext context) {
 Widget _tapNoticeBar(BuildContext context) {
   return TNoticeBar(
     content: '这是一条普通的通知信息',
-    prefixIcon: TIcons.error_circle_filled,
-    suffixIcon: TIcons.chevron_right,
+    themeData: const TNoticeBarThemeData(
+      prefixIcon: TIcons.error_circle_filled,
+      suffixIcon: TIcons.chevron_right,
+    ),
     onPressed: (trigger) {
       TToast.showText('tap:$trigger', context: context);
     },
@@ -237,14 +260,12 @@ Widget _tapNoticeBar(BuildContext context) {
 Widget _leftNoticeBar(BuildContext context) {
   return const TNoticeBar(
     content: '这是一条普通的通知信息',
-    suffixIcon: TIcons.chevron_right,
+    themeData: TNoticeBarThemeData(suffixIcon: TIcons.chevron_right),
     left: TButton(
       child: Text('文本'),
       variant: TButtonVariant.text,
       colorScheme: TButtonColorScheme.primary,
       size: TButtonSize.extraSmall,
-      height: 22,
-      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
     ),
   );
 }
@@ -252,14 +273,16 @@ Widget _leftNoticeBar(BuildContext context) {
 @Demo(group: 'noticeBar')
 Widget _stepNoticeBar(BuildContext context) {
   return const TNoticeBar(
-    context: [
+    content: [
       '君不见黄河之水天上来',
       '奔流到海不复回',
       '君不见',
       '这是一条很长很长的消息提醒内容测试这是一条很长很长的消息提醒内容测试'
     ],
     direction: Axis.vertical,
-    prefixIcon: TIcons.sound,
-    marquee: true,
+    themeData: TNoticeBarThemeData(
+      prefixIcon: TIcons.sound,
+      marquee: true,
+    ),
   );
 }

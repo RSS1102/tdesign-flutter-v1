@@ -54,7 +54,7 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| action | Function()? | - | 点击 |
+| onPressed | Function()? | - | 点击 |
 | backgroundColor | Color? | - | 背景颜色 |
 | buttonStyle | TDialogButtonStyle | TDialogButtonStyle.normal | 按钮样式 |
 | buttonStyleCustom | ButtonStyle? | - | 按钮自定义样式属性（V1.0: 改用 ButtonStyle） |
@@ -80,7 +80,7 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| action | Function()? | - | 点击操作 |
+| onPressed | Function()? | - | 点击操作 |
 | fontWeight | FontWeight? | - | 字体粗细 |
 | height | double? | - | 按钮高度 建议使用默认高度 |
 | style | ButtonStyle? | - | 按钮样式（V1.0: 改用 ButtonStyle 替代 TButtonStyle） |

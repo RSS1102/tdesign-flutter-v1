@@ -14,7 +14,8 @@ class TFormPage extends StatefulWidget {
 }
 
 class _TFormPageState extends State<TFormPage> {
-  final List<TextEditingController> _controller = [];
+  /// 文本输入控制器列表（与 form 字段一一对应）
+  final List<TextEditingController> _textControllers = [];
   final FormController _formController = FormController();
   final StreamController<TStepperEventType> _stepController =
       StreamController.broadcast();
@@ -63,7 +64,7 @@ class _TFormPageState extends State<TFormPage> {
                 child: Row(
                   children: [
                     GestureDetector(
-                      onPressed: () => Navigator.pop(context),
+                      onTap: () => Navigator.pop(context),
                       child: Text(
                         '取消',
                         style: TextStyle(
@@ -83,7 +84,7 @@ class _TFormPageState extends State<TFormPage> {
                       ),
                     ),
                     GestureDetector(
-                      onPressed: () => Navigator.pop(context),
+                      onTap: () => Navigator.pop(context),
                       child: Text(
                         '确认',
                         style: TextStyle(
@@ -98,9 +99,9 @@ class _TFormPageState extends State<TFormPage> {
               TPicker(
                 items: TPickerColumns([yearItems, monthItems, dayItems]),
                 initialValue: [year, month, day],
-                // onChange 签名: (int col, TPickerValue value)
+                // onChanged 签名: (int col, TPickerValue value)
                 // col 为本次触发的列索引,这里不关心;value.values 是各列 value 列表
-                onChange: (_, v) => onConfirm(
+                onChanged: (_, v) => onConfirm(
                   [for (final x in v.values) x as int],
                 ),
               ),
@@ -116,8 +117,8 @@ class _TFormPageState extends State<TFormPage> {
   bool horizontalButton = false;
   bool verticalButton = true;
 
-  Color activeButtonColor = Color(0xFFF0F1FD);
   Color defaultButtonColor = Color(0xFFE5E5E5);
+  Color activeButtonColor = Color(0xFFF0F1FD);
 
   Color verticalTextColor = Color(0xFF1A1A1A);
   Color horizontalTextColor = Color(0xFF0A58D9);
@@ -217,7 +218,7 @@ class _TFormPageState extends State<TFormPage> {
     'resume': '',
     'photo': '',
   };
-  final Map<String, dynamic> _formItemNotifier = {
+  final Map<String, dynamic> _itemNotifier = {
     'name': '',
     'password': '',
     'gender': '',
@@ -231,19 +232,18 @@ class _TFormPageState extends State<TFormPage> {
 
   @override
   void initState() {
-    /// 三个文本型的表格单元
+    /// 四个文本型的表格单元（用户名、密码、个人简介 + 备用）
     for (var i = 0; i < 4; i++) {
-      _controller.add(TextEditingController());
+      _textControllers.add(TextEditingController());
     }
     _formData.forEach((key, value) {
-      _formItemNotifier[key] = FormItemNotifier();
+      _itemNotifier[key] = FormItemNotifier();
     });
     super.initState();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _stepController.close();
   }
@@ -339,7 +339,6 @@ class _TFormPageState extends State<TFormPage> {
               builder: (BuildContext context) {
                 return CodeWrapper(builder: _buildForm);
               }),
-          // ExampleItem(ignoreCode: true, desc: '', builder: (_) => CodeWrapper(builder: _buildCombinationButtons)),
         ]),
       ],
       test: [
@@ -359,18 +358,17 @@ class _TFormPageState extends State<TFormPage> {
 
   @Demo(group: 'form')
   Widget _buildForm(BuildContext context) {
-    final theme = TTheme.of(context);
     return TForm(
-        formController: _formController,
+        controller: _formController,
         disabled: _formDisableState,
         data: _formData,
-        isHorizontal: _isFormHorizontal,
+        layout: _isFormHorizontal,
         rules: _validationRules,
         formContentAlign: TextAlign.left,
         requiredMark: true,
 
         /// 确定整个表单是否展示提示信息
-        formShowErrorMessage: true,
+        showErrorMessage: true,
         onSubmit: onSubmit,
         items: [
           TFormItem(
@@ -379,30 +377,29 @@ class _TFormPageState extends State<TFormPage> {
             type: TFormItemType.input,
             help: '请输入用户名',
             labelWidth: 82.0,
-            formItemNotifier: _formItemNotifier['name'],
+            itemNotifier: _itemNotifier['name'],
 
             /// 控制单个 item 是否展示错误提醒
             showErrorMessage: true,
             requiredMark: true,
             child: TInput(
-                leftContentSpace: 0,
-                inputDecoration: InputDecoration(
-                  hintchild: Text('请输入用户名'),
+                inputDecoration: const InputDecoration(
+                  hintText: '请输入用户名',
                   border: InputBorder.none,
                   hintStyle: TextStyle(
-                    color: TTheme.of(context).textColorPlaceholder,
+                    color: Colors.grey,
                   ),
                 ),
-                controller: _controller[0],
+                controller: _textControllers[0],
                 additionInfoColor: TTheme.of(context).errorColor6,
                 showBottomDivider: false,
                 readOnly: _formDisableState,
                 onChanged: (val) {
-                  _formItemNotifier['name']?.upDataForm(val);
+                  _itemNotifier['name']?.upDataForm(val);
                 },
                 onClearTap: () {
-                  _controller[0].clear();
-                  _formItemNotifier['name']?.upDataForm('');
+                  _textControllers[0].clear();
+                  _itemNotifier['name']?.upDataForm('');
                 }),
           ),
           TFormItem(
@@ -410,29 +407,28 @@ class _TFormPageState extends State<TFormPage> {
             name: 'password',
             type: TFormItemType.input,
             labelWidth: 82.0,
-            formItemNotifier: _formItemNotifier['password'],
+            itemNotifier: _itemNotifier['password'],
             showErrorMessage: true,
             child: TInput(
-                leftContentSpace: 0,
-                inputDecoration: InputDecoration(
-                  hintchild: Text('请输入密码'),
+                inputDecoration: const InputDecoration(
+                  hintText: '请输入密码',
                   border: InputBorder.none,
                   hintStyle: TextStyle(
-                    color: TTheme.of(context).textColorPlaceholder,
+                    color: Colors.grey,
                   ),
                 ),
-                type: TInputType.normal,
-                controller: _controller[1],
+                layout: TInputLayout.normal,
+                controller: _textControllers[1],
                 obscureText: !browseOn,
-                needClear: false,
+                showClearButton: false,
                 readOnly: _formDisableState,
                 showBottomDivider: false,
                 onChanged: (val) {
-                  _formItemNotifier['password']?.upDataForm(val);
+                  _itemNotifier['password']?.upDataForm(val);
                 },
                 onClearTap: () {
-                  _controller[1].clear();
-                  _formItemNotifier['password']?.upDataForm('');
+                  _textControllers[1].clear();
+                  _itemNotifier['password']?.upDataForm('');
                 }),
           ),
           TFormItem(
@@ -441,7 +437,7 @@ class _TFormPageState extends State<TFormPage> {
             type: TFormItemType.radios,
             labelWidth: 82.0,
             showErrorMessage: true,
-            formItemNotifier: _formItemNotifier['gender'],
+            itemNotifier: _itemNotifier['gender'],
             child: TRadioGroup(
               spacing: 0,
               direction: Axis.horizontal,
@@ -454,15 +450,12 @@ class _TFormPageState extends State<TFormPage> {
                   showDivider: false,
                   spacing: 4,
                   checkBoxLeftSpace: 0,
-                  customSpace: EdgeInsets.all(0),
-                  enable: !_formDisableState,
+                  customSpace: const EdgeInsets.all(0),
+                  enabled: !_formDisableState,
                 );
               }).toList(),
-              onRadioGroupChange: (ids) {
-                if (ids == null) {
-                  return;
-                }
-                _formItemNotifier['gender']?.upDataForm(ids);
+              onRadioGroupChange: (selectedId) {
+                _itemNotifier['gender']?.upDataForm(selectedId);
               },
             ),
           ),
@@ -473,8 +466,8 @@ class _TFormPageState extends State<TFormPage> {
             type: TFormItemType.dateTimePicker,
             contentAlign: TextAlign.left,
             tipAlign: TextAlign.left,
-            formItemNotifier: _formItemNotifier['birth'],
-            hintchild: Text('请输入内容'),
+            itemNotifier: _itemNotifier['birth'],
+            hintText: '请输入内容',
             select: _selected_1,
             selectFn: (BuildContext context) {
               if (_formDisableState) {
@@ -487,7 +480,7 @@ class _TFormPageState extends State<TFormPage> {
                   setState(() {
                     _selected_1 =
                         '${selected[0].toString().padLeft(4, '0')}-${selected[1].toString().padLeft(2, '0')}-${selected[2].toString().padLeft(2, '0')}';
-                    _formItemNotifier['birth']?.upDataForm(_selected_1);
+                    _itemNotifier['birth']?.upDataForm(_selected_1);
                   });
                 },
               );
@@ -500,9 +493,9 @@ class _TFormPageState extends State<TFormPage> {
             contentAlign: TextAlign.left,
             tipAlign: TextAlign.left,
             labelWidth: 82.0,
-            hintchild: Text('请输入内容'),
+            hintText: '请输入内容',
             select: _selected_2,
-            formItemNotifier: _formItemNotifier['place'],
+            itemNotifier: _itemNotifier['place'],
             selectFn: (BuildContext context) {
               if (_formDisableState) {
                 return;
@@ -512,7 +505,7 @@ class _TFormPageState extends State<TFormPage> {
                   data: _data,
                   initialData: _initLocalData,
                   theme: 'step',
-                  onChange: (List<MultiCascaderListModel> selectData) {
+                  onChanged: (List<MultiCascaderListModel> selectData) {
                 setState(() {
                   var result = [];
                   var len = selectData.length;
@@ -521,7 +514,7 @@ class _TFormPageState extends State<TFormPage> {
                     result.add(element.label);
                   });
                   _selected_2 = result.join('/');
-                  _formItemNotifier['place']?.upDataForm(_selected_2);
+                  _itemNotifier['place']?.upDataForm(_selected_2);
                 });
               }, onClose: () {
                 Navigator.of(context).pop();
@@ -533,16 +526,16 @@ class _TFormPageState extends State<TFormPage> {
               name: 'age',
               labelWidth: 82.0,
               type: TFormItemType.stepper,
-              formItemNotifier: _formItemNotifier['age'],
+              itemNotifier: _itemNotifier['age'],
               child: Padding(
                 padding: const EdgeInsets.only(right: 18),
                 child: TStepper(
-                  theme: TStepperTheme.filled,
+                  theme: TStepperColorScheme.filled,
                   disabled: _formDisableState,
                   eventController: _stepController!,
                   value: int.parse(_formData['age']),
-                  onChange: (value) {
-                    _formItemNotifier['age']?.upDataForm('${value}');
+                  onChanged: (value) {
+                    _itemNotifier['age']?.upDataForm('$value');
                   },
                 ),
               )),
@@ -552,7 +545,7 @@ class _TFormPageState extends State<TFormPage> {
             tipAlign: TextAlign.left,
             type: TFormItemType.rate,
             labelWidth: 82.0,
-            formItemNotifier: _formItemNotifier['description'],
+            itemNotifier: _itemNotifier['description'],
             child: Align(
               alignment: Alignment.centerLeft,
               child: Padding(
@@ -562,11 +555,11 @@ class _TFormPageState extends State<TFormPage> {
                     value: double.parse(_formData['description']),
                     allowHalf: false,
                     disabled: _formDisableState,
-                    onChange: (value) {
+                    onChanged: (value) {
                       setState(() {
-                        _formData['description'] = '${value}';
+                        _formData['description'] = '$value';
                       });
-                      _formItemNotifier['description']?.upDataForm('${value}');
+                      _itemNotifier['description']?.upDataForm('$value');
                     },
                   )),
             ),
@@ -576,21 +569,21 @@ class _TFormPageState extends State<TFormPage> {
               labelWidth: 82.0,
               name: 'resume',
               type: TFormItemType.textarea,
-              formItemNotifier: _formItemNotifier['resume'],
+              itemNotifier: _itemNotifier['resume'],
               child: Padding(
                 padding:
                     EdgeInsets.only(top: _isFormHorizontal ? 0 : 8, bottom: 4),
                 child: TTextarea(
                   backgroundColor: Colors.red,
-                  hintchild: Text('请输入个人简介'),
+                  hintText: '请输入个人简介',
                   maxLength: 500,
                   indicator: true,
                   readOnly: _formDisableState,
                   layout: TTextareaLayout.vertical,
-                  controller: _controller[2],
+                  controller: _textControllers[2],
                   showBottomDivider: false,
                   onChanged: (value) {
-                    _formItemNotifier['resume']?.upDataForm(value);
+                    _itemNotifier['resume']?.upDataForm(value);
                   },
                 ),
               )),
@@ -599,9 +592,9 @@ class _TFormPageState extends State<TFormPage> {
               name: 'photo',
               labelWidth: 82.0,
               type: TFormItemType.upLoadImg,
-              formItemNotifier: _formItemNotifier['photo'],
+              itemNotifier: _itemNotifier['photo'],
               child: Padding(
-                padding: EdgeInsets.only(top: 4, bottom: 4),
+                padding: const EdgeInsets.only(top: 4, bottom: 4),
                 child: TUpload(
                   files: files,
                   multiple: true,
@@ -609,15 +602,15 @@ class _TFormPageState extends State<TFormPage> {
                   onError: print,
                   onValidate: print,
                   disabled: _formDisableState,
-                  onChange: ((imgList, type) {
+                  onChanged: ((imgList, type) {
                     if (_formDisableState) {
                       return;
                     }
-                    files = _onValueChanged(files ?? [], imgList, type);
+                    files = _onValueChanged(files, imgList, type);
                     List imgs =
                         files.map((e) => e.remotePath ?? e.assetPath).toList();
                     setState(() {
-                      _formItemNotifier['photo'].upDataForm(imgs.join(','));
+                      _itemNotifier['photo'].upDataForm(imgs.join(','));
                     });
                   }),
                 ),
@@ -630,59 +623,57 @@ class _TFormPageState extends State<TFormPage> {
                 children: [
                   Expanded(
                       child: TButton(
-                    child: Text('重置'),
+                    child: const Text('重置'),
                     size: TButtonSize.large,
                     variant: TButtonVariant.fill,
                     colorScheme: TButtonColorScheme.light,
-                    shape: TButtonShape.rectangle,
-                    disabled: _formDisableState,
-                    onPressed: () {
-                      //用户名称
-                      _controller[0].clear();
-                      //密码
-                      _controller[1].clear();
-                      // 性别
-                      _genderCheckboxGroupController.toggle('', false);
-                      //个人简介
-                      _controller[2].clear();
-                      //生日
-                      _selected_1 = '';
-                      //籍贯
-                      _selected_2 = '';
-                      //年限
-                      _stepController.add(TStepperEventType.cleanValue);
-                      //上传图片
-                      files.clear();
-                      _formData = {
-                        'name': '',
-                        'password': '',
-                        'gender': '',
-                        'birth': '',
-                        'place': '',
-                        'age': '0',
-                        'description': '2',
-                        'resume': '',
-                        'photo': ''
-                      };
-                      _formData.forEach((key, value) {
-                        _formItemNotifier[key].upDataForm(value);
-                      });
-                      _formController.reset(_formData);
-                      setState(() {});
-                    },
+                    onPressed: _formDisableState
+                        ? null
+                        : () {
+                            //用户名称
+                            _textControllers[0].clear();
+                            //密码
+                            _textControllers[1].clear();
+                            // 性别
+                            _genderCheckboxGroupController.toggle('', false);
+                            //个人简介
+                            _textControllers[2].clear();
+                            //生日
+                            _selected_1 = '';
+                            //籍贯
+                            _selected_2 = '';
+                            //年限
+                            _stepController.add(TStepperEventType.cleanValue);
+                            //上传图片
+                            files.clear();
+                            _formData = {
+                              'name': '',
+                              'password': '',
+                              'gender': '',
+                              'birth': '',
+                              'place': '',
+                              'age': '0',
+                              'description': '2',
+                              'resume': '',
+                              'photo': ''
+                            };
+                            _formData.forEach((key, value) {
+                              _itemNotifier[key].upDataForm(value);
+                            });
+                            _formController.reset(_formData);
+                            setState(() {});
+                          },
                   )),
                   const SizedBox(
                     width: 20,
                   ),
                   Expanded(
                       child: TButton(
-                          child: Text('提交'),
+                          child: const Text('提交'),
                           size: TButtonSize.large,
                           variant: TButtonVariant.fill,
                           colorScheme: TButtonColorScheme.primary,
-                          shape: TButtonShape.rectangle,
-                          onPressed: _onSubmit,
-                          disabled: _formDisableState)),
+                          onPressed: _formDisableState ? null : _onSubmit)),
                 ],
               ))
         ]);
@@ -690,18 +681,17 @@ class _TFormPageState extends State<TFormPage> {
 
   @Demo(group: 'form')
   Widget _buildCustomForm(BuildContext context) {
-    final theme = TTheme.of(context);
     return TForm(
-        formController: _formController,
+        controller: _formController,
         disabled: _formDisableState,
         data: _formData,
-        isHorizontal: _isFormHorizontal,
+        layout: _isFormHorizontal,
         rules: _validationRules,
         formContentAlign: TextAlign.left,
         requiredMark: true,
 
         /// 确定整个表单是否展示提示信息
-        formShowErrorMessage: true,
+        showErrorMessage: true,
         onSubmit: onSubmit,
         items: [
           TFormItem(
@@ -711,31 +701,30 @@ class _TFormPageState extends State<TFormPage> {
             type: TFormItemType.input,
             help: '请输入用户名',
             labelWidth: 82.0,
-            formItemNotifier: _formItemNotifier['name'],
+            itemNotifier: _itemNotifier['name'],
 
             /// 控制单个 item 是否展示错误提醒
             showErrorMessage: true,
             requiredMark: true,
             child: TInput(
-                leftContentSpace: 0,
                 inputDecoration: InputDecoration(
-                    hintchild: Text('请输入用户名'),
+                    hintText: '请输入用户名',
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.all(0),
                     hintStyle: TextStyle(
                         color:
                             TTheme.of(context).fontGyColor3.withOpacity(0.4))),
-                controller: _controller[0],
+                controller: _textControllers[0],
                 backgroundColor: TTheme.of(context).brandNormalColor,
                 additionInfoColor: TTheme.of(context).errorColor6,
                 showBottomDivider: false,
                 readOnly: _formDisableState,
                 onChanged: (val) {
-                  _formItemNotifier['name']?.upDataForm(val);
+                  _itemNotifier['name']?.upDataForm(val);
                 },
                 onClearTap: () {
-                  _controller[0].clear();
-                  _formItemNotifier['name']?.upDataForm('');
+                  _textControllers[0].clear();
+                  _itemNotifier['name']?.upDataForm('');
                 }),
           ),
           TFormItem(
@@ -744,29 +733,28 @@ class _TFormPageState extends State<TFormPage> {
             name: 'password',
             type: TFormItemType.input,
             labelWidth: 82.0,
-            formItemNotifier: _formItemNotifier['password'],
+            itemNotifier: _itemNotifier['password'],
             showErrorMessage: true,
             child: TInput(
-                leftContentSpace: 0,
                 inputDecoration: InputDecoration(
-                    hintchild: Text('请输入密码'),
+                    hintText: '请输入密码',
                     border: InputBorder.none,
                     hintStyle: TextStyle(
                         color:
                             TTheme.of(context).fontGyColor3.withOpacity(0.4))),
-                type: TInputType.normal,
-                controller: _controller[1],
+                layout: TInputLayout.normal,
+                controller: _textControllers[1],
                 obscureText: !browseOn,
                 backgroundColor: TTheme.of(context).brandNormalColor,
-                needClear: false,
+                showClearButton: false,
                 readOnly: _formDisableState,
                 showBottomDivider: false,
                 onChanged: (val) {
-                  _formItemNotifier['password']?.upDataForm(val);
+                  _itemNotifier['password']?.upDataForm(val);
                 },
                 onClearTap: () {
-                  _controller[1].clear();
-                  _formItemNotifier['password']?.upDataForm('');
+                  _textControllers[1].clear();
+                  _itemNotifier['password']?.upDataForm('');
                 }),
           ),
           TFormItem(
@@ -776,7 +764,7 @@ class _TFormPageState extends State<TFormPage> {
             type: TFormItemType.radios,
             labelWidth: 82.0,
             showErrorMessage: true,
-            formItemNotifier: _formItemNotifier['gender'],
+            itemNotifier: _itemNotifier['gender'],
             child: TRadioGroup(
               spacing: 0,
               direction: Axis.horizontal,
@@ -792,14 +780,11 @@ class _TFormPageState extends State<TFormPage> {
                   spacing: 4,
                   checkBoxLeftSpace: 0,
                   customSpace: const EdgeInsets.all(0),
-                  enable: !_formDisableState,
+                  enabled: !_formDisableState,
                 );
               }).toList(),
-              onRadioGroupChange: (ids) {
-                if (ids == null) {
-                  return;
-                }
-                _formItemNotifier['gender']?.upDataForm(ids);
+              onRadioGroupChange: (selectedId) {
+                _itemNotifier['gender']?.upDataForm(selectedId);
               },
             ),
           ),
@@ -811,8 +796,8 @@ class _TFormPageState extends State<TFormPage> {
             type: TFormItemType.dateTimePicker,
             contentAlign: TextAlign.left,
             tipAlign: TextAlign.left,
-            formItemNotifier: _formItemNotifier['birth'],
-            hintchild: Text('请输入内容'),
+            itemNotifier: _itemNotifier['birth'],
+            hintText: '请输入内容',
             select: _selected_1,
             selectFn: (BuildContext context) {
               if (_formDisableState) {
@@ -825,7 +810,7 @@ class _TFormPageState extends State<TFormPage> {
                   setState(() {
                     _selected_1 =
                         '${selected[0].toString().padLeft(4, '0')}-${selected[1].toString().padLeft(2, '0')}-${selected[2].toString().padLeft(2, '0')}';
-                    _formItemNotifier['birth']?.upDataForm(_selected_1);
+                    _itemNotifier['birth']?.upDataForm(_selected_1);
                   });
                 },
               );
@@ -837,16 +822,16 @@ class _TFormPageState extends State<TFormPage> {
               labelWidth: 82.0,
               backgroundColor: TTheme.of(context).brandNormalColor,
               type: TFormItemType.stepper,
-              formItemNotifier: _formItemNotifier['age'],
+              itemNotifier: _itemNotifier['age'],
               child: Padding(
                 padding: const EdgeInsets.only(right: 18),
                 child: TStepper(
-                  theme: TStepperTheme.filled,
+                  theme: TStepperColorScheme.filled,
                   disabled: _formDisableState,
                   eventController: _stepController!,
                   value: int.parse(_formData['age']),
-                  onChange: (value) {
-                    _formItemNotifier['age']?.upDataForm('${value}');
+                  onChanged: (value) {
+                    _itemNotifier['age']?.upDataForm('$value');
                   },
                 ),
               )),
@@ -857,7 +842,7 @@ class _TFormPageState extends State<TFormPage> {
             type: TFormItemType.rate,
             labelWidth: 82.0,
             backgroundColor: TTheme.of(context).brandNormalColor,
-            formItemNotifier: _formItemNotifier['description'],
+            itemNotifier: _itemNotifier['description'],
             child: Align(
               alignment: Alignment.centerLeft,
               child: Padding(
@@ -867,11 +852,11 @@ class _TFormPageState extends State<TFormPage> {
                     value: double.parse(_formData['description']),
                     allowHalf: false,
                     disabled: _formDisableState,
-                    onChange: (value) {
+                    onChanged: (value) {
                       setState(() {
-                        _formData['description'] = '${value}';
+                        _formData['description'] = '$value';
                       });
-                      _formItemNotifier['description']?.upDataForm('${value}');
+                      _itemNotifier['description']?.upDataForm('$value');
                     },
                   )),
             ),
@@ -882,22 +867,22 @@ class _TFormPageState extends State<TFormPage> {
               name: 'resume',
               type: TFormItemType.textarea,
               backgroundColor: TTheme.of(context).brandNormalColor,
-              formItemNotifier: _formItemNotifier['resume'],
+              itemNotifier: _itemNotifier['resume'],
               child: Padding(
                 padding:
                     EdgeInsets.only(top: _isFormHorizontal ? 0 : 8, bottom: 4),
                 child: TTextarea(
                   backgroundColor: Colors.red,
                   padding: const EdgeInsets.all(0),
-                  hintchild: Text('请输入个人简介'),
+                  hintText: '请输入个人简介',
                   maxLength: 500,
                   indicator: true,
                   readOnly: _formDisableState,
                   layout: TTextareaLayout.vertical,
-                  controller: _controller[2],
+                  controller: _textControllers[2],
                   showBottomDivider: false,
                   onChanged: (value) {
-                    _formItemNotifier['resume']?.upDataForm(value);
+                    _itemNotifier['resume']?.upDataForm(value);
                   },
                 ),
               )),
@@ -907,7 +892,7 @@ class _TFormPageState extends State<TFormPage> {
               labelWidth: 82.0,
               backgroundColor: TTheme.of(context).brandNormalColor,
               type: TFormItemType.upLoadImg,
-              formItemNotifier: _formItemNotifier['photo'],
+              itemNotifier: _itemNotifier['photo'],
               child: Padding(
                 padding: const EdgeInsets.only(top: 4, bottom: 4),
                 child: TUpload(
@@ -917,15 +902,15 @@ class _TFormPageState extends State<TFormPage> {
                   onError: print,
                   onValidate: print,
                   disabled: _formDisableState,
-                  onChange: ((imgList, type) {
+                  onChanged: ((imgList, type) {
                     if (_formDisableState) {
                       return;
                     }
-                    files = _onValueChanged(files ?? [], imgList, type);
+                    files = _onValueChanged(files, imgList, type);
                     List imgs =
                         files.map((e) => e.remotePath ?? e.assetPath).toList();
                     setState(() {
-                      _formItemNotifier['photo'].upDataForm(imgs.join(','));
+                      _itemNotifier['photo'].upDataForm(imgs.join(','));
                     });
                   }),
                 ),
@@ -935,15 +920,15 @@ class _TFormPageState extends State<TFormPage> {
   }
 
   List<TUploadFile> _onValueChanged(List<TUploadFile> fileList,
-      List<TUploadFile> value, TUploadType event) {
+      List<TUploadFile> value, TUploadAction event) {
     switch (event) {
-      case TUploadType.add:
+      case TUploadAction.add:
         fileList.addAll(value);
         break;
-      case TUploadType.remove:
+      case TUploadAction.remove:
         fileList.removeWhere((element) => element.key == value[0].key);
         break;
-      case TUploadType.replace:
+      case TUploadAction.replace:
         final firstReplaceFile = value.first;
         final index =
             fileList.indexWhere((file) => file.key == firstReplaceFile.key);
@@ -958,19 +943,15 @@ class _TFormPageState extends State<TFormPage> {
   /// todo
   /// 横 竖 排版模式切换按钮
   Widget _buildArrangementSwitch(BuildContext buildContext) {
-    final theme = TTheme.of(context);
     return Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             Expanded(
               child: TButton(
-                child: Text('水平排布'),
-                shape: TButtonShape.round,
-                style: TButtonStyle(backgroundColor: horizontalButtonColor),
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: horizontalTextColor,
+                child: const Text('水平排布'),
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(horizontalButtonColor),
                 ),
                 onPressed: () {
                   setState(() {
@@ -989,7 +970,6 @@ class _TFormPageState extends State<TFormPage> {
                       verticalTextColor = horizontalTextColor;
                       horizontalTextColor = currentTextColor;
                       _isFormHorizontal = true;
-                      print(_isFormHorizontal);
                     }
                   });
                 },
@@ -998,12 +978,9 @@ class _TFormPageState extends State<TFormPage> {
             const SizedBox(width: 8),
             Expanded(
               child: TButton(
-                child: Text('竖直排布'),
-                shape: TButtonShape.round,
-                style: TButtonStyle(backgroundColor: verticalButtonColor),
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: verticalTextColor,
+                child: const Text('竖直排布'),
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(verticalButtonColor),
                 ),
                 onPressed: () {
                   setState(() {
@@ -1023,7 +1000,6 @@ class _TFormPageState extends State<TFormPage> {
                       horizontalTextColor = currentTextColor;
 
                       _isFormHorizontal = false;
-                      print(_isFormHorizontal);
                     }
                   });
                 },
@@ -1037,12 +1013,11 @@ class _TFormPageState extends State<TFormPage> {
     return TCell(
       title: '禁用态',
       rightIconWidget: TSwitch(
-        isOn: _formDisableState,
+        value: _formDisableState,
         onChanged: (value) {
           setState(() {
             _formDisableState = value;
           });
-          return false;
         },
       ),
     );

@@ -33,7 +33,7 @@ class TRate extends StatefulWidget {
     this.textWidth = 48.0,
     this.builderText,
     this.value = 0,
-    this.onChange,
+    this.onChanged,
     this.direction = Axis.horizontal,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.crossAxisAlignment = CrossAxisAlignment.center,
@@ -85,7 +85,7 @@ class TRate extends StatefulWidget {
   final double? value;
 
   /// 评分数改变时触发
-  final void Function(double value)? onChange;
+  final void Function(double value)? onChanged;
 
   /// 评分图标与辅助文字的布局方向
   final Axis? direction;
@@ -298,7 +298,7 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
         _overlay.update();
         if (diff) {
           setState(() {});
-          widget.onChange?.call(newIndex);
+          widget.onChanged?.call(newIndex);
         }
       }
     });
@@ -446,7 +446,7 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
           if (value != _activeValue) {
             _activeValue = value;
             setState(() {});
-            widget.onChange?.call(value);
+            widget.onChanged?.call(value);
           }
         },
       ),

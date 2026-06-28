@@ -13,7 +13,7 @@
 | content | String? | - | 显示内容 |
 | contentWidget | Widget? | - | 自定义内容 |
 | offset | double | 4 | 偏移 |
-| theme | TPopoverTheme? | - | 弹出气泡主题 |
+| theme | TPopoverColorScheme? | - | 弹出气泡主题 |
 | closeOnClickOutside | bool | true | - |
 | placement | TPopoverPlacement? | - | 浮层出现位置 |
 | showArrow | bool? | true | 是否显示浮层箭头 |
@@ -21,7 +21,7 @@
 | padding | EdgeInsetsGeometry? | - | 内容内边距 |
 | width | double? | - | 内容宽度（包含padding，实际高度：height - paddingLeft - paddingRight） |
 | height | double? | - | 内容高度（包含padding，实际高度：height - paddingTop - paddingBottom） |
-| overlayColor | Color? | Colors.transparent | - |
+| barrierColor | Color? | Colors.transparent | - |
 | onTap | OnTap? | - | 点击事件 |
 | onLongTap | OnLongTap? | - | 长按事件 |
 | radius | BorderRadius? | - | 圆角 |
@@ -45,11 +45,11 @@
 | placement | TPopoverPlacement? | - | 浮层出现位置 |
 | radius | BorderRadius? | - | 圆角 |
 | showArrow | bool? | true | 是否显示浮层箭头 |
-| theme | TPopoverTheme? | - | 弹出气泡主题 |
+| theme | TPopoverColorScheme? | - | 弹出气泡主题 |
 | width | double? | - | 内容宽度（包含padding，实际高度：height - paddingLeft - paddingRight） |
 
 
-### TPopoverTheme
+### TPopoverColorScheme
 #### 枚举值
 
 

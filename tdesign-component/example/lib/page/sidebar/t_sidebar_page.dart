@@ -107,21 +107,22 @@ class TSideBarPageState extends State<TSideBarPage> {
     );
   }
 
-  TButton getCustomButton(
+  Widget getCustomButton(
       BuildContext context, String text, String routeName) {
-    return TButton(
-      text: text,
-      isBlock: true,
-      size: TButtonSize.large,
-      type: TButtonType.outline,
-      shape: TButtonShape.rectangle,
-      theme: TButtonTheme.primary,
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          PlatformUtil.isWeb ? routeName : '$routeName',
-        );
-      },
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: Text(text),
+        size: TButtonSize.large,
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            PlatformUtil.isWeb ? routeName : '$routeName',
+          );
+        },
+      ),
     );
   }
 }

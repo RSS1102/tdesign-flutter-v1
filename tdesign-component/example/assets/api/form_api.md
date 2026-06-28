@@ -10,10 +10,10 @@
 | disabled | bool | false | 是否禁用整个表单 |
 | errorMessage | Object? | - | 表单信息错误信息配置 |
 | formContentAlign | TextAlign | TextAlign.left | 表单内容对齐方式: 左对齐、右对齐、居中对齐 可选项: left/right/center 默认为左对齐 优先级低于 TFormItem 的对齐 API TODO: TStepper TRate 等组件没用实现通用性 |
-| formController | FormController? | - | 表单控制器 |
+| controller | FormController? | - | 表单控制器 |
 | formLabelAlign | TextAlign? | TextAlign.left | 表单字段标签的对齐方式： 左对齐、右对齐、顶部对齐 可选项: left/right/top TODO: 表单总体标签对齐方式 |
-| formShowErrorMessage | bool? | true | 校验不通过时，是否显示错误提示信息，统一控制全部表单项 如果希望控制单个表单项，请给 FormItem 设置该属性 |
-| isHorizontal | bool | true | 表单排列方式是否为 水平方向 |
+| showErrorMessage | bool? | true | 校验不通过时，是否显示错误提示信息，统一控制全部表单项 如果希望控制单个表单项，请给 FormItem 设置该属性 |
+| layout | bool | true | 表单排列方式是否为 水平方向 |
 | items | List<TFormItem> | - | 表单内容 items |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | labelWidth | double? | 20.0 | 可以整体设置 label 标签宽度 |
@@ -35,7 +35,7 @@
 | backgroundColor | Color? | - | 背景色 |
 | child | Widget? | - | 表单子组件 |
 | contentAlign | TextAlign? | - | 表单显示内容对齐方式： left、right、top TODO: TStepper TRate 等组件没用实现通用性 |
-| formItemNotifier | FormItemNotifier? | - | - |
+| itemNotifier | FormItemNotifier? | - | - |
 | formRules | List<TFormValidation>? | - | 整个表单的校验规则 |
 | help | String? | - | TInput 默认显示文字 |
 | hintText | - | '' | 提示内容 |

@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter, TextInputFormatter;
 
 import '../../../tdesign_flutter.dart';
 
 enum TStepperSize { small, medium, large }
-
-enum TStepperTheme { normal, filled, outline }
 
 enum TStepperIconType { remove, add }
 
@@ -47,11 +45,10 @@ class TStepper extends StatefulWidget {
     this.min = 0,
     this.size = TStepperSize.medium,
     this.step = 1,
-    this.theme = TStepperTheme.normal,
+    this.theme = TStepperColorScheme.normal,
     this.value = 0,
-    this.defaultValue = 0,
     this.onBlur,
-    this.onChange,
+    this.onChanged,
     this.onOverlimit,
     this.controller,
   }) : super(key: key);
@@ -78,19 +75,16 @@ class TStepper extends StatefulWidget {
   final int step;
 
   /// 组件风格
-  final TStepperTheme theme;
+  final TStepperColorScheme theme;
 
   /// 值
   final int? value;
-
-  /// 默认值
-  final int? defaultValue;
 
   /// 输入框失去焦点时触发
   final VoidCallback? onBlur;
 
   /// 数值发生变更时触发
-  final ValueChanged<int>? onChange;
+  final ValueChanged<int>? onChanged;
 
   /// 数值超出限制时触发
   final TStepperOverlimitFunction? onOverlimit;
@@ -117,7 +111,7 @@ class _TStepperState extends State<TStepper> {
       _controller = widget.controller!;
     } else {
       _controller = TStepperController()
-        ..value = widget.value ?? widget.defaultValue ?? 0;
+        ..value = widget.value ?? 0;
     }
     _controller._bindState(this);
     if (widget.eventController != null) {
@@ -183,13 +177,13 @@ class _TStepperState extends State<TStepper> {
 
   Color? _getBackgroundColor(BuildContext context) {
     switch (widget.theme) {
-      case TStepperTheme.filled:
+      case TStepperColorScheme.filled:
         return widget.disabled
             ? TTheme.of(context).bgColorComponentDisabled
             : TTheme.of(context).bgColorSecondaryContainer;
-      case TStepperTheme.outline:
+      case TStepperColorScheme.outline:
         return null;
-      case TStepperTheme.normal:
+      case TStepperColorScheme.normal:
       default:
         return null;
     }
@@ -277,8 +271,8 @@ class _TStepperState extends State<TStepper> {
         )));
     _focusNode.unfocus();
 
-    if (widget.onChange != null) {
-      widget.onChange!(_controller._value);
+    if (widget.onChanged != null) {
+      widget.onChanged!(_controller._value);
     }
   }
 
@@ -295,7 +289,7 @@ class _TStepperState extends State<TStepper> {
         ),
         Container(
           decoration: BoxDecoration(
-              border: widget.theme == TStepperTheme.outline
+              border: widget.theme == TStepperColorScheme.outline
                   ? Border(
                       top: BorderSide(
                         color: TTheme.of(context).componentBorderColor,
@@ -306,7 +300,7 @@ class _TStepperState extends State<TStepper> {
                   : null),
           child: Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: widget.theme == TStepperTheme.normal ? 0 : 4),
+                  horizontal: widget.theme == TStepperColorScheme.normal ? 0 : 4),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                     minWidth: _getWidth(),
@@ -393,8 +387,8 @@ class _TStepperState extends State<TStepper> {
                       ],
                       onChanged: (newValue) {
                         final result = int.parse(newValue);
-                        if (widget.onChange != null) {
-                          widget.onChange!(result);
+                        if (widget.onChanged != null) {
+                          widget.onChanged!(result);
                         }
                       },
                     ),
@@ -433,7 +427,7 @@ class TStepperIconButton extends StatelessWidget {
     this.onTap,
     this.size = TStepperSize.medium,
     this.disabled = false,
-    this.theme = TStepperTheme.normal,
+    this.theme = TStepperColorScheme.normal,
     required this.type,
   }) : super(key: key);
 
@@ -441,7 +435,7 @@ class TStepperIconButton extends StatelessWidget {
   final TStepperSize size;
   final TStepperIconType type;
   final bool disabled;
-  final TStepperTheme theme;
+  final TStepperColorScheme theme;
 
   double _getIconSize() {
     switch (size) {
@@ -468,20 +462,20 @@ class TStepperIconButton extends StatelessWidget {
 
   Color? _getBackgroundColor(BuildContext context) {
     switch (theme) {
-      case TStepperTheme.filled:
+      case TStepperColorScheme.filled:
         return disabled
             ? TTheme.of(context).bgColorComponentDisabled
             : TTheme.of(context).bgColorSecondaryContainer;
-      case TStepperTheme.outline:
+      case TStepperColorScheme.outline:
         return disabled ? TTheme.of(context).bgColorComponentDisabled : null;
-      case TStepperTheme.normal:
+      case TStepperColorScheme.normal:
       default:
         return null;
     }
   }
 
   BorderRadiusGeometry? _getBorderRadius(BuildContext context) {
-    if (theme == TStepperTheme.normal) {
+    if (theme == TStepperColorScheme.normal) {
       return null;
     }
 
@@ -493,7 +487,7 @@ class TStepperIconButton extends StatelessWidget {
   }
 
   BoxBorder? _getBoxBorder(BuildContext context) {
-    if (theme == TStepperTheme.outline) {
+    if (theme == TStepperColorScheme.outline) {
       return Border.all(
         color: TTheme.of(context).componentBorderColor,
       );

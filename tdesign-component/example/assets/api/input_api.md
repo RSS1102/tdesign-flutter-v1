@@ -8,7 +8,7 @@
 | additionInfoColor | Color? | - | 错误提示颜色 |
 | autofocus | bool | false | 是否自动获取焦点 |
 | backgroundColor | Color? | - | 输入框背景色 |
-| cardStyle | TCardStyle? | - | 卡片默认样式 |
+| cardStyle | TInputCardStyle? | - | 卡片默认样式 |
 | cardStyleBottomText | String? | - | 卡片模式下方文字 |
 | cardStyleTopText | String? | - | 卡片模式上方文字 |
 | clearBtnColor | Color? | - | 右侧删除按钮颜色 |
@@ -28,16 +28,16 @@
 | inputFormatters | List<TextInputFormatter>? | - | 显示输入内容，如限制长度(LengthLimitingTextInputFormatter(6)) |
 | inputType | TextInputType? | - | 键盘类型，数字、字母 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| labelWidget | Widget? | - | leftLabel右侧组件，支持自定义 |
+| labelWidget | Widget? | - | label右侧组件，支持自定义 |
 | leftContentSpace | double? | - | 输入框内容左侧间距 |
-| leftIcon | Widget? | - | 带图标的输入框 |
+| prefix | Widget? | - | 带图标的输入框 |
 | leftInfoWidth | double? | - | 输入框左侧的宽度（输入框有16dp的左侧padding，因而左侧部分不用考虑这16dp） |
-| leftLabel | String? | - | 输入框左侧文案 |
-| leftLabelSpace | double? | - | 输入框左侧文案间距 |
-| leftLabelStyle | TextStyle? | - | 左侧标签样式 设置该值是若出现像素溢出，请设置letterSpacing: 0 |
+| label | String? | - | 输入框左侧文案 |
+| labelSpace | double? | - | 输入框左侧文案间距 |
+| labelStyle | TextStyle? | - | 左侧标签样式 设置该值是若出现像素溢出，请设置letterSpacing: 0 |
 | maxLength | int? | 500 | 最大字数限制 |
 | maxLines | int? | 1 | 最大输入行数 |
-| needClear | bool | true | 是否需要右侧按钮变为删除 |
+| showClearButton | bool | true | 是否需要右侧按钮变为删除 |
 | obscureText | bool | false | 是否隐藏输入的文字，一般用在密码输入框中 |
 | onBtnTap | GestureTapCallback? | - | 右侧按钮点击 |
 | onChanged | ValueChanged<String>? | - | 输入文本变化时回调 |
@@ -48,7 +48,7 @@
 | readOnly | bool | false | 是否只读 |
 | required | bool? | - | 是否必填标志（红色*） |
 | rightBtn | Widget? | - | 右侧按钮 |
-| rightWidget | Widget? | - | 右侧自定义组件 特殊类型时生效 |
+| suffix | Widget? | - | 右侧自定义组件 特殊类型时生效 |
 | selectionControls | TextSelectionControls? | - | 自定义选择控制器 |
 | showBottomDivider | bool | true | 是否展示底部分割线 |
 | size | TInputSize | TInputSize.large | 输入框规格 |
@@ -56,11 +56,11 @@
 | textAlign | TextAlign? | - | 文字对齐方向 |
 | textInputBackgroundColor | Color? | - | 文本框背景色 |
 | textStyle | TextStyle? | - | 文本颜色 |
-| type | TInputType | TInputType.normal | 输入框类型 |
-| width | double? | - | 输入框宽度(TCardStyle时必须设置该参数) |
+| type | TInputLayout | TInputLayout.normal | 输入框类型 |
+| width | double? | - | 输入框宽度(TInputCardStyle时必须设置该参数) |
 
 
-### TInputType
+### TInputLayout
 #### 枚举值
 
 
@@ -84,7 +84,7 @@
 | large | - |
 
 
-### TCardStyle
+### TInputCardStyle
 #### 枚举值
 
 

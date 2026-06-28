@@ -14,10 +14,10 @@ class TActionSheetList extends StatelessWidget {
   final List<TActionSheetItem> items;
   final TActionSheetAlign align;
   final String? cancelText;
-  final String? description;
+  final String? subtitle;
   final bool showCancel;
   final VoidCallback? onCancel;
-  final TActionSheetItemCallback? onSelected;
+  final TActionSheetOnChanged? onChanged;
   final bool useSafeArea;
 
   const TActionSheetList({
@@ -25,10 +25,10 @@ class TActionSheetList extends StatelessWidget {
     required this.items,
     this.align = TActionSheetAlign.center,
     this.cancelText,
-    this.description,
+    this.subtitle,
     this.showCancel = true,
     this.onCancel,
-    this.onSelected,
+    this.onChanged,
     this.useSafeArea = true,
   });
 
@@ -45,7 +45,7 @@ class TActionSheetList extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (description != null) _buildDescription(context),
+          if (subtitle != null) _buildDescription(context),
           _buildOptionsList(context),
           if (showCancel) _buildCancelButton(context),
         ],
@@ -73,7 +73,7 @@ class TActionSheetList extends StatelessWidget {
         mainAxisAlignment: getMainAxisAlignment(align),
         children: [
           TText(
-            description!,
+            subtitle!,
             font: TTheme.of(context).fontBodyMedium,
             textColor: TTheme.of(context).textColorSecondary,
           ),
@@ -98,11 +98,11 @@ class TActionSheetList extends StatelessWidget {
             onTap: item.disabled
                 ? null // 如果项被禁用，则不设置点击事件
                 : () {
-                    onSelected?.call(item, index); // 触发选中回调
+                    onChanged?.call(item, index); // 触发选中回调
                     Navigator.maybePop(context); // 关闭当前页面
                   },
             child: Container(
-              height: item.description == null || item.description!.isEmpty
+              height: item.subtitle == null || item.subtitle!.isEmpty
                   ? 56
                   : 78,
               padding: EdgeInsets.symmetric(
@@ -158,14 +158,14 @@ class TActionSheetList extends StatelessWidget {
                       ],
                     ],
                   ),
-                  if (item.description != null &&
-                      item.description!.isNotEmpty) ...[
+                  if (item.subtitle != null &&
+                      item.subtitle!.isNotEmpty) ...[
                     SizedBox(height: TTheme.of(context).spacer4),
                     Row(
                         mainAxisAlignment: getMainAxisAlignment(align),
                         children: [
                           Flexible(
-                              child: TText(item.description,
+                              child: TText(item.subtitle,
                                   font: TTheme.of(context).fontBodyMedium,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,

@@ -101,7 +101,7 @@ class LinkedLazyPickerViewModel {
     return TPicker(
       items: TPickerColumns([primaryOptions, linkedOptions]),
       initialValue: initialValue,
-      onChange: onChange,
+      onChanged: onChange,
       onColumnScrollEnd: onColumnScrollEnd,
     );
   }

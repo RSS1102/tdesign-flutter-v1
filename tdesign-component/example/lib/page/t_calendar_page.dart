@@ -118,7 +118,7 @@ class _CalendarPickerPanel extends StatelessWidget {
     this.autoPopOnSingleSelect = true,
   });
 
-  final CalendarType type;
+  final TCalendarVariant type;
   final List<DateTime>? seedInitial;
   final ValueNotifier<List<DateTime>> pending;
   final ValueChanged<List<DateTime>> onConfirm;
@@ -150,10 +150,10 @@ class _CalendarPickerPanel extends StatelessWidget {
             animateTo: animateTo,
             subtitleBuilder: subtitleBuilder,
             cellBuilder: cellBuilder,
-            onChange: (value) {
+            onChanged: (value) {
               final dates = _normalizeDateList(value);
               pending.value = dates;
-              if (type == CalendarType.single && autoPopOnSingleSelect) {
+              if (type == TCalendarVariant.single && autoPopOnSingleSelect) {
                 onConfirm(dates);
                 closePopup();
               }
@@ -174,7 +174,7 @@ class _CalendarPickerPanel extends StatelessWidget {
 void _showCalendarPickerSheet({
   required BuildContext context,
   required String title,
-  required CalendarType type,
+  required TCalendarVariant type,
   List<DateTime>? initialValue,
   required ValueChanged<List<DateTime>> onConfirm,
   DateTime? anchorDate,
@@ -191,7 +191,7 @@ void _showCalendarPickerSheet({
     initialValue != null ? List<DateTime>.from(initialValue) : <DateTime>[],
   );
   final showHeaderConfirm =
-      type != CalendarType.single || !autoPopOnSingleSelect;
+      type != TCalendarVariant.single || !autoPopOnSingleSelect;
   final sheetHeight = MediaQuery.sizeOf(context).height * 0.6;
 
   final popupHandles = <TPopupHandle>[];
@@ -275,7 +275,7 @@ class _SingleCalendarCellState extends State<_SingleCalendarCell> {
         _showCalendarPickerSheet(
           context: context,
           title: '请选择日期',
-          type: CalendarType.single,
+          type: TCalendarVariant.single,
           initialValue: _selected,
           onConfirm: (value) => setState(() => _selected = value),
         );
@@ -287,7 +287,7 @@ class _SingleCalendarCellState extends State<_SingleCalendarCell> {
 // ========================= 2. 多选 =========================
 /// 多选日历 + 已选汇总
 ///
-/// 演示 [CalendarType.multiple] 多选模式，展示已选日期列表。
+/// 演示 [TCalendarVariant.multiple] 多选模式，展示已选日期列表。
 class _MultipleCalendarCell extends StatefulWidget {
   const _MultipleCalendarCell();
   @override
@@ -307,7 +307,7 @@ class _MultipleCalendarCellState extends State<_MultipleCalendarCell> {
         _showCalendarPickerSheet(
           context: context,
           title: '请选择日期',
-          type: CalendarType.multiple,
+          type: TCalendarVariant.multiple,
           initialValue: _dates,
           footer: (selected) => _MultipleSummary(selected: selected),
           onConfirm: (value) => setState(() => _dates = value),
@@ -320,7 +320,7 @@ class _MultipleCalendarCellState extends State<_MultipleCalendarCell> {
 // ========================= 3. 区间 =========================
 /// 区间选择日历 + 区间摘要
 ///
-/// 演示 [CalendarType.range] 区间模式，展示开始/结束日期及天数。
+/// 演示 [TCalendarVariant.range] 区间模式，展示开始/结束日期及天数。
 class _RangeCalendarCell extends StatefulWidget {
   const _RangeCalendarCell();
   @override
@@ -345,7 +345,7 @@ class _RangeCalendarCellState extends State<_RangeCalendarCell> {
         _showCalendarPickerSheet(
           context: context,
           title: '请选择日期区间',
-          type: CalendarType.range,
+          type: TCalendarVariant.range,
           initialValue: _dates,
           footer: (selected) => _RangeSummary(selected: selected),
           onConfirm: (value) => setState(() => _dates = value),
@@ -383,7 +383,7 @@ class _AnchorCalendarCellState extends State<_AnchorCalendarCell> {
     _showCalendarPickerSheet(
       context: context,
       title: hasInitial ? '选择日期' : '选择日期（$anchorLabel）',
-      type: CalendarType.single,
+      type: TCalendarVariant.single,
       initialValue: hasInitial ? _selected : null,
       anchorDate: hasInitial ? null : _AnchorDemoData.anchorMonth,
       animateTo: !hasInitial,
@@ -412,9 +412,7 @@ class _AnchorCalendarCellState extends State<_AnchorCalendarCell> {
             child: Text('清除已选'),
             size: TButtonSize.small,
             colorScheme: TButtonColorScheme.light,
-            isBlock: true,
-            disabled: !hasInitial,
-            onPressed: _clearSelected,
+            onPressed: hasInitial ? _clearSelected : null,
           ),
         ),
         Padding(
@@ -831,7 +829,7 @@ class _StyleDemoState extends State<_StyleDemo> {
                     _showCalendarPickerSheet(
                       context: context,
                       title: '请选择日期',
-                      type: CalendarType.single,
+                      type: TCalendarVariant.single,
                       initialValue: textSelected,
                       minDate: DateTime(2022, 1, 1),
                       maxDate: DateTime(2022, 2, 15),
@@ -853,7 +851,7 @@ class _StyleDemoState extends State<_StyleDemo> {
                     _showCalendarPickerSheet(
                       context: context,
                       title: '请选择日期',
-                      type: CalendarType.single,
+                      type: TCalendarVariant.single,
                       initialValue: cellValue,
                       style: const TCalendarStyle(cellHeight: 80),
                       cellBuilder: _buildCustomDayCell,
@@ -948,7 +946,7 @@ class _LunarCalendarDemoState extends State<_LunarCalendarDemo> {
           },
         ),
         TCalendar(
-          type: CalendarType.single,
+          type: TCalendarVariant.single,
           minDate: _minDate,
           maxDate: _maxDate,
           initialValue: _selected,
@@ -956,7 +954,7 @@ class _LunarCalendarDemoState extends State<_LunarCalendarDemo> {
           animateTo: true,
           subtitleBuilder: _lunarExample.buildSubtitle,
           onMonthChanged: _onCalendarMonthChanged,
-          onChange: (value) {
+          onChanged: (value) {
             final dates = _normalizeDateList(value);
             _selected = dates;
             _selectedDisplay.value = dates;
@@ -1096,7 +1094,7 @@ class _LunarControlBarState extends State<_LunarControlBar> {
             children: [
               const Padding(
                 padding: EdgeInsets.all(16),
-                child: Text('选择年份'),
+                child: Text('选择年份',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               Expanded(
@@ -1117,7 +1115,7 @@ class _LunarControlBarState extends State<_LunarControlBar> {
                       trailing: isSelected
                           ? const Icon(Icons.check, color: Colors.blue)
                           : null,
-                      onPressed: () => Navigator.pop(ctx, y),
+                      onTap: () => Navigator.pop(ctx, y),
                     );
                   },
                 ),
@@ -1146,7 +1144,7 @@ class _LunarControlBarState extends State<_LunarControlBar> {
             children: [
               const Padding(
                 padding: EdgeInsets.all(16),
-                child: Text('选择月份'),
+                child: Text('选择月份',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ),
               Expanded(
@@ -1173,7 +1171,7 @@ class _LunarControlBarState extends State<_LunarControlBar> {
                         ? Colors.grey.shade400
                         : (isSelected ? Colors.white : Colors.black);
                     return InkWell(
-                      onPressed: isDisabled
+                      onTap: isDisabled
                           ? null
                           : () => Navigator.pop(ctx, month),
                       child: Container(
@@ -1182,7 +1180,7 @@ class _LunarControlBarState extends State<_LunarControlBar> {
                           color: bgColor,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Text('$month月'),
+                        child: Text('$month月',
                             style: TextStyle(
                               color: fgColor,
                               fontWeight:
@@ -1234,7 +1232,6 @@ class _LunarControlBarState extends State<_LunarControlBar> {
                 child: Text('◀'),
                 size: TButtonSize.small,
                 colorScheme: TButtonColorScheme.defaultTheme,
-                disabled: !canPrev,
                 onPressed: canPrev
                     ? () => _navigateTo(DateTime(
                         _currentMonth.year, _currentMonth.month - 1, 1))
@@ -1263,7 +1260,6 @@ class _LunarControlBarState extends State<_LunarControlBar> {
                 child: Text('▶'),
                 size: TButtonSize.small,
                 colorScheme: TButtonColorScheme.defaultTheme,
-                disabled: !canNext,
                 onPressed: canNext
                     ? () => _navigateTo(DateTime(
                         _currentMonth.year, _currentMonth.month + 1, 1))

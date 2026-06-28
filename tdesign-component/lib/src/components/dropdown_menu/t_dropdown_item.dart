@@ -62,7 +62,7 @@ class TDropdownItem<T> extends StatefulWidget {
     this.options = const [],
     this.builder,
     this.optionsColumns = 1,
-    this.onChange,
+    this.onChanged,
     this.onConfirm,
     this.onReset,
     this.minHeight,
@@ -98,7 +98,7 @@ class TDropdownItem<T> extends StatefulWidget {
   final int? optionsColumns;
 
   /// 值改变时触发
-  final ValueChanged<T?>? onChange;
+  final ValueChanged<T?>? onChanged;
 
   /// 点击确认时触发
   final ValueChanged<T?>? onConfirm;
@@ -268,7 +268,7 @@ class _TDropdownItemState extends State<TDropdownItem> {
             id: widget.options![index].value,
             title: widget.options![index].label,
             selectColor: widget.options![index].selectedColor,
-            enable: !(widget.options![index].disabled ?? false),
+            enabled: !(widget.options![index].disabled ?? false),
             contentDirection: TContentDirection.left,
           ),
         ),
@@ -298,7 +298,7 @@ class _TDropdownItemState extends State<TDropdownItem> {
     return TCheckbox(
       id: col.value,
       title: col.label,
-      enable: !(col.disabled ?? false),
+      enabled: !(col.disabled ?? false),
       selectColor: col.selectedColor,
       disableColor: col.disabledColor,
       customIconBuilder: (context, checked) => null,
@@ -419,7 +419,7 @@ class _TDropdownItemState extends State<TDropdownItem> {
     if (isRadio) {
       setState(() {});
     }
-    widget.onChange
+    widget.onChanged
         ?.call(_getSelected(widget.options).map((e) => e!.value).toList());
     if (widget.multiple != true && selected.isNotEmpty) {
       _handleClose();

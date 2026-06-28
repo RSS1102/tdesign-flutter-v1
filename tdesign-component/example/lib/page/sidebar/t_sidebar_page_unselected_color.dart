@@ -119,22 +119,25 @@ class TSideBarUnSelectedColorPageState
         Container(
           height: testButtonHeight,
           padding: const EdgeInsets.all(16),
-          child: TButton(
-            text: '更新children',
-            onTap: () {
-              setState(() {
-                var children = list
-                    .map((e) => SideItemProps(
-                        index: e.index,
-                        label: '变更${e.index}',
-                        badge: e.badge,
-                        value: e.value,
-                        icon: e.icon))
-                    .toList();
-                _sideBarController.children = children;
-                setState(() {});
-              });
-            },
+          child: SizedBox(
+            width: double.infinity,
+            child: TButton(
+              child: const Text('更新children'),
+              onPressed: () {
+                setState(() {
+                  var children = list
+                      .map((e) => SideItemProps(
+                          index: e.index,
+                          label: '变更${e.index}',
+                          badge: e.badge,
+                          value: e.value,
+                          icon: e.icon))
+                      .toList();
+                  _sideBarController.children = children;
+                  setState(() {});
+                });
+              },
+            ),
           ),
         ),
         Expanded(

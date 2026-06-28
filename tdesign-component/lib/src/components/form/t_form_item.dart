@@ -18,7 +18,7 @@ class TFormItem extends StatefulWidget {
   const TFormItem({
     required this.type,
     this.child,
-    this.formItemNotifier,
+    this.itemNotifier,
     this.label,
     this.labelWidget,
     this.help,
@@ -77,7 +77,7 @@ class TFormItem extends StatefulWidget {
   /// 表单子组件
   final Widget? child;
 
-  final FormItemNotifier? formItemNotifier;
+  final FormItemNotifier? itemNotifier;
 
   /// 选择器 适用于日期选择器等
   final String select;
@@ -115,9 +115,9 @@ class _TFormItemState extends State<TFormItem> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (!(widget.formItemNotifier?.isDisposed ?? true)) {
-      widget.formItemNotifier?.addListener(() {
-        updateFormData(widget.formItemNotifier?.formVal);
+    if (!(widget.itemNotifier?.isDisposed ?? true)) {
+      widget.itemNotifier?.addListener(() {
+        updateFormData(widget.itemNotifier?.formVal);
       });
     }
   }
@@ -125,9 +125,9 @@ class _TFormItemState extends State<TFormItem> {
   @override
   void dispose() {
     super.dispose();
-    if (widget.formItemNotifier != null &&
-        !widget.formItemNotifier!.isDisposed) {
-      widget.formItemNotifier?.dispose();
+    if (widget.itemNotifier != null &&
+        !widget.itemNotifier!.isDisposed) {
+      widget.itemNotifier?.dispose();
     }
   }
 
@@ -174,14 +174,14 @@ class _TFormItemState extends State<TFormItem> {
     }
 
     /// 如果 没用为 item 定制内容排列方式 则全部使用总表单的内容排列方式
-    return inherited!.formContentAlign;
+    return inherited!.contentAlign;
   }
 
   /// 获取 form 是否为水平排列的状态
-  bool get FormIsHorizontal {
+  bool get FormIsLayout {
     final inherited = TFormInherited.of(context);
-    if (inherited?.isHorizontal != null) {
-      return inherited!.isHorizontal;
+    if (inherited?.layout != null) {
+      return inherited!.layout;
     }
     return false;
   }
@@ -210,7 +210,7 @@ class _TFormItemState extends State<TFormItem> {
     if (widget.showErrorMessage != null) {
       return widget.showErrorMessage;
     } else {
-      return inherited!.formShowErrorMessage;
+      return inherited!.showErrorMessage;
     }
   }
 
@@ -234,7 +234,7 @@ class _TFormItemState extends State<TFormItem> {
 
   /// 遍历校验规则并执行
   String? validate() {
-    dynamic value = widget.formItemNotifier?.formVal;
+    dynamic value = widget.itemNotifier?.formVal;
     String name = widget.name!;
     if (name == null) {
       return null;
@@ -293,7 +293,7 @@ class _TFormItemState extends State<TFormItem> {
     List<Widget> itemRowContent = [
       labelContent,
       Visibility(
-        visible: FormIsHorizontal,
+        visible: FormIsLayout,
         child: Expanded(
             child: Align(
           alignment: Alignment.centerRight,
@@ -306,7 +306,7 @@ class _TFormItemState extends State<TFormItem> {
       labelContent,
       SizedBox(height: 8),
       Visibility(
-        visible: FormIsHorizontal,
+        visible: FormIsLayout,
         child: Expanded(
             child: Align(
           alignment: Alignment.centerRight,
@@ -327,7 +327,7 @@ class _TFormItemState extends State<TFormItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                      visible: FormIsHorizontal,
+                      visible: FormIsLayout,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: itemRowContent,
@@ -352,7 +352,7 @@ class _TFormItemState extends State<TFormItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                      visible: FormIsHorizontal,
+                      visible: FormIsLayout,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: itemRowContent,
@@ -376,7 +376,7 @@ class _TFormItemState extends State<TFormItem> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Visibility(
-                visible: FormIsHorizontal,
+                visible: FormIsLayout,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -400,7 +400,7 @@ class _TFormItemState extends State<TFormItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                      visible: FormIsHorizontal,
+                      visible: FormIsLayout,
                       child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -437,7 +437,7 @@ class _TFormItemState extends State<TFormItem> {
               child: Column(
                 children: [
                   Visibility(
-                    visible: FormIsHorizontal,
+                    visible: FormIsLayout,
                     child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: itemRowContent),
@@ -530,7 +530,7 @@ class _TFormItemState extends State<TFormItem> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Visibility(
-              visible: FormIsHorizontal,
+              visible: FormIsLayout,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -580,7 +580,7 @@ class _TFormItemState extends State<TFormItem> {
         if (widget.help != null && (errorMessage == null || errorMessage == ''))
           Row(
             children: [
-              if (widget.label != null && FormIsHorizontal)
+              if (widget.label != null && FormIsLayout)
                 SizedBox(width: LabelWidth),
               Expanded(
                 child: Padding(
@@ -601,7 +601,7 @@ class _TFormItemState extends State<TFormItem> {
             errorMessage != '')
           Row(
             children: [
-              if (widget.label != null && FormIsHorizontal)
+              if (widget.label != null && FormIsLayout)
                 SizedBox(width: LabelWidth),
               Expanded(
                   child: Padding(

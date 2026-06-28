@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../util/context_extension.dart';
 import 't_loading.dart';
+import 't_loading_theme_data.dart';
 
 class TLoadingController {
   static BuildContext? _context;
@@ -13,13 +14,8 @@ class TLoadingController {
       {Widget? child,
       TLoadingSize size = TLoadingSize.medium,
       TLoadingIcon? icon = TLoadingIcon.circle,
-      Color? iconColor,
       String? text,
-      Widget? refreshWidget,
-      Color? textColor,
-      Axis axis = Axis.vertical,
-      Widget? customIcon,
-      int duration = 2000}) {
+      TLoadingThemeData? themeData}) {
     if (_isShowing) {
       print('warn: TLoading is showing!');
       return;
@@ -31,13 +27,8 @@ class TLoadingController {
             TLoading(
               size: size,
               icon: icon,
-              customIcon: customIcon,
               text: text ?? context.resource.loading,
-              textColor: textColor,
-              refreshWidget: refreshWidget,
-              duration: duration,
-              iconColor: iconColor,
-              axis: axis,
+              themeData: themeData,
             ),
       );
     });

@@ -5,7 +5,7 @@
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | controller | TStepperController? | - | Stepper控制器 |
-| defaultValue | int? | 0 | 默认值 |
+| value | int? | 0 | 默认值 |
 | disabled | bool | false | 禁用全部操作 |
 | disableInput | bool | false | 禁用输入框 |
 | eventController | StreamController<TStepperEventType>? | - | 事件控制器 |
@@ -18,7 +18,7 @@
 | onOverlimit | TStepperOverlimitFunction? | - | 数值超出限制时触发 |
 | size | TStepperSize | TStepperSize.medium | 组件尺寸 |
 | step | int | 1 | 步长 |
-| theme | TStepperTheme | TStepperTheme.normal | 组件风格 |
+| theme | TStepperColorScheme | TStepperColorScheme.normal | 组件风格 |
 | value | int? | 0 | 值 |
 
 
@@ -33,7 +33,7 @@
 | large | - |
 
 
-### TStepperTheme
+### TStepperColorScheme
 #### 枚举值
 
 

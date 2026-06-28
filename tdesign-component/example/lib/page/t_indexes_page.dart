@@ -150,13 +150,14 @@ class TIndexesPage extends StatelessWidget {
 Widget _buildSimple(BuildContext context) {
   final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
-  return TButton(
-    child: Text('基础用法'),
-    isBlock: true,
-    size: TButtonSize.large,
-    colorScheme: TButtonColorScheme.primary,
-    variant: TButtonVariant.outline,
-    onPressed: () {
+  return SizedBox(
+    width: double.infinity,
+    child: TButton(
+      child: Text('基础用法'),
+      size: TButtonSize.large,
+      colorScheme: TButtonColorScheme.primary,
+      variant: TButtonVariant.outline,
+      onPressed: () {
       TPopup.show(
         context,
         options: TPopupOptions.right(
@@ -175,6 +176,7 @@ Widget _buildSimple(BuildContext context) {
             )),
       );
     },
+  ),
   );
 }
 
@@ -182,13 +184,14 @@ Widget _buildSimple(BuildContext context) {
 Widget _buildOther(BuildContext context) {
   final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
-  return TButton(
-    child: Text('胶囊索引'),
-    isBlock: true,
-    size: TButtonSize.large,
-    colorScheme: TButtonColorScheme.primary,
-    variant: TButtonVariant.outline,
-    onPressed: () {
+  return SizedBox(
+    width: double.infinity,
+    child: TButton(
+      child: Text('胶囊索引'),
+      size: TButtonSize.large,
+      colorScheme: TButtonColorScheme.primary,
+      variant: TButtonVariant.outline,
+      onPressed: () {
       TPopup.show(
         context,
         options: TPopupOptions.right(
@@ -208,6 +211,7 @@ Widget _buildOther(BuildContext context) {
             )),
       );
     },
+  ),
   );
 }
 
@@ -215,13 +219,14 @@ Widget _buildOther(BuildContext context) {
 Widget _buildCustomIndexes(BuildContext context) {
   final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
-  return TButton(
-    child: Text('自定义索引'),
-    isBlock: true,
-    size: TButtonSize.large,
-    colorScheme: TButtonColorScheme.primary,
-    variant: TButtonVariant.outline,
-    onPressed: () {
+  return SizedBox(
+    width: double.infinity,
+    child: TButton(
+      child: Text('自定义索引'),
+      size: TButtonSize.large,
+      colorScheme: TButtonColorScheme.primary,
+      variant: TButtonVariant.outline,
+      onPressed: () {
       TPopup.show(
         context,
         options: TPopupOptions.right(
@@ -248,5 +253,6 @@ Widget _buildCustomIndexes(BuildContext context) {
             )),
       );
     },
+  ),
   );
 }

@@ -3,13 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
 import '../../util/auto_size.dart';
 
-enum TRadioStyle {
-  circle, // 圆形
-  square, // 方形
-  check, // 对号样式
-  hollowCircle, // 镂空圆点样式
-}
-
 /// 单选框按钮,继承自TCheckbox，字段含义与父类一致
 class TRadio extends TCheckbox {
   /// 单选框按钮样式
@@ -22,7 +15,7 @@ class TRadio extends TCheckbox {
     Font? titleFont,
     String? subTitle,
     Font? subTitleFont,
-    bool enable = true,
+    bool enabled = true,
     int subTitleMaxLine = 1,
     int titleMaxLine = 1,
     Color? selectColor,
@@ -49,7 +42,7 @@ class TRadio extends TCheckbox {
             titleFont: titleFont,
             subTitleFont: subTitleFont,
             subTitleMaxLine: subTitleMaxLine,
-            enable: enable,
+            enabled: enabled,
             size: size,
             cardMode: cardMode ?? false,
             showDivider: showDivider ?? true,
@@ -89,7 +82,7 @@ class TRadio extends TCheckbox {
         width: size,
         height: size,
         child: CustomPaint(
-          painter: HollowCircle(!enable
+          painter: HollowCircle(!enabled
               ? (isSelected ? theme.brandDisabledColor : theme.grayColor4)
               : isSelected
                   ? selectColor ?? theme.brandNormalColor
@@ -114,7 +107,7 @@ class TRadio extends TCheckbox {
     if (iconData != null) {
       return Icon(iconData,
           size: size,
-          color: !enable
+          color: !enabled
               ? (isSelected
                   ? (disableColor ?? theme.brandDisabledColor)
                   : theme.componentStrokeColor)
@@ -209,7 +202,7 @@ class TRadioGroup extends TCheckboxGroup {
       double? spacing, // icon和文字距离
       this.rowCount = 1,
       TContentDirection? contentDirection,
-      OnRadioGroupChange? onRadioGroupChange, // 切换监听
+      void Function(String? selectedId)? onRadioGroupChange, // 切换监听
       this.showDivider = false,
       this.divider,
 
@@ -389,11 +382,11 @@ class TRadioGroup extends TCheckboxGroup {
                       )),
           ),
           key: key,
-          onChangeGroup: (ids) {
+          onChanged: (ids) {
             onRadioGroupChange?.call(ids.isNotEmpty ? ids[0] : null);
           },
           controller: controller,
-          checkedIds: selectId != null ? [selectId] : null,
+          value: selectId != null ? [selectId] : null,
           maxChecked: 1,
           titleMaxLine: titleMaxLine,
           contentDirection: contentDirection,
@@ -419,7 +412,9 @@ class TRadioGroupState extends TCheckboxGroupState {
   }
 }
 
-typedef OnRadioGroupChange = void Function(String? selectedId);
+
+
+
 
 // 横向卡片单选框，根据设计师要求'间距保持一致，宽度适应'
 // 实现方法为在两个单选框中间增加一个宽度固定的SizedBox，同时每个单选框是Expanded的，这样就能

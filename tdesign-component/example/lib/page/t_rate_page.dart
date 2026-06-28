@@ -104,7 +104,7 @@ class TRatePageState extends State<TRatePage> {
         noteWidget: TRate(
           value: 3,
           allowHalf: true,
-          onChange: print,
+          onChanged: print,
         ));
   }
 

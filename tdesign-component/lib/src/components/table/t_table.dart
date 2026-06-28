@@ -255,8 +255,8 @@ class TTableState extends State<TTable> {
         var enable = col.selectable?.call(index, widget.data?[index]) ?? true;
         checkBox = TCheckbox(
           id: 'index:$index',
-          checked: _checkedList[index],
-          enable: enable,
+          value: _checkedList[index],
+          enabled: enable,
           customIconBuilder: (context, checked) {
             if (checked) {
               return Icon(TIcons.check_rectangle_filled,
@@ -268,7 +268,7 @@ class TTableState extends State<TTable> {
                     ? TTheme.of(context).textColorPrimary
                     : TTheme.of(context).textColorPlaceholder);
           },
-          onCheckBoxChanged: (checked) {
+          onChanged: (checked) {
             setState(() {
               _checkedList[index] = checked;
               if (checked) {
@@ -294,7 +294,7 @@ class TTableState extends State<TTable> {
       if (isHeader) {
         checkBox = TCheckbox(
           id: 'header',
-          checked: _checkAll,
+          value: _checkAll,
           customIconBuilder: (context, checked) {
             if (_hasChecked == 0) {
               return Icon(
@@ -308,7 +308,7 @@ class TTableState extends State<TTable> {
                 _hasChecked > 0 && _hasChecked < _totalSelectable;
             return getAllIcon(allCheck, halfSelected);
           },
-          onCheckBoxChanged: (checked) {
+          onChanged: (checked) {
             setState(() {
               if (!_notEmptyData() && checked) {
                 _hasChecked = _totalSelectable = 1;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 't_steps_horizontal.dart';
+import 't_steps_theme_data.dart';
 import 't_steps_vertical.dart';
 
 /// Steps步骤条数据类型
@@ -57,11 +58,13 @@ class TSteps extends StatefulWidget {
     super.key,
     required this.steps,
     this.activeIndex = 0,
+    this.value,
     this.direction = TStepsDirection.horizontal,
     this.status = TStepsStatus.success,
     this.simple = false,
     this.readOnly = false,
     this.verticalSelect = false,
+    this.themeData,
   });
 
   /// 步骤条数据
@@ -70,20 +73,26 @@ class TSteps extends StatefulWidget {
   /// 步骤条方向
   final TStepsDirection direction;
 
-  /// 步骤条当前激活的索引
+  /// 步骤条当前激活的索引（v1.0 推荐使用 [value]）
   final int activeIndex;
 
-  /// 步骤条状态
+  /// 步骤条当前激活的索引（v1.0 新增，优先级高于 [activeIndex]）
+  final int? value;
+
+  /// 步骤条状态（优先级高于 ThemeData）
   final TStepsStatus status;
 
-  /// 步骤条simple模式
+  /// 步骤条simple模式（优先级高于 ThemeData）
   final bool simple;
 
-  /// 步骤条readOnly模式
+  /// 步骤条readOnly模式（优先级高于 ThemeData）
   final bool readOnly;
 
-  /// 步骤条垂直自定义步骤条选择模式
+  /// 步骤条垂直自定义步骤条选择模式（优先级高于 ThemeData）
   final bool verticalSelect;
+
+  /// 子树级主题数据（v1.0 新增）
+  final TStepsThemeData? themeData;
 
   @override
   _TStepsState createState() => _TStepsState();
@@ -100,11 +109,25 @@ class _TStepsState extends State<TSteps> {
     return index;
   }
 
+  /// 从 ThemeData 解析有效值
+  TStepsThemeData _resolveTheme() {
+    return widget.themeData ??
+        Theme.of(context).extension<TStepsThemeData>() ??
+        const TStepsThemeData();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = _resolveTheme();
+    final effectiveIndex = widget.value ?? widget.activeIndex;
+    final effectiveStatus = widget.status;
+    final effectiveSimple = widget.simple;
+    final effectiveReadOnly = widget.readOnly;
+    final effectiveVerticalSelect = widget.verticalSelect;
+
     /// 当前激活的step索引
     final currentActiveIndex = _clampActiveIndex(
-      widget.activeIndex,
+      effectiveIndex,
       widget.steps.length,
     );
 
@@ -112,16 +135,16 @@ class _TStepsState extends State<TSteps> {
         ? TStepsHorizontal(
             steps: widget.steps,
             activeIndex: currentActiveIndex,
-            status: widget.status,
-            simple: widget.simple,
-            readOnly: widget.readOnly)
+            status: effectiveStatus,
+            simple: effectiveSimple,
+            readOnly: effectiveReadOnly)
         : TStepsVertical(
             steps: widget.steps,
             activeIndex: currentActiveIndex,
-            status: widget.status,
-            simple: widget.simple,
-            readOnly: widget.readOnly,
-            verticalSelect: widget.verticalSelect,
+            status: effectiveStatus,
+            simple: effectiveSimple,
+            readOnly: effectiveReadOnly,
+            verticalSelect: effectiveVerticalSelect,
           );
   }
 }

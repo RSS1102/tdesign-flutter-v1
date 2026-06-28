@@ -4,17 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import 't_horizontal_tab_bar.dart';
-
-enum TTabBarOutlineType {
-  /// 填充样式
-  filled,
-
-  /// 胶囊样式
-  capsule,
-
-  /// 卡片
-  card
-}
+import 't_tab_bar_theme_data.dart';
 
 class TTabBar extends StatefulWidget {
   const TTabBar({
@@ -38,7 +28,7 @@ class TTabBar extends StatefulWidget {
     this.indicator,
     this.physics,
     this.onTap,
-    this.outlineType = TTabBarOutlineType.filled,
+    this.variant = TTabBarVariant.filled,
     this.showIndicator = false,
     this.dividerColor,
     this.dividerHeight = 0.5,
@@ -58,73 +48,73 @@ class TTabBar extends StatefulWidget {
   /// tab控制器
   final TabController? controller;
 
-  /// tabBar修饰
+  /// tabBar修饰（可覆盖 Theme）
   final Decoration? decoration;
 
-  /// tabBar背景色，当outlineType为card时控制选中tab颜色
+  /// tabBar背景色，当 variant 为 card 时控制选中tab颜色（可覆盖 Theme）
   final Color? backgroundColor;
 
-  /// tabBar下标颜色
+  /// tabBar下标颜色（可覆盖 Theme）
   final Color? indicatorColor;
 
-  /// tabBar下标高度
+  /// tabBar下标高度（可覆盖 Theme）
   final double? indicatorHeight;
 
-  /// tabBar下标宽度
+  /// tabBar下标宽度（可覆盖 Theme）
   final double? indicatorWidth;
 
-  /// tabBar 已选标签颜色
+  /// tabBar 已选标签颜色（可覆盖 Theme）
   final Color? labelColor;
 
-  /// tabBar未选标签颜色
+  /// tabBar未选标签颜色（可覆盖 Theme）
   final Color? unselectedLabelColor;
 
-  /// 是否滚动
+  /// 是否滚动（可覆盖 Theme）
   final bool isScrollable;
 
-  /// 已选label字体
+  /// 已选label字体（可覆盖 Theme）
   final TextStyle? labelStyle;
 
-  /// unselectedLabel字体
+  /// unselectedLabel字体（可覆盖 Theme）
   final TextStyle? unselectedLabelStyle;
 
   /// tabBar宽度
   final double? width;
 
-  /// tabBar高度
+  /// tabBar高度（可覆盖 Theme）
   final double? height;
 
-  /// 引导padding
+  /// 引导padding（可覆盖 Theme）
   final EdgeInsets? indicatorPadding;
 
-  /// 自定义引导控件
+  /// 自定义引导控件（可覆盖 Theme）
   final Decoration? indicator;
 
-  /// 是否展示引导控件
+  /// 是否展示引导控件（可覆盖 Theme）
   final bool showIndicator;
 
-  /// 自定义滑动
+  /// 自定义滑动（可覆盖 Theme）
   final ScrollPhysics? physics;
 
   /// 点击事件
   final Function(int)? onTap;
 
-  /// tab间距
+  /// tab间距（可覆盖 Theme）
   final EdgeInsetsGeometry? labelPadding;
 
-  /// 选项卡样式
-  final TTabBarOutlineType outlineType;
+  /// 选项卡样式（可覆盖 Theme）
+  final TTabBarVariant variant;
 
-  /// 分割线颜色
+  /// 分割线颜色（可覆盖 Theme）
   final Color? dividerColor;
 
-  /// 分割线高度,小于等于0则不展示分割线
+  /// 分割线高度，小于等于0则不展示分割线（可覆盖 Theme）
   final double dividerHeight;
 
-  /// 被选中背景色，只有outlineType为capsule时有效
+  /// 被选中背景色，只有 variant 为 capsule 时有效（可覆盖 Theme）
   final Color? selectedBgColor;
 
-  /// 未选中背景色，只有outlineType为capsule时有效
+  /// 未选中背景色，只有 variant 为 capsule 时有效（可覆盖 Theme）
   final Color? unSelectedBgColor;
 
   final TabAlignment? tabAlignment;
@@ -137,46 +127,63 @@ class _TTabBarState extends State<TTabBar> {
   /// 默认高度
   static const double _defaultHeight = 48;
 
+  TTabBarThemeData get _themeData =>
+      Theme.of(context).extension<TTabBarThemeData>() ??
+      const TTabBarThemeData();
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: widget.width ?? MediaQuery.of(context).size.width,
-      height: widget.height ?? _defaultHeight,
+      height: widget.height ?? _themeData.height ?? _defaultHeight,
       decoration: widget.decoration ??
-          (widget.outlineType == TTabBarOutlineType.card
+          _themeData.decoration ??
+          (widget.variant == TTabBarVariant.card
               ? BoxDecoration(
                   color: widget.backgroundColor ??
+                      _themeData.backgroundColor ??
                       TTheme.of(context).bgColorContainer)
               : BoxDecoration(
                   color: widget.backgroundColor ??
+                      _themeData.backgroundColor ??
                       TTheme.of(context).bgColorContainer,
                   border: widget.dividerHeight <= 0
                       ? null
                       : Border(
                           bottom: BorderSide(
                               color: widget.dividerColor ??
+                                  _themeData.dividerColor ??
                                   TTheme.of(context).componentStrokeColor,
                               width: widget.dividerHeight)))),
       child: THorizontalTabBar(
-        physics: widget.physics,
-        isScrollable: widget.isScrollable,
+        physics: widget.physics ?? _themeData.physics,
+        isScrollable:
+            widget.isScrollable ?? _themeData.isScrollable ?? false,
         indicator: widget.indicator ?? _getIndicator(),
-        indicatorColor: widget.indicatorColor,
-        unselectedLabelColor: widget.unselectedLabelColor,
-        labelColor: widget.labelColor ?? TTheme.of(context).brandNormalColor,
+        indicatorColor: widget.indicatorColor ?? _themeData.indicatorColor,
+        unselectedLabelColor:
+            widget.unselectedLabelColor ?? _themeData.unselectedLabelColor,
+        labelColor: widget.labelColor ??
+            _themeData.labelColor ??
+            TTheme.of(context).brandNormalColor,
         labelStyle: widget.labelStyle ?? _getLabelStyle(),
-        labelPadding: widget.labelPadding ?? const EdgeInsets.all(8),
-        unselectedLabelStyle:
-            widget.unselectedLabelStyle ?? _getUnSelectLabelStyle(),
+        labelPadding: widget.labelPadding ??
+            _themeData.labelPadding ??
+            const EdgeInsets.all(8),
+        unselectedLabelStyle: widget.unselectedLabelStyle ??
+            _themeData.unselectedLabelStyle ??
+            _getUnSelectLabelStyle(),
         tabs: widget.tabs,
-        indicatorPadding: widget.indicatorPadding ?? EdgeInsets.zero,
-        outlineType: widget.outlineType,
+        indicatorPadding:
+            widget.indicatorPadding ?? _themeData.indicatorPadding ?? EdgeInsets.zero,
+        outlineType: widget.variant,
         controller: widget.controller,
-        backgroundColor: widget.backgroundColor,
-        selectedBgColor: widget.selectedBgColor,
+        backgroundColor: widget.backgroundColor ?? _themeData.backgroundColor,
+        selectedBgColor: widget.selectedBgColor ?? _themeData.selectedBgColor,
         unSelectedBgColor: widget.unSelectedBgColor ??
+            _themeData.unSelectedBgColor ??
             TTheme.of(context).bgColorSecondaryContainer,
-        tabAlignment: widget.tabAlignment,
+        tabAlignment: widget.tabAlignment ?? _themeData.tabAlignment,
         onTap: (index) {
           widget.onTap?.call(index);
         },
@@ -228,18 +235,13 @@ class TTabBarIndicator extends Decoration {
 }
 
 class _TTabBarIndicatorPainter extends BoxPainter {
-  /// 下标宽度
   static const double _defaultIndicatorWidth = 16;
-
-  /// 下标高度
   static const double _defaultIndicatorHeight = 3;
 
   final TTabBarIndicator decoration;
-
   final _paint = Paint();
 
   _TTabBarIndicatorPainter(this.decoration, VoidCallback onChanged) {
-    /// 下标颜色
     _paint.color = decoration.indicatorColor ??
         TTheme.of(decoration.context).brandNormalColor;
     _paint.strokeCap = StrokeCap.round;
@@ -262,7 +264,6 @@ class _TTabBarIndicatorPainter extends BoxPainter {
       decoration.indicatorWidth ?? _defaultIndicatorWidth;
 }
 
-/// TDesign自定义下标 竖向
 class TTabBarVerticalIndicator extends Decoration {
   final BuildContext? context;
   final double? indicatorWidth;
@@ -280,18 +281,13 @@ class TTabBarVerticalIndicator extends Decoration {
 }
 
 class _TTabBarVerticalIndicatorPainter extends BoxPainter {
-  /// 下标宽度
   static const double _defaultIndicatorWidth = 1.5;
-
-  /// 下标高度
   static const double _defaultIndicatorHeight = 54;
 
   final TTabBarVerticalIndicator decoration;
-
   final _paint = Paint();
 
   _TTabBarVerticalIndicatorPainter(this.decoration, VoidCallback onChanged) {
-    /// 下标颜色
     _paint.color = TTheme.of(decoration.context).brandNormalColor;
     _paint.strokeCap = StrokeCap.round;
   }
@@ -317,7 +313,6 @@ class _TTabBarVerticalIndicatorPainter extends BoxPainter {
       decoration.indicatorWidth ?? _defaultIndicatorWidth;
 }
 
-/// TDesign不展示下标
 class TNoneIndicator extends Decoration {
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) =>

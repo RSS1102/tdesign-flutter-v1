@@ -68,7 +68,7 @@ class _ApiWidgetState extends State<ApiWidget> {
               size: TLoadingSize.large,
               icon: TLoadingIcon.circle,
               text: '加载中…',
-              axis: Axis.horizontal,
+              themeData: const TLoadingThemeData(axis: Axis.horizontal),
             ),
           );
         }

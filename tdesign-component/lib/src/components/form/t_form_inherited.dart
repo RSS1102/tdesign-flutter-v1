@@ -5,12 +5,12 @@ import '../../../tdesign_flutter.dart';
 class TFormInherited extends InheritedWidget {
   final Map<String, dynamic> formData;
   final double? labelWidth;
-  final bool isHorizontal;
+  final bool layout;
   final bool isValidate;
   final Map<String, TFormValidation> rules;
-  final bool? formShowErrorMessage;
+  final bool? showErrorMessage;
   final bool? requiredMark;
-  final TextAlign formContentAlign;
+  final TextAlign contentAlign;
   final Function onFormDataChange;
   final bool isReset;
   final int updateCount;
@@ -20,16 +20,16 @@ class TFormInherited extends InheritedWidget {
     super.key,
     required this.formData,
     required Widget child,
-    required this.isHorizontal,
+    required this.layout,
     required this.isValidate,
     required this.rules,
-    required this.formContentAlign,
+    required this.contentAlign,
     required this.onFormDataChange,
     required this.onSubmit,
     required this.requiredMark,
     required this.updateCount,
     this.labelWidth,
-    this.formShowErrorMessage,
+    this.showErrorMessage,
     required this.isReset,
   }) : super(child: child);
 
@@ -42,10 +42,10 @@ class TFormInherited extends InheritedWidget {
     return updateCount != oldWidget.updateCount ||
         isReset != oldWidget.isReset ||
         labelWidth != oldWidget.labelWidth ||
-        isHorizontal != oldWidget.isHorizontal ||
+        layout != oldWidget.layout ||
         isValidate != oldWidget.isValidate ||
         rules != oldWidget.rules ||
-        formShowErrorMessage != oldWidget.formShowErrorMessage ||
-        formContentAlign != oldWidget.formContentAlign;
+        showErrorMessage != oldWidget.showErrorMessage ||
+        contentAlign != oldWidget.contentAlign;
   }
 }

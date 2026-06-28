@@ -124,7 +124,7 @@ class _ThemeModeSettingsPageState extends State<ThemeModeSettingsPage> {
                   title: '跟随系统',
                   description: '开启后，将跟随系统打开或关闭深色模式。',
                   rightIconWidget: TSwitch(
-                    isOn: themeModeProvider.themeMode == ThemeMode.system,
+                    value: themeModeProvider.themeMode == ThemeMode.system,
                     onChanged: (isOn) {
                       if (isOn) {
                         themeModeProvider.themeMode = ThemeMode.system;

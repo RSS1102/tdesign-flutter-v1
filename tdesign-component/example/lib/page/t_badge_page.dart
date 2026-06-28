@@ -166,12 +166,14 @@ class _TBadgePageState extends State<TBadgePage> {
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          TButton(
+          SizedBox(
             width: 80,
             height: 48,
-            child: Text('按钮'),
-            size: TButtonSize.large,
-            variant: TButtonVariant.fill,
+            child: TButton(
+              child: Text('按钮'),
+              size: TButtonSize.large,
+              variant: TButtonVariant.fill,
+            ),
           ),
           Positioned(
             child: TBadge(TBadgeType.redPoint),
@@ -229,11 +231,13 @@ class _TBadgePageState extends State<TBadgePage> {
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          const TButton(
+          const SizedBox(
             width: 80,
             height: 48,
-            child: Text('按钮'),
-            size: TButtonSize.large,
+            child: TButton(
+              child: Text('按钮'),
+              size: TButtonSize.large,
+            ),
           ),
           Positioned(
             child: TBadge(TBadgeType.message, count: num.toString()),

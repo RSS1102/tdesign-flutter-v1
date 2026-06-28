@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
+import 't_tab_bar_theme_data.dart';
 
-enum TTabSize { large, small }
-
-enum TTabOutlineType {
-  /// 填充样式
-  filled,
-
-  /// 胶囊样式
-  capsule,
-
-  /// 卡片
-  card
-}
-
+/// Tab 组件 v1.0
+///
+/// Material Tab 薄包装。禁用：`enabled: false`。
+/// L4 样式（badge、iconMargin、height、contentHeight、textMargin、outlineType）→ [TTabBarThemeData]。
 class TTab extends Tab {
   /// 文字内容
   @override
@@ -28,31 +20,28 @@ class TTab extends Tab {
   @override
   final Widget? icon;
 
-  /// 图标
+  /// 徽标
   final TBadge? badge;
 
-  /// 图标间距
+  /// 图标间距（可覆盖 Theme）
   @override
   final EdgeInsetsGeometry iconMargin;
 
-  /// tab高度
+  /// tab高度（可覆盖 Theme）
   @override
   final double? height;
 
-  /// 中间内容高度
+  /// 中间内容高度（可覆盖 Theme）
   final double? contentHeight;
 
-  /// 中间内容宽度
+  /// 文本边距（可覆盖 Theme）
   final EdgeInsetsGeometry? textMargin;
 
-  /// 是否可用，默认true
-  final bool enable;
+  /// 是否可用，默认 true；`false` 即禁用
+  final bool enabled;
 
   /// 选项卡尺寸
   final TTabSize size;
-
-  /// 选项卡样式
-  final TTabOutlineType outlineType;
 
   @override
   const TTab({
@@ -61,14 +50,14 @@ class TTab extends Tab {
     this.child,
     this.icon,
     this.badge,
-    this.height,
     this.contentHeight,
     this.textMargin,
     this.size = TTabSize.small,
-    this.outlineType = TTabOutlineType.filled,
-    this.enable = true,
+    this.enabled = true,
     this.iconMargin = const EdgeInsets.only(bottom: 4.0, right: 4.0),
-  }) : super(
+    double? height,
+  })  : height = height,
+        super(
           key: key,
           text: text,
           child: child,
@@ -77,8 +66,8 @@ class TTab extends Tab {
           iconMargin: iconMargin,
         );
 
-  final double _kTabHeight = 48.0;
-  final double _kTextAndIconTabHeight = 72.0;
+  static const double _kTabHeight = 48.0;
+  static const double _kTextAndIconTabHeight = 72.0;
 
   @override
   Widget build(BuildContext context) {
@@ -120,12 +109,9 @@ class TTab extends Tab {
     }
 
     return IgnorePointer(
-      ignoring: !enable,
+      ignoring: !enabled,
       child: Container(
         alignment: Alignment.center,
-        margin: outlineType == TTabOutlineType.capsule
-            ? const EdgeInsets.symmetric(horizontal: 16)
-            : null,
         height: height ?? calculatedHeight,
         child: Center(
           widthFactor: 1.0,

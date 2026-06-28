@@ -66,8 +66,8 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '带文字开关',
       noteWidget: TSwitch(
-        isOn: true,
-        type: TSwitchType.text,
+        value: true,
+        variant: TSwitchVariant.text,
       ),
     );
   }
@@ -77,8 +77,8 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '带图标开关',
       noteWidget: TSwitch(
-        isOn: true,
-        type: TSwitchType.icon,
+        value: true,
+        variant: TSwitchVariant.icon,
       ),
     );
   }
@@ -88,7 +88,7 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '自定义颜色开关',
       noteWidget: TSwitch(
-        isOn: true,
+        value: true,
         trackOnColor: Colors.green,
       ),
     );
@@ -99,8 +99,8 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '加载状态',
       noteWidget: TSwitch(
-        isOn: false,
-        type: TSwitchType.loading,
+        value: false,
+        variant: TSwitchVariant.loading,
       ),
     );
   }
@@ -110,8 +110,8 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '加载状态',
       noteWidget: TSwitch(
-        isOn: true,
-        type: TSwitchType.loading,
+        value: true,
+        variant: TSwitchVariant.loading,
       ),
     );
   }
@@ -121,8 +121,8 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '禁用状态',
       noteWidget: TSwitch(
-        enable: false,
-        isOn: false,
+        enabled: false,
+        value: false,
       ),
     );
   }
@@ -132,8 +132,8 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '禁用状态',
       noteWidget: TSwitch(
-        enable: false,
-        isOn: true,
+        enabled: false,
+        value: true,
       ),
     );
   }
@@ -144,7 +144,7 @@ class TSwitchPageState extends State<TSwitchPage> {
       title: '大尺寸32',
       noteWidget: TSwitch(
         size: TSwitchSize.large,
-        isOn: true,
+        value: true,
       ),
     );
   }
@@ -155,7 +155,7 @@ class TSwitchPageState extends State<TSwitchPage> {
       title: '中尺寸28',
       noteWidget: TSwitch(
         size: TSwitchSize.medium,
-        isOn: true,
+        value: true,
       ),
     );
   }
@@ -166,7 +166,7 @@ class TSwitchPageState extends State<TSwitchPage> {
       title: '小尺寸24',
       noteWidget: TSwitch(
         size: TSwitchSize.small,
-        isOn: true,
+        value: true,
       ),
     );
   }
@@ -176,7 +176,7 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '基础开关',
       noteWidget: TSwitch(
-        type: TSwitchType.text,
+        variant: TSwitchVariant.text,
         openText: '1111',
         closeText: '—',
       ),
@@ -188,7 +188,7 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '基础开关',
       noteWidget: TSwitch(
-        type: TSwitchType.text,
+        variant: TSwitchVariant.text,
         openText: '开',
         closeText: '关',
         thumbContentOffColor: Colors.red,

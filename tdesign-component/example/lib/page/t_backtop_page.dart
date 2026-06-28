@@ -12,87 +12,78 @@ class TBackTopPage extends StatefulWidget {
 }
 
 class _TBackTopPageState extends State<TBackTopPage> {
-  ScrollController controller = ScrollController();
-  bool showBackTop = false;
-  TBackTopStyle style = TBackTopStyle.circle;
-  TBackTopTheme theme = TBackTopTheme.light;
+  final ScrollController controller = ScrollController();
+  TBackTopShape shape = TBackTopShape.circle;
+  TBackTopColorScheme colorScheme = TBackTopColorScheme.light;
 
   @override
   void initState() {
     super.initState();
-    controller.addListener(listenCallback);
-
+    // 根据当前亮暗主题自动适配 colorScheme
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       setState(() {
-        theme = Theme.of(context).brightness == Brightness.dark
-            ? TBackTopTheme.light
-            : TBackTopTheme.dark;
+        colorScheme = Theme.of(context).brightness == Brightness.dark
+            ? TBackTopColorScheme.dark
+            : TBackTopColorScheme.light;
       });
     });
   }
 
   @override
   void dispose() {
+    controller.dispose();
     super.dispose();
-    controller.removeListener(listenCallback);
-  }
-
-  void listenCallback() {
-    final shouldShow = controller.offset >= 100;
-    if (shouldShow != showBackTop) {
-      setState(() {
-        showBackTop = shouldShow;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return ExamplePage(
-        scrollController: controller,
-        title: tTitle(),
-        desc: '用于当页面过长往下滑动时，帮助用户快速回到页面顶部。',
-        exampleCodeGroup: 'backtop',
-        floatingActionButton: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Visibility(
-                visible: showBackTop,
-                child: style == TBackTopStyle.halfCircle
-                    ? Positioned(
-                        right: -16,
-                        bottom: 10,
-                        child: TBackTop(
-                          controller: controller,
-                          theme: theme,
-                          showText: true,
-                          style: style,
-                        ))
-                    : TBackTop(
-                        controller: controller,
-                        theme: theme,
-                        showText: true,
-                        style: style,
-                      )),
-          ],
-        ),
-        children: [
-          ExampleModule(title: '组件类型', children: [
-            ExampleItem(desc: '圆形返回顶部', builder: _buildCircleBackTop),
-            ExampleItem(desc: '半圆形返回顶部', builder: _buildHalfCircleBackTop),
-          ])
-        ]);
+      scrollController: controller,
+      title: tTitle(),
+      desc: '用于当页面过长往下滑动时，帮助用户快速回到页面顶部。',
+      exampleCodeGroup: 'backtop',
+      floatingActionButton: shape == TBackTopShape.halfCircle
+          ? Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  right: TBackTopThemeData().halfCircleRightInset ?? -16,
+                  bottom: 10,
+                  child: TBackTop(
+                    controller: controller,
+                    colorScheme: colorScheme,
+                    showText: true,
+                    shape: shape,
+                    visibilityOffset: 100,
+                  ),
+                ),
+              ],
+            )
+          : TBackTop(
+              controller: controller,
+              colorScheme: colorScheme,
+              showText: true,
+              shape: shape,
+              visibilityOffset: 100,
+            ),
+      children: [
+        ExampleModule(title: '组件类型', children: [
+          ExampleItem(desc: '圆形返回顶部', builder: _buildCircleBackTop),
+          ExampleItem(desc: '半圆形返回顶部', builder: _buildHalfCircleBackTop),
+        ])
+      ],
+    );
   }
 
   @Demo(group: 'backtop')
   Widget _buildCircleBackTop(BuildContext context) {
     return getCustomButton(context, '圆形返回顶部', () {
       setState(() {
-        showBackTop = true;
         if (controller.hasClients) {
           controller.jumpTo(500);
         }
-        style = TBackTopStyle.circle;
+        shape = TBackTopShape.circle;
       });
     });
   }
@@ -103,11 +94,10 @@ class _TBackTopPageState extends State<TBackTopPage> {
       children: [
         getCustomButton(context, '半圆形返回顶部', () {
           setState(() {
-            showBackTop = true;
             if (controller.hasClients) {
               controller.jumpTo(500);
             }
-            style = TBackTopStyle.halfCircle;
+            shape = TBackTopShape.halfCircle;
           });
         }),
         Padding(
@@ -117,21 +107,22 @@ class _TBackTopPageState extends State<TBackTopPage> {
             runSpacing: 24,
             children: List.generate(6, (_) => getDemoBox(context)),
           ),
-        )
+        ),
       ],
     );
   }
 
   Widget getCustomButton(
       BuildContext context, String text, void Function() onTap) {
-    return TButton(
-      text: text,
-      isBlock: true,
-      size: TButtonSize.large,
-      variant: TButtonVariant.outline,
-      shape: TButtonShape.rectangle,
-      colorScheme: TButtonColorScheme.primary,
-      onPressed: onTap,
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: Text(text),
+        size: TButtonSize.large,
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: onTap,
+      ),
     );
   }
 
@@ -139,7 +130,6 @@ class _TBackTopPageState extends State<TBackTopPage> {
     final theme = TTheme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      // spacing: 10,
       children: [
         Container(
           width: 163,

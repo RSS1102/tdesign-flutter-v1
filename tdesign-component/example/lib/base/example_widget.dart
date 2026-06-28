@@ -283,8 +283,8 @@ class _ExamplePageState extends State<ExamplePage> {
     return TNavBar(
       key: widget.navBarKey,
       title: widget.title,
-      leftBarItems: leftBarItems,
-      rightBarItems: rightBarItems,
+      leading: leftBarItems,
+      actions: rightBarItems,
     );
   }
 

@@ -141,9 +141,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             TSearchBar(
-              placeHolder: '请输入组件名称',
+              hintText: '请输入组件名称',
               focusNode: focusNode,
-              onTextChanged: (value) {
+              onChanged: (value) {
                 setState(() {
                   searchText = value;
                 });

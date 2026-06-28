@@ -13,7 +13,7 @@ import 't_action_sheet_item_widget.dart';
 
 class TActionSheetGrid extends StatefulWidget {
   final List<TActionSheetItem> items;
-  final String? description;
+  final String? subtitle;
   final TActionSheetAlign align;
   final int count;
   final int rows;
@@ -22,7 +22,7 @@ class TActionSheetGrid extends StatefulWidget {
   final bool showPagination;
   final bool scrollable;
   final VoidCallback? onCancel;
-  final TActionSheetItemCallback? onSelected;
+  final TActionSheetOnChanged? onChanged;
   final double itemHeight;
   final double itemMinWidth;
   final bool useSafeArea;
@@ -30,7 +30,7 @@ class TActionSheetGrid extends StatefulWidget {
   const TActionSheetGrid({
     super.key,
     required this.items,
-    this.description,
+    this.subtitle,
     this.align = TActionSheetAlign.center,
     this.count = 8,
     this.rows = 2,
@@ -39,7 +39,7 @@ class TActionSheetGrid extends StatefulWidget {
     this.showPagination = false,
     this.scrollable = false,
     this.onCancel,
-    this.onSelected,
+    this.onChanged,
     this.itemHeight = 96.0,
     this.itemMinWidth = 80.0,
     this.useSafeArea = true,
@@ -69,7 +69,7 @@ class _TActionSheetGridState extends State<TActionSheetGrid> {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(height: TTheme.of(context).spacer8),
-          if (widget.description != null) _buildDescription(context),
+          if (widget.subtitle != null) _buildDescription(context),
           if (widget.showPagination) ...[
             _buildPaginationGrid(context),
             _buildPaginationDots(context),
@@ -101,7 +101,7 @@ class _TActionSheetGridState extends State<TActionSheetGrid> {
         mainAxisAlignment: getMainAxisAlignment(widget.align),
         children: [
           TText(
-            widget.description!,
+            widget.subtitle!,
             font: TTheme.of(context).fontBodyMedium,
             textColor: TTheme.of(context).textColorPlaceholder,
           ),
@@ -160,7 +160,7 @@ class _TActionSheetGridState extends State<TActionSheetGrid> {
                 child: TActionSheetItemWidget(
                   item: chunks[row].getOrNull(col),
                   index: index,
-                  onSelected: widget.onSelected,
+                  onChanged: widget.onChanged,
                 ),
               );
             }),
@@ -195,7 +195,7 @@ class _TActionSheetGridState extends State<TActionSheetGrid> {
           return TActionSheetItemWidget(
             item: item,
             index: pageIndex * widget.count + index,
-            onSelected: widget.onSelected,
+            onChanged: widget.onChanged,
           );
         },
       ),

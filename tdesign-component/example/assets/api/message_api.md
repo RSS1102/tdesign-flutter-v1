@@ -16,9 +16,9 @@
 | closeBtn | dynamic | - | 关闭按钮 |
 | icon | dynamic | - | 自定义消息前面的图标 |
 | link | dynamic | - | 链接名称 |
-| marquee | MessageMarquee? | - | 跑马灯效果 |
+| marquee | TMessageMarquee? | - | 跑马灯效果 |
 | offset | List<double>? | - | 相对于 placement 的偏移量 |
-| theme | MessageTheme? | - | 消息组件风格 info/success/warning/error |
+| theme | TMessageVariant? | - | 消息组件风格 info/success/warning/error |
 | onCloseBtnClick | VoidCallback? | - | 点击关闭按钮触发 |
 | onDurationEnd | VoidCallback? | - | 计时结束后触发 |
 | onLinkClick | VoidCallback? | - | 点击链接文本时触发 |
@@ -33,16 +33,16 @@
 | icon | dynamic | true | 自定义消息前面的图标 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | link | dynamic | - | 链接名称 |
-| marquee | MessageMarquee? | - | 跑马灯效果 |
+| marquee | TMessageMarquee? | - | 跑马灯效果 |
 | offset | List<double>? | - | 相对于 placement 的偏移量 |
 | onCloseBtnClick | VoidCallback? | - | 点击关闭按钮触发 |
 | onDurationEnd | VoidCallback? | - | 计时结束后触发 |
 | onLinkClick | VoidCallback? | - | 点击链接文本时触发 |
-| theme | MessageTheme? | MessageTheme.info | 消息组件风格 info/success/warning/error |
+| theme | TMessageVariant? | TMessageVariant.info | 消息组件风格 info/success/warning/error |
 | visible | bool? | true | 是否显示 |
 
 
-### MessageMarquee
+### TMessageMarquee
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -52,7 +52,7 @@
 | speed | int? | - | 速度 |
 
 
-### MessageLink
+### TMessageLink
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -62,7 +62,7 @@
 | uri | Uri? | - | 资源链接 |
 
 
-### MessageTheme
+### TMessageVariant
 #### 枚举值
 
 

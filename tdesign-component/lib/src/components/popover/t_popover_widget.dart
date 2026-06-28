@@ -1,25 +1,6 @@
 import 'package:flutter/material.dart';
+import 't_popover_theme_data.dart';
 import '../../../tdesign_flutter.dart';
-
-enum TPopoverTheme {
-  /// 暗色
-  dark,
-
-  /// 亮色
-  light,
-
-  /// 品牌色
-  info,
-
-  /// 成功
-  success,
-
-  /// 警告
-  warning,
-
-  /// 错误
-  error
-}
 
 enum TPopoverPlacement {
   /// 上左
@@ -69,7 +50,7 @@ class TPopoverWidget extends StatefulWidget {
     this.content,
     this.contentWidget,
     this.offset = 4,
-    this.theme,
+    this.colorScheme,
     this.placement,
     this.showArrow = true,
     this.arrowSize = 8,
@@ -94,7 +75,7 @@ class TPopoverWidget extends StatefulWidget {
   final double offset;
 
   /// 弹出气泡主题
-  final TPopoverTheme? theme;
+  final TPopoverColorScheme? colorScheme;
 
   /// 浮层出现位置
   final TPopoverPlacement? placement;
@@ -233,24 +214,24 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
 
   /// 初始化主题
   void _initTheme() {
-    switch (widget.theme) {
-      case TPopoverTheme.info:
+    switch (widget.colorScheme) {
+      case TPopoverColorScheme.info:
         _color = TTheme.of(widget.context).brandNormalColor;
         _backgroundColor = TTheme.of(widget.context).brandLightColor;
         break;
-      case TPopoverTheme.success:
+      case TPopoverColorScheme.success:
         _color = TTheme.of(widget.context).successNormalColor;
         _backgroundColor = TTheme.of(widget.context).successLightColor;
         break;
-      case TPopoverTheme.warning:
+      case TPopoverColorScheme.warning:
         _color = TTheme.of(widget.context).warningNormalColor;
         _backgroundColor = TTheme.of(widget.context).warningLightColor;
         break;
-      case TPopoverTheme.error:
+      case TPopoverColorScheme.error:
         _color = TTheme.of(widget.context).errorNormalColor;
         _backgroundColor = TTheme.of(widget.context).errorLightColor;
         break;
-      case TPopoverTheme.light:
+      case TPopoverColorScheme.light:
         _color = TTheme.of(widget.context).grayColor14;
         _backgroundColor = TTheme.of(widget.context).whiteColor1;
         break;

@@ -5,7 +5,7 @@
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | action | String | '' | 自定义操作文字 |
-| alignment | TSearchAlignment? | TSearchAlignment.left | 对齐方式，居中或这头部对齐 |
+| alignment | TSearchBarAlignment? | TSearchBarAlignment.left | 对齐方式，居中或这头部对齐 |
 | autoFocus | bool | false | 是否自动获取焦点 |
 | autoHeight | bool | false | 是否自动计算高度 |
 | backgroundColor | Color? | - | 背景颜色 |
@@ -23,14 +23,14 @@
 | onInputClick | GestureTapCallback? | - | 输入框点击事件 |
 | onSubmitted | TSearchBarEvent? | - | 提交回调 |
 | onTapOutside | TapRegionCallback? | - | 点击输入框外部回调 |
-| onTextChanged | TSearchBarEvent? | - | 文字改变回调 |
+| onChanged | TSearchBarEvent? | - | 文字改变回调 |
 | padding | EdgeInsets | const EdgeInsets.symmetric(horizontal: 16, vertical: 8) | 内部填充 |
-| placeHolder | String? | - | 预设文案 |
+| hintText | String? | - | 预设文案 |
 | readOnly | bool? | - | 是否只读 |
-| style | TSearchStyle? | TSearchStyle.square | 样式 |
+| style | TSearchBarStyle? | TSearchBarStyle.square | 样式 |
 
 
-### TSearchStyle
+### TSearchBarStyle
 #### 枚举值
 
 
@@ -40,7 +40,7 @@
 | round | 圆形 |
 
 
-### TSearchAlignment
+### TSearchBarAlignment
 #### 枚举值
 
 

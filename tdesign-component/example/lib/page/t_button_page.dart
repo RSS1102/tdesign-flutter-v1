@@ -614,7 +614,7 @@ class _TButtonPageState extends State<TButtonPage> {
       icon: TLoading(
         size: TLoadingSize.small,
         icon: TLoadingIcon.circle,
-        iconColor: TTheme.of(context).whiteColor1,
+        themeData: TLoadingThemeData(iconColor: TTheme.of(context).whiteColor1),
       ),
       size: TButtonSize.large,
       variant: TButtonVariant.fill,

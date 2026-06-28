@@ -51,7 +51,7 @@ TDropdownMenu _buildDownSimple(BuildContext context) {
           TDropdownItemOption(label: '最新产品', value: 'new'),
           TDropdownItemOption(label: '最火产品', value: 'hot'),
         ],
-        onChange: (value) {
+        onChanged: (value) {
           print('选择：$value');
         },
       ),
@@ -84,7 +84,7 @@ TDropdownMenu _buildDownChunk(BuildContext context) {
           TDropdownItemOption(label: '选项8', value: '8'),
           TDropdownItemOption(label: '禁用选项', value: '9', disabled: true),
         ],
-        onChange: (value) {
+        onChanged: (value) {
           print('选择：$value');
         },
         onConfirm: (value) {
@@ -170,7 +170,7 @@ TDropdownMenu _buildUp(BuildContext context) {
             TDropdownItemOption(label: '最新产品', value: 'new'),
             TDropdownItemOption(label: '最火产品', value: 'hot'),
           ],
-          onChange: (value) {
+          onChanged: (value) {
             print('选择：$value');
           },
         ),
@@ -230,7 +230,7 @@ TDropdownMenu _buildGroup(BuildContext context) {
             TDropdownItemOption(label: '选项11', value: '11', group: '能力'),
             TDropdownItemOption(label: '选项12', value: '12', group: '能力'),
           ],
-          onChange: (value) {
+          onChanged: (value) {
             print('选择：$value');
           },
           onConfirm: (value) {
@@ -268,7 +268,7 @@ TDropdownMenu _buildHidden(BuildContext context) {
             TDropdownItemOption(label: '选项11', value: '11', group: '能力'),
             TDropdownItemOption(label: '选项12', value: '12', group: '能力'),
           ],
-          onChange: (value) {
+          onChanged: (value) {
             print('选择：$value');
           },
         ),
@@ -307,7 +307,7 @@ TDropdownMenu _buildHeight(BuildContext context) {
             TDropdownItemOption(label: '禁用选项', value: '11', disabled: true),
             TDropdownItemOption(label: '禁用选项', value: '12', disabled: true),
           ],
-          onChange: (value) {
+          onChanged: (value) {
             print('选择：$value');
           },
         ),
@@ -366,7 +366,7 @@ TDropdownMenu _buildOverflow(BuildContext context) {
             TDropdownItemOption(label: '禁用选项', value: '11', disabled: true),
             TDropdownItemOption(label: '禁用选项', value: '12', disabled: true),
           ],
-          onChange: (value) {
+          onChanged: (value) {
             print('选择：$value');
           },
         ),
@@ -429,7 +429,7 @@ TDropdownMenu _buildCustomOverflow(BuildContext context) {
           TDropdownItemOption(
               label: '最火产品', value: 'hot', selectedColor: Colors.green),
         ],
-        onChange: (value) {
+        onChanged: (value) {
           print('选择：$value');
         },
       ),

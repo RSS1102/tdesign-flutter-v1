@@ -12,7 +12,7 @@ class TPopoverPage extends StatefulWidget {
 }
 
 class _TPopoverPage extends State<TPopoverPage> {
-  TPopoverTheme theme = TPopoverTheme.light;
+  TPopoverColorScheme theme = TPopoverColorScheme.light;
 
   @override
   void initState() {
@@ -20,8 +20,8 @@ class _TPopoverPage extends State<TPopoverPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         theme = Theme.of(context).brightness == Brightness.dark
-            ? TPopoverTheme.light
-            : TPopoverTheme.dark;
+            ? TPopoverColorScheme.light
+            : TPopoverColorScheme.dark;
       });
     });
   }
@@ -209,7 +209,7 @@ class _TPopoverPage extends State<TPopoverPage> {
             colorScheme: TButtonColorScheme.primary,
             onPressed: () {
               TPopover.showPopover(
-                  context: _, content: '弹出气泡内容', theme: theme);
+                  context: _, content: '弹出气泡内容', colorScheme: theme);
             },
           );
         },
@@ -228,7 +228,7 @@ class _TPopoverPage extends State<TPopoverPage> {
           colorScheme: TButtonColorScheme.primary,
           onPressed: () {
             TPopover.showPopover(
-                context: _, content: '弹出气泡内容', showArrow: false, theme: theme);
+                context: _, content: '弹出气泡内容', showArrow: false, colorScheme: theme);
           },
         );
       },
@@ -238,7 +238,7 @@ class _TPopoverPage extends State<TPopoverPage> {
   @Demo(group: 'popover')
   Widget _buildNCustomPopover(BuildContext context) {
     var textStyle = TextStyle(
-        color: theme == TPopoverTheme.light
+        color: theme == TPopoverColorScheme.light
             ? TTheme.of(context).fontGyColor1
             : TTheme.of(context).fontWhColor1);
     return LayoutBuilder(
@@ -251,7 +251,7 @@ class _TPopoverPage extends State<TPopoverPage> {
             TPopover.showPopover(
               context: _,
               padding: const EdgeInsets.all(0),
-              theme: theme,
+              colorScheme: theme,
               width: 108,
               height: 152,
               contentWidget: Column(
@@ -260,12 +260,12 @@ class _TPopoverPage extends State<TPopoverPage> {
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                     child: TText('选项1', style: textStyle),
                   ),
-                  const TDivider(height: 0.5),
+                  const TDivider(),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                     child: TText('选项2', style: textStyle),
                   ),
-                  const TDivider(height: 0.5),
+                  const TDivider(),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                     child: TText('选项3', style: textStyle),
@@ -319,7 +319,7 @@ class _TPopoverPage extends State<TPopoverPage> {
               TPopover.showPopover(
                 context: _,
                 content: '弹出气泡内容',
-                theme: TPopoverTheme.light,
+                colorScheme: TPopoverColorScheme.light,
               );
             },
           );
@@ -344,7 +344,7 @@ class _TPopoverPage extends State<TPopoverPage> {
               TPopover.showPopover(
                 context: _,
                 content: '弹出气泡内容',
-                theme: TPopoverTheme.info,
+                colorScheme: TPopoverColorScheme.info,
               );
             },
           );
@@ -369,7 +369,7 @@ class _TPopoverPage extends State<TPopoverPage> {
               TPopover.showPopover(
                 context: _,
                 content: '弹出气泡内容',
-                theme: TPopoverTheme.success,
+                colorScheme: TPopoverColorScheme.success,
               );
             },
           );
@@ -394,7 +394,7 @@ class _TPopoverPage extends State<TPopoverPage> {
               TPopover.showPopover(
                 context: _,
                 content: '弹出气泡内容',
-                theme: TPopoverTheme.warning,
+                colorScheme: TPopoverColorScheme.warning,
               );
             },
           );
@@ -419,7 +419,7 @@ class _TPopoverPage extends State<TPopoverPage> {
               TPopover.showPopover(
                 context: _,
                 content: '弹出气泡内容',
-                theme: TPopoverTheme.error,
+                colorScheme: TPopoverColorScheme.error,
               );
             },
           );
@@ -445,7 +445,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.topLeft,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -471,7 +471,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.top,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -497,7 +497,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.topRight,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -523,7 +523,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.bottomLeft,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -549,7 +549,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.bottom,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -575,7 +575,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.bottomRight,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -601,7 +601,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.rightTop,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -627,7 +627,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.right,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -653,7 +653,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.rightBottom,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -679,7 +679,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.leftTop,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -705,7 +705,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.left,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -731,7 +731,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 content: '弹出气泡内容',
                 placement: TPopoverPlacement.leftBottom,
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -757,7 +757,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 width: 200,
                 content: '弹出气泡内容弹出气泡内容弹出气泡内容弹出气泡内容',
-                theme: theme,
+                colorScheme: theme,
               );
             },
           );
@@ -783,7 +783,7 @@ class _TPopoverPage extends State<TPopoverPage> {
                 context: _,
                 width: 200,
                 radius: BorderRadius.circular(16),
-                theme: theme,
+                colorScheme: theme,
                 content: '弹出气泡内容弹出气泡内容弹出气泡内容弹出气泡内容',
               );
             },

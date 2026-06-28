@@ -6,8 +6,8 @@ import '../../theme/t_theme.dart';
 import '../cell/t_cell.dart';
 import '../cell/t_cell_group.dart';
 import '../cell/t_cell_style.dart';
-import '../icon/t_icons.dart';
 import '../popup/t_popup.dart';
+import 't_drawer_theme_data.dart';
 import 't_drawer_widget.dart';
 
 /// 抽屉方向
@@ -27,14 +27,15 @@ class TDrawer {
     this.visible,
     this.onClose,
     this.onItemClick,
-    this.width = 280,
+    this.width,
     this.drawerTop,
     this.style,
-    this.hover = true,
+    this.hover,
     this.backgroundColor,
-    this.bordered = true,
-    this.isShowLastBordered = true,
-    this.contentWidget,
+    this.bordered,
+    this.isShowLastBordered,
+    this.child,
+    this.themeData,
   }) {
     if (visible == true) {
       show();
@@ -54,7 +55,7 @@ class TDrawer {
   final List<TDrawerItem>? items;
 
   /// 自定义内容，优先级高于[items]/[footer]/[title]
-  final Widget? contentWidget;
+  final Widget? child;
 
   /// 抽屉方向
   final TDrawerPlacement? placement;
@@ -77,34 +78,46 @@ class TDrawer {
   /// 点击抽屉里的列表项触发
   final TDrawerItemClickCallback? onItemClick;
 
-  /// 宽度
+  /// 宽度（优先级高于 ThemeData）
   final double? width;
 
   /// 距离顶部的距离
   final double? drawerTop;
 
-  /// 列表自定义样式
+  /// 列表自定义样式（优先级高于 ThemeData）
   final TCellStyle? style;
 
-  /// 是否开启点击反馈
+  /// 是否开启点击反馈（优先级高于 ThemeData）
   final bool? hover;
 
-  /// 组件背景颜色
+  /// 组件背景颜色（优先级高于 ThemeData）
   final Color? backgroundColor;
 
-  /// 是否显示边框
+  /// 是否显示边框（优先级高于 ThemeData）
   final bool? bordered;
 
-  /// 是否显示最后一行分割线
+  /// 是否显示最后一行分割线（优先级高于 ThemeData）
   final bool? isShowLastBordered;
 
+  /// 子树级主题数据
+  final TDrawerThemeData? themeData;
+
   TPopupHandle? _drawerHandle;
+
+  /// 从 ThemeData 解析有效值
+  TDrawerThemeData _resolveTheme() {
+    final theme = themeData ??
+        Theme.of(context).extension<TDrawerThemeData>() ??
+        const TDrawerThemeData();
+    return theme;
+  }
 
   void show() {
     if (_drawerHandle?.isShowing == true) {
       return;
     }
 
+    final theme = _resolveTheme();
     final overlayEnabled = showOverlay ?? true;
     final dismissible = overlayEnabled && (closeOnOverlayClick ?? true);
     final popupPlacement = placement == TDrawerPlacement.right
@@ -118,7 +131,7 @@ class TDrawer {
       context,
       options: TPopupOptions(
         placement: popupPlacement,
-        width: width,
+        width: width ?? theme.width ?? 280,
         inset: popupInset,
         showOverlay: overlayEnabled,
         closeOnOverlayClick: dismissible,
@@ -127,16 +140,17 @@ class TDrawer {
         child: TDrawerWidget(
           footer: footer,
           items: items,
-          contentWidget: contentWidget,
+          child: child,
           title: title,
           titleWidget: titleWidget,
           onItemClick: onItemClick,
-          width: width,
-          style: style,
-          hover: hover,
-          backgroundColor: backgroundColor,
-          bordered: bordered,
-          isShowLastBordered: isShowLastBordered,
+          width: width ?? theme.width ?? 280,
+          style: style ?? theme.style,
+          hover: hover ?? theme.hover ?? true,
+          backgroundColor: backgroundColor ?? theme.backgroundColor,
+          bordered: bordered ?? theme.bordered ?? true,
+          isShowLastBordered:
+              isShowLastBordered ?? theme.isShowLastBordered ?? true,
         ),
       ),
     );

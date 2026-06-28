@@ -42,7 +42,7 @@
 | maxHeight | double? | - | 内容最大高度 |
 | minHeight | double? | - | 内容最小高度 |
 | multiple | bool? | false | 是否多选 |
-| onChange | ValueChanged<T?>? | - | 值改变时触发 |
+| onChanged | ValueChanged<T?>? | - | 值改变时触发 |
 | onConfirm | ValueChanged<T?>? | - | 点击确认时触发 |
 | onReset | VoidCallback? | - | 点击重置时触发 |
 | options | List<TDropdownItemOption>? | const [] | 选项数据 |

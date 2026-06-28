@@ -17,7 +17,7 @@ class TActionSheetGroup extends StatelessWidget {
   final String? cancelText;
   final bool showCancel;
   final VoidCallback? onCancel;
-  final TActionSheetItemCallback? onSelected;
+  final TActionSheetOnChanged? onChanged;
   final double itemHeight;
   final double itemMinWidth;
   final bool useSafeArea;
@@ -29,7 +29,7 @@ class TActionSheetGroup extends StatelessWidget {
     this.cancelText,
     this.showCancel = true,
     this.onCancel,
-    this.onSelected,
+    this.onChanged,
     this.itemHeight = 96.0,
     this.itemMinWidth = 80.0,
     this.useSafeArea = true,
@@ -89,7 +89,7 @@ class TActionSheetGroup extends StatelessWidget {
                         width: itemMinWidth,
                         child: TActionSheetItemWidget(
                           item: list[row],
-                          onSelected: onSelected,
+                          onChanged: onChanged,
                           index: items.indexOf(list[row]),
                         ),
                       );

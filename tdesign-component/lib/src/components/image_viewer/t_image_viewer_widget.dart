@@ -180,7 +180,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
                 child: TLoading(
                   icon: TLoadingIcon.circle,
                   size: TLoadingSize.large,
-                  iconColor: TTheme.of(context).brandNormalColor,
+                  themeData: TLoadingThemeData(iconColor: TTheme.of(context).brandNormalColor),
                 ),
               ),
             ),

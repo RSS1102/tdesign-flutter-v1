@@ -26,7 +26,7 @@ enum TDialogButtonStyle {
 class TDialogButtonOptions {
   TDialogButtonOptions({
     required this.title,
-    required this.action,
+    required this.onPressed,
     this.titleColor,
     this.titleSize,
     this.style,
@@ -62,5 +62,5 @@ class TDialogButtonOptions {
   final double? height;
 
   /// 点击操作
-  final Function()? action;
+  final Function()? onPressed;
 }

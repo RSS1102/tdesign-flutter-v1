@@ -2,9 +2,7 @@
 ///  Created by arvinwli@tencent.com on 4/24/23.
 ///
 import 'package:flutter/material.dart';
-import '../../theme/t_colors.dart';
-import '../../theme/t_spacers.dart';
-import '../../theme/t_theme.dart';
+import '../../../tdesign_flutter.dart';
 import 't_slider_theme.dart';
 
 enum Position {
@@ -21,7 +19,7 @@ class TSlider extends StatefulWidget {
   final Decoration? boxDecoration;
 
   /// 左侧标签
-  final String? leftLabel;
+  final String? label;
 
   /// 右侧标签
   final String? rightLabel;
@@ -50,7 +48,7 @@ class TSlider extends StatefulWidget {
     this.boxDecoration,
     this.onChanged,
     this.sliderThemeData,
-    this.leftLabel,
+    this.label,
     this.rightLabel,
     this.onChangeStart,
     this.onChangeEnd,
@@ -88,10 +86,10 @@ class TSliderState extends State<TSlider> {
           ? TTheme.of(context).textColorPrimary
           : TTheme.of(context).textDisabledColor);
 
-  Widget get leftLabel => widget.leftLabel?.isNotEmpty == true
+  Widget get label => widget.label?.isNotEmpty == true
       ? Padding(
           padding: const EdgeInsets.only(left: 16),
-          child: Text(widget.leftLabel!, style: labelTextStyle),
+          child: Text(widget.label!, style: labelTextStyle),
         )
       : Container();
 
@@ -137,7 +135,7 @@ class TSliderState extends State<TSlider> {
           child: Row(
             // spacing: TTheme.of(context).spacer8,
             children: [
-              leftLabel,
+              label,
               const SizedBox(width: 8),
               Expanded(
                 child: Listener(
@@ -194,7 +192,7 @@ class TRangeSlider extends StatefulWidget {
   final Decoration? boxDecoration;
 
   /// 左侧标签
-  final String? leftLabel;
+  final String? label;
 
   /// 右侧标签
 
@@ -233,7 +231,7 @@ class TRangeSlider extends StatefulWidget {
     this.boxDecoration,
     this.onChanged,
     this.sliderThemeData,
-    this.leftLabel,
+    this.label,
     this.rightLabel,
     this.onChangeStart,
     this.onChangeEnd,
@@ -271,10 +269,10 @@ class _TRangeSliderState extends State<TRangeSlider> {
           ? TTheme.of(context).textColorPrimary
           : TTheme.of(context).textDisabledColor);
 
-  Widget get leftLabel => widget.leftLabel?.isNotEmpty == true
+  Widget get label => widget.label?.isNotEmpty == true
       ? Padding(
           padding: const EdgeInsets.only(left: 16),
-          child: Text(widget.leftLabel!, style: labelTextStyle),
+          child: Text(widget.label!, style: labelTextStyle),
         )
       : Container();
 
@@ -330,7 +328,7 @@ class _TRangeSliderState extends State<TRangeSlider> {
         child: Row(
           // spacing: 8,
           children: [
-            leftLabel,
+            label,
             const SizedBox(width: 8),
             Expanded(
               child: Listener(

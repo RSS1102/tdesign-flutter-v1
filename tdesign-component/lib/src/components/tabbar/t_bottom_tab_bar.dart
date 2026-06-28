@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
+import 't_bottom_tab_bar_theme_data.dart';
 
 /// 展开项 向下箭头宽
 const double _kArrowWidth = 13.5;
@@ -165,6 +166,8 @@ class TBottomTabBar extends StatefulWidget {
     this.indicatorAnimation = TBottomTabBarIndicatorAnimation.none,
     this.animationDuration = const Duration(milliseconds: 300),
     this.animationCurve = Curves.easeInOutCubic,
+    this.value,
+    this.themeData,
   })  : assert(() {
           if (navigationTabs.isEmpty) {
             throw FlutterError('[TBottomTabBar] please set at least one tab!');
@@ -257,7 +260,7 @@ class TBottomTabBar extends StatefulWidget {
   /// icon与文本中间距离（可选）
   final double? centerDistance;
 
-  /// 选中的index（可选）
+  /// 选中的index（可选，v1.0 推荐使用 [value]）
   final int? currentIndex;
 
   /// 是否需要水波纹效果
@@ -272,6 +275,12 @@ class TBottomTabBar extends StatefulWidget {
   /// 动画曲线
   final Curve animationCurve;
 
+  /// 选中的 index（v1.0 新增，等价于 [currentIndex]，优先级更高）
+  final int? value;
+
+  /// 子树级主题数据（v1.0 新增）
+  final TBottomTabBarThemeData? themeData;
+
   @override
   State<TBottomTabBar> createState() => _TBottomTabBarState();
 }
@@ -285,7 +294,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.currentIndex ?? 0;
+    _selectedIndex = widget.value ?? widget.currentIndex ?? 0;
 
     // 初始化动画控制器
     _animationController = AnimationController(
@@ -306,8 +315,9 @@ class _TBottomTabBarState extends State<TBottomTabBar>
   @override
   void didUpdateWidget(covariant TBottomTabBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.currentIndex != null && widget.currentIndex != _selectedIndex) {
-      _animateToIndex(widget.currentIndex!);
+    final effectiveValue = widget.value ?? widget.currentIndex;
+    if (effectiveValue != null && effectiveValue != _selectedIndex) {
+      _animateToIndex(effectiveValue);
     }
 
     // 更新动画时长和曲线

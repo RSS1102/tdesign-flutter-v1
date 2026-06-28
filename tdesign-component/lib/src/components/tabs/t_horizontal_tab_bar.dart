@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../tdesign_flutter.dart';
+import 't_tab_bar_theme_data.dart';
 
 const double _kTabHeight = 46.0;
 const double _kTextAndIconTabHeight = 72.0;
@@ -315,7 +316,7 @@ class THorizontalTabBar extends StatefulWidget implements PreferredSizeWidget {
   final ScrollPhysics? physics;
 
   /// 选项卡样式
-  final TTabBarOutlineType? outlineType;
+  final TTabBarVariant? outlineType;
 
   /// tabBar背景色
   final Color? backgroundColor;
@@ -784,7 +785,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   }
 
   BoxDecoration? _getContentDecorateInner(int index) {
-    if (widget.outlineType == TTabBarOutlineType.capsule) {
+    if (widget.outlineType == TTabBarVariant.capsule) {
       return BoxDecoration(
           color: index == _currentIndex
               ? (widget.selectedBgColor ?? TTheme.of(context).brandColor1)
@@ -795,11 +796,11 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   }
 
   BoxDecoration? _getContentDecorateOuter(int index) {
-    if (widget.outlineType == TTabBarOutlineType.capsule) {
+    if (widget.outlineType == TTabBarVariant.capsule) {
       return BoxDecoration(
         color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
       );
-    } else if (widget.outlineType == TTabBarOutlineType.card) {
+    } else if (widget.outlineType == TTabBarVariant.card) {
       if (index == _currentIndex) {
         return BoxDecoration(
             color:
@@ -828,7 +829,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   }
 
   Color? _getBackgroundColor(int index) {
-    if (widget.outlineType == TTabBarOutlineType.card) {
+    if (widget.outlineType == TTabBarVariant.card) {
       if (index == _currentIndex) {
         return TTheme.of(context).bgColorSecondaryContainer;
       }
@@ -898,7 +899,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
       }
       // tab.size=20;
       EdgeInsetsGeometry? capsuleDefaultPadding;
-      if (widget.outlineType == TTabBarOutlineType.capsule) {
+      if (widget.outlineType == TTabBarVariant.capsule) {
         capsuleDefaultPadding = const EdgeInsets.all(4);
       }
       return Container(
@@ -970,9 +971,9 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
     final tabCount = widget.tabs.length;
     for (var index = 0; index < tabCount; index += 1) {
       wrappedTabs[index] = Opacity(
-        opacity: widget.tabs[index].enable ? 1.0 : 0.4,
+        opacity: widget.tabs[index].enabled ? 1.0 : 0.4,
         child: IgnorePointer(
-          ignoring: !widget.tabs[index].enable,
+          ignoring: !widget.tabs[index].enabled,
           child: InkWell(
             mouseCursor: widget.mouseCursor ?? SystemMouseCursors.click,
             onTap: () {
@@ -981,7 +982,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
             enableFeedback: widget.enableFeedback ?? true,
             overlayColor: widget.overlayColor,
             child: Container(
-              padding: widget.outlineType == TTabBarOutlineType.filled
+              padding: widget.outlineType == TTabBarVariant.filled
                   ? EdgeInsets.only(bottom: widget.indicatorWeight)
                   : EdgeInsets.zero,
               child: Stack(

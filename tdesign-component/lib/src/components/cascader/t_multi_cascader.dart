@@ -49,7 +49,7 @@ class TMultiCascader extends StatefulWidget {
   final TCascaderAction? action;
 
   /// 值发生变更时触发
-  final MultiCascaderCallback onChange;
+  final MultiCascaderCallback onChanged;
 
   const TMultiCascader(
       {super.key,
@@ -67,7 +67,7 @@ class TMultiCascader extends StatefulWidget {
       this.isLetterSort = false,
       this.onClose,
       this.action,
-      required this.onChange});
+      required this.onChanged});
 
   @override
   State<TMultiCascader> createState() => _TMultiCascaderState();
@@ -557,7 +557,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
       var result = _tabListData
           .where((element) => element.label != context.resource.cascadeLabel)
           .toList();
-      widget.onChange(result);
+      widget.onChanged(result);
       Navigator.of(context).pop();
     }
   }

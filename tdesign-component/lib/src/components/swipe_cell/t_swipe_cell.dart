@@ -7,6 +7,7 @@ import '../cell/t_cell.dart';
 import 't_swipe_cell_action.dart';
 import 't_swipe_cell_inherited.dart';
 import 't_swipe_cell_panel.dart';
+import 't_swipe_cell_theme_data.dart';
 
 export 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -16,33 +17,21 @@ enum TSwipeDirection { right, left }
 class TSwipeCell extends StatefulWidget {
   const TSwipeCell({
     Key? key,
-    this.slidableKey,
     required this.cell,
-    this.disabled = false,
-    this.opened = const [false, false],
+    this.enabled = true,
     this.right,
     this.left,
-    this.onChange,
+    this.onChanged,
     this.controller,
-    this.groupTag,
-    this.closeWhenOpened = true,
-    this.closeWhenTapped = true,
-    this.dragStartBehavior = DragStartBehavior.start,
     this.direction = Axis.horizontal,
-    this.duration = const Duration(milliseconds: 200),
+    this.themeData,
   }) : super(key: key);
-
-  /// 滑动组件的 Key
-  final Key? slidableKey;
 
   /// 单元格 [TCell]
   final Widget cell;
 
-  /// 是否禁用滑动
-  final bool? disabled;
-
-  /// 默认打开，[left, right]
-  final List<bool>? opened;
+  /// 是否启用滑动（默认 true，false 表示禁用）
+  final bool enabled;
 
   /// 右侧滑动操作项面板
   final TSwipeCellPanel? right;
@@ -51,32 +40,26 @@ class TSwipeCell extends StatefulWidget {
   final TSwipeCellPanel? left;
 
   /// 滑动展开事件
-  final Function(TSwipeDirection direction, bool open)? onChange;
+  final Function(TSwipeDirection direction, bool open)? onChanged;
 
   /// 自定义控制滑动窗口
   final SlidableController? controller;
 
-  /// 组，配置后，[closeWhenOpened]、[closeWhenTapped]才起作用
-  final Object? groupTag;
-
-  /// 当同一组（[groupTag]）中的一个[TSwipeCell]打开时，是否关闭组中的所有其他[TSwipeCell]
-  final bool? closeWhenOpened;
-
-  /// 当同一组（[groupTag]）中的一个[TSwipeCell]被点击时，是否应该关闭组中的所有[TSwipeCell]
-  ///
-  /// [cell]组件被点击时必须传递点击事件，执行`TSwipeCellInherited.of(context)?.cellClick()`
-  final bool? closeWhenTapped;
-
-  /// 处理拖动开始行为的方式[GestureDetector.dragStartBehavior]
-  final DragStartBehavior? dragStartBehavior;
-
   /// 可拖动的方向
   final Axis? direction;
 
-  /// 打开关闭动画时长
-  final Duration? duration;
+  /// 组件级主题配置，优先级高于 Theme Extension
+  final TSwipeCellThemeData? themeData;
 
-  Duration get getDuration => duration ?? const Duration(milliseconds: 200);
+  /// 获取生效的 Theme（实例 themeData > Theme Extension > 默认值）
+  TSwipeCellThemeData _effectiveTheme(BuildContext context) {
+    return (Theme.of(context).extension<TSwipeCellThemeData>() ??
+            const TSwipeCellThemeData())
+        .merge(themeData);
+  }
+
+  Duration getDuration(BuildContext context) =>
+      _effectiveTheme(context).duration ?? const Duration(milliseconds: 200);
 
   static final Map<Object, List<SlidableController>> _controllers = {};
 
@@ -137,13 +120,14 @@ class _TSwipeCellState extends State<TSwipeCell>
       ..animation.addStatusListener((status) {
         confirmListenable.value = null;
       });
-    TSwipeCell._pushController(controller, widget.groupTag);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if ((widget.opened?.length ?? 0) > 0 && widget.opened![0] == true) {
-        controller.openStartActionPane(duration: widget.getDuration);
+      final theme = widget._effectiveTheme(context);
+      final opened = theme.opened;
+      if ((opened?.length ?? 0) > 0 && opened![0] == true) {
+        controller.openStartActionPane(duration: widget.getDuration(context));
       }
-      if ((widget.opened?.length ?? 0) > 1 && widget.opened![1] == true) {
-        controller.openEndActionPane(duration: widget.getDuration);
+      if ((opened?.length ?? 0) > 1 && opened![1] == true) {
+        controller.openEndActionPane(duration: widget.getDuration(context));
       }
     });
   }
@@ -152,11 +136,12 @@ class _TSwipeCellState extends State<TSwipeCell>
   void didUpdateWidget(covariant TSwipeCell oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.controller != widget.controller) {
+      final theme = widget._effectiveTheme(context);
       controller.actionPaneType.removeListener(_handleActionPanelTypeChanged);
-      TSwipeCell._pushController(controller, widget.groupTag, del: true);
+      TSwipeCell._pushController(controller, theme.groupTag, del: true);
       controller = (widget.controller ?? SlidableController(this))
         ..actionPaneType.addListener(_handleActionPanelTypeChanged);
-      TSwipeCell._pushController(controller, widget.groupTag);
+      TSwipeCell._pushController(controller, theme.groupTag);
     }
   }
 
@@ -164,33 +149,36 @@ class _TSwipeCellState extends State<TSwipeCell>
   void dispose() {
     controller.actionPaneType.removeListener(_handleActionPanelTypeChanged);
     controller.dispose();
-    TSwipeCell._pushController(controller, widget.groupTag, del: true);
+    final theme = widget._effectiveTheme(context);
+    TSwipeCell._pushController(controller, theme.groupTag, del: true);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = widget._effectiveTheme(context);
     final rightConfirmLength = widget.right?.confirms?.length ?? 0;
     final leftConfirmLength = widget.left?.confirms?.length ?? 0;
 
     final slidable = Slidable(
-      key: widget.slidableKey ?? UniqueKey(),
+      key: theme.slidableKey ?? UniqueKey(),
       closeOnScroll: false,
       child: widget.cell,
       controller: controller,
-      enabled: !(widget.disabled ?? false),
-      groupTag: widget.groupTag,
+      enabled: widget.enabled,
+      groupTag: theme.groupTag,
       startActionPane: widget.left?.build(context),
       endActionPane: widget.right?.build(context),
-      dragStartBehavior: widget.dragStartBehavior ?? DragStartBehavior.start,
+      dragStartBehavior:
+          theme.dragStartBehavior ?? DragStartBehavior.start,
       direction: widget.direction ?? Axis.horizontal,
     );
     return TSwipeCellInherited(
-      duration: widget.getDuration,
+      duration: widget.getDuration(context),
       controller: controller,
       cellClick: () {
-        if (widget.closeWhenTapped == true) {
-          TSwipeCell.close(widget.groupTag);
+        if (theme.closeWhenTapped == true) {
+          TSwipeCell.close(theme.groupTag);
         }
       },
       actionClick: (action) {
@@ -231,7 +219,7 @@ class _TSwipeCellState extends State<TSwipeCell>
         widthFactor: isHorizontal ? extentRatio : null,
         heightFactor: isHorizontal ? null : extentRatio,
         child: AnimatedSwitcher(
-          duration: widget.getDuration,
+          duration: widget.getDuration(context),
           transitionBuilder: (child, animation) {
             return SlideTransition(
               child: child,
@@ -248,24 +236,25 @@ class _TSwipeCellState extends State<TSwipeCell>
   }
 
   void _handleActionPanelTypeChanged() {
+    final theme = widget._effectiveTheme(context);
     switch (controller.actionPaneType.value) {
       case ActionPaneType.none:
-        widget.onChange?.call(openDirection!, false);
+        widget.onChanged?.call(openDirection!, false);
         openDirection = null;
         break;
       case ActionPaneType.start:
-        if (widget.closeWhenOpened == true) {
-          TSwipeCell.close(widget.groupTag, current: controller);
+        if (theme.closeWhenOpened == true) {
+          TSwipeCell.close(theme.groupTag, current: controller);
         }
         openDirection = TSwipeDirection.left;
-        widget.onChange?.call(openDirection!, true);
+        widget.onChanged?.call(openDirection!, true);
         break;
       case ActionPaneType.end:
-        if (widget.closeWhenOpened == true) {
-          TSwipeCell.close(widget.groupTag, current: controller);
+        if (theme.closeWhenOpened == true) {
+          TSwipeCell.close(theme.groupTag, current: controller);
         }
         openDirection = TSwipeDirection.right;
-        widget.onChange?.call(openDirection!, true);
+        widget.onChanged?.call(openDirection!, true);
         break;
     }
   }

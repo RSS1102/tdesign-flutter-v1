@@ -17,7 +17,7 @@ class TDrawerWidget extends StatelessWidget {
     super.key,
     this.footer,
     this.items,
-    this.contentWidget,
+    this.child,
     this.title,
     this.titleWidget,
     this.onItemClick,
@@ -36,7 +36,7 @@ class TDrawerWidget extends StatelessWidget {
   final List<TDrawerItem>? items;
 
   /// 自定义内容，优先级高于[items]/[footer]/[title]
-  final Widget? contentWidget;
+  final Widget? child;
 
   /// 抽屉的标题
   final String? title;
@@ -67,7 +67,7 @@ class TDrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var content = contentWidget;
+    var content = child;
     if (content == null) {
       var cellStyle = style;
       if (cellStyle == null) {
