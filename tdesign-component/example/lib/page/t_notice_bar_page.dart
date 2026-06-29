@@ -231,7 +231,6 @@ Widget _cardNoticeBar(BuildContext context) {
           ),
         ),
         Container(
-          height: 150,
           decoration: BoxDecoration(
             color: TTheme.of(context).bgColorContainer,
             borderRadius: const BorderRadius.all(Radius.circular(12)),

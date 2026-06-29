@@ -163,7 +163,6 @@ class _TFabPageState extends State<TFabPage> {
   @Demo(group: 'fab')
   Widget _buildDraggableFab(BuildContext context) {
     return _buildPageDemo(
-      height: 280,
       fab: const TFab(
         right: 16,
         bottom: 16,

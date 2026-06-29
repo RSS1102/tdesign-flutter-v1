@@ -54,9 +54,9 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
       pages.add(getPageDemo(i));
     }
 
-    list[1].badge = const TBadge(TBadgeType.redPoint);
+    list[1].badge = const TBadge(TBadgeVariant.redPoint);
     list[2].badge = const TBadge(
-      TBadgeType.message,
+      TBadgeVariant.message,
       count: '8',
     );
     list[1].textStyle = const TextStyle(color: Colors.green);
@@ -71,7 +71,6 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
     return Row(
       children: [
         SizedBox(
-          width: 110,
           child: TSideBar(
             style: TSideBarStyle.normal,
             value: currentValue,
@@ -159,10 +158,8 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const TImage(
-            assetUrl: 'assets/img/empty.png',
-            type: TImageType.roundedSquare,
-            width: 48,
-            height: 48,
+            src: 'assets/img/empty.png',
+            variant: TImageVariant.roundedSquare,
           ),
           const SizedBox(height: 4),
           TText('$title', style: const TextStyle(fontSize: 12))

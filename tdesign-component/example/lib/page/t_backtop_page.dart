@@ -132,8 +132,6 @@ class _TBackTopPageState extends State<TBackTopPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 163,
-          height: 163,
           decoration: BoxDecoration(
             color: theme.bgColorContainer,
             borderRadius: BorderRadius.circular(theme.radiusExtraLarge),
@@ -141,8 +139,6 @@ class _TBackTopPageState extends State<TBackTopPage> {
         ),
         const SizedBox(height: 10),
         Container(
-          width: 163,
-          height: 16,
           decoration: BoxDecoration(
             color: theme.bgColorContainer,
             borderRadius: BorderRadius.circular(theme.radiusSmall),
@@ -150,8 +146,6 @@ class _TBackTopPageState extends State<TBackTopPage> {
         ),
         const SizedBox(height: 10),
         Container(
-          width: 100,
-          height: 16,
           decoration: BoxDecoration(
             color: theme.bgColorContainer,
             borderRadius: BorderRadius.circular(theme.radiusSmall),

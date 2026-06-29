@@ -1,8 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
+import 't_footer_theme_data.dart';
 
-enum TFooterType {
+/// 页脚形态
+enum TFooterVariant {
   /// 文字样式
   text,
 
@@ -15,29 +17,25 @@ enum TFooterType {
 
 class TFooter extends StatefulWidget {
   const TFooter(
-    this.type, {
+    this.variant, {
     Key? key,
     this.logo,
     this.text = '',
     this.links = const [],
     this.width,
-    this.height,
   }) : super(key: key);
 
   /// 品牌图片
   final String? logo;
 
-  /// 样式
-  final TFooterType type;
+  /// 页脚形态
+  final TFooterVariant variant;
 
   /// 文字
   final String text;
 
   /// 自定义图片宽
   final double? width;
-
-  /// 自定义图片高
-  final double? height;
 
   /// 链接
   final List<TLink> links;
@@ -47,20 +45,24 @@ class TFooter extends StatefulWidget {
 }
 
 class _TFooterState extends State<TFooter> {
+  /// 从 Theme 子树读取 L4 默认值
+  TFooterThemeData? _theme(BuildContext context) =>
+      Theme.of(context).extension<TFooterThemeData>();
+
   @override
   Widget build(BuildContext context) {
     var children = <Widget>[];
 
-    switch (widget.type) {
-      case TFooterType.text:
+    switch (widget.variant) {
+      case TFooterVariant.text:
         children = [_renderText()];
         break;
-      case TFooterType.link:
+      case TFooterVariant.link:
         children = [
           if (widget.links.isNotEmpty) _renderLinks() else _renderText()
         ];
         break;
-      case TFooterType.brand:
+      case TFooterVariant.brand:
         children = [if (widget.logo != null) _renderLogo() else _renderText()];
         break;
     }
@@ -75,14 +77,14 @@ class _TFooterState extends State<TFooter> {
   }
 
   Widget _renderLogo() {
+    final height = _theme(context)?.height;
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Padding(
         padding: const EdgeInsets.only(top: 4, bottom: 4),
         child: TImage(
-          assetUrl: widget.logo,
-          type: TImageType.fitWidth,
+          src: widget.logo,
+          variant: TImageVariant.fitWidth,
           width: widget.width,
-          height: widget.height,
         ),
       )
     ]);

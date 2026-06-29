@@ -484,7 +484,7 @@ class _TPickerPageState extends State<TPickerPage> {
       title: '弹窗-联动选择(省市区)',
       note: label.isEmpty ? '请选择' : label,
       arrow: true,
-      onClick: (_) {
+      onTap: () {
         TPickerValue? draft;
         final initial =
             _popupLinkedValue?.values ?? List<dynamic>.from(_popupLinkedInitial);
@@ -611,11 +611,7 @@ class _TPickerPageState extends State<TPickerPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const SizedBox(
-                              width: 12,
-                              height: 12,
                               child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(width: 6),
@@ -739,7 +735,6 @@ class _TPickerPageState extends State<TPickerPage> {
           context,
           child: TPicker(
             items: cityItems,
-            height: 350,
             itemCount: 7,
             onChanged: (_, v) => debugPrint('选中: ${v.labels.first}'),
           ),

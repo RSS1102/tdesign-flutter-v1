@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
+import 't_avatar_theme_data.dart';
 
+/// 头像尺寸
 enum TAvatarSize { large, medium, small }
 
-enum TAvatarType { icon, normal, customText, display, operation }
+/// 头像形态
+enum TAvatarVariant { icon, normal, customText, display, operation }
 
+/// 头像形状（迁入 TAvatarThemeData，但保留枚举）
 enum TAvatarShape { circle, square }
 
 /// 用于头像显示
@@ -12,21 +16,16 @@ class TAvatar extends StatelessWidget {
   const TAvatar({
     Key? key,
     this.size = TAvatarSize.medium,
-    this.type = TAvatarType.normal,
-    this.shape = TAvatarShape.circle,
+    this.variant = TAvatarVariant.normal,
     this.text,
-    this.radius,
     this.icon,
     this.avatarUrl,
-    this.avatarSize,
     this.avatarDisplayList,
     this.displayText,
-    this.onTap,
+    this.onPressed,
     this.defaultUrl = '',
     this.avatarDisplayWidget,
-    this.avatarDisplayBorder = 2,
     this.avatarDisplayListAsset,
-    this.backgroundColor,
     this.fit,
   }) : super(key: key);
 
@@ -36,20 +35,11 @@ class TAvatar extends StatelessWidget {
   /// 头像尺寸
   final TAvatarSize size;
 
-  /// 头像类型
-  final TAvatarType type;
-
-  /// 头像形状
-  final TAvatarShape shape;
+  /// 头像形态
+  final TAvatarVariant variant;
 
   /// 自定义文字
   final String? text;
-
-  /// 自定义圆角
-  final double? radius;
-
-  /// 自定义头像大小
-  final double? avatarSize;
 
   /// 自定义图标
   final IconData? icon;
@@ -63,9 +53,6 @@ class TAvatar extends StatelessWidget {
   /// 带操作展示的头像列表（本地资源）
   final List<String>? avatarDisplayListAsset;
 
-  /// 带操作展示的头像描边宽度
-  final double avatarDisplayBorder;
-
   /// 带操作头像自定义操作Widget
   final Widget? avatarDisplayWidget;
 
@@ -73,15 +60,16 @@ class TAvatar extends StatelessWidget {
   final String? displayText;
 
   /// 操作点击事件
-  final Function()? onTap;
-
-  /// 自定义文案时背景色
-  final Color? backgroundColor;
+  final VoidCallback? onPressed;
 
   /// 自定义图片对齐方式
   final BoxFit? fit;
 
-  double _getAvatarWidth() {
+  /// 从 Theme 子树读取 L4 默认值
+  TAvatarThemeData? _theme(BuildContext context) =>
+      Theme.of(context).extension<TAvatarThemeData>();
+
+  double _getAvatarWidth(BuildContext context) {
     double width;
     switch (size) {
       case TAvatarSize.large:
@@ -94,64 +82,67 @@ class TAvatar extends StatelessWidget {
         width = 40;
         break;
     }
-    return avatarSize ?? width;
+    final theme = _theme(context);
+    return theme?.avatarSize ?? width;
   }
 
   Font? _getTextFont(BuildContext context) {
-    Font? font;
     switch (size) {
       case TAvatarSize.large:
-        font = TTheme.of(context).fontTitleExtraLarge;
-        break;
+        return TTheme.of(context).fontTitleExtraLarge;
       case TAvatarSize.medium:
-        font = TTheme.of(context).fontTitleMedium;
-        break;
+        return TTheme.of(context).fontTitleMedium;
       case TAvatarSize.small:
-        font = TTheme.of(context).fontTitleSmall;
-        break;
+        return TTheme.of(context).fontTitleSmall;
     }
-    return font;
   }
 
   double _getIconWidth() {
-    double width;
     switch (size) {
       case TAvatarSize.large:
-        width = 32;
-        break;
+        return 32;
       case TAvatarSize.medium:
-        width = 24;
-        break;
+        return 24;
       case TAvatarSize.small:
-        width = 20;
-        break;
+        return 20;
     }
-    return width;
   }
 
   double _getAvatarRadius(BuildContext context) {
-    double _radius;
+    final theme = _theme(context);
+    final shape = theme?.shape ?? TAvatarShape.circle;
+    double r;
     switch (shape) {
       case TAvatarShape.circle:
-        _radius = _getAvatarWidth() / 2;
+        r = _getAvatarWidth(context) / 2;
         break;
       case TAvatarShape.square:
-        _radius = TTheme.of(context).radiusDefault;
+        r = TTheme.of(context).radiusDefault;
         break;
     }
-    return radius ?? _radius;
+    return theme?.radius ?? r;
+  }
+
+  Color _resolveBackgroundColor(BuildContext context) {
+    final theme = _theme(context);
+    return theme?.backgroundColor ?? TTheme.of(context).brandFocusColor;
+  }
+
+  double _resolveDisplayBorder(BuildContext context) {
+    final theme = _theme(context);
+    return theme?.avatarDisplayBorder ?? 2;
   }
 
   @override
   Widget build(BuildContext context) {
-    switch (type) {
-      case TAvatarType.icon:
+    switch (variant) {
+      case TAvatarVariant.icon:
         return GestureDetector(
           child: Container(
-            width: _getAvatarWidth(),
-            height: _getAvatarWidth(),
+            width: _getAvatarWidth(context),
+            height: _getAvatarWidth(context),
             decoration: BoxDecoration(
-              color: backgroundColor ?? TTheme.of(context).brandFocusColor,
+              color: _resolveBackgroundColor(context),
               borderRadius: BorderRadius.circular(_getAvatarRadius(context)),
             ),
             child: Center(
@@ -161,15 +152,15 @@ class TAvatar extends StatelessWidget {
               color: TTheme.of(context).brandNormalColor,
             )),
           ),
-          onTap: onTap,
+          onTap: onPressed,
         );
-      case TAvatarType.normal:
+      case TAvatarVariant.normal:
         return GestureDetector(
           child: Container(
-            width: _getAvatarWidth(),
-            height: _getAvatarWidth(),
+            width: _getAvatarWidth(context),
+            height: _getAvatarWidth(context),
             decoration: BoxDecoration(
-                color: backgroundColor ?? TTheme.of(context).brandFocusColor,
+                color: _resolveBackgroundColor(context),
                 borderRadius: BorderRadius.circular(_getAvatarRadius(context)),
                 image: avatarUrl != null
                     ? DecorationImage(image: NetworkImage(avatarUrl!))
@@ -177,15 +168,17 @@ class TAvatar extends StatelessWidget {
                         ? DecorationImage(image: AssetImage(defaultUrl))
                         : null),
           ),
-          onTap: onTap,
+          onTap: onPressed,
         );
-      case TAvatarType.customText:
+      case TAvatarVariant.customText:
         return GestureDetector(
           child: Container(
-            width: _getAvatarWidth(),
-            height: _getAvatarWidth(),
+            width: _getAvatarWidth(context),
+            height: _getAvatarWidth(context),
             decoration: BoxDecoration(
-              color: backgroundColor ?? TTheme.of(context).brandNormalColor,
+              color: _resolveBackgroundColor(context) == TTheme.of(context).brandFocusColor
+                  ? TTheme.of(context).brandNormalColor
+                  : _resolveBackgroundColor(context),
               borderRadius: BorderRadius.circular(_getAvatarRadius(context)),
             ),
             child: Center(
@@ -198,29 +191,24 @@ class TAvatar extends StatelessWidget {
               ),
             ),
           ),
-          onTap: onTap,
+          onTap: onPressed,
         );
-      case TAvatarType.display:
+      case TAvatarVariant.display:
         return buildDisplayAvatar(context);
-      case TAvatarType.operation:
+      case TAvatarVariant.operation:
         return buildOperationAvatar(context);
     }
   }
 
   double _getDisplayPadding() {
-    double padding;
     switch (size) {
       case TAvatarSize.large:
-        padding = 10;
-        break;
+        return 10;
       case TAvatarSize.medium:
-        padding = 8;
-        break;
+        return 8;
       case TAvatarSize.small:
-        padding = 6;
-        break;
+        return 6;
     }
-    return padding;
   }
 
   Widget buildOperationAvatar(BuildContext context) {
@@ -231,49 +219,51 @@ class TAvatar extends StatelessWidget {
     }
 
     var length = 0;
+    final displayBorder = _resolveDisplayBorder(context);
+    final avatarWidth = _getAvatarWidth(context);
 
     if (avatarDisplayList != null) {
       length = avatarDisplayList!.length;
       for (var i = 0; i < avatarDisplayList!.length + 1; i++) {
-        var left = (_getAvatarWidth() - _getDisplayPadding()) * i;
+        var left = (avatarWidth - _getDisplayPadding()) * i;
         if (i == avatarDisplayList!.length) {
           list.add(Positioned(
               left: left,
               child: GestureDetector(
-                onTap: onTap,
+                onTap: onPressed,
                 child: Container(
                     child: Center(
                       child: Icon(TIcons.user_add,
                           size: _getIconWidth(),
                           color: TTheme.of(context).brandNormalColor),
                     ),
-                    width: _getAvatarWidth(),
-                    height: _getAvatarWidth(),
+                    width: avatarWidth,
+                    height: avatarWidth,
                     clipBehavior: Clip.hardEdge,
                     decoration: ShapeDecoration(
                       color: TTheme.of(context).brandFocusColor,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              _getAvatarWidth() - _getDisplayPadding()),
+                              avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
                               color: Colors.transparent,
-                              width: avatarDisplayBorder)),
+                              width: displayBorder)),
                     )),
               )));
         } else {
           list.add(Positioned(
               left: left,
               child: Container(
-                  width: _getAvatarWidth(),
-                  height: _getAvatarWidth(),
+                  width: avatarWidth,
+                  height: avatarWidth,
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              _getAvatarWidth() - _getDisplayPadding()),
+                              avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
                               color: TTheme.of(context).bgColorContainer,
-                              width: avatarDisplayBorder)),
+                              width: displayBorder)),
                       image: DecorationImage(
                           image: NetworkImage(avatarDisplayList![i]),
                           fit: fit ?? BoxFit.cover)))));
@@ -282,12 +272,12 @@ class TAvatar extends StatelessWidget {
     } else if (avatarDisplayListAsset != null) {
       length = avatarDisplayListAsset!.length;
       for (var i = 0; i < avatarDisplayListAsset!.length + 1; i++) {
-        var left = (_getAvatarWidth() - _getDisplayPadding()) * i;
+        var left = (avatarWidth - _getDisplayPadding()) * i;
         if (i == avatarDisplayListAsset!.length) {
           list.add(Positioned(
               left: left,
               child: GestureDetector(
-                onTap: onTap,
+                onTap: onPressed,
                 child: Container(
                     child: Center(
                       child: avatarDisplayWidget ??
@@ -295,33 +285,33 @@ class TAvatar extends StatelessWidget {
                               size: _getIconWidth(),
                               color: TTheme.of(context).brandNormalColor),
                     ),
-                    width: _getAvatarWidth(),
-                    height: _getAvatarWidth(),
+                    width: avatarWidth,
+                    height: avatarWidth,
                     clipBehavior: Clip.hardEdge,
                     decoration: ShapeDecoration(
                       color: TTheme.of(context).brandFocusColor,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              _getAvatarWidth() - _getDisplayPadding()),
+                              avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
                               color: TTheme.of(context).bgColorContainer,
-                              width: avatarDisplayBorder)),
+                              width: displayBorder)),
                     )),
               )));
         } else {
           list.add(Positioned(
               left: left,
               child: Container(
-                  width: _getAvatarWidth(),
-                  height: _getAvatarWidth(),
+                  width: avatarWidth,
+                  height: avatarWidth,
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              _getAvatarWidth() - _getDisplayPadding()),
+                              avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
                               color: TTheme.of(context).bgColorContainer,
-                              width: avatarDisplayBorder)),
+                              width: displayBorder)),
                       image: DecorationImage(
                           image: AssetImage(avatarDisplayListAsset![i]),
                           fit: fit ?? BoxFit.fill)))));
@@ -330,8 +320,8 @@ class TAvatar extends StatelessWidget {
     }
 
     return SizedBox(
-      height: _getAvatarWidth(),
-      width: _getAvatarWidth() * (length + 1) - length * _getDisplayPadding(),
+      height: avatarWidth,
+      width: avatarWidth * (length + 1) - length * _getDisplayPadding(),
       child: Stack(children: list),
     );
   }
@@ -344,11 +334,13 @@ class TAvatar extends StatelessWidget {
     }
 
     var length = 0;
+    final displayBorder = _resolveDisplayBorder(context);
+    final avatarWidth = _getAvatarWidth(context);
 
     if (avatarDisplayList != null) {
       length = avatarDisplayList!.length;
       for (var i = avatarDisplayList!.length; i >= 0; i--) {
-        var left = (_getAvatarWidth() - _getDisplayPadding()) * i;
+        var left = (avatarWidth - _getDisplayPadding()) * i;
         if (i == avatarDisplayList!.length) {
           list.add(Positioned(
               left: left,
@@ -363,32 +355,32 @@ class TAvatar extends StatelessWidget {
                       textColor: TTheme.of(context).brandNormalColor,
                     ),
                   ),
-                  width: _getAvatarWidth(),
-                  height: _getAvatarWidth(),
+                  width: avatarWidth,
+                  height: avatarWidth,
                   clipBehavior: Clip.hardEdge,
                   decoration: ShapeDecoration(
                     color: TTheme.of(context).brandFocusColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
-                            _getAvatarWidth() - _getDisplayPadding()),
+                            avatarWidth - _getDisplayPadding()),
                         side: BorderSide(
                             color: TTheme.of(context).bgColorContainer,
-                            width: avatarDisplayBorder)),
+                            width: displayBorder)),
                   ))));
         } else {
           list.add(Positioned(
               left: left,
               child: Container(
-                  width: _getAvatarWidth(),
-                  height: _getAvatarWidth(),
+                  width: avatarWidth,
+                  height: avatarWidth,
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              _getAvatarWidth() - _getDisplayPadding()),
+                              avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
                               color: TTheme.of(context).bgColorContainer,
-                              width: avatarDisplayBorder)),
+                              width: displayBorder)),
                       image: DecorationImage(
                           image: NetworkImage(avatarDisplayList![i]),
                           fit: fit ?? BoxFit.cover)))));
@@ -397,7 +389,7 @@ class TAvatar extends StatelessWidget {
     } else if (avatarDisplayListAsset != null) {
       length = avatarDisplayListAsset!.length;
       for (var i = avatarDisplayListAsset!.length; i >= 0; i--) {
-        var left = (_getAvatarWidth() - _getDisplayPadding()) * i;
+        var left = (avatarWidth - _getDisplayPadding()) * i;
         if (i == avatarDisplayListAsset!.length) {
           list.add(Positioned(
               left: left,
@@ -412,32 +404,32 @@ class TAvatar extends StatelessWidget {
                       textColor: TTheme.of(context).brandNormalColor,
                     ),
                   ),
-                  width: _getAvatarWidth(),
-                  height: _getAvatarWidth(),
+                  width: avatarWidth,
+                  height: avatarWidth,
                   clipBehavior: Clip.hardEdge,
                   decoration: ShapeDecoration(
                     color: TTheme.of(context).brandFocusColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
-                            _getAvatarWidth() - _getDisplayPadding()),
+                            avatarWidth - _getDisplayPadding()),
                         side: BorderSide(
                             color: TTheme.of(context).bgColorContainer,
-                            width: avatarDisplayBorder)),
+                            width: displayBorder)),
                   ))));
         } else {
           list.add(Positioned(
               left: left,
               child: Container(
-                  width: _getAvatarWidth(),
-                  height: _getAvatarWidth(),
+                  width: avatarWidth,
+                  height: avatarWidth,
                   clipBehavior: Clip.antiAlias,
                   decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              _getAvatarWidth() - _getDisplayPadding()),
+                              avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
                               color: TTheme.of(context).bgColorContainer,
-                              width: avatarDisplayBorder)),
+                              width: displayBorder)),
                       image: DecorationImage(
                           image: AssetImage(avatarDisplayListAsset![i]),
                           fit: fit ?? BoxFit.cover)))));
@@ -446,8 +438,8 @@ class TAvatar extends StatelessWidget {
     }
 
     return SizedBox(
-      height: _getAvatarWidth(),
-      width: _getAvatarWidth() * (length + 1) - length * _getDisplayPadding(),
+      height: avatarWidth,
+      width: avatarWidth * (length + 1) - length * _getDisplayPadding(),
       child: Stack(children: list),
     );
   }

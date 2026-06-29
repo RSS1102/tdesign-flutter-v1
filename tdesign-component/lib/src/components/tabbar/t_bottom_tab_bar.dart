@@ -72,7 +72,7 @@ class BadgeConfig {
     TBadge? tBadge,
     this.badgeTopOffset,
     this.badgeRightOffset,
-  }) : tBadge = tBadge ?? const TBadge(TBadgeType.redPoint);
+  }) : tBadge = tBadge ?? const TBadge(TBadgeVariant.redPoint);
 
   /// 是否展示消息
   final bool showBadge;

@@ -252,8 +252,6 @@ class _TPopoverPage extends State<TPopoverPage> {
               context: _,
               padding: const EdgeInsets.all(0),
               colorScheme: theme,
-              width: 108,
-              height: 152,
               contentWidget: Column(
                 children: [
                   Container(
@@ -755,7 +753,6 @@ class _TPopoverPage extends State<TPopoverPage> {
             onPressed: () {
               TPopover.showPopover(
                 context: _,
-                width: 200,
                 content: '弹出气泡内容弹出气泡内容弹出气泡内容弹出气泡内容',
                 colorScheme: theme,
               );
@@ -781,7 +778,6 @@ class _TPopoverPage extends State<TPopoverPage> {
             onPressed: () {
               TPopover.showPopover(
                 context: _,
-                width: 200,
                 radius: BorderRadius.circular(16),
                 colorScheme: theme,
                 content: '弹出气泡内容弹出气泡内容弹出气泡内容弹出气泡内容',

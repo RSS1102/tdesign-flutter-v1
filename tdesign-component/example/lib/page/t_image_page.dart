@@ -221,8 +221,8 @@ class TImageState extends State<TImagePage>
           ),
         ),
         const TImage(
-          assetUrl: 'assets/img/image.png',
-          type: TImageType.clip,
+          src: 'assets/img/image.png',
+          variant: TImageVariant.clip,
         ),
       ],
     );
@@ -243,16 +243,12 @@ class TImageState extends State<TImagePage>
         ),
         Container(
           color: TTheme.of(context).bgColorContainerHover,
-          width: 121,
-          height: 72,
           child: const Stack(
             alignment: Alignment.center,
             children: [
               TImage(
-                assetUrl: 'assets/img/image.png',
-                width: 121,
-                height: 50,
-                type: TImageType.stretch,
+                src: 'assets/img/image.png',
+                variant: TImageVariant.stretch,
               ),
             ],
           ),
@@ -275,12 +271,10 @@ class TImageState extends State<TImagePage>
           ),
         ),
         Container(
-          width: 89,
-          height: 72,
           color: TTheme.of(context).bgColorContainerHover,
           child: const TImage(
-            assetUrl: 'assets/img/image.png',
-            type: TImageType.fitHeight,
+            src: 'assets/img/image.png',
+            variant: TImageVariant.fitHeight,
           ),
         ),
       ],
@@ -301,12 +295,10 @@ class TImageState extends State<TImagePage>
           ),
         ),
         Container(
-          width: 72,
-          height: 89,
           color: TTheme.of(context).bgColorContainerHover,
           child: const TImage(
-            assetUrl: 'assets/img/image.png',
-            type: TImageType.fitWidth,
+            src: 'assets/img/image.png',
+            variant: TImageVariant.fitWidth,
           ),
         ),
       ],
@@ -327,8 +319,8 @@ class TImageState extends State<TImagePage>
           ),
         ),
         const TImage(
-          assetUrl: 'assets/img/image.png',
-          type: TImageType.square,
+          src: 'assets/img/image.png',
+          variant: TImageVariant.square,
         ),
       ],
     );
@@ -348,10 +340,8 @@ class TImageState extends State<TImagePage>
           ),
         ),
         const TImage(
-          assetUrl: 'assets/img/image.png',
-          type: TImageType.roundedSquare,
-          width: 72,
-          height: 72,
+          src: 'assets/img/image.png',
+          variant: TImageVariant.roundedSquare,
         ),
       ],
     );
@@ -371,10 +361,8 @@ class TImageState extends State<TImagePage>
           ),
         ),
         const TImage(
-          assetUrl: 'assets/img/image.png',
-          width: 72,
-          height: 72,
-          type: TImageType.circle,
+          src: 'assets/img/image.png',
+          variant: TImageVariant.circle,
         ),
       ],
     );
@@ -394,8 +382,6 @@ class TImageState extends State<TImagePage>
           ),
         ),
         Container(
-            height: 72,
-            width: 72,
             clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
                 borderRadius:
@@ -411,9 +397,9 @@ class TImageState extends State<TImagePage>
 
         /// @tips 实际组件写法如下：上面仅为加载展示
         // const TImage(
-        //   imgUrl:
+        //   src:
         //       'https://images.pexels.com/photos/842711/pexels-photo-842711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-        //   type: TImageType.roundedSquare,
+        //   variant: TImageVariant.roundedSquare,
         // ),
       ],
     );
@@ -433,8 +419,6 @@ class TImageState extends State<TImagePage>
           ),
         ),
         Container(
-            height: 72,
-            width: 72,
             clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
                 borderRadius:
@@ -452,7 +436,7 @@ class TImageState extends State<TImagePage>
                     )))),
         // 实际组件写法如下：上面仅为加载展示
         // TImage(
-        //   imgUrl:
+        //   src:
         //       'https://images.pexels.com/photos/842711/pexels-photo-842711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
         //   loadingWidget: RotationTransition(
         //       turns: animation,
@@ -462,7 +446,7 @@ class TImageState extends State<TImagePage>
         //         size: 18,
         //         lineWidth: 3,
         //       )),
-        //   type: TImageType.roundedSquare,
+        //   variant: TImageVariant.roundedSquare,
         // ),
       ],
     );
@@ -482,8 +466,8 @@ class TImageState extends State<TImagePage>
           ),
         ),
         const TImage(
-          imgUrl: 'error',
-          type: TImageType.roundedSquare,
+          src: 'error',
+          variant: TImageVariant.roundedSquare,
         ),
       ],
     );
@@ -503,13 +487,13 @@ class TImageState extends State<TImagePage>
           ),
         ),
         TImage(
-          imgUrl: 'error',
+          src: 'error',
           errorWidget: TText(
             '加载失败',
             forceVerticalCenter: true,
             font: TTheme.of(context).fontBodyExtraSmall,
           ),
-          type: TImageType.roundedSquare,
+          variant: TImageVariant.roundedSquare,
         ),
       ],
     );
@@ -518,11 +502,9 @@ class TImageState extends State<TImagePage>
   @Demo(group: 'image')
   Widget _imageFile(BuildContext context) {
     return SizedBox(
-      width: 72,
-      height: 72,
       child: TImage(
         imageFile: File('/sdcard/td/test.jpg'),
-        type: TImageType.fitWidth,
+        variant: TImageVariant.fitWidth,
       ),
     );
   }

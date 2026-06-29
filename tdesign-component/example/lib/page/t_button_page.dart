@@ -723,9 +723,6 @@ class _TButtonPageState extends State<TButtonPage> {
   Widget _buildChildTestButton(BuildContext context) {
     return TButton(
       child: Container(
-        height: 48,
-        width: 48,
-        color: Colors.red,
       ),
       onPressed: null,
     );
@@ -999,7 +996,6 @@ class _TButtonPageState extends State<TButtonPage> {
     return themes.map((scheme) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        color: Colors.black,
         child: Wrap(
           spacing: 16,
           runSpacing: 16,
@@ -1038,7 +1034,6 @@ extension _TButtonCopy on TButton {
       size: size,
       iconPosition: iconPosition,
       onPressed: onPressed,
-      style: style,
     );
   }
 }

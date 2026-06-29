@@ -30,7 +30,7 @@ class TFooterPage extends StatelessWidget {
   @Demo(group: 'footer')
   Widget _buildFooter(BuildContext context) {
     return const TFooter(
-      TFooterType.text,
+      TFooterVariant.text,
       text: 'Copyright © 2019-2023 TDesign.All Rights Reserved.',
     );
   }
@@ -38,7 +38,7 @@ class TFooterPage extends StatelessWidget {
   @Demo(group: 'footer')
   Widget _buildSingleLinkFooter(BuildContext context) {
     return TFooter(
-      TFooterType.link,
+      TFooterVariant.link,
       links: [
         TLink(
           child: Text('底部链接'),
@@ -58,7 +58,7 @@ class TFooterPage extends StatelessWidget {
   @Demo(group: 'footer')
   Widget _buildLinksFooter(BuildContext context) {
     return TFooter(
-      TFooterType.link,
+      TFooterVariant.link,
       links: [
         TLink(
           child: Text('底部链接1'),
@@ -86,9 +86,8 @@ class TFooterPage extends StatelessWidget {
   @Demo(group: 'footer')
   Widget _buildBrandFooter(BuildContext context) {
     return const TFooter(
-      TFooterType.brand,
+      TFooterVariant.brand,
       logo: 'assets/img/t_brand.png',
-      width: 204,
     );
   }
 }

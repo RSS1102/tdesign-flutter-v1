@@ -28,7 +28,6 @@ class TDividerPage extends StatelessWidget {
   @Demo(group: 'divider')
   Widget _horizontalDivider(BuildContext context) {
     return Container(
-      height: 20,
       alignment: Alignment.center,
       child: const TDivider(),
     );
@@ -71,7 +70,6 @@ class TDividerPage extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: SizedBox(
-              height: 12,
               child: TDivider(layout: TDividerLayout.vertical),
             ),
           ),
@@ -80,7 +78,6 @@ class TDividerPage extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: SizedBox(
-              height: 12,
               child: TDivider(layout: TDividerLayout.vertical),
             ),
           ),

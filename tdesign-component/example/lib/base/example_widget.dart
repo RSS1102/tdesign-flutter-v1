@@ -609,7 +609,6 @@ class _CodeWrapperState extends State<CodeWrapper> {
     await showModalBottomSheet(
         isScrollControlled: true,
         barrierColor: Colors.black.withOpacity(0.5),
-        backgroundColor: Colors.transparent,
         context: context,
         builder: (_) {
           if (codeString!.isEmpty) {
@@ -619,7 +618,6 @@ class _CodeWrapperState extends State<CodeWrapper> {
                   color: TTheme.of(context).bgColorSecondaryContainer,
                   borderRadius: BorderRadius.vertical(
                       top: Radius.circular(TTheme.of(context).radiusDefault))),
-              height: 500,
               child:
                   TText(PlatformUtil.isWeb ? 'web不支持演示代码，请在移动端查看' : '暂无演示代码'),
             );

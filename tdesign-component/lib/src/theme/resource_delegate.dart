@@ -66,10 +66,10 @@ abstract class TResourceDelegate {
   /// [TBadge]为0时的默认文案
   String get badgeZero;
 
-  /// [TAlertDialog]等 取消
+  /// [TDialog]等 取消
   String get cancel;
 
-  /// [TAlertDialog]等 确认
+  /// [TDialog]等 确认
   String get confirm;
 
   /// [TDropdownMenu] 其他

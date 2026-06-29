@@ -329,7 +329,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_1,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data,
@@ -357,7 +357,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_2,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data_2,
@@ -385,7 +385,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_1,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               subTitles: ['请选择省份', '请选择城市', '请选择区/县'],
@@ -414,7 +414,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_2,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data_2,
@@ -443,7 +443,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_3,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data_3,
@@ -472,7 +472,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_3,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data_3,
@@ -501,7 +501,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_1,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               subTitles: ['请选择省份', '请选择城市', '请选择区/县'],
@@ -530,7 +530,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_4,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data_4,
@@ -558,7 +558,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_1,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           var action = (List<MultiCascaderListModel> selectData) {
             if (selectData.isEmpty) {
               TToast.showText(title, context: context);
@@ -591,7 +591,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
       title: '选择地区',
       note: _selected_1.isEmpty ? '请选择' : _selected_1,
       arrow: true,
-      onClick: (click) {
+      onTap: () {
         TCascader.showMultiCascader(
           context,
           title: '选择地址',

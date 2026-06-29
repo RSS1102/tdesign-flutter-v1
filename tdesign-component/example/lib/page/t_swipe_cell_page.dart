@@ -53,7 +53,7 @@ class TSwipeCellPage extends StatelessWidget {
               .map((e) => TCell(
                   title: e['title'],
                   note: e['note'],
-                  description: e['description']))
+                  subtitle: e['description']))
               .toList(),
           builder: (context, cell, index) {
             return TSwipeCell(
@@ -263,7 +263,7 @@ class TSwipeCellPage extends StatelessWidget {
             ],
           ),
           cell: const TCell(
-              title: '左滑操作', note: '图标+文字（纵向）', description: '一段很长很长的内容文字'),
+              title: '左滑操作', note: '图标+文字（纵向）', subtitle: '一段很长很长的内容文字'),
         )
       ],
     );

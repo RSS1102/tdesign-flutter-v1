@@ -193,11 +193,9 @@ TDropdownMenu _buildDisabled(BuildContext context) {
     builder: (context) {
       return [
         const TDropdownItem(
-          disabled: true,
           label: '禁用菜单',
         ),
         const TDropdownItem(
-          disabled: true,
           label: '禁用菜单',
         ),
       ];

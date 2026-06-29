@@ -22,7 +22,6 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    height: 193,
                     margin: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
@@ -37,7 +36,6 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    height: 193,
                     margin: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
@@ -52,7 +50,6 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    height: 193,
                     margin: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
@@ -67,7 +64,6 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    height: 193,
                     margin: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
@@ -82,7 +78,6 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    height: 193,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
                             TTheme.of(context).radiusLarge)),
@@ -96,7 +91,6 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    height: 193,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
                             TTheme.of(context).radiusLarge)),
@@ -113,7 +107,6 @@ class TSwiperPage extends StatelessWidget {
               ignoreCode: true,
               builder: (_) {
                 return Container(
-                  height: 193,
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
@@ -128,7 +121,6 @@ class TSwiperPage extends StatelessWidget {
               ignoreCode: true,
               builder: (_) {
                 return Container(
-                  height: 193,
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
@@ -143,7 +135,6 @@ class TSwiperPage extends StatelessWidget {
               ignoreCode: true,
               builder: (_) {
                 return Container(
-                  height: 193,
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
@@ -161,7 +152,6 @@ class TSwiperPage extends StatelessWidget {
             ignoreCode: true,
             builder: (_) {
               return Container(
-                height: 193,
                 decoration: BoxDecoration(
                     borderRadius:
                         BorderRadius.circular(TTheme.of(context).radiusLarge)),
@@ -176,7 +166,6 @@ class TSwiperPage extends StatelessWidget {
             ignoreCode: true,
             builder: (_) {
               return Container(
-                height: 193,
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                     borderRadius:
@@ -191,7 +180,6 @@ class TSwiperPage extends StatelessWidget {
             ignoreCode: true,
             builder: (_) {
               return Container(
-                height: 193,
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                     borderRadius:
@@ -206,7 +194,6 @@ class TSwiperPage extends StatelessWidget {
             ignoreCode: true,
             builder: (_) {
               return Container(
-                height: 193,
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                     borderRadius:
@@ -232,7 +219,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -250,7 +237,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -269,7 +256,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -287,7 +274,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -308,7 +295,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -329,7 +316,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -348,7 +335,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -367,7 +354,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -388,7 +375,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -407,7 +394,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -425,7 +412,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );
@@ -444,7 +431,7 @@ class TSwiperPage extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         return const TImage(
-          assetUrl: 'assets/img/image.png',
+          src: 'assets/img/image.png',
         );
       },
     );

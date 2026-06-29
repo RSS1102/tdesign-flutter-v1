@@ -68,6 +68,24 @@ import 'page/t_popup_page.dart';
 import 'page/t_refresh_page.dart';
 import 'page/t_swipe_cell_page.dart';
 import 'page/t_toast_page.dart';
+// V1.0 Display 组件
+import 'page/t_avatar_page.dart';
+import 'page/t_badge_page.dart';
+import 'page/t_cell_page.dart';
+import 'page/t_cell_group_page.dart';
+import 'page/t_collapse_page.dart';
+import 'page/t_empty_page.dart';
+import 'page/t_footer_page.dart';
+import 'page/t_image_page.dart';
+import 'page/t_image_viewer_page.dart';
+import 'page/t_progress_page.dart';
+import 'page/t_result_page.dart';
+import 'page/t_select_tag_page.dart';
+import 'page/t_skeleton_page.dart';
+import 'page/t_swiper_page.dart';
+import 'page/t_table_page.dart';
+// import 'page/t_tag_page.dart';  // TODO: 待升级至 V1.0
+import 'page/t_time_counter_page.dart';
 /*
 import 'page/t_action_sheet_page.dart';
 import 'page/t_avatar_page.dart';
@@ -286,6 +304,25 @@ Map<String, List<ExamplePageModel>> exampleMap = {
         name: 'dropdownMenu',
         pageBuilder:
             _wrapInheritedTheme((context) => const TDropdownMenuPage())),
+  ],
+  '展示': [
+    ExamplePageModel(text: 'Image 图片 (V1.0)', name: 'image', pageBuilder: _wrapInheritedTheme((context) => const TImagePage())),
+    ExamplePageModel(text: 'Progress 进度条 (V1.0)', name: 'progress', pageBuilder: _wrapInheritedTheme((context) => const TProgressPage())),
+    ExamplePageModel(text: 'Badge 徽标 (V1.0)', name: 'badge', pageBuilder: _wrapInheritedTheme((context) => const TBadgePage())),
+    // ExamplePageModel(text: 'Tag 标签 (V1.0)', name: 'tag', pageBuilder: _wrapInheritedTheme((context) => const TTagPage())),  // TODO: 待升级
+    ExamplePageModel(text: 'SelectTag 可选标签 (V1.0)', name: 'selectTag', pageBuilder: _wrapInheritedTheme((context) => const TSelectTagPage())),
+    ExamplePageModel(text: 'Cell 单元格 (V1.0)', name: 'cell', pageBuilder: _wrapInheritedTheme((context) => const TCellPage())),
+    ExamplePageModel(text: 'CellGroup 单元格组 (V1.0)', name: 'cellGroup', pageBuilder: _wrapInheritedTheme((context) => const TCellGroupPage())),
+    ExamplePageModel(text: 'Collapse 折叠面板 (V1.0)', name: 'collapse', pageBuilder: _wrapInheritedTheme((context) => const TCollapsePage())),
+    ExamplePageModel(text: 'Avatar 头像 (V1.0)', name: 'avatar', pageBuilder: _wrapInheritedTheme((context) => const TAvatarPage())),
+    ExamplePageModel(text: 'Empty 空状态 (V1.0)', name: 'empty', pageBuilder: _wrapInheritedTheme((context) => const TEmptyPage())),
+    ExamplePageModel(text: 'Result 结果 (V1.0)', name: 'result', pageBuilder: _wrapInheritedTheme((context) => const TResultPage())),
+    ExamplePageModel(text: 'Footer 页脚 (V1.0)', name: 'footer', pageBuilder: _wrapInheritedTheme((context) => const TFooterPage())),
+    ExamplePageModel(text: 'Skeleton 骨架屏 (V1.0)', name: 'skeleton', pageBuilder: _wrapInheritedTheme((context) => const TSkeletonPage())),
+    ExamplePageModel(text: 'TimeCounter 计时 (V1.0)', name: 'timeCounter', pageBuilder: _wrapInheritedTheme((context) => const TTimeCounterPage())),
+    ExamplePageModel(text: 'Swiper 轮播 (V1.0)', name: 'swiper', pageBuilder: _wrapInheritedTheme((context) => const TSwiperPage())),
+    ExamplePageModel(text: 'ImageViewer 图片预览 (V1.0)', name: 'imageViewer', pageBuilder: _wrapInheritedTheme((context) => const TImageViewerPage())),
+    ExamplePageModel(text: 'Table 表格 (V1.0)', name: 'table', pageBuilder: _wrapInheritedTheme((context) => const TTablePage())),
   ],
 };
 

@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import '../../../tdesign_flutter.dart';
 import '../../util/context_extension.dart';
 import '../../util/list_ext.dart';
+import 't_time_counter_style.dart';
 
 RegExp _timeReg = RegExp(r'D+|H+|m+|s+|S+');
 
@@ -31,7 +32,7 @@ class TTimeCounter extends StatefulWidget {
     this.theme = TTimeCounterTheme.defaultTheme,
     required this.time,
     this.style,
-    this.onChange,
+    this.onChanged,
     this.onFinish,
     this.direction = TTimeCounterDirection.down,
     this.controller,
@@ -65,7 +66,7 @@ class TTimeCounter extends StatefulWidget {
   final TTimeCounterStyle? style;
 
   /// 时间变化时触发回调
-  final Function(int time)? onChange;
+  final Function(int time)? onChanged;
 
   /// 计时结束时触发回调
   final VoidCallback? onFinish;
@@ -153,7 +154,7 @@ class _TTimeCounterState extends State<TTimeCounter>
           }
         });
         _tempMilliseconds = elapsed.inMilliseconds;
-        widget.onChange?.call(_time);
+        widget.onChanged?.call(_time);
       } else {
         pauseTimer();
         widget.onFinish?.call();

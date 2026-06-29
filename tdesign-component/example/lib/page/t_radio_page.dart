@@ -61,9 +61,8 @@ class TRadioPageState extends State<TRadioPage> {
   Widget _verticalRadios(BuildContext context) {
     return TCell(
       title: '单选标题',
-      hover: false,
       required: true,
-      descriptionWidget: TRadioGroup(
+      subtitleWidget: TRadioGroup(
         selectId: '0',
         direction: Axis.horizontal,
         directionalTdRadios: const [
@@ -164,7 +163,6 @@ class TRadioPageState extends State<TRadioPage> {
           ),
         ),
         const SizedBox(
-          height: 17,
         ),
         TRadioGroup(
           radioCheckStyle: TRadioStyle.hollowCircle,

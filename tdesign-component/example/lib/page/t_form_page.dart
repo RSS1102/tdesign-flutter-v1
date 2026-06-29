@@ -46,7 +46,6 @@ class _TFormPageState extends State<TFormPage> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
       builder: (context) => Container(
         decoration: BoxDecoration(
           color: TTheme.of(context).bgColorContainer,
@@ -387,7 +386,6 @@ class _TFormPageState extends State<TFormPage> {
                   hintText: '请输入用户名',
                   border: InputBorder.none,
                   hintStyle: TextStyle(
-                    color: Colors.grey,
                   ),
                 ),
                 controller: _textControllers[0],
@@ -414,7 +412,6 @@ class _TFormPageState extends State<TFormPage> {
                   hintText: '请输入密码',
                   border: InputBorder.none,
                   hintStyle: TextStyle(
-                    color: Colors.grey,
                   ),
                 ),
                 layout: TInputLayout.normal,
@@ -574,7 +571,6 @@ class _TFormPageState extends State<TFormPage> {
                 padding:
                     EdgeInsets.only(top: _isFormHorizontal ? 0 : 8, bottom: 4),
                 child: TTextarea(
-                  backgroundColor: Colors.red,
                   hintText: '请输入个人简介',
                   maxLength: 500,
                   indicator: true,
@@ -665,7 +661,6 @@ class _TFormPageState extends State<TFormPage> {
                           },
                   )),
                   const SizedBox(
-                    width: 20,
                   ),
                   Expanded(
                       child: TButton(
@@ -872,7 +867,6 @@ class _TFormPageState extends State<TFormPage> {
                 padding:
                     EdgeInsets.only(top: _isFormHorizontal ? 0 : 8, bottom: 4),
                 child: TTextarea(
-                  backgroundColor: Colors.red,
                   padding: const EdgeInsets.all(0),
                   hintText: '请输入个人简介',
                   maxLength: 500,

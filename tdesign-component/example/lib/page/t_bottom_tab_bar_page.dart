@@ -354,7 +354,7 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
         TBottomTabBarTabConfig(
           badgeConfig: BadgeConfig(
             showBadge: true,
-            tBadge: const TBadge(TBadgeType.redPoint),
+            tBadge: const TBadge(TBadgeVariant.redPoint),
             badgeTopOffset: -2,
             badgeRightOffset: -10,
           ),
@@ -391,7 +391,7 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
           unselectedIcon: _unSelectedIcon,
           badgeConfig: BadgeConfig(
             showBadge: true,
-            tBadge: const TBadge(TBadgeType.redPoint),
+            tBadge: const TBadge(TBadgeVariant.redPoint),
             badgeTopOffset: -2,
             badgeRightOffset: -10,
           ),
@@ -432,7 +432,7 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
           unselectedIcon: _unSelectedIcon,
           badgeConfig: BadgeConfig(
             showBadge: true,
-            tBadge: const TBadge(TBadgeType.redPoint),
+            tBadge: const TBadge(TBadgeVariant.redPoint),
             badgeTopOffset: -2,
             badgeRightOffset: -10,
           ),
@@ -517,7 +517,7 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
           unselectedIcon: _unSelectedIcon,
           badgeConfig: BadgeConfig(
             showBadge: true,
-            tBadge: const TBadge(TBadgeType.redPoint),
+            tBadge: const TBadge(TBadgeVariant.redPoint),
             badgeTopOffset: -2,
             badgeRightOffset: -10,
           ),
@@ -595,7 +595,6 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
   @Demo(group: 'bottomTabBar')
   Widget _setCurrentIndexToTabBar(BuildContext context) {
     return SizedBox(
-      height: 200,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

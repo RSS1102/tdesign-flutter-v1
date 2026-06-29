@@ -56,9 +56,9 @@ class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
       pages.add(getAnchorDemo(i));
     }
 
-    list[1].badge = const TBadge(TBadgeType.redPoint);
+    list[1].badge = const TBadge(TBadgeVariant.redPoint);
     list[2].badge = const TBadge(
-      TBadgeType.message,
+      TBadgeVariant.message,
       count: '8',
     );
 
@@ -147,7 +147,6 @@ class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
           child: Row(
             children: [
               SizedBox(
-                width: 110,
                 child: TSideBar(
                   style: TSideBarStyle.normal,
                   value: currentValue,
@@ -216,10 +215,8 @@ class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
         // spacing: 16,
         children: [
           TImage(
-            assetUrl: 'assets/img/empty.png',
-            type: TImageType.roundedSquare,
-            width: 48,
-            height: 48,
+            src: 'assets/img/empty.png',
+            variant: TImageVariant.roundedSquare,
           ),
           SizedBox(width: 16),
           TText('标题', style: TextStyle(fontSize: 16))

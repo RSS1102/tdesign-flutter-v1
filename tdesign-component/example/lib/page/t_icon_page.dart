@@ -238,7 +238,6 @@ class _TIconPageState extends State<TIconPage> {
           Builder(builder: (context) {
             if (iconList.isEmpty) {
               return Container(
-                height: 300,
                 alignment: Alignment.center,
                 child:
                     isLoading ? const TText('加载中...') : const TText('暂无内容'),

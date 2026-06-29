@@ -623,8 +623,8 @@ class _TStepsPageState extends State<TStepsPage> {
           customContent: Container(
             margin: const EdgeInsets.only(bottom: 16, top: 4),
             child: const TImage(
-              assetUrl: 'assets/img/image.png',
-              type: TImageType.roundedSquare,
+              src: 'assets/img/image.png',
+              variant: TImageVariant.roundedSquare,
             ),
           ),
         ),

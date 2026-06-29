@@ -1,28 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
+import 't_empty_theme_data.dart';
 
-typedef TTapEvent = void Function();
-
-enum TEmptyType { plain, operation }
+/// 空态形态
+enum TEmptyVariant { plain, operation }
 
 class TEmpty extends StatelessWidget {
   const TEmpty({
-    this.type = TEmptyType.plain,
+    this.variant = TEmptyVariant.plain,
     this.icon = TIcons.info_circle_filled,
     this.image,
     this.emptyText,
     this.operationText,
-    this.operationTheme,
-    this.onTapEvent,
-    this.emptyTextColor,
-    this.emptyTextFont,
+    this.onPressed,
     this.customOperationWidget,
     Key? key,
   }) : super(key: key);
 
-  /// 点击事件
-  final TTapEvent? onTapEvent;
+  /// 空态形态
+  final TEmptyVariant variant;
 
   /// 图标
   final IconData? icon;
@@ -33,26 +30,26 @@ class TEmpty extends StatelessWidget {
   /// 描述文字
   final String? emptyText;
 
-  /// 描述文字颜色
-  final Color? emptyTextColor;
-
-  /// 描述文字大小
-  final Font? emptyTextFont;
-
   /// 操作按钮文案
   final String? operationText;
 
-  /// 操作按钮文案主题色
-  final TButtonColorScheme? operationTheme;
-
-  /// 类型，为operation有操作按钮，plain无按钮
-  final TEmptyType type;
+  /// 点击事件
+  final VoidCallback? onPressed;
 
   /// 自定义操作按钮
   final Widget? customOperationWidget;
 
+  /// 从 Theme 子树读取 L4 默认值
+  TEmptyThemeData? _theme(BuildContext context) =>
+      Theme.of(context).extension<TEmptyThemeData>();
+
   @override
   Widget build(BuildContext context) {
+    final theme = _theme(context);
+    final emptyTextColor = theme?.emptyTextColor;
+    final emptyTextFont = theme?.emptyTextFont;
+    final operationTheme = theme?.operationTheme ?? TButtonColorScheme.primary;
+
     return Container(
       alignment: Alignment.center,
       child: Column(
@@ -69,22 +66,17 @@ class TEmpty extends StatelessWidget {
             emptyText ?? '',
             fontWeight: FontWeight.w400,
             font: emptyTextFont ?? TTheme.of(context).fontBodyMedium,
-            textColor:
-                emptyTextColor ?? TTheme.of(context).textColorPlaceholder,
+            textColor: emptyTextColor ?? TTheme.of(context).textColorPlaceholder,
           ),
-          (type == TEmptyType.operation)
+          (variant == TEmptyVariant.operation)
               ? customOperationWidget ??
                   Padding(
                       padding: const EdgeInsets.only(top: 32),
                       child: TButton(
                         child: Text(operationText ?? ''),
                         size: TButtonSize.large,
-                        colorScheme: operationTheme ?? TButtonColorScheme.primary,
-                        onPressed: () {
-                          if (onTapEvent != null) {
-                            onTapEvent!();
-                          }
-                        },
+                        colorScheme: operationTheme,
+                        onPressed: onPressed,
                       ))
               : Container()
         ],

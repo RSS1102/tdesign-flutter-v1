@@ -45,7 +45,6 @@ class _TPullDownRefreshPageState extends State<TPullDownRefreshPage> {
           // spacing: 16,
           children: [
             Container(
-              height: 171,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   color: TTheme.of(context).bgColorContainer,
@@ -59,7 +58,6 @@ class _TPullDownRefreshPageState extends State<TPullDownRefreshPage> {
             ),
             const SizedBox(height: 16),
             Container(
-              height: 70,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   color: TTheme.of(context).bgColorContainer,

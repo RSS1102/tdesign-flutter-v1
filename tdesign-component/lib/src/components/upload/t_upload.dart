@@ -158,9 +158,9 @@ class _TUploadState extends State<TUpload> {
   final ImagePicker _picker = ImagePicker();
 
   // 类型映射
-  final Map<TUploadVariant, TImageType> _imageTypeMap = {
-    TUploadVariant.roundedSquare: TImageType.roundedSquare,
-    TUploadVariant.circle: TImageType.circle,
+  final Map<TUploadVariant, TImageVariant> _imageTypeMap = {
+    TUploadVariant.roundedSquare: TImageVariant.roundedSquare,
+    TUploadVariant.circle: TImageVariant.circle,
   };
 
   @override
@@ -394,11 +394,9 @@ class _TUploadState extends State<TUpload> {
           TImage(
             key: Key(file.assetPath ?? ''),
             width: widget.width,
-            height: widget.height,
-            imgUrl: file.remotePath,
             imageFile: file.file,
-            assetUrl: file.file == null ? file.assetPath : null,
-            type: _imageTypeMap[widget.type] ?? TImageType.roundedSquare,
+            src: file.remotePath ?? (file.file == null ? file.assetPath : null),
+            variant: _imageTypeMap[widget.type] ?? TImageVariant.roundedSquare,
           ),
           Visibility(
               visible: file.status != TUploadFileStatus.success,

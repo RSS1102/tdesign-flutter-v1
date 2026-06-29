@@ -53,9 +53,9 @@ class TSideBarPaginationPageState extends State<TSideBarPaginationPage> {
       pages.add(getPageDemo(i));
     }
 
-    list[1].badge = const TBadge(TBadgeType.redPoint);
+    list[1].badge = const TBadge(TBadgeVariant.redPoint);
     list[2].badge = const TBadge(
-      TBadgeType.message,
+      TBadgeVariant.message,
       count: '8',
     );
 
@@ -69,7 +69,6 @@ class TSideBarPaginationPageState extends State<TSideBarPaginationPage> {
     return Row(
       children: [
         SizedBox(
-          width: 110,
           child: TSideBar(
             style: TSideBarStyle.normal,
             value: currentValue,
@@ -136,10 +135,8 @@ class TSideBarPaginationPageState extends State<TSideBarPaginationPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const TImage(
-          assetUrl: 'assets/img/empty.png',
-          type: TImageType.roundedSquare,
-          width: 48,
-          height: 48,
+          src: 'assets/img/empty.png',
+          variant: TImageVariant.roundedSquare,
         ),
         const SizedBox(height: 8),
         TText('$title', style: const TextStyle(fontSize: 12))

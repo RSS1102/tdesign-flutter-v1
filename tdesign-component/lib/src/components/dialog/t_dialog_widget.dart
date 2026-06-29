@@ -243,7 +243,7 @@ class HorizontalNormalButtons extends StatelessWidget {
               buttonTextSize: leftBtn.titleSize,
               buttonStyle: leftBtn.style,
               buttonVariant: leftBtn.type,
-              buttonColorScheme: leftBtn.theme,
+              buttonColorScheme: leftBtn.colorScheme,
               height: leftBtn.height,
               buttonTextFontWeight: leftBtn.fontWeight ?? FontWeight.w600,
               onPressed: () {
@@ -263,7 +263,7 @@ class HorizontalNormalButtons extends StatelessWidget {
               buttonTextSize: rightBtn.titleSize,
               buttonStyle: rightBtn.style,
               buttonVariant: rightBtn.type,
-              buttonColorScheme: rightBtn.theme,
+              buttonColorScheme: rightBtn.colorScheme,
               height: rightBtn.height,
               buttonTextFontWeight: rightBtn.fontWeight ?? FontWeight.w600,
               onPressed: () {
@@ -311,7 +311,7 @@ class HorizontalTextButtons extends StatelessWidget {
                 buttonTextSize: leftBtn.titleSize,
                 buttonStyle: leftBtn.style,
                 buttonVariant: leftBtn.type ?? TButtonVariant.text,
-                buttonColorScheme: leftBtn.theme,
+                buttonColorScheme: leftBtn.colorScheme,
                 // fix： The button height does not fill the container.
                 height: 56,
                 buttonTextFontWeight: leftBtn.fontWeight,
@@ -335,7 +335,7 @@ class HorizontalTextButtons extends StatelessWidget {
                 buttonTextSize: rightBtn.titleSize,
                 buttonStyle: rightBtn.style,
                 buttonVariant: rightBtn.type ?? TButtonVariant.text,
-                buttonColorScheme: rightBtn.theme ?? TButtonColorScheme.primary,
+                buttonColorScheme: rightBtn.colorScheme ?? TButtonColorScheme.primary,
                 height: 56,
                 buttonTextFontWeight: rightBtn.fontWeight ?? FontWeight.w600,
                 onPressed: () {

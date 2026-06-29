@@ -59,14 +59,13 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.medium,
-          type: TAvatarType.normal,
+          variant: TAvatarVariant.normal,
           defaultUrl: 'assets/img/t_avatar_1.png',
         ),
         SizedBox(width: 32),
         TAvatar(
           size: TAvatarSize.medium,
-          type: TAvatarType.normal,
-          shape: TAvatarShape.square,
+          variant: TAvatarVariant.normal,
           defaultUrl: 'assets/img/t_avatar_1.png',
         ),
       ],
@@ -81,14 +80,13 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.medium,
-          type: TAvatarType.customText,
+          variant: TAvatarVariant.customText,
           text: 'A',
         ),
         SizedBox(width: 32),
         TAvatar(
           size: TAvatarSize.medium,
-          type: TAvatarType.customText,
-          shape: TAvatarShape.square,
+          variant: TAvatarVariant.customText,
           text: 'A',
         ),
       ],
@@ -103,13 +101,12 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.medium,
-          type: TAvatarType.icon,
+          variant: TAvatarVariant.icon,
         ),
         SizedBox(width: 32),
         TAvatar(
           size: TAvatarSize.medium,
-          type: TAvatarType.icon,
-          shape: TAvatarShape.square,
+          variant: TAvatarVariant.icon,
         ),
       ],
     );
@@ -122,34 +119,30 @@ class _TAvatarPageState extends State<TAvatarPage> {
       // spacing: 32,
       children: [
         SizedBox(
-          height: 51,
-          width: 51,
           child: Stack(
             alignment: Alignment.bottomLeft,
             children: [
               TAvatar(
                 size: TAvatarSize.medium,
-                type: TAvatarType.normal,
+                variant: TAvatarVariant.normal,
                 defaultUrl: 'assets/img/t_avatar_1.png',
               ),
-              Positioned(child: TBadge(TBadgeType.redPoint), right: 0, top: 0)
+              Positioned(child: TBadge(TBadgeVariant.redPoint), right: 0, top: 0)
             ],
           ),
         ),
         SizedBox(width: 32),
         SizedBox(
-          height: 51,
-          width: 51,
           child: Stack(
             alignment: Alignment.bottomLeft,
             children: [
               TAvatar(
                 size: TAvatarSize.medium,
-                type: TAvatarType.customText,
+                variant: TAvatarVariant.customText,
                 text: 'A',
               ),
               Positioned(
-                child: TBadge(TBadgeType.message, count: '8'),
+                child: TBadge(TBadgeVariant.message, count: '8'),
                 right: 0,
                 top: 0,
               )
@@ -158,14 +151,12 @@ class _TAvatarPageState extends State<TAvatarPage> {
         ),
         SizedBox(width: 32),
         SizedBox(
-          width: 51,
-          height: 51,
           child: Stack(
             alignment: Alignment.bottomLeft,
             children: [
-              TAvatar(size: TAvatarSize.medium, type: TAvatarType.icon),
+              TAvatar(size: TAvatarSize.medium, variant: TAvatarVariant.icon),
               Positioned(
-                child: TBadge(TBadgeType.message, count: '12'),
+                child: TBadge(TBadgeVariant.message, count: '12'),
                 right: 0,
                 top: 0,
               )
@@ -184,7 +175,7 @@ class _TAvatarPageState extends State<TAvatarPage> {
     var avatarList = [assetUrl, assetUrl2, assetUrl, assetUrl2, assetUrl];
     return TAvatar(
       size: TAvatarSize.medium,
-      type: TAvatarType.display,
+      variant: TAvatarVariant.display,
       displayText: '+5',
       avatarDisplayListAsset: avatarList,
     );
@@ -198,9 +189,9 @@ class _TAvatarPageState extends State<TAvatarPage> {
     var avatarList = [assetUrl, assetUrl2, assetUrl, assetUrl2, assetUrl];
     return TAvatar(
       size: TAvatarSize.medium,
-      type: TAvatarType.operation,
+      variant: TAvatarVariant.operation,
       avatarDisplayListAsset: avatarList,
-      onTap: () {
+      onPressed: () {
         TToast.showText('点击了操作', context: context);
       },
     );
@@ -214,19 +205,19 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.large,
-          type: TAvatarType.normal,
+          variant: TAvatarVariant.normal,
           defaultUrl: 'assets/img/t_avatar_1.png',
         ),
         SizedBox(width: 32),
         TAvatar(
           size: TAvatarSize.large,
-          type: TAvatarType.customText,
+          variant: TAvatarVariant.customText,
           text: 'A',
         ),
         SizedBox(width: 32),
         TAvatar(
           size: TAvatarSize.large,
-          type: TAvatarType.icon,
+          variant: TAvatarVariant.icon,
         ),
       ],
     );
@@ -240,19 +231,19 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.medium,
-          type: TAvatarType.normal,
+          variant: TAvatarVariant.normal,
           defaultUrl: 'assets/img/t_avatar_1.png',
         ),
         SizedBox(width: 48),
         TAvatar(
           size: TAvatarSize.medium,
-          type: TAvatarType.customText,
+          variant: TAvatarVariant.customText,
           text: 'A',
         ),
         SizedBox(width: 48),
         TAvatar(
           size: TAvatarSize.medium,
-          type: TAvatarType.icon,
+          variant: TAvatarVariant.icon,
         ),
       ],
     );
@@ -266,19 +257,19 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.small,
-          type: TAvatarType.normal,
+          variant: TAvatarVariant.normal,
           defaultUrl: 'assets/img/t_avatar_1.png',
         ),
         SizedBox(width: 56),
         TAvatar(
           size: TAvatarSize.small,
-          type: TAvatarType.customText,
+          variant: TAvatarVariant.customText,
           text: 'A',
         ),
         SizedBox(width: 56),
         TAvatar(
           size: TAvatarSize.small,
-          type: TAvatarType.icon,
+          variant: TAvatarVariant.icon,
         ),
       ],
     );

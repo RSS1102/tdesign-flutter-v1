@@ -32,31 +32,29 @@ class TCellPage extends StatelessWidget {
 @Demo(group: 'cell')
 Widget _buildSimple(BuildContext context) {
   // 可统一修改样式
-  var style = TCellStyle(context: context);
+  var style = TCellThemeData.cellStyle(context);
   return TCellGroup(
-    style: style,
     cells: [
       // 可单独修改样式
       TCell(
         arrow: true,
         title: '单行标题',
-        style: TCellStyle.cellStyle(context),
       ),
       TCell(
         arrow: true,
         title: '单行标题',
         required: true,
-        onClick: (cell) {
+        onTap: () {
           print('单行标题');
         },
-        onLongPress: (cell) {
+        onLongPress: () {
           print('onLongPress 单行标题');
         },
       ),
       const TCell(
         arrow: true,
         title: '单行标题',
-        noteWidget: TBadge(TBadgeType.message, count: '8'),
+        noteWidget: TBadge(TBadgeVariant.message, count: '8'),
       ),
       const TCell(
         arrow: false,
@@ -71,7 +69,7 @@ Widget _buildSimple(BuildContext context) {
       const TCell(
         arrow: true,
         title: '单行标题',
-        leftIcon: TIcons.lock_on,
+        prefix: TIcons.lock_on,
       ),
       const TCell(arrow: false, title: '单行标题'),
     ],
@@ -82,48 +80,48 @@ Widget _buildSimple(BuildContext context) {
 Widget _buildDesSimple(BuildContext context) {
   return const TCellGroup(
     cells: [
-      TCell(arrow: true, title: '单行标题', description: '一段很长很长的内容文字'),
+      TCell(arrow: true, title: '单行标题', subtitle: '一段很长很长的内容文字'),
       TCell(
           arrow: true,
           title: '单行标题',
-          description: '一段很长很长的内容文字',
+          subtitle: '一段很长很长的内容文字',
           required: true),
       TCell(
           arrow: true,
           title: '单行标题',
-          description: '一段很长很长的内容文字',
-          noteWidget: TBadge(TBadgeType.message, count: '8')),
+          subtitle: '一段很长很长的内容文字',
+          noteWidget: TBadge(TBadgeVariant.message, count: '8')),
       TCell(
           arrow: false,
           title: '单行标题',
-          description: '一段很长很长的内容文字',
+          subtitle: '一段很长很长的内容文字',
           rightIconWidget: TSwitch(value: true)),
       TCell(
-          arrow: true, title: '单行标题', description: '一段很长很长的内容文字', note: '辅助信息'),
+          arrow: true, title: '单行标题', subtitle: '一段很长很长的内容文字', note: '辅助信息'),
       TCell(
           arrow: true,
           title: '单行标题',
-          description: '一段很长很长的内容文字一段很长很长的内容文字一段很长很长的内',
-          leftIcon: TIcons.lock_on),
+          subtitle: '一段很长很长的内容文字一段很长很长的内容文字一段很长很长的内',
+          prefix: TIcons.lock_on),
       TCell(
           arrow: false,
           title: '单行标题',
-          description: '一段很长很长的内容文字一段很长很长的内容文字一段很长很长的内'),
+          subtitle: '一段很长很长的内容文字一段很长很长的内容文字一段很长很长的内'),
       TCell(
           arrow: false,
           title: '多行高度不定，长文本自动换行，该选项的描述是一段很长的内容',
-          description: '一段很长很长的内容文字一段很长很长的内容文字一段很长很长的内'),
+          subtitle: '一段很长很长的内容文字一段很长很长的内容文字一段很长很长的内'),
       TCell(
         arrow: true,
         title: '多行带头像',
-        description: '一段很长很长的内容文字一段很长很长的内容文字一段很长很长的内容',
+        subtitle: '一段很长很长的内容文字一段很长很长的内容文字一段很长很长的内容',
         image: AssetImage('assets/img/t_avatar_1.png'),
       ),
       // NetworkImage('https://tdesign.gtimg.com/mobile/demos/avatar1.png')),
       TCell(
         arrow: true,
         title: '多行带图片',
-        description: '一段很长很长的内容文字',
+        subtitle: '一段很长很长的内容文字',
         image: AssetImage('assets/img/image.png'),
         imageCircle: 8,
       ),
@@ -134,7 +132,7 @@ Widget _buildDesSimple(BuildContext context) {
 @Demo(group: 'cell')
 Widget _buildCard(BuildContext context) {
   return const TCellGroup(
-    theme: TCellGroupTheme.cardTheme,
+    groupVariant: TCellGroupVariant.cardTheme,
     cells: [
       TCell(arrow: true, title: '单行标题'),
       TCell(arrow: true, title: '单行标题', required: true),
@@ -145,16 +143,15 @@ Widget _buildCard(BuildContext context) {
 
 @Demo(group: 'cell')
 Widget _buildPadding(BuildContext context) {
-  var style = TCellStyle(context: context);
+  var style = TCellThemeData.cellStyle(context);
   style.padding = const EdgeInsets.all(30);
   return TCellGroup(
-    theme: TCellGroupTheme.cardTheme,
+    groupVariant: TCellGroupVariant.cardTheme,
     cells: [
       TCell(
         arrow: true,
         title: 'padding-all-30',
-        style: style,
-        onClick: (cell) {
+        onTap: () {
           print('padding-all-30');
         },
       ),

@@ -42,7 +42,6 @@ class TNavBarPage extends StatelessWidget {
   @Demo(group: 'navbar')
   Widget _baseH5Navbar(BuildContext context) {
     return const TNavBar(
-      height: 48,
       titleFontWeight: FontWeight.w600,
       title: titleText,
       useDefaultBack: true,
@@ -54,7 +53,6 @@ class TNavBarPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: TNavBar(
-        height: 48,
         title: titleText,
         titleFontWeight: FontWeight.w600,
         useDefaultBack: true,
@@ -73,7 +71,6 @@ class TNavBarPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: TNavBar(
-        height: 48,
         title: titleText,
         titleFontWeight: FontWeight.w600,
         useDefaultBack: true,
@@ -116,9 +113,7 @@ class TNavBarPage extends StatelessWidget {
       centerTitle: false,
       titleMargin: 0,
       titleWidget: const TImage(
-        assetUrl: 'assets/img/t_brand.png',
-        width: 102,
-        height: 24,
+        src: 'assets/img/t_brand.png',
       ),
       actions: [
         TNavBarItem(icon: TIcons.home, iconSize: 24),
@@ -130,7 +125,6 @@ class TNavBarPage extends StatelessWidget {
   @Demo(group: 'navbar')
   Widget _titleCenterNavbar(BuildContext context) {
     return TNavBar(
-      height: 48,
       title: titleText,
       titleFontWeight: FontWeight.w600,
       useDefaultBack: true,
@@ -146,7 +140,6 @@ class TNavBarPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: TNavBar(
-        height: 48,
         title: titleText,
         titleFontWeight: FontWeight.w600,
         centerTitle: false,
@@ -163,7 +156,6 @@ class TNavBarPage extends StatelessWidget {
   @Demo(group: 'navbar')
   Widget _titleNormalNavbar(BuildContext context) {
     return TNavBar(
-      height: 48,
       title: titleText,
       titleFontWeight: FontWeight.w600,
       useDefaultBack: true,
@@ -179,11 +171,9 @@ class TNavBarPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: TNavBar(
-        height: 104,
         title: '返回',
         titleColor: TTheme.of(context).textColorPrimary,
         belowTitleWidget: SizedBox(
-          height: 56,
           child: TText(
             titleText,
             font: Font(size: 28, lineHeight: 52),
@@ -208,7 +198,6 @@ class TNavBarPage extends StatelessWidget {
   @Demo(group: 'navbar')
   Widget _setBgColorNavbar(BuildContext context) {
     return TNavBar(
-      height: 48,
       title: titleText,
       titleColor: Colors.white,
       backgroundColor: TTheme.of(context).brandNormalColor,
@@ -239,7 +228,6 @@ class TNavBarPage extends StatelessWidget {
   @Demo(group: 'navbar')
   Widget _shadowNavbar(BuildContext context) {
     return TNavBar(
-      height: 48,
       titleFontWeight: FontWeight.w600,
       title: titleText,
       useDefaultBack: true,

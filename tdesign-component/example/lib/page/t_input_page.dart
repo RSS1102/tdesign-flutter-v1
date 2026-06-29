@@ -148,7 +148,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -172,7 +171,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -195,7 +193,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -217,7 +214,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -261,7 +257,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -310,7 +305,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -326,8 +320,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           hintText: '请输入文字',
           rightBtn: Container(
             alignment: Alignment.center,
-            width: 73,
-            height: 28,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
               color: TTheme.of(context).brandNormalColor,
@@ -344,7 +336,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           showClearButton: false,
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -391,7 +382,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -414,7 +404,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -447,7 +436,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           showClearButton: false,
         ),
         const SizedBox(
-          height: 16,
         ),
       ],
     );
@@ -491,7 +479,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         ),
       ],
     );
@@ -512,16 +499,12 @@ class _TInputViewPageState extends State<TInputViewPage> {
             children: [
               Container(
                 width: 0.5,
-                height: 24,
                 color: TTheme.of(context).componentBorderColor,
               ),
               const SizedBox(
-                width: 16,
               ),
               Image.network(
                 'https://img2018.cnblogs.com/blog/736399/202001/736399-20200108170302307-1377487770.jpg',
-                width: 72,
-                height: 36,
               )
             ],
           ),
@@ -531,7 +514,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -547,7 +529,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           label: '手机号',
           hintText: '输入手机号',
           rightBtn: SizedBox(
-            width: 98,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -555,7 +536,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
                   padding: const EdgeInsets.only(right: 16),
                   child: Container(
                     width: 0.5,
-                    height: 24,
                     color: TTheme.of(context).componentBorderColor,
                   ),
                 ),
@@ -581,7 +561,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -601,7 +580,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
               TText('元', textColor: TTheme.of(context).textColorPrimary),
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -638,7 +616,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -673,7 +650,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -783,7 +759,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -807,7 +782,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -831,7 +805,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -896,11 +869,8 @@ class _TInputViewPageState extends State<TInputViewPage> {
   Widget _customHeight(BuildContext context) {
     var controller = TextEditingController();
     return Container(
-      color: Colors.yellow,
       alignment: Alignment.center,
-      height: 90,
       child: SizedBox(
-        height: 60,
         child: TInput(
           size: TInputSize.small,
           label: '标签文字',
@@ -915,11 +885,8 @@ class _TInputViewPageState extends State<TInputViewPage> {
   Widget _onTapOutside(BuildContext context) {
     var controller = TextEditingController();
     return Container(
-      color: Colors.yellow,
       alignment: Alignment.center,
-      height: 90,
       child: SizedBox(
-        height: 60,
         child: TInput(
           size: TInputSize.small,
           label: '标签文字',
@@ -938,7 +905,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
   Widget _contentPadding(BuildContext context) {
     var controller = TextEditingController();
     return Container(
-      color: Colors.yellow,
       alignment: Alignment.center,
       child: Column(
         children: [
@@ -988,7 +954,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );

@@ -30,8 +30,6 @@ class TRadiusPage extends StatelessWidget {
   @Demo(group: 'radius')
   Widget _buildRadiusSmall(BuildContext context) {
     return Container(
-      width: 100,
-      height: 50,
       decoration: BoxDecoration(
         color: TTheme.of(context).brandNormalColor,
         borderRadius: BorderRadius.circular(TTheme.of(context).radiusSmall),
@@ -42,8 +40,6 @@ class TRadiusPage extends StatelessWidget {
   @Demo(group: 'radius')
   Widget _buildRadiusDefault(BuildContext context) {
     return Container(
-      width: 100,
-      height: 50,
       decoration: BoxDecoration(
         color: TTheme.of(context).brandNormalColor,
         borderRadius: BorderRadius.circular(TTheme.of(context).radiusDefault),
@@ -54,8 +50,6 @@ class TRadiusPage extends StatelessWidget {
   @Demo(group: 'radius')
   Widget _buildRadiusLarge(BuildContext context) {
     return Container(
-      width: 100,
-      height: 50,
       decoration: BoxDecoration(
         color: TTheme.of(context).brandNormalColor,
         borderRadius: BorderRadius.circular(TTheme.of(context).radiusLarge),
@@ -66,8 +60,6 @@ class TRadiusPage extends StatelessWidget {
   @Demo(group: 'radius')
   Widget _buildRadiusExtraLarge(BuildContext context) {
     return Container(
-      width: 100,
-      height: 50,
       decoration: BoxDecoration(
         color: TTheme.of(context).brandNormalColor,
         borderRadius:
@@ -80,8 +72,6 @@ class TRadiusPage extends StatelessWidget {
   Widget _buildRadiusRound(BuildContext context) {
     // 胶囊型，数值设置较大
     return Container(
-      width: 100,
-      height: 50,
       decoration: BoxDecoration(
         color: TTheme.of(context).brandNormalColor,
         borderRadius: BorderRadius.circular(TTheme.of(context).radiusRound),
@@ -93,8 +83,6 @@ class TRadiusPage extends StatelessWidget {
   Widget _buildRadiusCircle(BuildContext context) {
     //  圆形与胶囊型一致，如果长宽一致即是圆形
     return Container(
-      width: 50,
-      height: 50,
       decoration: BoxDecoration(
         color: TTheme.of(context).brandNormalColor,
         borderRadius: BorderRadius.circular(TTheme.of(context).radiusCircle),

@@ -2,7 +2,7 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import '../cell/t_cell_style.dart';
+import '../cell/t_cell_theme_data.dart';
 
 /// 抽屉组件 ThemeExtension
 ///
@@ -25,7 +25,7 @@ class TDrawerThemeData extends ThemeExtension<TDrawerThemeData> {
   final bool? hover;
 
   /// 默认列表自定义样式
-  final TCellStyle? style;
+  final TCellThemeData? style;
 
   const TDrawerThemeData({
     this.width,
@@ -43,7 +43,7 @@ class TDrawerThemeData extends ThemeExtension<TDrawerThemeData> {
     bool? bordered,
     bool? isShowLastBordered,
     bool? hover,
-    TCellStyle? style,
+    TCellThemeData? style,
   }) {
     return TDrawerThemeData(
       width: width ?? this.width,

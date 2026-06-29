@@ -159,7 +159,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
         child: TImage(
           imageFile: image,
           fit: boxFit,
-          type: TImageType.fitWidth,
+          variant: TImageVariant.fitWidth,
         ),
       );
     }
@@ -168,9 +168,9 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
         return Container(
           margin: margin,
           child: TImage(
-            imgUrl: image,
+            src: image,
             fit: boxFit,
-            type: TImageType.fitWidth,
+            variant: TImageVariant.fitWidth,
             loadingWidget: Container(
               width: size.width,
               height: size.height,
@@ -190,9 +190,9 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
       return Container(
         margin: margin,
         child: TImage(
-          assetUrl: image,
+          src: image,
           fit: boxFit,
-          type: TImageType.fitWidth,
+          variant: TImageVariant.fitWidth,
         ),
       );
     }

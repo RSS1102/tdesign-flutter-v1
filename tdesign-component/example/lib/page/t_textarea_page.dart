@@ -200,7 +200,6 @@ class _TTextareaPageState extends State<TTextareaPage> {
       minLines: 4,
       maxLength: 500,
       indicator: true,
-      width: 200,
       onChanged: (value) {},
     );
   }

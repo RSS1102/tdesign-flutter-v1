@@ -5,7 +5,7 @@ import '../../theme/t_spacers.dart';
 import '../../theme/t_theme.dart';
 import '../cell/t_cell.dart';
 import '../cell/t_cell_group.dart';
-import '../cell/t_cell_style.dart';
+import '../cell/t_cell_theme_data.dart';
 import '../popup/t_popup.dart';
 import 't_drawer_theme_data.dart';
 import 't_drawer_widget.dart';
@@ -85,7 +85,7 @@ class TDrawer {
   final double? drawerTop;
 
   /// 列表自定义样式（优先级高于 ThemeData）
-  final TCellStyle? style;
+  final TCellThemeData? style;
 
   /// 是否开启点击反馈（优先级高于 ThemeData）
   final bool? hover;

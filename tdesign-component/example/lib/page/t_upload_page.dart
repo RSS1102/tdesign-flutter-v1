@@ -148,7 +148,6 @@ class TUploadState extends State<TUploadPage> {
             style: const TextStyle(fontSize: 16),
           ),
           const SizedBox(
-            height: 16,
           ),
           child
         ],
@@ -174,8 +173,6 @@ class TUploadState extends State<TUploadPage> {
     return wrapDemoContainer('单选上传(替换)',
         child: TUpload(
           files: files6,
-          width: 60,
-          height: 60,
           type: TUploadVariant.circle,
           enabledReplaceType: true,
           onPressed: onClick,

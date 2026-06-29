@@ -179,7 +179,6 @@ class TCheckboxPageState extends State<TCheckboxPage> {
           if (index == 0) {
             title = '全选';
             return SizedBox(
-              height: 56,
               child: TCheckbox(
                 id: 'index:$index',
                 title: title,
@@ -265,7 +264,6 @@ class TCheckboxPageState extends State<TCheckboxPage> {
           ),
         ),
         const SizedBox(
-          height: 17,
         ),
         TCheckboxGroupContainer(
           style: TCheckboxStyle.square,

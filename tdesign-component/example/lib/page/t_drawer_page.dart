@@ -188,7 +188,7 @@ Widget _buildBottomSimple(BuildContext context) {
 Widget _buildColorSimple(BuildContext context) {
   var renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
 
-  var tCellStyle = TCellStyle(context: context);
+  var tCellStyle = TCellThemeData.cellStyle(context);
   tCellStyle.backgroundColor = TTheme.of(context).brandNormalColor;
 
   return SizedBox(

@@ -736,9 +736,9 @@ class TTableState extends State<TTable> {
   TImage _buildEmptyImage() {
     var url = widget.empty?.assetUrl ?? '';
     if (url.startsWith('http')) {
-      return TImage(imgUrl: url);
+      return TImage(src: url);
     }
-    return TImage(assetUrl: url);
+    return TImage(src: url);
   }
 
   /// 半选图标

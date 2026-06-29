@@ -263,7 +263,6 @@ TTimeCounter _buildCustomUnitSimple(BuildContext context) {
   return TTimeCounter(
     time: 60 * 60 * 1000,
     splitWithUnit: true,
-    style: style,
   );
 }
 
@@ -383,7 +382,6 @@ TTimeCounter _buildCustomUnitSmallSize(BuildContext context) {
   return TTimeCounter(
     time: 60 * 60 * 1000,
     splitWithUnit: true,
-    style: style,
   );
 }
 
@@ -395,7 +393,6 @@ TTimeCounter _buildCustomUnitMediumSize(BuildContext context) {
   return TTimeCounter(
     time: 60 * 60 * 1000,
     splitWithUnit: true,
-    style: style,
   );
 }
 
@@ -407,7 +404,6 @@ TTimeCounter _buildCustomUnitLargeSize(BuildContext context) {
   return TTimeCounter(
     time: 60 * 60 * 1000,
     splitWithUnit: true,
-    style: style,
   );
 }
 

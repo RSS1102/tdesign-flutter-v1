@@ -25,8 +25,6 @@ class TShadowsPage extends StatelessWidget {
   @Demo(group: 'shadows')
   Widget _buildShadowsBase(BuildContext context) {
     return Container(
-      width: 100,
-      height: 50,
       decoration: BoxDecoration(
         color: TTheme.of(context).bgColorContainer,
         boxShadow: TTheme.of(context).shadowsBase,
@@ -38,8 +36,6 @@ class TShadowsPage extends StatelessWidget {
   @Demo(group: 'shadows')
   Widget _buildShadowsMiddle(BuildContext context) {
     return Container(
-      width: 100,
-      height: 50,
       decoration: BoxDecoration(
         color: TTheme.of(context).bgColorContainer,
         boxShadow: TTheme.of(context).shadowsMiddle,
@@ -51,8 +47,6 @@ class TShadowsPage extends StatelessWidget {
   @Demo(group: 'shadows')
   Widget _buildShadowsTop(BuildContext context) {
     return Container(
-      width: 100,
-      height: 50,
       decoration: BoxDecoration(
         color: TTheme.of(context).bgColorContainer,
         boxShadow: TTheme.of(context).shadowsTop,

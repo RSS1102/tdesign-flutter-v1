@@ -63,13 +63,11 @@ class _StudyDetailState extends State with SingleTickerProviderStateMixin {
             TTabBar(
                 controller: _tabController,
                 height: 44.h,
-                backgroundColor: Colors.white,
                 indicatorColor: TTheme.of().brandNormalColor,
                 // labelColor:TTheme.of().brandNormalColor,
                 unselectedLabelStyle: TextStyle(fontSize: 12.sp, color: Colors.red),
                 labelStyle: TextStyle(
                     fontSize: 28.sp,
-                    color: Colors.deepPurpleAccent,
                     fontWeight: FontWeight.w500),
                 indicatorWidth: 16.w,
                 showIndicator: true,
@@ -102,7 +100,6 @@ class _CourseItemDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(15.w, 10.h, 15.w, 8.h),
-      color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -154,7 +151,6 @@ class _CourseItemDetail extends StatelessWidget {
                 child: Container(
                   width: 28.w,
                   height: 28.w,
-                  color: Colors.grey,
                 ),
               ),
               SizedBox(

@@ -1,107 +1,77 @@
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
+import 't_tag_theme_data.dart';
+
+/// 标签尺寸
+enum TTagSize { extraLarge, large, medium, small, custom }
+
+/// 标签形状
+enum TTagShape { square, round, mark }
 
 /// 展示型标签组件，仅展示，内部不可更改自身状态
 /// 支持样式：方形/圆角/半圆/带关闭图标
 class TTag extends StatelessWidget {
   const TTag(
     this.text, {
-    this.theme,
+    this.colorScheme,
     this.icon,
-    this.iconWidget,
-    this.textColor,
-    this.backgroundColor,
-    this.font,
-    this.fontWeight,
-    this.style,
     this.size = TTagSize.medium,
-    this.padding,
-    this.forceVerticalCenter = true,
-    this.isOutline = false,
-    this.shape = TTagShape.square,
-    this.isLight = false,
-    this.disable = false,
-    this.needCloseIcon = false,
     this.onCloseTap,
-    this.overflow,
-    this.fixedWidth,
     Key? key,
   }) : super(key: key);
 
   /// 标签内容
   final String text;
 
-  /// 主题
-  final TTagTheme? theme;
+  /// 语义色
+  final TTagColorScheme? colorScheme;
 
   /// 图标内容，可随状态改变颜色
   final IconData? icon;
 
-  /// 自定义图标内容，需自处理颜色
-  final Widget? iconWidget;
-
-  /// 文字颜色，优先级高于style的textColor
-  final Color? textColor;
-
-  /// 背景颜色，优先级高于style的backgroundColor
-  final Color? backgroundColor;
-
-  /// 字体尺寸，优先级高于style的font
-  final Font? font;
-
-  /// 字体粗细，优先级高于style的fontWeight
-  final FontWeight? fontWeight;
-
-  /// 标签样式
-  final TTagStyle? style;
-
   /// 标签大小
   final TTagSize size;
-
-  /// 自定义模式下的间距
-  final EdgeInsets? padding;
-
-  /// 是否强制中文文字居中
-  final bool forceVerticalCenter;
-
-  /// 是否为描边类型，默认不是
-  final bool isOutline;
-
-  /// 标签形状
-  final TTagShape shape;
-
-  /// 是否为浅色
-  final bool isLight;
-
-  /// 是否为禁用状态
-  final bool disable;
-
-  /// 关闭图标
-  final bool needCloseIcon;
-
-  /// 文字溢出处理
-  final TextOverflow? overflow;
 
   /// 关闭图标点击事件
   final GestureTapCallback? onCloseTap;
 
-  /// 标签的固定宽度
-  final double? fixedWidth;
+  /// 从 Theme 子树读取 L4 默认值
+  TTagThemeData? _theme(BuildContext context) =>
+      Theme.of(context).extension<TTagThemeData>();
 
   @override
   Widget build(BuildContext context) {
-    var innerStyle = _getInnerStyle(context);
+    final theme = _theme(context);
+    final resolvedColorScheme = colorScheme ?? theme?.colorScheme ?? TTagColorScheme.defaultTheme;
+    final isOutline = theme?.isOutline ?? false;
+    final isLight = theme?.isLight ?? false;
+    final shape = theme?.shape ?? TTagShape.square;
+    final disable = theme?.disable ?? false;
+    final needCloseIcon = theme?.needCloseIcon ?? false;
+    final forceVerticalCenter = theme?.forceVerticalCenter ?? true;
+    final overflow = theme?.overflow;
+    final fixedWidth = theme?.fixedWidth;
+    final padding = theme?.padding;
+    final iconWidget = theme?.iconWidget;
+    final textColor = theme?.textColor;
+    final backgroundColor = theme?.backgroundColor;
+    final font = theme?.font;
+    final fontWeight = theme?.fontWeight;
+
+    // 计算样式颜色
+    final colors = _resolveColors(context, resolvedColorScheme, isLight, isOutline, disable);
+    final borderRadius = _resolveBorderRadius(context, shape);
 
     Widget child = TText(
       text,
       overflow: overflow ?? TextOverflow.ellipsis,
       forceVerticalCenter: forceVerticalCenter,
-      textColor: textColor ?? innerStyle.getTextColor,
-      font: font ?? innerStyle.font ?? _getFont(context),
-      fontWeight: fontWeight ?? innerStyle.fontWeight,
+      textColor: textColor ?? colors.textColor,
+      font: font ?? _getFont(context),
+      fontWeight: fontWeight ?? colors.fontWeight,
     );
 
-    var innerIcon = getIcon(innerStyle);
+    var innerIcon = _getIcon(iconWidget, colors.textColor);
     if (innerIcon != null || needCloseIcon) {
       var children = <Widget>[];
       if (innerIcon != null) {
@@ -121,8 +91,7 @@ class TTag extends StatelessWidget {
               margin: const EdgeInsets.only(left: 4),
               child: Icon(
                 TIcons.close,
-                color: innerStyle.closeIconColor ??
-                    TTheme.of(context).textColorAnti,
+                color: colors.closeIconColor ?? TTheme.of(context).textColorAnti,
                 size: 14,
               ),
             ),
@@ -130,7 +99,6 @@ class TTag extends StatelessWidget {
         );
       }
       child = Row(
-        // spacing: TTheme.of(context).spacer4,
         mainAxisSize: MainAxisSize.min,
         children: children,
       );
@@ -138,12 +106,11 @@ class TTag extends StatelessWidget {
 
     return Container(
       width: fixedWidth,
-      padding: padding ?? _getPadding(innerStyle.border),
+      padding: padding ?? _getPadding(isOutline ? 1.0 : 0.0),
       decoration: BoxDecoration(
-          color: backgroundColor ?? innerStyle.getBackgroundColor,
-          border: Border.all(
-              width: innerStyle.border, color: innerStyle.getBorderColor),
-          borderRadius: innerStyle.getBorderRadius),
+          color: backgroundColor ?? colors.backgroundColor,
+          border: Border.all(width: isOutline ? 1 : 0, color: colors.borderColor),
+          borderRadius: borderRadius),
       child: Align(
         widthFactor: 1,
         child: child,
@@ -151,7 +118,109 @@ class TTag extends StatelessWidget {
     );
   }
 
-  Widget? getIcon(TTagStyle innerStyle) {
+  /// 解析颜色（原 TTagStyle 的 generateFillStyleByTheme/generateOutlineStyleByTheme/generateDisableSelectStyle 逻辑）
+  _TagColors _resolveColors(
+    BuildContext context,
+    TTagColorScheme colorScheme,
+    bool isLight,
+    bool isOutline,
+    bool disable,
+  ) {
+    if (disable) {
+      return _TagColors(
+        textColor: TTheme.of(context).textDisabledColor,
+        backgroundColor: isOutline && !isLight
+            ? Colors.transparent
+            : TTheme.of(context).bgColorComponentDisabled,
+        borderColor: TTheme.of(context).componentBorderColor,
+      );
+    }
+
+    Color textColor;
+    Color backgroundColor;
+    Color borderColor;
+
+    switch (colorScheme) {
+      case TTagColorScheme.primary:
+        if (isOutline) {
+          borderColor = TTheme.of(context).brandNormalColor;
+          textColor = TTheme.of(context).brandNormalColor;
+          backgroundColor = isLight ? TTheme.of(context).brandLightColor : Colors.transparent;
+        } else {
+          textColor = isLight ? TTheme.of(context).brandNormalColor : TTheme.of(context).textColorAnti;
+          backgroundColor = isLight ? TTheme.of(context).brandLightColor : TTheme.of(context).brandNormalColor;
+          borderColor = backgroundColor;
+        }
+        break;
+      case TTagColorScheme.warning:
+        if (isOutline) {
+          borderColor = TTheme.of(context).warningNormalColor;
+          textColor = TTheme.of(context).warningNormalColor;
+          backgroundColor = isLight ? TTheme.of(context).warningLightColor : Colors.transparent;
+        } else {
+          textColor = isLight ? TTheme.of(context).warningNormalColor : TTheme.of(context).textColorAnti;
+          backgroundColor = isLight ? TTheme.of(context).warningLightColor : TTheme.of(context).warningNormalColor;
+          borderColor = backgroundColor;
+        }
+        break;
+      case TTagColorScheme.danger:
+        if (isOutline) {
+          borderColor = TTheme.of(context).errorNormalColor;
+          textColor = TTheme.of(context).errorNormalColor;
+          backgroundColor = isLight ? TTheme.of(context).errorLightColor : Colors.transparent;
+        } else {
+          textColor = isLight ? TTheme.of(context).errorNormalColor : TTheme.of(context).textColorAnti;
+          backgroundColor = isLight ? TTheme.of(context).errorLightColor : TTheme.of(context).errorNormalColor;
+          borderColor = backgroundColor;
+        }
+        break;
+      case TTagColorScheme.success:
+        if (isOutline) {
+          borderColor = TTheme.of(context).successNormalColor;
+          textColor = TTheme.of(context).successNormalColor;
+          backgroundColor = isLight ? TTheme.of(context).successLightColor : Colors.transparent;
+        } else {
+          textColor = isLight ? TTheme.of(context).successNormalColor : TTheme.of(context).textColorAnti;
+          backgroundColor = isLight ? TTheme.of(context).successLightColor : TTheme.of(context).successNormalColor;
+          borderColor = backgroundColor;
+        }
+        break;
+      case TTagColorScheme.defaultTheme:
+      default:
+        if (isOutline) {
+          borderColor = TTheme.of(context).componentBorderColor;
+          textColor = TTheme.of(context).textColorPrimary;
+          backgroundColor = isLight ? TTheme.of(context).bgColorSecondaryContainer : Colors.transparent;
+        } else {
+          textColor = TTheme.of(context).textColorPrimary;
+          backgroundColor = isLight ? TTheme.of(context).bgColorSecondaryContainer : TTheme.of(context).bgColorComponent;
+          borderColor = backgroundColor;
+        }
+    }
+
+    return _TagColors(
+      textColor: textColor,
+      backgroundColor: backgroundColor,
+      borderColor: borderColor,
+      closeIconColor: textColor,
+    );
+  }
+
+  BorderRadiusGeometry _resolveBorderRadius(BuildContext context, TTagShape shape) {
+    switch (shape) {
+      case TTagShape.square:
+        return BorderRadius.circular(TTheme.of(context).radiusSmall);
+      case TTagShape.round:
+        return BorderRadius.circular(TTheme.of(context).radiusRound);
+      case TTagShape.mark:
+        return BorderRadius.only(
+          topRight: Radius.circular(TTheme.of(context).radiusRound),
+          bottomRight: Radius.circular(TTheme.of(context).radiusRound),
+        );
+    }
+  }
+
+  Widget? _getIcon(Widget? iconWidget, Color textColor) {
     if (iconWidget != null) {
       return iconWidget;
     }
@@ -162,7 +231,7 @@ class TTag extends StatelessWidget {
           text: String.fromCharCode(icon!.codePoint),
           style: TextStyle(
             inherit: false,
-            color: innerStyle.textColor,
+            color: textColor,
             height: 1,
             fontSize: _getIconSize(),
             fontFamily: icon!.fontFamily,
@@ -172,19 +241,6 @@ class TTag extends StatelessWidget {
       );
     }
     return null;
-  }
-
-  TTagStyle _getInnerStyle(BuildContext context) {
-    if (style != null) {
-      return style!;
-    }
-    if (disable) {
-      return TTagStyle.generateDisableSelectStyle(
-          context, isLight, isOutline, shape);
-    }
-    return isOutline
-        ? TTagStyle.generateOutlineStyleByTheme(context, theme, isLight, shape)
-        : TTagStyle.generateFillStyleByTheme(context, theme, isLight, shape);
   }
 
   Font? _getFont(BuildContext context) {
@@ -256,4 +312,21 @@ class TTag extends StatelessWidget {
         return 14;
     }
   }
+}
+
+/// 标签颜色解析结果
+class _TagColors {
+  final Color textColor;
+  final Color backgroundColor;
+  final Color borderColor;
+  final Color? closeIconColor;
+  final FontWeight? fontWeight;
+
+  _TagColors({
+    required this.textColor,
+    required this.backgroundColor,
+    required this.borderColor,
+    this.closeIconColor,
+    this.fontWeight,
+  });
 }

@@ -118,11 +118,11 @@ class _ThemeModeSettingsPageState extends State<ThemeModeSettingsPage> {
         child: Column(
           children: [
             TCellGroup(
-              theme: TCellGroupTheme.cardTheme,
+              groupVariant: TCellGroupVariant.cardTheme,
               cells: [
                 TCell(
                   title: '跟随系统',
-                  description: '开启后，将跟随系统打开或关闭深色模式。',
+                  subtitle: '开启后，将跟随系统打开或关闭深色模式。',
                   rightIconWidget: TSwitch(
                     value: themeModeProvider.themeMode == ThemeMode.system,
                     onChanged: (isOn) {
@@ -136,27 +136,26 @@ class _ThemeModeSettingsPageState extends State<ThemeModeSettingsPage> {
                       return isOn;
                     },
                   ),
-                  disabled: true,
                 ),
               ],
             ),
             TCellGroup(
-              theme: TCellGroupTheme.cardTheme,
+              groupVariant: TCellGroupVariant.cardTheme,
               title: '手动选择',
               cells: [
                 TCell(
                   title: '浅色模式',
-                  leftIcon: TIcons.mode_light,
+                  prefix: TIcons.mode_light,
                   rightIcon: enabledModeCheckIcon(ThemeMode.light),
-                  onClick: (cell) {
+                  onTap: () {
                     themeModeProvider.themeMode = ThemeMode.light;
                   },
                 ),
                 TCell(
                   title: '深色模式',
-                  leftIcon: TIcons.mode_dark,
+                  prefix: TIcons.mode_dark,
                   rightIcon: enabledModeCheckIcon(ThemeMode.dark),
-                  onClick: (cell) {
+                  onTap: () {
                     themeModeProvider.themeMode = ThemeMode.dark;
                   },
                 ),

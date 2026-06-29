@@ -40,7 +40,6 @@ class TPopupPage extends StatelessWidget {
             context,
             options: TPopupOptions.bottom(
               titleWidget: const Text('底部弹出层'),
-              height: 240,
               child: const Center(child: Text('弹出层内容区域')),
             ),
           );
@@ -63,7 +62,6 @@ class TPopupPage extends StatelessWidget {
             context,
             options: TPopupOptions.top(
               child: Container(
-                height: 200,
                 padding: const EdgeInsets.only(top: 40),
                 alignment: Alignment.center,
                 child: const Text('顶部弹出层内容'),
@@ -89,8 +87,6 @@ class TPopupPage extends StatelessWidget {
             context,
             options: TPopupOptions.left(
               child: Container(
-                width: 200,
-                color: Colors.white,
                 alignment: Alignment.center,
                 child: const Text('左侧弹出层内容'),
               ),
@@ -115,8 +111,6 @@ class TPopupPage extends StatelessWidget {
             context,
             options: TPopupOptions.right(
               child: Container(
-                width: 200,
-                color: Colors.white,
                 alignment: Alignment.center,
                 child: const Text('右侧弹出层内容'),
               ),
@@ -141,11 +135,8 @@ class TPopupPage extends StatelessWidget {
             context,
             options: TPopupOptions.center(
               child: Container(
-                width: 240,
-                height: 160,
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Center(child: Text('中间弹出层内容')),

@@ -216,7 +216,7 @@ class WebMdTool {
       '''
 ---
 title: $title
-description: ${description}
+subtitle: ${description}
 spline: ${spline}
 isComponent: true
 ---

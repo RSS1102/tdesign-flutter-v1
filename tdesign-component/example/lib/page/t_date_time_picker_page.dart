@@ -183,7 +183,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
       title: '年月日选择器',
       note: _formatResult(_baseSelected),
       arrow: true,
-      onClick: (_) {
+      onTap: () {
         _showPickerPopup(
           context,
           picker: TDateTimePicker(
@@ -204,7 +204,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
       title: '选择年月',
       note: _formatResult(_yearMonthSelected),
       arrow: true,
-      onClick: (_) {
+      onTap: () {
         _showPickerPopup(
           context,
           picker: TDateTimePicker(
@@ -225,7 +225,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
       title: '选择时分',
       note: _formatResult(_timeSelected),
       arrow: true,
-      onClick: (_) {
+      onTap: () {
         _showPickerPopup(
           context,
           picker: TDateTimePicker(
@@ -246,7 +246,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
       title: '自定义选择范围',
       note: _formatResult(_rangeSelected),
       arrow: true,
-      onClick: (_) {
+      onTap: () {
         _showPickerPopup(
           context,
           picker: TDateTimePicker(
@@ -272,7 +272,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
       title: '年月日 + 星期',
       note: _formatWeekResult(context, _weekSelected),
       arrow: true,
-      onClick: (_) {
+      onTap: () {
         _showPickerPopup(
           context,
           picker: TDateTimePicker(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import 't_cell_inherited.dart';
+import 't_cell_theme_data.dart';
 
 typedef CellBuilder = Widget Function(
   BuildContext context,
@@ -9,14 +10,12 @@ typedef CellBuilder = Widget Function(
   int index,
 );
 
-enum TCellGroupTheme { defaultTheme, cardTheme }
-
 /// 单元格组组件
 class TCellGroup extends StatefulWidget {
   const TCellGroup({
     Key? key,
     this.bordered = false,
-    this.theme = TCellGroupTheme.defaultTheme,
+    this.groupVariant = TCellGroupVariant.defaultTheme,
     this.title,
     required this.cells,
     this.builder,
@@ -30,7 +29,7 @@ class TCellGroup extends StatefulWidget {
   final bool? bordered;
 
   /// 单元格组风格。可选项：default/card
-  final TCellGroupTheme? theme;
+  final TCellGroupVariant? groupVariant;
 
   /// 单元格组标题
   final String? title;
@@ -45,7 +44,7 @@ class TCellGroup extends StatefulWidget {
   final CellBuilder? builder;
 
   /// 自定义样式
-  final TCellStyle? style;
+  final TCellThemeData? style;
 
   /// 可滚动
   final bool? scrollable;
@@ -60,7 +59,9 @@ class TCellGroup extends StatefulWidget {
 class _TCellGroupState extends State<TCellGroup> {
   @override
   Widget build(BuildContext context) {
-    var style = widget.style ?? TCellStyle.cellStyle(context);
+    var style = widget.style ??
+        Theme.of(context).extension<TCellThemeData>() ??
+        TCellThemeData.cellStyle(context);
     var itemCount = widget.cells.length;
     var radius = _getBorderRadius(style);
     return TCellInherited(
@@ -78,7 +79,7 @@ class _TCellGroupState extends State<TCellGroup> {
             ),
           Flexible(
             child: Container(
-              padding: widget.theme == TCellGroupTheme.cardTheme
+              padding: widget.groupVariant == TCellGroupVariant.cardTheme
                   ? style.cardPadding
                   : EdgeInsets.zero,
               decoration: BoxDecoration(
@@ -88,11 +89,9 @@ class _TCellGroupState extends State<TCellGroup> {
                 child: ListView.separated(
                   padding: EdgeInsets.zero,
                   shrinkWrap: widget.scrollable == false,
-                  // 设置为true以避免无限制地增长
                   physics: widget.scrollable == false
                       ? const NeverScrollableScrollPhysics()
                       : null,
-                  // 禁用ListView的滚动
                   itemCount: itemCount,
                   itemBuilder: (context, index) {
                     final item = widget.cells[index];
@@ -120,7 +119,7 @@ class _TCellGroupState extends State<TCellGroup> {
     );
   }
 
-  BoxBorder? _getBordered(TCellStyle style) {
+  BoxBorder? _getBordered(TCellThemeData style) {
     if (!(widget.bordered ?? false)) {
       return null;
     }
@@ -132,14 +131,14 @@ class _TCellGroupState extends State<TCellGroup> {
     );
   }
 
-  BorderRadiusGeometry _getBorderRadius(TCellStyle style) {
-    if (widget.theme == TCellGroupTheme.cardTheme) {
+  BorderRadiusGeometry _getBorderRadius(TCellThemeData style) {
+    if (widget.groupVariant == TCellGroupVariant.cardTheme) {
       return style.cardBorderRadius ?? BorderRadius.zero;
     }
     return BorderRadius.zero;
   }
 
-  Widget _borderWidget(TCellStyle style) {
+  Widget _borderWidget(TCellThemeData style) {
     return Row(
       children: [
         Container(

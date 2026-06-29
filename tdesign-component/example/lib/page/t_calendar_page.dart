@@ -145,7 +145,6 @@ class _CalendarPickerPanel extends StatelessWidget {
                 : null,
             minDate: minDate,
             maxDate: maxDate,
-            style: style,
             anchorDate: anchorDate,
             animateTo: animateTo,
             subtitleBuilder: subtitleBuilder,
@@ -210,7 +209,6 @@ void _showCalendarPickerSheet({
         footer: footer,
         minDate: minDate,
         maxDate: maxDate,
-        style: style,
         subtitleBuilder: subtitleBuilder,
         cellBuilder: cellBuilder,
         autoPopOnSingleSelect: autoPopOnSingleSelect,
@@ -271,7 +269,7 @@ class _SingleCalendarCellState extends State<_SingleCalendarCell> {
       title: '单个选择日历',
       arrow: true,
       note: _formatYmd(_selected),
-      onClick: (_) {
+      onTap: () {
         _showCalendarPickerSheet(
           context: context,
           title: '请选择日期',
@@ -303,7 +301,7 @@ class _MultipleCalendarCellState extends State<_MultipleCalendarCell> {
       title: '多个选择日历',
       arrow: true,
       note: _dates.isEmpty ? '--' : '已选 ${_dates.length} 天',
-      onClick: (_) {
+      onTap: () {
         _showCalendarPickerSheet(
           context: context,
           title: '请选择日期',
@@ -341,7 +339,7 @@ class _RangeCalendarCellState extends State<_RangeCalendarCell> {
       note: _dates.length >= 2
           ? '${_formatMd(_dates.first)} ~ ${_formatMd(_dates[1])}'
           : '--',
-      onClick: (_) {
+      onTap: () {
         _showCalendarPickerSheet(
           context: context,
           title: '请选择日期区间',
@@ -436,7 +434,7 @@ class _AnchorCalendarCellState extends State<_AnchorCalendarCell> {
           note: hasInitial
               ? '已选 $selectedNote，打开显示该日所在月'
               : '未选日期，打开显示 $anchorLabel',
-          onClick: (_) => _openPicker(),
+          onTap: () => _openPicker(),
         ),
       ],
     );
@@ -755,7 +753,6 @@ class _StyleDemoState extends State<_StyleDemo> {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
           ),
         ),
       );
@@ -771,7 +768,6 @@ class _StyleDemoState extends State<_StyleDemo> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
               ),
             ),
             const Text(
@@ -825,7 +821,7 @@ class _StyleDemoState extends State<_StyleDemo> {
                   title: '自定义副标题',
                   arrow: true,
                   note: _formatYmd(textSelected),
-                  onClick: (_) {
+                  onTap: () {
                     _showCalendarPickerSheet(
                       context: context,
                       title: '请选择日期',
@@ -847,7 +843,7 @@ class _StyleDemoState extends State<_StyleDemo> {
                   arrow: true,
                   note:
                       '${cellDate.year}-${cellDate.month}-${cellDate.day}',
-                  onClick: (_) {
+                  onTap: () {
                     _showCalendarPickerSheet(
                       context: context,
                       title: '请选择日期',
@@ -1089,7 +1085,6 @@ class _LunarControlBarState extends State<_LunarControlBar> {
       context: context,
       builder: (ctx) {
         return SizedBox(
-          height: 300,
           child: Column(
             children: [
               const Padding(
@@ -1139,7 +1134,6 @@ class _LunarControlBarState extends State<_LunarControlBar> {
       context: context,
       builder: (ctx) {
         return SizedBox(
-          height: 400,
           child: Column(
             children: [
               const Padding(
@@ -1218,7 +1212,6 @@ class _LunarControlBarState extends State<_LunarControlBar> {
         children: [
           // 固定高度容器，防止农历文字有无时布局跳动
           SizedBox(
-            height: 20,
             child: lunarMonth.isNotEmpty
                 ? Text(
                     lunarMonth,

@@ -199,17 +199,16 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
         text: '选项',
         contentHeight: 48,
         textMargin: EdgeInsets.only(right: 8),
-        badge: TBadge(TBadgeType.redPoint),
+        badge: TBadge(TBadgeVariant.redPoint),
       ),
       const TTab(
         text: '选项',
         contentHeight: 42,
         textMargin: EdgeInsets.only(right: 16, top: 2, bottom: 2),
-        badge: TBadge(TBadgeType.message, message: '8'),
+        badge: TBadge(TBadgeVariant.message),
       ),
       const TTab(
         text: '选项',
-        height: 48,
         icon: Icon(TIcons.app, size: 18),
       ),
     ];
@@ -234,7 +233,6 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
             isScrollable: false,
           ),
           Container(
-            height: 120,
             color: TTheme.of(context).bgColorContainer,
             child: TTabBarView(
               children: _getTabViews(),
@@ -362,7 +360,6 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     return TTabBar(
       tabs: subList(2),
       controller: _tabController1,
-      backgroundColor: Colors.red,
       variant: TTabBarVariant.capsule,
     );
   }

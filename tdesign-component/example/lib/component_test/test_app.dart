@@ -79,7 +79,6 @@ Padding body(BuildContext context) {
           // label: '标签文字',
           // controller: controller[0],
           layout: TInputLayout.cardStyle,
-          backgroundColor: Colors.white,
           hintText: '请输入文字',
           cardStyleTopText: '标签文字',
           // onChanged: (text) {
@@ -119,13 +118,11 @@ PreferredSizeWidget _buildAppBar(BuildContext context) {
         ),
       ),
       // opacity: 0,
-      backgroundColor: Colors.red,
       centerTitle: false,
       titleMargin: 0,
       titleWidget: TSearchBar(
         needCancel: false,
         autoHeight: true,
-        backgroundColor: Colors.transparent,
         padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
         hintText: '搜索预设文案',
         mediumStyle: true,
@@ -160,7 +157,6 @@ TBottomTabBar _buildBottomTabBar() {
         selectTabTextStyle: TextStyle(fontSize: textSize, color: Colors.red),
         unselectTabTextStyle: TextStyle(
           fontSize: textSize,
-          color: Colors.black,
         ),
         onTap: () {
           // context.read<CurrentIndexProvider>().changeIndex(0);
@@ -192,7 +188,6 @@ TBottomTabBar _buildBottomTabBar() {
         selectTabTextStyle: TextStyle(fontSize: textSize, color: Colors.red),
         unselectTabTextStyle: TextStyle(
           fontSize: textSize,
-          color: Colors.black,
         ),
         onTap: () {
           // context.read<CurrentIndexProvider>().changeIndex(2);

@@ -161,7 +161,6 @@ Widget _buildSimple(BuildContext context) {
       TPopup.show(
         context,
         options: TPopupOptions.right(
-            width: 280,
             inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
             child: TIndexes(
               indexList: indexList,
@@ -195,7 +194,6 @@ Widget _buildOther(BuildContext context) {
       TPopup.show(
         context,
         options: TPopupOptions.right(
-            width: 280,
             inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
             child: TIndexes(
               indexList: indexList,
@@ -230,7 +228,6 @@ Widget _buildCustomIndexes(BuildContext context) {
       TPopup.show(
         context,
         options: TPopupOptions.right(
-            width: 280,
             inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
             child: TIndexes(
               indexList: indexList,

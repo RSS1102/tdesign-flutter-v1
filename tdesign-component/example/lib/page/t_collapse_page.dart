@@ -58,8 +58,7 @@ class TCollapsePageState extends State<TCollapsePage> {
   @Demo(group: 'collapse')
   Widget _buildBasicCollapse(BuildContext context) {
     return TCollapse(
-      style: TCollapseStyle.block,
-      expansionCallback: (int index, bool isExpanded) {
+      onExpansionChanged: (int index, bool isExpanded) {
         setState(() {
           _basicData[index].isExpanded = !isExpanded;
         });
@@ -79,8 +78,7 @@ class TCollapsePageState extends State<TCollapsePage> {
   @Demo(group: 'collapse')
   Widget _buildBlockStyleCollapse(BuildContext context) {
     return TCollapse(
-      style: TCollapseStyle.block,
-      expansionCallback: (int index, bool isExpanded) {
+      onExpansionChanged: (int index, bool isExpanded) {
         setState(() {
           _blockStyleData[index].isExpanded = !isExpanded;
         });
@@ -100,8 +98,7 @@ class TCollapsePageState extends State<TCollapsePage> {
   @Demo(group: 'collapse')
   Widget _buildCardCollapse(BuildContext context) {
     return TCollapse(
-      style: TCollapseStyle.card,
-      expansionCallback: (int index, bool isExpanded) {
+      onExpansionChanged: (int index, bool isExpanded) {
         setState(() {
           _cardStyleData[index].isExpanded = !isExpanded;
         });
@@ -121,8 +118,7 @@ class TCollapsePageState extends State<TCollapsePage> {
   @Demo(group: 'collapse')
   Widget _buildCollapseWithOperationText(BuildContext context) {
     return TCollapse(
-      style: TCollapseStyle.block,
-      expansionCallback: (int index, bool isExpanded) {
+      onExpansionChanged: (int index, bool isExpanded) {
         setState(() {
           _blockStyleWithOpText[index].isExpanded = !isExpanded;
         });
@@ -144,9 +140,8 @@ class TCollapsePageState extends State<TCollapsePage> {
 
   @Demo(group: 'collapse')
   Widget _buildAccordionCollapse(BuildContext context) {
-    return TCollapse.accordion(
-      style: TCollapseStyle.block,
-      expansionCallback: (int index, bool isExpanded) {
+    return TCollapse(mode: TCollapseMode.accordion, 
+      onExpansionChanged: (int index, bool isExpanded) {
         setState(() {
           _accordionData[index].isExpanded = !isExpanded;
         });

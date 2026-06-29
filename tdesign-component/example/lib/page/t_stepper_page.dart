@@ -69,15 +69,12 @@ class _TStepperPageState extends State<TStepperPage> {
     return _buildRow(context, [
       const TStepper(
         theme: TStepperColorScheme.filled,
-        disabled: true,
       ),
       const TStepper(
         theme: TStepperColorScheme.outline,
-        disabled: true,
       ),
       const TStepper(
         theme: TStepperColorScheme.normal,
-        disabled: true,
       ),
     ]);
   }
