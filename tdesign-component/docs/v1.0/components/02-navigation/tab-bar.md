@@ -1,7 +1,11 @@
-# TTabBar — v1.0 定稿
+# TabBar（TBottomTabBar）— v1.0 定稿
 
-> Sprint **S3** | 控制类 **—** | Material: Material TabBar
-> 源码：`lib/src/components/tabs` · [guide](../guide/developer-guide.md)
+> Sprint **S3** | 控制类 **B** | Material: NavigationBar  
+> 官网 [TabBar 标签栏](https://tdesign.tencent.com/flutter/components/tab-bar) · 源码：`lib/src/components/tabbar` · [guide](../guide/developer-guide.md)
+
+**读法**：新写 v1.0 → **§1** + **§2** Theme；0.2.x 升级 → 迁移表 · [bottom-tab-bar-upgrade-guide.md](./bottom-tab-bar-upgrade-guide.md)
+
+**合并说明**：[bottom-tab-bar-废弃.md](./bottom-tab-bar-废弃.md)（一组件一文件）已并入本文档。
 
 ---
 
@@ -9,16 +13,17 @@
 
 | 项 | v1.0 |
 |---|---|
-| 实现 | 展示/布局组件；样式进 Theme |
-| Material | Material TabBar |
-| Theme | `TTabBarThemeData` |
-| 禁用 | 读子项 [TTab.enabled](./tab.md)。 |
-| L4 | 构造器 L4 → `TTabBarThemeData` |
+| 实现 | Material 选择控件薄包装 |
+| Material | NavigationBar |
+| Theme | `TBottomNavThemeData` |
+| 禁用 | `onChanged: null`。 |
+| L4 | 构造器 L4 → `TBottomNavThemeData` |
 
 ## 受控
 
-无受控 value；按子交互控件控制类处理。
+`value` + `onChanged`；无 `defaultValue`。禁用：`onChanged: null`。
 
+Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写法)
 
 ---
 
@@ -28,36 +33,36 @@
 
 | 符号 | 说明 |
 | --- | --- |
-| width | tabBar宽度 |
-| controller | KEEP：L1–L3 高频 / Material 同名 |
+| TBottomTabBarIndicatorAnimation | KEEP：设计稿语义枚举保留 |
 
 ### 迁移 / 改名
 
 | 0.2.x | v1.0 | 原因 |
 | --- | --- | --- |
-| TTabBarOutlineType | variant 枚举 | 对齐 Material |
-| labelStyle | TTabBarThemeData | L4 → Theme |
-| unselectedLabelStyle | TTabBarThemeData | L4 → Theme |
-| decoration | TTabBarThemeData | L4 → Theme |
-| backgroundColor | TTabBarThemeData | L4 → Theme |
-| indicatorColor | TTabBarThemeData | L4 → Theme |
-| indicatorHeight | TTabBarThemeData | L4 → Theme |
-| indicatorWidth | TTabBarThemeData | L4 → Theme |
-| labelColor | TTabBarThemeData | L4 → Theme |
-| unselectedLabelColor | TTabBarThemeData | L4 → Theme |
-| isScrollable | TTabBarThemeData | L4 → Theme |
-| height | TTabBarThemeData | L4 → Theme |
-| indicatorPadding | TTabBarThemeData | L4 → Theme |
-| indicator | TTabBarThemeData | L4 → Theme |
-| showIndicator | TTabBarThemeData | L4 → Theme |
-| physics | TTabBarThemeData | L4 → Theme |
-| labelPadding | TTabBarThemeData | L4 → Theme |
-| outlineType | TTabBarThemeData | L4 → Theme |
-| dividerColor | TTabBarThemeData | L4 → Theme |
-| dividerHeight | TTabBarThemeData | L4 → Theme |
-| selectedBgColor | TTabBarThemeData | L4 → Theme |
-| unSelectedBgColor | TTabBarThemeData | L4 → Theme |
-| tabAlignment | TTabBarThemeData | L4 → Theme |
+| TBottomTabBarBasicType | variant 枚举 | 对齐 Material |
+| TBottomTabBarComponentType | variant 枚举 | 对齐 Material |
+| TBottomTabBarOutlineType | variant 枚举 | 对齐 Material |
+| currentIndex | value | 命名对齐 v1.0 |
+| basicType | TBottomNavThemeData | L4 → Theme |
+| componentType | TBottomNavThemeData | L4 → Theme |
+| outlineType | TBottomNavThemeData | L4 → Theme |
+| barHeight | TBottomNavThemeData | L4 → Theme |
+| useVerticalDivider | TBottomNavThemeData | L4 → Theme |
+| dividerHeight | TBottomNavThemeData | L4 → Theme |
+| dividerThickness | TBottomNavThemeData | L4 → Theme |
+| dividerColor | TBottomNavThemeData | L4 → Theme |
+| showTopBorder | TBottomNavThemeData | L4 → Theme |
+| topBorder | TBottomNavThemeData | L4 → Theme |
+| useSafeArea | TBottomNavThemeData | L4 → Theme |
+| placeholder | TBottomNavThemeData | L4 → Theme |
+| selectedBgColor | TBottomNavThemeData | L4 → Theme |
+| unselectedBgColor | TBottomNavThemeData | L4 → Theme |
+| backgroundColor | TBottomNavThemeData | L4 → Theme |
+| centerDistance | TBottomNavThemeData | L4 → Theme |
+| needInkWell | TBottomNavThemeData | L4 → Theme |
+| indicatorAnimation | TBottomNavThemeData | L4 → Theme |
+| animationDuration | TBottomNavThemeData | L4 → Theme |
+| animationCurve | TBottomNavThemeData | L4 → Theme |
 
 ### 废弃
 
@@ -69,26 +74,23 @@ _无_
 
 ### export
 
-- **保留**：`TTabBar`、`TTabBarVariant`、`TTabBarThemeData`
-- **移出**：`TTabBarOutlineType`（改名 `TTabBarVariant`）、`t_horizontal_tab_bar.dart` fork（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
-
+- **保留**：`TBottomTabBar`、`TBottomNavThemeData`、`TBottomTabBarIndicatorAnimation`
+- **移出**：内部 fork 文件 `t_horizontal_tab_bar.dart`（实现阶段删除）（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 ---
 
 ## 2. Theme
 
-`TTabBarThemeData` · Material: **Material TabBar** · [theme.md](../foundation/theme.md)
+`TBottomNavThemeData` · Material: **NavigationBar** · [theme.md](../foundation/theme.md)
 
 ### Material vs TDesign
 
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
-| `tabs` / `controller` | Material **`TabBar`** | **实例 KEEP**；与 Material 同级 |
-| `onTap` | Material **`TabBar.onTap`** | **`ValueChanged<int>?`**；保留名（[api §3](../foundation/api.md#3-动作回调)） |
-| `isScrollable` / `tabAlignment` | Material **`TabBar`** | 可滚动与对齐 |
-| `indicatorColor` / `indicatorWeight` / `indicatorPadding` / `indicator` | Material **`TabBarTheme`** | 指示器 |
-| `labelColor` / `unselectedLabelColor` / `labelStyle` / `unselectedLabelStyle` | Material **`TabBarTheme`** | 标签样式 |
-| `dividerColor` / `dividerHeight` | Material **`TabBarTheme`** | 底部分割线 |
-| `overlayColor` / `splashFactory` | Material **`TabBarTheme`** | 水波纹 |
-| `enableFeedback` | Material **`TabBar`** | 触觉；≠ 禁用 |
-| `variant`（outlineType）/ `selectedBgColor` / `unSelectedBgColor` / `decoration` | TDesign **`TTabBarThemeData`** | TDesign 胶囊/卡片形态与块背景 |
+| `value` / `onChanged` | Material **`NavigationBar`** | B 类受控；`onChanged: null` 禁用 |
+| `navigationTabs` | **实例 KEEP** | 底栏项配置（图标/文案/角标等） |
+| `backgroundColor` / `elevation` / `indicatorColor` | Material **`NavigationBarTheme`** | 容器与选中指示 |
+| `labelBehavior` / `height` | Material **`NavigationBar`** | 标签显示策略与高度 |
+| `animationDuration` / `animationCurve` | Material 动画 | 切换动效默认 |
+| `basicType` / `componentType` / `outlineType` → **`variant`** | TDesign **`TBottomNavThemeData`** | TDesign 底栏形态（图标/文字组合等） |
+| `barHeight` / 分割线 / `useSafeArea` / `needInkWell` / 弹出菜单尺寸 | TDesign **`TBottomNavThemeData`** | 0.2.x L4 默认 |
