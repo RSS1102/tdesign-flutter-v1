@@ -1,6 +1,6 @@
 # TProgress — v1.0 定稿
 
-> Sprint **S2** | 控制类 **C** | Material: ProgressIndicator
+> Sprint **S2** | 控制类 **—**（纯展示） | Material: ProgressIndicator
 > 源码：`lib/src/components/progress` · [guide](../guide/developer-guide.md)
 
 ---
@@ -9,18 +9,17 @@
 
 | 项 | v1.0 |
 |---|---|
-| 实现 | Material 连续值控件薄包装 |
-| Material | ProgressIndicator |
+| 实现 | Material 进度指示器薄包装（**不可交互**） |
+| Material | `LinearProgressIndicator` / `CircularProgressIndicator` |
 | Theme | `TProgressThemeData` |
-| 禁用 | `onChanged: null`（或省略 `onChanged` ≈ 禁用）。 |
+| 禁用 | 无 Widget 级禁用；纯展示 |
 | L4 | 构造器 L4 → `TProgressThemeData` |
 
-## 受控
+## 控制方案
 
-`value` + `onChanged`（含 `onChangeStart`/`End` 等）。禁用：`onChanged: null`。
+控制类 **`—`**（纯展示）：`value` 表示进度 `0.0–1.0`（或 `null` 为 indeterminate），父 State 传入渲染；**无** `onChanged`（对齐 Material `ProgressIndicator`，**非** C 类 Slider）。无 `defaultValue`。
 
-
-Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写法)
+→ [controlled.md](../../foundation/controlled.md)
 
 
 ---
@@ -32,7 +31,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | 符号 | 说明 |
 | --- | --- |
 | TProgressLabelPosition | 尺寸/位置枚举保留 |
-| value | C 类进度值（ KEEP） |
+| value | 进度值 `0.0–1.0` 或 `null`（indeterminate）；父 State 传入，KEEP |
 | label | 进度文案（ KEEP） |
 
 ### 迁移 / 改名

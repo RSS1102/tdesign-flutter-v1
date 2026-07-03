@@ -36,7 +36,7 @@
 | **A** | Button、Link、Cell | `onPressed` / `onTap` 主路径；**`null` = 禁用**（无 `disabled` 构造器） |
 | **B/C** | Switch、Slider、Rate | `value` + `onChanged` 受控；**`onChanged: null` = 禁用** |
 | **D** | Input、Textarea | `controller` 主路径；`enabled: false` / `readOnly: true`（**勿**用 `onChanged: null` 表禁用） |
-| **E** | Popup、Dialog、Toast | `show()` / `visible` 显隐；浮层**无** Widget 级 `disabled` |
+| **E** | Popup、Dialog、Toast | 仅 `show()` / `show*`；不调 show 即不显 |
 | **F** | Picker、Calendar | `value` + `onChanged`；`onChanged: null`；项级 `*.disabled` **KEEP** |
 
 **Tier1** 额外要求：**Theme 子树** `mergeExtension(T{Xxx}ThemeData)` 覆盖构造器未传项（见 [theme.md §3](../foundation/theme.md#3-子树覆盖)）。

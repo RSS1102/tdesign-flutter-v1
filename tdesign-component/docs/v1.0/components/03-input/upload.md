@@ -15,7 +15,7 @@
 | 禁用 | 废弃 Widget 级 `disabled`。 |
 | L4 | `type` → **`TUploadThemeData`** |
 
-## 受控
+## 控制方案
 
 无受控 value；按子交互控件控制类处理。
 

@@ -7,45 +7,57 @@
 
 | 类型 | 规则 | 数量 |
 |---|---|---|
-| **定稿** | 一官网入口一文件，可编辑 | 8 篇 |
-| **废弃** | 被合并的旧组件各保留一文件，文件名加 `-废弃`，仅跳转 | 4 篇 |
+| **定稿** | 一官网入口一文件 | 8 篇 |
+| **废弃** | 旧路径跳转，`-废弃` 后缀 | 4 篇 |
 | **升级指南** | `*-upgrade-guide.md`，不改动 | 8 篇 |
 
-Tab 系 S3 优先；TDrawer 官网归导航类、实现排 S4。
+## 定稿写法（8 篇统一）
 
-## 官网对照（定稿）
+- **四节**：§1 API · §2 迁移 · §3 Theme · §4 实现/测试/Example
+- **文首**：元信息 + **读法** + **图例链** + TOC
+- **架构 + 控制方案**：`## 架构` 表 + `## 控制方案`（对齐 [controlled.md](../../foundation/controlled.md) · [api.md](../../foundation/api.md)）
+- **§1.1**：每个参数单独一行；子类型用独立表
+- **§1 脚注**：无图例 = KEEP；L4 迁入 §3
+- **L2 槽位**：Widget 实例用语义名（`title`/`child`）；Builder 用 `{语义}Builder` → [api.md §2.1](../../foundation/api.md#21-l2-内容槽widget-实例-vs-builder-回调)
+- **§1.3**：KEEP / deprecated / 不 export 三行式
+- **§2**：「未改」一行 + 按图例分节
+- **§3**：配置选型三行 + 单张字段表（含决策列）
+- **§4**：链 [testing.md](../../guide/testing.md)
+- **篇幅**：约 90–150 行；不写附录 C、不贴大段代码（E 类 `show` 用法除外）
 
-| 定稿文档 | Dart 类 | 官网页 |
-|---|---|---|
-| [tab-bar.md](./tab-bar.md) | `TBottomTabBar` | [TabBar 标签栏](https://tdesign.tencent.com/flutter/components/tab-bar) |
-| [tabs.md](./tabs.md) | `TTab` · `TTabBar` · `TTabBarView` | [Tabs 选项卡](https://tdesign.tencent.com/flutter/components/tabs) |
-| [backtop.md](./backtop.md) | `TBackTop` | BackTop |
-| [navbar.md](./navbar.md) | `TNavBar` | Navbar |
-| [steps.md](./steps.md) | `TSteps` | Steps |
-| [drawer.md](./drawer.md) | `TDrawer` | Drawer |
-| [indexes.md](./indexes.md) | `TIndexes` | Indexes |
-| [sidebar.md](./sidebar.md) | `TSideBar` | SideBar |
+## 官网对照
 
-## 废弃（一组件一文件，勿编辑）
+| 定稿 | 控制类 | 文档状态 | 官网 |
+|---|---|---|---|
+| [tab-bar.md](./tab-bar.md) | B | **已定稿** | [TabBar 标签栏](https://tdesign.tencent.com/flutter/components/tab-bar) |
+| [tabs.md](./tabs.md) | — | **已定稿** | [Tabs 选项卡](https://tdesign.tencent.com/flutter/components/tabs) |
+| [backtop.md](./backtop.md) | A | **已定稿** | [BackTop](https://tdesign.tencent.com/flutter/components/back-top) |
+| [navbar.md](./navbar.md) | A | **已定稿** | [Navbar](https://tdesign.tencent.com/flutter/components/navbar) |
+| [steps.md](./steps.md) | — | **已定稿** | [Steps](https://tdesign.tencent.com/flutter/components/steps) |
+| [drawer.md](./drawer.md) | E | **已定稿** | [Drawer](https://tdesign.tencent.com/flutter/components/drawer) |
+| [indexes.md](./indexes.md) | — | **已定稿** | [Indexes](https://tdesign.tencent.com/flutter/components/indexes) |
+| [sidebar.md](./sidebar.md) | B | **已定稿** | [SideBar](https://tdesign.tencent.com/flutter/components/side-bar) |
 
-| 废弃文件 | 组件 | 合并为 |
+## 废弃跳转
+
+| 废弃文件 | 0.2.x | 合并为 |
 |---|---|---|
 | [tab-废弃.md](./tab-废弃.md) | `TTab` | [tabs.md](./tabs.md) |
-| [tab-bar-废弃-ttabbar.md](./tab-bar-废弃-ttabbar.md) | `TTabBar` | [tabs.md](./tabs.md) |
-| [tab-bar-view-废弃.md](./tab-bar-view-废弃.md) | `TTabBarView` | [tabs.md](./tabs.md) |
-| [bottom-tab-bar-废弃.md](./bottom-tab-bar-废弃.md) | `TBottomTabBar` | [tab-bar.md](./tab-bar.md) |
+| [tab-bar-废弃-ttabbar.md](./tab-bar-废弃-ttabbar.md) | `TTabBar`（页内） | [tabs.md](./tabs.md) → `TTabsBar` |
+| [tab-bar-view-废弃.md](./tab-bar-view-废弃.md) | `TTabBarView` | [tabs.md](./tabs.md) → `TTabsBarView` |
+| [bottom-tab-bar-废弃.md](./bottom-tab-bar-废弃.md) | `TBottomTabBar` | [tab-bar.md](./tab-bar.md) → `TTabBar` |
 
 ## 组件清单
 
-> `[ ]` = v1.0 代码未落地 · `[x]` = 已实现 · 控制类 / Tier 见各定稿 md 文首
-
-| 实现 | 组件 | 定稿 | Sprint |
+| 实现 | 产品 | 定稿 | Sprint |
 |---|---|---|---|
-| [ ] | TBottomTabBar | [tab-bar.md](./tab-bar.md) | S3 |
-| [ ] | TTab / TTabBar / TTabBarView | [tabs.md](./tabs.md) | S3 |
+| [ ] | TabBar | [tab-bar.md](./tab-bar.md) | S3 |
+| [ ] | Tabs | [tabs.md](./tabs.md) | S3 |
 | [ ] | TBackTop | [backtop.md](./backtop.md) | S3 |
 | [ ] | TNavBar | [navbar.md](./navbar.md) | S3 |
 | [ ] | TSteps | [steps.md](./steps.md) | S3 |
 | [ ] | TDrawer | [drawer.md](./drawer.md) | S4 |
 | [ ] | TIndexes | [indexes.md](./indexes.md) | S3 |
 | [ ] | TSideBar | [sidebar.md](./sidebar.md) | S3 |
+
+> **文档**：上表 8 篇定稿 md 均已 **已定稿**；`[ ]` 表示 Dart 实现尚未按 §4 验收。

@@ -15,7 +15,7 @@
 | 禁用 | `onChanged: null`。 |
 | L4 | 构造器 L4 → `TCheckboxThemeData` |
 
-## 受控
+## 控制方案
 
 `value` + `onChanged`；无 `defaultValue`。禁用：`onChanged: null`。
 

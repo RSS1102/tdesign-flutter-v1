@@ -11,12 +11,24 @@
 | L1 语义 | `variant`、`size`、`value`、`enabled` | ✅ |
 | L2 内容 | `child`、`label`、`hintText`、`icon` | ✅ |
 | L3 行为 | `onPressed`、`onChanged`、`onVisibleChange` | ✅ |
-| L4 样式 | 色、字号、padding、圆角 | ❌ → `T{Xxx}ThemeData` |
+| L4 样式 | 色、边距、宽高、圆角、阴影、状态按压样式、动效参数（`duration`/`curve`/`delay`） | ❌ → `T{Xxx}ThemeData`（归类 → [theme.md §2.1](./theme.md#21-themedata-字段归类v10-裁决)） |
 
-逃逸舱：`style: ButtonStyle?`、`decoration`（Material 同名）。  
-子树覆盖：`Theme.of(context).mergeExtension(T{Xxx}ThemeData(...))`。
+逃逸舱：`style: ButtonStyle?`、`decoration`（Material 同名）；**是否提供** → [theme.md §2.2](./theme.md#22-p0-逃逸舱判定) 四问判定（**默认无**）。  
+子树覆盖：`Theme.of(context).mergeExtension(T{Xxx}ThemeData(...))`。**禁止**构造器 `themeData`（→ [theme.md §2.1](./theme.md#禁止构造器-themedatav10-裁决)）。
 
 **Material 依据**：L4 不进构造器，与 `ButtonStyle` / `InputDecorationTheme` / `WidgetStateProperty` 同层；实例级仍可用 Material 逃逸舱。
+
+### 1.1 Flutter `Key`（Widget 基建）
+
+| 项 | 约定 |
+|---|---|
+| **是否公开 API** | 是 — 所有 `StatelessWidget` / `StatefulWidget` 构造器均接受可选 `Key`（Dart 3：`super.key`） |
+| **是否 L1–L4** | **否** — Flutter Element 身份，非 TDesign 业务语义 |
+| **组件 md §1.1** | **不逐行列出** `key`；全库一次约定见本节（→ [component-doc.md §5.2](../guide/component-doc.md#52-构造器与工厂一张表)） |
+| **实现** | 新代码统一 `super.key`；0.2.x 遗留 `Key? key` + `super(key: key)` 迁移时收口 |
+| **典型用途** | 列表项身份、父 `setState` 后保持子树状态、**受控初值重置**（改 `key` 强制 remount；B/C/D 类优先改 `value` / `controller`，`key` 为破例手段） |
+
+与受控 `value` / `onChanged` **无关**；勿将 `key` 当作选中态或表单值的替代 API。
 
 ---
 
@@ -34,6 +46,36 @@
 | `TTheme.of` | `Theme.of(context)` + `mergeExtension` |
 | `*Style` | 不 export |
 
+### 2.1 L2 内容槽：Widget 实例 vs Builder 回调
+
+两类 L2 槽位，命名方式**不同**，靠**类型 + 后缀**区分，不靠 `Widget` / `builder` 混用前缀。
+
+| 种类 | 参数形态 | 命名 | 类型示例 | 说明 |
+|---|---|---|---|---|
+| **Widget 实例** | 直接传入已构建的子树 | **语义名**（不加 `Widget` 后缀） | `Widget?` | `title` · `footer` · `child` · `icon` |
+| **Builder 回调** | 按上下文懒构建子树 | **`{语义}Builder` 后缀**（对齐 Flutter） | `Widget? Function(...)` | `contentBuilder` · `anchorBuilder` · `itemBuilder` |
+
+**Widget 实例（v1.0 裁决）**
+
+- 每个语义槽**只有一个** `Widget?` 参数；**禁止** `String?` + `titleWidget` 双通道。
+- 纯文案：`title: Text('标题')`（同 [button.md](../components/01-base/button.md) `child`、[drawer.md](../components/02-navigation/drawer.md) `title`/`footer`）。
+- 整块自定义主体：优先 `child`（对齐 Material `child`）。
+- **禁止** v1.0 新 API 使用 `titleWidget` · `contentWidget` 等 `*Widget` 后缀。
+- **唯一例外**：同构造器另有非 Widget 同名语义（如 `loading: bool?` 与 `loadingWidget: Widget?`）时，后者可保留 `*Widget` 以消歧。
+
+**Builder 回调（v1.0 裁决）**
+
+- 后缀 **`Builder`**，前缀为语义：`contentBuilder`（✅），**非** `builderContent`（❌）。
+- 依据：Flutter / Material 惯例 — `itemBuilder` · `separatorBuilder` · `transitionBuilder` · `ListView.builder`。
+- **为何 Builder 带后缀、Widget 不带**：`Builder` 表示**函数**（懒构建）；`Widget?` 类型已说明是实例，槽位名只保留语义（`title` 即「标题区」）。
+
+**Material 特例（保持原名，不强行合并）**
+
+- `Tab`：`text` / `child` / `icon` 跟 Material [Tab](https://api.flutter.dev/flutter/material/Tab-class.html)。
+- `AppBar`：`flexibleSpace` 等 Material 字段名 KEEP。
+
+0.2.x 对照：`title`+`titleWidget` → `title: Widget?` · `contentWidget` → `child` · `builderContent` → `contentBuilder`（见各组件 §2）。
+
 代码对照 → [disabled-evolution.md §6](./disabled-evolution.md#6-代码示例0.2x--v10) · [controlled.md §6](./controlled.md#6-代码示例0.2x--v10) · 逐组件 [components/](../components/) §2
 
 ---
@@ -46,7 +88,7 @@
 | ListTile 系（Cell） | `onTap` / `onLongPress` | `ListTile.onTap`（保留 `onTap` 名） |
 | TabBar | `onTap` | `TabBar.onTap` |
 | B/C/F | `onChanged` | `Switch` / `Slider` / `Radio.onChanged` |
-| E 类 | `show()` / `visible` + `onVisibleChange` | `showModalBottomSheet` / Route 显隐 |
+| E 类 | `show()` → `Handle` / `Future` | `showModalBottomSheet` / `showDialog` |
 | D 类 Input | `onChanged` 仅通知；禁用用 `enabled` | `TextField.onChanged` + `enabled` / `readOnly` |
 
 E 类细则 → [controlled.md §4](./controlled.md#e-类)
@@ -62,7 +104,7 @@ E 类细则 → [controlled.md §4](./controlled.md#e-类)
 | B Checkbox | `void Function(bool?)? onChanged` |
 | B/C/F | `ValueChanged<T>? onChanged` |
 | C Slider | `ValueChanged<double>?` + `onChangeStart`/`onChangeEnd` |
-| E | `show()` / `ValueChanged<bool>? onVisibleChange` |
+| E | `show()` → `Handle` / `Future`；show 上 `onClose` / `onVisibleChange` 仅生命周期通知 |
 
 ---
 
@@ -73,7 +115,7 @@ E 类细则 → [controlled.md §4](./controlled.md#e-类)
 | A | `onPressed: null` / `onTap: null` | ~~`disabled`~~ | `ElevatedButton.onPressed == null` |
 | B/C/F | `onChanged: null` | ~~`enable`~~ / ~~`disabled`~~ | `Switch` / `Slider` / `Checkbox.onChanged == null` |
 | D | `enabled: false` / `readOnly: true` | 不用 `onChanged: null` | `TextField.enabled` / `readOnly` |
-| E | 不 show / `visible: false` | ~~浮层 `disabled`~~ | 无 Widget 级 disabled；不调 `show` |
+| E | 不调 `show` | ~~浮层 `disabled`~~ / ~~`visible`~~ | 无 Widget 级 disabled；不调 `show` |
 | Tab 等 | `enabled: false` | ~~`enable`~~ | `Tab.enabled` |
 
 **原则**：有 Material 等价写法时跟 Material；**不**再暴露统一 `disabled` / `enable` 构造器。
@@ -87,7 +129,7 @@ E 类细则 → [controlled.md §4](./controlled.md#e-类)
 | 落点 | 条件 |
 |---|---|
 | KEEP | L1–L3 高频 |
-| → THEME | L4 或低频默认 |
+| → THEME | L4 样式默认（§2.1 归类）；不含浮层策略 / 能力开关 |
 | MERGE | 同义多参数 |
 | RENAME | 语义对、命名不对齐 Material |
 | REMOVE | 重复 / 可组合 |

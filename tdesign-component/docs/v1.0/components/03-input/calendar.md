@@ -15,7 +15,7 @@
 | 禁用 | Widget 级: onChanged: null |
 | L4 | `cellBuilder` → **`TCalendarThemeData`** |
 
-## 受控
+## 控制方案
 
 `value` + `onChanged`；项级 `*.disabled` KEEP。禁用：`onChanged: null`。
 
@@ -44,12 +44,12 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | onChange | onChanged | 命名对齐 v1.0 |
 | firstDayOfWeek | TCalendarThemeData | L4 → Theme |
 | height | TCalendarThemeData | L4 → Theme |
-| onMonthChanged | TCalendarThemeData | L4 → Theme |
-| monthTitleBuilder | TCalendarThemeData | L4 → Theme |
-| cellBuilder | TCalendarThemeData | L4 → Theme |
-| subtitleBuilder | TCalendarThemeData | L4 → Theme |
-| animateTo | TCalendarThemeData | L4 → Theme |
-| anchorDate | TCalendarThemeData | L4 → Theme |
+| onMonthChanged | 构造器 L3 **KEEP** | 回调不进 Theme |
+| monthTitleBuilder | TCalendarThemeData | L4 builder 默认 |
+| cellBuilder | TCalendarThemeData | L4 builder 默认 |
+| subtitleBuilder | TCalendarThemeData | L4 builder 默认 |
+| animateTo | 构造器 L3 / Controller | 命令式定位，不进 Theme |
+| anchorDate | 构造器 L1 **KEEP** | 初始锚定月，非 Widget 级 `initialValue` |
 
 ### 废弃
 
@@ -70,20 +70,23 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 参数 | 层级 | v1.0 | 说明 |
 | --- | --- | --- | --- |
-| `value` | L1 | **新增** | 受控 `List<DateTime>` |
+| `value` | L1 | **新增** | 受控 `List<DateTime>`；初值由父 State 持有 |
 | `onChanged` | L3 | **改名** | 原 `onChange` |
+| `onMonthChanged` | L3 | **保留** | 翻月通知；**不进 Theme** |
+| `anchorDate` | L1 | **保留** | 初始展示月份锚点 |
 | `variant` | L1 | **改名** | 原 `type` / `CalendarType` |
 | `minDate` / `maxDate` | L2 | **保留** | 可选区间 |
-| `cellBuilder` 等 | L4 | → Theme | 单元格/标题定制默认 |
+| `cellBuilder` 等 builder | L4 | → Theme | 单元格/标题定制**默认** |
 | 命令式整页 | — | **可选** | 全屏日期选择可 `Navigator`；面板场景配合 `TPopup.show` |
 
 ### L4 迁入 `TCalendarThemeData`
 
 | 0.2.x 来源 | Theme 字段 | Material 对照 |
 | --- | --- | --- |
-| `firstDayOfWeek` / `height` / `style` | 月历布局默认 | 自绘；Material `showDatePicker` 为对照 |
+| `firstDayOfWeek` / `height` / `style` | 月历布局默认 | 自绘 |
 | `cellBuilder` / `subtitleBuilder` / `monthTitleBuilder` | builder 默认 | TDesign 扩展 |
-| `onMonthChanged` / `animateTo` / `anchorDate` | 翻月行为默认 | TDesign 扩展 |
+
+> **不进 Theme**：`onMonthChanged`（L3 回调）· `animateTo`（命令式）· `value` / `onChanged`（F 类受控，留实例）。
 
 ### export
 
@@ -105,6 +108,8 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | `variant` | TDesign Widget API | 由 `type`/`CalendarType` 迁移；单选/范围等模式 |
 | `minDate` / `maxDate` | TDesign Widget API | **保留**实例 L2；区间外格自动 `DateSelectType.disabled` |
 | `firstDayOfWeek` / `height` / `style` | TDesign **`TCalendarThemeData`** | 月历布局 L4 |
-| `cellBuilder` / `subtitleBuilder` / `monthTitleBuilder` | TDesign **`TCalendarThemeData`** | 单元格与标题定制 |
-| `onMonthChanged` / `animateTo` / `anchorDate` | TDesign **`TCalendarThemeData`** | 翻月与定位行为默认 |
+| `cellBuilder` / `subtitleBuilder` / `monthTitleBuilder` | TDesign **`TCalendarThemeData`** | builder 默认 |
+| `onMonthChanged` | **构造器 L3** | 翻月回调 |
+| `anchorDate` | **构造器 L1** | 初始锚定月 |
+| `animateTo` | **Controller / 实例方法** | 命令式滚月 |
 | `showDatePicker` 等 | Material 对照 | 命令式日期选择走 Material；**内嵌日历面板**走 TCalendar |

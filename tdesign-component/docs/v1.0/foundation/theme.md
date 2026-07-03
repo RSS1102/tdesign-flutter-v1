@@ -29,6 +29,108 @@ L4  Widget 实例           — style / decoration 逃逸舱
 
 口诀：**实例 > 组件 Theme > Material > Token**。
 
+### 2.1 ThemeData 字段归类（v1.0 裁决）
+
+> 全库 `T{Xxx}ThemeData` / 浮层 `TPopupThemeData` 均按本节归类；细则 → 各组件 §Theme。
+
+#### 进 Theme（P1 · 样式默认）
+
+| 类别 | 示例 |
+|------|------|
+| **色** | `backgroundColor` · `overlayColor` · 文案色 |
+| **边距** | `padding` · `margin` · `gap` · 列表分割线间距 |
+| **宽高** | `width` · `height` · `drawerTop` · `itemHeight` · `itemMinWidth` |
+| **边框 / 圆角 / 阴影** | `bordered` · `radius` · `elevation` · `boxShadow` |
+| **状态样式** | `hover` 按压高亮 · `pressed` / `disabled` 色（`WidgetStateProperty` / `TCellThemeData`） |
+| **动效参数** | `duration` · `curve` · `delay`（画面过渡节奏；**非** Toast 停留时长） |
+
+#### 不进 Theme（构造器 / show · L1–L3）
+
+| 类别 | 示例 |
+|------|------|
+| **浮层策略** | `showOverlay` · `closeOnOverlayClick` · `useSafeArea` |
+| **能力开关** | `showCancel` · `scrollable` · `showPagination` |
+| **交互语义** | `onClose` · `onItemClick` · `onChanged`；点项后是否 `handle.close()` |
+| **停留 / 业务时序** | Toast `duration`（显示多久） |
+
+#### 动画与 Material
+
+| 项 | v1.0 |
+|----|------|
+| 默认过渡 | `TPopupThemeData`：`animationDuration` · `animationCurve`（及组件自有 Theme） |
+| 单次覆盖 | `show` / Route 可选参数（对齐 M3 `AnimationStyle` 思路） |
+| 不进 Theme | 浮层「要不要蒙层」「点蒙层关不关」 |
+
+#### TPopup 系分工（范例）
+
+| 对象 | 归类内容 |
+|------|----------|
+| **`TDrawerThemeData`** | 色 · 边距 · `width` / `drawerTop` · 边框 · `TCellThemeData` · `hover` 按压样式 |
+| **`TActionSheetThemeData`** | 色 · 圆角 · `itemHeight` / `itemMinWidth` · `cancelText` · `defaultAlign` · 宫格 `count` / `rows` 等**布局默认** |
+| **`TPopupThemeData`** | 蒙层色 · 过渡 `duration` / `curve` |
+| **构造器 / `show*` L3** | `showOverlay` · `closeOnOverlayClick` · `showCancel` · `scrollable` · `useSafeArea` · 回调 |
+
+→ [drawer.md §3](../components/02-navigation/drawer.md#3-theme-主题配置) · [popup.md §3](../components/05-feedback/popup.md#3-theme) · [action-sheet.md §2](../components/05-feedback/action-sheet.md#2-theme)
+
+#### 禁止构造器 `themeData`（v1.0 裁决）
+
+对齐 M3：**样式默认只从 `Theme.of(context)` 读取**（全局 / 子树 `mergeExtension`）。**全库不提供** `T{Xxx}(..., themeData: …)` 构造器参数。
+
+| 场景 | v1.0 做法 |
+|------|-----------|
+| 全 App / 一片区域默认 | `MaterialApp.theme` · `Theme(data: …mergeExtension(T{Xxx}ThemeData(...)), child: …)` |
+| 单颗组件与周围不同 | **`Theme` 子树包裹**（上表），或 P0 逃逸舱 `style` / `decoration` |
+| E 类浮层 `show()` | 打开方 `context` 上的 Theme；**无** `themeData` |
+
+```dart
+// ✅ 单颗 Indexes 定制样式
+Theme(
+  data: Theme.of(context).mergeExtension(
+    const TIndexesThemeData(capsuleTheme: true),
+  ),
+  child: TIndexes(contentBuilder: ...),
+)
+
+// ❌ 不提供
+TIndexes(themeData: TIndexesThemeData(...));
+```
+
+### 2.2 P0 逃逸舱判定（写 / 评审组件）{#22-p0-逃逸舱判定}
+
+> **默认**：全库**多数组件无** P0 `style` / `decoration`；L4 进 `T{Xxx}ThemeData`，单颗差异用 **子树 `mergeExtension`** 或 **L1 构造器单项**（`variant` · `status` 等）。  
+> **例外**：Material 有同名逃逸舱，或极少数需「一颗整包覆写」resolve 时，才在 §1 增加 P0 行。
+
+#### 四问判定（按序）
+
+| # | 问题 | 是 → | 否 → |
+|---|------|------|------|
+| 1 | Material Widget 有 **`style` / `decoration`** 吗？ | 考虑 P0；类型**跟 Material 同名**（`ButtonStyle?` · `InputDecoration?` · `TextStyle?`） | 继续 ↓ |
+| 2 | 单颗差异能用 **子树 `mergeExtension`** 吗？ | **不要 P0** | 继续 ↓ |
+| 3 | 能用 **L1 构造器单项**覆盖吗？（`variant` · `colorScheme` · `status` · 项级 `textStyle` 等） | **不要 P0** | 继续 ↓ |
+| 4 | resolve 字段很多，且业务**常要一颗整包覆写**吗？ | 可选自研 `T{Xxx}Style?`（**少见**；须在 §1 标明 P0 与 resolve 顺序） | **不要 P0** |
+
+**默认结论**：四问走完仍为「否」→ **不提供** P0；组件 md §1 **不写** `style: T{Xxx}Style?` 规划行。
+
+#### 全库现况（v1.0 定稿）
+
+| 有 P0 | 参数 | 说明 |
+|-------|------|------|
+| [TButton](../components/01-base/button.md) | `ButtonStyle? style` | Material 同名；✅ |
+| [TText](../components/01-base/text.md) | `TextStyle? style` | Material 同名；✅ |
+| [TInput](../components/03-input/input.md) · [TTextarea](../components/03-input/textarea.md) | `InputDecoration? decoration` | Material 同名；✅ |
+| [TFab](../components/01-base/fab.md) | 经 `buttonProps.style` | 委托 Button P0 |
+| **其余组件** | — | **无 P0**（含 SideBar · Steps · Tabs · Navbar · Switch · Cell …） |
+
+自研 `T{Xxx}Style` **非默认模板**；新增前须在四问表记录裁决理由。
+
+#### 组件 md 写法
+
+- **有 P0**：§1.1 表单独一行，层级列 **`P0`**，说明写「覆盖 resolve / 非日常入口」；§3 覆盖顺序写明 **P0 > P1 Theme > …**
+- **无 P0**：§3「单颗」行只写 **子树 `mergeExtension`** 或 **构造器 L1 覆盖**；**禁止**写「规划逃逸舱」占位
+- §2 **禁止**新增构造器 `themeData`（→ 上节）
+
+→ 构造器四层 [api.md §1](./api.md#1-构造器四层l1l4) · 撰写清单 [component-doc.md §8](../guide/component-doc.md#8-去重检查清单发布前)
+
 ---
 
 ## 3. 子树覆盖
@@ -109,7 +211,7 @@ Column(children: [
 | 禁用走 `onPressed: null` / `onChanged: null` / `enabled` | 不进构造器 L4 |
 | `ThemeData.colorScheme` / `textTheme`（P3） | Token 经 `TMaterialThemeBuilder` 写入，P4 回读仅 TD 专有项 |
 
-**裁决**：先查 Material 子主题能否表达 → 能则 P2；不能且跨组件复用 → P1 Extension；仅单实例 → P0 逃逸舱。
+**裁决**：先查 Material 子主题能否表达 → 能则 P2；不能且跨组件复用 → P1 Extension；仅单实例 → 子树 Theme 或 L1 单项；**极少数** → P0 逃逸舱（→ [§2.2](#22-p0-逃逸舱判定) 四问，**默认无**）。
 
 组件 md §2.1 必填「Material 字段 vs TDesign 扩展」对照表。
 

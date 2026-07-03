@@ -15,7 +15,7 @@
 | 禁用 | `onChanged: null`（F 类）。 |
 | L4 | 构造器 L4 → `TTreeSelectThemeData` |
 
-## 受控
+## 控制方案
 
 `value` + `onChanged`；项级 `*.disabled` KEEP。禁用：`onChanged: null`。
 

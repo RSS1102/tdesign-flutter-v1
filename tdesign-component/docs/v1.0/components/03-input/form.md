@@ -15,7 +15,7 @@
 | 禁用 | 废弃 TForm(disabled: true)；改为各字段 TFormFiel |
 | L4 | `child` → **`TFormThemeData`** |
 
-## 受控
+## 控制方案
 
 无受控 value；按子交互控件控制类处理。
 

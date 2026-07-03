@@ -13,7 +13,7 @@ v1.0 **不暴露** Widget 级统一 `disabled` / `enable`；按控制类映射�
 | A | `onPressed: null` / `onTap: null` |
 | B/C/F | `onChanged: null` |
 | D | `enabled: false` / `readOnly: true` |
-| E | 不 show / `visible: false` |
+| E | 不调 `show` |
 | Tab 等 | `enabled: false` |
 
 ---

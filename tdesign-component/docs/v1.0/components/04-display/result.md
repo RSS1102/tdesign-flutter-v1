@@ -15,7 +15,7 @@
 | 禁用 | 纯展示组件无 Widget 级禁用开关。 |
 | L4 | 构造器 L4 → `TResultThemeData` |
 
-## 受控
+## 控制方案
 
 `onPressed` / `onTap`；无 `value`。禁用：回调 `null`。
 

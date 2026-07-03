@@ -15,7 +15,7 @@
 | 禁用 | 浮层无 Widget 级禁用 |
 | L4 | show 色/字号/尺寸 → **`TImageViewerThemeData`** |
 
-## 受控
+## 控制方案
 
 命令式 `show()` 为主；当前页由 `defaultIndex` + `onIndexChange` 通知。无 Widget 级 `disabled`。
 

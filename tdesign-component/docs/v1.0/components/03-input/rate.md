@@ -15,7 +15,7 @@
 | 禁用 | `onChanged: null`。 |
 | L4 | 构造器 L4 → `TRateThemeData` |
 
-## 受控
+## 控制方案
 
 `value` + `onChanged`（含 `onChangeStart`/`End` 等）。禁用：`onChanged: null`。
 
@@ -36,12 +36,13 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | icon | KEEP：L1–L3 高频 / Material 同名 |
 | direction | KEEP：L1–L3 高频 / Material 同名 |
 | texts | KEEP：实例辅助文案列表 |
-| builderText | KEEP：实例自定义文案 Builder |
+| textBuilder | 自定义文案 Builder（原 `builderText`） |
 
 ### 迁移 / 改名
 
 | 0.2.x | v1.0 | 原因 |
 | --- | --- | --- |
+| `builderText` | `textBuilder` | §2.1 `{语义}Builder` 后缀 |
 | color | TRateThemeData | L4 → Theme |
 | onChange | onChanged | 命名对齐 v1.0 |
 | disabled | onChanged: null | Material 禁用 |
@@ -82,5 +83,5 @@ _无_
 | --- | --- | --- |
 | `value` / `onChanged` | 语义对齐 Material **`Slider`** | C 类；`onChanged: null` 禁用 |
 | `count` / `allowHalf` | **实例** | 星数与半星（默认可 Theme） |
-| `icon` / `texts` / `builderText` | **实例 KEEP** | 图标与文案映射 |
+| `icon` / `texts` / `textBuilder` | **实例 KEEP** | 图标与文案映射 |
 | `color` / `gap` / 对齐 / `showText` | TDesign **`TRateThemeData`** | L4 默认 |

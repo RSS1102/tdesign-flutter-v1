@@ -15,7 +15,7 @@
 | 禁用 | `onChanged: null`（或省略 `onChanged` ≈ 禁用）。 |
 | L4 | 构造器 L4 → `TSliderThemeData` |
 
-## 受控
+## 控制方案
 
 `value` + `onChanged`（含 `onChangeStart`/`End` 等）。禁用：`onChanged: null`。
 

@@ -15,9 +15,9 @@
 | 禁用 | 浮层无 Widget 级禁用；按钮 `onPressed: null` |
 | L4 | show 样式参数 → **`TDialogThemeData`** |
 
-## 受控
+## 控制方案
 
-命令式 `show()` 为主。无 Widget 级 `disabled`。
+**仅**命令式 `showAlert` / `showConfirm` / `showInput` → `Future<T?>`（对齐 Material `showDialog`）。**不提供** Widget 级 `visible`。无 Widget 级 `disabled`。
 
 
 ---
@@ -32,7 +32,7 @@
 | showConfirm | 命令式 confirm |
 | showInput | 命令式 input |
 | TAlertDialog / TConfirmDialog / TInputDialog | 声明式 Widget（少用） |
-| title / content / contentWidget | 文案与自定义内容 |
+| title / content | 标题与正文（`Widget?`） |
 | leftBtn / rightBtn / buttons | 按钮区 |
 | barrierDismissible | Material 同名 |
 
@@ -40,6 +40,7 @@
 
 | 0.2.x | v1.0 | 原因 |
 | --- | --- | --- |
+| `title`（`String?`）/ `content`（`String?`）/ `contentWidget` | `title` / `content`（`Widget?`） | §2.1 单槽；文案 `Text('…')` |
 | 零散 show 系列 | showAlert / showConfirm / showInput | 三族合并 |
 | TDialogButtonOptions 内 L4 | TDialogThemeData | 色/字号/高度 → Theme |
 | TDialogButtonOptions.action | onPressed | A 类 |
@@ -64,7 +65,7 @@
 | 参数 | 层级 | v1.0 | 说明 |
 | --- | --- | --- | --- |
 | `context` | E 首参 | **保留** | `BuildContext` |
-| `title` / `content` / `contentWidget` | L2 | **保留** | 文案区 |
+| `title` / `content` | L2 | **保留** | 标题与正文（`Widget?`） |
 | `leftBtn` / `rightBtn` / `buttons` | L3 | **保留** | 按钮配置；内部 `onPressed` |
 | `barrierDismissible` | L3 | **保留** | 点击蒙层关闭 |
 | `onClose` | L3 | **保留** | 关闭回调 |

@@ -15,9 +15,9 @@
 | 禁用 | 浮层无 Widget 级禁用 |
 | L4 | show 色/尺寸/内边距 → **`TPopoverThemeData`** |
 
-## 受控
+## 控制方案
 
-命令式 `show()` 为主。无 Widget 级 `disabled`；可选后续声明式 `visible` + `onVisibleChange`。
+**仅**命令式 `showPopover()` → `Future`（对齐 Material `showDialog` + Overlay 锚点）。**不提供** Widget 级 `visible` / `onVisibleChange`。无 Widget 级 `disabled`。
 
 
 ---
@@ -30,7 +30,7 @@
 | --- | --- |
 | showPopover | 命令式 show API（E 类） |
 | TPopoverPlacement | 12 向定位枚举 |
-| content / contentWidget | 气泡文案或自定义内容 |
+| content | 气泡内容（`Widget?`） |
 | placement / showArrow / offset | 相对锚点定位 |
 | closeOnClickOutside | 对齐 `barrierDismissible` |
 | onTap / onLongTap | 内容区点击/长按 |
@@ -40,6 +40,7 @@
 
 | 0.2.x | v1.0 | 原因 |
 | --- | --- | --- |
+| `content`（`String?`）/ `contentWidget` | `content: Widget?` | §2.1 单槽；文案 `Text('…')` |
 | TPopoverTheme | TPopoverColorScheme | 语义色 enum；避免与 ThemeExtension 混淆 |
 | theme | colorScheme | 原 `TPopoverTheme`（dark/light/info/…） |
 | padding / width / height / radius | TPopoverThemeData | L4 → Theme |
@@ -50,6 +51,7 @@
 | 符号 | 原因 |
 | --- | --- |
 | `TPopoverTheme` 作 Theme 名 | 改名为 `TPopoverColorScheme` + `TPopoverThemeData` |
+| Widget `visible` / 声明式构造 | 移出；仅 `showPopover` |
 
 ### 新增
 
@@ -63,7 +65,7 @@
 | 参数 | 层级 | v1.0 | 说明 |
 | --- | --- | --- | --- |
 | `context` | E 首参 | **保留** | 锚点与 Overlay 上下文 |
-| `content` / `contentWidget` | L2 | **保留** | 二选一；自定义优先 |
+| `content` | L2 | **保留** | 气泡内容（`Widget?`） |
 | `placement` | L1 | **保留** | `TPopoverPlacement` |
 | `showArrow` / `offset` | L1 | **保留** | 箭头与锚点偏移 |
 | `closeOnClickOutside` | L3 | **保留** | 点击蒙层关闭 |
@@ -99,7 +101,7 @@
 
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
-| `content` / `contentWidget` | **单次 show L2** | 当次气泡内容 |
+| `content` | **单次 show L2** | 当次气泡内容（`Widget?`） |
 | `placement` / `showArrow` / `offset` | **单次 show L1** | 锚点定位 KEEP |
 | `closeOnClickOutside` | Material **`barrierDismissible`** | show 参数 KEEP |
 | `onTap` / `onLongTap` | **单次 show L3** | 内容回调 |

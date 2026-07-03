@@ -15,10 +15,9 @@
 | 禁用 | Widget 级: onChanged: null |
 | L4 | `onColumnScrollEnd` → **`TPickerThemeData`** |
 
-## 受控
+## 控制方案
 
-`value` + `onChanged`；项级 `*.disabled` KEEP。禁用：`onChanged: null`。
-
+**仅** `value` + `onChanged`；项级 `*.disabled` KEEP。禁用：`onChanged: null`。命令式改列值 → 父 `setState` 改 `value`（**无** `TPickerController`）。
 
 Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写法)
 
@@ -54,13 +53,13 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | --- | --- |
 | initialValue | init 一次性语义 → 父 State + `value` |
 | disabled | Widget 级 bool → `onChanged: null` |
+| `TPickerController` | 移出 export |
 
 ### 新增
 
 | 符号 | 说明 |
 | --- | --- |
 | value | 受控各列选中值 `List<dynamic>` |
-| TPickerController | 可选命令式 |
 | TPickerThemeData | L4 滚轮视窗与列行为 |
 
 ### show API（嵌入 TPopup）
@@ -83,8 +82,8 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 ### export
 
-- **保留**：`TPicker`、`TPickerOption`、`TPickerValue`、`TPickerColumnData`、`TPickerController`、`TPickerThemeData`、公开 `columnBuilder` typedef
-- **移出**：`picker_data.dart`、`picker_keys.dart`（附录 C 默认移出）、`picker_item.dart` 收窄（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`TPicker`、`TPickerOption`、`TPickerValue`、`TPickerColumnData`、`TPickerThemeData`、公开 `columnBuilder` typedef
+- **移出**：`picker_data.dart`、`picker_keys.dart`（附录 C 默认移出）、`picker_item.dart` 收窄、`TPickerController`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 
 ---

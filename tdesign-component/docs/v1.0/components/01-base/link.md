@@ -15,7 +15,7 @@
 | 禁用 | 废弃 `state: TLinkState.disabled`。 |
 | L4 | 构造器 L4 → `TLinkThemeData` |
 
-## 受控
+## 控制方案
 
 `onPressed` / `onTap`；无 `value`。禁用：回调 `null`。
 

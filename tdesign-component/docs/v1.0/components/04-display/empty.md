@@ -15,7 +15,7 @@
 | 禁用 | 纯展示组件无 Widget 级禁用开关。 |
 | L4 | 构造器 L4 → `TEmptyThemeData` |
 
-## 受控
+## 控制方案
 
 `onPressed` / `onTap`；无 `value`。禁用：回调 `null`。
 
@@ -31,13 +31,13 @@
 | icon | KEEP |
 | image | KEEP — 自定义插图 Widget |
 | emptyText | KEEP — 主文案 |
-| operationText | KEEP — 操作按钮文案（`variant=operation` 时） |
-| customOperationWidget | KEEP — 自定义操作区（替代默认按钮） |
+| operation | 操作区（`Widget?`；原 `customOperationWidget` / `operationText`） |
 
 ### 迁移 / 改名
 
 | 0.2.x | v1.0 | 原因 |
 | --- | --- | --- |
+| `operationText` / `customOperationWidget` | `operation: Widget?` | §2.1 单槽；默认按钮 `Text('…')` |
 | TEmptyType | TEmptyVariant | 命名对齐 v1.0 |
 | onTapEvent | onPressed | 命名对齐 v1.0 |
 | type | variant | 命名对齐 v1.0 |

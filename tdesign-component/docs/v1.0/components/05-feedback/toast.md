@@ -15,9 +15,9 @@
 | 禁用 | 浮层无 Widget 级禁用；不 show 即可 |
 | L4 | 色/字号/图标 → **`TToastThemeData`** |
 
-## 受控
+## 控制方案
 
-命令式 `show*` 返回 `toastId`；`dismissToast` / `dismissAll` / `dismissLoading` 关闭。无 `visible` 声明式主路径。
+**仅**命令式 static `show*` → `toastId`；`dismissToast` / `dismissAll` / `dismissLoading` 关闭（对齐 Overlay 直插）。**不提供** Widget 级 `visible`。无 Widget 级 `disabled`。
 
 
 ---
@@ -36,13 +36,14 @@
 | IconTextDirection | 图标与文本横/竖排列 |
 | toastId | 可选；show 返回 id 供 dismiss |
 | preventTap | 是否拦截点击穿透 |
-| customWidget | 自定义 Toast 内容 |
+| child | 自定义 Toast 主体（`Widget?`；原 `customWidget`） |
 | maxLines / constraints | 文本布局 |
 
 ### 迁移 / 改名
 
 | 0.2.x | v1.0 | 原因 |
 | --- | --- | --- |
+| `customWidget` | `child` | §2.1；整块自定义主体 |
 | TToastConfig | TToastThemeData | L4 默认；单次 show 可破例 |
 | backgroundColor / textStyle / iconSize / iconColor | TToastThemeData | L4 → Theme |
 | duration（毫秒 int） | Duration | 对齐 Material |
@@ -71,7 +72,7 @@
 | `duration` | L3 | **保留** | 默认 3s；loading 用超长 |
 | `preventTap` | L3 | **保留** | 拦截点击 |
 | `toastId` | L1 | **保留** | 传入则复用 id；否则自动生成 |
-| `customWidget` | L2 | **保留** | 自定义内容（showText/showLoading） |
+| `child` | L2 | **保留** | 自定义主体（showText/showLoading；与 `text` 二选一） |
 | `backgroundColor` / `textStyle` | L4 | → Theme | 单次可覆盖 Theme |
 | 返回值 | — | **保留** | `String` toastId |
 
@@ -124,7 +125,7 @@
 
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
-| `text` / `customWidget` | **单次 show L2** | 当次内容 |
+| `text` / `child` | **单次 show L2** | 文案简写或整块自定义 |
 | `duration` / `preventTap` | **单次 show L3** | 展示时长与点击策略 |
 | `showText` 等 static | **E 类** | Overlay 插入 |
 | `toastId` 返回值 + dismiss | **实例管理** | 多 Toast 并存 |

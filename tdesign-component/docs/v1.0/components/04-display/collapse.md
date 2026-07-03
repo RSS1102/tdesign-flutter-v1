@@ -15,7 +15,7 @@
 | 禁用 | 容器无统一 bool。 |
 | L4 | 构造器 L4 → `TCollapseThemeData` |
 
-## 受控
+## 控制方案
 
 无受控 value；按子交互控件控制类处理。
 

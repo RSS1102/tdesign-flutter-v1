@@ -15,7 +15,7 @@
 | 禁用 | 整颗 Stepper 不可用: onChanged: null |
 | L4 | 构造器 L4 → `TStepperThemeData` |
 
-## 受控
+## 控制方案
 
 `value` + `onChanged`（含 `onChangeStart`/`End` 等）。禁用：`onChanged: null`。
 

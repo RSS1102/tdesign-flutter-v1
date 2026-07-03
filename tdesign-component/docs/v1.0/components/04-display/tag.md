@@ -15,7 +15,7 @@
 | 禁用 | `disable` 不是交互禁用 API，仅控制灰态样式。 |
 | L4 | 构造器 L4 → `TTagThemeData` |
 
-## 受控
+## 控制方案
 
 `onPressed` / `onTap`；无 `value`。禁用：回调 `null`。
 

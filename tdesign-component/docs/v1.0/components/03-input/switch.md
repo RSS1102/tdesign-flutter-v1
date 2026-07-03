@@ -15,10 +15,9 @@
 | 禁用 | `onChanged: null`。 |
 | L4 | 构造器 L4 → `TSwitchThemeData` |
 
-## 受控
+## 控制方案
 
-`value` + `onChanged`；无 `defaultValue`。禁用：`onChanged: null`。
-
+**仅** `value` + `onChanged`；无 `defaultValue`；初值父 State。禁用：`onChanged: null`。命令式改值 → 父 `setState` 改 `value`（对齐 Material `Switch`；**无** `SwitchController`）。
 
 Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写法)
 
@@ -55,18 +54,18 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 ### 废弃
 
-_无_
+| 符号 | 原因 |
+| --- | --- |
+| `TSwitchController` | 移出 export；B 类仅 `value` + `onChanged` |
 
 ### 新增
 
-| 符号 | 说明 |
-| --- | --- |
-| TSwitchController（可选） | v1.0 新增 |
+_无_
 
 ### export
 
-- **保留**：`TSwitch`、`TSwitchSize`、`TSwitchThemeData`、`TSwitchController`（可选）
-- **移出**：`TSwitchType`、`OnSwitchChanged`、`enable` 参数文档（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`TSwitch`、`TSwitchSize`、`TSwitchThemeData`
+- **移出**：`TSwitchType`、`OnSwitchChanged`、`enable` 参数文档、`TSwitchController`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 ---
 

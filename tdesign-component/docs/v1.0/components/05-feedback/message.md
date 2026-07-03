@@ -9,15 +9,15 @@
 
 | 项 | v1.0 |
 |---|---|
-| 实现 | Overlay / Route；命令式 `show` 为主 |
+| 实现 | Overlay / Route；**仅**命令式 `showMessage` |
 | Material | SnackBar / ScaffoldMessenger |
 | Theme | `TMessageThemeData` |
 | 禁用 | 浮层 无 Widget 级 disabled。不展示 → 不调 showMess |
 | L4 | 构造器 L4 → `TMessageThemeData` |
 
-## 受控
+## 控制方案
 
-命令式 `show()` 或 `visible` + `onVisibleChange`。无 Widget 级 `disabled`。
+**仅**命令式 `showMessage()` → `TMessageHandle`（可选 `handle.close()`）。对齐 Material `ScaffoldMessenger.showSnackBar`。**不提供** Widget 级 `TMessage` 声明式 / `visible`。无 Widget 级 `disabled`。
 
 
 ---
@@ -28,7 +28,6 @@
 
 | 符号 | 说明 |
 | --- | --- |
-| TMessage | 声明式（少用） |
 | showMessage | 命令式入口 |
 | TMessageOptions | content/duration/closeBtn 等见 |
 | TMessageHandle | 关闭句柄 |
@@ -56,6 +55,7 @@
 | --- | --- |
 | MessageTheme | 由 `TMessageVariant` 替代 |
 | Widget 级 `disabled` | E 类无容器禁用；不 show 即可 |
+| `TMessage` Widget 声明式 / `visible` | 移出；仅 `showMessage` |
 
 ### 新增
 
@@ -70,8 +70,8 @@
 
 ### export
 
-- **保留**：`TMessage`、`showMessage`、`TMessageOptions`、`TMessageHandle`、`TMessageThemeData`、`TMessageVariant`、`TMessageLink`、`TMessageMarquee`
-- **移出**：`MessageTheme` 旧 enum 名（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`showMessage`、`TMessageOptions`、`TMessageHandle`、`TMessageThemeData`、`TMessageVariant`、`TMessageLink`、`TMessageMarquee`
+- **移出**：`MessageTheme` 旧 enum 名、`TMessage` Widget 声明式构造（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 ### show API（`showMessage`）
 

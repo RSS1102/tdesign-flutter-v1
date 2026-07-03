@@ -15,7 +15,7 @@
 | 禁用 | enabled: false / readOnly: true |
 | L4 | 构造器 L4 → `TSearchBarThemeData` |
 
-## 受控
+## 控制方案
 
 `controller` 主路径 / `initialValue` 辅（init 一次）。禁用：`enabled` / `readOnly`（不用 `onChanged: null`）。
 

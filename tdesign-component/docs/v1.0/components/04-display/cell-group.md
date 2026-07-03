@@ -15,7 +15,7 @@
 | 禁用 | `onTap: null`（Material ListTile/TabBar 系保留 `onTap`，不用 `onPressed`）。 |
 | L4 | 构造器 L4 → `TCellThemeData` |
 
-## 受控
+## 控制方案
 
 `onPressed` / `onTap`；无 `value`。禁用：回调 `null`。
 
@@ -30,7 +30,7 @@
 | --- | --- |
 | cells | `List<TCell>` 子项 |
 | builder | `CellBuilder` 自定义 cell 父组件 |
-| title / titleWidget | 组标题 |
+| title | 组标题（`Widget?`） |
 | bordered / isShowLastBordered | 组边框 |
 | scrollable | 组内可滚动 |
 
@@ -38,6 +38,7 @@
 
 | 0.2.x | v1.0 | 原因 |
 | --- | --- | --- |
+| `title`（`String?`）/ `titleWidget` | `title: Widget?` | §2.1 单槽 |
 | TCellGroupTheme | TCellThemeData.groupVariant | default / card |
 | theme | TCellThemeData | L4 → Theme |
 | style | TCellThemeData | 移除 `TCellStyle` 实例 |

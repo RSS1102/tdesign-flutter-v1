@@ -15,7 +15,7 @@
 | 禁用 | Item 本身无 bool。 |
 | L4 | 构造器 L4 → `TFormThemeData` |
 
-## 受控
+## 控制方案
 
 无受控 value；按子交互控件控制类处理。
 
@@ -31,12 +31,13 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 符号 | 说明 |
 | --- | --- |
-| labelWidget | 自定义标签 |
+| label | 标签区（`Widget?`） |
 
 ### 迁移 / 改名
 
 | 0.2.x | v1.0 | 原因 |
 | --- | --- | --- |
+| `labelWidget` | `label: Widget?` | §2.1 单槽 |
 | type / TFormItemType | type / TFormItemType | 删除；`child: TFormField(...)` 组合 |
 | formRules / itemRule | formRules / itemRule | 迁入子树 `TFormField.rules` |
 | backgroundColor | TFormThemeData | L4 → Theme |
@@ -70,7 +71,7 @@ _无_
 
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
-| `label` | Material **`InputDecoration.labelText`** 语义 | 实例 KEEP |
+| `label` | Material **`InputDecoration.labelText`** 语义 | 实例 `Widget?` KEEP |
 | `help` | **`helperText`** 语义 | 实例 KEEP |
 | `error`（来自子树） | **`errorText`** 语义 | 子 **`TFormField.errorText`** |
 | 横/竖布局 | TDesign 扩展 | 见 [form.md §4](../foundation/form.md#4-字段组件接入) |

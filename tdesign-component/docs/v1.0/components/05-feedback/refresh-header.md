@@ -15,7 +15,7 @@
 | 禁用 | 无 Widget 级禁用相关字段。`enableHapticFeedback` / `enableInfiniteRefresh` 为能力开关，见 [disabled-evolution.md §6](../foundation/disabled-evolution.md#6-易混淆名字含-enabledisable-但不是组件禁用)。 |
 | L4 | `spring` → **`TRefreshThemeData`** |
 
-## 受控
+## 控制方案
 
 无受控 value；按子交互控件控制类处理。
 

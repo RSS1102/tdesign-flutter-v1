@@ -15,7 +15,7 @@
 | 禁用 | 项级 `disabled` KEEP；整组 `onChanged: null` |
 | L4 | show 样式参数 → **`TCascaderThemeData`** |
 
-## 受控
+## 控制方案
 
 `value` + `onChanged`；项级 `*.disabled` KEEP。禁用：`onChanged: null`。
 

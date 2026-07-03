@@ -15,7 +15,7 @@
 | 禁用 | 不设 `disabled` 参数。 |
 | L4 | 构造器 L4 → `TCellThemeData` |
 
-## 受控
+## 控制方案
 
 `onPressed` / `onTap`；无 `value`。禁用：回调 `null`。
 
@@ -29,26 +29,29 @@
 | 符号 | 说明 |
 | --- | --- |
 | arrow | 是否显示右侧箭头 |
-| title | 标题 |
+| title | 标题区（`Widget?`） |
 | TCellAlign | 保留 |
 | bordered | 保留 |
-| subtitle | 由 `description` 迁移 |
-| prefix | 由 `leftIcon` 迁移 |
+| subtitle | 副标题区（`Widget?`；原 `description`） |
+| prefix | 左侧区（`Widget?`；原 `leftIcon`） |
 | onTap | 由 `onClick` 迁移；`GestureTapCallback?` |
 | onLongPress | 保留 — Material `ListTile.onLongPress` |
-| titleWidget | 保留 — 实例标题 Widget |
-| subtitleWidget | 由 `descriptionWidget` 保留/更名 |
-| image / imageWidget / imageSize / imageCircle | 保留 — leading 图片区 |
-| leftIconWidget / prefix | 保留 — 左侧区 |
-| note / noteWidget / noteMaxWidth / noteMaxLine | 保留 — 右侧 note 区 |
-| rightIcon / rightIconWidget | 保留 — trailing 区 |
+| image | 左侧图片区（`Widget?`） |
+| imageSize / imageCircle | 图片尺寸与圆形裁剪 |
+| note | 右侧 note 区（`Widget?`） |
+| noteMaxWidth / noteMaxLine | note 布局约束 |
+| trailing | 最右图标区（`Widget?`；原 `rightIcon`） |
 
 ### 迁移 / 改名
 
 | 0.2.x | v1.0 | 原因 |
 | --- | --- | --- |
-| description | subtitle | 命名对齐 v1.0 |
-| leftIcon | prefix | 命名对齐 v1.0 |
+| `title`（`String?`）/ `titleWidget` | `title: Widget?` | §2.1 单槽 |
+| `description` / `descriptionWidget` / `subtitleWidget` | `subtitle: Widget?` | 命名对齐 + 单槽 |
+| `leftIcon` / `leftIconWidget` | `prefix: Widget?` | 命名对齐 + 单槽 |
+| `image` / `imageWidget` | `image: Widget?` | §2.1 单槽 |
+| `note`（`String?`）/ `noteWidget` | `note: Widget?` | §2.1 单槽 |
+| `rightIcon` / `rightIconWidget` | `trailing: Widget?` | §2.1 单槽 |
 | onClick | onTap | 命名对齐 v1.0 |
 | disabled | onTap: null | Material 禁用 |
 | style | TCellThemeData | L4 → Theme |
@@ -83,9 +86,9 @@ _无_
 
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
-| `title` / `subtitle` / `leading` / `trailing` | Material **`ListTile`** | 映射 `title` / `subtitle` / `prefix` / `note`+`arrow` |
+| `title` / `subtitle` / `leading` / `trailing` | Material **`ListTile`** | 映射 `title` / `subtitle` / `prefix`+`image` / `note`+`trailing`+`arrow` |
 | `onTap` / `onLongPress` | Material **`ListTile`** | `GestureTapCallback?` |
-| `titleWidget` / `subtitleWidget` / `*Widget` 槽位 | **实例 KEEP** | 每行内容不同；Material `title`/`subtitle` 可为 Widget |
+| `title` / `subtitle` / `prefix` / `note` / `trailing` / `image` | **实例 `Widget?`** | 每行内容不同；文案 `Text('…')` |
 | `titleColor` / `iconColor` / `contentPadding` / `dense` | Material **`ListTileTheme`** | 默认样式 |
 | `note` 区 / `arrow` 布局 | TDesign 扩展 | Material ListTile 无 note 语义 |
 | `bordered` / `hover` / `height` 默认 | TDesign **`TCellThemeData`** | L4 默认 |

@@ -15,7 +15,7 @@
 | 禁用 | 交互锁定用 `onChanged: null`（B 类）。 |
 | L4 | 构造器 L4 → `TTagThemeData` |
 
-## 受控
+## 控制方案
 
 `value` + `onChanged`；无 `defaultValue`。禁用：`onChanged: null`。
 

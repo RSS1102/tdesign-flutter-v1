@@ -15,10 +15,9 @@
 | 禁用 | Widget 级 `onChanged: null`。 |
 | L4 | `child` → **`TDropdownThemeData`** |
 
-## 受控
+## 控制方案
 
-`value` + `onChanged`；项级 `*.disabled` KEEP。禁用：`onChanged: null`。
-
+**仅** `value` + `onChanged`；项级 `*.disabled` KEEP。禁用：`onChanged: null`。命令式改菜单选中 → 父 `setState` 改 `value`（**无** `TDropdownItemController`）。
 
 Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写法)
 
@@ -35,7 +34,6 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | items / builder | 菜单项列表 |
 | TDropdownItem / TDropdownItemOption | 下拉项与选项 |
 | TDropdownItem.disabled | 项级禁用（数据） |
-| TDropdownItemController | 命令式重置/更新选项 |
 | closeOnClickOverlay / direction / showOverlay | 浮层行为 |
 | onMenuOpened / onMenuClosed | 开闭回调 |
 | multiple / onConfirm / onReset | 多选确认流 |
@@ -52,7 +50,9 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 ### 废弃
 
-_无_
+| 符号 | 原因 |
+| --- | --- |
+| `TDropdownItemController` | 移出 export；选中由父 `value` + `onChanged` |
 
 ### 新增
 
@@ -81,8 +81,8 @@ _无_
 
 ### export
 
-- **保留**：`TDropdownMenu`、`TDropdownItem`、`TDropdownItemOption`、`TDropdownItemController`、`TDropdownThemeData`
-- **移出**：内部 Overlay 路由实现类（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`TDropdownMenu`、`TDropdownItem`、`TDropdownItemOption`、`TDropdownThemeData`
+- **移出**：内部 Overlay 路由实现类、`TDropdownItemController`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 
 ---

@@ -15,10 +15,9 @@
 | 禁用 | `onChanged: null`（B 类）。Group 整组锁定同样 `onChanged: null`。 |
 | L4 | `cardMode` → **`TRadioThemeData`** |
 
-## 受控
+## 控制方案
 
-`value` + `onChanged`；无 `defaultValue`。禁用：`onChanged: null`。
-
+**仅** `value` + `onChanged`；无 `defaultValue`。禁用：`onChanged: null`。Group 命令式改选中 → 父 `setState` 改 `value`（对齐 Material `RadioGroup`；**无** `TRadioGroupController`）。
 
 Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写法)
 
@@ -34,7 +33,6 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | TRadio | 单选项 |
 | TRadioGroup | 互斥组 |
 | TRadioThemeData | L4 默认样式 |
-| TRadioGroupController | 组级命令式控制 |
 | TRadioSize | 尺寸 |
 | TContentDirection | 文案与控件方向 |
 | value | 选项值 `T`（单颗）或当前选中 `T?`（Group） |
@@ -50,7 +48,6 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | children | Group 选项列表 |
 | child | Group 自由布局 |
 | rowCount / passThrough / divider | Group 布局 |
-| controller | Group Controller |
 
 ### 迁移 / 改名
 
@@ -67,7 +64,6 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | titleFont / subTitleFont | TRadioThemeData | L4 → Theme |
 | spacing / checkBoxLeftSpace / insetSpacing / customSpace | TRadioThemeData.spacing | L4 → Theme |
 | directionalTdRadios | children | 命名对齐 v1.0 |
-| TCheckboxGroupController | TRadioGroupController | 命名对齐 v1.0 |
 
 ### 废弃
 
@@ -77,6 +73,8 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | OnRadioGroupChange | 废弃 → 使用 `ValueChanged<T>?` |
 | `OnRadioGroupChange` | 改用 `ValueChanged<T>?` |
 | enable | 禁用见 `onChanged: null` |
+| `TRadioGroupController` | 移出 export；组值由父 `value` + `onChanged` |
+| Group 构造器 `controller` | 删除 |
 
 ### 新增
 
@@ -85,13 +83,12 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | **TRadio**\<T\> | 单选项；内部 Material `Radio<T>` + 可选 `RadioListTile` 布局 |
 | **TRadioGroup**\<T\> | 互斥组；语义对齐 Material `RadioGroup<T>`（`groupValue`→`value`） |
 | **TRadioThemeData** | L4 色、字号、间距、`radioStyle` 等 |
-| **TRadioGroupController** | 可选；命令式改选中项 |
 | toggleable | 不暴露 — Radio 固定不可三态（Material `toggleable: false`） |
 
 ### export
 
-- **保留**：`TRadio`、`TRadioGroup`、`TRadioThemeData`、`TRadioGroupController`、`TRadioSize`、`TContentDirection`
-- **移出**：`TRadioStyle`、`HollowCircle` 等内部绘制类、对 `TCheckbox`/`TCheckboxGroup` 实现的 re-export（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`TRadio`、`TRadioGroup`、`TRadioThemeData`、`TRadioSize`、`TContentDirection`
+- **移出**：`TRadioStyle`、`HollowCircle` 等内部绘制类、对 `TCheckbox`/`TCheckboxGroup` 实现的 re-export、`TRadioGroupController`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 
 ---

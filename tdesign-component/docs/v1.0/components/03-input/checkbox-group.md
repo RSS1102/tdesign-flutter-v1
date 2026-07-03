@@ -15,10 +15,9 @@
 | 禁用 | Group 容器无 Widget 级 `disabled`。 |
 | L4 | 构造器 L4 → `TCheckboxThemeData` |
 
-## 受控
+## 控制方案
 
-`value` + `onChanged`；无 `defaultValue`。禁用：`onChanged: null`。
-
+**仅** `value` + `onChanged`；无 `defaultValue`。禁用：`onChanged: null`。命令式改组值 → 父 `setState` 改 `value`（**无** `TCheckboxGroupController`）。
 
 Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写法)
 
@@ -32,10 +31,8 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | 符号 | 说明 |
 | --- | --- |
 | TCheckboxGroup | 多选组 |
-| TCheckboxGroupController | 组级命令式控制 |
 | customIconBuilder | 自定义选择icon的样式 |
 | child | 保留 |
-| controller | 保留 |
 | titleMaxLine | 保留 |
 | customContentBuilder | 保留 |
 | contentDirection | 保留 |
@@ -59,6 +56,8 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | --- | --- |
 | OnGroupChange | 废弃 → `onChanged: ValueChanged<List<T>>?` |
 | OnCheckBoxGroupChange | 废弃 → 同上 |
+| `TCheckboxGroupController` | 移出 export；组值由父 `value` + `onChanged` |
+| 构造器 `controller` | 删除 |
 
 ### 新增
 
@@ -66,8 +65,8 @@ _无_
 
 ### export
 
-- **保留**：`TCheckboxGroup`、`TCheckboxGroupController`、`TCheckboxThemeData`
-- **移出**：`OnGroupChange`、`OnCheckBoxGroupChange` 旧 typedef（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`TCheckboxGroup`、`TCheckboxThemeData`
+- **移出**：`OnGroupChange`、`OnCheckBoxGroupChange`、`TCheckboxGroupController` 旧 typedef（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 
 ---

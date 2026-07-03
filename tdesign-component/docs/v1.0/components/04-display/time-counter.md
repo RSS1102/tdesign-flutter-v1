@@ -15,7 +15,7 @@
 | 禁用 | 容器/展示无统一 bool。 |
 | L4 | `theme` → **`TTimeCounterThemeData`** |
 
-## 受控
+## 控制方案
 
 无受控 value；按子交互控件控制类处理。
 

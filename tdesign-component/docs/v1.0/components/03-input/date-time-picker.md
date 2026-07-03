@@ -15,10 +15,9 @@
 | 禁用 | Widget 级 `onChanged: null`（F 类） |
 | L4 | mode/start/end/steps 等 → **`TPickerThemeData`** |
 
-## 受控
+## 控制方案
 
-`value` + `onChanged`；项级 `*.disabled` KEEP。禁用：`onChanged: null`。
-
+**仅** `value` + `onChanged`；禁用：`onChanged: null`。命令式改时刻 → 父 `setState` 改 `value`（**无** `TPickerController`）。
 
 Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写法)
 
@@ -52,13 +51,13 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | 符号 | 原因 |
 | --- | --- |
 | initialValue（非受控重置） | 改 `value` + 父 State；重置用 `key` 破例 |
+| `TPickerController` | 移出 export（与 [picker.md](./picker.md) 一致） |
 
 ### 新增
 
 | 符号 | 说明 |
 | --- | --- |
 | value | 受控 `DateTime` / `TDateTimePickerValue` |
-| TPickerController | 可选；与 TPicker 共用 |
 
 ### show API（嵌入 TPopup）
 

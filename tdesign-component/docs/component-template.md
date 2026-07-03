@@ -16,9 +16,17 @@
 
 ---
 
-**架构**：（用一段话说明实现方式、受控/禁用、Theme 指向）
+## 架构
 
-{组件名} 底层基于 Material [{原生控件}](https://api.flutter.dev/flutter/material/{...}.html) 薄包装。[A 类：通过 `onPressed: null` 表达禁用]。所有样式按优先级 `实例 P0 style > resolve 全量 > Token` 覆盖。主题扩展为 `T{组件名}ThemeData`，通过 `Theme.of(context).extension<T{组件名}ThemeData>()` 读取。
+（用一段话或表说明实现方式、Theme 指向 §3）
+
+## 控制方案
+
+（控制类 **A–F** 或 **`—`**；禁用规则；链 [controlled.md](v1.0/foundation/controlled.md)）
+
+{B 类示例：`value` + `onChanged`；无 `defaultValue`。A 类：`onPressed: null` 禁用。}
+
+{组件名} 底层基于 Material [{原生控件}](https://api.flutter.dev/flutter/material/{...}.html) 薄包装。样式默认走 `T{组件名}ThemeData`（P1）；是否提供 P0 `style`/`decoration` → [theme.md §2.2](v1.0/foundation/theme.md#22-p0-逃逸舱判定) 四问（**默认无**）。
 
 ---
 
@@ -35,9 +43,9 @@
 | | `size` | `T{组件名}Size` | L1 | `medium` | 尺寸规格 |
 | ✨ | `colorScheme` | `T{组件名}ColorScheme?` | L1 | Theme | 颜色方案 |
 | 🗑️ → | `onPressed` | `VoidCallback?` | L3 | — | 点击回调；`null` 即禁用 |
-| | `style` | `{组件名}Style?` | P0 | — | 实例级最终覆盖（逃逸舱） |
+| ✨? | `style` / `decoration` | Material 同名类型 | P0 | — | **仅**四问判定为「要」时增加（→ [theme.md §2.2](v1.0/foundation/theme.md#22-p0-逃逸舱判定)） |
 
-> **L1** = 语义级、**L2** = 内容级、**L3** = 行为级、**P0** = 逃逸舱样式覆盖
+> **L1** = 语义级、**L2** = 内容级、**L3** = 行为级、**P0** = 逃逸舱（**默认无**）
 
 ### 1.2 类型定义
 

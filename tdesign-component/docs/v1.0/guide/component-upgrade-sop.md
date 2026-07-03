@@ -173,7 +173,7 @@ L3 行为：onPressed / onChanged / onVisibleChange  ← 进构造器
 L4 样式：色 / 字号 / padding / 圆角               ← ❌ 不进构造器，进 T{Xxx}ThemeData
 ```
 
-逃逸舱：`style: ButtonStyle?` / `decoration`（Material 同名），仅单实例破例用。
+逃逸舱：`style: ButtonStyle?` / `decoration`（Material 同名）；**是否提供** → [theme.md §2.2](../foundation/theme.md#22-p0-逃逸舱判定) 四问（**默认无**）。
 
 **参数量目标**：动作类 6–10 · 选择类 3–5 · 输入类 12–18 · 浮层 5–8。
 
@@ -612,11 +612,11 @@ Theme(
 | TBackTop | A | 枚举改名（shape/colorScheme）+ visibilityOffset 新增 | [link](../components/02-navigation/backtop-upgrade-guide.md) |
 | TNavBar | A | 参数对齐 AppBar（leading/actions）+ 废弃 screenAdaptation | [link](../components/02-navigation/navbar-upgrade-guide.md) |
 | TTab/TTabBar/TTabBarView | — | 枚举合并 + enable→enabled + physics 替换 bool | [link](../components/02-navigation/tab-upgrade-guide.md) |
-| TDrawer | E | contentWidget→child + show() + visible | [link](../components/02-navigation/drawer-upgrade-guide.md) |
-| TSideBar | F | defaultValue 删除 + value 新增 | [link](../components/02-navigation/sidebar-upgrade-guide.md) |
+| TDrawer | E | contentWidget→child + show()（删除 visible） | [link](../components/02-navigation/drawer-upgrade-guide.md) |
+| TSideBar | B | defaultValue 删除 + value 新增 | [link](../components/02-navigation/sidebar-upgrade-guide.md) |
 | TBottomTabBar | B | currentIndex→value | [link](../components/02-navigation/bottom-tab-bar-upgrade-guide.md) |
-| TSteps | B | activeIndex→value | [link](../components/02-navigation/steps-upgrade-guide.md) |
-| TIndexes | F | onChange→onChanged | [link](../components/02-navigation/indexes-upgrade-guide.md) |
+| TSteps | — | activeIndex→value（展示型） | [link](../components/02-navigation/steps-upgrade-guide.md) |
+| TIndexes | — | onChange→onChanged（通知型） | [link](../components/02-navigation/indexes-upgrade-guide.md) |
 
 ### 9.3 选样板速查
 
@@ -630,7 +630,8 @@ Theme(
 | 资源/字体剥离 | TIcon |
 | A 类 + 枚举改名 | TBackTop |
 | 参数对齐 Material 同名控件 | TNavBar |
-| B/C/F 受控 + value/onChanged | TBottomTabBar / TSteps / TSideBar |
+| B 类受控 + value/onChanged | TBottomTabBar / TSideBar |
+| — 类通知型 / 展示型 value | TIndexes / TSteps |
 | E 类浮层 + show/visible | TDrawer |
 | 枚举值合并（多→少） | TTab（TTabBarOutlineType + TTabOutlineType → TTabBarVariant） |
 
