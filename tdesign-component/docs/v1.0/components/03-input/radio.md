@@ -1,7 +1,13 @@
 # TRadio — v1.0 定稿
 
-> Sprint **S2** | 控制类 **B** | Material: Radio / RadioListTile / RadioGroup
-> 源码：`lib/src/components/radio` · [guide](../guide/developer-guide.md)
+> **状态**：规划中 | **控制类**：B | **Sprint**：S2
+
+- [§1 v1.0 定稿 API](#1-v10-定稿-api)（新组件从零开始看这里）
+- [§2 0.2.x → v1.0](#2-02x--v10)（从旧版升级看这里）
+- [§3 Theme 主题配置](#3-theme-主题配置)
+- [§4 实现约定 · 测试与 Example 契约](#4-实现约定--测试与-example-契约)
+
+**源码路径**：`lib/src/components/radio`
 
 ---
 
@@ -12,84 +18,193 @@
 | 实现 | Material 选择控件薄包装 |
 | Material | Radio / RadioListTile / RadioGroup |
 | Theme | `TRadioThemeData` |
-| 禁用 | `onChanged: null`（B 类）。Group 整组锁定同样 `onChanged: null`。 |
-| L4 | `cardMode` → **`TRadioThemeData`** |
+| 禁用 | `onChanged: null`（自动应用 TDesign Token 禁用色） |
+| L4 | 构造器 L4 → **`TRadioThemeData`** |
 
 ## 控制方案
 
-**仅** `value` + `onChanged`；无 `defaultValue`。禁用：`onChanged: null`。Group 命令式改选中 → 父 `setState` 改 `value`（对齐 Material `RadioGroup`；**无** `TRadioGroupController`）。
+控制类 **B**：`value` + `onChanged`；无 `defaultValue`；初值父 State。禁用：`onChanged: null`（组件自动读取 TDesign Token 的禁用色）。
+
+`TRadioGroup` 为互斥组语义，内部仍为单颗 `TRadio` 的 `value` + `onChanged`（对齐 Material `RadioGroup`；**无** `TRadioGroupController`）。
 
 Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写法)
 
+---
+
+## §1 v1.0 定稿 API
+
+> 与 0.2.x API 对照参见 §2。无图例项 = 与 0.2.x 同名同义保留。
+
+### 1.1 构造器参数
+
+| 决策 | 参数 | 类型 | 层级 | 默认值 | 说明 |
+|------|------|------|------|--------|------|
+| | `value` | `T` | L1 | — | 本选项标识 |
+| | `groupValue` | `T?` | L1 | — | Group 当前选中值（Group 内部维护） |
+| | `onChanged` | `ValueChanged<T>?` | L3 | — | 选中变更 |
+| | `title` | `String?` | L2 | — | 主标题文案 |
+| | `subTitle` | `String?` | L2 | — | 副标题文案 |
+| ✨ | `size` | `TRadioSize` | L1 | `medium` | 尺寸（大/中/小） |
+| ✨ | `cardMode` | `bool` | L1 | `false` | 卡片模式 |
+| ✨ | `showDivider` | `bool` | L1 | `false` | 列表项底部分割线 |
+| ✨ | `contentDirection` | `TContentDirection` | L1 | `right` | 控件与文案排列方向 |
+
+> **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
+
+### 1.2 类型定义
+
+| 决策 | 类型 | 成员 | 用于 |
+|------|------|------|------|
+| ✨ | `TRadioSize` | `large` · `medium` · `small` | `size` 参数 |
+| ✨ | `TContentDirection` | `left` · `right` | `contentDirection` 参数 |
+| ✨ | `TRadioThemeData` | ThemeExtension | §3 主题配置 |
+
+### 1.3 移除的导出符号
+
+| 决策 | 移除符号 | 替代 |
+|------|---------|------|
+| 🚫 | `TRadioStyle` | 内部实现，不公开 |
+| 🚫 | `TRadioGroupController` | 移出 export；组值由父 `value` + `onChanged` |
+| 🗑️ | `id` | `value`（B 类受控） |
+| 🗑️ | `selectId` | `groupValue` |
+| 🗑️ | `enable` | `onChanged: null` |
+| 🗑️ | `onRadioGroupChange` | `onChanged` |
 
 ---
 
-## 1. API
+## §2 0.2.x → v1.0
 
-### 保留
+### ✏️ 改名
 
-| 符号 | 说明 |
-| --- | --- |
-| TRadio | 单选项 |
-| TRadioGroup | 互斥组 |
-| TRadioThemeData | L4 默认样式 |
-| TRadioSize | 尺寸 |
-| TContentDirection | 文案与控件方向 |
-| value | 选项值 `T`（单颗）或当前选中 `T?`（Group） |
-| onChanged | `ValueChanged<T>?` |
-| title / subTitle | 文案 |
-| titleMaxLine / subTitleMaxLine | 行数限制 |
-| contentDirection | 排列方向 |
-| customContentBuilder / customIconBuilder | 自定义内容/图标 |
-| cardMode / showDivider | 布局 |
-| size | 尺寸 |
-| strictMode | 不可取消选中 |
-| direction | Group 布局轴 |
-| children | Group 选项列表 |
-| child | Group 自由布局 |
-| rowCount / passThrough / divider | Group 布局 |
+| 从（0.2.x） | 到（v1.0） | 怎么改 |
+|------------|-----------|--------|
+| `id` | `value` | 命名对齐 v1.0 |
+| `selectId` | `groupValue` | 对齐 Material |
+| `onRadioGroupChange` | `onChanged` | 命名对齐 v1.0 |
+| `enable` | `onChanged: null` | Material 禁用 |
 
-### 迁移 / 改名
+### ✨ 新增
 
-| 0.2.x | v1.0 | 原因 |
-| --- | --- | --- |
-| id | value | 命名对齐 v1.0 |
-| selectId | value: T? | 对齐 Material |
-| enable | onChanged: null | Material 禁用 |
-| onRadioGroupChange | onChanged | 命名对齐 v1.0 |
-| TRadioStyle | TRadioThemeData | L4 → Theme |
-| radioStyle | TRadioThemeData.radioStyle | L4 → Theme |
-| radioCheckStyle | TRadioThemeData.radioCheckStyle | L4 → Theme |
-| selectColor / disableColor / titleColor / subTitleColor / backgroundColor | TRadioThemeData | L4 → Theme |
-| titleFont / subTitleFont | TRadioThemeData | L4 → Theme |
-| spacing / checkBoxLeftSpace / insetSpacing / customSpace | TRadioThemeData.spacing | L4 → Theme |
-| directionalTdRadios | children | 命名对齐 v1.0 |
+_无_
 
-### 废弃
+### 🔀 合并
 
-| 符号 | 原因 |
-| --- | --- |
-| `TRadio extends TCheckbox` | 废弃继承 → 薄包装 Material `Radio` / `RadioListTile` |
-| OnRadioGroupChange | 废弃 → 使用 `ValueChanged<T>?` |
-| `OnRadioGroupChange` | 改用 `ValueChanged<T>?` |
-| enable | 禁用见 `onChanged: null` |
-| `TRadioGroupController` | 移出 export；组值由父 `value` + `onChanged` |
-| Group 构造器 `controller` | 删除 |
+_无_
 
-### 新增
+### 🗑️ 移除
 
-| 符号 | 说明 |
-| --- | --- |
-| **TRadio**\<T\> | 单选项；内部 Material `Radio<T>` + 可选 `RadioListTile` 布局 |
-| **TRadioGroup**\<T\> | 互斥组；语义对齐 Material `RadioGroup<T>`（`groupValue`→`value`） |
-| **TRadioThemeData** | L4 色、字号、间距、`radioStyle` 等 |
-| toggleable | 不暴露 — Radio 固定不可三态（Material `toggleable: false`） |
+| 从（0.2.x） | 替代方案 | 怎么改 |
+|------------|---------|--------|
+| `TRadioGroupController` | 父 `setState` 改 `value` | 单轨原则 |
+| `Group` 构造器 `controller` | 删除 |
+
+### 📦 迁入 Theme
+
+| 从（0.2.x 构造器） | 到（TRadioThemeData 字段） | 怎么改 |
+|------------------|---------------------------|--------|
+| `selectColor` | `selectColor` | 见 §3 末列 |
+| `disableColor` | `disableColor` | 见 §3 末列 |
+| `titleColor` | `titleColor` | 见 §3 末列 |
+| `subTitleColor` | `subTitleColor` | 见 §3 末列 |
+| `backgroundColor` | `backgroundColor` | 见 §3 末列 |
+| `titleFont` | `titleFont` | 见 §3 末列 |
+| `subTitleFont` | `subTitleFont` | 见 §3 末列 |
+| `spacing` / `checkBoxLeftSpace` / `insetSpacing` / `customSpace` | `spacing` | 合并到 spacing |
+
+> 注：Material `RadioThemeData` 的 `fillColor`/`overlayColor`/`splashRadius` 由 Material 子主题处理，TDesign 扩展字段在 `TRadioThemeData` 中。
+
+> 子组件内部使用的 `TRadio` 也需同步升级，**不借用构造器参数**。
+
+---
+
+## §3 Theme 主题配置
+
+### 3.1 配置方式
+
+| 范围 | 配置方法 |
+|------|---------|
+| 单组件 | 构造器 L1 参数 |
+| 子树 | `Theme.of(context).mergeExtension(TRadioThemeData(...))` |
+| 全应用 | `MaterialApp.theme` 扩展 `TRadioThemeData` |
+
+### 3.2 覆盖顺序
+
+`resolve（全量合并）` **>** Token
+
+### 3.3 TRadioThemeData 字段
+
+> TDesign 扩展字段（Material `RadioThemeData` 无对应项）：
+
+| 决策 | 字段 | 管什么 | 0.2.x 构造参数 |
+|------|------|--------|---------------|
+| 📦 | `radioStyle` | 单选形态枚举（circle/check/hollowCircle） | `radioStyle` |
+| 📦 | `radioCheckStyle` | 选中态形态枚举 | `radioCheckStyle` |
+| 📦 | `selectColor` | 选中态颜色 | `selectColor` |
+| 📦 | `disableColor` | 禁用态颜色 | `disableColor` |
+| 📦 | `titleColor` | 标题文字颜色 | `titleColor` |
+| 📦 | `subTitleColor` | 副标题文字颜色 | `subTitleColor` |
+| 📦 | `backgroundColor` | 卡片背景色（cardMode） | `backgroundColor` |
+| 📦 | `titleFont` | 标题文字样式 | `titleFont` |
+| 📦 | `subTitleFont` | 副标题文字样式 | `subTitleFont` |
+| 📦 | `spacing` | 控件与标题间距 | `spacing` / `checkBoxLeftSpace` / `insetSpacing` / `customSpace` |
+
+---
+
+## §4 实现约定 · 测试与 Example 契约
+
+### 4.1 实现约束
+
+- **文件划分**：单一 resolve 入口
+  - `t_radio.dart` — Widget 本体
+  - `t_radio_resolve.dart` — **唯一**样式合并入口
+  - `t_radio_theme_data.dart` — `TRadioThemeData` ThemeExtension
+
+- **底层实现**：包装 Material `Radio` / `RadioListTile`
+
+### 4.2 必测场景
+
+> 控制类通用必测见 [testing.md](../guide/testing.md) §3，此处仅列组件专项。
+
+| 测试项 | Golden | 说明 |
+|--------|--------|------|
+| 基础渲染 | ✅ | 默认参数正常渲染 |
+| 互斥选中 | ✅ | Group 内仅一个选中 |
+| 选中变更 | ✅ | `onChanged` 回调正确触发 |
+| 卡片模式 | ✅ | `cardMode: true` |
+| 整组禁用 | ✅ | `onChanged: null` 不可交互 |
+| Form 桥接 | ✅ | `TFormField<T>(...)` |
+
+### 4.3 Example 契约
+
+- 覆盖 `TRadioGroup` 互斥选中
+- 提供 Form 桥接示例
+
+---
+
+## 组合范式（TRadioGroup）
+
+> 互斥组语义；内部仍为单颗 `TRadio` 的 `value` + `onChanged`。
+
+```dart
+// 示例：TRadioGroup 互斥选中
+TRadioGroup<String>(
+  value: _selected,
+  onChanged: (value) {
+    setState(() => _selected = value);
+  },
+  children: [
+    TRadio<String>(value: 'a', title: '选项A'),
+    TRadio<String>(value: 'b', title: '选项B'),
+  ],
+)
+```
+
+---
 
 ### export
 
 - **保留**：`TRadio`、`TRadioGroup`、`TRadioThemeData`、`TRadioSize`、`TContentDirection`
-- **移出**：`TRadioStyle`、`HollowCircle` 等内部绘制类、对 `TCheckbox`/`TCheckboxGroup` 实现的 re-export、`TRadioGroupController`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
-
+- **移出**：`TRadioStyle`、`HollowCircle` 等内部绘制类、`TRadioGroupController`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 ---
 
@@ -101,11 +216,15 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
-| `value`（单颗） | Material **`Radio.value`** | 本选项标识 `T` |
-| `value`（Group） | Material **`RadioGroup.groupValue`** | v1.0 统一命名 **`value: T?`** |
-| `onChanged` | Material **`Radio.onChanged`** / **`RadioGroup.onChanged`** | `null` 禁用；Group 下发至子 `Radio` |
-| `title` / `subtitle` | Material **`RadioListTile`** | 映射 `title` / `subTitle` |
-| `fillColor` / `overlayColor` / `splashRadius` / `visualDensity` / `materialTapTargetSize` | Material **`RadioThemeData`** | `WidgetStateProperty` 三态 |
-| `radioStyle` / `radioCheckStyle`（circle/check/hollowCircle…） | TDesign **`TRadioThemeData`** | Material 仅 M3 圆环；TDesign 多形态 |
-| `disableColor` / `selectColor` / 文案色 / `spacing` | TDesign **`TRadioThemeData`** | 0.2.x 构造器 L4 迁入 |
-| `cardMode` / `direction` / `rowCount` | **TDesign 扩展** | 布局；Material `RadioGroup` 无内置 |
+| `value`（单颗） | Material **`Radio.value`** | 本选项标识 |
+| `value`（Group） | Material **`RadioGroup.groupValue`** | v1.0 统一命名 `groupValue` |
+| `onChanged` | Material **`Radio.onChanged`** / **`RadioGroup.onChanged`** | `null` 禁用 |
+| `title` / `subTitle` | Material **`RadioListTile`** | 映射 title / subTitle |
+| `fillColor` / `overlayColor` / `splashRadius` / `visualDensity` / `materialTapTargetSize` | Material **`RadioThemeData`** | 三态（`WidgetStateProperty`） |
+| `radioStyle` / `radioCheckStyle` | **`TRadioThemeData`** | TDesign 多形态（circle/check/hollowCircle） |
+| `disableColor` / `selectColor` / 文案色 / `spacing` | **`TRadioThemeData`** | 0.2.x 构造器 L4 迁入 |
+| `cardMode` | **TDesign 扩展** | 布局 |
+
+---
+
+> **文档参考**：[api.md](../foundation/api.md) · [controlled.md](../foundation/controlled.md) · [theme.md](../foundation/theme.md) · [disabled-evolution.md](../foundation/disabled-evolution.md)

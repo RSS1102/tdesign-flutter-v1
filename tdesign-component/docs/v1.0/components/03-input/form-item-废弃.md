@@ -32,13 +32,13 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | 符号 | 说明 |
 | --- | --- |
 | label | 标签区（`Widget?`） |
+| child | 表单字段容器（`TFormField(...)` 组合入口） |
 
 ### 迁移 / 改名
 
 | 0.2.x | v1.0 | 原因 |
 | --- | --- | --- |
 | `labelWidget` | `label: Widget?` | §2.1 单槽 |
-| type / TFormItemType | type / TFormItemType | 删除；`child: TFormField(...)` 组合 |
 | formRules / itemRule | formRules / itemRule | 迁入子树 `TFormField.rules` |
 | backgroundColor | TFormThemeData | L4 → Theme |
 | indicator | TFormThemeData | L4 → Theme |
@@ -47,6 +47,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 符号 | 原因 |
 | --- | --- |
+| type / TFormItemType | 随组合式 `child: TFormField(...)` 删除 |
 | select / selectFn | 随 `TFormItemType` 删除 |
 | formItemNotifier | 校验改 FormState |
 | 字段型 props | 不再根据 type 渲染 Input/Switch 等 |
