@@ -42,7 +42,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | | `value` | `List<DateTime>?` | L1 | — | 受控选中日期（单选: 1 个；范围: 2 个） |
 | ✨ | `onChanged` | `ValueChanged<List<DateTime>>?` | L3 | — | 选中日期变更（每次选中都触发） |
 | ✨ | `onConfirmed` | `ValueChanged<List<DateTime>>?` | L3 | — | 仅最终选中触发 |
-| ✨ | `variant` | `TCalendarVariant` | L1 | `single` | 单选 / 范围 |
+| ✏️ | `mode` | `TCalendarMode` | L1 | `single` | 选择模式（single / range） |
 | ✨ | `minDate` | `DateTime?` | L2 | — | 最小可选日期 |
 | ✨ | `maxDate` | `DateTime?` | L2 | — | 最大可选日期 |
 | ✨ | `anchorDate` | `DateTime?` | L1 | — | 初始锚定月（首屏优先级：anchorDate → value 所在月 → 今天） |
@@ -54,7 +54,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 决策 | 类型 | 成员 | 用于 |
 |------|------|------|------|
-| ✨ | `TCalendarVariant` | `single` · `range` | `variant` 参数 |
+| ✏️ | `TCalendarMode` | `single` · `range` | `mode` 参数（选择模式） |
 | ✨ | `DateSelectType` | `normal` · `selected` · `start` · `end` · `disabled` | 单元格选中态 |
 | ✨ | `TCalendarThemeData` | ThemeExtension | §3 主题配置 |
 
@@ -76,7 +76,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 |------------|-----------|--------|
 | `onChange` | `onChanged` | 回调函数名替换；每次选中都触发 |
 | `initialValue` | `value` | 初值由父 State + `value` 受控 |
-| `type` / `CalendarType` | `variant`（`TCalendarVariant`） | 枚举化 |
+| `type` / `CalendarType` | `mode`（`TCalendarMode`） | 枚举化，避免与视觉形态 `variant` 混淆 |
 
 ### ✨ 新增
 
@@ -114,7 +114,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 范围 | 配置方法 |
 |------|---------|
-| 单组件 | 构造器 `variant` + P0 `style`（如有） |
+| 单组件 | 构造器 `mode` + P0 `style`（如有） |
 | 子树 | `Theme.of(context).mergeExtension(TCalendarThemeData(...))` |
 | 全应用 | `MaterialApp.theme` 扩展 `TCalendarThemeData` |
 
@@ -147,8 +147,8 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 测试项 | Golden | 说明 |
 |--------|--------|------|
-| 基础渲染 | ✅ | 默认参数正常渲染（single 形态） |
-| range 形态 | ✅ | `variant: TCalendarVariant.range` |
+| 基础渲染 | ✅ | 默认参数正常渲染（single 模式） |
+| range 模式 | ✅ | `mode: TCalendarMode.range` |
 | 选中日期变更 | ✅ | `onChanged` 回调正确触发 |
 | 项级禁用 | ✅ | `minDate` / `maxDate` 区间外格不可选 |
 | 整组禁用 | ✅ | `onChanged: null` 不可交互 |
@@ -157,7 +157,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 ### 4.3 Example 契约
 
-- 覆盖 `variant`（`single` / `range`）组合
+- 覆盖 `mode`（`single` / `range`）组合
 - 覆盖 `minDate` / `maxDate` 区间限制
 - 提供 Form 桥接示例
 
@@ -192,8 +192,8 @@ TPopup.show(
 
 ### export
 
-- **保留**：`TCalendar`、`TCalendarVariant`、`DateSelectType`、`TCalendarThemeData`
-- **移出**：`TCalendarStyle`、`showCalendar` 等（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`TCalendar`、`TCalendarMode`、`DateSelectType`、`TCalendarThemeData`
+- **移出**：`TCalendarVariant`、`TCalendarStyle`、`showCalendar` 等（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 ---
 
@@ -206,7 +206,7 @@ TPopup.show(
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
 | `value` / `onChanged` / `onConfirmed` | **F 类 Widget API** | 日期受控；Form → `TFormField` |
-| `variant` | **构造器 L1** | 单选/范围模式 |
+| `mode` | **构造器 L1** | 选择模式（single / range） |
 | `anchorDate` | **构造器 L1** | 初始锚定月 |
 | `minDate` / `maxDate` | **构造器 L2** | 可选区间 |
 | `onMonthChanged` | **构造器 L3** | 翻月回调 |

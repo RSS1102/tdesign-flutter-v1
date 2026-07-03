@@ -40,7 +40,6 @@
 | --- | --- | --- |
 | TProgressType | variant | 命名对齐 v1.0 |
 | variant | variant | v1.0 语义形态 |
-| onTap | onPressed | 命名对齐 v1.0 |
 | progressStatus | TProgressThemeData | L4 → Theme |
 | progressLabelPosition | TProgressThemeData | L4 → Theme |
 | strokeWidth | TProgressThemeData | L4 → Theme |
@@ -54,12 +53,19 @@
 | labelWidgetAlignment | TProgressThemeData | L4 → Theme |
 | animationDuration | TProgressThemeData | L4 → Theme |
 
+### 🗑️ 移除
+
+| 0.2.x | 原因 |
+| --- | --- |
+| onTap | 纯展示组件（控制类 —）不应有交互回调 |
+
 ### 废弃
 
 | 符号 | 原因 |
 | --- | --- |
 | TProgressStatus | 内部状态枚举，v1.0 不公开 |
 | onLongPress | REMOVE：非设计稿关键态；与 Button 一致删除 |
+| onTap | 纯展示组件（控制类 —）不应有交互回调 |
 
 ### 新增
 
