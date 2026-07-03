@@ -1,165 +1,134 @@
-# TPopup — v1.0 定稿
+# TPopup
 
-> Sprint **S4** | 控制类 **E** | Material: `PopupRoute` + Navigator
-> 源码：`lib/src/components/popup` · [guide](../guide/developer-guide.md)
-
----
+> Sprint **S3** | 控制类 **E** | Material: PopupMenuButton / Overlay 包装
 
 ## 架构
 
 | 项 | v1.0 |
 |---|---|
-| 实现 | Overlay / Route；**仅**命令式 `show` |
-| Material | `PopupRoute` + Navigator |
+| 实现 | Material 弹层薄包装 |
+| Material | PopupMenuButton / Overlay |
 | Theme | `TPopupThemeData` |
-| 禁用 | 浮层 无 Widget 级 disabled / enable |
-| L4 | 构造器 L4 → `TPopupThemeData` |
+| 禁用 | 无 Widget 级禁用（弹层组件） |
+| L4 | 构造器 L4 → **`TPopupThemeData`** |
 
 ## 控制方案
 
-**仅**命令式 `TPopup.show()` → `TPopupHandle`；`handle.close()` 关闭。对齐 Material `Navigator` + `PopupRoute` / `showModalBottomSheet`。**不提供** Widget 级 `visible` / `onVisibleChange` 声明式显隐。无 Widget 级 `disabled`。
+控制类 **E**：命令式调用 `showPopup()` / `hidePopup()` 或 `visible: true/false`；无 `value` / `onChanged`。禁用：不调 `showPopup` 或 `visible: false`。
 
+## §1 v1.0 定稿 API
 
----
+### 1.1 构造器参数
 
-## 1. API
+| 决策 | 参数 | 类型 | 层级 | 默认值 | 说明 |
+|------|------|------|------|--------|------|
+| | `child` | `Widget` | L2 | — | 触发弹层的子组件 |
+| | `content` | `Widget` | L2 | — | 弹层内容 |
+| ✨ | `placement` | `TPopupPlacement` | L1 | `bottom` | 弹出位置 |
+| ✨ | `visible` | `bool` | L1 | `false` | 是否显示（受控） |
+| | `onVisibleChange` | `ValueChanged<bool>?` | L3 | — | 显示状态变更 |
 
-### 保留
+> **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
 
-| 符号 | 说明 |
-| --- | --- |
-| TPopup | E 类 show 入口 |
-| TPopup.show | 打开浮层 |
-| TPopupOptions | 单次参数见组件 |
-| TPopupHandle | 生命周期句柄 |
-| TPopupPlacement | 五向 + center |
-| TPopupTrigger | 关闭来源 |
-| TPopupBottomInset 等 | 方向 inset |
-| TPopupThemeData | L4 默认 |
+> 注：`offset`（弹层偏移）为 L4 样式，迁入 `TPopupThemeData.offset`。
 
-### 迁移 / 改名
+### 1.2 类型定义
 
-| 0.2.x | v1.0 | 原因 |
-| --- | --- | --- |
-| 零散构造器 L4 | TPopupThemeData | L4 → Theme |
+| 决策 | 类型 | 成员 | 用于 |
+|------|------|------|------|
+| ✨ | `TPopupPlacement` | `top` · `bottom` · `left` · `right` | `placement` 参数 |
+| ✨ | `TPopupThemeData` | ThemeExtension | §3 主题配置 |
 
-### 废弃
+### 1.3 移除的导出符号
 
-| 符号 | 原因 |
-| --- | --- |
-| `defaultVisible` / Widget `visible` + `onVisibleChange` | 移出；仅 `TPopup.show` + `TPopupHandle` |
-| Widget 级 `disabled` | E 类无容器禁用 |
-| 错误文档项 `context`→Theme | `BuildContext` 为 `show` 首参，不进 Theme |
+| 决策 | 移除符号 | 替代 |
+|------|---------|------|
+| 📦 | `theme` (0.2.x) | `colorScheme` 参数 |
+| 📦 | `backgroundColor` / `borderRadius` / `padding` / `offset` | `TPopupThemeData` |
 
-### 新增
+### §2 0.2.x → v1.0
 
-_无_
+#### ✏️ 改名
 
-### show API（`TPopup.show`）
+| 从（0.2.x） | 到（v1.0） | 怎么改 |
+|------------|-----------|--------|
+| `theme` | `colorScheme` | 命名对齐 v1.0 |
 
-| 参数 | 层级 | v1.0 | 说明 |
-| --- | --- | --- | --- |
-| `context` | E 首参 | **保留** | `BuildContext` |
-| `options` | L2–L3 | **保留** | `TPopupOptions` 命名工厂 bottom/center/… |
-| `child` | L2 | **保留** | 浮层内容 |
-| `placement` | L1 | **保留** | `TPopupPlacement` |
-| `onVisibleChange` / `onClose` | L3 | **保留** | **show 生命周期通知**（非声明式持态） |
-| `closeOnOverlayClick` | L3 | **保留** | 对齐 `barrierDismissible` |
-| `height` / `width` / `inset` | L1/L4 | **保留实例** | 方向相关尺寸 |
-| `overlayColor` / `animationDuration` / `animationCurve` | L4 | → Theme | 蒙层**色**与过渡动效（**非** `showOverlay` 开关） |
-| `closeOnOverlayClick` / `showOverlay` | L3 | **保留** `TPopupOptions` / show | 浮层策略；**不进 Theme** |
-| header/cancel/confirm builder | L2 | **保留** | bottom/center 操作区 |
+#### 🗑️ 移除
 
-### L4 迁入 `TPopupThemeData`
+| 从（0.2.x） | 替代方案 | 怎么改 |
+|------------|---------|--------|
+| `backgroundColor` | `TPopupThemeData` | L4 样式迁入 Theme |
+| `borderRadius` | `TPopupThemeData` | L4 样式迁入 Theme |
+| `padding` | `TPopupThemeData` | L4 样式迁入 Theme |
+| `offset` | `TPopupThemeData` | L4 样式迁入 Theme |
 
-| 0.2.x 来源 | Theme 字段 | Material 对照 |
-| --- | --- | --- |
-| `overlayColor` | `barrierColor` | `ModalRoute` |
-| `animationDuration` | `transitionDuration` | Route |
-| `animationCurve` | `reverseTransitionDuration` 同曲线或独立 | Route 曲线 |
-| 默认 header 文案/样式 | `headerStyle` / `cancelText` / `confirmText` | TDesign 扩展 |
-| 圆角 | `panelRadius` | BottomSheet 近似 |
-| `useSafeArea` | — | **不进 Theme** → `TPopupOptions` L3（见 §3） |
+#### 📦 迁入 Theme
+
+| 从（0.2.x 构造器） | 到（TPopupThemeData 字段） | 怎么改 |
+|------------------|---------------------------|--------|
+| `backgroundColor` | `backgroundColor` | 见 §3 末列 |
+| `borderRadius` | `borderRadius` | 见 §3 末列 |
+| `padding` | `padding` | 见 §3 末列 |
+| `offset` | `offset` | 见 §3 末列 |
+
+### ✨ 新增
+
+| 新增符号 | 用途 |
+|---------|------|
+| `TPopupPlacement` | 弹出位置枚举 |
+| `TPopupThemeData` | ThemeExtension |
+
+## §3 Theme 主题配置
+
+### 3.1 配置方式
+
+| 范围 | 配置方法 |
+|------|---------|
+| 单组件 | 构造器 `placement` + P0 `style`（如有） |
+| 子树 | `Theme.of(context).mergeExtension(TPopupThemeData(...))` |
+| 全应用 | `MaterialApp.theme` 扩展 `TPopupThemeData` |
+
+### 3.2 TPopupThemeData 字段
+
+| 字段 | 类型 | 管什么 | 0.2.x 构造参数 |
+|------|------|--------|---------------|
+| `backgroundColor` | `Color` | 背景色 | `backgroundColor` |
+| `borderRadius` | `double` | 圆角 | `borderRadius` |
+| `padding` | `EdgeInsets` | 内边距 | `padding` |
+| `offset` | `Offset` | 弹层偏移 | `offset` |
+
+## §4 实现约定 · 测试与 Example 契约
+
+### 4.1 文件划分
+
+| 文件 | 职责 |
+|------|------|
+| `t_popup.dart` | TPopup Widget |
+| `t_popup_theme_data.dart` | TPopupThemeData ThemeExtension |
+
+### 4.2 必测场景
+
+| 场景 | 预期 |
+|------|------|
+| 基础渲染 | 默认参数正常渲染 |
+| 弹出位置 | `placement: TPopupPlacement.bottom` |
+| Theme 覆盖 | `mergeExtension(TPopupThemeData(...))` 生效 |
+
+### Example 契约
+
+- 覆盖 `placement` 组合
+- 覆盖 Theme 覆盖
 
 ### export
 
-- **保留**：`TPopup`、`TPopup.show`、`TPopupOptions`、`TPopupHandle`、`TPopupPlacement`、`TPopupTrigger`、inset 类型、`TPopupThemeData`、builder typedef
-- **移出**：`_PopupNavigatorRoute` 等 `_*` 内部实现（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`TPopup`、`TPopupPlacement`、`TPopupThemeData`
+- **移出**：内部 `*Style`、绘制 helper
 
----
+## Material vs TDesign
 
-## 2. TPopup 业务壳约定 {#2-tpopup-业务壳约定}
-
-基于 `TPopup.show` 的**业务组件**（侧滑抽屉、ActionSheet 等），v1.0 统一：
-
-| 规则 | 说明 |
+| 项目 | 说明 |
 |------|------|
-| `show` 返回值 | `T{Xxx}Handle`（**不**对外暴露 `TPopupHandle`） |
-| 关闭 | **`handle.close()`** 为唯一推荐入口 |
-| 查询 | `handle.isShowing`（业务壳暴露；底座 `TPopupHandle` 另有 `open()`） |
-| 回调 | `onClose` / `onClosed` 保留，**不替代** Handle |
-| 非 `Future` | 生命周期用 Handle + 回调；**不要求**调用方 `await` |
-| 蒙层行为 L3 | `showOverlay` / `closeOnOverlayClick` 留在**单次 show/构造器**；**不进 Theme**（归类 → [theme.md §2.1](../foundation/theme.md#21-themedata-字段归类v10-裁决)） |
-
-### 适用组件
-
-| 组件 | 打开 | 返回 | 文档 |
-|------|------|------|------|
-| **TPopup**（底座） | `TPopup.show` | `TPopupHandle` | 本文 §1 |
-| **TDrawer** | `TDrawer(...).show()` | `TDrawerHandle` | [drawer.md](../02-navigation/drawer.md) |
-| **TActionSheet** | `showList/Grid/GroupActionSheet` | `TActionSheetHandle` | [action-sheet.md](./action-sheet.md) |
-
-### 与 Flutter / TDialog 分工
-
-| 模型 | 适用 | 说明 |
-|------|------|------|
-| **Handle** | TPopup 系（上表） | TDesign 浮层栈约定；对齐 `TPopupHandle` 语义 |
-| **`Future<T?>`** | `TDialog` / `TPopover` | 对齐 `showDialog`；需 `await` 结果 |
-
-> 业务壳 **不** 透传 `TPopupOptions`；L4 蒙层**色/动画**走 `TPopupThemeData`，内容区走各组件 `T{Xxx}ThemeData`。`showOverlay` / `closeOnOverlayClick` 为 L3 行为，随单次打开传入。
-
-**示例（三组件同一心智）**：
-
-```dart
-// 底座
-final popup = TPopup.show(context, options: TPopupOptions.bottom(child: panel));
-
-// Drawer
-final drawer = TDrawer(context, items: [...]).show();
-
-// ActionSheet
-final sheet = TActionSheet.showListActionSheet(context, items: [...]);
-
-popup.close();
-drawer.close();
-sheet.close();
-```
-
----
-
-## 3. Theme {#3-theme}
-
-`TPopupThemeData` · 字段归类 → [theme.md §2.1](../foundation/theme.md#21-themedata-字段归类v10-裁决) · Material: **`PopupRoute` + Navigator**
-
-### `TPopupThemeData` 字段（样式）
-
-| 字段 | 类别 | 说明 |
-|------|------|------|
-| `overlayColor` | 色 | 蒙层色；对齐 `ModalRoute.barrierColor` |
-| `animationDuration` | 动效 | 入/出过渡时长 |
-| `animationCurve` | 动效 | 入/出曲线 |
-| `panelRadius` | 圆角 | 面板圆角默认 |
-
-> **不进 Theme**：`showOverlay` · `closeOnOverlayClick` · `useSafeArea`（单次 `TPopupOptions` / show L3）。
-
-### Material vs TDesign
-
-| 字段 | 来源 | 说明 |
-| --- | --- | --- |
-| `Navigator.push` / `PopupRoute` | Material **Route** | `TPopup.show` 实现基础 |
-| `barrierColor` / `transitionDuration` | Material **`ModalRoute`** | → `overlayColor` / `animationDuration` / `animationCurve` |
-| `useRootNavigator` | Material **`showDialog`** 等同名参数 | `show` 可选参数 |
-| `child` | Material **Route 内容** | 实例 KEEP |
-| `placement`（五向 + center） | **TDesign 扩展** | Material 仅 bottom/center 有标准 API |
-| `headerBuilder` / cancel / confirm / close 槽位 | **TDesign 扩展** | bottom/center 操作区 |
-| `TPopupThemeData` 默认 L4 | TDesign 扩展 | 子树 mergeExtension |
+| `child` / `onSelected` / `shape` / `elevation` / `menuConstraints` | Material **`PopupMenuButton`** |
+| `backgroundColor` / `elevation` / `shadowColor` / `surfaceTintColor` | Material **`PopupMenuItem`** |
+| `backgroundColor` / `borderRadius` / `padding` | TDesign **`TPopupThemeData`** |

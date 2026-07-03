@@ -1,110 +1,137 @@
-# TPopover — v1.0 定稿
+# TPopover
 
-> Sprint **S4** | 控制类 **E** | Material: Overlay
-> 源码：`lib/src/components/popover` · [guide](../guide/developer-guide.md)
-
----
+> Sprint **S3** | 控制类 **E** | Material: Overlay + 自绘
 
 ## 架构
 
 | 项 | v1.0 |
 |---|---|
-| 实现 | Overlay / Route；命令式 `show` 为主 |
-| Material | `showDialog` + 锚点定位 Overlay |
+| 实现 | Material 弹层薄包装 |
+| Material | Overlay + 自绘 |
 | Theme | `TPopoverThemeData` |
-| 禁用 | 浮层无 Widget 级禁用 |
-| L4 | show 色/尺寸/内边距 → **`TPopoverThemeData`** |
+| 禁用 | 无 Widget 级禁用（弹层组件） |
+| L4 | 构造器 L4 → **`TPopoverThemeData`** |
 
 ## 控制方案
 
-**仅**命令式 `showPopover()` → `Future`（对齐 Material `showDialog` + Overlay 锚点）。**不提供** Widget 级 `visible` / `onVisibleChange`。无 Widget 级 `disabled`。
+控制类 **E**：命令式调用 `showPopover()` / `hidePopover()` 或 `visible: true/false`；无 `value` / `onChanged`。禁用：不调 `showPopover` 或 `visible: false`。
 
+## §1 v1.0 定稿 API
 
----
+### 1.1 构造器参数
 
-## 1. API
+| 决策 | 参数 | 类型 | 层级 | 默认值 | 说明 |
+|------|------|------|------|--------|------|
+| | `target` | `Widget` | L2 | — | 触发弹层的子组件 |
+| | `content` | `Widget` | L2 | — | 弹层内容 |
+| ✨ | `placement` | `TPopoverPlacement` | L1 | `top` | 弹出位置 |
+| ✨ | `visible` | `bool` | L1 | `false` | 是否显示（受控） |
+| | `onVisibleChange` | `ValueChanged<bool>?` | L3 | — | 显示状态变更 |
 
-### 保留
+> **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
 
-| 符号 | 说明 |
-| --- | --- |
-| showPopover | 命令式 show API（E 类） |
-| TPopoverPlacement | 12 向定位枚举 |
-| content | 气泡内容（`Widget?`） |
-| placement / showArrow / offset | 相对锚点定位 |
-| closeOnClickOutside | 对齐 `barrierDismissible` |
-| onTap / onLongTap | 内容区点击/长按 |
-| arrowSize | 箭头尺寸（高频可保留实例） |
+> 注：`offset`（弹层偏移）为 L4 样式，迁入 `TPopoverThemeData.offset`。
 
-### 迁移 / 改名
+### 1.2 类型定义
 
-| 0.2.x | v1.0 | 原因 |
-| --- | --- | --- |
-| `content`（`String?`）/ `contentWidget` | `content: Widget?` | §2.1 单槽；文案 `Text('…')` |
-| TPopoverTheme | TPopoverColorScheme | 语义色 enum；避免与 ThemeExtension 混淆 |
-| theme | colorScheme | 原 `TPopoverTheme`（dark/light/info/…） |
-| padding / width / height / radius | TPopoverThemeData | L4 → Theme |
-| overlayColor | barrierColor | Material 命名 |
+| 决策 | 类型 | 成员 | 用于 |
+|------|------|------|------|
+| ✨ | `TPopoverPlacement` | `top` · `bottom` · `left` · `right` · `auto` | `placement` 参数 |
+| ✨ | `TPopoverThemeData` | ThemeExtension | §3 主题配置 |
 
-### 废弃
+### 1.3 移除的导出符号
 
-| 符号 | 原因 |
-| --- | --- |
-| `TPopoverTheme` 作 Theme 名 | 改名为 `TPopoverColorScheme` + `TPopoverThemeData` |
-| Widget `visible` / 声明式构造 | 移出；仅 `showPopover` |
+| 决策 | 移除符号 | 替代 |
+|------|---------|------|
+| 📦 | `theme` (0.2.x) | `colorScheme` 参数 |
+| 📦 | `backgroundColor` / `borderRadius` / `padding` / `arrow` / `offset` | `TPopoverThemeData` |
 
-### 新增
+### §2 0.2.x → v1.0
 
-| 符号 | 说明 |
-| --- | --- |
-| TPopoverThemeData | L4 气泡背景、边框、阴影、内边距默认 |
-| TPopoverColorScheme | 原 `TPopoverTheme` 语义色 |
+#### ✏️ 改名
 
-### show API（`showPopover`）
+| 从（0.2.x） | 到（v1.0） | 怎么改 |
+|------------|-----------|--------|
+| `theme` | `colorScheme` | 命名对齐 v1.0 |
 
-| 参数 | 层级 | v1.0 | 说明 |
-| --- | --- | --- | --- |
-| `context` | E 首参 | **保留** | 锚点与 Overlay 上下文 |
-| `content` | L2 | **保留** | 气泡内容（`Widget?`） |
-| `placement` | L1 | **保留** | `TPopoverPlacement` |
-| `showArrow` / `offset` | L1 | **保留** | 箭头与锚点偏移 |
-| `closeOnClickOutside` | L3 | **保留** | 点击蒙层关闭 |
-| `onTap` / `onLongTap` | L3 | **保留** | 内容区手势 |
-| `arrowSize` | L1/L4 | **保留实例** | 默认取自 Theme |
-| `theme` | L4 | → `colorScheme` | 原 enum 语义色 |
-| `padding` / `width` / `height` / `radius` | L4 | → Theme | 气泡盒模型 |
-| `overlayColor` | L4 | → `barrierColor` | 蒙层色默认 Theme |
+#### 🗑️ 移除
 
-### L4 迁入 `TPopoverThemeData`
+| 从（0.2.x） | 替代方案 | 怎么改 |
+|------------|---------|--------|
+| `backgroundColor` | `TPopoverThemeData` | L4 样式迁入 Theme |
+| `borderRadius` | `TPopoverThemeData` | L4 样式迁入 Theme |
+| `padding` | `TPopoverThemeData` | L4 样式迁入 Theme |
+| `arrow` | `TPopoverThemeData` | L4 样式迁入 Theme |
+| `offset` | `TPopoverThemeData` | L4 样式迁入 Theme |
 
-| 0.2.x 来源 | Theme 字段 | Material 对照 |
-| --- | --- | --- |
-| `theme` dark/light/info/… | `colorScheme` + `backgroundColor` | 无内置 Popover；走 Extension |
-| `padding` | `padding` | 近似 `Material` 内边距 |
-| `width` / `height` | `minWidth` / `maxHeight` | 气泡约束 |
-| `radius` | `borderRadius` | `ShapeBorder` |
-| `overlayColor` | `barrierColor` | `Dialog.barrierColor` |
-| `arrowSize` | `arrowSize` | TDesign 扩展 |
+#### 📦 迁入 Theme
+
+| 从（0.2.x 构造器） | 到（TPopoverThemeData 字段） | 怎么改 |
+|------------------|---------------------------|--------|
+| `backgroundColor` | `backgroundColor` | 见 §3 末列 |
+| `borderRadius` | `borderRadius` | 见 §3 末列 |
+| `padding` | `padding` | 见 §3 末列 |
+| `arrow` | `showArrow` | 见 §3 末列 |
+| `offset` | `offset` | 见 §3 末列 |
+
+### ✨ 新增
+
+| 新增符号 | 用途 |
+|---------|------|
+| `TPopoverPlacement` | 弹出位置枚举 |
+| `showPopover()` | 命令式显示 Popover |
+| `TPopoverThemeData` | ThemeExtension |
+
+## §3 Theme 主题配置
+
+### 3.1 配置方式
+
+| 范围 | 配置方法 |
+|------|---------|
+| 单组件 | `showPopover()` 参数 |
+| 子树 | `Theme.of(context).mergeExtension(TPopoverThemeData(...))` |
+| 全应用 | `MaterialApp.theme` 扩展 `TPopoverThemeData` |
+
+### 3.2 TPopoverThemeData 字段
+
+| 字段 | 类型 | 管什么 | 0.2.x 构造参数 |
+|------|------|--------|---------------|
+| `backgroundColor` | `Color` | 背景色 | `backgroundColor` |
+| `borderRadius` | `double` | 圆角 | `borderRadius` |
+| `padding` | `EdgeInsets` | 内边距 | `padding` |
+| `showArrow` | `bool` | 是否显示箭头 | `arrow` |
+| `offset` | `Offset` | 弹层偏移 | `offset` |
+
+## §4 实现约定 · 测试与 Example 契约
+
+### 4.1 文件划分
+
+| 文件 | 职责 |
+|------|------|
+| `t_popover.dart` | TPopover Widget / 命令式 API |
+| `t_popover_theme_data.dart` | TPopoverThemeData ThemeExtension |
+
+### 4.2 必测场景
+
+| 场景 | 预期 |
+|------|------|
+| 基础渲染 | 默认参数正常渲染 |
+| 弹出位置 | `placement: TPopoverPlacement.bottom` |
+| Theme 覆盖 | `mergeExtension(TPopoverThemeData(...))` 生效 |
+
+### Example 契约
+
+- 覆盖 `placement` 组合
+- 覆盖 Theme 覆盖
 
 ### export
 
-- **保留**：`TPopover`、`showPopover`、`TPopoverPlacement`、`TPopoverColorScheme`、`TPopoverThemeData`
-- **移出**：`TPopoverWidget`、`t_popover_widget.dart`、旧名 `TPopoverTheme` enum（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`TPopover`、`showPopover`、`hidePopover`、`TPopoverPlacement`、`TPopoverThemeData`
+- **移出**：内部 `*Style`、绘制 helper
 
----
+## Material vs TDesign
 
-## 2. Theme
-
-`TPopoverThemeData` · Material: **Overlay / Dialog 蒙层** · [theme.md](../foundation/theme.md)
-
-### Material vs TDesign
-
-| 字段 | 来源 | 说明 |
-| --- | --- | --- |
-| `content` | **单次 show L2** | 当次气泡内容（`Widget?`） |
-| `placement` / `showArrow` / `offset` | **单次 show L1** | 锚点定位 KEEP |
-| `closeOnClickOutside` | Material **`barrierDismissible`** | show 参数 KEEP |
-| `onTap` / `onLongTap` | **单次 show L3** | 内容回调 |
-| `showPopover` | **E 类首参** | `showDialog(context, …)` + Overlay |
-| `colorScheme` | **`TPopoverColorScheme`** | dark/light/info/success/warning/error |
-| 内边距 / 圆角 / 尺寸 / 箭头 / 蒙层色 | **`TPopoverThemeData`** | L4 默认；实例可破例 |
+| 项目 | 说明 |
+|------|------|
+| `behavior` / `clickThrough` / `shape` / `elevation` | Material **`PopupMenuItem`** |
+| `backgroundColor` / `borderRadius` / `padding` / `showArrow` | TDesign **`TPopoverThemeData`** |

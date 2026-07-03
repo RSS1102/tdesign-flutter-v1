@@ -1,173 +1,133 @@
-# TActionSheet — v1.0 定稿
+# TActionSheet
 
-> Sprint **S4** | 控制类 **E** | Material: TPopup 组合
-> 源码：`lib/src/components/action-sheet` · [guide](../guide/developer-guide.md)
-
----
+> Sprint **S3** | 控制类 **E** | Material: showModalBottomSheet 包装
 
 ## 架构
 
 | 项 | v1.0 |
 |---|---|
-| 实现 | Overlay / Route；命令式 `show` 为主 |
-| Material | `TPopup.show` + BottomSheet 视觉 |
+| 实现 | Material 底部弹层薄包装 |
+| Material | showModalBottomSheet |
 | Theme | `TActionSheetThemeData` |
-| 禁用 | 浮层无 Widget 级禁用；项级 `TActionSheetItem.disabled` KEEP |
-| L4 | 布局/面板样式 → **`TActionSheetThemeData`**；蒙层**色/动画** → **`TPopupThemeData`** |
+| 禁用 | 无 Widget 级禁用（命令式组件） |
+| L4 | 构造器 L4 → **`TActionSheetThemeData`** |
 
 ## 控制方案
 
-**仅**命令式 `showListActionSheet` / `showGridActionSheet` / `showGroupActionSheet` → `TActionSheetHandle`（对齐 [Popup §2 业务壳](./popup.md#2-tpopup-业务壳约定) · [controlled.md §4](../../foundation/controlled.md#e-类)）。**不提供** Widget `visible` 声明式。无 Widget 级 `disabled`。
+控制类 **E**：命令式调用 `showActionSheet()` / `hideActionSheet()`；无 `value` / `onChanged`。禁用：不调 `showActionSheet`。
 
+## §1 v1.0 定稿 API
 
----
+### 1.1 构造器参数
 
-## 1. API
+| 决策 | 参数 | 类型 | 层级 | 默认值 | 说明 |
+|------|------|------|------|--------|------|
+| | `actions` | `List<TActionSheetItem>` | L2 | — | 操作项列表 |
+| | `cancelText` | `String?` | L2 | — | 取消按钮文字 |
+| | `onActionTap` | `ValueChanged<int>?` | L3 | — | 操作项点击回调 |
+| | `onCancel` | `VoidCallback?` | L3 | — | 取消回调 |
 
-### 保留
+> **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
 
-| 符号 | 说明 |
-| --- | --- |
-| showListActionSheet | 列表型命令式 show → `TActionSheetHandle` |
-| showGridActionSheet | 宫格型命令式 show → `TActionSheetHandle` |
-| showGroupActionSheet | 分组型命令式 show → `TActionSheetHandle` |
-| TActionSheetHandle | 生命周期句柄；`close()` · `isShowing` |
-| TActionSheetItem | 选项数据（`label` / `icon` / `badge` / `group`） |
-| TActionSheetItem.disabled | 项级禁用（数据字段） |
-| TActionSheetAlign | center / left / right |
-| onCancel / onClose | 取消与关闭回调 |
+### 1.2 类型定义
 
-### 迁移 / 改名
+| 决策 | 类型 | 成员 | 用于 |
+|------|------|------|------|
+| ✨ | `TActionSheetItem` | `text` · `danger` | `actions` 数据模型 |
+| ✨ | `TActionSheetThemeData` | ThemeExtension | §3 主题配置 |
 
-| 0.2.x | v1.0 | 原因 |
-| --- | --- | --- |
-| TActionSheetTheme | variant | list / grid / group；三族 show 固定 variant |
-| items | child | 命名对齐 v1.0（show 参数仍传 `List<TActionSheetItem>`） |
-| description | subtitle | 列表/宫格副标题 |
-| onSelected | onChanged | E 类选中回调 |
-| TActionSheetItemCallback | TActionSheetOnChanged | 类型改名 |
-| align / cancelText / count / rows | TActionSheetThemeData | 样式 / 布局默认 → Theme |
-| itemHeight / itemMinWidth | TActionSheetThemeData | 宽高 → Theme |
-| showCancel / scrollable / showPagination / useSafeArea | show* L3 | 能力 / 策略 → **不进 Theme** |
+### 1.3 移除的导出符号
 
-### 废弃
+| 决策 | 移除符号 | 替代 |
+|------|---------|------|
+| 📦 | `theme` (0.2.x) | `colorScheme` 参数 |
+| 📦 | `backgroundColor` / `textColor` / `cancelColor` / `borderRadius` | `TActionSheetThemeData` |
 
-| 符号 | 原因 |
-| --- | --- |
-| TActionSheetItemCallback | → `TActionSheetOnChanged` |
-| `TActionSheet(context, …)` 构造器主路径 | 改用三族 static show |
-| `visible`（构造器自动 show） | 删除 → 三族 `show*` |
+### §2 0.2.x → v1.0
 
-### 新增
+#### ✏️ 改名
 
-| 符号 | 说明 |
-| --- | --- |
-| TActionSheetThemeData | L4 列表/宫格/分组默认布局 |
-| TActionSheetOnChanged | `void Function(TActionSheetItem item, int index)?` |
-| **TActionSheetHandle** | `show*` 返回值；包装内部 `TPopupHandle` |
+| 从（0.2.x） | 到（v1.0） | 怎么改 |
+|------------|-----------|--------|
+| `theme` | `colorScheme` | 命名对齐 v1.0 |
 
-### 命令式用法
+#### 🗑️ 移除
 
-三族 `show*` 均返回 **`TActionSheetHandle`**；关闭统一 **`handle.close()`**。内部 `TPopup.show` + `TPopupOptions.bottom`，**不透传** `TPopupHandle`。
+| 从（0.2.x） | 替代方案 | 怎么改 |
+|------------|---------|--------|
+| `backgroundColor` | `TActionSheetThemeData` | L4 样式迁入 Theme |
+| `textColor` | `TActionSheetThemeData` | L4 样式迁入 Theme |
+| `cancelColor` | `TActionSheetThemeData` | L4 样式迁入 Theme |
+| `borderRadius` | `TActionSheetThemeData` | L4 样式迁入 Theme |
 
-```dart
-final handle = TActionSheet.showListActionSheet(
-  context,
-  items: [
-    TActionSheetItem(label: '拍照'),
-    TActionSheetItem(label: '从相册选择'),
-  ],
-  onChanged: (item, index) {
-    debugPrint('选中: ${item.label}');
-    handle.close(); // 是否点项即关由业务定
-  },
-  onClose: () => debugPrint('面板已关'),
-);
+#### 📦 迁入 Theme
 
-handle.close();
-```
+| 从（0.2.x 构造器） | 到（TActionSheetThemeData 字段） | 怎么改 |
+|------------------|---------------------------|--------|
+| `backgroundColor` | `backgroundColor` | 见 §3 末列 |
+| `textColor` | `textColor` | 见 §3 末列 |
+| `cancelColor` | `cancelColor` | 见 §3 末列 |
+| `borderRadius` | `borderRadius` | 见 §3 末列 |
 
-### show API（三族 static）
+### ✨ 新增
 
-**公共参数**（list / grid / group 均适用）：
+| 新增符号 | 用途 |
+|---------|------|
+| `showActionSheet()` | 命令式显示 ActionSheet |
+| `TActionSheetItem` | 操作项数据模型 |
+| `TActionSheetThemeData` | ThemeExtension |
 
-| 参数 | 层级 | v1.0 | 说明 |
-| --- | --- | --- | --- |
-| `context` | E 首参 | **保留** | `BuildContext` |
-| `items`（→ `child`） | L2 | **保留** | `List<TActionSheetItem>` |
-| `onChanged` | L3 | **改名** | 原 `onSelected` |
-| `onCancel` / `onClose` | L3 | **保留** | 取消/关闭 |
-| `align` | L1 | **保留** | `TActionSheetAlign`；Theme 可提供 `defaultAlign` |
-| `showCancel` | L3 | **保留** | 是否显示取消钮；**不进 Theme** |
-| `cancelText` | L1/L4 | **保留** / → Theme | 取消钮文案样式默认 |
-| `showOverlay` / `closeOnOverlayClick` | L3 | **保留** | 蒙层行为；**不进 Theme** |
-| `useSafeArea` | L3 | **保留** | 布局策略；**不进 Theme** |
-| **返回值** | — | **`TActionSheetHandle`** | `close()` · `isShowing` |
+## §3 Theme 主题配置
 
-**`showListActionSheet` 专有**：
+### 3.1 配置方式
 
-| 参数 | 层级 | v1.0 | 说明 |
-| --- | --- | --- | --- |
-| `subtitle` | L2 | **改名** | 原 `description` |
+| 范围 | 配置方法 |
+|------|---------|
+| 单组件 | `showActionSheet()` 参数 |
+| 子树 | `Theme.of(context).mergeExtension(TActionSheetThemeData(...))` |
+| 全应用 | `MaterialApp.theme` 扩展 `TActionSheetThemeData` |
 
-**`showGridActionSheet` 专有**：
+### 3.2 TActionSheetThemeData 字段
 
-| 参数 | 层级 | v1.0 | 说明 |
-| --- | --- | --- | --- |
-| `subtitle` | L2 | **改名** | 原 `description` |
-| `count` / `rows` | L4 | → Theme | 宫格列数/行数**布局默认** |
-| `itemHeight` / `itemMinWidth` | L4 | → Theme | 宫格单元尺寸 |
-| `scrollable` / `showPagination` | L3 | **保留** | 宫格能力；**不进 Theme** |
+| 字段 | 类型 | 管什么 | 0.2.x 构造参数 |
+|------|------|--------|---------------|
+| `backgroundColor` | `Color` | 背景色 | `backgroundColor` |
+| `textColor` | `Color` | 文字颜色 | `textColor` |
+| `cancelColor` | `Color` | 取消按钮颜色 | `cancelColor` |
+| `borderRadius` | `double` | 圆角 | `borderRadius` |
 
-**`showGroupActionSheet` 专有**：
+## §4 实现约定 · 测试与 Example 契约
 
-| 参数 | 层级 | v1.0 | 说明 |
-| --- | --- | --- | --- |
-| `itemHeight` / `itemMinWidth` | L4 | → Theme | 分组行高/最小宽 |
-| `TActionSheetItem.group` | L2 数据 | **保留** | 分组 key；缺省则项不展示 |
+### 4.1 文件划分
 
-实现壳：`TPopup.show` + `TPopupOptions.bottom`（见 [popup.md §2](./popup.md#2-tpopup-业务壳约定)）。
-
-#### `TActionSheetHandle`
-
-| 成员 | 说明 |
+| 文件 | 职责 |
 |------|------|
-| `close()` | 关闭本次面板；已关时无副作用 |
-| `isShowing` | 本次面板是否仍在展示 |
+| `t_action_sheet.dart` | 命令式 API（showActionSheet / hideActionSheet） |
+| `t_action_sheet_theme_data.dart` | TActionSheetThemeData ThemeExtension |
 
-### L4 迁入 `TActionSheetThemeData`（样式）
+### 4.2 必测场景
 
-| 0.2.x 来源 | Theme 字段 | 类别 |
-| --- | --- | --- |
-| `cancelText` | `cancelText` | 文案 |
-| `align` 默认 | `defaultAlign` | 布局 |
-| `itemHeight` / `itemMinWidth` | `itemHeight` / `itemMinWidth` | 宽高 |
-| `count` / `rows` | `gridCount` / `gridRows` | 宫格布局默认 |
-| 容器圆角 | `panelRadius` | 圆角 |
-| 蒙层色 / 动效 | — | **`TPopupThemeData`** |
+| 场景 | 预期 |
+|------|------|
+| 基础显示 | `showActionSheet(context, actions: [...])` 正常显示 |
+| 操作项点击 | `onActionTap` 触发 |
+| 取消回调 | `onCancel` 触发 |
+| Theme 覆盖 | `mergeExtension(TActionSheetThemeData(...))` 生效 |
 
-**不进 Theme（show* L3）**：`showCancel` · `scrollable` · `showPagination` · `useSafeArea` · `showOverlay` · `closeOnOverlayClick`
+### Example 契约
+
+- 覆盖 `showActionSheet` 基本用法
+- 覆盖操作项点击/取消回调
+- 覆盖 Theme 覆盖
 
 ### export
 
-- **保留**：`showListActionSheet`、`showGridActionSheet`、`showGroupActionSheet`、`TActionSheetHandle`、`TActionSheetItem`、`TActionSheetAlign`、`TActionSheetOnChanged`、`TActionSheetThemeData`
-- **移出**：`TActionSheetTheme`（enum 改名 `variant` 或内聚 Theme）、`TActionSheetItemCallback`、`TActionSheetList/Grid/Group` 内部 Widget（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`showActionSheet`、`hideActionSheet`、`TActionSheetItem`、`TActionSheetThemeData`
+- **移出**：内部 `*Style`、绘制 helper
 
----
+## Material vs TDesign
 
-## 2. Theme {#2-theme}
-
-`TActionSheetThemeData` · 字段归类 → [theme.md §2.1](../foundation/theme.md#21-themedata-字段归类v10-裁决) · Material: **TPopup + BottomSheet**
-
-### Material vs TDesign
-
-| 字段 | 来源 | 说明 |
-| --- | --- | --- |
-| `child`（items）/ `subtitle` | **单次 show L2** | 选项与副标题 |
-| `onChanged` / `onCancel` / `onClose` | **单次 show L3** | 选中与关闭 |
-| `showOverlay` / `closeOnOverlayClick` / `useSafeArea` | **单次 show L3** | 浮层策略；**不进 Theme** |
-| `showCancel` / `scrollable` / `showPagination` | **单次 show L3** | 能力开关；**不进 Theme** |
-| 三族 `show*` | **E 类首参** | 返回 `TActionSheetHandle` |
-| `TActionSheetItem.disabled` | **数据项** | 灰显且不触发 `onChanged` |
-| `itemHeight` / `count` / `rows` / `panelRadius` / `cancelText` | **`TActionSheetThemeData`** | 样式与布局默认 |
-| 蒙层色 / `duration` / `curve` | **`TPopupThemeData`** | 过渡动效 |
+| 项目 | 说明 |
+|------|------|
+| `backgroundColor` / `elevation` / `shape` / `constraints` | Material **`showModalBottomSheet`** |
+| `backgroundColor` / `borderRadius` / `textColor` / `cancelColor` | TDesign **`TActionSheetThemeData`** |

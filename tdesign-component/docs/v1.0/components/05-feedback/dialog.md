@@ -1,104 +1,144 @@
-# TDialog — v1.0 定稿
+# TDialog
 
-> Sprint **S3** | 控制类 **E** | Material: AlertDialog
-> 源码：`lib/src/components/dialog` · [guide](../guide/developer-guide.md)
-
----
+> Sprint **S3** | 控制类 **E** | Material: showDialog 包装
 
 ## 架构
 
 | 项 | v1.0 |
 |---|---|
-| 实现 | Overlay / Route；命令式 `show` 为主 |
-| Material | AlertDialog |
+| 实现 | Material 对话框薄包装 |
+| Material | AlertDialog / Dialog |
 | Theme | `TDialogThemeData` |
-| 禁用 | 浮层无 Widget 级禁用；按钮 `onPressed: null` |
-| L4 | show 样式参数 → **`TDialogThemeData`** |
+| 禁用 | 无 Widget 级禁用（命令式组件） |
+| L4 | 构造器 L4 → **`TDialogThemeData`** |
 
 ## 控制方案
 
-**仅**命令式 `showAlert` / `showConfirm` / `showInput` → `Future<T?>`（对齐 Material `showDialog`）。**不提供** Widget 级 `visible`。无 Widget 级 `disabled`。
+控制类 **E**：命令式调用 `showDialog()` / `pop()`；无 `value` / `onChanged`。禁用：不调 `showDialog`。
 
+## §1 v1.0 定稿 API
 
----
+### 1.1 构造器参数
 
-## 1. API
+| 决策 | 参数 | 类型 | 层级 | 默认值 | 说明 |
+|------|------|------|------|--------|------|
+| | `title` | `String?` | L2 | — | 标题 |
+| | `content` | `String?` | L2 | — | 内容 |
+| | `confirmText` | `String?` | L2 | — | 确认按钮文字 |
+| | `cancelText` | `String?` | L2 | — | 取消按钮文字 |
+| | `onConfirm` | `VoidCallback?` | L3 | — | 确认回调 |
+| | `onCancel` | `VoidCallback?` | L3 | — | 取消回调 |
+| ✨ | `width` | `double?` | L1 | — | 对话框宽度 |
+| ✨ | `closeOnMaskTap` | `bool` | L1 | `true` | 点击遮罩是否关闭 |
 
-### 保留
+> **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
 
-| 符号 | 说明 |
-| --- | --- |
-| showAlert | 命令式 alert（E 类） |
-| showConfirm | 命令式 confirm |
-| showInput | 命令式 input |
-| TAlertDialog / TConfirmDialog / TInputDialog | 声明式 Widget（少用） |
-| title / content | 标题与正文（`Widget?`） |
-| leftBtn / rightBtn / buttons | 按钮区 |
-| barrierDismissible | Material 同名 |
+> 注：`showHeader`（是否显示头部）删除。Material `AlertDialog` 固定结构，标题区始终存在；如需隐藏标题，传入 `title: ''` 或不传 `title`。
 
-### 迁移 / 改名
+### 1.2 类型定义
 
-| 0.2.x | v1.0 | 原因 |
-| --- | --- | --- |
-| `title`（`String?`）/ `content`（`String?`）/ `contentWidget` | `title` / `content`（`Widget?`） | §2.1 单槽；文案 `Text('…')` |
-| 零散 show 系列 | showAlert / showConfirm / showInput | 三族合并 |
-| TDialogButtonOptions 内 L4 | TDialogThemeData | 色/字号/高度 → Theme |
-| TDialogButtonOptions.action | onPressed | A 类 |
-| backgroundColor / radius / titleColor / contentColor | TDialogThemeData | L4 → Theme |
-| padding / buttonStyle | TDialogThemeData | L4 → Theme |
+| 决策 | 类型 | 成员 | 用于 |
+|------|------|------|------|
+| ✨ | `TDialogThemeData` | ThemeExtension | §3 主题配置 |
 
-### 废弃
+### 1.3 移除的导出符号
 
-| 符号 | 原因 |
-| --- | --- |
-| 未合并的旧 show 入口 | 由三族之一替代 |
-| TDialogButtonOptions 内 `style`/`type`/`theme` | 迁入 Theme + `onPressed` |
+| 决策 | 移除符号 | 替代 |
+|------|---------|------|
+| 📦 | `theme` (0.2.x) | `colorScheme` 参数 |
+| 📦 | `titleColor` / `contentColor` / `confirmColor` / `cancelColor` / `backgroundColor` / `borderRadius` | `TDialogThemeData` |
 
-### 新增
+### §2 0.2.x → v1.0
 
-| 符号 | 说明 |
-| --- | --- |
-| TDialogThemeData | L4 对话框与按钮区默认 |
+#### ✏️ 改名
 
-### show API（三族）
+| 从（0.2.x） | 到（v1.0） | 怎么改 |
+|------------|-----------|--------|
+| `theme` | `colorScheme` | 命名对齐 v1.0 |
 
-| 参数 | 层级 | v1.0 | 说明 |
-| --- | --- | --- | --- |
-| `context` | E 首参 | **保留** | `BuildContext` |
-| `title` / `content` | L2 | **保留** | 标题与正文（`Widget?`） |
-| `leftBtn` / `rightBtn` / `buttons` | L3 | **保留** | 按钮配置；内部 `onPressed` |
-| `barrierDismissible` | L3 | **保留** | 点击蒙层关闭 |
-| `onClose` | L3 | **保留** | 关闭回调 |
-| `backgroundColor` / `radius` / `padding` | L4 | → Theme | 容器样式 |
-| `titleColor` / `contentColor` / `titleAlignment` | L4 | → Theme | 文案样式 |
+#### 🗑️ 移除
 
-### L4 迁入 `TDialogThemeData`
+| 从（0.2.x） | 替代方案 | 怎么改 |
+|------------|---------|--------|
+| `titleColor` | `TDialogThemeData` | L4 样式迁入 Theme |
+| `contentColor` | `TDialogThemeData` | L4 样式迁入 Theme |
+| `confirmColor` | `TDialogThemeData` | L4 样式迁入 Theme |
+| `cancelColor` | `TDialogThemeData` | L4 样式迁入 Theme |
+| `backgroundColor` | `TDialogThemeData` | L4 样式迁入 Theme |
+| `borderRadius` | `TDialogThemeData` | L4 样式迁入 Theme |
+| `showHeader` | 删除 | M3 AlertDialog 固定结构 |
 
-| 0.2.x 来源 | Theme 字段 | Material 对照 |
-| --- | --- | --- |
-| `backgroundColor` / `radius` / `elevation` | `backgroundColor` / `shape` / `elevation` | `DialogThemeData` |
-| `titleColor` / `contentColor` / `titleTextStyle` | `titleTextStyle` / `contentTextStyle` | `DialogTheme` |
-| `barrierColor` | `barrierColor` | `showDialog` |
-| `buttonStyle` / 按钮 L4 | `actionButtonStyle` | `TextButtonTheme` |
-| `padding` / `contentMaxHeight` | `contentPadding` / `contentMaxHeight` | TDesign 扩展 |
+#### 📦 迁入 Theme
+
+| 从（0.2.x 构造器） | 到（TDialogThemeData 字段） | 怎么改 |
+|------------------|---------------------------|--------|
+| `titleColor` | `titleColor` | 见 §3 末列 |
+| `contentColor` | `contentColor` | 见 §3 末列 |
+| `confirmColor` | `confirmColor` | 见 §3 末列 |
+| `cancelColor` | `cancelColor` | 见 §3 末列 |
+| `backgroundColor` | `backgroundColor` | 见 §3 末列 |
+| `borderRadius` | `borderRadius` | 见 §3 末列 |
+
+### ✨ 新增
+
+| 新增符号 | 用途 |
+|---------|------|
+| `TDialogThemeData` | ThemeExtension |
+
+## §3 Theme 主题配置
+
+### 3.1 配置方式
+
+| 范围 | 配置方法 |
+|------|---------|
+| 单组件 | `showDialog()` 参数 |
+| 子树 | `Theme.of(context).mergeExtension(TDialogThemeData(...))` |
+| 全应用 | `MaterialApp.theme` 扩展 `TDialogThemeData` |
+
+### 3.2 TDialogThemeData 字段
+
+| 字段 | 类型 | 管什么 | 0.2.x 构造参数 |
+|------|------|--------|---------------|
+| `titleColor` | `Color` | 标题颜色 | `titleColor` |
+| `contentColor` | `Color` | 内容颜色 | `contentColor` |
+| `confirmColor` | `Color` | 确认按钮颜色 | `confirmColor` |
+| `cancelColor` | `Color` | 取消按钮颜色 | `cancelColor` |
+| `backgroundColor` | `Color` | 背景色 | `backgroundColor` |
+| `borderRadius` | `double` | 圆角 | `borderRadius` |
+
+## §4 实现约定 · 测试与 Example 契约
+
+### 4.1 文件划分
+
+| 文件 | 职责 |
+|------|------|
+| `t_dialog.dart` | TDialog Widget |
+| `t_dialog_theme_data.dart` | TDialogThemeData ThemeExtension |
+
+### 4.2 必测场景
+
+| 场景 | 预期 |
+|------|------|
+| 基础渲染 | 默认参数正常渲染 |
+| 确认回调 | `onConfirm` 触发 |
+| 取消回调 | `onCancel` 触发 |
+| Theme 覆盖 | `mergeExtension(TDialogThemeData(...))` 生效 |
+
+### Example 契约
+
+- 覆盖基础对话框
+- 覆盖确认/取消回调
+- 覆盖 Theme 覆盖
 
 ### export
 
-- **保留**：`showAlert`、`showConfirm`、`showInput`、`TAlertDialog`、`TConfirmDialog`、`TInputDialog`、`TDialogButtonOptions`、`TDialogButtonStyle`、`TDialogThemeData`
-- **移出**：`TDialogScaffold`、`TDialogButton`、`t_dialog_widget.dart` 等内部 Widget（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`TDialog`、`TDialogThemeData`
+- **移出**：内部 `*Style`、绘制 helper
 
----
+## Material vs TDesign
 
-## 2. Theme
-
-`TDialogThemeData` · Material: **AlertDialog** · [theme.md](../foundation/theme.md)
-
-### Material vs TDesign
-
-| 字段 | 来源 | 说明 |
-| --- | --- | --- |
-| `title` / `content` / `actions` | Material **`AlertDialog`** | 单次 show KEEP |
-| `showAlert` / `showConfirm` / `showInput` | **E 类命令式** | `Future<T?>` 对齐 **`showDialog`** |
-| `barrierDismissible` | Material **`showDialog`** | 单次 show KEEP |
-| 内部确认/取消按钮 | Material **`TextButton`** 等 | A 类 **`onPressed`** |
-| `backgroundColor` / `shape` / 文案样式 | Material **`DialogThemeData`** | 默认 → **`TDialogThemeData`** |
+| 项目 | 说明 |
+|------|------|
+| `title` / `content` / `actions` | Material **`AlertDialog`** |
+| `backgroundColor` / `elevation` / `insetPadding` | Material **`Dialog`** |
+| `titleColor` / `contentColor` / `confirmColor` / `cancelColor` / `borderRadius` | TDesign **`TDialogThemeData`** |
