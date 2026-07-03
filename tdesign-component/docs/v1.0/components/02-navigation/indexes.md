@@ -45,6 +45,8 @@
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
+> **P0 逃逸舱**：无。本组件不提供 `style` / `decoration` 逃逸舱（四问判定见 [theme.md §2.2](../../foundation/theme.md#22-p0-逃逸舱判定)）；单颗差异用子树 `mergeExtension` 或 L1 单项（`indexListMaxHeight` / `stickyOffset` / `capsuleTheme`）。
+
 ### 1.1 构造器参数
 
 #### TIndexes
@@ -145,13 +147,24 @@
 | 子树 | `Theme.of(context).mergeExtension(TIndexesThemeData(...))` |
 | 全局 | `TDesignTheme` 注册 `TIndexesThemeData` |
 
-覆盖顺序：构造器 L1 **>** 子树 `TIndexesThemeData` **>** Token。行为项 `sticky` / `reverse` 仅构造器 L3，**不进 Theme**。
+覆盖顺序：`P0`(无) **>** `P1` 组件 Theme（`TIndexesThemeData`）**>** `P3` `ThemeData` / `P4` Token（自绘无 P2 Material 子主题）。行为项 `sticky` / `reverse` 仅构造器 L3，**不进 Theme**。
 
 | 决策 | 字段 | 管什么 | 0.2.x 来源 |
 |------|------|--------|-----------|
 | 📦 | `indexListMaxHeight` | 侧栏最大高度比例 | 同名构造器 |
 | 📦 | `stickyOffset` | 吸顶偏移 | 同名构造器 |
 | 📦 | `capsuleTheme` | 胶囊锚点样式 | 同名构造器 |
+
+#### 字段归类：进 Theme 与不进 Theme
+
+本组件为自绘索引（无 Material 等价薄包装）；已确认 Material 无对应字段 → 进 Theme 者全为 TDesign 扩展（P1）。
+
+**进 `TIndexesThemeData`（P1，可主题化）**
+- `indexListMaxHeight` · `stickyOffset` · `capsuleTheme`
+
+**不进 Theme（构造器 L1/L2/L3）**
+- `sticky` · `reverse`（L3 行为项）
+- `indexList` · `scrollController` · `onChanged` · `onSelect` · `onChange`（L1/L2/L3）
 
 ---
 

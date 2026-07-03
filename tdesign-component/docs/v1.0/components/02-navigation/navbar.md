@@ -40,6 +40,8 @@
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
+> **P0 逃逸舱**：无。本组件不提供 `style` / `decoration` 逃逸舱（四问判定见 [theme.md §2.2](../../foundation/theme.md#22-p0-逃逸舱判定)）；单颗差异用子树 `mergeExtension`（`TNavBarThemeData`）。
+
 ### 1.1 构造器参数
 
 | 决策 | 参数 | 类型 | 层级 | 说明 |
@@ -320,7 +322,7 @@ null：  │ ← │    页面标题（居中）    │ （空） │
 |------|---------|
 | 单颗 / 子树 / 全局 | `mergeExtension(TNavBarThemeData(...))` |
 
-覆盖：子树 Theme **>** Token。
+覆盖顺序：`P0`(无) **>** `P1` 组件 Theme（`TNavBarThemeData`）**>** `P2` Material `ToolbarTheme` / `AppBarTheme` **>** `P3` `ThemeData` **>** `P4` Token。
 
 ### 标题区（默认居中 `title` 路径）
 
@@ -341,7 +343,16 @@ null：  │ ← │    页面标题（居中）    │ （空） │
 | 📦 | `backgroundColor` / `height` / `padding` / `backIconColor` / `opacity` | 构造器 |
 | 📦 | `useBorderStyle` / `border` / `boxShadow` | 构造器 / `TNavBarItemBorder` |
 
-> **不进 Theme**：`onBack` · `leadingItems` / `leading` / `title` / `actionsItems` / `actions` / `belowTitle`。
+#### 字段归类：进 Theme 与不进 Theme
+
+本组件为 Material `NavigationToolbar` 薄包装；已按 [theme.md §4](../../foundation/theme.md#4-material-vs-themeextension) 确认：布局骨架走 Material 子主题（P2），外观样式为 TDesign 扩展（P1）。
+
+**进 Theme**
+- P2（Material `ToolbarTheme` / `AppBarTheme`）：`NavigationToolbar` 布局（leading / middle / trailing 对齐展开）
+- P1（`TNavBarThemeData`，TDesign 扩展）：`titleColor` · `titleFont` / `titleFontFamily` / `titleFontWeight` · `titleMargin` · `backgroundColor` · `height` · `padding` · `backIconColor` · `opacity` · `useBorderStyle` / `border` / `boxShadow`
+
+**不进 Theme（构造器 L2/L3）**
+- `onBack`（L3）· `leadingItems` / `leading` · `title` / `belowTitle` · `actionsItems` / `actions`（L2）
 
 ---
 

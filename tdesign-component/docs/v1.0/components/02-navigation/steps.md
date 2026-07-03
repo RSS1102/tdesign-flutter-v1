@@ -43,6 +43,8 @@
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
+> **P0 逃逸舱**：无。本组件不提供 `style` / `decoration` 逃逸舱（四问判定见 [theme.md §2.2](../../foundation/theme.md#22-p0-逃逸舱判定)）；单颗差异用子树 `mergeExtension` 或 L1 单项（`status` / `simple` / `verticalSelect` / `readOnly`）。
+
 ### 1.1 构造器参数
 
 | 决策 | 参数 | 类型 | 层级 | 默认 | 说明 |
@@ -180,7 +182,7 @@ v1.0 **不提供** `onTap` / `onChanged` / 步骤级点击 API。步骤条仅渲
 | 子树 | `Theme.of(context).mergeExtension(TStepsThemeData(...))` |
 | 全局 | `TDesignTheme` 注册 `TStepsThemeData` |
 
-覆盖：构造器 L1 **>** 子树 Theme **>** Token。
+覆盖顺序：`P0`(无) **>** `P1` 组件 Theme（`TStepsThemeData`）**>** `P3` `ThemeData` / `P4` Token（自绘非 Material `Stepper`，无 P2）。
 
 | 决策 | 字段 | 管什么 | 0.2.x 来源 |
 |------|------|--------|-----------|
@@ -189,7 +191,15 @@ v1.0 **不提供** `onTap` / `onChanged` / 步骤级点击 API。步骤条仅渲
 | 📦 | `verticalSelect` | 纵向选中样式 | `verticalSelect` |
 | 📦 | `readOnly` | 流程展示视觉态默认 | `readOnly` |
 
-> **不进 Theme**：`steps` · `value` / `activeIndex` · `direction`。
+#### 字段归类：进 Theme 与不进 Theme
+
+本组件为自绘步骤条（**非** Material `Stepper` 分步表单控件），无 Material 等价；已确认 Material 无对应字段 → 进 Theme 者全为 TDesign 扩展（P1）。
+
+**进 `TStepsThemeData`（P1，可主题化）**
+- `status`（`success` / `error`）· `simple` · `verticalSelect` · `readOnly`
+
+**不进 Theme（构造器 L1/L2）**
+- `steps`（L2）· `value` / `activeIndex`（L1）· `direction`（L1）
 
 ---
 

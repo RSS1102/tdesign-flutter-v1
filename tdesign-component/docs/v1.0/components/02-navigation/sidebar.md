@@ -41,6 +41,8 @@
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
+> **P0 逃逸舱**：无。本组件不提供 `style` / `decoration` 逃逸舱（四问判定见 [theme.md §2.2](../../foundation/theme.md#22-p0-逃逸舱判定)）；单颗差异用子树 `mergeExtension` 或 L1 单项（`loading`）。
+
 ### 1.1 构造器参数
 
 | 决策 | 参数 | 类型 | 层级 | 默认 | 说明 |
@@ -176,7 +178,7 @@ setState(() => _value = 2);
 |------|---------|
 | 单颗 / 子树 / 全局 | `mergeExtension(TSideBarThemeData(...))` |
 
-覆盖：子树 Theme **>** Token。
+覆盖顺序：`P0`(无) **>** `P1` 组件 Theme（`TSideBarThemeData`）**>** `P3` `ThemeData` / `P4` Token（自绘无 P2 Material 子主题）。
 
 | 决策 | 字段 | 管什么 | 0.2.x 来源 |
 |------|------|--------|-----------|
@@ -186,7 +188,15 @@ setState(() => _value = 2);
 | 📦 | `selectedTextStyle` | 选中字形 | 同名 |
 | 📦 | `contentPadding` / `height` | 布局 | 同名 |
 
-> **不进 Theme**：`loading` · `loadingWidget` · `value` / `onChanged` · `children` · 项级 `textStyle`。
+#### 字段归类：进 Theme 与不进 Theme
+
+本组件为自绘侧边导航（无 Material 等价薄包装）；已确认 Material 无对应字段 → 进 Theme 者全为 TDesign 扩展（P1）。
+
+**进 `TSideBarThemeData`（P1，可主题化）**
+- `style`（`normal` / `outline`）· `selectedColor` / `unSelectedColor` / `selectedBgColor` / `unSelectedBgColor` · `selectedTextStyle` · `contentPadding` · `height`
+
+**不进 Theme（构造器 L1/L2/L3）**
+- `loading`（L1）· `loadingWidget`（L2）· `value`（L1）· `onChanged`（L3）· `children`（L2）· 项级 `textStyle`（L2）
 
 ---
 

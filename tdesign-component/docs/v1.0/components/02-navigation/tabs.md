@@ -41,6 +41,8 @@
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
+> **P0 逃逸舱**：无。本组件不提供 `style` / `decoration` 逃逸舱（四问判定见 [theme.md §2.2](../../foundation/theme.md#22-p0-逃逸舱判定)）；单颗差异用子树 `mergeExtension` 或 L1 单项（`variant` / `size` / `physics` / `isScrollable` / `tabAlignment`）。
+
 ### 1.1 构造器参数
 
 #### TTab
@@ -58,8 +60,9 @@
 |------|------|------|------|------|------|
 | | `tabs` | `List<TTab>` | L2 | — | KEEP |
 | | `controller` | `TabController?` | L1 | — | 与 `TTabsBarView` 共用 |
-| | `width` | `double?` | L1 | — | KEEP |
 | ✏️ | `variant` | `TTabsBarVariant?` | L1 | Theme | 原 `outlineType` |
+| ✨ | `isScrollable` | `bool?` | L1 | Theme | 是否可横向滚动；对齐 Material `TabBar.isScrollable`（能力开关，不进 Theme） |
+| ✨ | `tabAlignment` | `TabAlignment?` | L1 | Material 默认 | 对齐 Material `TabBar.tabAlignment` |
 | | `onTap` | `ValueChanged<int>?` | L3 | — | L3 旁听 |
 
 #### TTabsBarView
@@ -92,7 +95,7 @@
 
 ## §2 0.2.x → v1.0
 
-**未改**（§1 无图例项）：`tabs` · `controller` · `width` · `onTap` · `children` · `text` / `child` / `icon` · `badge` · `size`
+**未改**（§1 无图例项）：`tabs` · `controller` · `onTap` · `children` · `text` / `child` / `icon` · `badge` · `size`
 
 | 从 | 到 |
 |---|---|
@@ -102,7 +105,8 @@
 | `TTabBarOutlineType` / `outlineType` | `TTabsBarVariant` / `variant` |
 | `enable` | `enabled` |
 | `isSlideSwitch` | `physics`（可滑传 `BouncingScrollPhysics()`） |
-| `TTabsBar` / `TTab` 构造器 L4 | 迁入 `TTabsBarThemeData`（§3） |
+| `width`（构造器） | 迁入 `TTabsBarThemeData.width`（§3） |
+| `TTabsBar` / `TTab` 其余构造器 L4 | 迁入 `TTabsBarThemeData`（§3） |
 
 ---
 
@@ -112,18 +116,29 @@
 
 | 范围 | 配置方法 |
 |------|---------|
-| 单颗 | 构造器 `variant` / `size` / `physics` |
+| 单颗 | 构造器 `variant` / `size` / `physics` / `isScrollable` / `tabAlignment` |
 | 子树 | `Theme.of(context).mergeExtension(TTabsBarThemeData(...))` |
 | 全局 | `TDesignTheme` 注册 `TTabsBarThemeData` |
 
-覆盖：实例 **>** resolve **>** Token。
+覆盖顺序：`P0`(无) **>** `P1` 组件 Theme（`TTabsBarThemeData`）**>** `P2` Material `TabBarTheme` **>** `P3` `ThemeData` **>** `P4` Token。
 
 | 决策 | 字段 | 管什么 | 0.2.x 来源 |
 |------|------|--------|-----------|
 | 📦 | **TTab** `iconMargin` / `contentHeight` / `textMargin` / `labelStyle` | 单项样式 | `TTab` 构造器 L4 |
 | 📦 | **TTabsBar** `variant` | 栏形态 | `outlineType` |
-| 📦 | **TTabsBar** `indicator*` / `label*` / `divider*` / `isScrollable` / `tabAlignment` | 栏样式 | `TTabBar` 构造器 L4 |
-| 📦 | **TTabsBarView** `defaultPhysics` | 默认滑动 | 原默认不可滑动 |
+| 📦 | **TTabsBar** `width`（栏宽） / `indicator*` / `label*` / `divider*` | 栏样式 | `TTabBar` 构造器 L4 |
+| 📦 | **TTabsBarView** `defaultPhysics` | 默认滑动（**行为默认**，非样式 L4） | 原默认不可滑动 |
+
+#### 字段归类：进 Theme 与不进 Theme
+
+本组件为 Material `TabBar` 薄包装；已按 [theme.md §4](../../foundation/theme.md#4-material-vs-themeextension) 确认：进 Theme 字段中，Material 已有者走 P2 子主题，TDesign 设计稿必需且 M3 无对应者进 P1 `TTabsBarThemeData`。
+
+**进 Theme**
+- P2（Material `TabBar` / `TabBarTheme` 已有）：`indicatorColor` · `indicatorSize` · `labelStyle` · `unselectedLabelStyle` · `dividerColor`
+- P1（`TTabsBarThemeData`，TDesign 扩展）：`variant`（`capsule` / `card`）· `width`（栏宽）· `iconMargin` · `contentHeight` · `textMargin` · `defaultPhysics`（行为默认）
+
+**不进 Theme（构造器 L1）**
+- `isScrollable` · `tabAlignment`（对齐 Material `TabBar` 构造器，M3 不可主题化）
 
 ---
 

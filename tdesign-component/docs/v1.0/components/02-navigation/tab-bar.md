@@ -43,6 +43,8 @@
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
+> **P0 逃逸舱**：无。本组件不提供 `style` / `decoration` 逃逸舱（四问判定见 [theme.md §2.2](../../foundation/theme.md#22-p0-逃逸舱判定)）；单颗差异用子树 `mergeExtension` 或 L1 单项（`variant`）。
+
 ### 1.1 构造器参数
 
 | 决策 | 参数 | 类型 | 层级 | 默认 | 说明 |
@@ -221,7 +223,7 @@ PR-2 落地时删除 [tabs.md](./tabs.md) 临时 `typedef TTabBar = TTabsBar`。
 | 子树 | `Theme.of(context).mergeExtension(TTabBarThemeData(...))` |
 | 全局 | `TDesignTheme` 注册 `TTabBarThemeData` |
 
-覆盖：构造器 L1 **>** 子树 Theme **>** Token。
+覆盖顺序：`P0`(无) **>** `P1` 组件 Theme（`TTabBarThemeData`）**>** `P3` `ThemeData` / `P4` Token（自绘无 P2 Material 子主题）。
 
 > 现网 `TBottomTabBarThemeData` 尚无动效字段；实现 `TTabBarThemeData` 时须补齐下列 📦 项。
 
@@ -233,7 +235,15 @@ PR-2 落地时删除 [tabs.md](./tabs.md) 临时 `typedef TTabBar = TTabsBar`。
 | 📦 | `centerDistance` | 图标与文案间距 | 同名 |
 | 📦 | `indicatorAnimation` / `animationDuration` / `animationCurve` | 指示器动效 | 同名构造参数 |
 
-> **不进 Theme**：`value` / `onChanged` · `navigationTabs` · `useSafeArea` · `placeholder` · `needInkWell`。
+#### 字段归类：进 Theme 与不进 Theme
+
+本组件为 T2 自绘底部栏（**非** Material `NavigationBar` 薄包装），**无** Material 等价；已确认 Material 无对应字段 → 进 Theme 者全为 TDesign 扩展（P1）。
+
+**进 `TTabBarThemeData`（P1，可主题化）**
+- `barHeight` · `showTopBorder` / `topBorder` · `backgroundColor` · `selectedBgColor` / `unselectedBgColor` · `centerDistance` · `indicatorAnimation` / `animationDuration` / `animationCurve`
+
+**不进 Theme（构造器 L1/L2/L3）**
+- `value`（L1）· `onChanged`（L3）· `navigationTabs`（L2）· `useSafeArea`（L1）· `placeholder`（L1）· `needInkWell`（L3）
 
 ---
 

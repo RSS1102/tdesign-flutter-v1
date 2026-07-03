@@ -39,6 +39,8 @@
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
+> **P0 逃逸舱**：无。本组件不提供 `style` / `decoration` 逃逸舱（四问判定见 [theme.md §2.2](../../foundation/theme.md#22-p0-逃逸舱判定)）；单颗差异用子树 `mergeExtension`（`TDrawerThemeData` / `TPopupThemeData`）或构造器 L1（`width` / `drawerTop`）。
+
 ### 1.1 构造器参数
 
 E 类入口：`TDrawer(context, ...)` → `show()` 返回 **`TDrawerHandle`** → `handle.close()` 关闭。命令式为**唯一**主路径；**不提供** `visible` / `onVisibleChange`（对齐 [Popup §2 业务壳](../05-feedback/popup.md#2-tpopup-业务壳约定)）。
@@ -171,7 +173,7 @@ v1.0 **裁决**：点击 `items` 某项**不**自动 `close()`，与 0.2.x 行�
 
 **收拢原则**：样式默认走 `ThemeExtension`（字段归类 → [theme.md §2.1](../../foundation/theme.md#21-themedata-字段归类v10-裁决)）；**禁止**构造器 `themeData` / `popupOptions`（→ [theme.md §2.1](../../foundation/theme.md#禁止构造器-themedatav10-裁决)）。`show()` 时用打开方 `context` 解析 Theme。
 
-覆盖：**构造器 L1**（`width` / `drawerTop`）**>** `TDrawerThemeData` **>** Token。蒙层动效/色：**`TPopupThemeData`** **>** Popup 内置默认。
+覆盖顺序：`P0`(无) **>** `P1` 内容 `TDrawerThemeData` + 浮层 `TPopupThemeData` **>** `P3` `ThemeData` / `P4` Token。构造器 L1（`width` / `drawerTop`）可单次覆盖内容 `TDrawerThemeData`；蒙层动效/色由 `TPopupThemeData` 表达（无 P2 Material 浮层子主题）。
 
 ### 构造器 L3（不进 Theme）
 
@@ -200,6 +202,18 @@ v1.0 **裁决**：点击 `items` 某项**不**自动 `close()`，与 0.2.x 行�
 | 📦 | `overlayColor` | 色 | 蒙层色（及透明度） |
 | 📦 | `animationDuration` | 动效 | 侧滑入/出时长 |
 | 📦 | `animationCurve` | 动效 | 侧滑曲线 |
+
+#### 字段归类：进 Theme 与不进 Theme
+
+本组件为 E 类浮层，内部基于 `TPopup` 自绘（**非** Material `Drawer` 薄包装），无 Material 浮层子主题；已确认 Material 无对应字段 → 进 Theme 者全为 TDesign 扩展（P1）。
+
+**进 Theme**
+- `TDrawerThemeData`（内容区，P1）：`width` · `drawerTop` · `backgroundColor` · `bordered` · `hover` · `style`
+- `TPopupThemeData`（浮层壳，P1）：`overlayColor` · `animationDuration` · `animationCurve`
+
+**不进 Theme（构造器 L2/L3）**
+- `showOverlay` · `closeOnOverlayClick` · `onClose` · `onItemClick`（L3）
+- `child` · `items` · `title` · `footer`（L2，单次 `show`）
 
 > 单次打开内容（`child` / `items` / `title` / `footer`）与 L3 蒙层策略不进 Theme。显隐：`show()` → `TDrawerHandle` · `handle.close()`。
 

@@ -41,6 +41,8 @@
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
+> **P0 逃逸舱**：无。本组件不提供 `style` / `decoration` 逃逸舱（四问判定见 [theme.md §2.2](../../foundation/theme.md#22-p0-逃逸舱判定)）；单颗差异用子树 `mergeExtension` 或 L1 单项（`shape` / `visibilityOffset`）。
+
 ### 1.1 构造器参数
 
 | 决策 | 参数 | 类型 | 层级 | 默认 | 说明 |
@@ -106,7 +108,7 @@ BackTop 默认仅图标（`showText: false`），读屏（VoiceOver / TalkBack�
 | 子树 | `Theme.of(context).mergeExtension(TBackTopThemeData(...))` |
 | 全局 | `TDesignTheme` 注册 `TBackTopThemeData` |
 
-覆盖：构造器 L1 **>** Theme **>** Token。
+覆盖顺序：`P0`(无) **>** `P1` 组件 Theme（`TBackTopThemeData`）**>** `P3` `ThemeData` / `P4` Token（自绘无 P2 Material 子主题）。
 
 **配色**：不暴露 `colorScheme` / `theme` 构造器或 Theme 字段；背景/边框/文字色由 `Theme.of(context).brightness` 选 Token（亮模式灰阶浅底，暗模式灰阶深底）。
 
@@ -116,6 +118,16 @@ BackTop 默认仅图标（`showText: false`），读屏（VoiceOver / TalkBack�
 | ✨ | `defaultVisibilityOffset` | 显隐阈值 | demo 硬编码 100 |
 | ✨ | `defaultRight` / `defaultBottom` | 定位 | — |
 | ✨ | `halfCircleRightInset` | 半圆贴边 | 0.2 `Positioned(right: -16)` |
+
+#### 字段归类：进 Theme 与不进 Theme
+
+本组件为 T2 自绘（无 Material 等价薄包装）；已确认 Material 无对应字段 → 进 Theme 者全为 TDesign 扩展（P1）。
+
+**进 `TBackTopThemeData`（P1，可主题化）**
+- `shape` · `defaultVisibilityOffset` · `defaultRight` / `defaultBottom` · `halfCircleRightInset`
+
+**不进 Theme（构造器 L1/L2/L3）**
+- `controller`（L1）· `showText`（L2）· `onPressed`（L3）· `tooltip`（L2）
 
 ---
 
