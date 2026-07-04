@@ -14,7 +14,7 @@
 
 ## 控制方案
 
-控制类 **E**：命令式调用 `showPopover()` / `hidePopover()` 或 `visible: true/false`；无 `value` / `onChanged`。禁用：不调 `showPopover` 或 `visible: false`。
+控制类 **E**：命令式调用 `showPopover()` / `hidePopover()` 控制显隐；**不提供**声明式 `visible` / `value` / `onChanged`。禁用：不调 `showPopover()`。
 
 ## §1 v1.0 定稿 API
 
@@ -25,8 +25,6 @@
 | | `target` | `Widget` | L2 | — | 触发弹层的子组件 |
 | | `content` | `Widget` | L2 | — | 弹层内容 |
 | ✨ | `placement` | `TPopoverPlacement` | L1 | `top` | 弹出位置 |
-| ✨ | `visible` | `bool` | L1 | `false` | 是否显示（受控） |
-| | `onVisibleChange` | `ValueChanged<bool>?` | L3 | — | 显示状态变更 |
 
 > **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
 

@@ -125,12 +125,12 @@ setState(() => _value = 2);
 
 | 决策 | 类型 | 说明 |
 |------|------|------|
-| | `TSideBarStyle` | `normal` · `outline`；形态默认在 Theme |
+| | `TSideBarVariant` | `normal` · `outline`；形态默认在 Theme |
 | | `TSideBarThemeData` | ThemeExtension（§3） |
 
 ### 1.3 export
 
-**KEEP**：`TSideBar` · `TSideBarItem` · `TSideBarThemeData` · `TSideBarStyle`。
+**KEEP**：`TSideBar` · `TSideBarItem` · `TSideBarThemeData` · `TSideBarVariant`。
 
 ---
 
@@ -212,7 +212,7 @@ setState(() => _value = 2);
 | 单项高度 | `56` |
 | 列表 | `ListView` · `ClampingScrollPhysics` |
 
-**必测**：受控 `value`+`onChanged`（点击触发）· 父改 `value` 同步高亮 · `onChanged: null` · `disabled` 单项 · `value` 必填不自动首项 · `loading` / `loadingWidget` · `TSideBarStyle` Theme · **无** `onSelected` / `TSideBarController`。
+**必测**：受控 `value`+`onChanged`（点击触发）· 父改 `value` 同步高亮 · `onChanged: null` · `disabled` 单项 · `value` 必填不自动首项 · `loading` / `loadingWidget` · `TSideBarVariant` Theme · **无** `onSelected` / `TSideBarController`。
 
 **Example**：`defaultValue→value` · B 类受控示例 · 父 `setState` 切项 · 单项/整栏禁用 · Theme `style` 覆盖。
 

@@ -14,7 +14,7 @@
 
 ## 控制方案
 
-控制类 **E**：命令式调用 `showMessage()` / `hideMessage()`；无 `value` / `onChanged`。禁用：不调 `showMessage`。
+控制类 **E**：命令式调用 `showMessage()` / `hideMessage()` 控制显隐；**不提供**声明式 `value` / `onChanged`。禁用：不调 `showMessage`。
 
 ## §1 v1.0 定稿 API
 

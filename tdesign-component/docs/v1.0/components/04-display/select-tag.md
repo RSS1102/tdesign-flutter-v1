@@ -41,6 +41,8 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | | `onChanged` | `ValueChanged<bool>?` | L3 | — | 选中态变更 |
 | | `text` | `String?` | L2 | — | 标签文案 |
 | | `icon` | `Icon?` | L2 | — | 图标 |
+| ✨ | `needCloseIcon` | `bool` | L1 | `false` | 是否显示关闭图标 |
+| ✨ | `onCloseTap` | `VoidCallback?` | L3 | — | 关闭图标点击回调 |
 
 > **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
 
@@ -62,7 +64,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | 📦 | `isSelected` | `value` |
 | 🗑️ | `onTap` | B 类组件统一用 `onChanged` |
 | 🗑️ | `size` | `TTagThemeData` |
-| 📦 | `iconWidget` / `padding` / `forceVerticalCenter` / `isOutline` / `shape` / `isLight` / `needCloseIcon` / `onCloseTap` / `fixedWidth` | `TTagThemeData` |
+| 📦 | `iconWidget` / `padding` / `forceVerticalCenter` / `isOutline` / `shape` / `isLight` / `fixedWidth` | `TTagThemeData` |
 
 ---
 
@@ -84,8 +86,8 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | `isOutline` | `TTagThemeData` | L4 → Theme |
 | `shape` | `TTagThemeData` | L4 → Theme |
 | `isLight` | `TTagThemeData` | L4 → Theme |
-| `needCloseIcon` | `TTagThemeData` | L4 → Theme |
-| `onCloseTap` | `TTagThemeData` | L4 → Theme |
+| `needCloseIcon` | `needCloseIcon` | L1 能力参数保留 |
+| `onCloseTap` | `onCloseTap` | L3 回调保留（移出 Theme） |
 | `fixedWidth` | `TTagThemeData` | L4 → Theme |
 
 ### ✨ 新增
@@ -117,8 +119,6 @@ _无_
 | `isOutline` | `isOutline` | 见 §3 末列 |
 | `shape` | `shape` | 见 §3 末列 |
 | `isLight` | `isLight` | 见 §3 末列 |
-| `needCloseIcon` | `needCloseIcon` | 见 §3 末列 |
-| `onCloseTap` | `onCloseTap` | 见 §3 末列 |
 | `fixedWidth` | `fixedWidth` | 见 §3 末列 |
 
 > 注：Material `ChipTheme` 的 `backgroundColor`/`labelStyle`/`side`/`padding` 由 Material 子主题处理，TDesign 扩展字段在 `TTagThemeData` 中。
@@ -157,8 +157,6 @@ _无_
 | 📦 | `isOutline` | 是否描边样式 | `isOutline` |
 | 📦 | `shape` | 形态 | `shape` |
 | 📦 | `isLight` | 是否轻量样式 | `isLight` |
-| 📦 | `needCloseIcon` | 是否显示关闭图标 | `needCloseIcon` |
-| 📦 | `onCloseTap` | 关闭图标点击 | `onCloseTap` |
 | 📦 | `fixedWidth` | 固定宽度 | `fixedWidth` |
 
 > 完整字段见 [tag.md §3](./tag.md#3-theme-主题配置)

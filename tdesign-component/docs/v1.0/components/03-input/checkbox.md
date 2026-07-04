@@ -45,7 +45,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | | `onChanged` | `ValueChanged<bool?>?` | L3 | — | 选中态变更 |
 | | `title` | `String?` | L2 | — | 主标题文案 |
 | | `subTitle` | `String?` | L2 | — | 副标题文案 |
-| ✨ | `size` | `TCheckBoxSize` | L1 | `medium` | 尺寸（大/中/小） |
+| ✨ | `size` | `TCheckboxSize` | L1 | `medium` | 尺寸（大/中/小） |
 | ✨ | `cardMode` | `bool` | L1 | `false` | 卡片模式 |
 | ✨ | `customIconBuilder` | `Widget Function(bool checked)?` | L2 | — | 自定义 Checkbox 图标 |
 | ✨ | `contentDirection` | `TContentDirection` | L1 | `right` | 控件与文案排列方向 |
@@ -66,7 +66,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 决策 | 类型 | 成员 | 用于 |
 |------|------|------|------|
-| ✨ | `TCheckBoxSize` | `large` · `medium` · `small` | `size` 参数 |
+| ✨ | `TCheckboxSize` | `large` · `medium` · `small` | `size` 参数 |
 | ✨ | `TContentDirection` | `left` · `right` | `contentDirection` 参数 |
 | ✨ | `TCheckboxThemeData` | ThemeExtension | §3 主题配置 |
 
@@ -221,7 +221,7 @@ TCheckboxGroup<String>(
 
 ### export
 
-- **保留**：`TCheckbox`、`TCheckboxGroup`、`TCheckBoxSize`、`TContentDirection`、`TCheckboxThemeData`
+- **保留**：`TCheckbox`、`TCheckboxGroup`、`TCheckboxSize`、`TContentDirection`、`TCheckboxThemeData`
 - **移出**：`TCheckboxStyle`、`TCheckboxGroupController`、`OnGroupChange`、`OnCheckBoxGroupChange`、内部 `HollowCircle` 等绘制类（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 ---

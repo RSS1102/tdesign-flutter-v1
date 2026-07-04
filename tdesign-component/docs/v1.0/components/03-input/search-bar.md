@@ -48,8 +48,8 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | ✨ | `hintText` | `String?` | L2 | — | 占位提示文案 |
 | ✨ | `needCancel` | `bool` | L1 | `false` | 是否显示取消按钮 |
 | ✨ | `cancelText` | `String` | L2 | `'取消'` | 取消按钮文案 |
-| ✨ | `onCancelTap` | `VoidCallback?` | L3 | — | 取消按钮点击 |
-| ✨ | `onClearTap` | `VoidCallback?` | L3 | — | 清除按钮点击 |
+| ✨ | `onCancelPressed` | `VoidCallback?` | L3 | — | 取消按钮点击 |
+| ✨ | `onClearPressed` | `VoidCallback?` | L3 | — | 清除按钮点击 |
 | ✨ | `autoFocus` | `bool` | L1 | `false` | 自动聚焦 |
 | ✨ | `inputAction` | `TextInputAction` | L1 | `search` | 键盘操作按钮 |
 | ✨ | `decoration` | ` InputDecoration?` | L4 | — | P0 逃逸舱（Material 同名） |
@@ -167,8 +167,8 @@ _无_
 |--------|--------|------|
 | 基础渲染 | ✅ | 默认参数正常渲染 |
 | 文本输入 | ✅ | `controller` + `onChanged` |
-| 取消按钮 | ✅ | `needCancel: true` + `onCancelTap` |
-| 清除按钮 | ✅ | `onClearTap` 回调 |
+| 取消按钮 | ✅ | `needCancel: true` + `onCancelPressed` |
+| 清除按钮 | ✅ | `onClearPressed` 回调 |
 | 提交 | ✅ | `onSubmitted` 回调 |
 | Form 桥接 | ✅ | `TFormField<String>(...)` |
 
@@ -197,7 +197,7 @@ _无_
 | --- | --- | --- |
 | `controller` / `initialValue` / `onChanged` / `onSubmitted` | **D 类 Widget API** | 文本受控；Form → `TFormField` |
 | `enabled` / `readOnly` / `hintText` / `autoFocus` / `inputAction` | **D 类 Widget API** | 控制类 D 专有参数 |
-| `needCancel` / `cancelText` / `onCancelTap` / `onClearTap` | **D 类 Widget API** | 搜索条特有交互 |
+| `needCancel` / `cancelText` / `onCancelPressed` / `onClearPressed` | **D 类 Widget API** | 搜索条特有交互 |
 | 输入区 | 复用 **`TInput` / `TextField`** | `controller`、`hintText`、`onChanged`、`enabled` |
 | `variant` / `textAlignment` / `padding` / `backgroundColor` | **`TSearchBarThemeData`** | 搜索条容器样式 |
 

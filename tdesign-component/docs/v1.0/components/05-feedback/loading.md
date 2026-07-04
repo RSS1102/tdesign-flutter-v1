@@ -14,7 +14,7 @@
 
 ## 控制方案
 
-控制类 **A**：`onTap`；无 `value`。禁用：`onTap: null`。
+控制类 **A**：`onTap`；**不提供** `value`。禁用：`onTap: null`。
 
 ## §1 v1.0 定稿 API
 
@@ -36,6 +36,7 @@
 | 决策 | 类型 | 成员 | 用于 |
 |------|------|------|------|
 | ✨ | `TLoadingVariant` | `circular` · `linear` | `variant` 参数 |
+| ✨ | `TLoadingSize` | `small` · `medium` · `large` | `defaultSize` 参数 |
 | ✨ | `TLoadingThemeData` | ThemeExtension | §3 主题配置 |
 
 ### 1.3 移除的导出符号
@@ -94,7 +95,7 @@
 
 | 范围 | 配置方法 |
 |------|---------|
-| 单组件 | 构造器 `variant` / `size` + P0 `style`（如有） |
+| 单组件 | 构造器 `variant`（尺寸经 `TLoadingThemeData.defaultSize`） |
 | 子树 | `Theme.of(context).mergeExtension(TLoadingThemeData(...))` |
 | 全应用 | `MaterialApp.theme` 扩展 `TLoadingThemeData` |
 

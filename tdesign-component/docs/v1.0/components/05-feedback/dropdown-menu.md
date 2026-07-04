@@ -45,7 +45,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | onChange | onChanged | F 类（`TDropdownItem`） |
 | width / height / decoration | TDropdownThemeData | L4 → Theme |
 | arrowIcon / arrowColor / tabBarAlign | TDropdownThemeData | L4 → Theme |
-| duration / isScrollable | TDropdownThemeData | L4 → Theme |
+| duration（动画时长）/ isScrollable（可滚动） | 构造器保留 | 动画/能力开关，不进 Theme |
 | labelBuilder | 保留实例 | 自定义标签槽位 |
 
 ### 废弃
@@ -70,6 +70,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | `onMenuOpened` / `onMenuClosed` | L3 | **保留** | 开闭通知 |
 | `multiple` / `onConfirm` / `onReset` | L2 | **保留** | 多选确认流 |
 | `width` / `height` / `decoration` | L4 | → Theme | 菜单栏默认样式 |
+| `duration` / `isScrollable` | L4 | 构造器保留 | 动画时长 / 可滚动（不进 Theme） |
 
 ### L4 迁入 `TDropdownThemeData`
 
@@ -77,7 +78,6 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | --- | --- | --- |
 | `width` / `height` / `decoration` | 菜单栏容器 | Overlay 面板 |
 | `arrowIcon` / `arrowColor` / `tabBarAlign` | 指示器与对齐 | TDesign 扩展 |
-| `duration` / `isScrollable` | 动画/滚动 | TDesign 扩展 |
 
 ### export
 
@@ -90,6 +90,17 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 ## 2. Theme
 
 `TDropdownThemeData` · Material: **Overlay** · [theme.md](../foundation/theme.md)
+
+### TDropdownThemeData 字段
+
+| 字段 | 类型 | 管什么 | 0.2.x 来源 |
+|------|------|--------|-----------|
+| `width` | `double` | 菜单栏宽度 | `width` |
+| `height` | `double` | 菜单栏高度 | `height` |
+| `decoration` | `Decoration` | 菜单栏容器样式 | `decoration` |
+| `arrowIcon` | `Widget` | 指示器图标 | `arrowIcon` |
+| `arrowColor` | `Color` | 指示器颜色 | `arrowColor` |
+| `tabBarAlign` | `Alignment` | 指示器对齐 | `tabBarAlign` |
 
 ### Material vs TDesign
 

@@ -46,6 +46,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 决策 | 类型 | 成员 | 用于 |
 |------|------|------|------|
+| ✨ | `TSwitchVariant` | `standard` · `filled` | `variant` 参数 |
 | ✨ | `TSwitchThemeData` | ThemeExtension | §3 主题配置 |
 
 ### 1.3 移除的导出符号
@@ -121,8 +122,13 @@ _无_
 
 | 决策 | 字段 | 管什么 | 0.2.x 构造参数 |
 |------|------|--------|---------------|
+| 📦 | `variant` | 形态枚举（standard / filled） | `type` / `TSwitchType` |
 | 📦 | `trackOnColor` | 开启态轨道颜色 | `trackOnColor` |
 | 📦 | `trackOffColor` | 关闭态轨道颜色 | `trackOffColor` |
+| 📦 | `thumbContentOnColor` | 开启态滑块内容颜色 | `thumbContentOnColor` |
+| 📦 | `thumbContentOffColor` | 关闭态滑块内容颜色 | `thumbContentOffColor` |
+| 📦 | `thumbContentOnFont` | 开启态滑块内容字号 | `thumbContentOnFont` |
+| 📦 | `thumbContentOffFont` | 关闭态滑块内容字号 | `thumbContentOffFont` |
 
 ---
 
@@ -158,8 +164,8 @@ _无_
 
 ### export
 
-- **保留**：`TSwitch`、`TSwitchThemeData`
-- **移出**：`TSwitchType`、`TSwitchSize`、`TSwitchVariant`、`OnSwitchChanged`、`TSwitchController`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- **保留**：`TSwitch`、`TSwitchThemeData`、`TSwitchVariant`
+- **移出**：`TSwitchType`、`TSwitchSize`、`OnSwitchChanged`、`TSwitchController`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 ---
 

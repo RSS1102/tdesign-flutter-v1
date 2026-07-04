@@ -47,7 +47,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | ✨ | `mediaType` | `TUploadMediaType` | L1 | `image` | 媒体类型（image/video/mixed） |
 | ✨ | `sizeLimit` | `int?` | L1 | — | 单文件大小限制（bytes） |
 | ✨ | `multiple` | `bool` | L1 | `false` | 是否多选 |
-| ✨ | `onUploadTap` | `VoidCallback?` | L3 | — | 选图/拍图点击 |
+| ✨ | `onPressed` | `VoidCallback?` | L3 | — | 选图/拍图点击 |
 | ✨ | `onCancel` | `ValueChanged<TUploadFile>?` | L3 | — | 删除文件回调 |
 | ✨ | `onPreview` | `ValueChanged<TUploadFile>?` | L3 | — | 预览文件回调 |
 | ✨ | `onError` | `ValueChanged<TUploadValidatorError>?` | L3 | — | 错误回调 |
@@ -70,7 +70,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | 🚫 | `TUploadMediaType`（旧） | `TUploadMediaType`（重命名） |
 | 🚫 | `TUploadType` | `TUploadMediaType` |
 | 🚫 | `TUploadBoxType` | `TUploadThemeData.variant` |
-| 🗑️ | `onClick` | `onPressed` / `onUploadTap` |
+| 🗑️ | `onClick` | `onPressed` |
 | 🗑️ | `onChange` | `onChanged` |
 | 🗑️ | `disabled` | `onUploadTap: null` |
 
@@ -82,12 +82,12 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 从（0.2.x） | 到（v1.0） | 怎么改 |
 |------------|-----------|--------|
-| `onClick` | `onUploadTap` | 命名对齐 v1.0 |
+| `onClick` | `onPressed` | 命名对齐 v1.0 |
 | `onChange` | `onChanged` | 命名对齐 v1.0 |
 | `TUploadMediaType` | `TUploadMediaType` | 重命名（避免与旧 enum 冲突） |
 | `TUploadType` | `TUploadMediaType` | 合并枚举 |
 | `TUploadBoxType` | `TUploadThemeData.variant` | 枚举化 |
-| `disabled` | `onUploadTap: null` | Material 禁用 |
+| `disabled` | `onPressed: null` | Material 禁用 |
 
 ### ✨ 新增
 
@@ -168,7 +168,7 @@ _无_
 |--------|--------|------|
 | 基础渲染 | ✅ | 默认参数正常渲染 |
 | 文件列表展示 | ✅ | `files` 正确渲染 |
-| 选图/拍图 | ✅ | `onUploadTap` 触发 |
+| 选图/拍图 | ✅ | `onPressed` 触发 |
 | 删除文件 | ✅ | `onCancel` 回调 |
 | 预览文件 | ✅ | `onPreview` 回调 |
 | 错误处理 | ✅ | `onError` 回调 |
@@ -198,7 +198,7 @@ _无_
 | --- | --- | --- |
 | `files` / `onChanged` | **— 类 Widget API** | 文件列表展示与受控；Form → `TFormField` |
 | `max` / `mediaType` / `sizeLimit` / `multiple` | **构造器 L1** | 上传业务约束（语义级） |
-| `onUploadTap` / `onCancel` / `onPreview` / `onError` | **构造器 L3** | 生命周期回调 |
+| `onPressed` / `onCancel` / `onPreview` / `onError` | **构造器 L3** | 生命周期回调 |
 | 选图/拍图 | **`image_picker`** | 平台能力；非 Material Widget |
 | `thumbWidth` / `thumbHeight` / `wrapSpacing` / `wrapRunSpacing` / `wrapAlignment` | **`TUploadThemeData`** | 缩略图网格 L4 |
 | `variant` | **`TUploadThemeData`** | 展示形态（卡片/网格） |

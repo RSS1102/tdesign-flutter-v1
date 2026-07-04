@@ -41,7 +41,6 @@
 | | `data` | `List<Map>` | L2 | — | 行数据 |
 | | `loading` | `bool` | L1 | `false` | **业务态**：是否展示加载 UI（**非** Theme） |
 | | `loadingWidget` | `Widget?` | L2 | — | 加载占位；与 `loading` 配对 |
-| | `showHeader` | `bool` | L1 | `true` | **结构开关**：是否渲染表头行 |
 | | `empty` | `Widget?` | L2 | — | 空数据占位 |
 | | `footer` | `Widget?` | L2 | — | 表尾（原 `footerWidget`） |
 | | `onCellTap` | `VoidCallback?` | L3 | — | 单元格点击回调 |
@@ -117,7 +116,6 @@ _无_
 |------|------|
 | `loading` | bool 业务态 |
 | `loadingWidget` | Widget 槽位 |
-| `showHeader` | 结构能力开关 |
 | `empty` / `footer` | Widget 槽位 |
 | `columns` / `data` / 回调 | 实例数据与 L3 |
 
@@ -154,7 +152,7 @@ _无_
 | 📦 | `width` | 表格宽度 | `width` |
 | 📦 | `backgroundColor` | 背景色 | `backgroundColor` |
 
-> **不进 Theme**：`loading` · `loadingWidget` · `showHeader` · `empty` · `footer` · `columns` / `data` · 回调。
+> **不进 Theme**：`loading` · `loadingWidget` · `empty` · `footer` · `columns` / `data` · 回调。
 
 ---
 
@@ -178,13 +176,11 @@ _无_
 | 基础渲染 | ✅ | 默认参数正常渲染 |
 | 加载态 | ✅ | `loading` / `loadingWidget` |
 | 空态 | ✅ | `empty` 参数 |
-| 隐藏表头 | ✅ | `showHeader: false` |
 | 边框/斑马纹 | ✅ | Theme `bordered` / `stripe` |
 
 ### 4.3 Example 契约
 
 - 覆盖 `loading` / `loadingWidget` 加载态
-- 覆盖 `showHeader` 结构开关
 - 覆盖 `empty` 空态
 - 覆盖 Theme 子树配置
 
@@ -207,7 +203,6 @@ _无_
 | --- | --- | --- |
 | `columns` / `data` | **实例 KEEP** | 表格数据 |
 | `loading` / `loadingWidget` | **实例 KEEP** | 业务态 |
-| `showHeader` | **实例** | 结构开关 |
 | `empty` / `footer` | **实例 KEEP** | Widget 槽位 |
 | `bordered` / `stripe` / `rowHeight` / `height` / `width` / `backgroundColor` | TDesign **`TTableThemeData`** | CSS 式样式默认 |
 

@@ -41,8 +41,6 @@
 | ✨ | `mode` | `TCollapseMode` | L1 | `multiple` | 展开模式（accordion / multiple） |
 | ✨ | `value` | `Object?` | L1 | — | 手风琴模式下当前展开 panel 的 value |
 | | `children` | `List<TCollapsePanel>` | L2 | — | 面板列表 |
-| | `animationDuration` | `Duration?` | L1 | — | 动画时长 |
-| | `elevation` | `double?` | L1 | — | 阴影高度 |
 | | `onExpansionChanged` | `ExpansionPanelCallback?` | L3 | — | 多开模式展开回调 `(index, isExpanded)` |
 | | `onChanged` | `ValueChanged<Object?>?` | L3 | — | 手风琴模式受控回调 |
 
@@ -111,7 +109,7 @@ _无_
 | `style` | `style` | 见 §3 末列 |
 | `backgroundColor` | `backgroundColor` | 见 §3 末列 |
 
-> 注：Material `ExpansionPanelList` 的 `animationDuration`/`elevation`/`expansionCallback` 与 Flutter 同名，**KEEP** 构造器。
+> 注：Material `ExpansionPanelList` 的 `animationDuration` / `elevation` 为 L4 样式，迁入 `TCollapseThemeData`；`expansionCallback` 已对齐为 `onExpansionChanged`。
 
 > 子组件内部使用的 `TCollapse` 也需同步升级，**不借用构造器参数**。
 
@@ -139,7 +137,8 @@ _无_
 |------|------|--------|---------------|
 | 📦 | `style` | 面板样式（block / card） | `TCollapseStyle` |
 | 📦 | `backgroundColor` | 默认面板背景 | `backgroundColor` |
-| 📦 | `expandIconTextBuilder` | 展开按钮旁文案 | — |
+| 📦 | `animationDuration` | 展开动画时长 | `animationDuration` |
+| 📦 | `elevation` | 面板阴影高度 | `elevation` |
 
 ---
 
@@ -190,7 +189,7 @@ _无_
 | --- | --- | --- |
 | `children` | Material **`ExpansionPanelList`** | `List<ExpansionPanel>` → `TCollapsePanel` |
 | `onExpansionChanged` | Material **`expansionCallback`** | `(int index, bool isExpanded)` |
-| `animationDuration` / `elevation` | Material **`ExpansionPanelList`** | 实例 KEEP |
+| `animationDuration` / `elevation` | `TCollapseThemeData` → Material **`ExpansionPanelList`** | L4 样式迁入 Theme |
 | `headerBuilder` / `body` / `isExpanded` | Material **`ExpansionPanel`** | 面板结构 |
 | `value`（Panel） | Material **`ExpansionPanel.value`** | 手风琴模式必填且互异 |
 | `value`（Collapse 手风琴） | **受控扩展** | 当前展开 panel 的 `value` |

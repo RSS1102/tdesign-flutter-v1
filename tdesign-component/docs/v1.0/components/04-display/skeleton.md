@@ -23,7 +23,7 @@
 
 ## 控制方案
 
-控制类 **A**：`onTap`；无 `value`。禁用：`onTap: null`。
+控制类 **A**：`onTap`；**不提供** `value`。禁用：`onTap: null`。
 
 ---
 

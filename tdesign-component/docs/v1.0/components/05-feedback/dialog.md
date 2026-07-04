@@ -14,7 +14,7 @@
 
 ## 控制方案
 
-控制类 **E**：命令式调用 `showDialog()` / `pop()`；无 `value` / `onChanged`。禁用：不调 `showDialog`。
+控制类 **E**：命令式调用 `showDialog()` / `pop()` 控制显隐；**不提供**声明式 `value` / `onChanged`。禁用：不调 `showDialog`。
 
 ## §1 v1.0 定稿 API
 
@@ -28,12 +28,13 @@
 | | `cancelText` | `String?` | L2 | — | 取消按钮文字 |
 | | `onConfirm` | `VoidCallback?` | L3 | — | 确认回调 |
 | | `onCancel` | `VoidCallback?` | L3 | — | 取消回调 |
-| ✨ | `width` | `double?` | L1 | — | 对话框宽度 |
 | ✨ | `closeOnMaskTap` | `bool` | L1 | `true` | 点击遮罩是否关闭 |
 
 > **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
 
 > 注：`showHeader`（是否显示头部）删除。Material `AlertDialog` 固定结构，标题区始终存在；如需隐藏标题，传入 `title: ''` 或不传 `title`。
+>
+> 说明：以上参数均通过命令式 `showDialog()` 传入；`TDialog` Widget 为内部实现，对外仅暴露 `showDialog()` 与 `TDialogThemeData`，不提供 Widget 级 `visible`。
 
 ### 1.2 类型定义
 
@@ -46,7 +47,7 @@
 | 决策 | 移除符号 | 替代 |
 |------|---------|------|
 | 📦 | `theme` (0.2.x) | `colorScheme` 参数 |
-| 📦 | `titleColor` / `contentColor` / `confirmColor` / `cancelColor` / `backgroundColor` / `borderRadius` | `TDialogThemeData` |
+| 📦 | `titleColor` / `contentColor` / `confirmColor` / `cancelColor` / `backgroundColor` / `borderRadius` / `width` | `TDialogThemeData` |
 
 ### §2 0.2.x → v1.0
 
@@ -78,6 +79,7 @@
 | `cancelColor` | `cancelColor` | 见 §3 末列 |
 | `backgroundColor` | `backgroundColor` | 见 §3 末列 |
 | `borderRadius` | `borderRadius` | 见 §3 末列 |
+| `width` | `width` | 见 §3 末列 |
 
 ### ✨ 新增
 
@@ -105,6 +107,7 @@
 | `cancelColor` | `Color` | 取消按钮颜色 | `cancelColor` |
 | `backgroundColor` | `Color` | 背景色 | `backgroundColor` |
 | `borderRadius` | `double` | 圆角 | `borderRadius` |
+| `width` | `double` | 对话框宽度 | `width` |
 
 ## §4 实现约定 · 测试与 Example 契约
 
@@ -132,8 +135,8 @@
 
 ### export
 
-- **保留**：`TDialog`、`TDialogThemeData`
-- **移出**：内部 `*Style`、绘制 helper
+- **保留**：`showDialog()`、`TDialogThemeData`
+- **移出**：`TDialog` Widget（内部实现）、内部 `*Style`、绘制 helper
 
 ## Material vs TDesign
 

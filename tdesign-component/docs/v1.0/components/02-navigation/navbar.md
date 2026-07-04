@@ -28,7 +28,7 @@
 
 ## 控制方案
 
-控制类 **A**：`onBack` / `TNavBarItem.action` 对齐 `onPressed` — `null` 禁用（不可点）；非 `null` 为点击回调。默认返回钮**显隐**由左区配置（`leadingItems` / `leading`），与 `onBack` 分离。无 `value` / `onChanged`。
+控制类 **A**：`onBack` / `TNavBarItem.action` 对齐 `onPressed` — `null` 禁用（不可点）；非 `null` 为点击回调。默认返回钮**显隐**由左区配置（`leadingItems` / `leading`），与 `onBack` 分离。**不提供** `value` / `onChanged`。
 
 → [controlled.md](../../foundation/controlled.md)
 

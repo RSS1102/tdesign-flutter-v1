@@ -17,7 +17,7 @@
 
 ## 控制方案
 
-`onPressed` / `onTap`；无 `value`。禁用：回调 `null`。
+`onPressed` / `onTap`；**不提供** `value`。禁用：回调 `null`。
 
 
 ---
@@ -28,7 +28,7 @@
 
 | 符号 | 说明 |
 | --- | --- |
-| TLinkType | 链接形态（basic / underline / icon） |
+| TLinkVariant | 链接形态（basic / underline / icon） |
 | TLinkSize | 尺寸 |
 | uri | 跳转 URI |
 | prefixIcon / suffixIcon | 链式图标 |
@@ -62,7 +62,7 @@
 
 ### export
 
-- **保留**：`TLink`、`TLinkType`、`TLinkSize`、`TLinkColorScheme`、`TLinkThemeData`、`TLinkConfiguration`
+- **保留**：`TLink`、`TLinkVariant`、`TLinkSize`、`TLinkColorScheme`、`TLinkThemeData`、`TLinkConfiguration`
 - **移出**：`TLinkStyle`、`TLinkState`、`LinkClick`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 
@@ -72,11 +72,19 @@
 
 `TLinkThemeData` · Material: **InkWell+Text** · [theme.md](../foundation/theme.md)
 
+### TLinkThemeData 字段
+
+| 字段 | 类型 | 管什么 | 默认 |
+| --- | --- | --- | --- |
+| `defaultVariant` | `TLinkVariant` | 未传构造器 `variant` 时的默认形态 | `basic` |
+| `defaultSize` | `TLinkSize` | 未传构造器 `size` 时的默认尺寸 | `medium` |
+
 ### Material vs TDesign
 
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
 | `foregroundColor` / `overlayColor` | Material **`TextButtonTheme`** / InkWell | 链接色与水波纹 |
-| `variant` | TDesign **`TLinkThemeData`** | 原 `TLinkType` / `type` |
+| `variant` | TDesign 构造器 L1（非 Material） | `TLinkVariant`；默认由 `TLinkThemeData.defaultVariant` 提供；原 `type` / `TLinkType` |
+| `size` | TDesign 构造器 L1（非 Material） | `TLinkSize`；默认由 `TLinkThemeData.defaultSize` 提供 |
 | `fontSize` / `iconSize` / `prefixIcon` / `suffixIcon` / 间距 | TDesign 扩展 | 链式图标布局 |
 | `uri` | TDesign 扩展（可选） | 默认链接色/下划线策略 |

@@ -116,7 +116,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 ### 3.2 覆盖顺序
 
-`实例 P0 style` **>** resolve（全量合并） **>** Token
+`resolve（全量合并）` **>** Token
 
 ### 3.3 TTreeSelectThemeData 字段
 

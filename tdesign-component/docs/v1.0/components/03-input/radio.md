@@ -55,6 +55,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 决策 | 类型 | 成员 | 用于 |
 |------|------|------|------|
+| ✨ | `TRadioVariant` | `circle` · `check` · `hollowCircle` | `variant` 形态 |
 | ✨ | `TRadioSize` | `large` · `medium` · `small` | `size` 参数 |
 | ✨ | `TContentDirection` | `left` · `right` | `contentDirection` 参数 |
 | ✨ | `TRadioThemeData` | ThemeExtension | §3 主题配置 |
@@ -137,8 +138,7 @@ _无_
 
 | 决策 | 字段 | 管什么 | 0.2.x 构造参数 |
 |------|------|--------|---------------|
-| 📦 | `radioStyle` | 单选形态枚举（circle/check/hollowCircle） | `radioStyle` |
-| 📦 | `radioCheckStyle` | 选中态形态枚举 | `radioCheckStyle` |
+| 📦 | `variant` | 形态枚举（circle / check / hollowCircle） | `radioStyle` / `radioCheckStyle` |
 | 📦 | `selectColor` | 选中态颜色 | `selectColor` |
 | 📦 | `disableColor` | 禁用态颜色 | `disableColor` |
 | 📦 | `titleColor` | 标题文字颜色 | `titleColor` |
@@ -203,7 +203,7 @@ TRadioGroup<String>(
 
 ### export
 
-- **保留**：`TRadio`、`TRadioGroup`、`TRadioThemeData`、`TRadioSize`、`TContentDirection`
+- **保留**：`TRadio`、`TRadioGroup`、`TRadioThemeData`、`TRadioVariant`、`TRadioSize`、`TContentDirection`
 - **移出**：`TRadioStyle`、`HollowCircle` 等内部绘制类、`TRadioGroupController`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 ---
@@ -221,7 +221,7 @@ TRadioGroup<String>(
 | `onChanged` | Material **`Radio.onChanged`** / **`RadioGroup.onChanged`** | `null` 禁用 |
 | `title` / `subTitle` | Material **`RadioListTile`** | 映射 title / subTitle |
 | `fillColor` / `overlayColor` / `splashRadius` / `visualDensity` / `materialTapTargetSize` | Material **`RadioThemeData`** | 三态（`WidgetStateProperty`） |
-| `radioStyle` / `radioCheckStyle` | **`TRadioThemeData`** | TDesign 多形态（circle/check/hollowCircle） |
+| `variant` | **`TRadioThemeData`** | TDesign 多形态（circle/check/hollowCircle） |
 | `disableColor` / `selectColor` / 文案色 / `spacing` | **`TRadioThemeData`** | 0.2.x 构造器 L4 迁入 |
 | `cardMode` | **TDesign 扩展** | 布局 |
 

@@ -23,7 +23,7 @@
 
 ## 控制方案
 
-控制类 **A**：`onTap`；无 `value`。禁用：`onTap: null`。
+控制类 **A**：`onTap`；**不提供** `value`。禁用：`onTap: null`。
 
 ---
 
@@ -35,8 +35,7 @@
 
 | 决策 | 参数 | 类型 | 层级 | 默认值 | 说明 |
 |------|------|------|------|--------|------|
-| | `icon` | `Widget?` | L2 | — | 自定义插图（替代默认图标） |
-| | `image` | `Widget?` | L2 | — | 自定义插图 Widget（与 `icon` 二选一） |
+| | `image` | `Widget?` | L2 | — | 自定义插图（图标或图片 Widget，替代默认插图） |
 | | `title` | `String?` | L2 | — | 主文案（原 `emptyText`） |
 | ✨ | `variant` | `TEmptyVariant` | L1 | `plain` | 形态（plain / operation） |
 | | `operation` | `Widget?` | L2 | — | 操作区（原 `customOperationWidget` / `operationText`） |
@@ -85,7 +84,9 @@
 
 ### 🔀 合并
 
-_无_
+| 从（0.2.x） | 到（v1.0） | 怎么改 |
+|------------|-----------|--------|
+| `icon` | `image` | 单插图槽：图标/图片统一用 `image`（`Widget?`）表达 |
 
 ### 🗑️ 移除
 
@@ -153,13 +154,13 @@ _无_
 |--------|--------|------|
 | 基础渲染 | ✅ | 默认参数正常渲染 |
 | 形态切换 | ✅ | `variant: TEmptyVariant.operation` |
-| 自定义插图 | ✅ | `icon` / `image` 参数 |
+| 自定义插图 | ✅ | `image` 参数 |
 | 操作区 | ✅ | `operation` 参数 |
 
 ### 4.3 Example 契约
 
 - 覆盖 `variant` 形态切换
-- 覆盖 `icon` / `image` 自定义插图
+- 覆盖 `image` 自定义插图
 - 覆盖 `operation` 操作区
 
 ---

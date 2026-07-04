@@ -14,7 +14,7 @@
 
 ## 控制方案
 
-控制类 **E**：命令式调用 `showPopup()` / `hidePopup()` 或 `visible: true/false`；无 `value` / `onChanged`。禁用：不调 `showPopup` 或 `visible: false`。
+控制类 **E**：命令式调用 `showPopup()` / `hidePopup()` 控制显隐；**不提供**声明式 `visible` / `value` / `onChanged`。禁用：不调 `showPopup()`。
 
 ## §1 v1.0 定稿 API
 
@@ -25,8 +25,6 @@
 | | `child` | `Widget` | L2 | — | 触发弹层的子组件 |
 | | `content` | `Widget` | L2 | — | 弹层内容 |
 | ✨ | `placement` | `TPopupPlacement` | L1 | `bottom` | 弹出位置 |
-| ✨ | `visible` | `bool` | L1 | `false` | 是否显示（受控） |
-| | `onVisibleChange` | `ValueChanged<bool>?` | L3 | — | 显示状态变更 |
 
 > **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
 
@@ -79,13 +77,17 @@
 | `TPopupPlacement` | 弹出位置枚举 |
 | `TPopupThemeData` | ThemeExtension |
 
+#### TPopup 业务壳约定
+
+`TPopup` 是所有浮层类组件（Drawer / ActionSheet / DropdownMenu / Popover）的统一底座，**仅负责弹层容器与定位**。浮层策略（`showOverlay` / `closeOnOverlayClick` / `closeOnMaskTap` 等）由各自的命令式 `showXxx()` 持有，**不在 `TPopup` 构造器重复声明**，以避免跨组件重复定义；各业务壳按需透传自身的浮层策略参数即可。
+
 ## §3 Theme 主题配置
 
 ### 3.1 配置方式
 
 | 范围 | 配置方法 |
 |------|---------|
-| 单组件 | 构造器 `placement` + P0 `style`（如有） |
+| 单组件 | `showPopup()` 参数（`placement` 等） |
 | 子树 | `Theme.of(context).mergeExtension(TPopupThemeData(...))` |
 | 全应用 | `MaterialApp.theme` 扩展 `TPopupThemeData` |
 

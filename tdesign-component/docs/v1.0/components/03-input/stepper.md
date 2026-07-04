@@ -47,7 +47,10 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 ### 1.2 类型定义
 
-_无（复用基础类型）_
+| 决策 | 类型 | 成员 | 用于 |
+|------|------|------|------|
+| ✨ | `TStepperVariant` | `normal` · `filled` | `variant` 参数 |
+| ✨ | `TStepperThemeData` | ThemeExtension | §3 主题配置 |
 
 ### 1.3 移除的导出符号
 
@@ -119,6 +122,7 @@ _无_
 
 | 决策 | 字段 | 管什么 | 0.2.x 构造参数 |
 |------|------|--------|---------------|
+| 📦 | `variant` | 形态/配色枚举（normal / filled） | `colorScheme` / `theme` / `TStepperTheme` |
 | 📦 | `inputWidth` | 输入框宽度 | `inputWidth` |
 
 ---
@@ -156,7 +160,7 @@ _无_
 
 ### export
 
-- **保留**：`TStepper`、`TStepperThemeData`
+- **保留**：`TStepper`、`TStepperThemeData`、`TStepperVariant`
 - **移出**：`TStepperSize`、`TStepperOverlimitType`、`TStepperTheme`（enum）、`defaultValue`/`disabled` 废弃参数相关 export（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 ---

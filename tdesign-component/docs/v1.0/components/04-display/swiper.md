@@ -1,6 +1,6 @@
 # TSwiper — v1.0 定稿
 
-> **状态**：规划中 | **控制类**：C | **Sprint**：S3
+> **状态**：规划中 | **控制类**：B | **Sprint**：S3
 
 - [§1 v1.0 定稿 API](#1-v10-定稿-api)（新组件从零开始看这里）
 - [§2 0.2.x → v1.0](#2-02x--v10)（从旧版升级看这里）
@@ -23,7 +23,7 @@
 
 ## 控制方案
 
-控制类 **C**：**仅** `value`（当前页 index）+ `onChanged`；初值父 State。禁用：不调用 `show()` 或 `onChanged: null`。
+控制类 **B**：`value`（当前页 index）+ `onChanged`；初值父 State。禁用：`onChanged: null`。
 
 ---
 

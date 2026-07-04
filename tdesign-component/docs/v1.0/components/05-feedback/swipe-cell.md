@@ -88,7 +88,7 @@
 
 | 范围 | 配置方法 |
 |------|---------|
-| 单组件 | 构造器 `enabled` + P0 `style`（如有） |
+| 单组件 | 构造器 `enabled` |
 | 子树 | `Theme.of(context).mergeExtension(TSwipeCellThemeData(...))` |
 | 全应用 | `MaterialApp.theme` 扩展 `TSwipeCellThemeData` |
 

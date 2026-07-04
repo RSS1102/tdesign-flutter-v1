@@ -33,7 +33,6 @@
 |------|----------|
 | `onChanged` | 激活索引变化（滚动吸顶 **或** 点击侧栏） |
 | `onSelect` | **仅**点击右侧索引条；`TIndexes` 对外仅传 `newIndex`，内部 `TIndexesList` 使用 `(newIndex, oldIndex)` |
-| `onChange` | KEEP；与 `onChanged` 同时触发 |
 
 → [controlled.md](../../foundation/controlled.md) · [api.md §3 动作回调](../../foundation/api.md#3-动作回调)
 
@@ -58,8 +57,7 @@
 | ✏️ | `anchorBuilder` | `Widget? Function(BuildContext, String, bool)?` | L2 | — | 自定义锚点；`bool` 为吸顶态 |
 | ✏️ | `indexBuilder` | `Widget Function(BuildContext, String, bool)?` | L2 | — | 自定义侧边索引项；`bool` 为激活态 |
 | | `scrollController` | `ScrollController?` | L1 | — | 滚动控制器（可选） |
-| ✏️ | `onChanged` | `ValueChanged<String>?` | L3 | — | 激活索引变化通知（推荐；原 `onChange`） |
-| | `onChange` | `ValueChanged<String>?` | L3 | — | KEEP；与 `onChanged` 同时触发 |
+| ✏️ | `onChanged` | `ValueChanged<String>?` | L3 | — | 激活索引变化通知（原 `onChange`） |
 | | `onSelect` | `ValueChanged<String>?` | L3 | — | 点击侧栏；仅 `newIndex` |
 | | `sticky` | `bool?` | L3 | `true` | 锚点吸顶 |
 | | `reverse` | `bool?` | L3 | `false` | 反向滚动置顶 |
@@ -111,7 +109,7 @@
 
 ## §2 0.2.x → v1.0
 
-**未改**（§1 无图例项）：`indexList` · `scrollController` · `onSelect` · `onChange` · `sticky` · `reverse` · `indexListMaxHeight` · `stickyOffset` · `capsuleTheme`
+**未改**（§1 无图例项）：`indexList` · `scrollController` · `onSelect` · `sticky` · `reverse` · `indexListMaxHeight` · `stickyOffset` · `capsuleTheme`
 
 ### ✏️ 改名
 
@@ -120,7 +118,7 @@
 | `builderContent` | `contentBuilder` | 全局替换（含 `TIndexes`） |
 | `builderAnchor` | `anchorBuilder` | 全局替换（含 `TIndexes` · `TIndexesAnchor`） |
 | `builderIndex` | `indexBuilder` | 全局替换（含 `TIndexes` · `TIndexesList`） |
-| `onChange` | `onChanged` | 推荐新名；`onChange` KEEP 双触发 |
+| `onChange` | `onChanged` | 0.2.x 旧名；v1.0 仅保留 `onChanged`（弃用双触发） |
 
 ### 🗑️ 移除
 
@@ -164,7 +162,7 @@
 
 **不进 Theme（构造器 L1/L2/L3）**
 - `sticky` · `reverse`（L3 行为项）
-- `indexList` · `scrollController` · `onChanged` · `onSelect` · `onChange`（L1/L2/L3）
+- `indexList` · `scrollController` · `onChanged` · `onSelect`（L1/L2/L3）
 
 ---
 

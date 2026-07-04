@@ -23,7 +23,7 @@
 
 ## 控制方案
 
-控制类 **A**：`onTap`；无 `value`。禁用：`onTap: null`。
+控制类 **A**：`onTap`；**不提供** `value`。禁用：`onTap: null`。
 
 ---
 
@@ -38,7 +38,6 @@
 | | `title` | `Widget?` | L2 | — | 组标题（原 `titleWidget`） |
 | | `cells` | `List<TCell>` | L2 | — | `TCell` 子项列表 |
 | | `builder` | `CellGroupBuilder?` | L2 | — | 自定义 cell 父组件 |
-| ✨ | `scrollable` | `bool` | L1 | `false` | 组内可滚动 |
 | | `onTap` | `GestureTapCallback?` | L3 | — | 点击回调 |
 
 > **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
@@ -161,7 +160,6 @@ _无_
 
 - 覆盖 `title` + `cells` 基本结构
 - 覆盖 `bordered` 开关
-- 覆盖 `scrollable` 开关
 
 ---
 

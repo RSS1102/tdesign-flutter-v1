@@ -29,7 +29,7 @@
 
 ## 控制方案
 
-控制类 **A**：`onPressed` 动作回调；`null` 禁用。无 `value` / `onChanged`。
+控制类 **A**：`onPressed` 动作回调；`null` 禁用。**不提供** `value` / `onChanged`。
 
 → [controlled.md](../../foundation/controlled.md)
 

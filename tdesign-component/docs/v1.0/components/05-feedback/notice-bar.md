@@ -14,7 +14,7 @@
 
 ## 控制方案
 
-控制类 **A**：`onTap`；无 `value`。禁用：`onTap: null`。
+控制类 **A**：`onTap`；**不提供** `value`。禁用：`onTap: null`。
 
 ## §1 v1.0 定稿 API
 
@@ -90,7 +90,7 @@
 
 | 范围 | 配置方法 |
 |------|---------|
-| 单组件 | 构造器 `variant` + P0 `style`（如有） |
+| 单组件 | 构造器 `variant` |
 | 子树 | `Theme.of(context).mergeExtension(TNoticeBarThemeData(...))` |
 | 全应用 | `MaterialApp.theme` 扩展 `TNoticeBarThemeData` |
 

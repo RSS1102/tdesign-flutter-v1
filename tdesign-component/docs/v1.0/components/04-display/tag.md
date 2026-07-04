@@ -23,7 +23,7 @@
 
 ## 控制方案
 
-控制类 **A**：`onTap`；无 `value`。禁用：`onTap: null`。
+控制类 **A**：`onTap`；**不提供** `value`。禁用：`onTap: null`。
 
 ---
 
@@ -37,7 +37,6 @@
 |------|------|------|------|--------|------|
 | | `text` | `String?` | L2 | — | 标签文案 |
 | | `icon` | `Icon?` | L2 | — | 图标 |
-| | `size` | `TTagSize` | L1 | `medium` | 标签大小 |
 | ✨ | `needCloseIcon` | `bool` | L1 | `false` | 是否显示关闭图标 |
 | | `onTap` | `GestureTapCallback?` | L3 | — | 点击回调 |
 | ✨ | `onCloseTap` | `VoidCallback?` | L3 | — | 关闭图标点击回调 |
@@ -113,6 +112,7 @@ _无_
 | `isLight` | `isLight` | 见 §3 末列 |
 | `overflow` | `overflow` | 见 §3 末列 |
 | `fixedWidth` | `fixedWidth` | 见 §3 末列 |
+| `size` | `defaultSize` | 见 §3 末列 |
 
 > 注：Material `ChipTheme` 的 `backgroundColor`/`labelStyle`/`side`/`padding` 由 Material 子主题处理，TDesign 扩展字段在 `TTagThemeData` 中。
 
@@ -152,6 +152,7 @@ _无_
 | 📦 | `isLight` | 是否轻量样式 | `isLight` |
 | 📦 | `overflow` | 溢出处理 | `overflow` |
 | 📦 | `fixedWidth` | 固定宽度 | `fixedWidth` |
+| 📦 | `defaultSize` | 默认尺寸 | `size` |
 
 ---
 

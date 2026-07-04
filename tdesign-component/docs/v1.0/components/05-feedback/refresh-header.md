@@ -30,6 +30,7 @@
 | --- | --- |
 | enableHapticFeedback | 下拉触觉反馈，保留（≠ 禁用） |
 | enableInfiniteRefresh | 无限刷新开关，保留（≠ 禁用） |
+| completeDuration | 完成态停留时长（构造器保留，Material easy_refresh Header 原生，不进 Theme） |
 
 ### 迁移 / 改名
 
@@ -40,7 +41,6 @@
 | extent | TRefreshThemeData | L4 → Theme |
 | triggerDistance | TRefreshThemeData | L4 → Theme |
 | float | TRefreshThemeData | L4 → Theme |
-| completeDuration | TRefreshThemeData | L4 → Theme |
 | infiniteOffset | TRefreshThemeData | L4 → Theme |
 | overScroll | TRefreshThemeData | L4 → Theme |
 
@@ -64,13 +64,26 @@ _无_
 
 `TRefreshThemeData` · Material: **easy_refresh** · [theme.md](../foundation/theme.md)
 
+### TRefreshThemeData 字段
+
+| 字段 | 类型 | 管什么 | 0.2.x 来源 |
+|------|------|--------|-----------|
+| `loadingIcon` | `Widget` | 加载图标 | `loadingIcon` |
+| `backgroundColor` | `Color` | 背景色 | `backgroundColor` |
+| `extent` | `double` | 占位高度 | `extent` |
+| `triggerDistance` | `double` | 触发距离 | `triggerDistance` |
+| `float` | `bool` | 回弹悬浮 | `float` |
+| `infiniteOffset` | `double` | 无限刷新偏移 | `infiniteOffset` |
+| `overScroll` | `bool` | 越界 | `overScroll` |
+| `spring` | `SpringDescription` | 物理参数 | `spring` |
+
 ### Material vs TDesign
 
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
 | `triggerOffset` / `triggerDistance` / `extent` | **easy_refresh `Header`** | 触发与占位高度 |
 | `clamping` / `float` / `overScroll` | **easy_refresh `Header`** | 回弹与越界 |
-| `processedDuration` / `completeDuration` | **easy_refresh `Header`** | 完成态停留 |
+| `processedDuration` / `completeDuration` | **easy_refresh `Header`** | 完成态停留（构造器 passthrough） |
 | `hapticFeedback` / `enableHapticFeedback` | **实例 KEEP** | 触觉开关（≠ 禁用） |
 | `infiniteOffset` / `enableInfiniteRefresh` | **实例 KEEP** | 无限刷新 |
 | `loadingIcon` / `backgroundColor` | TDesign **`TRefreshThemeData`** | 指示器与背景 L4 |

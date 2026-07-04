@@ -114,13 +114,13 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 
 | 范围 | 配置方法 |
 |------|---------|
-| 单组件 | 构造器 `mode` + P0 `style`（如有） |
+| 单组件 | 构造器 `mode` |
 | 子树 | `Theme.of(context).mergeExtension(TCalendarThemeData(...))` |
 | 全应用 | `MaterialApp.theme` 扩展 `TCalendarThemeData` |
 
 ### 3.2 覆盖顺序
 
-`实例 P0 style` **>** resolve（全量合并） **>** Token
+`resolve（全量合并）` **>** Token
 
 ### 3.3 TCalendarThemeData 字段
 
