@@ -11,7 +11,8 @@ docs/
     │   ├── developer-guide.md     #   环境、目录结构、本地命令
     │   ├── component-doc.md       #   单篇组件 md 怎么写
     │   ├── doc-generation.md      #   注释 → API 生成（tdesign_flutter_tools）
-    │   └── testing.md             #   CI、Widget/Golden、发布前检查
+    │   ├── testing.md             #   CI、测试位置/运行/命名、Widget/Golden、发布前检查
+    │   └── component-acceptance-standard.md  # 整体工作验收标准 + Theme 接入验证方法
     │
     ├── foundation/                # 全组件共守的设计规则（按需查阅，组件 md 只写差异）
     │   ├── api.md                 #   构造器 L1–L4、命名、禁用、export
@@ -31,3 +32,18 @@ example/assets/api/                # Example API 面板（注释生成，非本�
 ```
 
 **入门**：[`guide/developer-guide.md`](./guide/developer-guide.md) → `components/{分类}/{组件}.md`（样板 [`button.md`](./components/01-base/button.md)）
+
+---
+
+## 快速导航
+
+按主题快速跳到对应文档与关键章节：
+
+| 主题 | 文档 | 关键章节 |
+| --- | --- | --- |
+| **Theme 层级**（四层架构 / 优先级 P0–P4 / 子树覆盖 / 禁止 `themeData`） | [foundation/theme.md](./foundation/theme.md) | §1 四层 · §2 优先级 · §3 子树覆盖 · §2.2 P0 逃逸舱 |
+| **测试**（CI 门槛 / 测试位置·运行·命名 / Widget 必测 / Golden） | [guide/testing.md](./guide/testing.md) | §1 CI · §2.1 位置·运行·命名 · §3 必测 · §4 Golden |
+| **验收标准 + 验证**（整体工作验收 / Theme 接入验证 / Web 网页） | [guide/component-acceptance-standard.md](./guide/component-acceptance-standard.md) | 一·二 验收项 · §四 Theme 验证方法 · 补充项 G |
+| **组件 md 编写**（章节结构 / 发布前去重清单） | [guide/component-doc.md](./guide/component-doc.md) | §2 章节 · §8 去重清单 |
+| **注释 → API 文档生成**（tdesign_flutter_tools） | [guide/doc-generation.md](./guide/doc-generation.md) | §3 注释约束 · §6 发布前 |
+| **开发入门**（环境 / 目录 / 本地命令） | [guide/developer-guide.md](./guide/developer-guide.md) | — |
