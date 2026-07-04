@@ -4,6 +4,45 @@
 
 ---
 
+## 0. Token / 组件 / Theme.of 三者关系
+
+> 本节回答「CSS Token、项目组件、`Theme.of` 三者如何衔接」；四层架构细节见 [§1](#1-四层架构)。
+
+TDesign 的设计令牌（web 端以 **CSS 变量**承载：色板 / 间距 / 圆角 / 字阶）是**设计值的唯一源头**，但 Flutter 没有 CSS——它在 Flutter 端**物化为 `TThemeData`**（L1），组件读的是经 Token 解析后的样式，而非 CSS 本身。
+
+### 流转链路
+
+```
+CSS Token（设计源）
+   │  搬到 Dart → TThemeData
+   ▼
+L1  TThemeData（JSON Token）                     ← P4 最底层、唯一真源
+   │  TMaterialThemeBuilder
+   ▼
+L2  ThemeData + ColorScheme（Material 主题）      ← P3
+   │  Theme.of(context) 读取
+   ▼
+L3  T{Xxx}ThemeData（组件 ThemeExtension）        ← P1 组件默认样式
+   │  Theme.of(context).extension<T{Xxx}ThemeData>()
+   ▼
+L4  Widget 实例 style / decoration               ← P0 逃逸舱（最高优先级）
+```
+
+优先级（覆盖方向，强 → 弱）：**P0 实例 > P1 组件 Theme > P2 Material > P3 ColorScheme > P4 Token**。
+
+### 与 `Theme.of` 的关系
+
+| 想要 | 怎么取 | 层级 |
+| --- | --- | --- |
+| 全局设计 Token（色板 / 间距原始值） | `Theme.of(context).extension<TThemeData>()` | P4 |
+| Material 子主题 / `ColorScheme` / `TextTheme` | `Theme.of(context)`（返回 `ThemeData`） | P2 / P3 |
+| 某组件的样式默认 | `Theme.of(context).extension<T{Xxx}ThemeData>()` | P1 |
+| 单颗强覆盖 | 构造器 `style` / `decoration`，或子树 `mergeExtension` | P0 |
+
+> 要点：v1.0 **不用**旧 `TTheme.of`，统一走 Material 的 `Theme.of(context)`；子树覆盖用 `mergeExtension(...)`，**禁用** `copyWith(extensions:)`（见 [§3](#3-子树覆盖)）。Token → ColorScheme 映射见 [总规范 §1.3](../../v1.0-redesign-spec.md#13-token--colorscheme-映射表)。
+
+---
+
 ## 1. 四层架构
 
 ```
