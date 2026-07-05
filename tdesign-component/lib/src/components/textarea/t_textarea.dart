@@ -243,7 +243,7 @@ class _TTextareaState extends State<TTextarea> {
             right: 0,
             child: Divider(
               height: 0.5,
-              color: TTheme.of(context).componentStrokeColor,
+              color: context.tTheme.componentStrokeColor,
             ),
           ),
       ],
@@ -254,8 +254,8 @@ class _TTextareaState extends State<TTextarea> {
     final pad = _getInputPadding(context, size);
     final isHorizontal = widget.layout == TTextareaLayout.horizontal;
     final fontSize = isHorizontal
-        ? TTheme.of(context).fontBodyLarge?.size
-        : TTheme.of(context).fontBodyMedium?.size;
+        ? context.tTheme.fontBodyLarge?.size
+        : context.tTheme.fontBodyMedium?.size;
     if ((widget.label == null || widget.label == '') &&
         widget.labelIcon == null &&
         widget.labelWidget == null) {
@@ -265,7 +265,7 @@ class _TTextareaState extends State<TTextarea> {
       width: widget.labelWidth,
       padding: isHorizontal
           ? EdgeInsets.only(right: pad)
-          : EdgeInsets.only(bottom: TTheme.of(context).spacer8),
+          : EdgeInsets.only(bottom: context.tTheme.spacer8),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -275,7 +275,7 @@ class _TTextareaState extends State<TTextarea> {
                   child: Padding(
                     padding: EdgeInsets.only(
                         left: widget.labelIcon != null
-                            ? TTheme.of(context).spacer4
+                            ? context.tTheme.spacer4
                             : 0),
                     child: TText(
                       widget.label!,
@@ -295,11 +295,11 @@ class _TTextareaState extends State<TTextarea> {
           widget.required == true
               ? Padding(
                   padding:
-                      EdgeInsets.only(left: TTheme.of(context).spacer4),
+                      EdgeInsets.only(left: context.tTheme.spacer4),
                   child: TText(
                     '*',
                     style: TextStyle(
-                        color: TTheme.of(context).errorColor6,
+                        color: context.tTheme.errorColor6,
                         fontSize: fontSize,
                         height: 1.3),
                   ),
@@ -355,7 +355,7 @@ class _TTextareaState extends State<TTextarea> {
           focusNode: _focusNode,
           isCollapsed: true,
           hintTextStyle: widget.readOnly == true
-              ? TextStyle(color: TTheme.of(context).textDisabledColor)
+              ? TextStyle(color: context.tTheme.textDisabledColor)
               : hintTextStyle,
           cursorColor: cursorColor,
           textInputBackgroundColor: TInputResolve.resolveTextInputBackgroundColor(
@@ -385,7 +385,7 @@ class _TTextareaState extends State<TTextarea> {
                 child: TText(
                   widget.additionInfo!,
                   style: TextStyle(
-                    fontSize: TTheme.of(context).fontBodySmall?.size,
+                    fontSize: context.tTheme.fontBodySmall?.size,
                     color: TInputResolve.resolveAdditionInfoColor(
                       context: context,
                       theme: Theme.of(context).extension<TInputThemeData>(),
@@ -406,8 +406,8 @@ class _TTextareaState extends State<TTextarea> {
       widgetList.add(TText(
         '${widget.controller?.text.length ?? 0}/${widget.maxLength}',
         style: TextStyle(
-            fontSize: TTheme.of(context).fontBodySmall?.size,
-            color: TTheme.of(context).textColorPlaceholder),
+            fontSize: context.tTheme.fontBodySmall?.size,
+            color: context.tTheme.textColorPlaceholder),
       ));
     }
     return Visibility(
@@ -431,11 +431,11 @@ class _TTextareaState extends State<TTextarea> {
                   color: widget.decoration != null
                       ? null
                       : (widget.backgroundColor ??
-                          TTheme.of(context).bgColorContainer),
+                          context.tTheme.bgColorContainer),
                   borderRadius:
-                      BorderRadius.circular(TTheme.of(context).radiusDefault),
+                      BorderRadius.circular(context.tTheme.radiusDefault),
                   border: Border.all(
-                      color: TTheme.of(context).componentBorderColor),
+                      color: context.tTheme.componentBorderColor),
                 )
               : null),
       padding: widget.bordered == true ? EdgeInsets.all(padding) : null,
@@ -482,9 +482,9 @@ class _TTextareaState extends State<TTextarea> {
   double _getInputPadding(BuildContext context, TInputSize size) {
     switch (size) {
       case TInputSize.small:
-        return TTheme.of(context).spacer12;
+        return context.tTheme.spacer12;
       case TInputSize.large:
-        return TTheme.of(context).spacer16;
+        return context.tTheme.spacer16;
     }
   }
 }

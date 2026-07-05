@@ -22,10 +22,10 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 200,margin: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
-                            TTheme.of(context).radiusLarge)),
+                            context.tTheme.radiusLarge)),
                     child: CodeWrapper(
                       builder: _buildDotsSwiper,
                     ),
@@ -36,10 +36,10 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 200,margin: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
-                            TTheme.of(context).radiusLarge)),
+                            context.tTheme.radiusLarge)),
                     child: CodeWrapper(
                       builder: _buildDotsBarSwiper,
                     ),
@@ -50,10 +50,10 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 200,margin: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
-                            TTheme.of(context).radiusLarge)),
+                            context.tTheme.radiusLarge)),
                     child: CodeWrapper(
                       builder: _buildFractionSwiper,
                     ),
@@ -64,10 +64,10 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 200,margin: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
-                            TTheme.of(context).radiusLarge)),
+                            context.tTheme.radiusLarge)),
                     child: CodeWrapper(
                       builder: _buildControlsSwiper,
                     ),
@@ -78,9 +78,9 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    decoration: BoxDecoration(
+                    height: 200,decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
-                            TTheme.of(context).radiusLarge)),
+                            context.tTheme.radiusLarge)),
                     child: CodeWrapper(
                       builder: _buildCardsSwiper,
                     ),
@@ -91,9 +91,9 @@ class TSwiperPage extends StatelessWidget {
                 ignoreCode: true,
                 builder: (_) {
                   return Container(
-                    decoration: BoxDecoration(
+                    height: 200,decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
-                            TTheme.of(context).radiusLarge)),
+                            context.tTheme.radiusLarge)),
                     child: CodeWrapper(
                       builder: _buildScaleCardsSwiper,
                     ),
@@ -107,10 +107,10 @@ class TSwiperPage extends StatelessWidget {
               ignoreCode: true,
               builder: (_) {
                 return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  height: 200,margin: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
-                          TTheme.of(context).radiusLarge)),
+                          context.tTheme.radiusLarge)),
                   child: CodeWrapper(
                     builder: _buildDotsSwiper,
                   ),
@@ -121,10 +121,10 @@ class TSwiperPage extends StatelessWidget {
               ignoreCode: true,
               builder: (_) {
                 return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  height: 200,margin: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
-                          TTheme.of(context).radiusLarge)),
+                          context.tTheme.radiusLarge)),
                   child: CodeWrapper(
                     builder: _buildOuterDotsSwiper,
                   ),
@@ -135,10 +135,10 @@ class TSwiperPage extends StatelessWidget {
               ignoreCode: true,
               builder: (_) {
                 return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  height: 200,margin: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(
-                          TTheme.of(context).radiusLarge)),
+                          context.tTheme.radiusLarge)),
                   child: CodeWrapper(
                     builder: _buildRightDotsSwiper,
                   ),
@@ -152,9 +152,9 @@ class TSwiperPage extends StatelessWidget {
             ignoreCode: true,
             builder: (_) {
               return Container(
-                decoration: BoxDecoration(
+                height: 200,decoration: BoxDecoration(
                     borderRadius:
-                        BorderRadius.circular(TTheme.of(context).radiusLarge)),
+                        BorderRadius.circular(context.tTheme.radiusLarge)),
                 child: CodeWrapper(
                   builder: _buildNotLoopCardsSwiper,
                 ),
@@ -166,10 +166,10 @@ class TSwiperPage extends StatelessWidget {
             ignoreCode: true,
             builder: (_) {
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
+                height: 200,margin: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                     borderRadius:
-                        BorderRadius.circular(TTheme.of(context).radiusLarge)),
+                        BorderRadius.circular(context.tTheme.radiusLarge)),
                 child: CodeWrapper(
                   builder: _buildOuterDotsBarSwiper,
                 ),
@@ -180,10 +180,10 @@ class TSwiperPage extends StatelessWidget {
             ignoreCode: true,
             builder: (_) {
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
+                height: 200,margin: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                     borderRadius:
-                        BorderRadius.circular(TTheme.of(context).radiusLarge)),
+                        BorderRadius.circular(context.tTheme.radiusLarge)),
                 child: CodeWrapper(
                   builder: _buildFractionBarSwiper,
                 ),
@@ -194,10 +194,10 @@ class TSwiperPage extends StatelessWidget {
             ignoreCode: true,
             builder: (_) {
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
+                height: 200,margin: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                     borderRadius:
-                        BorderRadius.circular(TTheme.of(context).radiusLarge)),
+                        BorderRadius.circular(context.tTheme.radiusLarge)),
                 child: CodeWrapper(
                   builder: _buildVerticalDotsBarSwiper,
                 ),

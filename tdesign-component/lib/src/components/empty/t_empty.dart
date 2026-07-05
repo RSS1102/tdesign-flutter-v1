@@ -59,14 +59,14 @@ class TEmpty extends StatelessWidget {
               Icon(
                 icon ?? TIcons.info_circle_filled,
                 size: 96,
-                color: TTheme.of(context).textColorPlaceholder,
+                color: context.tTheme.textColorPlaceholder,
               ),
           Padding(padding: EdgeInsets.only(top: image == null ? 22 : 16)),
           TText(
             emptyText ?? '',
             fontWeight: FontWeight.w400,
-            font: emptyTextFont ?? TTheme.of(context).fontBodyMedium,
-            textColor: emptyTextColor ?? TTheme.of(context).textColorPlaceholder,
+            font: emptyTextFont ?? context.tTheme.fontBodyMedium,
+            textColor: emptyTextColor ?? context.tTheme.textColorPlaceholder,
           ),
           (variant == TEmptyVariant.operation)
               ? customOperationWidget ??

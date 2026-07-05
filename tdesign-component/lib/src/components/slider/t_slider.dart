@@ -33,9 +33,6 @@ class TSlider extends StatefulWidget {
   /// 滑动结束监听
   final ValueChanged<double>? onChangeEnd;
 
-  /// 样式
-  final TSliderThemeData? sliderThemeData;
-
   ///  Thumb 点击事件 坐标、当前值
   final Function(Offset offset, double value)? onTap;
 
@@ -47,7 +44,6 @@ class TSlider extends StatefulWidget {
     required this.value,
     this.boxDecoration,
     this.onChanged,
-    this.sliderThemeData,
     this.label,
     this.rightLabel,
     this.onChangeStart,
@@ -83,8 +79,8 @@ class TSliderState extends State<TSlider> {
   TextStyle get labelTextStyle => TextStyle(
       fontSize: 16,
       color: _enabled
-          ? TTheme.of(context).textColorPrimary
-          : TTheme.of(context).textDisabledColor);
+          ? context.tTheme.textColorPrimary
+          : context.tTheme.textDisabledColor);
 
   Widget get label => widget.label?.isNotEmpty == true
       ? Padding(
@@ -102,7 +98,9 @@ class TSliderState extends State<TSlider> {
 
   @override
   Widget build(BuildContext context) {
-    var tSliderThemeData = widget.sliderThemeData ?? TSliderThemeData();
+    // v1.0：从 Theme.of(context).extension 读取组件 Theme，copyWith 隔离运行时测量数据
+    final baseTheme = Theme.of(context).extension<TSliderThemeData>();
+    var tSliderThemeData = (baseTheme ?? TSliderThemeData()).copyWith();
 
     final showValue =
         tSliderThemeData.showScaleValue || tSliderThemeData.showThumbValue;
@@ -118,8 +116,7 @@ class TSliderState extends State<TSlider> {
           }
 
           final localOffset = sliderBox.globalToLocal(event.position);
-          final themeData = widget.sliderThemeData ?? TSliderThemeData();
-          final textRect = themeData.sliderMeasureData.thumbTextRect;
+          final textRect = tSliderThemeData.sliderMeasureData.thumbTextRect;
 
           if (textRect != null && textRect.contains(localOffset)) {
             widget.onThumbTextTap?.call(localOffset, value);
@@ -131,9 +128,9 @@ class TSliderState extends State<TSlider> {
             bottom: 8,
           ),
           decoration: widget.boxDecoration ??
-              BoxDecoration(color: TTheme.of(context).bgColorContainer),
+              BoxDecoration(color: context.tTheme.bgColorContainer),
           child: Row(
-            // spacing: TTheme.of(context).spacer8,
+            // spacing: context.tTheme.spacer8,
             children: [
               label,
               const SizedBox(width: 8),
@@ -154,7 +151,7 @@ class TSliderState extends State<TSlider> {
                     widget.onTap?.call(tapOffset, value);
                   },
                   child: SliderTheme(
-                    data: tSliderThemeData.sliderThemeData,
+                    data: tSliderThemeData.sliderThemeData(context.tTheme),
                     child: Slider(
                       key: _sliderKey,
                       value: value,
@@ -208,9 +205,6 @@ class TRangeSlider extends StatefulWidget {
   /// 滑动结束监听
   final ValueChanged<RangeValues>? onChangeEnd;
 
-  /// 样式
-  final TSliderThemeData? sliderThemeData;
-
   /// Thumb 点击事件 位置、坐标、当前值
   final Function(
     Position position,
@@ -230,7 +224,6 @@ class TRangeSlider extends StatefulWidget {
     required this.value,
     this.boxDecoration,
     this.onChanged,
-    this.sliderThemeData,
     this.label,
     this.rightLabel,
     this.onChangeStart,
@@ -266,8 +259,8 @@ class _TRangeSliderState extends State<TRangeSlider> {
   TextStyle get labelTextStyle => TextStyle(
       fontSize: 16,
       color: _enabled
-          ? TTheme.of(context).textColorPrimary
-          : TTheme.of(context).textDisabledColor);
+          ? context.tTheme.textColorPrimary
+          : context.tTheme.textDisabledColor);
 
   Widget get label => widget.label?.isNotEmpty == true
       ? Padding(
@@ -285,7 +278,9 @@ class _TRangeSliderState extends State<TRangeSlider> {
 
   @override
   Widget build(BuildContext context) {
-    var tSliderThemeData = widget.sliderThemeData ?? TSliderThemeData();
+    // v1.0：从 Theme.of(context).extension 读取组件 Theme，copyWith 隔离运行时测量数据
+    final baseTheme = Theme.of(context).extension<TSliderThemeData>();
+    var tSliderThemeData = (baseTheme ?? TSliderThemeData()).copyWith();
     final showValue =
         tSliderThemeData.showScaleValue || tSliderThemeData.showThumbValue;
 
@@ -302,10 +297,9 @@ class _TRangeSliderState extends State<TRangeSlider> {
           return;
         }
 
-        final themeData = widget.sliderThemeData ?? TSliderThemeData();
         final startTextRect =
-            themeData.sliderMeasureData.startRangeThumbTextRect;
-        final endTextRect = themeData.sliderMeasureData.endRangeThumbTextRect;
+            tSliderThemeData.sliderMeasureData.startRangeThumbTextRect;
+        final endTextRect = tSliderThemeData.sliderMeasureData.endRangeThumbTextRect;
 
         if (startTextRect?.contains(localOffset) ?? false) {
           widget.onThumbTextTap
@@ -323,7 +317,7 @@ class _TRangeSliderState extends State<TRangeSlider> {
         ),
         decoration: widget.boxDecoration ??
             BoxDecoration(
-              color: TTheme.of(context).bgColorContainer,
+              color: context.tTheme.bgColorContainer,
             ),
         child: Row(
           // spacing: 8,
@@ -350,15 +344,15 @@ class _TRangeSliderState extends State<TRangeSlider> {
                   final thumbShape = sliderTheme.rangeThumbShape;
                   final thumbSize = thumbShape?.getPreferredSize(
                         _enabled,
-                        widget.sliderThemeData?.divisions != null,
+                        tSliderThemeData.divisions != null,
                       ) ??
                       const Size(20, 20);
 
                   final thumbRadius = thumbSize.width / 2;
 
                   // 计算当前值对应的坐标比例
-                  final min = widget.sliderThemeData?.min ?? 0;
-                  final max = widget.sliderThemeData?.max ?? 100;
+                  final min = tSliderThemeData.min;
+                  final max = tSliderThemeData.max;
                   final startRatio = (rangeValues.start - min) / (max - min);
                   final endRatio = (rangeValues.end - min) / (max - min);
 
@@ -397,7 +391,7 @@ class _TRangeSliderState extends State<TRangeSlider> {
                   widget.onTap?.call(position, tapOffset, tappedValue);
                 },
                 child: SliderTheme(
-                  data: tSliderThemeData.sliderThemeData,
+                  data: tSliderThemeData.sliderThemeData(context.tTheme),
                   child: RangeSlider(
                     key: _sliderRangeKey,
                     values: rangeValues,

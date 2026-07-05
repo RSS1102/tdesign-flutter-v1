@@ -23,7 +23,7 @@ class TButtonResolve {
     required BuildContext context,
     required bool hasGradient,
   }) {
-    final tTheme = TTheme.of(context);
+    final tTheme = context.tTheme;
     final effectiveShape = theme?.effectiveShape ?? TButtonShape.rectangle;
 
     // 1. P2 色板（variant 级）

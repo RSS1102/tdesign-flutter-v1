@@ -256,7 +256,7 @@ class TInput extends StatelessWidget {
       return 0;
     }
     final effectiveStyle = (style ?? const TextStyle()).copyWith(
-      fontSize: TTheme.of(context).fontBodyLarge?.size,
+      fontSize: context.tTheme.fontBodyLarge?.size,
       letterSpacing: 0,
       height: 1.0,
     );
@@ -344,7 +344,7 @@ class TInput extends StatelessWidget {
           alignment: Alignment.centerLeft,
           color: (cardStyleDecoration != null || decoration != null)
               ? null
-              : (bgColor ?? TTheme.of(context).bgColorContainer),
+              : (bgColor ?? context.tTheme.bgColorContainer),
           decoration: cardStyleDecoration ?? decoration,
           child: Row(
             crossAxisAlignment: additionInfo != null && additionInfo!.isNotEmpty
@@ -386,7 +386,7 @@ class TInput extends StatelessWidget {
                               theme: theme,
                               instanceStyle: labelStyle,
                             ),
-                            font: TTheme.of(context).fontBodyLarge,
+                            font: context.tTheme.fontBodyLarge,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -403,8 +403,8 @@ class TInput extends StatelessWidget {
                             '*',
                             maxLines: 1,
                             style: TextStyle(
-                                color: TTheme.of(context).errorColor6),
-                            font: TTheme.of(context).fontBodyLarge,
+                                color: context.tTheme.errorColor6),
+                            font: context.tTheme.fontBodyLarge,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -458,7 +458,7 @@ class TInput extends StatelessWidget {
                             bottom: TInputResolve.getInputPadding(size)),
                         child: TText(
                           additionInfo,
-                          font: TTheme.of(context).fontBodySmall,
+                          font: context.tTheme.fontBodySmall,
                           textAlign: contentAlignment != TextAlign.center
                               ? contentAlignment
                               : TextAlign.start,
@@ -574,7 +574,7 @@ class TInput extends StatelessWidget {
       alignment: Alignment.centerLeft,
       color: decoration != null
           ? null
-          : (bgColor ?? TTheme.of(context).bgColorContainer),
+          : (bgColor ?? context.tTheme.bgColorContainer),
       decoration: decoration,
       child: Stack(
         alignment: Alignment.bottomCenter,
@@ -604,7 +604,7 @@ class TInput extends StatelessWidget {
                                 theme: theme,
                                 instanceStyle: labelStyle,
                               ),
-                              font: TTheme.of(context).fontBodyLarge,
+                              font: context.tTheme.fontBodyLarge,
                               fontWeight: FontWeight.w400,
                             ),
                           ],
@@ -623,8 +623,8 @@ class TInput extends StatelessWidget {
                           '*',
                           maxLines: 1,
                           style: TextStyle(
-                              color: TTheme.of(context).errorColor6),
-                          font: TTheme.of(context).fontBodyLarge,
+                              color: context.tTheme.errorColor6),
+                          font: context.tTheme.fontBodyLarge,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -753,7 +753,7 @@ class TInput extends StatelessWidget {
       alignment: Alignment.centerLeft,
       color: decoration != null
           ? null
-          : (bgColor ?? TTheme.of(context).bgColorContainer),
+          : (bgColor ?? context.tTheme.bgColorContainer),
       decoration: decoration,
       height: label != null ? 197 : 148,
       child: Column(
@@ -821,8 +821,8 @@ class TInput extends StatelessWidget {
             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
             child: TText(
               '${controller?.text.length}/${maxLength}',
-              font: TTheme.of(context).fontBodySmall,
-              textColor: TTheme.of(context).textColorPlaceholder,
+              font: context.tTheme.fontBodySmall,
+              textColor: context.tTheme.textColorPlaceholder,
             ),
           ),
         ],
@@ -858,7 +858,7 @@ class TInput extends StatelessWidget {
           alignment: Alignment.centerLeft,
           color: decoration != null
               ? null
-              : (bgColor ?? TTheme.of(context).bgColorContainer),
+              : (bgColor ?? context.tTheme.bgColorContainer),
           decoration: decoration,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -876,14 +876,14 @@ class TInput extends StatelessWidget {
                           child: TText(
                             label,
                             maxLines: 1,
-                            font: TTheme.of(context).fontBodyLarge,
+                            font: context.tTheme.fontBodyLarge,
                             fontWeight: FontWeight.w400,
                           ),
                         )
                       : TText(
                           label,
                           maxLines: 1,
-                          font: TTheme.of(context).fontBodyLarge,
+                          font: context.tTheme.fontBodyLarge,
                           fontWeight: FontWeight.w400,
                         ),
                 ),
@@ -968,8 +968,8 @@ class TInput extends StatelessWidget {
               Text(
                 topText ?? '',
                 style: TextStyle(
-                    fontSize: TTheme.of(context).fontBodyMedium!.size,
-                    height: TTheme.of(context).fontBodyMedium!.height),
+                    fontSize: context.tTheme.fontBodyMedium!.size,
+                    height: context.tTheme.fontBodyMedium!.height),
               ),
               const SizedBox(height: 8),
             ],
@@ -984,9 +984,9 @@ class TInput extends StatelessWidget {
               Text(
                 bottomText ?? '',
                 style: TextStyle(
-                    color: TTheme.of(context).errorColor6,
-                    fontSize: TTheme.of(context).fontBodySmall!.size,
-                    height: TTheme.of(context).fontBodySmall!.height),
+                    color: context.tTheme.errorColor6,
+                    fontSize: context.tTheme.fontBodySmall!.size,
+                    height: context.tTheme.fontBodySmall!.height),
               ),
             ],
           ),

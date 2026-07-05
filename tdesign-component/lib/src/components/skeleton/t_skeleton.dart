@@ -128,7 +128,7 @@ class _TSkeletonState extends State<TSkeleton>
       LinearGradient(
         colors: [
           Colors.transparent,
-          TTheme.of(context).bgColorSecondaryContainerActive,
+          context.tTheme.bgColorSecondaryContainerActive,
           Colors.transparent,
         ],
         // 15 deg

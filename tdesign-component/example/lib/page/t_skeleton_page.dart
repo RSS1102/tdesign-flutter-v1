@@ -79,9 +79,9 @@ class TSkeletonPage extends StatelessWidget {
       (context) => Container(
             alignment: Alignment.topLeft,
             padding: EdgeInsets.fromLTRB(
-              TTheme.of(context).spacer16,
+              context.tTheme.spacer16,
               0,
-              TTheme.of(context).spacer16,
+              context.tTheme.spacer16,
               0,
             ),
             child: isFlexible
@@ -181,7 +181,7 @@ class TSkeletonPage extends StatelessWidget {
                               flex: null,
                               style: TSkeletonRowColObjStyle(
                                   borderRadius: (context) =>
-                                      TTheme.of(context).radiusExtraLarge))
+                                      context.tTheme.radiusExtraLarge))
                         ],
                         [TSkeletonRowColObj.text(width: constraints.maxWidth)],
                         const [
@@ -194,10 +194,10 @@ class TSkeletonPage extends StatelessWidget {
                 ])));
 
     return Row(
-      // spacing: TTheme.of(context).spacer16,
+      // spacing: context.tTheme.spacer16,
       children: [
         rowCols,
-        SizedBox(width: TTheme.of(context).spacer16),
+        SizedBox(width: context.tTheme.spacer16),
         rowCols,
       ],
     );

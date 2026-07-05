@@ -106,28 +106,28 @@ class TProgress extends StatelessWidget {
       case TProgressVariant.linear:
         return _DefaultValues(
           strokeWidth: 20.0,
-          backgroundColor: TTheme.of(context).bgColorComponent,
+          backgroundColor: context.tTheme.bgColorComponent,
           linearBorderRadius: BorderRadius.circular(20),
           circleRadius: 0,
         );
       case TProgressVariant.circular:
         return _DefaultValues(
           strokeWidth: 5.0,
-          backgroundColor: TTheme.of(context).bgColorComponent,
+          backgroundColor: context.tTheme.bgColorComponent,
           linearBorderRadius: BorderRadius.circular(20),
           circleRadius: 100.0,
         );
       case TProgressVariant.micro:
         return _DefaultValues(
           strokeWidth: 2.0,
-          backgroundColor: TTheme.of(context).bgColorComponent,
+          backgroundColor: context.tTheme.bgColorComponent,
           linearBorderRadius: BorderRadius.circular(20),
           circleRadius: 25.0,
         );
       case TProgressVariant.button:
         return _DefaultValues(
           strokeWidth: 50.0,
-          backgroundColor: TTheme.of(context).brandNormalColor,
+          backgroundColor: context.tTheme.brandNormalColor,
           linearBorderRadius: BorderRadius.circular(8),
           circleRadius: 0,
         );
@@ -253,7 +253,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
   }
 
   Color _getDefaultColor() {
-    return TTheme.of(widget.context).brandNormalColor;
+    return widget.context!.tTheme.brandNormalColor;
   }
 
   @override
@@ -300,7 +300,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
         final progressWidth = _animation.value * maxWidth;
         return ClipRRect(
             borderRadius:
-                BorderRadius.circular(TTheme.of(context).radiusRound),
+                BorderRadius.circular(context.tTheme.radiusRound),
             child: Stack(
               children: [
                 _buildBackgroundContainer(),
@@ -334,13 +334,13 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
               constraints:
                   BoxConstraints(minWidth: widget.labelWidgetWidth ?? 0),
               child: widget.customProgressLabel ??
-                  _buildLabelWidget(TTheme.of(context).textColorPrimary),
+                  _buildLabelWidget(context.tTheme.textColorPrimary),
             ),
-            SizedBox(width: TTheme.of(context).spacer8),
+            SizedBox(width: context.tTheme.spacer8),
             Expanded(
               child: ClipRRect(
                   borderRadius:
-                      BorderRadius.circular(TTheme.of(context).radiusRound),
+                      BorderRadius.circular(context.tTheme.radiusRound),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return Stack(
@@ -388,7 +388,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                child: _buildLabelWidget(TTheme.of(context).textColorAnti),
+                child: _buildLabelWidget(context.tTheme.textColorAnti),
               ),
             )
           : null,
@@ -424,7 +424,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
         if (widget.showLabel)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: _buildLabelWidget(TTheme.of(context).textColorPrimary),
+            child: _buildLabelWidget(context.tTheme.textColorPrimary),
           ),
       ],
     );
@@ -498,7 +498,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
               ),
             ),
             if (widget.showLabel)
-              _buildLabelWidget(TTheme.of(widget.context).textColorPrimary),
+              _buildLabelWidget(widget.context!.tTheme.textColorPrimary),
           ],
         );
       },
@@ -516,8 +516,8 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
                 children: [
                   _buildMicroOutline(),
                   if (widget.showLabel)
-                    _buildLabelWidget(
-                        TTheme.of(widget.context).textColorPrimary),
+                        _buildLabelWidget(
+                            widget.context!.tTheme.textColorPrimary),
                 ],
               ));
         });
@@ -573,7 +573,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
         gradient: LinearGradient(
           colors: [
             _effectiveColor,
-            TTheme.of(widget.context).brandDisabledColor.withOpacity(.5)
+            widget.context!.tTheme.brandDisabledColor.withOpacity(.5)
           ],
         ),
       ),
@@ -584,7 +584,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
     return Container(
       height: widget.strokeWidth,
       alignment: Alignment.center,
-      child: _buildLabelWidget(TTheme.of(widget.context).fontWhColor1),
+      child: _buildLabelWidget(widget.context!.tTheme.fontWhColor1),
     );
   }
 }

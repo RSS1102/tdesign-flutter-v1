@@ -71,8 +71,8 @@ void main() {
 
   group('TDrawerWidget', () {
     Widget wrapWithTheme(Widget child) {
-      return TTheme(
-        data: TThemeData.defaultData(),
+      return Theme(
+        data: ThemeData(extensions: [TThemeData.defaultData()]),
         child: MaterialApp(
           home: Scaffold(body: child),
         ),

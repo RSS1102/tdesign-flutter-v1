@@ -175,12 +175,16 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
               width: size.width,
               height: size.height,
               // todo
-              color: TTheme.of(context).fontGyColor1,
+              color: context.tTheme.fontGyColor1,
               child: Center(
-                child: TLoading(
-                  icon: TLoadingIcon.circle,
-                  size: TLoadingSize.large,
-                  themeData: TLoadingThemeData(iconColor: TTheme.of(context).brandNormalColor),
+                child: Theme(
+                  data: Theme.of(context).mergeExtension(
+                    TLoadingThemeData(iconColor: context.tTheme.brandNormalColor),
+                  ),
+                  child: const TLoading(
+                    icon: TLoadingIcon.circle,
+                    size: TLoadingSize.large,
+                  ),
                 ),
               ),
             ),
@@ -210,7 +214,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
               widget.labels![_index - 1],
               textAlign: TextAlign.center,
               style: widget.labelStyle ??
-                  TextStyle(color: TTheme.of(context).textColorAnti),
+                  TextStyle(color: context.tTheme.textColorAnti),
             ),
           ),
           Visibility(
@@ -220,7 +224,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
               textAlign: TextAlign.center,
               style: widget.indexStyle ??
                   TextStyle(
-                      color: TTheme.of(context).brandClickColor, fontSize: 10),
+                      color: context.tTheme.brandClickColor, fontSize: 10),
             ),
           )
         ],
@@ -230,7 +234,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
       (widget.showIndex ?? false) ? '$_index / ${widget.images.length}' : '',
       textAlign: TextAlign.center,
       style: widget.indexStyle ??
-          TextStyle(color: TTheme.of(context).textColorAnti),
+          TextStyle(color: context.tTheme.textColorAnti),
     );
   }
 
@@ -248,7 +252,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
       },
       child: Icon(
         TIcons.close,
-        color: widget.iconColor ?? TTheme.of(context).textColorAnti,
+        color: widget.iconColor ?? context.tTheme.textColorAnti,
       ),
     );
   }
@@ -278,7 +282,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
         },
         child: Icon(
           TIcons.delete,
-          color: widget.iconColor ?? TTheme.of(context).textColorAnti,
+          color: widget.iconColor ?? context.tTheme.textColorAnti,
         ),
       ),
     );
@@ -297,7 +301,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
           right: 0,
           child: Container(
             // todo
-            color: widget.bgColor ?? TTheme.of(context).fontGyColor1,
+            color: widget.bgColor ?? context.tTheme.fontGyColor1,
           ),
         ),
         Positioned(
@@ -334,7 +338,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
         SafeArea(
           child: Container(
             color: widget.navBarBgColor ??
-                TTheme.of(context).textColorPlaceholder,
+                context.tTheme.textColorPlaceholder,
             height: 44,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(

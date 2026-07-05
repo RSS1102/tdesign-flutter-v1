@@ -4,8 +4,8 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// Helper: 将组件包裹在 TTheme + MaterialApp 中渲染
 Widget _buildTestApp(Widget child) {
-  return TTheme(
-    data: TThemeData.defaultData(),
+  return Theme(
+    data: ThemeData(extensions: [TThemeData.defaultData()]),
     child: MaterialApp(
       home: Scaffold(
         body: child,
@@ -69,7 +69,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
-      final expectedColor = TTheme.of(context).brandNormalColor;
+      final expectedColor = context.tTheme.brandNormalColor;
 
       // 找到所有 Icon widget，第一个属于 index=0（选中）
       final icons = tester.widgetList<Icon>(find.byType(Icon)).toList();
@@ -98,7 +98,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
-      final expectedColor = TTheme.of(context).textColorPrimary;
+      final expectedColor = context.tTheme.textColorPrimary;
 
       final iconThemes =
           tester.widgetList<IconTheme>(find.byType(IconTheme)).toList();
@@ -147,8 +147,8 @@ void main() {
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
-      final brandColor = TTheme.of(context).brandNormalColor;
-      final primaryColor = TTheme.of(context).textColorPrimary;
+      final brandColor = context.tTheme.brandNormalColor;
+      final primaryColor = context.tTheme.textColorPrimary;
 
       // 点击 index=1
       await tester.tap(find.text('我的'));
@@ -173,7 +173,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
-      final expectedColor = TTheme.of(context).brandNormalColor;
+      final expectedColor = context.tTheme.brandNormalColor;
 
       final iconThemes =
           tester.widgetList<IconTheme>(find.byType(IconTheme)).toList();
@@ -196,7 +196,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
-      final expectedColor = TTheme.of(context).textColorPrimary;
+      final expectedColor = context.tTheme.textColorPrimary;
 
       final iconThemes =
           tester.widgetList<IconTheme>(find.byType(IconTheme)).toList();
@@ -219,8 +219,8 @@ void main() {
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
-      final brandColor = TTheme.of(context).brandNormalColor;
-      final primaryColor = TTheme.of(context).textColorPrimary;
+      final brandColor = context.tTheme.brandNormalColor;
+      final primaryColor = context.tTheme.textColorPrimary;
 
       // 通过 TText 验证文字颜色
       final tTexts = tester.widgetList<TText>(find.byType(TText)).toList();

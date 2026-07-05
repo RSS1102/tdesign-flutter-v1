@@ -7,8 +7,8 @@ void main() {
     final themeExtensions = <ThemeExtension>[
       if (tabBarTheme != null) tabBarTheme,
     ];
-    return TTheme(
-      data: TThemeData.defaultData(),
+    return Theme(
+      data: ThemeData(extensions: [TThemeData.defaultData()]),
       child: MaterialApp(
         theme: ThemeData(extensions: themeExtensions),
         home: Scaffold(body: child),
@@ -131,7 +131,7 @@ void main() {
 
     testWidgets('badge 渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTab(text: '徽标', badge: const TBadge(TBadgeType.redPoint)),
+        TTab(text: '徽标', badge: const TBadge(TBadgeVariant.redPoint)),
       ));
       expect(find.text('徽标'), findsOneWidget);
     });

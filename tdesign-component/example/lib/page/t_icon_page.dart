@@ -76,11 +76,11 @@ class _TIconPageState extends State<TIconPage> {
     // 构造器参数 size/color 直接生效
     return Row(
       children: [
-        TIcon(TIcons.home_filled, size: 32, color: TTheme.of(context).brandNormalColor),
+        TIcon(TIcons.home_filled, size: 32, color: context.tTheme.brandNormalColor),
         const SizedBox(width: 16),
-        TIcon(TIcons.setting, size: 28, color: TTheme.of(context).errorNormalColor),
+        TIcon(TIcons.setting, size: 28, color: context.tTheme.errorNormalColor),
         const SizedBox(width: 16),
-        TIcon(TIcons.notification, size: 24, color: TTheme.of(context).warningNormalColor),
+        TIcon(TIcons.notification, size: 24, color: context.tTheme.warningNormalColor),
       ],
     );
   }
@@ -92,9 +92,9 @@ class _TIconPageState extends State<TIconPage> {
       children: [
         TIcon.fromName('home_filled'),
         const SizedBox(width: 16),
-        TIcon.fromName('heart_filled', color: TTheme.of(context).errorNormalColor),
+        TIcon.fromName('heart_filled', color: context.tTheme.errorNormalColor),
         const SizedBox(width: 16),
-        TIcon.fromName('star_filled', color: TTheme.of(context).warningNormalColor),
+        TIcon.fromName('star_filled', color: context.tTheme.warningNormalColor),
       ],
     );
   }
@@ -108,7 +108,7 @@ class _TIconPageState extends State<TIconPage> {
           ...Theme.of(context).extensions.values,
           TIconThemeData(
             size: 36,
-            color: TTheme.of(context).brandNormalColor,
+            color: context.tTheme.brandNormalColor,
           ),
         ],
       ),
@@ -130,7 +130,7 @@ class _TIconPageState extends State<TIconPage> {
             '↑ 继承 TIconThemeData 默认 size=36 和品牌色',
             style: TextStyle(
               fontSize: 12,
-              color: TTheme.of(context).textColorSecondary,
+              color: context.tTheme.textColorSecondary,
             ),
           ),
         ],
@@ -148,7 +148,7 @@ class _TIconPageState extends State<TIconPage> {
           ...Theme.of(context).extensions.values,
           TIconThemeData(
             size: 36,
-            color: TTheme.of(context).brandNormalColor,
+            color: context.tTheme.brandNormalColor,
           ),
         ],
       ),
@@ -162,7 +162,7 @@ class _TIconPageState extends State<TIconPage> {
               const TIcon(TIcons.home_filled, size: 20),
               const SizedBox(width: 16),
               // 构造器 color 覆盖 Theme 的品牌色
-              TIcon(TIcons.setting, color: TTheme.of(context).errorNormalColor),
+              TIcon(TIcons.setting, color: context.tTheme.errorNormalColor),
               const SizedBox(width: 16),
               // 无构造器参数，继承 Theme 默认
               const TIcon(TIcons.notification),
@@ -173,7 +173,7 @@ class _TIconPageState extends State<TIconPage> {
             '↑ 前两个图标构造器覆盖 Theme，第三个继承 Theme',
             style: TextStyle(
               fontSize: 12,
-              color: TTheme.of(context).textColorSecondary,
+              color: context.tTheme.textColorSecondary,
             ),
           ),
         ],
@@ -262,7 +262,7 @@ class _TIconPageState extends State<TIconPage> {
                                 padding: const EdgeInsets.all(4),
                                 decoration: BoxDecoration(
                                   color: showBorder
-                                      ? TTheme.of(context).brandDisabledColor
+                                      ? context.tTheme.brandDisabledColor
                                       : Colors.transparent,
                                 ),
                                 child: TIcon(item.value, size: 32),

@@ -67,7 +67,7 @@ class TDivider extends StatelessWidget {
 
     // L4 值按优先级 fallback
     final effectiveColor =
-        theme?.color ?? dividerTheme.color ?? TTheme.of(context).componentStrokeColor;
+        theme?.color ?? dividerTheme.color ?? context.tTheme.componentStrokeColor;
     final effectiveThickness = theme?.thickness ?? dividerTheme.thickness ?? 0.5;
     final effectiveIndent = theme?.indent;
     final effectiveEndIndent = theme?.endIndent;

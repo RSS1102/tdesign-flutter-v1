@@ -44,7 +44,7 @@ class TDialogScaffold extends StatelessWidget {
           width: width ?? 311,
           decoration: BoxDecoration(
             color:
-                backgroundColor ?? TTheme.of(context).bgColorContainer, // 底色
+                backgroundColor ?? context.tTheme.bgColorContainer, // 底色
             borderRadius: BorderRadius.all(Radius.circular(radius)),
           ),
           child: Stack(
@@ -65,7 +65,7 @@ class TDialogScaffold extends StatelessWidget {
                             child: Icon(
                               TIcons.close,
                               size: 22,
-                              color: TTheme.of(context).textColorPlaceholder,
+                              color: context.tTheme.textColorPlaceholder,
                             ),
                           ),
                         ),
@@ -98,7 +98,7 @@ class TDialogTitle extends StatelessWidget {
     // 标题和内容不能同时为空
     return TText(
       title,
-      textColor: titleColor ?? TTheme.of(context).textColorPrimary,
+      textColor: titleColor ?? context.tTheme.textColorPrimary,
       fontWeight: FontWeight.w600,
       font: Font(size: 18, lineHeight: 26),
       textAlign: TextAlign.center,
@@ -125,7 +125,7 @@ class TDialogContent extends StatelessWidget {
     // 标题和内容不能同时为空
     return TText(
       content,
-      textColor: contentColor ?? TTheme.of(context).textColorSecondary,
+      textColor: contentColor ?? context.tTheme.textColorSecondary,
       font: Font(size: 16, lineHeight: 24),
       textAlign: TextAlign.center,
     );
@@ -203,7 +203,7 @@ class TDialogInfoWidget extends StatelessWidget {
                       child: TDialogContent(
                         content: content!,
                         contentColor: contentColor ??
-                            TTheme.of(context).textColorSecondary,
+                            context.tTheme.textColorSecondary,
                       ),
                     ),
                   ),

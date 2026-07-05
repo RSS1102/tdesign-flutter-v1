@@ -18,11 +18,9 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   var themeJsonString = await rootBundle.loadString('assets/theme.json');
-  /// 开启多套主题功能
-  TTheme.needMultiTheme(true);
   /// 默认浅色主题,dark为深色主题
   themeData = TThemeData.fromJson('red', themeJsonString, darkName: 'redDark') ??
-      TTheme.defaultData();
+      TThemeData.defaultData();
 
   runApp(const App());
 }
@@ -52,7 +50,7 @@ class App extends StatelessWidget {
             title: '深色模式切换测试',
 
             /// 默认浅色模式
-            theme: themeData.systemThemeDataLight!.copyWith(
+            theme: TThemeBuilder.light(themeData).copyWith(
               /// 根据自己的需求用 TD 颜色覆盖 Material/Cupertino 的颜色
               cupertinoOverrideTheme: const CupertinoThemeData().copyWith(
                 barBackgroundColor: themeData.bgColorContainer.withOpacity(0.5),
@@ -61,7 +59,7 @@ class App extends StatelessWidget {
             ),
 
             /// 深色模式
-            darkTheme: themeData.systemThemeDataDark?.copyWith(
+            darkTheme: TThemeBuilder.dark(themeData).copyWith(
               cupertinoOverrideTheme: const CupertinoThemeData().copyWith(
                 barBackgroundColor: themeData.dark?.grayColor13.withOpacity(0.5),
               ),

@@ -37,7 +37,7 @@ class TImageViewer {
     LeftItemBuilder? leftItemBuilder,
     RightItemBuilder? rightItemBuilder,
   }) {
-    modalBarrierColor ??= TTheme.of(context).fontGyColor1;
+    modalBarrierColor ??= context.tTheme.fontGyColor1;
     showDialog(
       context: context,
       barrierDismissible: barrierDismissible ?? false,

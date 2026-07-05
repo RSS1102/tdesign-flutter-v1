@@ -11,11 +11,11 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: TCalendar(
-              type: CalendarType.single,
+              type: TCalendarVariant.single,
               minDate: DateTime(2025, 6, 1),
               maxDate: DateTime(2025, 6, 30),
               initialValue: [DateTime(2025, 6, 15)],
-              onChange: (_) {},
+              onChanged: (_) {},
               subtitleBuilder: (context, ctx) {
                 seenDates.add(ctx.date);
                 return TText('副-${ctx.date.day}');

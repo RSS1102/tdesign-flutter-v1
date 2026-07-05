@@ -31,8 +31,8 @@ class TRadiusPage extends StatelessWidget {
   Widget _buildRadiusSmall(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: TTheme.of(context).brandNormalColor,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusSmall),
+        color: context.tTheme.brandNormalColor,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusSmall),
       ),
     );
   }
@@ -41,8 +41,8 @@ class TRadiusPage extends StatelessWidget {
   Widget _buildRadiusDefault(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: TTheme.of(context).brandNormalColor,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusDefault),
+        color: context.tTheme.brandNormalColor,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),
       ),
     );
   }
@@ -51,8 +51,8 @@ class TRadiusPage extends StatelessWidget {
   Widget _buildRadiusLarge(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: TTheme.of(context).brandNormalColor,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusLarge),
+        color: context.tTheme.brandNormalColor,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusLarge),
       ),
     );
   }
@@ -61,9 +61,9 @@ class TRadiusPage extends StatelessWidget {
   Widget _buildRadiusExtraLarge(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: TTheme.of(context).brandNormalColor,
+        color: context.tTheme.brandNormalColor,
         borderRadius:
-            BorderRadius.circular(TTheme.of(context).radiusExtraLarge),
+            BorderRadius.circular(context.tTheme.radiusExtraLarge),
       ),
     );
   }
@@ -73,8 +73,8 @@ class TRadiusPage extends StatelessWidget {
     // 胶囊型，数值设置较大
     return Container(
       decoration: BoxDecoration(
-        color: TTheme.of(context).brandNormalColor,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusRound),
+        color: context.tTheme.brandNormalColor,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusRound),
       ),
     );
   }
@@ -84,8 +84,8 @@ class TRadiusPage extends StatelessWidget {
     //  圆形与胶囊型一致，如果长宽一致即是圆形
     return Container(
       decoration: BoxDecoration(
-        color: TTheme.of(context).brandNormalColor,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusCircle),
+        color: context.tTheme.brandNormalColor,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusCircle),
       ),
     );
   }

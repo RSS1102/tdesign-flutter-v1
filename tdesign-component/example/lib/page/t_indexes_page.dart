@@ -109,7 +109,7 @@ class TIndexesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: TTheme.of(context).grayColor2,
+        color: context.tTheme.grayColor2,
         child: ExamplePage(
           title: tTitle(context),
           desc: '用于页面中信息快速检索，可以根据目录中的页码快速找到所需的内容。',
@@ -235,8 +235,8 @@ Widget _buildCustomIndexes(BuildContext context) {
                 return TText(
                   '自定义 $index',
                   textColor: isActive
-                      ? TTheme.of(context).brandNormalColor
-                      : TTheme.of(context).textColorPrimary,
+                      ? context.tTheme.brandNormalColor
+                      : context.tTheme.textColorPrimary,
                 );
               },
               builderContent: (context, index) {

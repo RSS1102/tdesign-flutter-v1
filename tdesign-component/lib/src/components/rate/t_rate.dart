@@ -44,7 +44,7 @@ class TRate extends StatefulWidget {
   /// 是否允许半选
   final bool? allowHalf;
 
-  /// 评分图标的颜色，示例：[选中颜色] / [选中颜色，未选中颜色]，默认：[TTheme.of(context).warningColor5, TTheme.of(context).grayColor4]
+  /// 评分图标的颜色，示例：[选中颜色] / [选中颜色，未选中颜色]，默认：[context.tTheme.warningColor5, context.tTheme.grayColor4]
   final List<Color>? color;
 
   /// 评分的数量
@@ -53,7 +53,7 @@ class TRate extends StatefulWidget {
   /// 是否禁用评分
   final bool? disabled;
 
-  /// 评分图标的间距，默认：TTheme.of(context).spacer8
+  /// 评分图标的间距，默认：context.tTheme.spacer8
   final double? gap;
 
   /// 自定义评分图标，[选中和未选中图标] / [选中图标，未选中图标]，默认：[TIcons.star_filled]
@@ -99,7 +99,7 @@ class TRate extends StatefulWidget {
   /// 评分图标与辅助文字主轴方向上如何占用空间
   final MainAxisSize? mainAxisSize;
 
-  /// 评分图标与辅助文字的间距，默认：[TTheme.of(context).spacer16]
+  /// 评分图标与辅助文字的间距，默认：[context.tTheme.spacer16]
   final double? iconTextGap;
 
   @override
@@ -236,7 +236,7 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
               return Padding(
                 padding: EdgeInsets.only(
                     right:
-                        isLast ? 0 : widget.gap ?? TTheme.of(context).spacer8),
+                        isLast ? 0 : widget.gap ?? context.tTheme.spacer8),
                 child: AnimatedBuilder(
                   animation: _animation[index],
                   builder: (context, child) {
@@ -372,9 +372,9 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
     return Padding(
       padding: widget.direction == Axis.horizontal
           ? EdgeInsets.only(
-              left: widget.iconTextGap ?? TTheme.of(context).spacer16)
+              left: widget.iconTextGap ?? context.tTheme.spacer16)
           : EdgeInsets.only(
-              top: widget.iconTextGap ?? TTheme.of(context).spacer8),
+              top: widget.iconTextGap ?? context.tTheme.spacer8),
       child: SizedBox(
         width: widget.textWidth ?? 50,
         child: TText(
@@ -382,11 +382,11 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
               ? context.resource.notRated
               : widget.texts?.getOrNull(textIndex.toInt()) ?? '$_activeValue',
           font: notRated
-              ? TTheme.of(context).fontBodyLarge
-              : TTheme.of(context).fontTitleMedium,
+              ? context.tTheme.fontBodyLarge
+              : context.tTheme.fontTitleMedium,
           textColor: notRated
-              ? TTheme.of(context).textDisabledColor
-              : TTheme.of(context).textColorPrimary,
+              ? context.tTheme.textDisabledColor
+              : context.tTheme.textColorPrimary,
         ),
       ),
     );
@@ -395,8 +395,8 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
   Color _getIconColor({double? value, bool? isActive}) {
     return (value != null && _activeValue >= value) ||
             (isActive != null && isActive)
-        ? widget.color?.getOrNull(0) ?? TTheme.of(context).warningColor5
-        : widget.color?.getOrNull(1) ?? TTheme.of(context).bgColorComponent;
+        ? widget.color?.getOrNull(0) ?? context.tTheme.warningColor5
+        : widget.color?.getOrNull(1) ?? context.tTheme.bgColorComponent;
   }
 
   IconData _getIcon({double? value, bool? isActive}) {
@@ -422,8 +422,8 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
     }
     return Positioned(
       top: widget.placement == PlacementEnum.top
-          ? rateOffset.dy - TTheme.of(context).spacer8 - _tipSize.height
-          : rateOffset.dy + TTheme.of(context).spacer8 + rateSize.height,
+          ? rateOffset.dy - context.tTheme.spacer8 - _tipSize.height
+          : rateOffset.dy + context.tTheme.spacer8 + rateSize.height,
       left: rateOffset.dx - (_tipSize.width - rateSize.width) / 2,
       child: TRateTips(
         allowHalf: widget.allowHalf,

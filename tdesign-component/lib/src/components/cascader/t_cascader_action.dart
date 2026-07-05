@@ -17,6 +17,6 @@ class TCascaderAction {
   MultiCascaderCallback onConfirm;
 
   Widget build(BuildContext context){
-    return builder?.call(context) ?? TText(text ?? context.resource.confirm, textColor: TTheme.of(context).brandNormalColor, font: TTheme.of(context).fontTitleMedium,);
+    return builder?.call(context) ?? TText(text ?? context.resource.confirm, textColor: context.tTheme.brandNormalColor, font: context.tTheme.fontTitleMedium,);
   }
 }

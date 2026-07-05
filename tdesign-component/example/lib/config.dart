@@ -84,7 +84,7 @@ import 'page/t_select_tag_page.dart';
 import 'page/t_skeleton_page.dart';
 import 'page/t_swiper_page.dart';
 import 'page/t_table_page.dart';
-// import 'page/t_tag_page.dart';  // TODO: 待升级至 V1.0
+import 'page/t_tag_page.dart';
 import 'page/t_time_counter_page.dart';
 /*
 import 'page/t_action_sheet_page.dart';
@@ -309,7 +309,7 @@ Map<String, List<ExamplePageModel>> exampleMap = {
     ExamplePageModel(text: 'Image 图片 (V1.0)', name: 'image', pageBuilder: _wrapInheritedTheme((context) => const TImagePage())),
     ExamplePageModel(text: 'Progress 进度条 (V1.0)', name: 'progress', pageBuilder: _wrapInheritedTheme((context) => const TProgressPage())),
     ExamplePageModel(text: 'Badge 徽标 (V1.0)', name: 'badge', pageBuilder: _wrapInheritedTheme((context) => const TBadgePage())),
-    // ExamplePageModel(text: 'Tag 标签 (V1.0)', name: 'tag', pageBuilder: _wrapInheritedTheme((context) => const TTagPage())),  // TODO: 待升级
+    ExamplePageModel(text: 'Tag 标签 (V1.0)', name: 'tag', pageBuilder: _wrapInheritedTheme((context) => const TTagPage())),
     ExamplePageModel(text: 'SelectTag 可选标签 (V1.0)', name: 'selectTag', pageBuilder: _wrapInheritedTheme((context) => const TSelectTagPage())),
     ExamplePageModel(text: 'Cell 单元格 (V1.0)', name: 'cell', pageBuilder: _wrapInheritedTheme((context) => const TCellPage())),
     ExamplePageModel(text: 'CellGroup 单元格组 (V1.0)', name: 'cellGroup', pageBuilder: _wrapInheritedTheme((context) => const TCellGroupPage())),
@@ -326,7 +326,6 @@ Map<String, List<ExamplePageModel>> exampleMap = {
   ],
 };
 
-/* TODO: 取消注释 sideBarExamplePage 当 sidebar 页面升级至 V1.0
 List<ExamplePageModel> sideBarExamplePage = [
   ExamplePageModel(
       text: 'SideBar 切页',
@@ -371,4 +370,3 @@ List<ExamplePageModel> sideBarExamplePage = [
       pageBuilder: _wrapInheritedTheme(
           (context) => const TSideBarUnSelectedColorPage()))
 ];
-*/

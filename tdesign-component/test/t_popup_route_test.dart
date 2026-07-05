@@ -16,8 +16,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: TTheme(
-            data: TThemeData.defaultData(),
+          home: Theme(
+            data: ThemeData(extensions: [TThemeData.defaultData()]),
             child: Scaffold(
               body: Builder(
                 builder: (context) {
@@ -86,8 +86,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: TTheme(
-            data: TThemeData.defaultData(),
+          home: Theme(
+            data: ThemeData(extensions: [TThemeData.defaultData()]),
             child: Scaffold(
               body: Builder(
                 builder: (context) {

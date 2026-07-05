@@ -10,9 +10,9 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: TCalendar(
-            type: CalendarType.multiple,
+            type: TCalendarVariant.multiple,
             initialValue: const [],
-            onChange: (_) => onChangeCount++,
+            onChanged: (_) => onChangeCount++,
           ),
         ),
       ),
@@ -31,7 +31,7 @@ void main() {
             return Scaffold(
               body: TCell(
                 title: '打开',
-                onClick: (_) {
+                onTap: () {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
@@ -88,9 +88,9 @@ class _TestMultipleSheetState extends State<_TestMultipleSheet> {
       child: SizedBox(
         height: 500,
         child: TCalendar(
-          type: CalendarType.multiple,
+          type: TCalendarVariant.multiple,
           initialValue: pending,
-          onChange: (v) => setState(() => pending = v),
+          onChanged: (v) => setState(() => pending = v),
         ),
       ),
     );

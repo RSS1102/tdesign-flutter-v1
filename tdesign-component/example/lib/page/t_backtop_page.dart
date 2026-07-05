@@ -127,7 +127,7 @@ class _TBackTopPageState extends State<TBackTopPage> {
   }
 
   Widget getDemoBox(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

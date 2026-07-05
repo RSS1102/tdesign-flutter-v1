@@ -123,12 +123,12 @@ class _TNavBarState extends State<TNavBar> {
   Color _effectiveTitleColor(BuildContext context) =>
       widget.titleColor ??
       _themeData.titleColor ??
-      TTheme.of(context).textColorPrimary;
+      context.tTheme.textColorPrimary;
 
   Color _effectiveBackIconColor(BuildContext context) =>
       widget.backIconColor ??
       _themeData.backIconColor ??
-      TTheme.of(context).textColorPrimary;
+      context.tTheme.textColorPrimary;
 
   Font? get _effectiveTitleFont =>
       widget.titleFont ?? _themeData.titleFont;
@@ -142,7 +142,7 @@ class _TNavBarState extends State<TNavBar> {
   Color get _effectiveBackgroundColor =>
       widget.backgroundColor ??
       _themeData.backgroundColor ??
-      TTheme.of(context).bgColorContainer;
+      context.tTheme.bgColorContainer;
 
   double get _effectiveHeight => widget.height ?? _themeData.height ?? 48;
 
@@ -150,8 +150,8 @@ class _TNavBarState extends State<TNavBar> {
       widget.padding ??
       _themeData.padding ??
       EdgeInsets.symmetric(
-        horizontal: TTheme.of(context).spacer16,
-        vertical: TTheme.of(context).spacer4,
+        horizontal: context.tTheme.spacer16,
+        vertical: context.tTheme.spacer4,
       );
 
   double get _effectiveTitleMargin =>
@@ -171,7 +171,7 @@ class _TNavBarState extends State<TNavBar> {
 
   Widget _addBorder(List<Widget> items) {
     var border = _effectiveBorder;
-    var borderColor = border.color ?? TTheme.of(context).componentStrokeColor;
+    var borderColor = border.color ?? context.tTheme.componentStrokeColor;
     var children = <Widget>[];
     for (var i = 0; i < items.length; i++) {
       children.add(items[i]);
@@ -198,7 +198,7 @@ class _TNavBarState extends State<TNavBar> {
         ),
       ),
       padding: border.padding ??
-          EdgeInsets.symmetric(horizontal: TTheme.of(context).spacer4),
+          EdgeInsets.symmetric(horizontal: context.tTheme.spacer4),
       child: child,
     );
   }
@@ -242,7 +242,7 @@ class _TNavBarState extends State<TNavBar> {
   TextStyle _getTitleStyle(BuildContext context) {
     var titleColor = _effectiveTitleColor(context);
 
-    var titleFont = _effectiveTitleFont ?? TTheme.of(context).fontBodyLarge;
+    var titleFont = _effectiveTitleFont ?? context.tTheme.fontBodyLarge;
 
     return _effectiveTitleFontFamily == null
         ? TextStyle(
@@ -364,8 +364,8 @@ class TNavBarItem {
         child: Padding(
           padding: padding ??
               (isLeading
-                  ? EdgeInsets.only(right: TTheme.of(context).spacer8)
-                  : EdgeInsets.only(left: TTheme.of(context).spacer8)),
+                  ? EdgeInsets.only(right: context.tTheme.spacer8)
+                  : EdgeInsets.only(left: context.tTheme.spacer8)),
           child: customWidget ??
               iconWidget ??
               Icon(

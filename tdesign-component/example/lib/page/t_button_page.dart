@@ -71,7 +71,7 @@ class _TButtonPageState extends State<TButtonPage> {
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   alignment: Alignment.center,
-                  color: TTheme.of(context).grayColor14,
+                  color: context.tTheme.grayColor14,
                   child: Wrap(
                     spacing: 16, // 主轴方向间距
                     runSpacing: 16, // 交叉轴方向间距
@@ -195,7 +195,7 @@ class _TButtonPageState extends State<TButtonPage> {
             desc: '通栏按钮测试（V1.0 外包布局）',
             builder: (context) {
               return Container(
-                color: TTheme.of(context).bgColorContainer,
+                color: context.tTheme.bgColorContainer,
                 padding: const EdgeInsets.only(
                     top: 16, bottom: 16, left: 16, right: 16),
                 child: Column(
@@ -611,10 +611,14 @@ class _TButtonPageState extends State<TButtonPage> {
   TButton _buildLoadingIconButton(BuildContext context) {
     return TButton(
       child: const Text('加载中'),
-      icon: TLoading(
-        size: TLoadingSize.small,
-        icon: TLoadingIcon.circle,
-        themeData: TLoadingThemeData(iconColor: TTheme.of(context).whiteColor1),
+      icon: Theme(
+        // TLoading 已移除 themeData 构造参数，改用 mergeExtension 注入子树主题
+        data: Theme.of(context)
+            .mergeExtension(TLoadingThemeData(iconColor: context.tTheme.whiteColor1)),
+        child: const TLoading(
+          size: TLoadingSize.small,
+          icon: TLoadingIcon.circle,
+        ),
       ),
       size: TButtonSize.large,
       variant: TButtonVariant.fill,

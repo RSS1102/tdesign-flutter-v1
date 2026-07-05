@@ -42,7 +42,6 @@ class TLoading extends StatelessWidget {
     required this.size,
     this.icon = TLoadingIcon.circle,
     this.text,
-    this.themeData,
   }) : super(key: key);
 
   /// 尺寸
@@ -54,14 +53,13 @@ class TLoading extends StatelessWidget {
   /// 文案
   final String? text;
 
-  /// 组件级主题配置，优先级高于 Theme Extension
-  final TLoadingThemeData? themeData;
-
-  /// 获取生效的 Theme（实例 themeData > Theme Extension > 默认值）
+  /// 获取生效的 Theme（Theme Extension > 默认值）
+  ///
+  /// v1.0 按文档 §2.1 裁决：样式默认只从 `Theme.of(context)` 读取，
+  /// 子树覆盖用 `mergeExtension(...)`，禁止构造器 `themeData`。
   TLoadingThemeData _effectiveTheme(BuildContext context) {
-    return (Theme.of(context).extension<TLoadingThemeData>() ??
-            const TLoadingThemeData())
-        .merge(themeData);
+    return Theme.of(context).extension<TLoadingThemeData>() ??
+        const TLoadingThemeData();
   }
 
   @override
@@ -174,16 +172,16 @@ class TLoading extends StatelessWidget {
       BuildContext context, TLoadingThemeData theme, Widget? refreshWidget) {
     final font = switch (size) {
       TLoadingSize.large =>
-        TTheme.of(context).fontBodyLarge ?? Font(size: 16, lineHeight: 24),
+        context.tTheme.fontBodyLarge ?? Font(size: 16, lineHeight: 24),
       TLoadingSize.medium =>
-        TTheme.of(context).fontBodyMedium ?? Font(size: 14, lineHeight: 22),
+        context.tTheme.fontBodyMedium ?? Font(size: 14, lineHeight: 22),
       TLoadingSize.small =>
-        TTheme.of(context).fontBodySmall ?? Font(size: 12, lineHeight: 20),
+        context.tTheme.fontBodySmall ?? Font(size: 12, lineHeight: 20),
     };
 
     Widget result = TText(
       text,
-      textColor: theme.textColor ?? TTheme.of(context).textColorPrimary,
+      textColor: theme.textColor ?? context.tTheme.textColorPrimary,
       fontWeight: FontWeight.w400,
       font: font,
       textAlign: TextAlign.center,

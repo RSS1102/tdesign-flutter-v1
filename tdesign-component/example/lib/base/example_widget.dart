@@ -304,8 +304,8 @@ class _ExamplePageState extends State<ExamplePage> {
           if (WebMdTool.needGenerateWebMd) const TText('WebGenTag'),
           TText(
             widget.title,
-            font: TTheme.of(context).fontHeadlineSmall,
-            textColor: TTheme.of(context).textColorPrimary,
+            font: context.tTheme.fontHeadlineSmall,
+            textColor: context.tTheme.textColorPrimary,
           ),
           Container(
             margin: const EdgeInsets.only(
@@ -313,8 +313,8 @@ class _ExamplePageState extends State<ExamplePage> {
             ),
             child: TText(
               widget.desc,
-              font: TTheme.of(context).fontBodyMedium,
-              textColor: TTheme.of(context).textColorSecondary,
+              font: context.tTheme.fontBodyMedium,
+              textColor: context.tTheme.textColorSecondary,
             ),
           ),
           // Expanded(child: ),
@@ -332,9 +332,9 @@ class _ExamplePageState extends State<ExamplePage> {
           margin: const EdgeInsets.only(left: 16, right: 16, top: 32),
           child: TText(
             '${index < 10 ? "0$index" : index} ${data.title}',
-            font: TTheme.of(context).fontTitleLarge,
+            font: context.tTheme.fontTitleLarge,
             // todo BuildContext
-            // textColor: TTheme.of(context).textColorPrimary,
+            // textColor: context.tTheme.textColorPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -466,8 +466,8 @@ class _ExampleItemWidgetState extends State<ExampleItemWidget> {
                     bottom: 16),
                 child: TText(
                   widget.data.desc,
-                  font: TTheme.of(context).fontBodyMedium,
-                  textColor: TTheme.of(context).textColorSecondary,
+                  font: context.tTheme.fontBodyMedium,
+                  textColor: context.tTheme.textColorSecondary,
                 ),
               ),
         child
@@ -572,7 +572,7 @@ class _CodeWrapperState extends State<CodeWrapper> {
                   alignment: Alignment.center,
                   child: TText(
                     'code',
-                    textColor: TTheme.of(context).whiteColor1,
+                    textColor: context.tTheme.whiteColor1,
                   ),
                 ),
               ))
@@ -615,9 +615,9 @@ class _CodeWrapperState extends State<CodeWrapper> {
             return Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  color: TTheme.of(context).bgColorSecondaryContainer,
+                  color: context.tTheme.bgColorSecondaryContainer,
                   borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(TTheme.of(context).radiusDefault))),
+                      top: Radius.circular(context.tTheme.radiusDefault))),
               child:
                   TText(PlatformUtil.isWeb ? 'web不支持演示代码，请在移动端查看' : '暂无演示代码'),
             );
@@ -640,9 +640,9 @@ ${codeString}
           return Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: TTheme.of(context).bgColorSecondaryContainer,
+                color: context.tTheme.bgColorSecondaryContainer,
                 borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(TTheme.of(context).radiusDefault))),
+                    top: Radius.circular(context.tTheme.radiusDefault))),
             height: height,
             child: Markdown(
               physics: const BouncingScrollPhysics(),

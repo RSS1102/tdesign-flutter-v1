@@ -291,7 +291,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           hintText: '请输入文字',
           rightBtn: Icon(
             TIcons.error_circle_filled,
-            color: TTheme.of(context).textColorPlaceholder,
+            color: context.tTheme.textColorPlaceholder,
           ),
           onBtnTap: () {
             TToast.showText('点击右侧按钮', context: context);
@@ -322,7 +322,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
-              color: TTheme.of(context).brandNormalColor,
+              color: context.tTheme.brandNormalColor,
             ),
             child: const TButton(
               child: Text('操作按钮'),
@@ -349,7 +349,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
       hintText: '请输入文字',
       rightBtn: Icon(
         TIcons.user_avatar,
-        color: TTheme.of(context).textColorPlaceholder,
+        color: context.tTheme.textColorPlaceholder,
       ),
       onBtnTap: () {
         TToast.showText('点击操作按钮', context: context);
@@ -422,11 +422,11 @@ class _TInputViewPageState extends State<TInputViewPage> {
           rightBtn: browseOn
               ? Icon(
                   TIcons.browse,
-                  color: TTheme.of(context).textColorPlaceholder,
+                  color: context.tTheme.textColorPlaceholder,
                 )
               : Icon(
                   TIcons.browse_off,
-                  color: TTheme.of(context).textColorPlaceholder,
+                  color: context.tTheme.textColorPlaceholder,
                 ),
           onBtnTap: () {
             setState(() {
@@ -499,7 +499,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             children: [
               Container(
                 width: 0.5,
-                color: TTheme.of(context).componentBorderColor,
+                color: context.tTheme.componentBorderColor,
               ),
               const SizedBox(
               ),
@@ -536,16 +536,16 @@ class _TInputViewPageState extends State<TInputViewPage> {
                   padding: const EdgeInsets.only(right: 16),
                   child: Container(
                     width: 0.5,
-                    color: TTheme.of(context).componentBorderColor,
+                    color: context.tTheme.componentBorderColor,
                   ),
                 ),
                 _countdownTime > 0
                     ? TText(
                         '${countDownText}(${_countdownTime}秒)',
-                        textColor: TTheme.of(context).textDisabledColor,
+                        textColor: context.tTheme.textDisabledColor,
                       )
                     : TText(confirmText,
-                        textColor: TTheme.of(context).brandNormalColor),
+                        textColor: context.tTheme.brandNormalColor),
               ],
             ),
           ),
@@ -577,7 +577,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           hintText: '0.00',
           textAlign: TextAlign.end,
           suffix:
-              TText('元', textColor: TTheme.of(context).textColorPrimary),
+              TText('元', textColor: context.tTheme.textColorPrimary),
         ),
         const SizedBox(
         )
@@ -593,7 +593,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
       label: '数量',
       hintText: '填写个数',
       textAlign: TextAlign.end,
-      suffix: TText('个', textColor: TTheme.of(context).textColorPrimary),
+      suffix: TText('个', textColor: context.tTheme.textColorPrimary),
     );
   }
 
@@ -606,7 +606,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           controller: controller[17],
           hintText: '请输入文字',
           additionInfo: '错误提示说明',
-          additionInfoColor: TTheme.of(context).errorColor6,
+          additionInfoColor: context.tTheme.errorColor6,
           onChanged: (text) {
             setState(() {});
           },
@@ -663,7 +663,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
       controller: controller[19],
       hintText: '输入文字超长不超过两行输入文字超长不超过两行',
       hintTextStyle: TextStyle(
-        color: TTheme.of(context).textColorPrimary,
+        color: context.tTheme.textColorPrimary,
       ),
       maxLines: 2,
     );
@@ -679,7 +679,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
       hintText: '请输入文字',
       rightBtn: Icon(
         TIcons.error_circle_filled,
-        color: TTheme.of(context).textColorPlaceholder,
+        color: context.tTheme.textColorPlaceholder,
       ),
       onBtnTap: () {
         TToast.showText('点击右侧按钮', context: context);
@@ -726,7 +726,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
         hintText: '请输入文字',
         rightBtn: Icon(
           TIcons.error_circle_filled,
-          color: TTheme.of(context).textColorPlaceholder,
+          color: context.tTheme.textColorPlaceholder,
         ),
         onBtnTap: () {
           TToast.showText('点击右侧按钮', context: context);
@@ -815,15 +815,15 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return TInput(
       label: '标签文字',
       controller: controller[26],
-      backgroundColor: TTheme.of(context).grayColor12,
-      labelStyle: TextStyle(color: TTheme.of(context).fontWhColor1),
-      textStyle: TextStyle(color: TTheme.of(context).fontWhColor1),
+      backgroundColor: context.tTheme.grayColor12,
+      labelStyle: TextStyle(color: context.tTheme.fontWhColor1),
+      textStyle: TextStyle(color: context.tTheme.fontWhColor1),
       hintText: '请输入文字',
-      hintTextStyle: TextStyle(color: TTheme.of(context).fontWhColor3),
+      hintTextStyle: TextStyle(color: context.tTheme.fontWhColor3),
       onChanged: (text) {
         setState(() {});
       },
-      clearBtnColor: TTheme.of(context).fontWhColor3,
+      clearBtnColor: context.tTheme.fontWhColor3,
       onClearTap: () {
         controller[26].clear();
         setState(() {});
@@ -846,7 +846,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           hintText: '请输入文字',
           rightBtn: Icon(
             TIcons.error_circle_filled,
-            color: TTheme.of(context).textColorPlaceholder,
+            color: context.tTheme.textColorPlaceholder,
           ),
           onBtnTap: () {
             TToast.showText('点击右侧按钮', context: context);

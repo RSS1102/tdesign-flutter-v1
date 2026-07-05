@@ -74,7 +74,7 @@ class _TIndexesListState extends State<TIndexesList> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      right: TTheme.of(context).spacer8,
+      right: context.tTheme.spacer8,
       top: 0,
       bottom: 0,
       child: Align(
@@ -112,25 +112,25 @@ class _TIndexesListState extends State<TIndexesList> {
                           children: [
                             if (_showTip && value == e)
                               Positioned(
-                                top: -TTheme.of(context).spacer48 / 2 +
+                                top: -context.tTheme.spacer48 / 2 +
                                     _indexSize / 2,
-                                left: -TTheme.of(context).spacer48,
+                                left: -context.tTheme.spacer48,
                                 child: Container(
-                                  height: TTheme.of(context).spacer48,
-                                  width: TTheme.of(context).spacer48,
+                                  height: context.tTheme.spacer48,
+                                  width: context.tTheme.spacer48,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(
-                                        TTheme.of(context).radiusCircle),
-                                    color: TTheme.of(context).brandLightColor,
+                                        context.tTheme.radiusCircle),
+                                    color: context.tTheme.brandLightColor,
                                   ),
                                   child: Center(
                                     child: TText(
                                       e,
                                       forceVerticalCenter: true,
-                                      font: TTheme.of(context)
+                                      font: context.tTheme
                                           .fontTitleExtraLarge,
                                       textColor:
-                                          TTheme.of(context).brandNormalColor,
+                                          context.tTheme.brandNormalColor,
                                     ),
                                   ),
                                 ),
@@ -138,15 +138,15 @@ class _TIndexesListState extends State<TIndexesList> {
                             Container(
                               key: _containerKeys[e],
                               padding: EdgeInsets.only(
-                                  left: TTheme.of(context).spacer8),
+                                  left: context.tTheme.spacer8),
                               child: Container(
                                 width: _indexSize,
                                 height: _indexSize,
                                 decoration: isActive
                                     ? BoxDecoration(
                                         borderRadius: BorderRadius.circular(
-                                            TTheme.of(context).radiusCircle),
-                                        color: TTheme.of(context)
+                                            context.tTheme.radiusCircle),
+                                        color: context.tTheme
                                             .brandNormalColor,
                                       )
                                     : null,
@@ -155,11 +155,11 @@ class _TIndexesListState extends State<TIndexesList> {
                                     e,
                                     forceVerticalCenter: true,
                                     font: isActive
-                                        ? TTheme.of(context).fontMarkSmall
-                                        : TTheme.of(context).fontLinkSmall,
+                                        ? context.tTheme.fontMarkSmall
+                                        : context.tTheme.fontLinkSmall,
                                     textColor: isActive
-                                        ? TTheme.of(context).textColorAnti
-                                        : TTheme.of(context).textColorPrimary,
+                                        ? context.tTheme.textColorAnti
+                                        : context.tTheme.textColorPrimary,
                                   ),
                                 ),
                               ),

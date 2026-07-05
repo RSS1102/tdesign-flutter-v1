@@ -20,7 +20,7 @@ class TInputResolve {
   }) {
     if (instanceStyle != null) return instanceStyle;
     if (theme?.textStyle != null) return theme!.textStyle!;
-    final tTheme = TTheme.of(context);
+    final tTheme = context.tTheme;
     return TextStyle(
       color: tTheme.textColorPrimary,
       fontSize: tTheme.fontBodyLarge?.size,
@@ -37,7 +37,7 @@ class TInputResolve {
   }) {
     if (instanceStyle != null) return instanceStyle;
     if (theme?.hintTextStyle != null) return theme!.hintTextStyle!;
-    final tTheme = TTheme.of(context);
+    final tTheme = context.tTheme;
     return TextStyle(
       color: tTheme.textColorPlaceholder,
       fontSize: tTheme.fontBodyLarge?.size,
@@ -54,7 +54,7 @@ class TInputResolve {
   }) {
     if (instanceStyle != null) return instanceStyle;
     if (theme?.labelStyle != null) return theme!.labelStyle!;
-    final tTheme = TTheme.of(context);
+    final tTheme = context.tTheme;
     return TextStyle(
       color: tTheme.textColorPrimary,
       fontSize: tTheme.fontBodyLarge?.size,
@@ -96,7 +96,7 @@ class TInputResolve {
   }) {
     if (instanceColor != null) return instanceColor;
     if (theme?.cursorColor != null) return theme!.cursorColor!;
-    return TTheme.of(context).brandNormalColor;
+    return context.tTheme.brandNormalColor;
   }
 
   /// 解析清除按钮颜色
@@ -109,7 +109,7 @@ class TInputResolve {
   }) {
     if (instanceColor != null) return instanceColor;
     if (theme?.clearBtnColor != null) return theme!.clearBtnColor!;
-    return TTheme.of(context).textColorPlaceholder;
+    return context.tTheme.textColorPlaceholder;
   }
 
   /// 解析附加信息颜色
@@ -122,7 +122,7 @@ class TInputResolve {
   }) {
     if (instanceColor != null) return instanceColor;
     if (theme?.additionInfoColor != null) return theme!.additionInfoColor!;
-    return TTheme.of(context).textColorPlaceholder;
+    return context.tTheme.textColorPlaceholder;
   }
 
   /// 解析内容内边距
@@ -190,7 +190,7 @@ class TInputResolve {
   }) {
     if (instanceDecoration is BoxDecoration) return instanceDecoration;
     if (layout != TInputLayout.cardStyle) return null;
-    final tTheme = TTheme.of(context);
+    final tTheme = context.tTheme;
     final effectiveCardStyle = cardStyle ?? theme?.cardStyle;
     if (effectiveCardStyle == null) return null;
     switch (effectiveCardStyle) {

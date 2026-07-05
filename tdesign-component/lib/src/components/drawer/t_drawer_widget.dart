@@ -72,7 +72,7 @@ class TDrawerWidget extends StatelessWidget {
       var cellStyle = style;
       if (cellStyle == null) {
         cellStyle = TCellThemeData.cellStyle(context);
-        cellStyle.leftIconColor = TTheme.of(context).brandNormalColor;
+        cellStyle.leftIconColor = context.tTheme.brandNormalColor;
       }
       var cells = items
           ?.asMap()
@@ -109,7 +109,7 @@ class TDrawerWidget extends StatelessWidget {
           ),
           if (footer != null)
             Container(
-              padding: EdgeInsets.all(TTheme.of(context).spacer16),
+              padding: EdgeInsets.all(context.tTheme.spacer16),
               child: footer,
             ),
         ],
@@ -117,7 +117,7 @@ class TDrawerWidget extends StatelessWidget {
     }
 
     return Container(
-      color: backgroundColor ?? TTheme.of(context).bgColorContainer,
+      color: backgroundColor ?? context.tTheme.bgColorContainer,
       width: width ?? 280,
       height: double.infinity,
       child: content,

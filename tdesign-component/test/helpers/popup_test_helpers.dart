@@ -15,8 +15,8 @@ Widget wrapPopupTest(
   bindPopupTestResource(resolved);
   return MaterialApp(
     locale: resolved.locale,
-    home: TTheme(
-      data: TThemeData.defaultData(),
+    home: Theme(
+      data: ThemeData(extensions: [TThemeData.defaultData()]),
       child: Scaffold(body: child),
     ),
   );
@@ -59,8 +59,8 @@ Widget wrapPopupTestWithMediaPadding(
         child: appChild ?? const SizedBox.shrink(),
       );
     },
-    home: TTheme(
-      data: TThemeData.defaultData(),
+    home: Theme(
+      data: ThemeData(extensions: [TThemeData.defaultData()]),
       child: Scaffold(body: child),
     ),
   );

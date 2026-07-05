@@ -239,8 +239,8 @@ class _TPopoverPage extends State<TPopoverPage> {
   Widget _buildNCustomPopover(BuildContext context) {
     var textStyle = TextStyle(
         color: theme == TPopoverColorScheme.light
-            ? TTheme.of(context).fontGyColor1
-            : TTheme.of(context).fontWhColor1);
+            ? context.tTheme.fontGyColor1
+            : context.tTheme.fontWhColor1);
     return LayoutBuilder(
       builder: (_, constrains) {
         return TButton(
@@ -252,6 +252,9 @@ class _TPopoverPage extends State<TPopoverPage> {
               context: _,
               padding: const EdgeInsets.all(0),
               colorScheme: theme,
+              // contentWidget 模式下必须指定 width 和 height（组件 initState 断言要求）
+              width: 150,
+              height: 146,
               contentWidget: Column(
                 children: [
                   Container(

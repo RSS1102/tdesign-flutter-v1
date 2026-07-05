@@ -60,19 +60,19 @@ class TWrapSideBarItem extends StatelessWidget {
   Widget renderNormalItem(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: selectedBgColor ?? TTheme.of(context).bgColorContainer,
+        color: selectedBgColor ?? context.tTheme.bgColorContainer,
       ),
       child: Container(
         decoration: BoxDecoration(
           color: selected
-              ? selectedBgColor ?? TTheme.of(context).bgColorContainer
+              ? selectedBgColor ?? context.tTheme.bgColorContainer
               : unSelectedBgColor ??
-                  TTheme.of(context).bgColorSecondaryContainer,
+                  context.tTheme.bgColorSecondaryContainer,
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(
-                topAdjacent ? TTheme.of(context).radiusLarge : 0),
+                topAdjacent ? context.tTheme.radiusLarge : 0),
             bottomRight: Radius.circular(
-                bottomAdjacent ? TTheme.of(context).radiusLarge : 0),
+                bottomAdjacent ? context.tTheme.radiusLarge : 0),
           ),
         ),
         child: Row(
@@ -94,15 +94,15 @@ class TWrapSideBarItem extends StatelessWidget {
         child: Container(
           // height: 86,
           decoration: BoxDecoration(
-              color: TTheme.of(context).bgColorSecondaryContainer),
+              color: context.tTheme.bgColorSecondaryContainer),
           padding: const EdgeInsets.all(8),
           child: Container(
             decoration: BoxDecoration(
                 color: selected && !disabled
-                    ? TTheme.of(context).bgColorContainer
+                    ? context.tTheme.bgColorContainer
                     : null,
                 borderRadius:
-                    BorderRadius.circular(TTheme.of(context).radiusDefault)),
+                    BorderRadius.circular(context.tTheme.radiusDefault)),
             padding: const EdgeInsets.all(8),
             child: renderMainContent(context),
           ),
@@ -138,7 +138,7 @@ class TWrapSideBarItem extends StatelessWidget {
             decoration: BoxDecoration(
                 color: selectedTextStyle != null
                     ? selectedTextStyle?.color
-                    : (selectedColor ?? TTheme.of(context).brandNormalColor),
+                    : (selectedColor ?? context.tTheme.brandNormalColor),
                 borderRadius: BorderRadius.circular(4)),
           )
         ],
@@ -149,15 +149,15 @@ class TWrapSideBarItem extends StatelessWidget {
   Widget renderIcon(BuildContext context) {
     final iconColor = () {
       if (disabled) {
-        return TTheme.of(context).textDisabledColor;
+        return context.tTheme.textDisabledColor;
       }
       if (!selected) {
-        return unSelectedColor ?? TTheme.of(context).textColorPrimary;
+        return unSelectedColor ?? context.tTheme.textColorPrimary;
       }
       if (selectedTextStyle?.color != null) {
         return selectedTextStyle!.color!;
       }
-      return selectedColor ?? TTheme.of(context).brandNormalColor;
+      return selectedColor ?? context.tTheme.brandNormalColor;
     }();
 
     return Visibility(
@@ -182,10 +182,10 @@ class TWrapSideBarItem extends StatelessWidget {
             fontWeight:
                 selected && !disabled ? FontWeight.w600 : FontWeight.w400,
             textColor: disabled
-                ? TTheme.of(context).textDisabledColor
+                ? context.tTheme.textDisabledColor
                 : selected
-                    ? selectedColor ?? TTheme.of(context).brandNormalColor
-                    : unSelectedColor ?? TTheme.of(context).textColorPrimary,
+                    ? selectedColor ?? context.tTheme.brandNormalColor
+                    : unSelectedColor ?? context.tTheme.textColorPrimary,
             // forceVerticalCenter: true,
           )),
 

@@ -13,12 +13,13 @@ void main() {
     final extensions = <ThemeExtension>[
       if (iconTheme != null) iconTheme,
     ];
-    return TTheme(
-      data: TThemeData.defaultData(),
-      child: MaterialApp(
-        theme: ThemeData(extensions: extensions),
-        home: Scaffold(body: Center(child: child)),
+    // 注意：必须通过 MaterialApp.theme 传递 extensions，
+    // 用外层 Theme 包 MaterialApp 会被 MaterialApp 默认 ThemeData.light() 覆盖，导致 extension 丢失。
+    return MaterialApp(
+      theme: ThemeData(
+        extensions: [TThemeData.defaultData(), ...extensions],
       ),
+      home: Scaffold(body: Center(child: child)),
     );
   }
 
@@ -98,15 +99,13 @@ void main() {
   // ============================================================
   testWidgets('T04 - 无 Theme 时回退 IconTheme', (tester) async {
     await tester.pumpWidget(
-      TTheme(
-        data: TThemeData.defaultData(),
-        child: MaterialApp(
-          theme: ThemeData(
-            iconTheme: const IconThemeData(size: 28.0, color: Colors.green),
-          ),
-          home: const Scaffold(
-            body: Center(child: TIcon(TIcons.check)),
-          ),
+      MaterialApp(
+        theme: ThemeData(
+          extensions: [TThemeData.defaultData()],
+          iconTheme: const IconThemeData(size: 28.0, color: Colors.green),
+        ),
+        home: const Scaffold(
+          body: Center(child: TIcon(TIcons.check)),
         ),
       ),
     );
@@ -168,5 +167,33 @@ void main() {
     const a = TIconThemeData(size: 10.0);
     final result = a.lerp(null, 0.5);
     expect(result, equals(a));
+  });
+
+  // 补充用例至 ≥15
+  testWidgets('T07 - mergeExtension 覆盖 defaultSize', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(extensions: [
+        TThemeData.defaultData(),
+        const TIconThemeData(size: 32.0, color: Colors.green),
+      ]),
+      home: Scaffold(body: Center(child: TIcon(TIcons.home))),
+    ));
+    final icon = tester.widget<Icon>(find.byIcon(TIcons.home));
+    expect(icon.size, 32.0);
+    expect(icon.color, Colors.green);
+  });
+
+  testWidgets('T08 - 多个 TIcon 同时渲染', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      home: Scaffold(body: Center(child: Row(children: [
+        TIcon(TIcons.home),
+        TIcon(TIcons.search),
+        TIcon(TIcons.user),
+      ]))),
+    ));
+    expect(find.byIcon(TIcons.home), findsOneWidget);
+    expect(find.byIcon(TIcons.search), findsOneWidget);
+    expect(find.byIcon(TIcons.user), findsOneWidget);
   });
 }

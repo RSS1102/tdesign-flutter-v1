@@ -46,8 +46,8 @@ class TResult extends StatelessWidget {
               padding: const EdgeInsets.only(top: 17),
               child: TText(
                 title,
-                textColor: TTheme.of(context).textColorPrimary,
-                font: TTheme.of(context).fontTitleExtraLarge,
+                textColor: context.tTheme.textColorPrimary,
+                font: context.tTheme.fontTitleExtraLarge,
                 style: titleStyle,
               )),
         if (subtitle != null && subtitle!.isNotEmpty)
@@ -55,8 +55,8 @@ class TResult extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8),
             child: TText(
               subtitle!,
-              textColor: TTheme.of(context).textColorSecondary,
-              font: TTheme.of(context).fontTitleSmall,
+              textColor: context.tTheme.textColorSecondary,
+              font: context.tTheme.fontTitleSmall,
             ),
           ),
       ],
@@ -69,25 +69,25 @@ class TResult extends StatelessWidget {
       case TResultVariant.success:
         return Icon(
           TIcons.check_circle,
-          color: TTheme.of(context).successNormalColor,
+          color: context.tTheme.successNormalColor,
           size: 70,
         );
       case TResultVariant.warning:
         return Icon(
           TIcons.error_circle,
-          color: TTheme.of(context).warningNormalColor,
+          color: context.tTheme.warningNormalColor,
           size: 70,
         );
       case TResultVariant.error:
         return Icon(
           TIcons.close_circle,
-          color: TTheme.of(context).errorNormalColor,
+          color: context.tTheme.errorNormalColor,
           size: 70,
         );
       default:
         return Icon(
           TIcons.info_circle,
-          color: TTheme.of(context).brandNormalColor,
+          color: context.tTheme.brandNormalColor,
           size: 70,
         );
     }

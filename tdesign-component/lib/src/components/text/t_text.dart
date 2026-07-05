@@ -174,7 +174,7 @@ class TText extends StatelessWidget {
       var paddingConfig = config?.paddingConfig;
 
       var textFont = font ??
-          TTheme.of(context).fontBodyLarge ??
+          context.tTheme.fontBodyLarge ??
           Font(size: 16, lineHeight: 24);
       var fontSize = style?.fontSize ?? textFont.size;
       var height = style?.height ?? textFont.height;

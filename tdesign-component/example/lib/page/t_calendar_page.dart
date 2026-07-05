@@ -195,7 +195,7 @@ void _showCalendarPickerSheet({
 
   final popupHandles = <TPopupHandle>[];
   final panel = Material(
-    color: TTheme.of(context).bgColorContainer,
+    color: context.tTheme.bgColorContainer,
     child: SafeArea(
       top: false,
       child: _CalendarPickerPanel(
@@ -423,7 +423,7 @@ class _AnchorCalendarCellState extends State<_AnchorCalendarCell> {
                   : '未选日期：打开日历会滚到锚点月份 $anchorLabel（不自动选中）',
               style: TextStyle(
                 fontSize: 12,
-                color: TTheme.of(context).fontGyColor3,
+                color: context.tTheme.fontGyColor3,
               ),
             ),
           ),
@@ -455,7 +455,7 @@ class _AnchorPickerHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     final anchorLabel = '${anchorMonth.year}年${anchorMonth.month}月';
     final selectedLabel = _formatYmd(selected);
 
@@ -585,14 +585,14 @@ class _MultipleSummary extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: TTheme.of(context).brandColor1,
+                        color: context.tTheme.brandColor1,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
                         _formatYmdFull(d),
                         style: TextStyle(
                             fontSize: 12,
-                            color: TTheme.of(context).brandColor7),
+                            color: context.tTheme.brandColor7),
                       ),
                     ))
                 .toList(),
@@ -627,7 +627,7 @@ class _RangeSummary extends StatelessWidget {
                 value: hasStart ? _formatYmdFull(selected[0]) : null),
           ),
           Icon(Icons.arrow_forward,
-              size: 16, color: TTheme.of(context).fontGyColor3),
+              size: 16, color: context.tTheme.fontGyColor3),
           const SizedBox(width: 12),
           Expanded(
             child: _RangeSegment(
@@ -639,13 +639,13 @@ class _RangeSummary extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: TTheme.of(context).brandColor1,
+                color: context.tTheme.brandColor1,
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
                 '共 $days 天',
                 style: TextStyle(
-                    fontSize: 12, color: TTheme.of(context).brandColor7),
+                    fontSize: 12, color: context.tTheme.brandColor7),
               ),
             ),
         ],
@@ -667,7 +667,7 @@ class _RangeSegment extends StatelessWidget {
       children: [
         Text(label,
             style: TextStyle(
-                fontSize: 12, color: TTheme.of(context).fontGyColor3)),
+                fontSize: 12, color: context.tTheme.fontGyColor3)),
         const SizedBox(height: 2),
         Text(
           value ?? '--',
@@ -675,8 +675,8 @@ class _RangeSegment extends StatelessWidget {
             fontSize: 15,
             fontWeight: FontWeight.w500,
             color: value != null
-                ? TTheme.of(context).fontGyColor1
-                : TTheme.of(context).fontGyColor3,
+                ? context.tTheme.fontGyColor1
+                : context.tTheme.fontGyColor3,
           ),
         ),
       ],
@@ -724,7 +724,7 @@ class _StyleDemoState extends State<_StyleDemo> {
     final label = isSpecial ? _specialDays[date.day] : null;
     final selected =
         subtitleContext.selectType == DateSelectType.selected;
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     final Color? color = selected
         ? theme.fontWhColor1
         : (isSpecial ? theme.errorColor6 : null);
@@ -747,7 +747,7 @@ class _StyleDemoState extends State<_StyleDemo> {
 
     if (isToday && cell.selectType != DateSelectType.selected) {
       return _CustomCellContainer(
-        color: TTheme.of(context).brandColor4,
+        color: context.tTheme.brandColor4,
         child: const Text(
           '今天',
           style: TextStyle(
@@ -759,7 +759,7 @@ class _StyleDemoState extends State<_StyleDemo> {
     }
     if (cell.selectType == DateSelectType.selected) {
       return _CustomCellContainer(
-        color: TTheme.of(context).successColor8,
+        color: context.tTheme.successColor8,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -967,7 +967,7 @@ class _LunarCalendarDemoState extends State<_LunarCalendarDemo> {
                   '选中：${_formatYmd(selected)}',
                   style: TextStyle(
                     fontSize: 12,
-                    color: TTheme.of(context).fontGyColor3,
+                    color: context.tTheme.fontGyColor3,
                   ),
                 ),
               ),
@@ -1197,7 +1197,7 @@ class _LunarControlBarState extends State<_LunarControlBar> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     final lunarInfo = widget.getLunarInfo(_currentMonth);
     final lunarMonth = lunarInfo != null
         ? '${lunarInfo.yearText}年 ${lunarInfo.monthText}'

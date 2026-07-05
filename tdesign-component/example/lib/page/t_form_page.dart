@@ -48,9 +48,9 @@ class _TFormPageState extends State<TFormPage> {
       context: context,
       builder: (context) => Container(
         decoration: BoxDecoration(
-          color: TTheme.of(context).bgColorContainer,
+          color: context.tTheme.bgColorContainer,
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(TTheme.of(context).radiusExtraLarge),
+            top: Radius.circular(context.tTheme.radiusExtraLarge),
           ),
         ),
         child: SafeArea(
@@ -59,7 +59,7 @@ class _TFormPageState extends State<TFormPage> {
             children: [
               // 标题栏
               Padding(
-                padding: EdgeInsets.all(TTheme.of(context).spacer16),
+                padding: EdgeInsets.all(context.tTheme.spacer16),
                 child: Row(
                   children: [
                     GestureDetector(
@@ -67,7 +67,7 @@ class _TFormPageState extends State<TFormPage> {
                       child: Text(
                         '取消',
                         style: TextStyle(
-                          color: TTheme.of(context).textColorSecondary,
+                          color: context.tTheme.textColorSecondary,
                         ),
                       ),
                     ),
@@ -77,7 +77,7 @@ class _TFormPageState extends State<TFormPage> {
                           '选择时间',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            color: TTheme.of(context).textColorPrimary,
+                            color: context.tTheme.textColorPrimary,
                           ),
                         ),
                       ),
@@ -87,7 +87,7 @@ class _TFormPageState extends State<TFormPage> {
                       child: Text(
                         '确认',
                         style: TextStyle(
-                          color: TTheme.of(context).brandNormalColor,
+                          color: context.tTheme.brandNormalColor,
                         ),
                       ),
                     ),
@@ -389,7 +389,7 @@ class _TFormPageState extends State<TFormPage> {
                   ),
                 ),
                 controller: _textControllers[0],
-                additionInfoColor: TTheme.of(context).errorColor6,
+                additionInfoColor: context.tTheme.errorColor6,
                 showBottomDivider: false,
                 readOnly: _formDisableState,
                 onChanged: (val) {
@@ -690,7 +690,7 @@ class _TFormPageState extends State<TFormPage> {
         onSubmit: onSubmit,
         items: [
           TFormItem(
-            backgroundColor: TTheme.of(context).brandNormalColor,
+            backgroundColor: context.tTheme.brandNormalColor,
             label: '用户名',
             name: 'name',
             type: TFormItemType.input,
@@ -708,10 +708,10 @@ class _TFormPageState extends State<TFormPage> {
                     contentPadding: const EdgeInsets.all(0),
                     hintStyle: TextStyle(
                         color:
-                            TTheme.of(context).fontGyColor3.withOpacity(0.4))),
+                            context.tTheme.fontGyColor3.withOpacity(0.4))),
                 controller: _textControllers[0],
-                backgroundColor: TTheme.of(context).brandNormalColor,
-                additionInfoColor: TTheme.of(context).errorColor6,
+                backgroundColor: context.tTheme.brandNormalColor,
+                additionInfoColor: context.tTheme.errorColor6,
                 showBottomDivider: false,
                 readOnly: _formDisableState,
                 onChanged: (val) {
@@ -724,7 +724,7 @@ class _TFormPageState extends State<TFormPage> {
           ),
           TFormItem(
             label: '密码',
-            backgroundColor: TTheme.of(context).brandNormalColor,
+            backgroundColor: context.tTheme.brandNormalColor,
             name: 'password',
             type: TFormItemType.input,
             labelWidth: 82.0,
@@ -736,11 +736,11 @@ class _TFormPageState extends State<TFormPage> {
                     border: InputBorder.none,
                     hintStyle: TextStyle(
                         color:
-                            TTheme.of(context).fontGyColor3.withOpacity(0.4))),
+                            context.tTheme.fontGyColor3.withOpacity(0.4))),
                 layout: TInputLayout.normal,
                 controller: _textControllers[1],
                 obscureText: !browseOn,
-                backgroundColor: TTheme.of(context).brandNormalColor,
+                backgroundColor: context.tTheme.brandNormalColor,
                 showClearButton: false,
                 readOnly: _formDisableState,
                 showBottomDivider: false,
@@ -755,7 +755,7 @@ class _TFormPageState extends State<TFormPage> {
           TFormItem(
             label: '性别',
             name: 'gender',
-            backgroundColor: TTheme.of(context).brandNormalColor,
+            backgroundColor: context.tTheme.brandNormalColor,
             type: TFormItemType.radios,
             labelWidth: 82.0,
             showErrorMessage: true,
@@ -768,8 +768,8 @@ class _TFormPageState extends State<TFormPage> {
                 return TRadio(
                   id: entry.key,
                   title: entry.value,
-                  backgroundColor: TTheme.of(context).brandNormalColor,
-                  selectColor: TTheme.of(context).brandFocusColor,
+                  backgroundColor: context.tTheme.brandNormalColor,
+                  selectColor: context.tTheme.brandFocusColor,
                   radioStyle: TRadioStyle.circle,
                   showDivider: false,
                   spacing: 4,
@@ -786,7 +786,7 @@ class _TFormPageState extends State<TFormPage> {
           TFormItem(
             label: '生日',
             name: 'birth',
-            backgroundColor: TTheme.of(context).brandNormalColor,
+            backgroundColor: context.tTheme.brandNormalColor,
             labelWidth: 82.0,
             type: TFormItemType.dateTimePicker,
             contentAlign: TextAlign.left,
@@ -815,7 +815,7 @@ class _TFormPageState extends State<TFormPage> {
               label: '年限',
               name: 'age',
               labelWidth: 82.0,
-              backgroundColor: TTheme.of(context).brandNormalColor,
+              backgroundColor: context.tTheme.brandNormalColor,
               type: TFormItemType.stepper,
               itemNotifier: _itemNotifier['age'],
               child: Padding(
@@ -836,7 +836,7 @@ class _TFormPageState extends State<TFormPage> {
             tipAlign: TextAlign.left,
             type: TFormItemType.rate,
             labelWidth: 82.0,
-            backgroundColor: TTheme.of(context).brandNormalColor,
+            backgroundColor: context.tTheme.brandNormalColor,
             itemNotifier: _itemNotifier['description'],
             child: Align(
               alignment: Alignment.centerLeft,
@@ -861,7 +861,7 @@ class _TFormPageState extends State<TFormPage> {
               labelWidth: 82.0,
               name: 'resume',
               type: TFormItemType.textarea,
-              backgroundColor: TTheme.of(context).brandNormalColor,
+              backgroundColor: context.tTheme.brandNormalColor,
               itemNotifier: _itemNotifier['resume'],
               child: Padding(
                 padding:
@@ -884,7 +884,7 @@ class _TFormPageState extends State<TFormPage> {
               label: '上传图片',
               name: 'photo',
               labelWidth: 82.0,
-              backgroundColor: TTheme.of(context).brandNormalColor,
+              backgroundColor: context.tTheme.brandNormalColor,
               type: TFormItemType.upLoadImg,
               itemNotifier: _itemNotifier['photo'],
               child: Padding(

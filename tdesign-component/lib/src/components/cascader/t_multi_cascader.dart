@@ -146,12 +146,12 @@ class _TMultiCascaderState extends State<TMultiCascader>
       width: maxWidth,
       height: widget.cascaderHeight,
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+        color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(
-              widget.topRadius ?? TTheme.of(context).radiusExtraLarge),
+              widget.topRadius ?? context.tTheme.radiusExtraLarge),
           topRight: Radius.circular(
-              widget.topRadius ?? TTheme.of(context).radiusExtraLarge),
+              widget.topRadius ?? context.tTheme.radiusExtraLarge),
         ),
       ),
       child: Column(
@@ -277,9 +277,9 @@ class _TMultiCascaderState extends State<TMultiCascader>
                     widget.title,
                     style: widget.titleStyle ??
                         TextStyle(
-                            fontSize: TTheme.of(context).fontTitleLarge!.size,
+                            fontSize: context.tTheme.fontTitleLarge!.size,
                             fontWeight: FontWeight.w700,
-                            color: TTheme.of(context).textColorPrimary),
+                            color: context.tTheme.textColorPrimary),
                   ),
                 ),
           Positioned(
@@ -310,16 +310,16 @@ class _TMultiCascaderState extends State<TMultiCascader>
                           (widget.closeText == null
                               ? Icon(
                                   TIcons.close,
-                                  color: TTheme.of(context).textColorPrimary,
+                                  color: context.tTheme.textColorPrimary,
                                 )
                               : TText(
                                   widget.closeText,
                                   style: TextStyle(
-                                      fontSize: TTheme.of(context)
+                                      fontSize: context.tTheme
                                           .fontTitleMedium!
                                           .size,
                                       color:
-                                          TTheme.of(context).textColorPrimary),
+                                          context.tTheme.textColorPrimary),
                                 )),
                     ),
                   ))),
@@ -339,7 +339,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
         decoration: BoxDecoration(
             border: Border(
                 bottom: BorderSide(
-                    color: TTheme.of(context).componentStrokeColor,
+                    color: context.tTheme.componentStrokeColor,
                     width: 0.5))),
         width: maxWidth,
         child: ListView(
@@ -373,8 +373,8 @@ class _TMultiCascaderState extends State<TMultiCascader>
                             style: TextStyle(
                                 fontSize: 14,
                                 color: _currentTabIndex == index
-                                    ? TTheme.of(context).brandNormalColor
-                                    : TTheme.of(context).textColorPrimary),
+                                    ? context.tTheme.brandNormalColor
+                                    : context.tTheme.textColorPrimary),
                             fontWeight: _currentTabIndex == index
                                 ? FontWeight.w600
                                 : FontWeight.w400,
@@ -384,7 +384,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
                           padding: const EdgeInsets.only(left: 2, right: 16),
                           child: Icon(
                             TIcons.chevron_right,
-                            color: TTheme.of(context).textColorPrimary,
+                            color: context.tTheme.textColorPrimary,
                           ),
                         ),
                       ],
@@ -400,7 +400,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-                  color: TTheme.of(context).componentStrokeColor,
+                  color: context.tTheme.componentStrokeColor,
                   width: 0.5))),
       width: maxWidth,
       child: TCustomTab(
@@ -430,8 +430,8 @@ class _TMultiCascaderState extends State<TMultiCascader>
                   child: TText(
                     widget.subTitles![_level],
                     style: TextStyle(
-                        color: TTheme.of(context).textColorPlaceholder),
-                    font: TTheme.of(context).fontTitleSmall,
+                        color: context.tTheme.textColorPlaceholder),
+                    font: context.tTheme.fontTitleSmall,
                   ) //,
                   ),
             Expanded(
@@ -510,7 +510,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
                               if (_selectTabValue == item.value)
                                 Icon(
                                   TIcons.check,
-                                  color: TTheme.of(context).brandNormalColor,
+                                  color: context.tTheme.brandNormalColor,
                                 )
                             ],
                           )),
@@ -620,7 +620,7 @@ class LeftLineWidget extends StatelessWidget {
       child: CustomPaint(
         painter: LeftLinePainter(
             isShowTopLine: isShowTopLine,
-            topLineColor: topLineColor ?? TTheme.of(context).brandNormalColor,
+            topLineColor: topLineColor ?? context.tTheme.brandNormalColor,
             isCircleFill: isCircleFill),
       ),
     );

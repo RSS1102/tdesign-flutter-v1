@@ -12,14 +12,13 @@ void main() {
     final themeExtensions = <ThemeExtension>[
       if (buttonTheme != null) buttonTheme,
     ];
-    return TTheme(
-      data: TThemeData.defaultData(),
-      child: MaterialApp(
-        theme: ThemeData(
-          extensions: themeExtensions,
-        ),
-        home: Scaffold(body: Center(child: child)),
+    // 注意：必须通过 MaterialApp.theme 传递 extensions，
+    // 用外层 Theme 包 MaterialApp 会被 MaterialApp 默认 ThemeData.light() 覆盖，导致 extension 丢失。
+    return MaterialApp(
+      theme: ThemeData(
+        extensions: [TThemeData.defaultData(), ...themeExtensions],
       ),
+      home: Scaffold(body: Center(child: child)),
     );
   }
 
@@ -429,10 +428,16 @@ void main() {
         ),
       ));
 
-      // 渐变存在时应该包了一层 Container
+      // 渐变模式不使用 ElevatedButton，而是 Container + gradient 装饰
       expect(find.byType(TButton), findsOneWidget);
-      expect(find.byType(ElevatedButton), findsOneWidget);
+      expect(find.byType(ElevatedButton), findsNothing);
       expect(find.byType(Container), findsWidgets);
+      // 验证存在带 gradient 的 BoxDecoration
+      final containers = tester.widgetList<Container>(find.byType(Container));
+      final hasGradientBox = containers.any(
+        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null,
+      );
+      expect(hasGradientBox, isTrue);
     });
 
     testWidgets('渐变时背景色为透明', (tester) async {
@@ -448,11 +453,11 @@ void main() {
         ),
       ));
 
-      // elevated button 的 backgroundColor 在渐变时被强制为透明
-      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
-      final bgColor = button.style?.backgroundColor?.resolve({});
-      // 渐变时应为透明
-      expect(bgColor, isNotNull);
+      // 渐变模式不使用 ElevatedButton（backgroundColor 被强制 null 以触发 MaterialType.transparency）
+      expect(find.byType(ElevatedButton), findsNothing);
+      // 验证使用了透明 Material（替代 ElevatedButton 的不透明背景）
+      final materials = tester.widgetList<Material>(find.byType(Material));
+      expect(materials.any((m) => m.type == MaterialType.transparency), isTrue);
     });
 
     testWidgets('渐变 + margin 组合正常', (tester) async {
@@ -470,7 +475,9 @@ void main() {
       ));
 
       expect(find.text('渐变边距'), findsOneWidget);
-      expect(find.byType(ElevatedButton), findsOneWidget);
+      // 渐变模式不使用 ElevatedButton，margin 外包 Container
+      expect(find.byType(ElevatedButton), findsNothing);
+      expect(find.byType(Container), findsWidgets);
     });
 
     testWidgets('无渐变时不额外包裹 Container', (tester) async {

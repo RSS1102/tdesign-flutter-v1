@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
 import 't_loading.dart';
 import 't_loading_theme_data.dart';
@@ -22,14 +23,21 @@ class TLoadingController {
     }
 
     _overlayEntry = OverlayEntry(builder: (context) {
+      final loadingWidget = child ??
+          TLoading(
+            size: size,
+            icon: icon,
+            text: text ?? context.resource.loading,
+          );
+      // v1.0 按文档 §2.1：子树覆盖用 mergeExtension，禁止构造器 themeData
+      if (themeData == null) {
+        return Center(child: loadingWidget);
+      }
       return Center(
-        child: child ??
-            TLoading(
-              size: size,
-              icon: icon,
-              text: text ?? context.resource.loading,
-              themeData: themeData,
-            ),
+        child: Theme(
+          data: Theme.of(context).mergeExtension(themeData),
+          child: loadingWidget,
+        ),
       );
     });
 

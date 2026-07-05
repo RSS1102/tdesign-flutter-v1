@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 't_popover_theme_data.dart';
 import '../../../tdesign_flutter.dart';
 
+/// 气泡弹层定位方向
 enum TPopoverPlacement {
   /// 上左
   topLeft,
@@ -40,9 +41,13 @@ enum TPopoverPlacement {
   leftTop
 }
 
+/// 点击事件回调
 typedef OnTap = Function(String? content);
+
+/// 长按事件回调
 typedef OnLongTap = Function(String? content);
 
+/// 气泡弹层 Widget
 class TPopoverWidget extends StatefulWidget {
   const TPopoverWidget({
     super.key,
@@ -216,28 +221,28 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
   void _initTheme() {
     switch (widget.colorScheme) {
       case TPopoverColorScheme.info:
-        _color = TTheme.of(widget.context).brandNormalColor;
-        _backgroundColor = TTheme.of(widget.context).brandLightColor;
+        _color = widget.context.tTheme.brandNormalColor;
+        _backgroundColor = widget.context.tTheme.brandLightColor;
         break;
       case TPopoverColorScheme.success:
-        _color = TTheme.of(widget.context).successNormalColor;
-        _backgroundColor = TTheme.of(widget.context).successLightColor;
+        _color = widget.context.tTheme.successNormalColor;
+        _backgroundColor = widget.context.tTheme.successLightColor;
         break;
       case TPopoverColorScheme.warning:
-        _color = TTheme.of(widget.context).warningNormalColor;
-        _backgroundColor = TTheme.of(widget.context).warningLightColor;
+        _color = widget.context.tTheme.warningNormalColor;
+        _backgroundColor = widget.context.tTheme.warningLightColor;
         break;
       case TPopoverColorScheme.error:
-        _color = TTheme.of(widget.context).errorNormalColor;
-        _backgroundColor = TTheme.of(widget.context).errorLightColor;
+        _color = widget.context.tTheme.errorNormalColor;
+        _backgroundColor = widget.context.tTheme.errorLightColor;
         break;
       case TPopoverColorScheme.light:
-        _color = TTheme.of(widget.context).grayColor14;
-        _backgroundColor = TTheme.of(widget.context).whiteColor1;
+        _color = widget.context.tTheme.grayColor14;
+        _backgroundColor = widget.context.tTheme.whiteColor1;
         break;
       default:
-        _color = TTheme.of(widget.context).whiteColor1;
-        _backgroundColor = TTheme.of(widget.context).grayColor14;
+        _color = widget.context.tTheme.whiteColor1;
+        _backgroundColor = widget.context.tTheme.grayColor14;
         break;
     }
   }
@@ -395,13 +400,21 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
   }
 
   Widget _getContainerWidget() {
+    // 当未指定 width 且使用纯文本内容时，用 TextPainter 测量的宽度作为约束，
+    // 确保长文本能在 maxWidth 范围内换行（否则 Container 无宽度约束，Text 会单行无限延伸）
+    var effectiveWidth = widget.width;
+    if (effectiveWidth == null && widget.contentWidget == null) {
+      final textWidth = _getTextSize().width;
+      final paddingHorizontal = widget.padding != null ? widget.padding!.horizontal : 24;
+      effectiveWidth = textWidth + paddingHorizontal;
+    }
     return Container(
-      width: widget.width,
+      width: effectiveWidth,
       height: widget.height,
       padding: widget.padding ?? const EdgeInsets.all(12),
       decoration: BoxDecoration(
           borderRadius: widget.radius ??
-              BorderRadius.circular(TTheme.of(context).radiusDefault),
+              BorderRadius.circular(context.tTheme.radiusDefault),
           color: _backgroundColor,
           boxShadow: const [
             BoxShadow(

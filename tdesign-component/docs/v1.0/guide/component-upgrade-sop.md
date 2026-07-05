@@ -144,7 +144,7 @@ ls tdesign-component/lib/src/components/{组件}/
 | `style`（枚举色） | `colorScheme` | |
 | `enable` / `disabled` | 按控制类 → §3.2 | |
 | `*Style`（如 TButtonStyle） | `T{Xxx}ThemeData` | 不 export `*Style` |
-| `TTheme.of` | `Theme.of(context)` + `extension<T{Xxx}ThemeData>()` | |
+| `TTheme.of` | `context.tTheme`（全局 Token）/ `Theme.of(context).extension<T{Xxx}ThemeData>()`（组件 Theme） | TTheme widget 已删除 |
 | `text: '...'` / `label: '...'` | `child: Text('...')` | String → Widget? |
 | 构造器 L4（色/间距/圆角） | `T{Xxx}ThemeData` 或 P0 `style`/`decoration` 逃逸舱 | |
 
@@ -343,7 +343,7 @@ class T{Xxx}Resolve {
     final themeColor = theme?.color;
     if (themeColor != null) return themeColor;
     // L3：colorScheme × 状态映射到 Token
-    final tTheme = TTheme.of(context);
+    final tTheme = context.tTheme;
     final scheme = colorScheme ?? T{Xxx}ColorScheme.primary;
     return isDisabled
         ? _disabledColor(scheme, tTheme)
@@ -374,7 +374,7 @@ class T{Xxx}Resolve {
 - 类加私有构造 `T{Xxx}Resolve._();`，所有方法 `static`
 - 每个 resolve 方法顶部注释写清优先级链
 - 颜色映射用 `switch` 表达式（Dart 3+），正常态/禁用态分两个私有方法
-- Token 读取用 `TTheme.of(context)`（v1.0 仍保留 Token 读取入口；Theme 注入用 `Theme.of(context).extension`）
+- Token 读取用 `context.tTheme`（底层 `Theme.of(context).extension<TThemeData>()`，TTheme widget 已删除）；组件 Theme 注入用 `Theme.of(context).extension<T{Xxx}ThemeData>()`
 
 ### 4.4 export 规则
 
@@ -451,7 +451,7 @@ export 'src/components/{xxx}/t_{xxx}_theme_data.dart' show T{Xxx}ThemeData;
 
 1. **基础用法**：v1.0 构造器各参数演示
 2. **配色/尺寸对比**：横向滚动卡片或 Row/Wrap 展示
-3. **Theme 子树注入 demo**：用 `Theme(data: Theme.of(context).copyWith(extensions: [...]), child: T{Xxx}(...))` 演示子树覆盖
+3. **Theme 子树注入 demo**：用 `Theme(data: Theme.of(context).mergeExtension(T{Xxx}ThemeData(...)), child: T{Xxx}(...))` 演示子树覆盖
 4. **禁用态**（A/B/C/F 类）：`onPressed: null` / `onChanged: null` / `enabled: false`
 5. **交互**（若有）：拖拽、显隐、回调
 
@@ -501,16 +501,13 @@ Theme.of(context).mergeExtension(T{Xxx}ThemeData(...))
 
 ### 7.2 内嵌 TButton 的组件（T2 组合）
 
-TFab 内嵌 TButton 时，注入 shape 不能通过 TButton 构造器（TButton shape 由 `TButtonThemeData.shape` 控制），必须：
+TFab 内嵌 TButton 时，注入 shape 不能通过 TButton 构造器（TButton shape 由 `TButtonThemeData.shape` 控制），必须用 `mergeExtension` 合并覆盖（保留父级所有 Extension）：
 
 ```dart
 Theme(
-  data: Theme.of(context).copyWith(
-    extensions: [
-      ...Theme.of(context).extensions.values, // 保留父级
-      (Theme.of(context).extension<TButtonThemeData>() ?? const TButtonThemeData())
-          .copyWith(shape: TButtonShape.circle),
-    ],
+  data: Theme.of(context).mergeExtension(
+    (Theme.of(context).extension<TButtonThemeData>() ?? const TButtonThemeData())
+        .copyWith(shape: TButtonShape.circle),
   ),
   child: TButton(...),
 )

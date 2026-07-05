@@ -257,8 +257,8 @@ void main() {
       var tapped = false;
       await tester.pumpWidget(
         MaterialApp(
-          home: TTheme(
-            data: TThemeData.defaultData(),
+          home: Theme(
+            data: ThemeData(extensions: [TThemeData.defaultData()]),
             child: Scaffold(
               body: TToolbarPressable(
                 onTap: () => tapped = true,
@@ -274,8 +274,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: TTheme(
-            data: TThemeData.defaultData(),
+          home: Theme(
+            data: ThemeData(extensions: [TThemeData.defaultData()]),
             child: Scaffold(
               body: TToolbarPressable(
                 onTap: null,

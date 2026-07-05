@@ -221,7 +221,7 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
           alignment: Alignment.centerLeft,
           child: Text(
             widget.content ?? '',
-            style: TextStyle(color: TTheme.of(context).textColorPrimary),
+            style: TextStyle(color: context.tTheme.textColorPrimary),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -230,7 +230,7 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
         final textPainter = TextPainter(
           text: TextSpan(
               text: widget.content ?? '',
-              style: TextStyle(color: TTheme.of(context).textColorPrimary)),
+              style: TextStyle(color: context.tTheme.textColorPrimary)),
           maxLines: 1,
           textDirection: TextDirection.ltr,
         )..layout(minWidth: 0, maxWidth: double.infinity);
@@ -275,7 +275,7 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
                           child: Text(
                             widget.content ?? '',
                             style: TextStyle(
-                                color: TTheme.of(context).textColorPrimary),
+                                color: context.tTheme.textColorPrimary),
                             maxLines: 1,
                           ),
                         ),
@@ -296,22 +296,22 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
           case TMessageVariant.info:
             return Icon(
               TIcons.error_circle_filled,
-              color: TTheme.of(context).brandNormalColor,
+              color: context.tTheme.brandNormalColor,
             );
           case TMessageVariant.success:
             return Icon(
               TIcons.check_circle_filled,
-              color: TTheme.of(context).successNormalColor,
+              color: context.tTheme.successNormalColor,
             );
           case TMessageVariant.warning:
             return Icon(
               TIcons.error_circle_filled,
-              color: TTheme.of(context).warningNormalColor,
+              color: context.tTheme.warningNormalColor,
             );
           case TMessageVariant.error:
             return Icon(
               TIcons.error_circle_filled,
-              color: TTheme.of(context).errorNormalColor,
+              color: context.tTheme.errorNormalColor,
             );
           case null:
             return const SizedBox.shrink();
@@ -335,7 +335,7 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
           onTap: clickCloseButton,
           child: Icon(
             TIcons.close,
-            color: TTheme.of(context).textColorPlaceholder,
+            color: context.tTheme.textColorPlaceholder,
           ),
         );
       } else if (widget.closeBtn is String) {
@@ -362,7 +362,7 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
               variant: TLinkType.basic,
               uri: widget.link.uri,
               size: TLinkSize.medium,
-              color: widget.link.color ?? TTheme.of(context).brandNormalColor,
+              color: widget.link.color ?? context.tTheme.brandNormalColor,
               onPressed: clickLink,
             ));
       } else if (widget.link is String) {
@@ -373,7 +373,7 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
               child: Text(
                 widget.link ?? '',
                 style: TextStyle(
-                  color: TTheme.of(context).brandNormalColor,
+                  color: context.tTheme.brandNormalColor,
                   fontSize: 14,
                 ),
                 maxLines: 1,
@@ -398,10 +398,10 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
                 height: 48,
                 padding: const EdgeInsets.fromLTRB(16, 13, 16, 13),
                 decoration: BoxDecoration(
-                    color: TTheme.of(context).bgColorContainer,
+                    color: context.tTheme.bgColorContainer,
                     borderRadius: BorderRadius.circular(
-                        TTheme.of(context).radiusDefault),
-                    boxShadow: TTheme.of(context).shadowsMiddle),
+                        context.tTheme.radiusDefault),
+                    boxShadow: context.tTheme.shadowsMiddle),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

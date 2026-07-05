@@ -39,7 +39,7 @@ class TTextPage extends StatelessWidget {
             desc: '中文居中-系统字体',
             builder: (context) {
               return Container(
-                color: TTheme.of(context).brandFocusColor,
+                color: context.tTheme.brandFocusColor,
                 child: Text(exampleTxt),
               );
             }),
@@ -47,7 +47,7 @@ class TTextPage extends StatelessWidget {
             desc: '中文居中-TD字体',
             builder: (context) {
               return Container(
-                color: TTheme.of(context).brandFocusColor,
+                color: context.tTheme.brandFocusColor,
                 child: TText(
                   exampleTxt,
                   forceVerticalCenter: true,
@@ -76,9 +76,9 @@ class TTextPage extends StatelessWidget {
   Widget _buildGeneralProp(BuildContext context) {
     return TText(
       exampleTxt,
-      font: TTheme.of(context).fontHeadlineLarge,
-      textColor: TTheme.of(context).brandNormalColor,
-      backgroundColor: TTheme.of(context).brandFocusColor,
+      font: context.tTheme.fontHeadlineLarge,
+      textColor: context.tTheme.brandNormalColor,
+      backgroundColor: context.tTheme.brandFocusColor,
     );
   }
 
@@ -86,9 +86,9 @@ class TTextPage extends StatelessWidget {
   Widget _buildStyleCoverColor(BuildContext context) {
     return TText(
       exampleTxt,
-      font: TTheme.of(context).fontBodyLarge,
-      textColor: TTheme.of(context).brandNormalColor,
-      style: TextStyle(color: TTheme.of(context).errorNormalColor),
+      font: context.tTheme.fontBodyLarge,
+      textColor: context.tTheme.brandNormalColor,
+      style: TextStyle(color: context.tTheme.errorNormalColor),
     );
   }
 
@@ -96,8 +96,8 @@ class TTextPage extends StatelessWidget {
   Widget _buildStyleCoverColorAndFont(BuildContext context) {
     return TText(
       exampleTxt,
-      font: TTheme.of(context).fontBodyLarge,
-      textColor: TTheme.of(context).brandNormalColor,
+      font: context.tTheme.fontBodyLarge,
+      textColor: context.tTheme.brandNormalColor,
     );
   }
 
@@ -107,25 +107,25 @@ class TTextPage extends StatelessWidget {
       TextSpan(children: [
         TTextSpan(
             text: 'TTextSpan1',
-            font: TTheme.of(context).fontTitleExtraLarge,
-            textColor: TTheme.of(context).warningNormalColor,
+            font: context.tTheme.fontTitleExtraLarge,
+            textColor: context.tTheme.warningNormalColor,
             isTextThrough: true,
-            lineThroughColor: TTheme.of(context).brandNormalColor,
-            style: TextStyle(color: TTheme.of(context).errorNormalColor)),
+            lineThroughColor: context.tTheme.brandNormalColor,
+            style: TextStyle(color: context.tTheme.errorNormalColor)),
         TextSpan(
             text: 'TextSpan2',
             style: TextStyle(
-                fontSize: 14, color: TTheme.of(context).brandNormalColor)),
+                fontSize: 14, color: context.tTheme.brandNormalColor)),
         const WidgetSpan(
             child: Icon(
           TIcons.setting,
           size: 24,
         )),
       ]),
-      font: TTheme.of(context).fontBodyLarge,
-      textColor: TTheme.of(context).brandNormalColor,
+      font: context.tTheme.fontBodyLarge,
+      textColor: context.tTheme.brandNormalColor,
       style:
-          TextStyle(color: TTheme.of(context).errorNormalColor, fontSize: 32),
+          TextStyle(color: context.tTheme.errorNormalColor, fontSize: 32),
     );
   }
 
@@ -133,7 +133,7 @@ class TTextPage extends StatelessWidget {
   Widget _getSystemText(BuildContext context) {
     return TText(
       exampleTxt,
-      backgroundColor: TTheme.of(context).brandFocusColor,
+      backgroundColor: context.tTheme.brandFocusColor,
     ).getRawText(context: context);
   }
 
@@ -143,7 +143,7 @@ class TTextPage extends StatelessWidget {
       '中华人民共和国腾讯科技',
       // font: Font(size: 100, lineHeight: 100),
       forceVerticalCenter: true,
-      backgroundColor: TTheme.of(context).brandFocusColor,
+      backgroundColor: context.tTheme.brandFocusColor,
     );
   }
 
@@ -168,7 +168,7 @@ class TTextPage extends StatelessWidget {
         extensions: [
           ...Theme.of(context).extensions.values,
           TTextThemeData(
-            defaultTextColor: TTheme.of(context).brandNormalColor,
+            defaultTextColor: context.tTheme.brandNormalColor,
             forceVerticalCenter: true,
           ),
         ],
@@ -178,7 +178,7 @@ class TTextPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            color: TTheme.of(context).brandFocusColor,
+            color: context.tTheme.brandFocusColor,
             child: TText(exampleTxt),
           ),
           const SizedBox(height: 4),
@@ -186,7 +186,7 @@ class TTextPage extends StatelessWidget {
             '↑ 继承 TTextThemeData 默认颜色和强制居中',
             style: TextStyle(
               fontSize: 12,
-              color: TTheme.of(context).textColorSecondary,
+              color: context.tTheme.textColorSecondary,
             ),
           ),
         ],
@@ -207,13 +207,13 @@ class CustomPaddingText extends StatelessWidget {
         TText(
           '中华人民共和国腾讯科技fgjpqy',
           forceVerticalCenter: true,
-          backgroundColor: TTheme.of(context).brandFocusColor,
+          backgroundColor: context.tTheme.brandFocusColor,
         ),
         TText(
           'English',
-          font: TTheme.of(context).fontHeadlineLarge,
+          font: context.tTheme.fontHeadlineLarge,
           forceVerticalCenter: true,
-          backgroundColor: TTheme.of(context).brandFocusColor,
+          backgroundColor: context.tTheme.brandFocusColor,
         ),
       ],
     );

@@ -11,6 +11,7 @@ import 't_swipe_cell_theme_data.dart';
 
 export 'package:flutter_slidable/flutter_slidable.dart';
 
+/// 滑动方向
 enum TSwipeDirection { right, left }
 
 /// 滑动单元格组件
@@ -58,6 +59,7 @@ class TSwipeCell extends StatefulWidget {
         .merge(themeData);
   }
 
+  /// 获取滑动动画时长
   Duration getDuration(BuildContext context) =>
       _effectiveTheme(context).duration ?? const Duration(milliseconds: 200);
 

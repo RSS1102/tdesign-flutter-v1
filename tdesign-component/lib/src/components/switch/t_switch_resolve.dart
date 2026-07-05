@@ -38,7 +38,7 @@ class TSwitchResolve {
   }) {
     if (instanceColor != null) return instanceColor;
     if (theme?.trackOnColor != null) return theme!.trackOnColor!;
-    return TTheme.of(context).brandNormalColor;
+    return context.tTheme.brandNormalColor;
   }
 
   /// 解析轨道关闭颜色
@@ -49,7 +49,7 @@ class TSwitchResolve {
   }) {
     if (instanceColor != null) return instanceColor;
     if (theme?.trackOffColor != null) return theme!.trackOffColor!;
-    return TTheme.of(context).textDisabledColor;
+    return context.tTheme.textDisabledColor;
   }
 
   /// 解析Thumb开启颜色
@@ -62,7 +62,7 @@ class TSwitchResolve {
     if (theme?.thumbContentOnColor != null) {
       return theme!.thumbContentOnColor!;
     }
-    return TTheme.of(context).brandNormalColor;
+    return context.tTheme.brandNormalColor;
   }
 
   /// 解析Thumb关闭颜色
@@ -75,7 +75,7 @@ class TSwitchResolve {
     if (theme?.thumbContentOffColor != null) {
       return theme!.thumbContentOffColor!;
     }
-    return TTheme.of(context).textDisabledColor;
+    return context.tTheme.textDisabledColor;
   }
 
   /// 解析Thumb开启字体样式

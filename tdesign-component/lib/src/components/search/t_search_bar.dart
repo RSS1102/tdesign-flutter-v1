@@ -163,8 +163,8 @@ class _TSearchBarState extends State<TSearchBar>
 
   Font? getSize(BuildContext context) {
     return widget.mediumStyle
-        ? TTheme.of(context).fontBodyMedium
-        : TTheme.of(context).fontBodyLarge;
+        ? context.tTheme.fontBodyMedium
+        : context.tTheme.fontBodyLarge;
   }
 
   Widget actionBtn(BuildContext context, String? text,
@@ -178,7 +178,7 @@ class _TSearchBarState extends State<TSearchBar>
         child: Text(action!,
             style: TextStyle(
                 fontSize: getSize(context)?.size,
-                color: TTheme.of(context).brandNormalColor)),
+                color: context.tTheme.brandNormalColor)),
       ),
     );
   }
@@ -188,7 +188,7 @@ class _TSearchBarState extends State<TSearchBar>
     return Container(
       padding: widget.padding,
       height: widget.autoHeight ? double.infinity : 56,
-      color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+      color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
       child: Stack(alignment: AlignmentDirectional.center, children: [
         Row(
           children: [
@@ -197,7 +197,7 @@ class _TSearchBarState extends State<TSearchBar>
               child: Container(
                 height: double.infinity,
                 decoration: BoxDecoration(
-                    color: TTheme.of(context).bgColorSecondaryContainer,
+                    color: context.tTheme.bgColorSecondaryContainer,
                     borderRadius: BorderRadius.circular(
                         widget.style == TSearchBarStyle.square ? 4 : 28)),
                 child: Row(
@@ -209,7 +209,7 @@ class _TSearchBarState extends State<TSearchBar>
                     Icon(
                       TIcons.search,
                       size: widget.mediumStyle ? 20 : 24,
-                      color: TTheme.of(context).textColorPlaceholder,
+                      color: context.tTheme.textColorPlaceholder,
                     ),
                     const Padding(padding: EdgeInsets.only(left: 3)),
                     Expanded(
@@ -221,7 +221,7 @@ class _TSearchBarState extends State<TSearchBar>
                           key: _textFieldKey,
                           controller: widget.controller ?? controller,
                           autofocus: widget.autoFocus,
-                          cursorColor: TTheme.of(context).brandNormalColor,
+                          cursorColor: context.tTheme.brandNormalColor,
                           cursorHeight: widget.cursorHeight,
                           textAlign:
                               widget.alignment == TSearchBarAlignment.center
@@ -235,12 +235,12 @@ class _TSearchBarState extends State<TSearchBar>
                           style: TextStyle(
                               textBaseline: TextBaseline.ideographic,
                               fontSize: getSize(context)?.size,
-                              color: TTheme.of(context).textColorPrimary),
+                              color: context.tTheme.textColorPrimary),
                           decoration: InputDecoration(
                             hintText: widget.hintText,
                             hintStyle: TextStyle(
                               fontSize: getSize(context)?.size,
-                              color: TTheme.of(context).textColorPlaceholder,
+                              color: context.tTheme.textColorPlaceholder,
                               textBaseline: TextBaseline.ideographic,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -248,7 +248,7 @@ class _TSearchBarState extends State<TSearchBar>
                             border: InputBorder.none,
                             isCollapsed: true,
                             // filled: true,
-                            // fillColor: TTheme.of(context).bgColorSecondaryContainer,
+                            // fillColor: context.tTheme.bgColorSecondaryContainer,
                           ),
                           maxLines: 1,
                           textInputAction: widget.inputAction,
@@ -271,7 +271,7 @@ class _TSearchBarState extends State<TSearchBar>
                           child: Icon(
                             TIcons.close_circle_filled,
                             size: widget.mediumStyle ? 17 : 21,
-                            color: TTheme.of(context).textColorPlaceholder,
+                            color: context.tTheme.textColorPlaceholder,
                           )),
                     ),
                     const Padding(padding: EdgeInsets.only(right: 9)),
@@ -301,7 +301,7 @@ class _TSearchBarState extends State<TSearchBar>
                         child: Text(context.resource.cancel,
                             style: TextStyle(
                                 fontSize: getSize(context)?.size,
-                                color: TTheme.of(context).brandNormalColor)),
+                                color: context.tTheme.brandNormalColor)),
                       ),
                     ),
                   ),

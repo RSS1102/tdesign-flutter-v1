@@ -102,7 +102,7 @@ class _TStepperPageState extends State<TStepperPage> {
 
   @Demo(group: 'stepper')
   Widget _buildRow(BuildContext context, List<Widget> stepperItems) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
 
     return Container(
       decoration: BoxDecoration(

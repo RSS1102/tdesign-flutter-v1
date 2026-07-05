@@ -49,7 +49,7 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
         index: i,
         label: '选项 $i',
         value: i,
-        textStyle: TextStyle(color: TTheme.of(context).brandLightColor),
+        textStyle: TextStyle(color: context.tTheme.brandLightColor),
       ));
       pages.add(getPageDemo(i));
     }

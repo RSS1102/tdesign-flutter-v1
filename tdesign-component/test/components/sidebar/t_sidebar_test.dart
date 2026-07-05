@@ -7,8 +7,8 @@ void main() {
     final themeExtensions = <ThemeExtension>[
       if (sideBarTheme != null) sideBarTheme,
     ];
-    return TTheme(
-      data: TThemeData.defaultData(),
+    return Theme(
+      data: ThemeData(extensions: [TThemeData.defaultData()]),
       child: MaterialApp(
         theme: ThemeData(extensions: themeExtensions),
         home: Scaffold(body: child),

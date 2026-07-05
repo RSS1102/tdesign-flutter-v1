@@ -267,7 +267,7 @@ class _TFormItemState extends State<TFormItem> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     Widget labelContent = Visibility(
         visible: widget.label != null ? true : false,
         child: SizedBox(
@@ -276,7 +276,7 @@ class _TFormItemState extends State<TFormItem> {
                 Row(
                   children: [
                     TText(widget.label,
-                        font: TTheme.of(context).fontBodyMedium,
+                        font: context.tTheme.fontBodyMedium,
                         textAlign: widget.labelAlign),
                     if (FormRequiredMark &&
                         (widget.requiredMark != null &&
@@ -320,7 +320,7 @@ class _TFormItemState extends State<TFormItem> {
       case TFormItemType.rate:
         return Container(
             color:
-                widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+                widget.backgroundColor ?? context.tTheme.bgColorContainer,
             child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -345,7 +345,7 @@ class _TFormItemState extends State<TFormItem> {
       case TFormItemType.radios:
         return Container(
             color:
-                widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+                widget.backgroundColor ?? context.tTheme.bgColorContainer,
             child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -370,7 +370,7 @@ class _TFormItemState extends State<TFormItem> {
         return _buildSelectRow(context);
       case TFormItemType.stepper:
         return Container(
-          color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+          color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child:
@@ -393,7 +393,7 @@ class _TFormItemState extends State<TFormItem> {
       case TFormItemType.textarea:
         return Container(
             color:
-                widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+                widget.backgroundColor ?? context.tTheme.bgColorContainer,
             child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -418,7 +418,7 @@ class _TFormItemState extends State<TFormItem> {
                               width: LabelWidth,
                               child: widget.labelWidget ??
                                   TText(widget.label,
-                                      font: TTheme.of(context).fontBodyMedium,
+                                      font: context.tTheme.fontBodyMedium,
                                       textAlign: widget.labelAlign),
                             ),
                           ),
@@ -431,7 +431,7 @@ class _TFormItemState extends State<TFormItem> {
                 )));
       case TFormItemType.upLoadImg:
         return Container(
-          color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+          color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
           child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -450,7 +450,7 @@ class _TFormItemState extends State<TFormItem> {
                               width: LabelWidth,
                               child: widget.labelWidget ??
                                   TText(widget.label,
-                                      font: TTheme.of(context).fontBodyMedium,
+                                      font: context.tTheme.fontBodyMedium,
                                       textAlign: widget.labelAlign),
                             )),
                         widget.child ?? SizedBox()
@@ -474,7 +474,7 @@ class _TFormItemState extends State<TFormItem> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TText(widget.label ?? '',
-                    font: TTheme.of(context).fontBodyMedium,
+                    font: context.tTheme.fontBodyMedium,
                     textAlign: widget.labelAlign),
                 if (FormRequiredMark &&
                     (widget.requiredMark != null &&
@@ -493,10 +493,10 @@ class _TFormItemState extends State<TFormItem> {
     Widget selectText = TText(
       widget.select != '' ? widget.select : widget.hintText,
       textAlign: FormContentAlign,
-      font: TTheme.of(context).fontBodyLarge,
+      font: context.tTheme.fontBodyLarge,
       textColor: widget.select != ''
-          ? TTheme.of(context).textColorPrimary
-          : TTheme.of(context).textColorPlaceholder,
+          ? context.tTheme.textColorPrimary
+          : context.tTheme.textColorPlaceholder,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
@@ -510,7 +510,7 @@ class _TFormItemState extends State<TFormItem> {
             padding: const EdgeInsets.only(left: 2),
             child: Icon(
               TIcons.chevron_right,
-              color: TTheme.of(context).textColorPlaceholder,
+              color: context.tTheme.textColorPlaceholder,
             ),
           ),
         ],
@@ -524,7 +524,7 @@ class _TFormItemState extends State<TFormItem> {
         }
       },
       child: Container(
-        color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+        color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -559,7 +559,7 @@ class _TFormItemState extends State<TFormItem> {
                     padding: const EdgeInsets.only(left: 2),
                     child: Icon(
                       TIcons.chevron_right,
-                      color: TTheme.of(context).textColorPlaceholder,
+                      color: context.tTheme.textColorPlaceholder,
                     ),
                   ),
                 ],
@@ -588,9 +588,9 @@ class _TFormItemState extends State<TFormItem> {
                         EdgeInsets.only(left: left, right: right, top: top),
                     child: TText(
                       widget.help,
-                      font: TTheme.of(context).fontBodySmall,
+                      font: context.tTheme.fontBodySmall,
                       textAlign: widget.tipAlign ?? TextAlign.left,
-                      textColor: TTheme.of(context).textColorPlaceholder,
+                      textColor: context.tTheme.textColorPlaceholder,
                     )),
               )
             ],
@@ -609,9 +609,9 @@ class _TFormItemState extends State<TFormItem> {
                           EdgeInsets.only(left: left, right: right, top: top),
                       child: TText(
                         errorMessage,
-                        font: TTheme.of(context).fontBodySmall,
+                        font: context.tTheme.fontBodySmall,
                         textAlign: widget.tipAlign ?? TextAlign.left,
-                        textColor: TTheme.of(context).errorNormalColor,
+                        textColor: context.tTheme.errorNormalColor,
                       )))
             ],
           ),

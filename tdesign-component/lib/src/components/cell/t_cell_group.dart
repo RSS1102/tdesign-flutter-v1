@@ -124,7 +124,7 @@ class _TCellGroupState extends State<TCellGroup> {
       return null;
     }
     var color =
-        style.groupBorderedColor ?? TTheme.of(context).componentStrokeColor;
+        style.groupBorderedColor ?? context.tTheme.componentStrokeColor;
     return Border.all(
       color: color,
       width: 1,
@@ -143,13 +143,13 @@ class _TCellGroupState extends State<TCellGroup> {
       children: [
         Container(
             height: 0.5,
-            width: TTheme.of(context).spacer16,
+            width: context.tTheme.spacer16,
             color: style.backgroundColor),
         Expanded(
           child: Container(
               height: 0.5,
               color: style.borderedColor ??
-                  TTheme.of(context).componentStrokeColor),
+                  context.tTheme.componentStrokeColor),
         ),
       ],
     );

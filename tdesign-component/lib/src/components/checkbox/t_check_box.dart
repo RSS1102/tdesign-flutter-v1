@@ -158,7 +158,7 @@ class TCheckbox extends StatefulWidget {
     var size = 24.0;
     final style =
         this.style ?? groupState?.widget.style ?? TCheckboxStyle.circle;
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     final deSelectedColor = style == TCheckboxStyle.check
         ? Colors.transparent
         : theme.componentBorderColor;
@@ -297,9 +297,9 @@ class TCheckboxState extends State<TCheckbox> {
                               overflow: TextOverflow.ellipsis,
                               textColor: widget.enabled
                                   ? (widget.subTitleColor ??
-                                      TTheme.of(context).textColorPlaceholder)
-                                  : TTheme.of(context).textDisabledColor,
-                              font: TTheme.of(context).fontBodyMedium),
+                                      context.tTheme.textColorPlaceholder)
+                                  : context.tTheme.textDisabledColor,
+                              font: context.tTheme.fontBodyMedium),
                         ),
                       )
                     ],
@@ -356,10 +356,10 @@ class TCheckboxState extends State<TCheckbox> {
                               overflow: TextOverflow.ellipsis,
                               textColor: widget.enabled
                                   ? (widget.subTitleColor ??
-                                      TTheme.of(context).textColorPlaceholder)
-                                  : TTheme.of(context).textDisabledColor,
+                                      context.tTheme.textColorPlaceholder)
+                                  : context.tTheme.textDisabledColor,
                               font: widget.subTitleFont ??
-                                  TTheme.of(context).fontBodyMedium),
+                                  context.tTheme.fontBodyMedium),
                         ),
                       )
                     ],
@@ -409,13 +409,13 @@ class TCheckboxState extends State<TCheckbox> {
     return Container(
       clipBehavior: widget.cardMode ? Clip.hardEdge : Clip.none,
       decoration: BoxDecoration(
-          color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+          color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
           border: widget.cardMode
               ? checked
                   ? Border.all(
                       width: 1.5,
                       color: widget.selectColor ??
-                          TTheme.of(context).brandNormalColor)
+                          context.tTheme.brandNormalColor)
                   : Border.all(width: 1.5, color: Colors.transparent)
               : null,
           borderRadius: widget.cardMode
@@ -485,10 +485,10 @@ class TCheckboxState extends State<TCheckbox> {
             maxLines: widget.titleMaxLine ?? groupState?.widget.titleMaxLine,
             overflow: TextOverflow.ellipsis,
             textColor: widget.enabled
-                ? (widget.titleColor ?? TTheme.of(context).textColorPrimary)
-                : TTheme.of(context).textDisabledColor,
+                ? (widget.titleColor ?? context.tTheme.textColorPrimary)
+                : context.tTheme.textDisabledColor,
             font: widget.titleFont ??
-                TTheme.of(context)
+                context.tTheme
                     .fontBodyLarge); // TODO custom fontSize https://github.com/Tencent/tdesign-flutter/issues/66
       }
     }
@@ -531,7 +531,7 @@ class RadioCornerIcon extends StatelessWidget {
             painter: RadioCorner(
                 length: length,
                 radius: radius,
-                fillColor: selectColor ?? TTheme.of(context).brandNormalColor),
+                fillColor: selectColor ?? context.tTheme.brandNormalColor),
           ),
           const Positioned(
               top: 3,

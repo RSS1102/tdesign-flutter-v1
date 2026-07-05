@@ -18,7 +18,10 @@ enum TTabBarVariant {
 
 /// Tab 尺寸枚举（保留）
 enum TTabSize {
+  /// 大尺寸
   large,
+
+  /// 小尺寸
   small,
 }
 

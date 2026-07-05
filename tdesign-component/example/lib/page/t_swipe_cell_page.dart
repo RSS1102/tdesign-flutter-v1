@@ -74,7 +74,7 @@ class TSwipeCellPage extends StatelessWidget {
                 },
                 children: [
                   TSwipeCellAction(
-                    backgroundColor: TTheme.of(context).errorNormalColor,
+                    backgroundColor: context.tTheme.errorNormalColor,
                     label: '删除',
                     onPressed: (context) {
                       print('点击action');
@@ -104,11 +104,11 @@ class TSwipeCellPage extends StatelessWidget {
         extentRatio: 120 / screenWidth,
         children: [
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).warningNormalColor,
+            backgroundColor: context.tTheme.warningNormalColor,
             label: '编辑',
           ),
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).errorNormalColor,
+            backgroundColor: context.tTheme.errorNormalColor,
             label: '删除',
           ),
         ],
@@ -127,15 +127,15 @@ class TSwipeCellPage extends StatelessWidget {
         extentRatio: 180 / screenWidth,
         children: [
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).brandNormalColor,
+            backgroundColor: context.tTheme.brandNormalColor,
             label: '保存',
           ),
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).warningNormalColor,
+            backgroundColor: context.tTheme.warningNormalColor,
             label: '编辑',
           ),
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).errorNormalColor,
+            backgroundColor: context.tTheme.errorNormalColor,
             label: '删除',
           ),
         ],
@@ -154,7 +154,7 @@ class TSwipeCellPage extends StatelessWidget {
         extentRatio: 60 / screenWidth,
         children: [
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).brandNormalColor,
+            backgroundColor: context.tTheme.brandNormalColor,
             label: '选择',
           ),
         ],
@@ -173,7 +173,7 @@ class TSwipeCellPage extends StatelessWidget {
         extentRatio: 60 / screenWidth,
         children: [
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).brandNormalColor,
+            backgroundColor: context.tTheme.brandNormalColor,
             label: '选择',
           ),
         ],
@@ -182,11 +182,11 @@ class TSwipeCellPage extends StatelessWidget {
         extentRatio: 120 / screenWidth,
         children: [
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).warningNormalColor,
+            backgroundColor: context.tTheme.warningNormalColor,
             label: '编辑',
           ),
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).errorNormalColor,
+            backgroundColor: context.tTheme.errorNormalColor,
             label: '删除',
           ),
         ],
@@ -209,12 +209,12 @@ class TSwipeCellPage extends StatelessWidget {
             extentRatio: 160 / screenWidth,
             children: [
               TSwipeCellAction(
-                backgroundColor: TTheme.of(context).warningNormalColor,
+                backgroundColor: context.tTheme.warningNormalColor,
                 icon: TIcons.edit,
                 label: '编辑',
               ),
               TSwipeCellAction(
-                backgroundColor: TTheme.of(context).errorNormalColor,
+                backgroundColor: context.tTheme.errorNormalColor,
                 icon: TIcons.delete,
                 label: '删除',
               ),
@@ -229,11 +229,11 @@ class TSwipeCellPage extends StatelessWidget {
             extentRatio: 120 / screenWidth,
             children: [
               TSwipeCellAction(
-                backgroundColor: TTheme.of(context).warningNormalColor,
+                backgroundColor: context.tTheme.warningNormalColor,
                 icon: TIcons.edit,
               ),
               TSwipeCellAction(
-                backgroundColor: TTheme.of(context).errorNormalColor,
+                backgroundColor: context.tTheme.errorNormalColor,
                 icon: TIcons.delete,
               ),
             ],
@@ -248,14 +248,14 @@ class TSwipeCellPage extends StatelessWidget {
             children: [
               TSwipeCellAction(
                 flex: 60,
-                backgroundColor: TTheme.of(context).warningNormalColor,
+                backgroundColor: context.tTheme.warningNormalColor,
                 direction: Axis.vertical,
                 icon: TIcons.edit,
                 label: '编辑',
               ),
               TSwipeCellAction(
                 flex: 60,
-                backgroundColor: TTheme.of(context).errorNormalColor,
+                backgroundColor: context.tTheme.errorNormalColor,
                 direction: Axis.vertical,
                 icon: TIcons.delete,
                 label: '删除',
@@ -279,17 +279,17 @@ class TSwipeCellPage extends StatelessWidget {
         extentRatio: 120 / screenWidth,
         children: [
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).warningNormalColor,
+            backgroundColor: context.tTheme.warningNormalColor,
             label: '编辑',
           ),
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).errorNormalColor,
+            backgroundColor: context.tTheme.errorNormalColor,
             label: '删除',
           ),
         ],
         confirms: [
           TSwipeCellAction(
-            backgroundColor: TTheme.of(context).errorNormalColor,
+            backgroundColor: context.tTheme.errorNormalColor,
             label: '确认删除',
             confirmIndex: const [1],
           ),

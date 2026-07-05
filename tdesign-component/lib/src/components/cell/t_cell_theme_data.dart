@@ -111,48 +111,48 @@ class TCellThemeData extends ThemeExtension<TCellThemeData> {
 
   /// 初始化默认样式
   void defaultStyle(BuildContext context) {
-    backgroundColor = TTheme.of(context).bgColorContainer;
-    clickBackgroundColor = TTheme.of(context).bgColorContainerHover;
-    leftIconColor = TTheme.of(context).brandNormalColor;
-    rightIconColor = TTheme.of(context).brandNormalColor;
+    backgroundColor = context.tTheme.bgColorContainer;
+    clickBackgroundColor = context.tTheme.bgColorContainerHover;
+    leftIconColor = context.tTheme.brandNormalColor;
+    rightIconColor = context.tTheme.brandNormalColor;
     titleStyle = TextStyle(
-      color: TTheme.of(context).textColorPrimary,
-      fontSize: TTheme.of(context).fontBodyLarge?.size ?? 16,
-      height: TTheme.of(context).fontBodyLarge?.height ?? 24,
+      color: context.tTheme.textColorPrimary,
+      fontSize: context.tTheme.fontBodyLarge?.size ?? 16,
+      height: context.tTheme.fontBodyLarge?.height ?? 24,
       fontWeight: FontWeight.w400,
     );
     requiredStyle =
-        titleStyle!.copyWith(color: TTheme.of(context).errorNormalColor);
+        titleStyle!.copyWith(color: context.tTheme.errorNormalColor);
     descriptionStyle = TextStyle(
-      color: TTheme.of(context).textColorSecondary,
-      fontSize: TTheme.of(context).fontBodyMedium?.size ?? 14,
-      height: TTheme.of(context).fontBodyMedium?.height ?? 22,
+      color: context.tTheme.textColorSecondary,
+      fontSize: context.tTheme.fontBodyMedium?.size ?? 14,
+      height: context.tTheme.fontBodyMedium?.height ?? 22,
       fontWeight: FontWeight.w400,
     );
     noteStyle =
-        titleStyle!.copyWith(color: TTheme.of(context).textColorPlaceholder);
-    arrowColor = TTheme.of(context).textColorPlaceholder;
+        titleStyle!.copyWith(color: context.tTheme.textColorPlaceholder);
+    arrowColor = context.tTheme.textColorPlaceholder;
 
-    groupBorderedColor = TTheme.of(context).componentStrokeColor;
-    borderedColor = TTheme.of(context).componentStrokeColor;
+    groupBorderedColor = context.tTheme.componentStrokeColor;
+    borderedColor = context.tTheme.componentStrokeColor;
     groupTitleStyle = TextStyle(
-      color: TTheme.of(context).textColorPrimary,
-      fontSize: TTheme.of(context).fontTitleLarge?.size ?? 18,
-      height: TTheme.of(context).fontTitleLarge?.height ?? 26,
+      color: context.tTheme.textColorPrimary,
+      fontSize: context.tTheme.fontTitleLarge?.size ?? 18,
+      height: context.tTheme.fontTitleLarge?.height ?? 26,
       fontWeight:
-          TTheme.of(context).fontTitleLarge?.fontWeight ?? FontWeight.w600,
+          context.tTheme.fontTitleLarge?.fontWeight ?? FontWeight.w600,
     );
 
-    padding = EdgeInsets.all(TTheme.of(context).spacer16);
+    padding = EdgeInsets.all(context.tTheme.spacer16);
     cardBorderRadius =
-        BorderRadius.all(Radius.circular(TTheme.of(context).radiusLarge));
+        BorderRadius.all(Radius.circular(context.tTheme.radiusLarge));
     cardPadding =
-        EdgeInsets.symmetric(horizontal: TTheme.of(context).spacer16);
+        EdgeInsets.symmetric(horizontal: context.tTheme.spacer16);
     titlePadding = EdgeInsets.only(
-      left: TTheme.of(context).spacer16,
-      right: TTheme.of(context).spacer16,
-      top: TTheme.of(context).spacer24,
-      bottom: TTheme.of(context).spacer8,
+      left: context.tTheme.spacer16,
+      right: context.tTheme.spacer16,
+      top: context.tTheme.spacer24,
+      bottom: context.tTheme.spacer8,
     );
     titleBackgroundColor = Colors.transparent;
   }

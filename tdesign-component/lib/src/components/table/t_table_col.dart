@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 
+/// 固定列位置
 enum TTableColFixed { left, right, none }
 
+/// 列内容对齐方式
 enum TTableColAlign { left, center, right }
 
+/// 行可选判断函数
 typedef SelectableFunc = bool Function(int index, dynamic row);
+
+/// 行选中判断函数
 typedef RowCheckFunc = bool Function(int index, dynamic row);
 
 /// 表格列配置
@@ -60,5 +65,6 @@ class TTableCol {
   /// 当前行是否选中
   RowCheckFunc? checked;
 
+  /// 列宽（像素值）
   double? get widthPx => width;
 }

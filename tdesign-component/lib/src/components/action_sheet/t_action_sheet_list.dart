@@ -10,14 +10,33 @@ import '../text/t_text.dart';
 import 't_action_sheet.dart';
 import 't_action_sheet_item_widget.dart';
 
+/// 列表类型动作面板
+///
+/// 以列表布局展示可选项，支持描述文本。
+/// 通常不直接使用，由 [TActionSheet.showListActionSheet] 创建。
 class TActionSheetList extends StatelessWidget {
+  /// 动作面板的项目列表
   final List<TActionSheetItem> items;
+
+  /// 对齐方式
   final TActionSheetAlign align;
+
+  /// 取消按钮的文本
   final String? cancelText;
+
+  /// 描述文本
   final String? subtitle;
+
+  /// 是否显示取消按钮
   final bool showCancel;
+
+  /// 取消按钮的回调函数
   final VoidCallback? onCancel;
+
+  /// 选择项目时的回调函数
   final TActionSheetOnChanged? onChanged;
+
+  /// 是否使用安全区域
   final bool useSafeArea;
 
   const TActionSheetList({
@@ -34,12 +53,12 @@ class TActionSheetList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = Radius.circular(TTheme.of(context).radiusExtraLarge);
+    final borderRadius = Radius.circular(context.tTheme.radiusExtraLarge);
     return Container(
       decoration: BoxDecoration(
         borderRadius:
             BorderRadius.only(topLeft: borderRadius, topRight: borderRadius),
-        color: TTheme.of(context).bgColorPage,
+        color: context.tTheme.bgColorPage,
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -57,14 +76,14 @@ class TActionSheetList extends StatelessWidget {
   Widget _buildDescription(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: TTheme.of(context).spacer16,
-        vertical: TTheme.of(context).spacer12,
+        horizontal: context.tTheme.spacer16,
+        vertical: context.tTheme.spacer12,
       ),
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorContainer,
+        color: context.tTheme.bgColorContainer,
         border: Border(
           bottom: BorderSide(
-            color: TTheme.of(context).componentStrokeColor,
+            color: context.tTheme.componentStrokeColor,
             width: 0.5,
           ),
         ),
@@ -74,8 +93,8 @@ class TActionSheetList extends StatelessWidget {
         children: [
           TText(
             subtitle!,
-            font: TTheme.of(context).fontBodyMedium,
-            textColor: TTheme.of(context).textColorSecondary,
+            font: context.tTheme.fontBodyMedium,
+            textColor: context.tTheme.textColorSecondary,
           ),
         ],
       ),
@@ -85,7 +104,7 @@ class TActionSheetList extends StatelessWidget {
   /// 构建选项列表
   Widget _buildOptionsList(BuildContext context) {
     return Container(
-      color: TTheme.of(context).bgColorContainer,
+      color: context.tTheme.bgColorContainer,
       child: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -106,11 +125,11 @@ class TActionSheetList extends StatelessWidget {
                   ? 56
                   : 78,
               padding: EdgeInsets.symmetric(
-                  horizontal: TTheme.of(context).spacer16),
+                  horizontal: context.tTheme.spacer16),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: TTheme.of(context).componentStrokeColor,
+                    color: context.tTheme.componentStrokeColor,
                     width: 0.5,
                   ),
                 ),
@@ -126,10 +145,10 @@ class TActionSheetList extends StatelessWidget {
                           data: IconThemeData(
                             color: item.disabled
                                 // 禁用状态下的图标颜色
-                                ? TTheme.of(context).textDisabledColor
+                                ? context.tTheme.textDisabledColor
                                 : (item.textStyle?.color ??
                                     // 正常状态下的图标颜色
-                                    TTheme.of(context).textColorPrimary),
+                                    context.tTheme.textColorPrimary),
                             size: item.textStyle?.fontSize,
                           ),
                           child: SizedBox(
@@ -138,39 +157,39 @@ class TActionSheetList extends StatelessWidget {
                             child: item.icon!,
                           ),
                         ),
-                        SizedBox(width: TTheme.of(context).spacer8),
+                        SizedBox(width: context.tTheme.spacer8),
                       ],
                       TText(
                         item.label,
-                        font: TTheme.of(context).fontBodyLarge,
+                        font: context.tTheme.fontBodyLarge,
                         textColor: item.disabled
-                            ? TTheme.of(context)
+                            ? context.tTheme
                                 .textDisabledColor // 禁用状态下的文本颜色
-                            : TTheme.of(context)
+                            : context.tTheme
                                 .textColorPrimary, // 正常状态下的文本颜色
                         style: item.textStyle,
                       ),
 
                       /// todo 徽标应位于右上角，而不是右边紧挨着，请参考宫格徽标实现
                       if (item.badge != null) ...[
-                        SizedBox(width: TTheme.of(context).spacer8),
+                        SizedBox(width: context.tTheme.spacer8),
                         item.badge!,
                       ],
                     ],
                   ),
                   if (item.subtitle != null &&
                       item.subtitle!.isNotEmpty) ...[
-                    SizedBox(height: TTheme.of(context).spacer4),
+                    SizedBox(height: context.tTheme.spacer4),
                     Row(
                         mainAxisAlignment: getMainAxisAlignment(align),
                         children: [
                           Flexible(
                               child: TText(item.subtitle,
-                                  font: TTheme.of(context).fontBodyMedium,
+                                  font: context.tTheme.fontBodyMedium,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   textColor:
-                                      TTheme.of(context).textDisabledColor))
+                                      context.tTheme.textDisabledColor))
                         ])
                   ]
                 ],
@@ -192,20 +211,20 @@ class TActionSheetList extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              color: TTheme.of(context).bgColorContainer,
+              color: context.tTheme.bgColorContainer,
               height: 48,
-              margin: EdgeInsets.only(top: TTheme.of(context).spacer8),
+              margin: EdgeInsets.only(top: context.tTheme.spacer8),
               child: Center(
                 child: TText(
                   cancelText ?? context.resource.cancel,
-                  font: TTheme.of(context).fontBodyLarge,
-                  textColor: TTheme.of(context).textColorPrimary,
+                  font: context.tTheme.fontBodyLarge,
+                  textColor: context.tTheme.textColorPrimary,
                 ),
               ),
             ),
             useSafeArea
                 ? Container(
-                    color: TTheme.of(context).bgColorContainer,
+                    color: context.tTheme.bgColorContainer,
                     height: MediaQuery.of(context).padding.bottom,
                   )
                 : const SizedBox.shrink(),

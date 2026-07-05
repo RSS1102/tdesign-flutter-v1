@@ -13,8 +13,8 @@ void main() {
     final extensions = <ThemeExtension>[
       if (textTheme != null) textTheme,
     ];
-    return TTheme(
-      data: TThemeData.defaultData(),
+    return Theme(
+      data: ThemeData(extensions: [TThemeData.defaultData()]),
       child: MaterialApp(
         theme: ThemeData(extensions: extensions),
         home: Scaffold(body: Center(child: child)),

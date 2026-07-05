@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 't_dropdown_menu.dart';
 import 't_dropdown_popup.dart';
 
+/// 下拉菜单内容面板，负责展开/收起动画
 class TDropdownPanel extends StatefulWidget {
   const TDropdownPanel({
     Key? key,
@@ -21,15 +22,34 @@ class TDropdownPanel extends StatefulWidget {
     required this.child,
   }) : super(key: key);
 
+  /// 初始内容顶部偏移
   final double initContentTop;
+
+  /// 初始内容底部偏移
   final double initContentBottom;
+
+  /// 反方向可用高度
   final double reverseHeight;
+
+  /// 动画时长
   final Duration duration;
+
+  /// 方向监听器
   final ValueNotifier<TDropdownPopupDirection> directionListenable;
+
+  /// 遮罩透明度监听器
   final ValueNotifier<bool> colorAlphaListenable;
+
+  /// 展开方向
   final TDropdownPopupDirection direction;
+
+  /// 关闭回调监听器
   final ValueNotifier<FutureCallback?> closeListenable;
+
+  /// 展开完成回调
   final VoidCallback onOpened;
+
+  /// 子内容
   final Widget child;
 
   @override
@@ -76,6 +96,7 @@ class _TDropdownPanelState extends State<TDropdownPanel> with SingleTickerProvid
     );
   }
 
+  /// 展开面板
   void open(BuildContext itemContext) {
     if (contentBottom != null || contentTop != null) {
       return;
@@ -134,6 +155,7 @@ class _TDropdownPanelState extends State<TDropdownPanel> with SingleTickerProvid
     ).animate(_controller);
   }
 
+  /// 收起面板
   Future<void> close() {
     widget.colorAlphaListenable.value = false;
     _controller.duration = widget.duration ~/ 2;

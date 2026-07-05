@@ -37,6 +37,7 @@ class TSwiperPagination extends SwiperPlugin {
   /// 具体样式
   final SwiperPlugin builder;
 
+  /// 自定义 Key
   final Key? key;
 
   @override
@@ -104,12 +105,12 @@ class TSwiperDotsPagination extends SwiperPlugin {
     }
     var activeColor = this.activeColor ??
         (config.outer
-            ? TTheme.of(context).brandNormalColor
-            : TTheme.of(context).whiteColor1);
+            ? context.tTheme.brandNormalColor
+            : context.tTheme.whiteColor1);
     var color = this.color ??
         (config.outer
-            ? TTheme.of(context).bgColorComponentHover
-            : TTheme.of(context).fontWhColor2);
+            ? context.tTheme.bgColorComponentHover
+            : context.tTheme.fontWhColor2);
 
     if (config.indicatorLayout != PageIndicatorLayout.NONE &&
         config.layout == SwiperLayout.DEFAULT) {
@@ -190,10 +191,13 @@ class TFractionPagination extends SwiperPlugin {
   /// 当前展示的索引，如果未设置，则为Theme.of(context).primaryColor
   final Color? activeColor;
 
+  /// 未选中文字样式
   final TextStyle? textStyle;
 
+  /// 选中文字样式
   final TextStyle? activeTextStyle;
 
+  /// 自定义 Key
   final Key? key;
 
   const TFractionPagination({
@@ -215,9 +219,9 @@ class TFractionPagination extends SwiperPlugin {
       height: height ?? 24,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: backgroundColor ?? TTheme.of(context).textColorPlaceholder,
+        color: backgroundColor ?? context.tTheme.textColorPlaceholder,
         borderRadius: BorderRadius.circular(
-            borderRadius ?? TTheme.of(context).radiusRound),
+            borderRadius ?? context.tTheme.radiusRound),
       ),
       child: Row(
         key: key,
@@ -295,7 +299,7 @@ class TSwiperArrowPagination extends SwiperPlugin {
         child: CircleAvatar(
           radius: radius ?? 10.0,
           backgroundColor:
-              backgroundColor ?? TTheme.of(context).textColorPlaceholder,
+              backgroundColor ?? context.tTheme.textColorPlaceholder,
           child: arrowWidget ?? Icon(icon, color: Colors.white, size: 10.0),
         ),
         onTap: onTap,

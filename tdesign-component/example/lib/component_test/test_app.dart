@@ -11,9 +11,8 @@ void main() async {
 
   var jsonString = await rootBundle.loadString('assets/theme.json');
   print('jsonString:$jsonString');
-  TTheme.needMultiTheme(true);
   var themeData =
-      TThemeData.fromJson('greenLight', jsonString) ?? TTheme.defaultData();
+      TThemeData.fromJson('greenLight', jsonString) ?? TThemeData.defaultData();
   await TFontLoader.load(
       name: 'test1',
       fontFamilyUrl:
@@ -59,7 +58,7 @@ Padding body(BuildContext context) {
         // 先显示再加载
         TText(
           '测试文案',
-          textColor: TTheme.of(context).brandNormalColor,
+          textColor: context.tTheme.brandNormalColor,
           fontFamilyUrl:
               'https://xinyue.qq.com/m/flutter_web/assets/packages/flutter_component/fonts/FZLanTingHeiS-EB-GB.ttf',
           fontFamily: FontFamily(fontFamily: 'test'),
@@ -70,7 +69,7 @@ Padding body(BuildContext context) {
         //   initialData: false,
         //   builder: (_,data)=>TText(
         //     (data.data ?? false) ? '测试文案' : '',
-        //     textColor: TTheme.of(context).brandNormalColor,
+        //     textColor: context.tTheme.brandNormalColor,
         //     fontFamilyUrl: 'https://xinyue.qq.com/m/flutter_web/assets/packages/flutter_component/fonts/FZLanTingHeiS-EB-GB.ttf',
         //     fontFamily: FontFamily(fontFamily: 'test1'),
         //   ),

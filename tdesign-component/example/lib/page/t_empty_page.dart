@@ -33,7 +33,7 @@ class _TEmptyPageState extends State<TEmptyPage> {
   Widget _iconEmpty(BuildContext context) {
     return const TEmpty(
       variant: TEmptyVariant.plain,
-      image: Text('描述文字'),
+      emptyText: '描述文字',
     );
   }
 
@@ -42,7 +42,7 @@ class _TEmptyPageState extends State<TEmptyPage> {
     return const TEmpty(
       variant: TEmptyVariant.plain,
       icon: Icons.hourglass_empty_sharp,
-      image: Text('描述文字'),
+      emptyText: '描述文字',
     );
   }
 
@@ -52,7 +52,7 @@ class _TEmptyPageState extends State<TEmptyPage> {
       variant: TEmptyVariant.plain,
       image: Container(
         decoration: BoxDecoration(
-          color: TTheme.of(context).bgColorComponent,
+          color: context.tTheme.bgColorComponent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: const TImage(
@@ -68,7 +68,7 @@ class _TEmptyPageState extends State<TEmptyPage> {
     return const TEmpty(
       variant: TEmptyVariant.operation,
       customOperationWidget: Text('操作按钮'),
-      image: Text('描述文字'),
+      emptyText: '描述文字',
     );
   }
 
@@ -76,7 +76,7 @@ class _TEmptyPageState extends State<TEmptyPage> {
   Widget _operationCustomEmpty(BuildContext context) {
     return TEmpty(
       variant: TEmptyVariant.operation,
-      image: Text('描述文字'),
+      emptyText: '描述文字',
       customOperationWidget: Padding(
         padding: const EdgeInsets.only(top: 32),
         child: TButton(

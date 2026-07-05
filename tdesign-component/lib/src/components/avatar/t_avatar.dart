@@ -89,11 +89,11 @@ class TAvatar extends StatelessWidget {
   Font? _getTextFont(BuildContext context) {
     switch (size) {
       case TAvatarSize.large:
-        return TTheme.of(context).fontTitleExtraLarge;
+        return context.tTheme.fontTitleExtraLarge;
       case TAvatarSize.medium:
-        return TTheme.of(context).fontTitleMedium;
+        return context.tTheme.fontTitleMedium;
       case TAvatarSize.small:
-        return TTheme.of(context).fontTitleSmall;
+        return context.tTheme.fontTitleSmall;
     }
   }
 
@@ -117,7 +117,7 @@ class TAvatar extends StatelessWidget {
         r = _getAvatarWidth(context) / 2;
         break;
       case TAvatarShape.square:
-        r = TTheme.of(context).radiusDefault;
+        r = context.tTheme.radiusDefault;
         break;
     }
     return theme?.radius ?? r;
@@ -125,7 +125,7 @@ class TAvatar extends StatelessWidget {
 
   Color _resolveBackgroundColor(BuildContext context) {
     final theme = _theme(context);
-    return theme?.backgroundColor ?? TTheme.of(context).brandFocusColor;
+    return theme?.backgroundColor ?? context.tTheme.brandFocusColor;
   }
 
   double _resolveDisplayBorder(BuildContext context) {
@@ -149,7 +149,7 @@ class TAvatar extends StatelessWidget {
                 child: Icon(
               icon ?? TIcons.user,
               size: _getIconWidth(),
-              color: TTheme.of(context).brandNormalColor,
+              color: context.tTheme.brandNormalColor,
             )),
           ),
           onTap: onPressed,
@@ -176,8 +176,8 @@ class TAvatar extends StatelessWidget {
             width: _getAvatarWidth(context),
             height: _getAvatarWidth(context),
             decoration: BoxDecoration(
-              color: _resolveBackgroundColor(context) == TTheme.of(context).brandFocusColor
-                  ? TTheme.of(context).brandNormalColor
+              color: _resolveBackgroundColor(context) == context.tTheme.brandFocusColor
+                  ? context.tTheme.brandNormalColor
                   : _resolveBackgroundColor(context),
               borderRadius: BorderRadius.circular(_getAvatarRadius(context)),
             ),
@@ -187,7 +187,7 @@ class TAvatar extends StatelessWidget {
                 forceVerticalCenter: true,
                 textAlign: TextAlign.center,
                 font: _getTextFont(context),
-                textColor: TTheme.of(context).whiteColor1,
+                textColor: context.tTheme.whiteColor1,
               ),
             ),
           ),
@@ -235,13 +235,13 @@ class TAvatar extends StatelessWidget {
                     child: Center(
                       child: Icon(TIcons.user_add,
                           size: _getIconWidth(),
-                          color: TTheme.of(context).brandNormalColor),
+                          color: context.tTheme.brandNormalColor),
                     ),
                     width: avatarWidth,
                     height: avatarWidth,
                     clipBehavior: Clip.hardEdge,
                     decoration: ShapeDecoration(
-                      color: TTheme.of(context).brandFocusColor,
+                      color: context.tTheme.brandFocusColor,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               avatarWidth - _getDisplayPadding()),
@@ -262,7 +262,7 @@ class TAvatar extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                               avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
-                              color: TTheme.of(context).bgColorContainer,
+                              color: context.tTheme.bgColorContainer,
                               width: displayBorder)),
                       image: DecorationImage(
                           image: NetworkImage(avatarDisplayList![i]),
@@ -283,18 +283,18 @@ class TAvatar extends StatelessWidget {
                       child: avatarDisplayWidget ??
                           Icon(TIcons.user_add,
                               size: _getIconWidth(),
-                              color: TTheme.of(context).brandNormalColor),
+                              color: context.tTheme.brandNormalColor),
                     ),
                     width: avatarWidth,
                     height: avatarWidth,
                     clipBehavior: Clip.hardEdge,
                     decoration: ShapeDecoration(
-                      color: TTheme.of(context).brandFocusColor,
+                      color: context.tTheme.brandFocusColor,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
-                              color: TTheme.of(context).bgColorContainer,
+                              color: context.tTheme.bgColorContainer,
                               width: displayBorder)),
                     )),
               )));
@@ -310,7 +310,7 @@ class TAvatar extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                               avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
-                              color: TTheme.of(context).bgColorContainer,
+                              color: context.tTheme.bgColorContainer,
                               width: displayBorder)),
                       image: DecorationImage(
                           image: AssetImage(avatarDisplayListAsset![i]),
@@ -352,19 +352,19 @@ class TAvatar extends StatelessWidget {
                       forceVerticalCenter: true,
                       textAlign: TextAlign.center,
                       font: _getTextFont(context),
-                      textColor: TTheme.of(context).brandNormalColor,
+                      textColor: context.tTheme.brandNormalColor,
                     ),
                   ),
                   width: avatarWidth,
                   height: avatarWidth,
                   clipBehavior: Clip.hardEdge,
                   decoration: ShapeDecoration(
-                    color: TTheme.of(context).brandFocusColor,
+                    color: context.tTheme.brandFocusColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
                             avatarWidth - _getDisplayPadding()),
                         side: BorderSide(
-                            color: TTheme.of(context).bgColorContainer,
+                            color: context.tTheme.bgColorContainer,
                             width: displayBorder)),
                   ))));
         } else {
@@ -379,7 +379,7 @@ class TAvatar extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                               avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
-                              color: TTheme.of(context).bgColorContainer,
+                              color: context.tTheme.bgColorContainer,
                               width: displayBorder)),
                       image: DecorationImage(
                           image: NetworkImage(avatarDisplayList![i]),
@@ -401,19 +401,19 @@ class TAvatar extends StatelessWidget {
                       forceVerticalCenter: true,
                       textAlign: TextAlign.center,
                       font: _getTextFont(context),
-                      textColor: TTheme.of(context).brandNormalColor,
+                      textColor: context.tTheme.brandNormalColor,
                     ),
                   ),
                   width: avatarWidth,
                   height: avatarWidth,
                   clipBehavior: Clip.hardEdge,
                   decoration: ShapeDecoration(
-                    color: TTheme.of(context).brandFocusColor,
+                    color: context.tTheme.brandFocusColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
                             avatarWidth - _getDisplayPadding()),
                         side: BorderSide(
-                            color: TTheme.of(context).bgColorContainer,
+                            color: context.tTheme.bgColorContainer,
                             width: displayBorder)),
                   ))));
         } else {
@@ -428,7 +428,7 @@ class TAvatar extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                               avatarWidth - _getDisplayPadding()),
                           side: BorderSide(
-                              color: TTheme.of(context).bgColorContainer,
+                              color: context.tTheme.bgColorContainer,
                               width: displayBorder)),
                       image: DecorationImage(
                           image: AssetImage(avatarDisplayListAsset![i]),

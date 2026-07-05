@@ -9,11 +9,16 @@ import 't_action_sheet_list.dart';
 
 export 't_action_sheet_item.dart';
 
+/// 选择项目时的回调函数类型
+///
+/// [item] 被选中的项目，[index] 项目索引
 typedef TActionSheetOnChanged = void Function(
     TActionSheetItem item, int index);
 
+/// 动作面板主题样式
 enum TActionSheetTheme { list, grid, group }
 
+/// 动作面板对齐方式
 enum TActionSheetAlign { center, left, right }
 
 /// 动作面板
@@ -248,10 +253,12 @@ class TActionSheet {
     );
   }
 
+  /// 打开动作面板（等同 [show]）
   void open() {
     show();
   }
 
+  /// 关闭动作面板
   @mustCallSuper
   void close() {
     _actionSheetHandle?.close();

@@ -176,15 +176,19 @@ class TGIconHeaderWidgetState extends State<TGIconHeaderWidget>
 
   double get _safeOffset => widget.state.safeOffset;
 
-  Widget _buildLoading() => TLoading(
-        size: TLoadingSize.medium,
-        icon: widget.loadingIcon,
-        themeData: TLoadingThemeData(
-          iconColor: TTheme.of(context).brandNormalColor,
-          axis: Axis.horizontal,
-          textColor: TTheme.of(context).textColorPlaceholder,
+  Widget _buildLoading() => Theme(
+        data: Theme.of(context).mergeExtension(
+          TLoadingThemeData(
+            iconColor: context.tTheme.brandNormalColor,
+            axis: Axis.horizontal,
+            textColor: context.tTheme.textColorPlaceholder,
+          ),
         ),
-        text: context.resource.refreshing,
+        child: TLoading(
+          size: TLoadingSize.medium,
+          icon: widget.loadingIcon,
+          text: context.resource.refreshing,
+        ),
       );
 
   @override
@@ -227,8 +231,8 @@ class TGIconHeaderWidgetState extends State<TGIconHeaderWidget>
                                 _refreshState == IndicatorMode.done
                             ? context.resource.completeRefresh
                             : context.resource.releaseRefresh,
-                    font: TTheme.of(context).fontBodyMedium,
-                    textColor: TTheme.of(context).textColorPlaceholder,
+                    font: context.tTheme.fontBodyMedium,
+                    textColor: context.tTheme.textColorPlaceholder,
                   ),
                 ),
               ),

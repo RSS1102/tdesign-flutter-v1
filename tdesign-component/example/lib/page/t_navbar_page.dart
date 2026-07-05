@@ -172,7 +172,7 @@ class TNavBarPage extends StatelessWidget {
       padding: const EdgeInsets.only(top: 16),
       child: TNavBar(
         title: '返回',
-        titleColor: TTheme.of(context).textColorPrimary,
+        titleColor: context.tTheme.textColorPrimary,
         belowTitleWidget: SizedBox(
           child: TText(
             titleText,
@@ -200,7 +200,7 @@ class TNavBarPage extends StatelessWidget {
     return TNavBar(
       title: titleText,
       titleColor: Colors.white,
-      backgroundColor: TTheme.of(context).brandNormalColor,
+      backgroundColor: context.tTheme.brandNormalColor,
       titleFontWeight: FontWeight.w600,
       useDefaultBack: false,
       leading: [
@@ -235,7 +235,7 @@ class TNavBarPage extends StatelessWidget {
         BoxShadow(
           blurRadius: 4,
           offset: const Offset(0, 4),
-          color: TTheme.of(context).componentBorderColor,
+          color: context.tTheme.componentBorderColor,
         ),
       ],
     );

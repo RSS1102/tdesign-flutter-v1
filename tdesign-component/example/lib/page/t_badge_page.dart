@@ -108,12 +108,16 @@ class _TBadgePageState extends State<TBadgePage> {
           builder: _buildMoreThanMaxCountBadge,
         )
       ],
-      floatingActionButton: TFab(
-          onPressed: () {
-            setState(() {
-              num = num + 1;
-            });
-          }),
+      // 注意：TFab 内部返回 Positioned widget，不能传给 Scaffold.floatingActionButton
+      // （会导致布局异常和白色遮罩）。改用原生 FloatingActionButton。
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            num = num + 1;
+          });
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
@@ -125,7 +129,7 @@ class _TBadgePageState extends State<TBadgePage> {
         children: [
           TText(
             '消息',
-            font: TTheme.of(context).fontBodyLarge,
+            font: context.tTheme.fontBodyLarge,
           ),
           const Positioned(
             child: TBadge(TBadgeVariant.redPoint),
@@ -183,7 +187,7 @@ class _TBadgePageState extends State<TBadgePage> {
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          TText('消息', font: TTheme.of(context).fontBodyLarge),
+          TText('消息', font: context.tTheme.fontBodyLarge),
           Positioned(
             child: TBadge(TBadgeVariant.message, count: num.toString()),
             left: 28,
@@ -242,9 +246,9 @@ class _TBadgePageState extends State<TBadgePage> {
           Container(
             child: const Icon(TIcons.notification),
             decoration: BoxDecoration(
-                color: TTheme.of(context).bgColorComponent,
+                color: context.tTheme.bgColorComponent,
                 borderRadius:
-                    BorderRadius.circular(TTheme.of(context).radiusDefault)),
+                    BorderRadius.circular(context.tTheme.radiusDefault)),
           ),
           Positioned(
             child: TBadge(TBadgeVariant.message, count: num.toString()),
@@ -265,9 +269,9 @@ class _TBadgePageState extends State<TBadgePage> {
           Container(
             child: const Icon(TIcons.notification),
             decoration: BoxDecoration(
-                color: TTheme.of(context).bgColorComponent,
+                color: context.tTheme.bgColorComponent,
                 borderRadius:
-                    BorderRadius.circular(TTheme.of(context).radiusDefault)),
+                    BorderRadius.circular(context.tTheme.radiusDefault)),
           ),
           const Positioned(
             child: TBadge(TBadgeVariant.message, count: '0'),
@@ -288,9 +292,9 @@ class _TBadgePageState extends State<TBadgePage> {
           Container(
             child: const Icon(TIcons.notification),
             decoration: BoxDecoration(
-                color: TTheme.of(context).bgColorComponent,
+                color: context.tTheme.bgColorComponent,
                 borderRadius:
-                    BorderRadius.circular(TTheme.of(context).radiusDefault)),
+                    BorderRadius.circular(context.tTheme.radiusDefault)),
           ),
           const Positioned(
             // 不显示 0
@@ -349,9 +353,9 @@ class _TBadgePageState extends State<TBadgePage> {
           Container(
             child: const Icon(TIcons.shop),
             decoration: BoxDecoration(
-                color: TTheme.of(context).bgColorComponent,
+                color: context.tTheme.bgColorComponent,
                 borderRadius:
-                    BorderRadius.circular(TTheme.of(context).radiusDefault)),
+                    BorderRadius.circular(context.tTheme.radiusDefault)),
           ),
           const Positioned(
             child: TBadge(TBadgeVariant.bubble, count: '领积分'),

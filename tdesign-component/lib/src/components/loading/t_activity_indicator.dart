@@ -99,7 +99,7 @@ class _TCupertinoActivityIndicatorState
       child: CustomPaint(
         painter: _CupertinoActivityIndicatorPainter(
           position: _controller,
-          activeColor: widget.activeColor ?? TTheme.of(context).textColorPlaceholder,
+          activeColor: widget.activeColor ?? context.tTheme.textColorPlaceholder,
           radius: widget.radius,
           progress: widget.progress,
         ),

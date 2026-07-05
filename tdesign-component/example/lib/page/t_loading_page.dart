@@ -48,22 +48,26 @@ class _TLoadingPageState extends State<TLoadingPage> {
             builder: (_) {
               return Padding(
                 padding: const EdgeInsets.all(16),
-                child: TLoading(
-                  icon: TLoadingIcon.circle,
-                  size: TLoadingSize.small,
-                  text: '加载失败',
-                  themeData: TLoadingThemeData(
-                    axis: Axis.horizontal,
-                    refreshWidget: GestureDetector(
-                      child: TText(
-                        '刷新',
-                        font: TTheme.of(context).fontBodySmall,
-                        textColor: TTheme.of(context).brandNormalColor,
+                child: Theme(
+                  data: Theme.of(context).mergeExtension(
+                    TLoadingThemeData(
+                      axis: Axis.horizontal,
+                      refreshWidget: GestureDetector(
+                        child: TText(
+                          '刷新',
+                          font: context.tTheme.fontBodySmall,
+                          textColor: context.tTheme.brandNormalColor,
+                        ),
+                        onTap: () {
+                          TToast.showText('刷新', context: context);
+                        },
                       ),
-                      onTap: () {
-                        TToast.showText('刷新', context: context);
-                      },
                     ),
+                  ),
+                  child: const TLoading(
+                    icon: TLoadingIcon.circle,
+                    size: TLoadingSize.small,
+                    text: '加载失败',
                   ),
                 ),
               );
@@ -74,21 +78,25 @@ class _TLoadingPageState extends State<TLoadingPage> {
             builder: (_) {
               return Container(
                 padding: const EdgeInsets.all(16),
-                child: TLoading(
-                  icon: TLoadingIcon.circle,
-                  size: TLoadingSize.small,
-                  text: '加载失败',
-                  themeData: TLoadingThemeData(
-                    refreshWidget: GestureDetector(
-                      child: TText(
-                        '刷新',
-                        font: TTheme.of(context).fontBodySmall,
-                        textColor: TTheme.of(context).brandNormalColor,
+                child: Theme(
+                  data: Theme.of(context).mergeExtension(
+                    TLoadingThemeData(
+                      refreshWidget: GestureDetector(
+                        child: TText(
+                          '刷新',
+                          font: context.tTheme.fontBodySmall,
+                          textColor: context.tTheme.brandNormalColor,
+                        ),
+                        onTap: () {
+                          TToast.showText('刷新', context: context);
+                        },
                       ),
-                      onTap: () {
-                        TToast.showText('刷新', context: context);
-                      },
                     ),
+                  ),
+                  child: const TLoading(
+                    icon: TLoadingIcon.circle,
+                    size: TLoadingSize.small,
+                    text: '加载失败',
                   ),
                 ),
               );
@@ -96,22 +104,28 @@ class _TLoadingPageState extends State<TLoadingPage> {
         ExampleItem(
             desc: '验证居中问题',
             ignoreCode: true,
-            builder: (_) {
-              return const Row(
+            builder: (context) {
+              return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TLoading(
-                      size: TLoadingSize.large,
-                      icon: TLoadingIcon.circle,
-                      text: '加载中…',
-                      themeData: TLoadingThemeData(axis: Axis.vertical),
+                    Theme(
+                      data: Theme.of(context)
+                          .mergeExtension(const TLoadingThemeData(axis: Axis.vertical)),
+                      child: const TLoading(
+                        size: TLoadingSize.large,
+                        icon: TLoadingIcon.circle,
+                        text: '加载中…',
+                      ),
                     ),
-                    SizedBox(width: 36),
-                    TLoading(
-                      size: TLoadingSize.large,
-                      icon: TLoadingIcon.activity,
-                      text: '加载中…',
-                      themeData: TLoadingThemeData(axis: Axis.vertical),
+                    const SizedBox(width: 36),
+                    Theme(
+                      data: Theme.of(context)
+                          .mergeExtension(const TLoadingThemeData(axis: Axis.vertical)),
+                      child: const TLoading(
+                        size: TLoadingSize.large,
+                        icon: TLoadingIcon.activity,
+                        text: '加载中…',
+                      ),
                     ),
                   ]);
             }),
@@ -158,11 +172,15 @@ class _TLoadingPageState extends State<TLoadingPage> {
           icon: TLoadingIcon.activity,
         ),
         const SizedBox(width: 36),
-        TLoading(
-          size: TLoadingSize.small,
-          icon: TLoadingIcon.point,
-          themeData: TLoadingThemeData(
-            iconColor: TTheme.of(context).brandNormalColor,
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TLoadingThemeData(
+              iconColor: context.tTheme.brandNormalColor,
+            ),
+          ),
+          child: const TLoading(
+            size: TLoadingSize.small,
+            icon: TLoadingIcon.point,
           ),
         ),
       ],
@@ -172,21 +190,27 @@ class _TLoadingPageState extends State<TLoadingPage> {
   /// 图标加文字横向
   @Demo(group: 'loading')
   Widget _buildTextIconHorizontalLoading(BuildContext context) {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TLoading(
-          size: TLoadingSize.small,
-          icon: TLoadingIcon.circle,
-          text: '加载中…',
-          themeData: TLoadingThemeData(axis: Axis.horizontal),
+        Theme(
+          data: Theme.of(context)
+              .mergeExtension(const TLoadingThemeData(axis: Axis.horizontal)),
+          child: const TLoading(
+            size: TLoadingSize.small,
+            icon: TLoadingIcon.circle,
+            text: '加载中…',
+          ),
         ),
-        SizedBox(width: 36),
-        TLoading(
-          size: TLoadingSize.small,
-          icon: TLoadingIcon.activity,
-          text: '加载中…',
-          themeData: TLoadingThemeData(axis: Axis.horizontal),
+        const SizedBox(width: 36),
+        Theme(
+          data: Theme.of(context)
+              .mergeExtension(const TLoadingThemeData(axis: Axis.horizontal)),
+          child: const TLoading(
+            size: TLoadingSize.small,
+            icon: TLoadingIcon.activity,
+            text: '加载中…',
+          ),
         ),
       ],
     );
@@ -195,21 +219,27 @@ class _TLoadingPageState extends State<TLoadingPage> {
   /// 图标加文字竖向
   @Demo(group: 'loading')
   Widget _buildTextIconVerticalLoading(BuildContext context) {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TLoading(
-          size: TLoadingSize.small,
-          icon: TLoadingIcon.circle,
-          text: '加载中…',
-          themeData: TLoadingThemeData(axis: Axis.vertical),
+        Theme(
+          data: Theme.of(context)
+              .mergeExtension(const TLoadingThemeData(axis: Axis.vertical)),
+          child: const TLoading(
+            size: TLoadingSize.small,
+            icon: TLoadingIcon.circle,
+            text: '加载中…',
+          ),
         ),
-        SizedBox(width: 36),
-        TLoading(
-          size: TLoadingSize.small,
-          icon: TLoadingIcon.activity,
-          text: '加载中…',
-          themeData: TLoadingThemeData(axis: Axis.vertical),
+        const SizedBox(width: 36),
+        Theme(
+          data: Theme.of(context)
+              .mergeExtension(const TLoadingThemeData(axis: Axis.vertical)),
+          child: const TLoading(
+            size: TLoadingSize.small,
+            icon: TLoadingIcon.activity,
+            text: '加载中…',
+          ),
         ),
       ],
     );
@@ -226,28 +256,36 @@ class _TLoadingPageState extends State<TLoadingPage> {
           text: '加载中…',
         ),
         const SizedBox(width: 36),
-        TLoading(
-          size: TLoadingSize.small,
-          text: '加载失败',
-          themeData: TLoadingThemeData(
-            textColor: TTheme.of(context).textColorPlaceholder,
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TLoadingThemeData(
+              textColor: context.tTheme.textColorPlaceholder,
+            ),
+          ),
+          child: const TLoading(
+            size: TLoadingSize.small,
+            text: '加载失败',
           ),
         ),
         const SizedBox(width: 36),
-        TLoading(
-          size: TLoadingSize.small,
-          text: '加载失败',
-          themeData: TLoadingThemeData(
-            refreshWidget: GestureDetector(
-              child: TText(
-                '刷新',
-                font: TTheme.of(context).fontBodySmall,
-                textColor: TTheme.of(context).brandNormalColor,
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TLoadingThemeData(
+              refreshWidget: GestureDetector(
+                child: TText(
+                  '刷新',
+                  font: context.tTheme.fontBodySmall,
+                  textColor: context.tTheme.brandNormalColor,
+                ),
+                onTap: () {
+                  TToast.showText('刷新', context: context);
+                },
               ),
-              onTap: () {
-                TToast.showText('刷新', context: context);
-              },
             ),
+          ),
+          child: const TLoading(
+            size: TLoadingSize.small,
+            text: '加载失败',
           ),
         ),
       ],
@@ -257,33 +295,42 @@ class _TLoadingPageState extends State<TLoadingPage> {
   /// 大尺寸
   @Demo(group: 'loading')
   Widget _buildLargeLoading(BuildContext context) {
-    return const TLoading(
-      size: TLoadingSize.large,
-      icon: TLoadingIcon.circle,
-      text: '加载中…',
-      themeData: TLoadingThemeData(axis: Axis.horizontal),
+    return Theme(
+      data: Theme.of(context)
+          .mergeExtension(const TLoadingThemeData(axis: Axis.horizontal)),
+      child: const TLoading(
+        size: TLoadingSize.large,
+        icon: TLoadingIcon.circle,
+        text: '加载中…',
+      ),
     );
   }
 
   /// 中尺寸
   @Demo(group: 'loading')
   Widget _buildMediumLoading(BuildContext context) {
-    return const TLoading(
-      size: TLoadingSize.medium,
-      icon: TLoadingIcon.circle,
-      text: '加载中…',
-      themeData: TLoadingThemeData(axis: Axis.horizontal),
+    return Theme(
+      data: Theme.of(context)
+          .mergeExtension(const TLoadingThemeData(axis: Axis.horizontal)),
+      child: const TLoading(
+        size: TLoadingSize.medium,
+        icon: TLoadingIcon.circle,
+        text: '加载中…',
+      ),
     );
   }
 
   /// 小尺寸
   @Demo(group: 'loading')
   Widget _buildSmallLoading(BuildContext context) {
-    return const TLoading(
-      size: TLoadingSize.small,
-      icon: TLoadingIcon.circle,
-      text: '加载中…',
-      themeData: TLoadingThemeData(axis: Axis.horizontal),
+    return Theme(
+      data: Theme.of(context)
+          .mergeExtension(const TLoadingThemeData(axis: Axis.horizontal)),
+      child: const TLoading(
+        size: TLoadingSize.small,
+        icon: TLoadingIcon.circle,
+        text: '加载中…',
+      ),
     );
   }
 
@@ -295,31 +342,38 @@ class _TLoadingPageState extends State<TLoadingPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        TLoading(
-          size: TLoadingSize.small,
-          icon: TLoadingIcon.circle,
-          text: '加载中…',
-          themeData: TLoadingThemeData(
-            axis: Axis.horizontal,
-            duration: _currentSliderValue.round(),
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TLoadingThemeData(
+              axis: Axis.horizontal,
+              duration: _currentSliderValue.round(),
+            ),
+          ),
+          child: const TLoading(
+            size: TLoadingSize.small,
+            icon: TLoadingIcon.circle,
+            text: '加载中…',
           ),
         ),
         const SizedBox(height: 16),
-        TSlider(
-          value: _currentSliderValue,
-          sliderThemeData: TSliderThemeData(
-            context: context,
-            max: 2000,
-            min: -20,
-            divisions: 100,
-            showThumbValue: true,
-            scaleFormatter: (value) => value.toInt().toString(),
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData(
+              max: 2000,
+              min: -20,
+              divisions: 100,
+              showThumbValue: true,
+              scaleFormatter: (value) => value.toInt().toString(),
+            ),
           ),
-          onChanged: (double value) {
-            setState(() {
-              _currentSliderValue = value;
-            });
-          },
+          child: TSlider(
+            value: _currentSliderValue,
+            onChanged: (double value) {
+              setState(() {
+                _currentSliderValue = value;
+              });
+            },
+          ),
         )
       ],
     );

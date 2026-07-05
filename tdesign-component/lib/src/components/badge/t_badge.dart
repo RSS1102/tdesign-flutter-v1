@@ -103,9 +103,9 @@ class _TBadgeState extends State<TBadge> {
   Font? getBadgeFont(BuildContext context) {
     switch (widget.size) {
       case TBadgeSize.large:
-        return TTheme.of(context).fontMarkSmall;
+        return context.tTheme.fontMarkSmall;
       case TBadgeSize.small:
-        return TTheme.of(context).fontMarkExtraSmall;
+        return context.tTheme.fontMarkExtraSmall;
     }
   }
 
@@ -127,12 +127,12 @@ class _TBadgeState extends State<TBadge> {
 
   Color _resolveColor(BuildContext context) {
     final theme = _theme(context);
-    return theme?.color ?? TTheme.of(context).errorNormalColor;
+    return theme?.color ?? context.tTheme.errorNormalColor;
   }
 
   Color _resolveTextColor(BuildContext context) {
     final theme = _theme(context);
-    return theme?.textColor ?? TTheme.of(context).textColorAnti;
+    return theme?.textColor ?? context.tTheme.textColorAnti;
   }
 
   TBadgeBorder _resolveBorder(BuildContext context) {

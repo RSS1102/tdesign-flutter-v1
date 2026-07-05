@@ -24,7 +24,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(testData),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -50,7 +50,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: TPickerLinked(linkedData),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -84,7 +84,7 @@ void main() {
             body: TPicker(
               items: TPickerLinked(linkedData),
               initialValue: const ['GD'],
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -107,7 +107,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(disabledData),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -130,7 +130,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(disabledData),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -153,7 +153,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(disabledData),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -176,7 +176,7 @@ void main() {
             body: TPicker(
               items: const TPickerColumns(testData),
               disabled: true,
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -201,7 +201,7 @@ void main() {
             body: TPicker(
               items: const TPickerColumns(testData),
               initialValue: const ['v2'],
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -230,7 +230,7 @@ void main() {
             body: TPicker(
               items: TPickerLinked(linkedData),
               initialValue: const ['GD', 'SZ'],
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -252,7 +252,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(testData),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -298,7 +298,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(emptyData),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -322,7 +322,7 @@ void main() {
               items: const TPickerColumns(testData),
               height: 300,
               itemCount: 3,
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -354,7 +354,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(testData),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -383,7 +383,7 @@ void main() {
             body: TPicker(
               items: const TPickerColumns(testData),
               initialValue: const ['a3', 'b2'],
-              onChange: (_, v) => captured = v,
+              onChanged: (_, v) => captured = v,
             ),
           ),
         ),
@@ -423,7 +423,7 @@ void main() {
             body: TPicker(
               items: TPickerLinked(linkedData),
               initialValue: const ['ZJ', 'HZ', 'XH'],
-              onChange: (_, v) => captured = v,
+              onChanged: (_, v) => captured = v,
             ),
           ),
         ),
@@ -455,7 +455,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(testData),
-              onChange: (_, v) => captured = v,
+              onChanged: (_, v) => captured = v,
             ),
           ),
         ),
@@ -491,7 +491,7 @@ void main() {
             body: TPicker(
               items: const TPickerColumns(testData),
               initialValue: const ['A5'],
-              onChange: (_, v) => captured = v,
+              onChanged: (_, v) => captured = v,
             ),
           ),
         ),
@@ -521,7 +521,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(testData1),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -534,7 +534,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(testData2),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -562,7 +562,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(testData),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -575,7 +575,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(testData2),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -600,7 +600,7 @@ void main() {
             body: TPicker(
               items: const TPickerColumns(testData),
               initialValue: const ['a'],
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -614,7 +614,7 @@ void main() {
             body: TPicker(
               items: const TPickerColumns(testData),
               initialValue: const ['c'],
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -647,7 +647,7 @@ void main() {
             body: TPicker(
               items: TPickerLinked(linkedData),
               initialValue: const ['GD', 'SZ', 'NS'],
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -708,7 +708,7 @@ void main() {
                 '1.1.1.1',
                 '1.1.1.1.1',
               ],
-              onChange: (_, v) => captured = v,
+              onChanged: (_, v) => captured = v,
             ),
           ),
         ),
@@ -753,7 +753,7 @@ void main() {
             body: TPicker(
               items: TPickerLinked(linkedData),
               initialValue: const ['GD', 'SZ', 'NS'],
-              onChange: (_, __) => changeCount++,
+              onChanged: (_, __) => changeCount++,
             ),
           ),
         ),
@@ -789,7 +789,7 @@ void main() {
             body: TPicker(
               items: TPickerLinked(linkedData),
               initialValue: const ['GD', 'SZ', 'NS'],
-              onChange: (col, _) => notifyCols.add(col),
+              onChanged: (col, _) => notifyCols.add(col),
             ),
           ),
         ),
@@ -829,7 +829,7 @@ void main() {
             body: TPicker(
               items: TPickerLinked(linkedData),
               initialValue: const ['GD', 'SZ', 'FT'],
-              onChange: (_, v) => captured = v,
+              onChanged: (_, v) => captured = v,
             ),
           ),
         ),
@@ -1019,7 +1019,7 @@ void main() {
                   child: Text(content),
                 );
               },
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -1043,7 +1043,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(testData),
-              onChange: (_, v) => captured = v,
+              onChanged: (_, v) => captured = v,
             ),
           ),
         ),
@@ -1075,7 +1075,7 @@ void main() {
           home: Scaffold(
             body: TPicker(
               items: const TPickerColumns(testData),
-              onChange: (_, v) => captured = v,
+              onChanged: (_, v) => captured = v,
             ),
           ),
         ),
@@ -1297,7 +1297,7 @@ void main() {
                     Text('selected: $selected'),
                     TPicker(
                       items: const TPickerColumns(testData),
-                      onChange: (_, v) =>
+                      onChanged: (_, v) =>
                           setState(() => selected = v.values.first as String),
                     ),
                   ],
@@ -1359,7 +1359,7 @@ void main() {
                     TPicker(
                       items: const TPickerColumns(testData),
                       initialValue: const ['v0'],
-                      onChange: (_, v) => setState(
+                      onChanged: (_, v) => setState(
                           () => currentValue = v.values.first as String),
                     ),
                   ],
@@ -1490,7 +1490,7 @@ void main() {
                     Text('selected: $selected'),
                     TPicker(
                       items: TPickerColumns([col0]),
-                      onChange: (_, v) =>
+                      onChanged: (_, v) =>
                           setState(() => selected = v.values.first as String),
                     ),
                   ],
@@ -1577,7 +1577,7 @@ void main() {
                     TPicker(
                       items: TPickerColumns([col0, col1]),
                       initialValue: pickerInitial,
-                      onChange: (_, v) => setState(() {
+                      onChanged: (_, v) => setState(() {
                         primary = v.values[0] as String;
                         linked = v.values[1] as String;
                       }),
@@ -1638,7 +1638,7 @@ void main() {
                     TPicker(
                       items: TPickerLinked(linkedData),
                       initialValue: const ['GD', 'SZ', 'NS'],
-                      onChange: (_, v) =>
+                      onChanged: (_, v) =>
                           setState(() => selected = v.labels.join(' / ')),
                     ),
                   ],
@@ -1714,7 +1714,7 @@ void main() {
                   TPickerOption(label: 'B', value: 'b'),
                 ],
               ]),
-              onChange: (_, __) {},
+              onChanged: (_, __) {},
             ),
           ),
         ),
@@ -1769,7 +1769,7 @@ void main() {
                     TPickerOption(label: 'B 区', value: 'B'),
                   ],
                 ]),
-                onChange: (_, __) {},
+                onChanged: (_, __) {},
               ),
             ),
           ),
@@ -1800,7 +1800,7 @@ void main() {
                   ],
                 ]),
                 disabled: true,
-                onChange: (_, __) {},
+                onChanged: (_, __) {},
               ),
             ),
           ),
@@ -1827,7 +1827,7 @@ void main() {
                   ],
                 ]),
                 disabled: true,
-                onChange: (_, __) {},
+                onChanged: (_, __) {},
               ),
             ),
           ),
@@ -1851,7 +1851,7 @@ void main() {
                     TPickerOption(label: '北京', value: 'BJ'),
                   ],
                 ]),
-                onChange: (_, __) {},
+                onChanged: (_, __) {},
               ),
             ),
           ),
@@ -1880,7 +1880,7 @@ void main() {
                     TPickerOption(label: '上海', value: 'SH'),
                   ],
                 ]),
-                onChange: (_, __) {},
+                onChanged: (_, __) {},
               ),
             ),
           ),
@@ -1917,7 +1917,7 @@ void main() {
                     TPickerOption(label: '广州', value: 'GZ'),
                   ],
                 ]),
-                onChange: (col, v) {
+                onChanged: (col, v) {
                   lastCol = col;
                 },
               ),
@@ -1961,7 +1961,7 @@ void main() {
                     TPickerOption(label: '启用2', value: 'e2'),
                   ],
                 ]),
-                onChange: (col, v) {
+                onChanged: (col, v) {
                   lastCol = col;
                   lastIndex = v.indexes[0];
                 },
@@ -2083,7 +2083,7 @@ void main() {
                     TPickerOption(label: '启用2', value: 'e2'),
                   ],
                 ]),
-                onChange: (col, v) {
+                onChanged: (col, v) {
                   changeCount++;
                   lastCol = col;
                   lastIndex = v.indexes[0];
@@ -2136,7 +2136,7 @@ void main() {
                     TPickerOption(label: '上海', value: 'SH'),
                   ],
                 ]),
-                onChange: (col, v) {
+                onChanged: (col, v) {
                   lastCol = col;
                 },
               ),
@@ -2171,7 +2171,7 @@ void main() {
                     TPickerOption(label: '杭州', value: 'HZ'),
                   ],
                 }),
-                onChange: (_, __) {},
+                onChanged: (_, __) {},
               ),
             ),
           ),

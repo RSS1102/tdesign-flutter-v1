@@ -28,12 +28,12 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
     _selectedIcon = Icon(
       TIcons.app,
       size: 20,
-      color: TTheme.of(context).brandNormalColor,
+      color: context.tTheme.brandNormalColor,
     );
     _unSelectedIcon = Icon(
       TIcons.app,
       size: 20,
-      color: TTheme.of(context).textColorPrimary,
+      color: context.tTheme.textColorPrimary,
     );
     return ExamplePage(
       title: tTitle(),
@@ -332,7 +332,7 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
                           itemWidget: Text(
                             e,
                             style: TextStyle(
-                                color: TTheme.of(context).textColorPrimary,
+                                color: context.tTheme.textColorPrimary,
                                 fontSize: 16),
                           ),
                         ))
@@ -550,8 +550,8 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
   Widget _customBgColor(BuildContext context) {
     return TBottomTabBar(TBottomTabBarBasicType.iconText,
         useVerticalDivider: false,
-        selectedBgColor: TTheme.of(context).errorColor3,
-        unselectedBgColor: TTheme.of(context).bgColorSecondaryContainer,
+        selectedBgColor: context.tTheme.errorColor3,
+        unselectedBgColor: context.tTheme.bgColorSecondaryContainer,
         navigationTabs: List.generate(5, (index) {
           final label = '标签${index + 1}';
           return TBottomTabBarTabConfig(
@@ -568,9 +568,9 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
   @Demo(group: 'bottomTabBar')
   Widget _customBgTypeTabBar(BuildContext context) {
     return TBottomTabBar(TBottomTabBarBasicType.text,
-        backgroundColor: TTheme.of(context).successNormalColor,
-        selectedBgColor: TTheme.of(context).errorLightColor,
-        unselectedBgColor: TTheme.of(context).brandLightColor,
+        backgroundColor: context.tTheme.successNormalColor,
+        selectedBgColor: context.tTheme.errorLightColor,
+        unselectedBgColor: context.tTheme.brandLightColor,
         useVerticalDivider: false,
         navigationTabs: [
           TBottomTabBarTabConfig(
@@ -582,7 +582,7 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
           TBottomTabBarTabConfig(
             tabText: '标签2',
             unselectTabTextStyle:
-                TextStyle(color: TTheme.of(context).textColorBrand),
+                TextStyle(color: context.tTheme.textColorBrand),
             onTap: () {
               onTapTab(context, '标签2');
             },

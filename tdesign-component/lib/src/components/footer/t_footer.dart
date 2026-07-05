@@ -106,7 +106,7 @@ class _TFooterState extends State<TFooter> {
                         border: Border(
                             right: BorderSide(
                                 color:
-                                    TTheme.of(context).textColorPlaceholder)))
+                                    context.tTheme.textColorPlaceholder)))
                     : null,
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 child: link,
@@ -130,7 +130,7 @@ class _TFooterState extends State<TFooter> {
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: 12,
-        color: TTheme.of(context).textColorPlaceholder,
+        color: context.tTheme.textColorPlaceholder,
       ),
     );
   }

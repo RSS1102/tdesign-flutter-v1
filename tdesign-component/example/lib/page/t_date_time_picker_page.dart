@@ -91,8 +91,8 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorContainer,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusDefault),
+        color: context.tTheme.bgColorContainer,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +103,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
               valueListenable: _inlineSelectedNotifier,
               builder: (context, selected, _) => TText(
                 '当前选择：${_formatResult(selected)}',
-                textColor: TTheme.of(context).textColorSecondary,
+                textColor: context.tTheme.textColorSecondary,
               ),
             ),
           ),
@@ -128,7 +128,7 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
         cancelBuilder: null,
         confirmBuilder: null,
         child: Material(
-          color: TTheme.of(context).bgColorContainer,
+          color: context.tTheme.bgColorContainer,
           child: SafeArea(top: false, child: picker),
         ),
       ),

@@ -101,7 +101,7 @@ class TNoticeBarThemeData extends ThemeExtension<TNoticeBarThemeData> {
   /// 根据变体和上下文解析出完整的样式（颜色等）
   TNoticeBarThemeData resolve(BuildContext context) {
     final effectiveVariant = variant ?? TNoticeBarVariant.info;
-    final t = TTheme.of(context);
+    final t = context.tTheme;
 
     Color? resolvedBg = backgroundColor;
     Color? resolvedLeftIcon = leftIconColor;

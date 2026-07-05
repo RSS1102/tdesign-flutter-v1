@@ -99,7 +99,7 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
 
     pages.add(Container(
       height: MediaQuery.of(context).size.height - itemHeight,
-      decoration: BoxDecoration(color: TTheme.of(context).bgColorContainer),
+      decoration: BoxDecoration(color: context.tTheme.bgColorContainer),
     ));
 
     list[1].badge = const TBadge(TBadgeVariant.redPoint);
@@ -156,7 +156,7 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
 
   Widget getLoadingDemo(int index) {
     return Container(
-      decoration: BoxDecoration(color: TTheme.of(context).bgColorContainer),
+      decoration: BoxDecoration(color: context.tTheme.bgColorContainer),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

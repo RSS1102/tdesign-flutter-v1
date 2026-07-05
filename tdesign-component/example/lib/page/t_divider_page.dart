@@ -65,7 +65,7 @@ class TDividerPage extends StatelessWidget {
         children: [
           TText(
             '文字信息',
-            textColor: TTheme.of(context).textColorPlaceholder,
+            textColor: context.tTheme.textColorPlaceholder,
           ),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
@@ -74,7 +74,7 @@ class TDividerPage extends StatelessWidget {
             ),
           ),
           TText('文字信息',
-              textColor: TTheme.of(context).textColorPlaceholder),
+              textColor: context.tTheme.textColorPlaceholder),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: SizedBox(
@@ -82,7 +82,7 @@ class TDividerPage extends StatelessWidget {
             ),
           ),
           TText('文字信息',
-              textColor: TTheme.of(context).textColorPlaceholder),
+              textColor: context.tTheme.textColorPlaceholder),
         ],
       ),
     );

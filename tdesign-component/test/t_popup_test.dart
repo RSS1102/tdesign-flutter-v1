@@ -207,8 +207,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           navigatorObservers: [rootObserver],
-          home: TTheme(
-            data: TThemeData.defaultData(),
+          home: Theme(
+            data: ThemeData(extensions: [TThemeData.defaultData()]),
             child: Builder(
               builder: (rootCtx) {
                 rootContext = rootCtx;
@@ -274,8 +274,8 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           navigatorObservers: [rootObserver],
-          home: TTheme(
-            data: TThemeData.defaultData(),
+          home: Theme(
+            data: ThemeData(extensions: [TThemeData.defaultData()]),
             child: Navigator(
               observers: [nestedObserver],
               onGenerateRoute: (_) {
@@ -992,8 +992,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: TTheme(
-            data: TThemeData.defaultData(),
+          home: Theme(
+            data: ThemeData(extensions: [TThemeData.defaultData()]),
             child: StatefulBuilder(
               builder: (context, setState) {
                 return Scaffold(

@@ -12,14 +12,13 @@ void main() {
     final themeExtensions = <ThemeExtension>[
       if (dividerTheme != null) dividerTheme,
     ];
-    return TTheme(
-      data: TThemeData.defaultData(),
-      child: MaterialApp(
-        theme: ThemeData(
-          extensions: themeExtensions,
-        ),
-        home: Scaffold(body: Center(child: child)),
+    // 注意：必须通过 MaterialApp.theme 传递 extensions，
+    // 用外层 Theme 包 MaterialApp 会被 MaterialApp 默认 ThemeData.light() 覆盖，导致 extension 丢失。
+    return MaterialApp(
+      theme: ThemeData(
+        extensions: [TThemeData.defaultData(), ...themeExtensions],
       ),
+      home: Scaffold(body: Center(child: child)),
     );
   }
 

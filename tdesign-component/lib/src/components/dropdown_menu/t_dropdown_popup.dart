@@ -7,9 +7,15 @@ import 't_dropdown_item.dart';
 import 't_dropdown_menu.dart';
 import 't_dropdown_panel.dart';
 
+/// 下拉弹出方向（别名 [TDropdownMenuDirection]）
 typedef TDropdownPopupDirection = TDropdownMenuDirection;
+
+/// 异步回调类型
 typedef FutureCallback = Future<void> Function();
 
+/// 下拉菜单弹出层管理器
+///
+/// 负责管理 Overlay 层的创建、方向计算和遮罩渲染。
 class TDropdownPopup {
   TDropdownPopup({
     required this.parentContext,
@@ -21,12 +27,25 @@ class TDropdownPopup {
     this.duration = const Duration(milliseconds: 200),
   });
 
+  /// 父级上下文（用于定位）
   final BuildContext parentContext;
+
+  /// 下拉内容
   final TDropdownItem child;
+
+  /// 关闭回调
   final FutureCallback handleClose;
+
+  /// 展开方向
   final TDropdownPopupDirection? direction;
+
+  /// 是否显示遮罩
   final bool? showOverlay;
+
+  /// 点击遮罩是否关闭
   final bool? closeOnClickOverlay;
+
+  /// 动画时长
   final Duration? duration;
 
   /// _overlay1：下拉方向的
@@ -54,6 +73,7 @@ class TDropdownPopup {
 
   Duration get _duration => duration ?? const Duration(milliseconds: 200);
 
+  /// 最大内容高度
   double get maxContentHeight => direction == TDropdownPopupDirection.down
       ? _initContentBottom
       : _initContentTop;
@@ -91,6 +111,7 @@ class TDropdownPopup {
     }
   }
 
+  /// 添加并显示弹出层
   Future<void> add([TDropdownItem? updateChild]) {
     var completer = Completer<void>();
     _directionListenable.value = direction ?? TDropdownPopupDirection.auto;
@@ -201,6 +222,7 @@ class TDropdownPopup {
     Navigator.maybePop(parentContext);
   }
 
+  /// 移除并关闭弹出层
   Future<void> remove() async {
     await _closeListenable.value?.call();
     _closeListenable.value = null;

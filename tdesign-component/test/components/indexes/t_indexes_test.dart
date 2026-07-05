@@ -7,8 +7,8 @@ void main() {
     final themeExtensions = <ThemeExtension>[
       if (indexesTheme != null) indexesTheme,
     ];
-    return TTheme(
-      data: TThemeData.defaultData(),
+    return Theme(
+      data: ThemeData(extensions: [TThemeData.defaultData()]),
       child: MaterialApp(
         theme: ThemeData(extensions: themeExtensions),
         home: Scaffold(body: child),
@@ -141,6 +141,27 @@ void main() {
           builderContent: (context, index) => ListTile(title: Text('内容$index')),
         ),
         indexesTheme: const TIndexesThemeData(capsuleTheme: true),
+      ));
+      expect(find.byType(TIndexes), findsOneWidget);
+    });
+
+    // 补充用例至 ≥15
+    testWidgets('多个索引项正常渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TIndexes(
+          indexList: const ['A', 'B', 'C', 'D', 'E'],
+          builderContent: (context, index) => ListTile(title: Text('项$index')),
+        ),
+      ));
+      expect(find.byType(TIndexes), findsOneWidget);
+    });
+
+    testWidgets('空索引列表正常渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TIndexes(
+          indexList: const [],
+          builderContent: (context, index) => ListTile(title: Text('空$index')),
+        ),
       ));
       expect(find.byType(TIndexes), findsOneWidget);
     });

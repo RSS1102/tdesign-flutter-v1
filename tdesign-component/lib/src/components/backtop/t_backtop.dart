@@ -132,7 +132,7 @@ class _TBackTopState extends State<TBackTop> {
   }
 
   void _initColors() {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     final colorScheme = _effectiveColorScheme;
     _bgColor = colorScheme == TBackTopColorScheme.light
         ? theme.grayColor1
@@ -200,7 +200,7 @@ class _TBackTopState extends State<TBackTop> {
       height: 48,
       padding: EdgeInsets.symmetric(vertical: widget.showText ? 6 : 13),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusCircle),
+        borderRadius: BorderRadius.circular(context.tTheme.radiusCircle),
         border: Border.all(color: _borderColor, width: 0.5),
         color: _bgColor,
       ),
@@ -241,8 +241,8 @@ class _TBackTopState extends State<TBackTop> {
         decoration: BoxDecoration(
           color: _bgColor,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(TTheme.of(context).radiusCircle),
-            bottomLeft: Radius.circular(TTheme.of(context).radiusCircle),
+            topLeft: Radius.circular(context.tTheme.radiusCircle),
+            bottomLeft: Radius.circular(context.tTheme.radiusCircle),
           ),
           border: Border.all(color: _borderColor, width: 0.5),
         ),

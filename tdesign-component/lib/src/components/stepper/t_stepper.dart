@@ -179,8 +179,8 @@ class _TStepperState extends State<TStepper> {
     switch (widget.theme) {
       case TStepperColorScheme.filled:
         return widget.disabled
-            ? TTheme.of(context).bgColorComponentDisabled
-            : TTheme.of(context).bgColorSecondaryContainer;
+            ? context.tTheme.bgColorComponentDisabled
+            : context.tTheme.bgColorSecondaryContainer;
       case TStepperColorScheme.outline:
         return null;
       case TStepperColorScheme.normal:
@@ -292,10 +292,10 @@ class _TStepperState extends State<TStepper> {
               border: widget.theme == TStepperColorScheme.outline
                   ? Border(
                       top: BorderSide(
-                        color: TTheme.of(context).componentBorderColor,
+                        color: context.tTheme.componentBorderColor,
                       ),
                       bottom: BorderSide(
-                        color: TTheme.of(context).componentBorderColor,
+                        color: context.tTheme.componentBorderColor,
                       ))
                   : null),
           child: Padding(
@@ -320,8 +320,8 @@ class _TStepperState extends State<TStepper> {
                       style: TextStyle(
                           fontSize: _getFontSize(),
                           color: widget.disabled
-                              ? TTheme.of(context).textDisabledColor
-                              : TTheme.of(context).textColorPrimary),
+                              ? context.tTheme.textDisabledColor
+                              : context.tTheme.textColorPrimary),
                       textAlign: TextAlign.center,
                       textAlignVertical: TextAlignVertical.center,
                       keyboardType: TextInputType.number,
@@ -456,18 +456,18 @@ class TStepperIconButton extends StatelessWidget {
     return Icon(iconType,
         size: _getIconSize(),
         color: disabled
-            ? TTheme.of(context).textDisabledColor
-            : TTheme.of(context).textColorPrimary);
+            ? context.tTheme.textDisabledColor
+            : context.tTheme.textColorPrimary);
   }
 
   Color? _getBackgroundColor(BuildContext context) {
     switch (theme) {
       case TStepperColorScheme.filled:
         return disabled
-            ? TTheme.of(context).bgColorComponentDisabled
-            : TTheme.of(context).bgColorSecondaryContainer;
+            ? context.tTheme.bgColorComponentDisabled
+            : context.tTheme.bgColorSecondaryContainer;
       case TStepperColorScheme.outline:
-        return disabled ? TTheme.of(context).bgColorComponentDisabled : null;
+        return disabled ? context.tTheme.bgColorComponentDisabled : null;
       case TStepperColorScheme.normal:
       default:
         return null;
@@ -489,7 +489,7 @@ class TStepperIconButton extends StatelessWidget {
   BoxBorder? _getBoxBorder(BuildContext context) {
     if (theme == TStepperColorScheme.outline) {
       return Border.all(
-        color: TTheme.of(context).componentBorderColor,
+        color: context.tTheme.componentBorderColor,
       );
     }
 

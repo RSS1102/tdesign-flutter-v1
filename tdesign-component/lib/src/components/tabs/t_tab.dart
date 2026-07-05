@@ -127,7 +127,7 @@ class TTab extends Tab {
         child: child!,
         style: DefaultTextStyle.of(context)
             .style
-            .copyWith(fontSize: TTheme.of(context).fontBodySmall?.size ?? 14),
+            .copyWith(fontSize: context.tTheme.fontBodySmall?.size ?? 14),
       );
     }
     return Text(

@@ -217,7 +217,7 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '裁剪',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         const TImage(
@@ -238,11 +238,11 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '拉伸',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         Container(
-          color: TTheme.of(context).bgColorContainerHover,
+          color: context.tTheme.bgColorContainerHover,
           child: const Stack(
             alignment: Alignment.center,
             children: [
@@ -267,11 +267,11 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '适应高',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         Container(
-          color: TTheme.of(context).bgColorContainerHover,
+          color: context.tTheme.bgColorContainerHover,
           child: const TImage(
             src: 'assets/img/image.png',
             variant: TImageVariant.fitHeight,
@@ -291,11 +291,11 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '适应宽',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         Container(
-          color: TTheme.of(context).bgColorContainerHover,
+          color: context.tTheme.bgColorContainerHover,
           child: const TImage(
             src: 'assets/img/image.png',
             variant: TImageVariant.fitWidth,
@@ -315,7 +315,7 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '方形',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         const TImage(
@@ -336,7 +336,7 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '圆角方形',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         const TImage(
@@ -357,7 +357,7 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '圆形',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         const TImage(
@@ -378,21 +378,21 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '加载默认提示',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         Container(
             clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
                 borderRadius:
-                    BorderRadius.circular(TTheme.of(context).radiusDefault)),
+                    BorderRadius.circular(context.tTheme.radiusDefault)),
             child: Container(
                 alignment: Alignment.center,
-                color: TTheme.of(context).bgColorContainerHover,
+                color: context.tTheme.bgColorContainerHover,
                 child: Icon(
                   TIcons.ellipsis,
                   size: 22,
-                  color: TTheme.of(context).textColorPlaceholder,
+                  color: context.tTheme.textColorPlaceholder,
                 ))),
 
         /// @tips 实际组件写法如下：上面仅为加载展示
@@ -415,22 +415,22 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '加载自定义提示',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         Container(
             clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
                 borderRadius:
-                    BorderRadius.circular(TTheme.of(context).radiusDefault)),
+                    BorderRadius.circular(context.tTheme.radiusDefault)),
             child: Container(
                 alignment: Alignment.center,
-                color: TTheme.of(context).bgColorContainerHover,
+                color: context.tTheme.bgColorContainerHover,
                 child: RotationTransition(
                     turns: animation,
                     alignment: Alignment.center,
                     child: TCircleIndicator(
-                      color: TTheme.of(context).brandNormalColor,
+                      color: context.tTheme.brandNormalColor,
                       size: 18,
                       lineWidth: 3,
                     )))),
@@ -442,7 +442,7 @@ class TImageState extends State<TImagePage>
         //       turns: animation,
         //       alignment: Alignment.center,
         //       child: TCircleIndicator(
-        //         color: TTheme.of(context).brandNormalColor,
+        //         color: context.tTheme.brandNormalColor,
         //         size: 18,
         //         lineWidth: 3,
         //       )),
@@ -462,7 +462,7 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '失败默认提示',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         const TImage(
@@ -483,7 +483,7 @@ class TImageState extends State<TImagePage>
           padding: const EdgeInsets.only(bottom: 16),
           child: TText(
             '失败自定义提示',
-            font: TTheme.of(context).fontBodyMedium,
+            font: context.tTheme.fontBodyMedium,
           ),
         ),
         TImage(
@@ -491,7 +491,7 @@ class TImageState extends State<TImagePage>
           errorWidget: TText(
             '加载失败',
             forceVerticalCenter: true,
-            font: TTheme.of(context).fontBodyExtraSmall,
+            font: context.tTheme.fontBodyExtraSmall,
           ),
           variant: TImageVariant.roundedSquare,
         ),

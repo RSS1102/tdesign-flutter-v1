@@ -132,7 +132,7 @@ Widget _customNoticeBar(BuildContext context) {
       variant: TNoticeBarVariant.info,
       prefixIcon: TIcons.notification,
       suffixIcon: TIcons.chevron_right,
-      backgroundColor: TTheme.of(context).bgColorComponent,
+      backgroundColor: context.tTheme.bgColorComponent,
     ),
   );
 }
@@ -232,7 +232,7 @@ Widget _cardNoticeBar(BuildContext context) {
         ),
         Container(
           decoration: BoxDecoration(
-            color: TTheme.of(context).bgColorContainer,
+            color: context.tTheme.bgColorContainer,
             borderRadius: const BorderRadius.all(Radius.circular(12)),
           ),
         )

@@ -43,6 +43,7 @@ class TFontLoaderWidget extends StatefulWidget {
     required this.fontFamilyUrl,
   }) : super(key: key);
 
+  /// 需要加载字体的文本组件
   final TText textWidget;
 
   /// FontFamily 的下载地址

@@ -145,13 +145,13 @@ class TTablePage extends StatelessWidget {
                 TText(
                   '修改',
                   style: TextStyle(
-                      color: TTheme.of(context).brandNormalColor,
+                      color: context.tTheme.brandNormalColor,
                       fontSize: 14),
                 ),
                 TText(
                   '通过',
                   style: TextStyle(
-                      color: TTheme.of(context).brandNormalColor,
+                      color: context.tTheme.brandNormalColor,
                       fontSize: 14),
                 ),
               ],
@@ -178,9 +178,9 @@ class TTablePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Icon(TIcons.upload,
-                    color: TTheme.of(context).brandNormalColor, size: 16),
+                    color: context.tTheme.brandNormalColor, size: 16),
                 Icon(TIcons.delete,
-                    color: TTheme.of(context).brandNormalColor, size: 16),
+                    color: context.tTheme.brandNormalColor, size: 16),
               ],
             );
           },
@@ -227,14 +227,14 @@ class TTablePage extends StatelessWidget {
                 TText(
                   '修改',
                   style: TextStyle(
-                    color: TTheme.of(context).brandNormalColor,
+                    color: context.tTheme.brandNormalColor,
                     fontSize: 14,
                   ),
                 ),
                 TText(
                   '通过',
                   style: TextStyle(
-                    color: TTheme.of(context).brandNormalColor,
+                    color: context.tTheme.brandNormalColor,
                     fontSize: 14,
                   ),
                 ),
@@ -319,14 +319,14 @@ class TTablePage extends StatelessWidget {
                 TText(
                   '修改',
                   style: TextStyle(
-                    color: TTheme.of(context).brandNormalColor,
+                    color: context.tTheme.brandNormalColor,
                     fontSize: 14,
                   ),
                 ),
                 TText(
                   '通过',
                   style: TextStyle(
-                    color: TTheme.of(context).brandNormalColor,
+                    color: context.tTheme.brandNormalColor,
                     fontSize: 14,
                   ),
                 ),

@@ -218,7 +218,7 @@ class _TImageState extends State<TImage> {
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
               borderRadius:
-                  BorderRadius.circular(TTheme.of(context).radiusDefault)),
+                  BorderRadius.circular(context.tTheme.radiusDefault)),
           child: _buildImageWidget(fit),
         );
       case TImageVariant.circle:

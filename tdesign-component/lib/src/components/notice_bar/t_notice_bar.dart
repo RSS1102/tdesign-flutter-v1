@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import '../../../tdesign_flutter.dart';
 import 't_notice_bar_theme_data.dart';
 
+/// 公告栏
 class TNoticeBar extends StatefulWidget {
   const TNoticeBar({
     super.key,

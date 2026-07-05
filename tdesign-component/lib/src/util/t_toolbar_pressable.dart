@@ -57,7 +57,7 @@ class _TToolbarPressableState extends State<TToolbarPressable> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     final padding = widget.padding ??
         EdgeInsets.symmetric(
           horizontal: theme.spacer8,

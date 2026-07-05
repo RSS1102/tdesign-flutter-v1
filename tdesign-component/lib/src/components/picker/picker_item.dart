@@ -4,7 +4,7 @@ import '../../theme/t_fonts.dart';
 import '../../theme/t_theme.dart';
 import '../text/t_text.dart';
 
-// 自定义子项构建器类型别名，见 [TPicker.itemBuilder] 字段说明
+/// 自定义子项构建器类型别名，见 [TPicker.itemBuilder] 字段说明
 typedef ItemBuilderType = Widget? Function(
   BuildContext context,
   String content,
@@ -22,7 +22,7 @@ const double _kDisabledItemOpacity = 0.5;
 /// 基础字号 fallback（theme.fontBodyLarge.size 为 null 时使用）
 const double _kBaseFontSize = 16.0;
 
-/// 选择器的子项组件（包内复用，不对外暴露）
+//// 选择器的子项组件（包内复用，不对外暴露）
 class PickerItemWidget extends StatelessWidget {
   const PickerItemWidget({
     required this.fixedExtentScrollController,
@@ -73,7 +73,7 @@ class PickerItemWidget extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: calc.calculateFont(context, 0),
-              color: TTheme.of(context).textDisabledColor,
+              color: context.tTheme.textDisabledColor,
             ),
           ),
         ),
@@ -142,7 +142,7 @@ class ItemDistanceCalculator {
 
   /// 计算指定距离处的文字颜色
   Color calculateColor(BuildContext context, double distance) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     final primary = theme.textColorPrimary;
     final placeholder = theme.textColorPlaceholder;
     final mix = _colorMixLevels[_level(distance)];
@@ -161,7 +161,7 @@ class ItemDistanceCalculator {
 
   /// 计算指定距离处的字体大小
   double calculateFont(BuildContext context, double distance) {
-    final baseSize = TTheme.of(context).fontBodyLarge?.size ?? _kBaseFontSize;
+    final baseSize = context.tTheme.fontBodyLarge?.size ?? _kBaseFontSize;
     return baseSize * _fontSizeScales[_level(distance)];
   }
 

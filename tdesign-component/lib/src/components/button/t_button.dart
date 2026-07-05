@@ -273,7 +273,7 @@ class _TButtonState extends State<TButton> {
 
   /// 根据 shape 获取渐变裁剪圆角值
   double _borderRadiusForShape(TButtonShape shape) {
-    final tTheme = TTheme.of(context);
+    final tTheme = context.tTheme;
     return switch (shape) {
       TButtonShape.rectangle => tTheme.radiusDefault,
       TButtonShape.round => tTheme.radiusRound,

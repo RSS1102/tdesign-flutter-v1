@@ -47,15 +47,15 @@ class _TabStyle extends AnimatedWidget {
     final defaultStyle = (labelStyle ??
             tabBarTheme.labelStyle ??
             TextStyle(
-                height: TTheme.of(context).fontBodyMedium?.height ?? 1.57,
-                fontSize: TTheme.of(context).fontBodyMedium?.size ?? 14))
+                height: context.tTheme.fontBodyMedium?.height ?? 1.57,
+                fontSize: context.tTheme.fontBodyMedium?.size ?? 14))
         .copyWith(inherit: true);
     final defaultUnselectedStyle = (unselectedLabelStyle ??
             tabBarTheme.unselectedLabelStyle ??
             labelStyle ??
             TextStyle(
-                height: TTheme.of(context).fontBodyMedium?.height ?? 1.57,
-                fontSize: TTheme.of(context).fontBodyMedium?.size ?? 14))
+                height: context.tTheme.fontBodyMedium?.height ?? 1.57,
+                fontSize: context.tTheme.fontBodyMedium?.size ?? 14))
         .copyWith(inherit: true);
     final textStyle = selected
         ? TextStyle.lerp(defaultStyle, defaultUnselectedStyle, animation.value)!
@@ -65,11 +65,11 @@ class _TabStyle extends AnimatedWidget {
     final selectedColor = labelColor ??
         tabBarTheme.labelColor ??
         labelStyle?.color ??
-        TTheme.of(context).brandNormalColor;
+        context.tTheme.brandNormalColor;
     final unselectedColor = unselectedLabelColor ??
         tabBarTheme.unselectedLabelColor ??
         unselectedLabelStyle?.color ??
-        TTheme.of(context).textColorPrimary;
+        context.tTheme.textColorPrimary;
 
     final color = selected
         ? Color.lerp(selectedColor, unselectedColor, animation.value)!
@@ -327,6 +327,7 @@ class THorizontalTabBar extends StatefulWidget implements PreferredSizeWidget {
   /// 未选中背景色
   final Color? unSelectedBgColor;
 
+  /// Tab 对齐方式
   final TabAlignment? tabAlignment;
 
   /// A size whose height depends on if the tabs have both icons and text.
@@ -788,8 +789,8 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
     if (widget.outlineType == TTabBarVariant.capsule) {
       return BoxDecoration(
           color: index == _currentIndex
-              ? (widget.selectedBgColor ?? TTheme.of(context).brandColor1)
-              : (widget.unSelectedBgColor ?? TTheme.of(context).grayColor1),
+              ? (widget.selectedBgColor ?? context.tTheme.brandColor1)
+              : (widget.unSelectedBgColor ?? context.tTheme.grayColor1),
           borderRadius: BorderRadius.circular(32));
     }
     return null;
@@ -798,28 +799,28 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   BoxDecoration? _getContentDecorateOuter(int index) {
     if (widget.outlineType == TTabBarVariant.capsule) {
       return BoxDecoration(
-        color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+        color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
       );
     } else if (widget.outlineType == TTabBarVariant.card) {
       if (index == _currentIndex) {
         return BoxDecoration(
             color:
-                widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+                widget.backgroundColor ?? context.tTheme.bgColorContainer,
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(index + 1 < widget.tabs.length
-                    ? TTheme.of(context).radiusLarge
+                    ? context.tTheme.radiusLarge
                     : 0),
                 topLeft: Radius.circular(
-                    index > 0 ? TTheme.of(context).radiusLarge : 0)));
+                    index > 0 ? context.tTheme.radiusLarge : 0)));
       } else {
         return BoxDecoration(
-          color: TTheme.of(context).bgColorSecondaryContainer,
+          color: context.tTheme.bgColorSecondaryContainer,
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(index - 1 == _currentIndex
-                ? TTheme.of(context).radiusLarge
+                ? context.tTheme.radiusLarge
                 : 0),
             bottomRight: Radius.circular(index + 1 == _currentIndex
-                ? TTheme.of(context).radiusLarge
+                ? context.tTheme.radiusLarge
                 : 0),
           ),
         );
@@ -831,7 +832,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   Color? _getBackgroundColor(int index) {
     if (widget.outlineType == TTabBarVariant.card) {
       if (index == _currentIndex) {
-        return TTheme.of(context).bgColorSecondaryContainer;
+        return context.tTheme.bgColorSecondaryContainer;
       }
     }
     return null;

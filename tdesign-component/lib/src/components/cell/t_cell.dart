@@ -115,7 +115,7 @@ class _TCellState extends State<TCell> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     final style = _resolveStyle(context);
     final align = Theme.of(context).extension<TCellThemeData>()?.align ??
         TCellAlign.middle;
@@ -187,7 +187,7 @@ class _TCellState extends State<TCell> {
                         ),
                         if ((widget.titleWidget != null || widget.title != null) &&
                             (widget.subtitleWidget != null || widget.subtitle?.isNotEmpty == true))
-                          SizedBox(height: TTheme.of(context).spacer4),
+                          SizedBox(height: context.tTheme.spacer4),
                         if (widget.subtitleWidget != null)
                           widget.subtitleWidget!
                         else if (widget.subtitle?.isNotEmpty ?? false)
@@ -278,7 +278,7 @@ class _TCellState extends State<TCell> {
     }
 
     if (imageWidgets.isNotEmpty) {
-      imageWidgets.add(SizedBox(width: TTheme.of(context).spacer12));
+      imageWidgets.add(SizedBox(width: context.tTheme.spacer12));
     }
 
     return imageWidgets;

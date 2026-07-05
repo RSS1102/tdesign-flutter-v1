@@ -11,15 +11,36 @@ import '../text/t_text.dart';
 import 't_action_sheet.dart';
 import 't_action_sheet_item_widget.dart';
 
+/// 分组类型动作面板
+///
+/// 按项目 [TActionSheetItem.group] 字段分组展示，
+/// 每组横向滚动。通常不直接使用，由 [TActionSheet.showGroupActionSheet] 创建。
 class TActionSheetGroup extends StatelessWidget {
+  /// 动作面板的项目列表
   final List<TActionSheetItem> items;
+
+  /// 对齐方式
   final TActionSheetAlign align;
+
+  /// 取消按钮的文本
   final String? cancelText;
+
+  /// 是否显示取消按钮
   final bool showCancel;
+
+  /// 取消按钮的回调函数
   final VoidCallback? onCancel;
+
+  /// 选择项目时的回调函数
   final TActionSheetOnChanged? onChanged;
+
+  /// 项目的行高
   final double itemHeight;
+
+  /// 项目的最小宽度
   final double itemMinWidth;
+
+  /// 是否使用安全区域
   final bool useSafeArea;
 
   const TActionSheetGroup({
@@ -37,7 +58,7 @@ class TActionSheetGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = Radius.circular(TTheme.of(context).radiusExtraLarge);
+    final borderRadius = Radius.circular(context.tTheme.radiusExtraLarge);
     final groupItems = items.groupBy((item) => item.group);
     final groupKeys = groupItems.keys
         .where((k) => k != null && groupItems[k]?.isNotEmpty == true);
@@ -46,7 +67,7 @@ class TActionSheetGroup extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius:
             BorderRadius.only(topLeft: borderRadius, topRight: borderRadius),
-        color: TTheme.of(context).bgColorContainer,
+        color: context.tTheme.bgColorContainer,
       ),
       clipBehavior: Clip.antiAlias,
       padding: useSafeArea
@@ -62,9 +83,9 @@ class TActionSheetGroup extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(
-                    TTheme.of(context).spacer16,
-                    TTheme.of(context).spacer12,
-                    TTheme.of(context).spacer16,
+                    context.tTheme.spacer16,
+                    context.tTheme.spacer12,
+                    context.tTheme.spacer16,
                     0,
                   ),
                   child: Row(
@@ -72,8 +93,8 @@ class TActionSheetGroup extends StatelessWidget {
                     children: [
                       TText(
                         k!,
-                        font: TTheme.of(context).fontBodyMedium,
-                        textColor: TTheme.of(context).textColorPlaceholder,
+                        font: context.tTheme.fontBodyMedium,
+                        textColor: context.tTheme.textColorPlaceholder,
                       ),
                     ],
                   ),
@@ -99,10 +120,10 @@ class TActionSheetGroup extends StatelessWidget {
                 if (i != groupKeys.length - 1)
                   Container(
                     decoration: BoxDecoration(
-                      color: TTheme.of(context).fontWhColor1,
+                      color: context.tTheme.fontWhColor1,
                       border: Border(
                         top: BorderSide(
-                          color: TTheme.of(context).componentStrokeColor,
+                          color: context.tTheme.componentStrokeColor,
                           width: 0.5,
                         ),
                       ),

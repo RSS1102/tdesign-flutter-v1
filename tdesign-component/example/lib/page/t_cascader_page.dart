@@ -296,7 +296,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: TTheme.of(context).whiteColor1,
+      color: context.tTheme.whiteColor1,
       child: ExamplePage(
         title: tTitle(),
         exampleCodeGroup: 'cascader',

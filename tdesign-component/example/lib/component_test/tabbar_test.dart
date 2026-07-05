@@ -63,8 +63,8 @@ class _StudyDetailState extends State with SingleTickerProviderStateMixin {
             TTabBar(
                 controller: _tabController,
                 height: 44.h,
-                indicatorColor: TTheme.of().brandNormalColor,
-                // labelColor:TTheme.of().brandNormalColor,
+                indicatorColor: context.tTheme.brandNormalColor,
+                // labelColor:context.tTheme.brandNormalColor,
                 unselectedLabelStyle: TextStyle(fontSize: 12.sp, color: Colors.red),
                 labelStyle: TextStyle(
                     fontSize: 28.sp,
@@ -129,7 +129,7 @@ class _CourseItemDetail extends StatelessWidget {
                   child: Text(
                     '集合图形离开撒娇的案例三等奖集合图形离开撒娇的案例',
                     style: TextStyle(
-                        color: TTheme.of().fontGyColor1,
+                        color: context.tTheme.fontGyColor1,
                         fontSize: 14.sp,
                         overflow: TextOverflow.ellipsis,
                         height: 1.5.h),
@@ -141,7 +141,7 @@ class _CourseItemDetail extends StatelessWidget {
             padding: EdgeInsets.only(top: 5.h, bottom: 12.h),
             child: Text(
               '2020年8月15日开始，共20节课',
-              style: TextStyle(fontSize: 12.sp, color: TTheme.of().fontGyColor2,),
+              style: TextStyle(fontSize: 12.sp, color: context.tTheme.fontGyColor2,),
             ),
           ),
           Row(
@@ -161,7 +161,7 @@ class _CourseItemDetail extends StatelessWidget {
                 maxLines: 1,
                 style: TextStyle(
                     fontSize: 12.sp,
-                    color: TTheme.of().fontGyColor2,
+                    color: context.tTheme.fontGyColor2,
                     overflow: TextOverflow.ellipsis),
               )
             ],

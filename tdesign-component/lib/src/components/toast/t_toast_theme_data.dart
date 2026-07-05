@@ -45,6 +45,7 @@ class TToastThemeData extends ThemeExtension<TToastThemeData> {
     this.maxWidth,
   });
 
+  /// 合并其他 ThemeData，非空字段优先取 [other]
   TToastThemeData merge(TToastThemeData? other) {
     if (other == null) return this;
     return TToastThemeData(

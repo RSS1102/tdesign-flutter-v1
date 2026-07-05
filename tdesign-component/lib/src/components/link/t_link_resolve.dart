@@ -29,7 +29,7 @@ class TLinkResolve {
       return themeColor;
     }
     // L3：颜色映射
-    final tTheme = TTheme.of(context);
+    final tTheme = context.tTheme;
     final scheme = colorScheme ?? TLinkColorScheme.primary;
 
     if (isDisabled) {

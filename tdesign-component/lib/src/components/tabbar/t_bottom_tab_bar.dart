@@ -24,6 +24,7 @@ const double _kDefaultTabBarHeight = 56;
 /// 展开项弹窗弹出动画时间
 const Duration _kPopupMenuDuration = Duration(milliseconds: 10);
 
+/// 底部标签栏基本类型
 enum TBottomTabBarBasicType {
   /// 单层级纯文本标签栏
   text,
@@ -38,6 +39,7 @@ enum TBottomTabBarBasicType {
   expansionPanel,
 }
 
+/// 底部标签栏组件样式
 enum TBottomTabBarComponentType {
   /// 普通样式
   normal,
@@ -46,6 +48,7 @@ enum TBottomTabBarComponentType {
   label
 }
 
+/// 底部标签栏轮廓样式
 enum TBottomTabBarOutlineType {
   /// 填充样式
   filled,
@@ -54,6 +57,7 @@ enum TBottomTabBarOutlineType {
   capsule
 }
 
+/// 指示器动画类型
 enum TBottomTabBarIndicatorAnimation {
   /// 无动画，瞬间切换
   none,
@@ -141,6 +145,10 @@ class TBottomTabBarTabConfig {
   final GestureLongPressCallback? onLongPress;
 }
 
+/// 底部标签栏
+///
+/// 支持文本/图标/图文/展开面板四种基本类型，
+/// 普通和胶囊两种选中样式，填充和胶囊两种轮廓样式。
 class TBottomTabBar extends StatefulWidget {
   TBottomTabBar(
     this.basicType, {
@@ -361,19 +369,19 @@ class _TBottomTabBarState extends State<TBottomTabBar>
                     : null,
                 decoration: BoxDecoration(
                     color: widget.backgroundColor ??
-                        TTheme.of(context).bgColorContainer,
+                        context.tTheme.bgColorContainer,
                     borderRadius: isCapsuleOutlineType
-                        ? BorderRadius.circular(TTheme.of(context).radiusCircle)
+                        ? BorderRadius.circular(context.tTheme.radiusCircle)
                         : null,
                     border: widget.showTopBorder! && !isCapsuleOutlineType
                         ? Border(
                         top: widget.topBorder ??
                             BorderSide(
-                                color: TTheme.of(context).componentStrokeColor,
+                                color: context.tTheme.componentStrokeColor,
                                 width: 0.5))
                         : null,
                     boxShadow: isCapsuleOutlineType
-                        ? TTheme.of(context).shadowsTop
+                        ? context.tTheme.shadowsTop
                         : null),
                 child: Stack(alignment: Alignment.center, children: [
                   // 动画指示器（在底层）
@@ -392,7 +400,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
               if (widget.placeholder) {
                 result = Container(
                   padding: EdgeInsets.only(bottom: safeAreaBottomHeight),
-                  color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+                  color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
                   child: result,
                 );
               } else {
@@ -486,7 +494,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
         width: indicatorWidth,
         height: height,
         decoration: BoxDecoration(
-          color: widget.selectedBgColor ?? TTheme.of(context).brandLightColor,
+          color: widget.selectedBgColor ?? context.tTheme.brandLightColor,
           borderRadius: const BorderRadius.all(Radius.circular(24)),
         ),
       ),
@@ -535,7 +543,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: widget.selectedBgColor ?? TTheme.of(context).brandLightColor,
+          color: widget.selectedBgColor ?? context.tTheme.brandLightColor,
           borderRadius: const BorderRadius.all(Radius.circular(24)),
         ),
       ),
@@ -589,7 +597,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
             height: widget.dividerHeight ?? 32,
             child: VerticalDivider(
               color: widget.dividerColor ??
-                  TTheme.of(context).componentStrokeColor,
+                  context.tTheme.componentStrokeColor,
               thickness: widget.dividerThickness ?? 0.5,
             ),
           );
@@ -599,6 +607,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
   }
 }
 
+/// 带徽标的底部标签栏单项
 class TBottomTabBarItemWithBadge extends StatelessWidget {
   const TBottomTabBarItemWithBadge({
     Key? key,
@@ -625,7 +634,7 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
   /// tab选中背景类型
   final TBottomTabBarComponentType componentType;
 
-  //
+  /// tab轮廓类型
   final TBottomTabBarOutlineType outlineType;
 
   /// 单个tab的属性配置
@@ -693,7 +702,7 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
                       : null,
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? selectedBgColor ?? TTheme.of(context).brandLightColor
+                        ? selectedBgColor ?? context.tTheme.brandLightColor
                         : unselectedBgColor,
                     borderRadius: const BorderRadius.all(Radius.circular(24)),
                   ),
@@ -720,7 +729,7 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
     Widget child = Container();
     if (basicType == TBottomTabBarBasicType.text) {
       child = _textItem(context, itemConfig, isSelected,
-          TTheme.of(context).fontTitleMedium!);
+          context.tTheme.fontTitleMedium!);
     }
     if (basicType == TBottomTabBarBasicType.expansionPanel) {
       if (itemConfig.popUpButtonConfig != null) {
@@ -731,17 +740,17 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
               TIcons.view_list,
               size: 16.0,
               color: isSelected
-                  ? TTheme.of(context).brandNormalColor
-                  : TTheme.of(context).textColorPrimary,
+                  ? context.tTheme.brandNormalColor
+                  : context.tTheme.textColorPrimary,
             ),
             const SizedBox(width: 5),
             _textItem(context, itemConfig, isSelected,
-                TTheme.of(context).fontTitleMedium!)
+                context.tTheme.fontTitleMedium!)
           ],
         );
       } else {
         child = _textItem(context, itemConfig, isSelected,
-            TTheme.of(context).fontTitleMedium!);
+            context.tTheme.fontTitleMedium!);
       }
     }
     if (basicType == TBottomTabBarBasicType.icon) {
@@ -750,8 +759,8 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
       child = IconTheme(
         data: IconThemeData(
           color: isSelected
-              ? TTheme.of(context).brandNormalColor
-              : TTheme.of(context).textColorPrimary,
+              ? context.tTheme.brandNormalColor
+              : context.tTheme.textColorPrimary,
         ),
         child: isSelected ? selectedIcon! : unSelectedIcon!,
       );
@@ -767,8 +776,8 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
           IconTheme(
             data: IconThemeData(
               color: isSelected
-                  ? TTheme.of(context).brandNormalColor
-                  : TTheme.of(context).textColorPrimary,
+                  ? context.tTheme.brandNormalColor
+                  : context.tTheme.textColorPrimary,
             ),
             child: isSelected ? selectedIcon! : unSelectedIcon!,
           ),
@@ -781,7 +790,7 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
                   context,
                   itemConfig,
                   isSelected,
-                  TTheme.of(context).fontBodyExtraSmall!,
+                  context.tTheme.fontBodyExtraSmall!,
                 )
               : Container()
         ],
@@ -811,8 +820,8 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
       style:
           isSelected ? config.selectTabTextStyle : config.unselectTabTextStyle,
       textColor: isSelected
-          ? TTheme.of(context).brandNormalColor
-          : TTheme.of(context).textColorPrimary,
+          ? context.tTheme.brandNormalColor
+          : context.tTheme.textColorPrimary,
       forceVerticalCenter: true,
     );
   }
@@ -843,8 +852,8 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
       child: InkWell(
         borderRadius: isInOrOutCapsule ? BorderRadius.circular(24) : null,
         splashFactory: InkRipple.splashFactory,
-        splashColor: selectedBgColor ?? TTheme.of(context).brandLightColor,
-        highlightColor: selectedBgColor ?? TTheme.of(context).brandLightColor,
+        splashColor: selectedBgColor ?? context.tTheme.brandLightColor,
+        highlightColor: selectedBgColor ?? context.tTheme.brandLightColor,
         onTap: () => handleTap(context),
         child: child,
       ),
@@ -953,8 +962,8 @@ class PopUpMenuItem extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(minHeight: _kMenuItemMinHeight),
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorContainer,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusDefault),
+        color: context.tTheme.bgColorContainer,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),
       ),
       alignment: alignment,
       child: itemWidget ??
@@ -966,7 +975,9 @@ class PopUpMenuItem extends StatelessWidget {
   }
 }
 
+/// 弹出菜单路由
 class PopRoute extends PopupRoute {
+  /// 子内容
   Widget child;
 
   PopRoute({required this.child});
@@ -990,6 +1001,7 @@ class PopRoute extends PopupRoute {
   Duration get transitionDuration => _kPopupMenuDuration;
 }
 
+/// 弹出菜单对话框
 class PopupDialog extends StatefulWidget {
   /// 按钮context
   final BuildContext btnContext;
@@ -1084,12 +1096,12 @@ class PopupDialogState extends State<PopupDialog> {
                   height: popUpItemHeight * widget.items.length +
                       (widget.config?.arrowHeight ?? _kArrowHeight),
                   decoration:
-                      BoxDecoration(boxShadow: TTheme.of(context).shadowsTop),
+                      BoxDecoration(boxShadow: context.tTheme.shadowsTop),
                   child: CustomPaint(
                     painter: PanelWithDownArrow(
                         config: widget.config,
                         backgroundColor: widget.config?.backgroundColor ??
-                            TTheme.of(context).bgColorContainer),
+                            context.tTheme.bgColorContainer),
                     child: Container(
                       alignment: Alignment.topCenter,
                       height: popUpItemHeight * widget.items.length,
@@ -1109,7 +1121,7 @@ class PopupDialogState extends State<PopupDialog> {
                                         child: Divider(
                                           thickness: 0.5,
                                           height: 0.5,
-                                          color: TTheme.of(context)
+                                          color: context.tTheme
                                               .componentStrokeColor,
                                         ),
                                       )),
@@ -1129,7 +1141,10 @@ class PopupDialogState extends State<PopupDialog> {
 
 /// 带下箭头的展开panel
 class PanelWithDownArrow extends CustomPainter {
+  /// 弹出面板形状配置
   TBottomTabBarPopUpShapeConfig? config;
+
+  /// 背景颜色
   Color backgroundColor;
 
   PanelWithDownArrow({this.config, required this.backgroundColor});

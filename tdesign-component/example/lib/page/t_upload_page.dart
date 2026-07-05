@@ -139,7 +139,7 @@ class TUploadState extends State<TUploadPage> {
   Widget wrapDemoContainer(String title, {required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(16),
-      color: TTheme.of(context).bgColorContainer,
+      color: context.tTheme.bgColorContainer,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

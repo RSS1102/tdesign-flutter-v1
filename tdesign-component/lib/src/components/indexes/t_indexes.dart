@@ -136,7 +136,7 @@ class _TIndexesState extends State<TIndexes> {
   Widget build(BuildContext context) {
     final theme = _resolveTheme();
     return Container(
-      color: TTheme.of(context).bgColorContainer,
+      color: context.tTheme.bgColorContainer,
       child: Stack(
         children: [
           CustomScrollView(
@@ -172,7 +172,7 @@ class _TIndexesState extends State<TIndexes> {
       return SliverStickyHeader.builder(
         sticky: sticky,
         pinnedOffset: isPinnedOffset
-            ? TTheme.of(context).spacer8 + stickyOffset
+            ? context.tTheme.spacer8 + stickyOffset
             : stickyOffset,
         builder: (context, state) {
           _anchorKeys[e] = context;
@@ -196,7 +196,7 @@ class _TIndexesState extends State<TIndexes> {
               _contentKeys[e] = context;
               return Padding(
                 padding: isPinnedOffset
-                    ? EdgeInsets.only(top: TTheme.of(context).spacer8)
+                    ? EdgeInsets.only(top: context.tTheme.spacer8)
                     : EdgeInsets.zero,
                 child: widget.builderContent(context, e),
               );

@@ -37,7 +37,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
   @Demo(group: 'link')
   Widget _buildBasicLinks(BuildContext context) {
     return Container(
-        color: TTheme.of(context).bgColorContainer,
+        color: context.tTheme.bgColorContainer,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: _buildLinksWithVariant(TLinkType.basic),
@@ -47,7 +47,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
   @Demo(group: 'link')
   Widget _buildUnderlineLinks(BuildContext context) {
     return Container(
-        color: TTheme.of(context).bgColorContainer,
+        color: context.tTheme.bgColorContainer,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: _buildLinksWithVariant(TLinkType.underline),
@@ -57,7 +57,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
   @Demo(group: 'link')
   Widget _buildIconLinks(BuildContext context) {
     return Container(
-        color: TTheme.of(context).bgColorContainer,
+        color: context.tTheme.bgColorContainer,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: _buildLinksWithVariant(TLinkType.icon),
@@ -86,7 +86,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
     return Column(
       children: [
         Container(
-          color: TTheme.of(context).bgColorContainer,
+          color: context.tTheme.bgColorContainer,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -98,7 +98,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
         ),
         const SizedBox(height: 16),
         Container(
-          color: TTheme.of(context).bgColorContainer,
+          color: context.tTheme.bgColorContainer,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -116,7 +116,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
     return Column(
       children: [
         Container(
-          color: TTheme.of(context).bgColorContainer,
+          color: context.tTheme.bgColorContainer,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -131,7 +131,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
         ),
         const SizedBox(height: 16),
         Container(
-          color: TTheme.of(context).bgColorContainer,
+          color: context.tTheme.bgColorContainer,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -160,7 +160,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
   @Demo(group: 'link')
   Widget _buildLinkSizes(BuildContext context) {
     return Container(
-        color: TTheme.of(context).bgColorContainer,
+        color: context.tTheme.bgColorContainer,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [

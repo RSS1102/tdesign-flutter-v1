@@ -46,7 +46,7 @@ class _TFabPageState extends State<TFabPage> {
                     height: cardSize,
                     margin: const EdgeInsets.only(right: 12),
                     decoration: BoxDecoration(
-                      color: TTheme.of(context).bgColorSecondaryContainer,
+                      color: context.tTheme.bgColorSecondaryContainer,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     // TFab 返回 Positioned，必须放在 Stack 内
@@ -72,7 +72,7 @@ class _TFabPageState extends State<TFabPage> {
       height: height,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorSecondaryContainer,
+        color: context.tTheme.bgColorSecondaryContainer,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Stack(
@@ -82,7 +82,7 @@ class _TFabPageState extends State<TFabPage> {
           Center(
             child: TText(
               '页面内容区域',
-              textColor: TTheme.of(context).textColorPlaceholder,
+              textColor: context.tTheme.textColorPlaceholder,
             ),
           ),
           // TFab 悬浮在右下角

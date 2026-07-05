@@ -130,7 +130,7 @@ class _TCollapseState extends State<TCollapse> {
           _isCardStyle(context) ? _createRadius(index) : BorderRadius.zero;
 
       final theme = _theme(context);
-      final bgColor = child.backgroundColor ?? theme?.backgroundColor ?? TTheme.of(context).bgColorContainer;
+      final bgColor = child.backgroundColor ?? theme?.backgroundColor ?? context.tTheme.bgColorContainer;
 
       items.add(
         MaterialSlice(
@@ -169,7 +169,7 @@ class _TCollapseState extends State<TCollapse> {
                     children: [
                       const TInsetDivider(),
                       Container(
-                        padding: EdgeInsets.all(TTheme.of(context).spacer16),
+                        padding: EdgeInsets.all(context.tTheme.spacer16),
                         child: child.body,
                       ),
                     ],
@@ -204,10 +204,10 @@ class _TCollapseState extends State<TCollapse> {
       collapse = Container(
         child: ClipRRect(
           child: collapse,
-          borderRadius: BorderRadius.circular(TTheme.of(context).radiusLarge),
+          borderRadius: BorderRadius.circular(context.tTheme.radiusLarge),
         ),
         margin: EdgeInsets.symmetric(
-          horizontal: TTheme.of(context).spacer16,
+          horizontal: context.tTheme.spacer16,
         ),
       );
     }
@@ -223,7 +223,7 @@ class _TCollapseState extends State<TCollapse> {
   }
 
   BorderRadius _createRadius(int index) {
-    final radius = Radius.circular(TTheme.of(context).radiusLarge);
+    final radius = Radius.circular(context.tTheme.radiusLarge);
 
     final isFirst = index == 0;
     if (isFirst) {
@@ -291,12 +291,12 @@ class _TCollapseState extends State<TCollapse> {
         isExpanded: _isChildExpanded(index),
         padding: child.expandIconTextBuilder != null
             ? EdgeInsets.only(
-                right: TTheme.of(context).spacer16,
-                top: TTheme.of(context).spacer16,
-                bottom: TTheme.of(context).spacer16,
+                right: context.tTheme.spacer16,
+                top: context.tTheme.spacer16,
+                bottom: context.tTheme.spacer16,
                 left: 0,
               )
-            : EdgeInsets.all(TTheme.of(context).spacer16),
+            : EdgeInsets.all(context.tTheme.spacer16),
       ),
     );
 
@@ -306,7 +306,7 @@ class _TCollapseState extends State<TCollapse> {
           Text(child.expandIconTextBuilder!(context, _isChildExpanded(index)),
               textAlign: TextAlign.right,
               style: TextStyle(
-                color: TTheme.of(context).textColorPlaceholder,
+                color: context.tTheme.textColorPlaceholder,
               )),
         expandedIcon,
       ],

@@ -17,8 +17,8 @@ class IconWithBackground extends StatelessWidget {
       width: 40.0,
       height: 40.0,
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorSecondaryContainer,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusDefault),
+        color: context.tTheme.bgColorSecondaryContainer,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),
       ),
       child: Center(
         child: Icon(
@@ -489,7 +489,7 @@ Widget _buildBaseListStateActionSheet(BuildContext context) {
           TActionSheetItem(
             label: '自定义选项',
             textStyle: TextStyle(
-              color: TTheme.of(context).brandNormalColor,
+              color: context.tTheme.brandNormalColor,
             ),
           ),
           TActionSheetItem(
@@ -529,7 +529,7 @@ Widget _buildIconListStateActionSheet(BuildContext context) {
             label: '自定义选项',
             icon: const Icon(TIcons.app),
             textStyle: TextStyle(
-              color: TTheme.of(context).brandNormalColor,
+              color: context.tTheme.brandNormalColor,
             ),
           ),
           TActionSheetItem(

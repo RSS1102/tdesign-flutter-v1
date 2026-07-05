@@ -159,7 +159,7 @@ class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
                 child: SingleChildScrollView(
                     controller: _demoScroller,
                     child: Container(
-                      color: TTheme.of(context).bgColorContainer,
+                      color: context.tTheme.bgColorContainer,
                       child: Column(
                         children: [
                           ...pages,

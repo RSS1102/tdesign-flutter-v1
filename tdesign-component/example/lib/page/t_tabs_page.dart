@@ -233,7 +233,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
             isScrollable: false,
           ),
           Container(
-            color: TTheme.of(context).bgColorContainer,
+            color: context.tTheme.bgColorContainer,
             child: TTabBarView(
               children: _getTabViews(),
               controller: tabController,

@@ -259,7 +259,7 @@ TTimeCounter _buildUnitSimple(BuildContext context) {
 @Demo(group: 'timeCounter')
 TTimeCounter _buildCustomUnitSimple(BuildContext context) {
   var style = TTimeCounterStyle.generateStyle(context);
-  style.timeColor = TTheme.of(context).errorNormalColor;
+  style.timeColor = context.tTheme.errorNormalColor;
   return TTimeCounter(
     time: 60 * 60 * 1000,
     splitWithUnit: true,
@@ -378,7 +378,7 @@ TTimeCounter _buildUnitLargeSize(BuildContext context) {
 TTimeCounter _buildCustomUnitSmallSize(BuildContext context) {
   var style =
       TTimeCounterStyle.generateStyle(context, size: TTimeCounterSize.small);
-  style.timeColor = TTheme.of(context).errorNormalColor;
+  style.timeColor = context.tTheme.errorNormalColor;
   return TTimeCounter(
     time: 60 * 60 * 1000,
     splitWithUnit: true,
@@ -389,7 +389,7 @@ TTimeCounter _buildCustomUnitSmallSize(BuildContext context) {
 TTimeCounter _buildCustomUnitMediumSize(BuildContext context) {
   var style =
       TTimeCounterStyle.generateStyle(context, size: TTimeCounterSize.medium);
-  style.timeColor = TTheme.of(context).errorNormalColor;
+  style.timeColor = context.tTheme.errorNormalColor;
   return TTimeCounter(
     time: 60 * 60 * 1000,
     splitWithUnit: true,
@@ -400,7 +400,7 @@ TTimeCounter _buildCustomUnitMediumSize(BuildContext context) {
 TTimeCounter _buildCustomUnitLargeSize(BuildContext context) {
   var style =
       TTimeCounterStyle.generateStyle(context, size: TTimeCounterSize.large);
-  style.timeColor = TTheme.of(context).errorNormalColor;
+  style.timeColor = context.tTheme.errorNormalColor;
   return TTimeCounter(
     time: 60 * 60 * 1000,
     splitWithUnit: true,

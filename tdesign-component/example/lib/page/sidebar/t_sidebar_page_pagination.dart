@@ -97,7 +97,7 @@ class TSideBarPaginationPageState extends State<TSideBarPaginationPage> {
 
   Widget getPageDemo(int index) {
     return Container(
-      decoration: BoxDecoration(color: TTheme.of(context).bgColorContainer),
+      decoration: BoxDecoration(color: context.tTheme.bgColorContainer),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         // spacing: 16,

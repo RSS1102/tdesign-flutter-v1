@@ -163,13 +163,13 @@ class _TTextareaPageState extends State<TTextareaPage> {
       maxLength: 500,
       indicator: true,
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorContainer,
+        color: context.tTheme.bgColorContainer,
         borderRadius:
-            BorderRadius.circular(TTheme.of(context).radiusExtraLarge),
+            BorderRadius.circular(context.tTheme.radiusExtraLarge),
       ),
       margin: EdgeInsets.only(
-          right: TTheme.of(context).spacer16,
-          left: TTheme.of(context).spacer16),
+          right: context.tTheme.spacer16,
+          left: context.tTheme.spacer16),
       onChanged: (value) {},
     );
   }
@@ -213,7 +213,7 @@ class _TTextareaPageState extends State<TTextareaPage> {
       labelIcon: Icon(
         TIcons.location,
         size: 20,
-        color: TTheme.of(context).textColorPrimary,
+        color: context.tTheme.textColorPrimary,
       ),
       hintText: '请输入文字',
       maxLines: 4,

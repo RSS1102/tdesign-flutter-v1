@@ -74,7 +74,7 @@ class TRadio extends TCheckbox {
     style = style ?? radioStyle;
 
     var size = 24.0;
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
 
     // 由于镂空圆没有现成icon，因而自己画一个
     if (style == TRadioStyle.hollowCircle) {

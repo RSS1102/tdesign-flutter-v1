@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 Widget _buildTestApp(Widget child) {
-  return TTheme(
-    data: TThemeData.defaultData(),
+  return Theme(
+    data: ThemeData(extensions: [TThemeData.defaultData()]),
     child: MaterialApp(home: Scaffold(body: child)),
   );
 }
@@ -30,11 +30,11 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             initialValue: [day15],
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (v) => result = v,
+            onChanged: (v) => result = v,
           ),
         ),
       );
@@ -59,11 +59,11 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             initialValue: [day15],
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (_) => callCount++,
+            onChanged: (_) => callCount++,
           ),
         ),
       );
@@ -86,11 +86,11 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             initialValue: [day15],
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (v) => result = v,
+            onChanged: (v) => result = v,
           ),
         ),
       );
@@ -122,11 +122,11 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.multiple,
+            type: TCalendarVariant.multiple,
             initialValue: [day15],
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (v) => result = v,
+            onChanged: (v) => result = v,
           ),
         ),
       );
@@ -152,11 +152,11 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.multiple,
+            type: TCalendarVariant.multiple,
             initialValue: [day15, day20],
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (v) => result = v,
+            onChanged: (v) => result = v,
           ),
         ),
       );
@@ -186,10 +186,10 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.range,
+            type: TCalendarVariant.range,
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (v) => result = v,
+            onChanged: (v) => result = v,
           ),
         ),
       );
@@ -217,10 +217,10 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.range,
+            type: TCalendarVariant.range,
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (v) => result = v,
+            onChanged: (v) => result = v,
           ),
         ),
       );
@@ -253,11 +253,11 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             initialValue: [day15],
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (_) => onChangeCount++,
+            onChanged: (_) => onChangeCount++,
           ),
         ),
       );
@@ -268,11 +268,11 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             initialValue: [day10],
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (_) => onChangeCount++,
+            onChanged: (_) => onChangeCount++,
           ),
         ),
       );
@@ -300,11 +300,11 @@ void main() {
           TCalendar(
             key: const Key('cal-a'),
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             initialValue: [day15],
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (_) => onChangeCount++,
+            onChanged: (_) => onChangeCount++,
           ),
         ),
       );
@@ -315,11 +315,11 @@ void main() {
           TCalendar(
             key: const Key('cal-b'),
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             initialValue: [day10],
             minDate: minDate,
             maxDate: maxDate,
-            onChange: (_) => onChangeCount++,
+            onChanged: (_) => onChangeCount++,
           ),
         ),
       );
@@ -335,9 +335,9 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             anchorDate: _day(2026, 1, 1),
-            onChange: (_) {},
+            onChanged: (_) {},
           ),
         ),
       );
@@ -356,7 +356,7 @@ void main() {
             anchorDate: _day(2024, 1, 1),
             minDate: _day(2024, 1, 1),
             maxDate: _day(2024, 12, 31),
-            onChange: (_) {},
+            onChanged: (_) {},
           ),
         ),
       );
@@ -369,7 +369,7 @@ void main() {
             anchorDate: _day(2024, 6, 1),
             minDate: _day(2024, 1, 1),
             maxDate: _day(2024, 12, 31),
-            onChange: (_) {},
+            onChanged: (_) {},
           ),
         ),
       );
@@ -388,10 +388,10 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             minDate: _day(2024, 6, 1),
             maxDate: _day(2024, 6, 30),
-            onChange: (_) {},
+            onChanged: (_) {},
           ),
         ),
       );
@@ -407,11 +407,11 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             initialValue: const [],
             minDate: _day(2024, 6, 1),
             maxDate: _day(2024, 6, 30),
-            onChange: (_) {},
+            onChanged: (_) {},
           ),
         ),
       );
@@ -425,10 +425,10 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             minDate: _day(2024, 6, 1),
             maxDate: _day(2024, 6, 2),
-            onChange: (_) {},
+            onChanged: (_) {},
           ),
         ),
       );
@@ -443,7 +443,7 @@ void main() {
 
       await tester.pumpWidget(
         _buildTestApp(
-          _RuntimeMaxDateHarness(onChange: (v) => result = v),
+          _RuntimeMaxDateHarness(onChanged: (v) => result = v),
         ),
       );
       await tester.pumpAndSettle();
@@ -467,7 +467,7 @@ void main() {
 
       await tester.pumpWidget(
         _buildTestApp(
-          _RuntimeWeekStartHarness(onChange: (v) => result = v),
+          _RuntimeWeekStartHarness(onChanged: (v) => result = v),
         ),
       );
       await tester.pumpAndSettle();
@@ -507,11 +507,11 @@ void main() {
         _buildTestApp(
           TCalendar(
             height: 640,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             firstDayOfWeek: 1,
             minDate: _day(2024, 6, 1),
             maxDate: _day(2024, 6, 30),
-            onChange: (_) {},
+            onChanged: (_) {},
           ),
         ),
       );
@@ -524,9 +524,9 @@ void main() {
 
 /// 运行期收窄 [TCalendar.maxDate] 的测试夹具。
 class _RuntimeMaxDateHarness extends StatefulWidget {
-  const _RuntimeMaxDateHarness({required this.onChange});
+  const _RuntimeMaxDateHarness({required this.onChanged});
 
-  final ValueChanged<List<DateTime>> onChange;
+  final ValueChanged<List<DateTime>> onChanged;
 
   @override
   State<_RuntimeMaxDateHarness> createState() => _RuntimeMaxDateHarnessState();
@@ -546,10 +546,10 @@ class _RuntimeMaxDateHarnessState extends State<_RuntimeMaxDateHarness> {
         Expanded(
           child: TCalendar(
             height: 600,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             minDate: _day(2024, 6, 1),
             maxDate: _maxDate,
-            onChange: widget.onChange,
+            onChanged: widget.onChanged,
           ),
         ),
       ],
@@ -559,9 +559,9 @@ class _RuntimeMaxDateHarnessState extends State<_RuntimeMaxDateHarness> {
 
 /// 运行期切换 [TCalendar.firstDayOfWeek] 的测试夹具。
 class _RuntimeWeekStartHarness extends StatefulWidget {
-  const _RuntimeWeekStartHarness({required this.onChange});
+  const _RuntimeWeekStartHarness({required this.onChanged});
 
-  final ValueChanged<List<DateTime>> onChange;
+  final ValueChanged<List<DateTime>> onChanged;
 
   @override
   State<_RuntimeWeekStartHarness> createState() =>
@@ -582,11 +582,11 @@ class _RuntimeWeekStartHarnessState extends State<_RuntimeWeekStartHarness> {
         Expanded(
           child: TCalendar(
             height: 600,
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             firstDayOfWeek: _firstDayOfWeek,
             minDate: _day(2024, 6, 1),
             maxDate: _day(2024, 6, 30),
-            onChange: widget.onChange,
+            onChanged: widget.onChanged,
           ),
         ),
       ],
@@ -629,11 +629,11 @@ class _RuntimeStyleHarnessState extends State<_RuntimeStyleHarness> {
         SizedBox(
           height: _calendarHeightFor(_cellHeight),
           child: TCalendar(
-            type: CalendarType.single,
+            type: TCalendarVariant.single,
             minDate: _day(2024, 6, 1),
             maxDate: _day(2024, 6, 30),
             style: TCalendarStyle(cellHeight: _cellHeight),
-            onChange: (_) {},
+            onChanged: (_) {},
           ),
         ),
       ],

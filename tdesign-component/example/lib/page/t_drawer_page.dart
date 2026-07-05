@@ -11,7 +11,7 @@ class TDrawerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: TTheme.of(context).grayColor2,
+        color: context.tTheme.grayColor2,
         child: ExamplePage(
           title: tTitle(context),
           desc: '用作一组平行关系页面/内容的切换器，相较于Tab，同屏可展示更多的选项数量。',
@@ -189,7 +189,7 @@ Widget _buildColorSimple(BuildContext context) {
   var renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
 
   var tCellStyle = TCellThemeData.cellStyle(context);
-  tCellStyle.backgroundColor = TTheme.of(context).brandNormalColor;
+  tCellStyle.backgroundColor = context.tTheme.brandNormalColor;
 
   return SizedBox(
     width: double.infinity,
@@ -204,7 +204,7 @@ Widget _buildColorSimple(BuildContext context) {
         visible: true,
         drawerTop: renderBox?.size.height,
         title: '标题',
-        backgroundColor: TTheme.of(context).bgColorSecondaryContainer,
+        backgroundColor: context.tTheme.bgColorSecondaryContainer,
         style: tCellStyle,
         placement: TDrawerPlacement.right,
         items: List.generate(

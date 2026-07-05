@@ -151,18 +151,18 @@ class TRatePageState extends State<TRatePage> {
             return value == 0
                 ? const SizedBox.shrink()
                 : Padding(
-                    padding: EdgeInsets.only(top: TTheme.of(context).spacer8),
+                    padding: EdgeInsets.only(top: context.tTheme.spacer8),
                     child: TText(
                       texts[(value - 1).toInt()],
-                      font: TTheme.of(context).fontTitleMedium,
-                      textColor: TTheme.of(context).warningColor5,
+                      font: context.tTheme.fontTitleMedium,
+                      textColor: context.tTheme.warningColor5,
                     ),
                   );
           },
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      color: TTheme.of(context).bgColorContainer,
+      color: context.tTheme.bgColorContainer,
     );
   }
 }

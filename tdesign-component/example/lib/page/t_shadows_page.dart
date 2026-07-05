@@ -26,9 +26,9 @@ class TShadowsPage extends StatelessWidget {
   Widget _buildShadowsBase(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorContainer,
-        boxShadow: TTheme.of(context).shadowsBase,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusDefault),
+        color: context.tTheme.bgColorContainer,
+        boxShadow: context.tTheme.shadowsBase,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),
       ),
     );
   }
@@ -37,9 +37,9 @@ class TShadowsPage extends StatelessWidget {
   Widget _buildShadowsMiddle(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorContainer,
-        boxShadow: TTheme.of(context).shadowsMiddle,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusDefault),
+        color: context.tTheme.bgColorContainer,
+        boxShadow: context.tTheme.shadowsMiddle,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),
       ),
     );
   }
@@ -48,9 +48,9 @@ class TShadowsPage extends StatelessWidget {
   Widget _buildShadowsTop(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorContainer,
-        boxShadow: TTheme.of(context).shadowsTop,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusDefault),
+        color: context.tTheme.bgColorContainer,
+        boxShadow: context.tTheme.shadowsTop,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),
       ),
     );
   }

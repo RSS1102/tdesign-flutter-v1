@@ -11,8 +11,8 @@ void main() {
     final themeExtensions = <ThemeExtension>[
       if (navBarTheme != null) navBarTheme,
     ];
-    return TTheme(
-      data: TThemeData.defaultData(),
+    return Theme(
+      data: ThemeData(extensions: [TThemeData.defaultData()]),
       child: MaterialApp(
         theme: ThemeData(extensions: themeExtensions),
         home: Scaffold(body: child),

@@ -300,10 +300,10 @@ class _TSideBarState extends State<TSideBar> {
                             currentIndex! - 1 == ele.index,
                         selectedBgColor: widget.selectedBgColor ??
                             theme.selectedBgColor ??
-                            TTheme.of(context).bgColorContainer,
+                            context.tTheme.bgColorContainer,
                         unSelectedBgColor: widget.unSelectedBgColor ??
                             theme.unSelectedBgColor ??
-                            TTheme.of(context).bgColorSecondaryContainer,
+                            context.tTheme.bgColorSecondaryContainer,
                         onTap: () {
                           if (!(ele.disabled ?? false)) {
                             onSelect(ele, isController: false);

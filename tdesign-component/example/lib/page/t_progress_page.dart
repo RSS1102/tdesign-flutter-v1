@@ -120,7 +120,7 @@ class _TProgressPageState extends State<TProgressPage> {
       onPressed: _toggleMicroProgress,
       label: TIconLabel(
         isPlaying ? Icons.pause : Icons.play_arrow,
-        color: TTheme.of(context).brandNormalColor,
+        color: context.tTheme.brandNormalColor,
       ),
     );
   }

@@ -39,7 +39,7 @@ class TTextResolve {
     // TextStyle.backgroundColor（TText 不以此为块背景，但与 forceVerticalCenter 分支共用 Container 时传入）
     Color? textStyleBackgroundColor,
   }) {
-    final tTheme = TTheme.of(context);
+    final tTheme = context.tTheme;
     final themeExtension = Theme.of(context).extension<TTextThemeData>();
     final configuration =
         context.dependOnInheritedWidgetOfExactType<TTextConfiguration>();
@@ -138,7 +138,7 @@ class TTextResolve {
     String? package,
   }) {
     // Token 默认值（context 可能为 null，此时用硬编码回退）
-    final tTheme = context != null ? TTheme.of(context) : null;
+    final tTheme = context != null ? context.tTheme : null;
     final themeExtension = context != null
         ? Theme.of(context).extension<TTextThemeData>()
         : null;

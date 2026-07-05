@@ -23,7 +23,7 @@ class TCascader {
         context: context,
         backgroundColor: Colors.transparent,
         barrierColor:
-            barrierColor ?? TTheme.of(context).fontGyColor2.withOpacity(0.6),
+            barrierColor ?? context.tTheme.fontGyColor2.withOpacity(0.6),
         builder: (context) {
           return TMultiCascader(
               title: title,

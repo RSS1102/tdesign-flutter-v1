@@ -43,18 +43,17 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     TExampleRoute.init();
-    // TODO: V1.0 升级后取消注释
-    // sideBarExamplePage.forEach(TExampleRoute.add);
+    sideBarExamplePage.forEach(TExampleRoute.add);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: TTheme.of(context).brandNormalColor,
+        backgroundColor: context.tTheme.brandNormalColor,
         titleTextStyle: TextStyle(
-          color: TTheme.of(context).whiteColor1,
-          fontSize: TTheme.of(context).fontTitleLarge?.size,
+          color: context.tTheme.whiteColor1,
+          fontSize: context.tTheme.fontTitleLarge?.size,
         ),
         title: Text(widget.title),
         actions: ScreenUtil.isWebLargeScreen(context)
@@ -66,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.only(
                       right: 16,
                     ),
-                    child: Icon(TIcons.setting, color: TTheme.of(context).whiteColor1,),
+                    child: Icon(TIcons.setting, color: context.tTheme.whiteColor1,),
                   ),
                   onTap: () {
                     focusNode.unfocus();
@@ -88,8 +87,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      TTheme(
-                        data: TThemeData.defaultData(),
+                      Theme(
+                        // mergeExtension 仅覆盖 TThemeData，保留 ColorScheme 等其他主题属性
+                        data: Theme.of(context)
+                            .mergeExtension(TThemeData.defaultData()),
                         child: TButton(
                           child: Text(AppLocalizations.of(context)?.defaultTheme ?? ''),
                           colorScheme: TButtonColorScheme.primary,
@@ -99,9 +100,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                         ),
                       ),
-                      TTheme(
-                        data: TThemeData.fromJson('green', greenThemeConfig) ??
-                            TThemeData.defaultData(),
+                      Theme(
+                        data: Theme.of(context).mergeExtension(
+                          TThemeData.fromJson('green', greenThemeConfig) ??
+                              TThemeData.defaultData(),
+                        ),
                         child: TButton(
                           child: Text(AppLocalizations.of(context)?.greenTheme ?? ''),
                           colorScheme: TButtonColorScheme.primary,
@@ -117,9 +120,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                         ),
                       ),
-                      TTheme(
-                        data: TThemeData.fromJson('red', greenThemeConfig) ??
-                            TThemeData.defaultData(),
+                      Theme(
+                        data: Theme.of(context).mergeExtension(
+                          TThemeData.fromJson('red', greenThemeConfig) ??
+                              TThemeData.defaultData(),
+                        ),
                         child: TButton(
                           child: Text(AppLocalizations.of(context)?.redTheme ?? ''),
                           colorScheme: TButtonColorScheme.primary,
@@ -210,12 +215,12 @@ class _MyHomePageState extends State<MyHomePage> {
         margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
         padding: const EdgeInsets.only(left: 12),
         decoration: BoxDecoration(
-            color: TTheme.of(context).brandHoverColor,
+            color: context.tTheme.brandHoverColor,
             borderRadius: BorderRadius.only(
-                topRight: Radius.circular(TTheme.of(context).radiusLarge))),
+                topRight: Radius.circular(context.tTheme.radiusLarge))),
         child: TText(
           '$key(${subList.length})',
-          textColor: TTheme.of(context).whiteColor1,
+          textColor: context.tTheme.whiteColor1,
         ),
       ));
       children.addAll(subList);
