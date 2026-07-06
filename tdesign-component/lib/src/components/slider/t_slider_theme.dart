@@ -61,6 +61,9 @@ class TSliderThemeData extends ThemeExtension<TSliderThemeData> {
   /// 是否为胶囊类型
   final bool _capsule;
 
+  /// 运行时 token 引用（由 sliderThemeData(token) 设置，供 effective* getter 解析颜色）
+  TThemeData? _token;
+
   /// 激活颜色
   final Color? activeTrackColor;
 
@@ -135,9 +138,30 @@ class TSliderThemeData extends ThemeExtension<TSliderThemeData> {
 
   /// 获取系统主题（接收 token 参数延迟解析颜色）
   SliderThemeData sliderThemeData(TThemeData token) {
+    _token = token;
     _sliderThemeData ??= _capsule ? capsule(token) : normal(token);
     return _sliderThemeData!;
   }
+
+  /// 游标文本样式（带主题色回退）
+  TextStyle get effectiveThumbTextStyle =>
+      TextStyle(color: _token?.textColorPrimary ?? Colors.black87)
+          .merge(thumbTextStyle);
+
+  /// 禁用态游标文本样式（带主题色回退）
+  TextStyle get effectiveDisabledThumbTextStyle =>
+      TextStyle(color: _token?.textDisabledColor ?? Colors.grey)
+          .merge(disabledThumbTextStyle);
+
+  /// 刻度文本样式（带主题色回退）
+  TextStyle get effectiveScaleTextStyle =>
+      TextStyle(color: _token?.textColorSecondary ?? Colors.black54)
+          .merge(scaleTextStyle);
+
+  /// 禁用态刻度文本样式（带主题色回退）
+  TextStyle get effectiveDisabledScaleTextStyle =>
+      TextStyle(color: _token?.textDisabledColor ?? Colors.grey)
+          .merge(disabledScaleTextStyle);
 
   /// 更新系统主题
   void updateSliderThemeData(
@@ -506,8 +530,8 @@ class TRoundSliderThumbShape extends SliderComponentShape {
           text: TextSpan(
               text: '$formatterValue',
               style: enableAnimation.value > 0
-                  ? themeData.thumbTextStyle
-                  : themeData.disabledThumbTextStyle),
+                  ? themeData.effectiveThumbTextStyle
+                  : themeData.effectiveDisabledThumbTextStyle),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
         ..layout(maxWidth: 100);
@@ -671,8 +695,8 @@ class TRoundSliderTickMarkShape extends SliderTickMarkShape {
             text: TextSpan(
                 text: valueFormatter,
                 style: enableAnimation.value > 0
-                    ? themeData.scaleTextStyle
-                    : themeData.disabledScaleTextStyle),
+                    ? themeData.effectiveScaleTextStyle
+                    : themeData.effectiveDisabledScaleTextStyle),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center)
           ..layout(maxWidth: 100);
@@ -1011,8 +1035,8 @@ class TRoundRangeSliderThumbShape extends RangeSliderThumbShape {
           text: TextSpan(
               text: '$formatterValue',
               style: enableAnimation.value > 0
-                  ? themeData.thumbTextStyle
-                  : themeData.disabledThumbTextStyle),
+                  ? themeData.effectiveThumbTextStyle
+                  : themeData.effectiveDisabledThumbTextStyle),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
         ..layout(maxWidth: 100);
@@ -1165,8 +1189,8 @@ class TRoundRangeSliderTickMarkShape extends RangeSliderTickMarkShape {
             text: TextSpan(
                 text: valueFormatter,
                 style: enableAnimation.value > 0
-                    ? themeData.scaleTextStyle
-                    : themeData.disabledScaleTextStyle),
+                    ? themeData.effectiveScaleTextStyle
+                    : themeData.effectiveDisabledScaleTextStyle),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center)
           ..layout(maxWidth: 100);
@@ -1481,8 +1505,8 @@ class TCapsuleSliderThumbShape extends SliderComponentShape
           text: TextSpan(
               text: '$formatterValue',
               style: enableAnimation.value > 0
-                  ? themeData.thumbTextStyle
-                  : themeData.disabledThumbTextStyle),
+                  ? themeData.effectiveThumbTextStyle
+                  : themeData.effectiveDisabledThumbTextStyle),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
         ..layout(maxWidth: 100);
@@ -1600,8 +1624,8 @@ class TCapsuleSliderTickMarkShape extends SliderTickMarkShape {
             text: TextSpan(
                 text: valueFormatter,
                 style: enableAnimation.value > 0
-                    ? themeData.scaleTextStyle
-                    : themeData.disabledScaleTextStyle),
+                    ? themeData.effectiveScaleTextStyle
+                    : themeData.effectiveDisabledScaleTextStyle),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center)
           ..layout(maxWidth: 100);
@@ -1950,8 +1974,8 @@ class TCapsuleRangeSliderThumbShape extends RangeSliderThumbShape
           text: TextSpan(
               text: '$formatterValue',
               style: enableAnimation.value > 0
-                  ? themeData.thumbTextStyle
-                  : themeData.disabledThumbTextStyle),
+                  ? themeData.effectiveThumbTextStyle
+                  : themeData.effectiveDisabledThumbTextStyle),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
         ..layout(maxWidth: 100);
@@ -2078,8 +2102,8 @@ class TCapsuleRangeSliderTickMarkShape extends RangeSliderTickMarkShape {
             text: TextSpan(
                 text: valueFormatter,
                 style: enableAnimation.value > 0
-                    ? themeData.scaleTextStyle
-                    : themeData.disabledScaleTextStyle),
+                    ? themeData.effectiveScaleTextStyle
+                    : themeData.effectiveDisabledScaleTextStyle),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center)
           ..layout(maxWidth: 100);

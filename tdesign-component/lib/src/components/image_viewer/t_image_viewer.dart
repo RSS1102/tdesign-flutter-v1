@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/t_colors.dart';
 import '../../theme/t_theme.dart';
+import 't_image_viewer_theme_data.dart';
 import 't_image_viewer_widget.dart';
 
 /// 图片预览工具
@@ -37,7 +38,16 @@ class TImageViewer {
     LeftItemBuilder? leftItemBuilder,
     RightItemBuilder? rightItemBuilder,
   }) {
-    modalBarrierColor ??= context.tTheme.fontGyColor1;
+    // P1: 组件级 ThemeExtension 回退
+    final theme = Theme.of(context).extension<TImageViewerThemeData>();
+    bgColor ??= theme?.backgroundColor;
+    navBarBgColor ??= theme?.appBarBackgroundColor;
+    iconColor ??= theme?.iconColor;
+    labelStyle ??= theme?.labelStyle;
+    indexStyle ??= theme?.indexStyle;
+    modalBarrierColor ??= theme?.barrierColor ?? context.tTheme.fontGyColor1;
+    width ??= theme?.viewerWidth;
+    height ??= theme?.viewerHeight;
     showDialog(
       context: context,
       barrierDismissible: barrierDismissible ?? false,

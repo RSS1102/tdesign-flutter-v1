@@ -35,7 +35,6 @@ class TDrawer {
     this.bordered,
     this.isShowLastBordered,
     this.child,
-    this.themeData,
   }) {
     if (visible == true) {
       show();
@@ -100,14 +99,12 @@ class TDrawer {
   final bool? isShowLastBordered;
 
   /// 子树级主题数据
-  final TDrawerThemeData? themeData;
 
   TPopupHandle? _drawerHandle;
 
   /// 从 ThemeData 解析有效值
   TDrawerThemeData _resolveTheme() {
-    final theme = themeData ??
-        Theme.of(context).extension<TDrawerThemeData>() ??
+    final theme = Theme.of(context).extension<TDrawerThemeData>() ??
         const TDrawerThemeData();
     return theme;
   }

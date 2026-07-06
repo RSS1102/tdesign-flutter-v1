@@ -18,7 +18,6 @@ class TNoticeBar extends StatefulWidget {
     this.direction = Axis.horizontal,
     this.maxLines = 1,
     this.onPressed,
-    this.themeData,
   })  : assert(content == null || content is String || content is List<String>,
             'content must be String or List<String>');
 
@@ -41,7 +40,6 @@ class TNoticeBar extends StatefulWidget {
   final ValueChanged? onPressed;
 
   /// 组件级主题配置，优先级高于 Theme Extension
-  final TNoticeBarThemeData? themeData;
 
   @override
   State<StatefulWidget> createState() => _TNoticeBarState();
@@ -73,10 +71,10 @@ class _TNoticeBarState extends State<TNoticeBar> {
 
   TNoticeBarThemeData get _theme {
     final ext = Theme.of(context).extension<TNoticeBarThemeData>();
-    return (ext ?? const TNoticeBarThemeData()).merge(widget.themeData).resolve(context);
+    return (ext ?? const TNoticeBarThemeData()).resolve(context);
   }
 
-  bool? get _effectiveMarquee => widget.themeData?.marquee ??
+  bool? get _effectiveMarquee =>
       Theme.of(context).extension<TNoticeBarThemeData>()?.marquee ??
       false;
 

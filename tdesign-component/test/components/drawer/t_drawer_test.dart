@@ -255,9 +255,16 @@ void main() {
       expect(find.byKey(childKey), findsOneWidget);
     });
 
-    testWidgets('使用 themeData 提供默认值', (tester) async {
+    testWidgets('使用 mergeExtension 子树覆盖', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          theme: ThemeData(extensions: [
+            TThemeData.defaultData(),
+            const TDrawerThemeData(
+              width: 320,
+              backgroundColor: Colors.yellow,
+            ),
+          ]),
           home: Scaffold(
             body: Builder(
               builder: (context) {
@@ -267,10 +274,6 @@ void main() {
                     TDrawer(
                       context,
                       visible: true,
-                      themeData: const TDrawerThemeData(
-                        width: 320,
-                        backgroundColor: Colors.yellow,
-                      ),
                       items: [TDrawerItem(title: '菜单1')],
                     );
                   },
@@ -285,9 +288,13 @@ void main() {
       expect(find.text('菜单1'), findsOneWidget);
     });
 
-    testWidgets('构造器参数优先级高于 themeData', (tester) async {
+    testWidgets('构造器参数优先级高于 Theme', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          theme: ThemeData(extensions: [
+            TThemeData.defaultData(),
+            const TDrawerThemeData(width: 320),
+          ]),
           home: Scaffold(
             body: Builder(
               builder: (context) {
@@ -298,7 +305,6 @@ void main() {
                       context,
                       visible: true,
                       width: 250,
-                      themeData: const TDrawerThemeData(width: 320),
                       items: [TDrawerItem(title: '菜单1')],
                     );
                   },

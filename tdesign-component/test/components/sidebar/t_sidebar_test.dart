@@ -248,12 +248,12 @@ void main() {
       expect(find.byType(TSideBar), findsOneWidget);
     });
 
-    testWidgets('使用 themeData 参数', (tester) async {
+    testWidgets('使用 mergeExtension 子树覆盖', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSideBar(
           children: buildItems(),
-          themeData: const TSideBarThemeData(height: 600),
         ),
+        sideBarTheme: const TSideBarThemeData(height: 600),
       ));
       expect(find.byType(TSideBar), findsOneWidget);
     });

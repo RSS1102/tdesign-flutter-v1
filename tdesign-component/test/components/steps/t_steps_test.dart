@@ -184,12 +184,12 @@ void main() {
       expect(find.byType(TSteps), findsOneWidget);
     });
 
-    testWidgets('使用 themeData 参数', (tester) async {
+    testWidgets('使用 mergeExtension 子树覆盖', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSteps(
           steps: buildSteps(3),
-          themeData: const TStepsThemeData(simple: true),
         ),
+        stepsTheme: const TStepsThemeData(simple: true),
       ));
       expect(find.byType(TSteps), findsOneWidget);
     });

@@ -15,7 +15,6 @@ export 't_calendar_cell.dart'
         TCalendarSubtitleBuilder,
         TCalendarCellBuilder,
         TCalendarMonthTitleBuilder;
-export 't_calendar_style.dart';
 
 // ---------------------------------------------------------------------------
 // TCalendar — 纯日历组件
@@ -60,7 +59,6 @@ class TCalendar extends StatefulWidget {
     this.type = TCalendarVariant.single,
     this.initialValue,
     this.height,
-    TCalendarStyle? style,
     required this.onChanged,
     this.onMonthChanged,
     TCalendarMonthTitleBuilder? monthTitleBuilder,
@@ -73,7 +71,6 @@ class TCalendar extends StatefulWidget {
         minDate = minDate ?? _getDefaultMinDate(),
         maxDate = maxDate ?? _getDefaultMaxDate(),
         monthTitleBuilder = monthTitleBuilder ?? _defaultMonthTitleBuilder,
-        style = style ?? TCalendarStyle.generateStyle(context: null),
         super(key: key);
 
   /// 第一天从星期几开始，0 = 周日，1 = 周一，…，6 = 周六。默认 0（周日）。
@@ -104,9 +101,6 @@ class TCalendar extends StatefulWidget {
 
   /// 高度，不传时自动按 5 行日期计算
   final double? height;
-
-  /// 自定义样式（包含 cellHeight、monthTitleHeight 等布局参数）
-  final TCalendarStyle style;
 
   /// 选中结果变化时触发（单选立即触发；多选每次切换；区间在端点变化时触发）。
   ///
@@ -234,7 +228,7 @@ class _TCalendarState extends State<TCalendar> {
       context.resource.november,
       context.resource.december,
     ];
-    _style = widget.style;
+    _style = _resolveStyle(context);
     if (!_initializedSelected) {
       _initializedSelected = true;
       _applyInitialValue();
@@ -249,9 +243,28 @@ class _TCalendarState extends State<TCalendar> {
   @override
   void didUpdateWidget(covariant TCalendar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.style != widget.style) {
-      setState(() => _style = widget.style);
-    }
+    // 主题变更由 didChangeDependencies 处理，无需在此检查 style
+  }
+
+  /// P1: 从 ThemeExtension 解析样式（mergeExtension 子树覆盖 → token 默认）
+  TCalendarStyle _resolveStyle(BuildContext context) {
+    final theme = Theme.of(context).extension<TCalendarThemeData>();
+    final base = TCalendarStyle.generateStyle(context: context);
+    return TCalendarStyle(
+      decoration: theme?.decoration ?? base.decoration,
+      weekdayStyle: theme?.weekdayStyle ?? base.weekdayStyle,
+      monthTitleStyle: theme?.monthTitleStyle ?? base.monthTitleStyle,
+      dayStyle: theme?.dayStyle ?? base.dayStyle,
+      todayDayStyle: theme?.todayDayStyle ?? base.todayDayStyle,
+      cellDecoration: theme?.cellDecoration ?? base.cellDecoration,
+      subtitleStyle: theme?.subtitleStyle ?? base.subtitleStyle,
+      cellHeight: theme?.cellHeight ?? base.cellHeight,
+      monthTitleHeight: theme?.monthTitleHeight ?? base.monthTitleHeight,
+      verticalGap: theme?.verticalGap ?? base.verticalGap,
+      bodyPadding: theme?.bodyPadding ?? base.bodyPadding,
+      weekdayGap: theme?.weekdayGap ?? base.weekdayGap,
+      centreColor: theme?.centreColor ?? base.centreColor,
+    );
   }
 
   @override

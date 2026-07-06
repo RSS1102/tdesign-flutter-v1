@@ -175,7 +175,6 @@ class TBottomTabBar extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 300),
     this.animationCurve = Curves.easeInOutCubic,
     this.value,
-    this.themeData,
   })  : assert(() {
           if (navigationTabs.isEmpty) {
             throw FlutterError('[TBottomTabBar] please set at least one tab!');
@@ -286,9 +285,6 @@ class TBottomTabBar extends StatefulWidget {
   /// 选中的 index（v1.0 新增，等价于 [currentIndex]，优先级更高）
   final int? value;
 
-  /// 子树级主题数据（v1.0 新增）
-  final TBottomTabBarThemeData? themeData;
-
   @override
   State<TBottomTabBar> createState() => _TBottomTabBarState();
 }
@@ -298,6 +294,20 @@ class _TBottomTabBarState extends State<TBottomTabBar>
   int _selectedIndex = 0;
   late AnimationController _animationController;
   Animation<double>? _animation;
+
+  /// P1 ThemeExtension 回退后的有效值
+  late double _effectiveBarHeight;
+  late Color _effectiveSelectedBgColor;
+  late Color? _effectiveUnselectedBgColor;
+  late Color _effectiveBackgroundColor;
+  late double _effectiveCenterDistance;
+  late bool _effectiveUseVerticalDivider;
+  late double _effectiveDividerHeight;
+  late double _effectiveDividerThickness;
+  late Color _effectiveDividerColor;
+  late bool _effectiveShowTopBorder;
+  late BorderSide? _effectiveTopBorder;
+  late bool _effectiveNeedInkWell;
 
   @override
   void initState() {
@@ -335,6 +345,25 @@ class _TBottomTabBarState extends State<TBottomTabBar>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // P1: 组件级 ThemeExtension 回退
+    final theme = Theme.of(context).extension<TBottomTabBarThemeData>();
+    _effectiveBarHeight = widget.barHeight ?? theme?.barHeight ?? _kDefaultTabBarHeight;
+    _effectiveSelectedBgColor = widget.selectedBgColor ?? theme?.selectedBgColor ?? context.tTheme.brandLightColor;
+    _effectiveUnselectedBgColor = widget.unselectedBgColor ?? theme?.unselectedBgColor;
+    _effectiveBackgroundColor = widget.backgroundColor ?? theme?.backgroundColor ?? context.tTheme.bgColorContainer;
+    _effectiveCenterDistance = widget.centerDistance ?? theme?.centerDistance ?? 0;
+    _effectiveUseVerticalDivider = widget.useVerticalDivider ?? theme?.useVerticalDivider ?? false;
+    _effectiveDividerHeight = widget.dividerHeight ?? theme?.dividerHeight ?? 32;
+    _effectiveDividerThickness = widget.dividerThickness ?? theme?.dividerThickness ?? 0.5;
+    _effectiveDividerColor = widget.dividerColor ?? theme?.dividerColor ?? context.tTheme.componentStrokeColor;
+    _effectiveShowTopBorder = widget.showTopBorder ?? theme?.showTopBorder ?? true;
+    _effectiveTopBorder = widget.topBorder ?? theme?.topBorder;
+    _effectiveNeedInkWell = widget.needInkWell; // 非空字段，构造器默认 false
+  }
+
+  @override
   void dispose() {
     _animationController.dispose();
     super.dispose();
@@ -362,20 +391,19 @@ class _TBottomTabBarState extends State<TBottomTabBar>
             var itemWidth = maxWidth / widget.navigationTabs.length;
 
             Widget result = Container(
-                height: widget.barHeight ?? _kDefaultTabBarHeight,
+                height: _effectiveBarHeight,
                 alignment: Alignment.center,
                 margin: isCapsuleOutlineType
                     ? const EdgeInsets.symmetric(horizontal: 16)
                     : null,
                 decoration: BoxDecoration(
-                    color: widget.backgroundColor ??
-                        context.tTheme.bgColorContainer,
+                    color: _effectiveBackgroundColor,
                     borderRadius: isCapsuleOutlineType
                         ? BorderRadius.circular(context.tTheme.radiusCircle)
                         : null,
-                    border: widget.showTopBorder! && !isCapsuleOutlineType
+                    border: _effectiveShowTopBorder && !isCapsuleOutlineType
                         ? Border(
-                        top: widget.topBorder ??
+                        top: _effectiveTopBorder ??
                             BorderSide(
                                 color: context.tTheme.componentStrokeColor,
                                 width: 0.5))
@@ -400,7 +428,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
               if (widget.placeholder) {
                 result = Container(
                   padding: EdgeInsets.only(bottom: safeAreaBottomHeight),
-                  color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
+                  color: _effectiveBackgroundColor,
                   child: result,
                 );
               } else {
@@ -494,7 +522,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
         width: indicatorWidth,
         height: height,
         decoration: BoxDecoration(
-          color: widget.selectedBgColor ?? context.tTheme.brandLightColor,
+          color: _effectiveSelectedBgColor,
           borderRadius: const BorderRadius.all(Radius.circular(24)),
         ),
       ),
@@ -543,7 +571,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: widget.selectedBgColor ?? context.tTheme.brandLightColor,
+          color: _effectiveSelectedBgColor,
           borderRadius: const BorderRadius.all(Radius.circular(24)),
         ),
       ),
@@ -553,7 +581,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
   Widget _item(int index, double itemWidth) {
     var tabItemConfig = widget.navigationTabs[index];
     return Container(
-        height: widget.barHeight ?? _kDefaultTabBarHeight,
+        height: _effectiveBarHeight,
         width: itemWidth,
         alignment: Alignment.center,
         padding: EdgeInsets.only(
@@ -567,13 +595,13 @@ class _TBottomTabBarState extends State<TBottomTabBar>
           outlineType: widget.outlineType ?? TBottomTabBarOutlineType.filled,
           itemConfig: tabItemConfig,
           isSelected: index == _selectedIndex,
-          itemHeight: widget.barHeight ?? _kDefaultTabBarHeight,
+          itemHeight: _effectiveBarHeight,
           itemWidth: itemWidth,
           tabsLength: widget.navigationTabs.length,
-          selectedBgColor: widget.selectedBgColor,
-          unselectedBgColor: widget.unselectedBgColor,
-          centerDistance: widget.centerDistance ?? 0,
-          needInkWell: widget.needInkWell,
+          selectedBgColor: _effectiveSelectedBgColor,
+          unselectedBgColor: _effectiveUnselectedBgColor,
+          centerDistance: _effectiveCenterDistance,
+          needInkWell: _effectiveNeedInkWell,
           showItemBackground:
           widget.indicatorAnimation == TBottomTabBarIndicatorAnimation.none,
           onTap: () {
@@ -588,17 +616,16 @@ class _TBottomTabBarState extends State<TBottomTabBar>
   Widget _verticalDivider() {
     return Visibility(
       visible: widget.componentType != TBottomTabBarComponentType.label &&
-          (widget.useVerticalDivider ?? false),
+          (_effectiveUseVerticalDivider),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List.generate(widget.navigationTabs.length - 1, (index) {
           return SizedBox(
-            width: widget.dividerThickness ?? 0.5,
-            height: widget.dividerHeight ?? 32,
+            width: _effectiveDividerThickness,
+            height: _effectiveDividerHeight,
             child: VerticalDivider(
-              color: widget.dividerColor ??
-                  context.tTheme.componentStrokeColor,
-              thickness: widget.dividerThickness ?? 0.5,
+              color: _effectiveDividerColor,
+              thickness: _effectiveDividerThickness,
             ),
           );
         }),

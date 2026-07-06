@@ -42,7 +42,6 @@ class TSideBar extends StatefulWidget {
     this.selectedBgColor,
     this.unSelectedBgColor,
     this.unSelectedColor,
-    this.themeData,
   }) : super(key: key);
 
   /// 选项值
@@ -91,7 +90,6 @@ class TSideBar extends StatefulWidget {
   final Color? unSelectedBgColor;
 
   /// 子树级主题数据
-  final TSideBarThemeData? themeData;
 
   @override
   State<TSideBar> createState() => _TSideBarState();
@@ -108,8 +106,7 @@ class _TSideBarState extends State<TSideBar> {
 
   /// 从 ThemeData 解析有效值
   TSideBarThemeData _resolveTheme() {
-    return widget.themeData ??
-        Theme.of(context).extension<TSideBarThemeData>() ??
+    return Theme.of(context).extension<TSideBarThemeData>() ??
         const TSideBarThemeData();
   }
 

@@ -27,7 +27,6 @@ class TIndexes extends StatefulWidget {
     required this.builderContent,
     this.builderAnchor,
     this.builderIndex,
-    this.themeData,
   }) : super(key: key);
 
   /// 索引字符列表。不传默认 A-Z
@@ -72,7 +71,6 @@ class TIndexes extends StatefulWidget {
       builderIndex;
 
   /// 子树级主题数据（v1.0 新增）
-  final TIndexesThemeData? themeData;
 
   @override
   _TIndexesState createState() => _TIndexesState();
@@ -94,8 +92,7 @@ class _TIndexesState extends State<TIndexes> {
 
   /// 从 ThemeData 解析有效值
   TIndexesThemeData _resolveTheme() {
-    return widget.themeData ??
-        Theme.of(context).extension<TIndexesThemeData>() ??
+    return Theme.of(context).extension<TIndexesThemeData>() ??
         const TIndexesThemeData();
   }
 

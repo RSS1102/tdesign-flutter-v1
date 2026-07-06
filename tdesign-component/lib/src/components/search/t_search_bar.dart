@@ -185,10 +185,17 @@ class _TSearchBarState extends State<TSearchBar>
 
   @override
   Widget build(BuildContext context) {
+    // P1: 组件级 ThemeExtension
+    final theme = Theme.of(context).extension<TSearchBarThemeData>();
+    final effectiveStyle = widget.style ?? theme?.defaultStyle ?? TSearchBarStyle.square;
+    final effectiveAlignment = widget.alignment ?? theme?.defaultAlignment ?? TSearchBarAlignment.left;
+    final effectiveBgColor = widget.backgroundColor ?? theme?.backgroundColor ?? context.tTheme.bgColorContainer;
+    final effectiveCursorHeight = widget.cursorHeight ?? theme?.cursorHeight;
+
     return Container(
       padding: widget.padding,
       height: widget.autoHeight ? double.infinity : 56,
-      color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
+      color: effectiveBgColor,
       child: Stack(alignment: AlignmentDirectional.center, children: [
         Row(
           children: [
@@ -199,7 +206,7 @@ class _TSearchBarState extends State<TSearchBar>
                 decoration: BoxDecoration(
                     color: context.tTheme.bgColorSecondaryContainer,
                     borderRadius: BorderRadius.circular(
-                        widget.style == TSearchBarStyle.square ? 4 : 28)),
+                        effectiveStyle == TSearchBarStyle.square ? 4 : 28)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -222,9 +229,9 @@ class _TSearchBarState extends State<TSearchBar>
                           controller: widget.controller ?? controller,
                           autofocus: widget.autoFocus,
                           cursorColor: context.tTheme.brandNormalColor,
-                          cursorHeight: widget.cursorHeight,
+                          cursorHeight: effectiveCursorHeight,
                           textAlign:
-                              widget.alignment == TSearchBarAlignment.center
+                              effectiveAlignment == TSearchBarAlignment.center
                                   ? TextAlign.center
                                   : TextAlign.left,
                           focusNode: focusNode,
@@ -246,6 +253,9 @@ class _TSearchBarState extends State<TSearchBar>
                             ),
                             hintMaxLines: 1,
                             border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
                             isCollapsed: true,
                             // filled: true,
                             // fillColor: context.tTheme.bgColorSecondaryContainer,

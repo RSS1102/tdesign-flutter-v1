@@ -25,7 +25,6 @@ class TSwipeCell extends StatefulWidget {
     this.onChanged,
     this.controller,
     this.direction = Axis.horizontal,
-    this.themeData,
   }) : super(key: key);
 
   /// 单元格 [TCell]
@@ -50,13 +49,11 @@ class TSwipeCell extends StatefulWidget {
   final Axis? direction;
 
   /// 组件级主题配置，优先级高于 Theme Extension
-  final TSwipeCellThemeData? themeData;
 
   /// 获取生效的 Theme（实例 themeData > Theme Extension > 默认值）
   TSwipeCellThemeData _effectiveTheme(BuildContext context) {
     return (Theme.of(context).extension<TSwipeCellThemeData>() ??
-            const TSwipeCellThemeData())
-        .merge(themeData);
+            const TSwipeCellThemeData());
   }
 
   /// 获取滑动动画时长

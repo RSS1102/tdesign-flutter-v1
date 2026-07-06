@@ -52,6 +52,13 @@ class TButtonResolve {
       effectiveShape: effectiveShape,
     );
 
+    // 4.5 textStyle → 覆盖 M3 labelLarge 默认字号
+    final textStyleStyle = ButtonStyle(
+      textStyle: WidgetStatePropertyAll<TextStyle>(
+        TextStyle(fontSize: _fontSizeForSize(size)),
+      ),
+    );
+
     // 5. Theme padding 覆盖默认
     final paddingStyle = theme?.padding != null
         ? ButtonStyle(padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(theme!.padding!))
@@ -61,11 +68,12 @@ class TButtonResolve {
     final spacing = theme?.iconSpacing ?? 8.0;
     final iconSpacingStyle = _resolveIconSpacing(spacing, iconPosition);
 
-    // 合并：P2 色板 → colorScheme → shape → size → Theme padding → iconSpacing → P0
+    // 合并：P2 色板 → colorScheme → shape → size → textStyle → Theme padding → iconSpacing → P0
     ButtonStyle resolved = variantPalette ?? const ButtonStyle();
     resolved = resolved.merge(colorStyle);
     resolved = resolved.merge(shapeStyle);
     resolved = resolved.merge(sizeStyle);
+    resolved = resolved.merge(textStyleStyle);
     if (paddingStyle != null) {
       resolved = resolved.merge(paddingStyle);
     }
@@ -381,6 +389,16 @@ class TButtonResolve {
       case TButtonSize.extraSmall:
         return 3;
     }
+  }
+
+  /// 根据 size 获取字号（与 t_button.dart _fontSizeForButton 对齐）
+  static double _fontSizeForSize(TButtonSize size) {
+    return switch (size) {
+      TButtonSize.large => 16,
+      TButtonSize.medium => 14,
+      TButtonSize.small => 12,
+      TButtonSize.extraSmall => 10,
+    };
   }
 
   /// 图标与文案间距

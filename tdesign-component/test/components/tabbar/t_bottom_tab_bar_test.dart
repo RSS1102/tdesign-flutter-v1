@@ -285,13 +285,13 @@ void main() {
   });
 
   group('TBottomTabBar ThemeData', () {
-    testWidgets('使用 themeData 参数', (tester) async {
+    testWidgets('使用 mergeExtension 子树覆盖', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TBottomTabBar(
           TBottomTabBarBasicType.text,
           navigationTabs: buildTextTabs(3),
-          themeData: const TBottomTabBarThemeData(barHeight: 64),
         ),
+        tabBarTheme: const TBottomTabBarThemeData(barHeight: 64),
       ));
       expect(find.byType(TBottomTabBar), findsOneWidget);
     });

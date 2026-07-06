@@ -26,10 +26,10 @@ class TTimeCounter extends StatefulWidget {
     this.autoStart = true,
     this.content = 'default',
     this.format = 'HH:mm:ss',
-    this.millisecond = false,
-    this.size = TTimeCounterSize.medium,
-    this.splitWithUnit = false,
-    this.theme = TTimeCounterTheme.defaultTheme,
+    this.millisecond,
+    this.size,
+    this.splitWithUnit,
+    this.theme,
     required this.time,
     this.style,
     this.onChanged,
@@ -48,16 +48,16 @@ class TTimeCounter extends StatefulWidget {
   final String format;
 
   /// 是否开启毫秒级渲染
-  final bool millisecond;
+  final bool? millisecond;
 
   /// 尺寸
-  final TTimeCounterSize size;
+  final TTimeCounterSize? size;
 
   /// 使用时间单位分割
-  final bool splitWithUnit;
+  final bool? splitWithUnit;
 
   /// 风格
-  final TTimeCounterTheme theme;
+  final TTimeCounterTheme? theme;
 
   /// 必需；计时时长，单位毫秒
   final int time;
@@ -85,6 +85,9 @@ class _TTimeCounterState extends State<TTimeCounter>
     with SingleTickerProviderStateMixin {
   late TTimeCounterStyle _style;
   late Map<String, String> timeUnitMap;
+  /// P1 回退后的有效值
+  late bool _effectiveMillisecond;
+  late bool _effectiveSplitWithUnit;
   Ticker? _ticker;
   int _time = 0;
   int _tempMilliseconds = 0;
@@ -100,12 +103,18 @@ class _TTimeCounterState extends State<TTimeCounter>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // P1: 组件级 ThemeExtension
+    final tTheme = Theme.of(context).extension<TTimeCounterThemeData>();
+    final effectiveSize = widget.size ?? tTheme?.size ?? TTimeCounterSize.medium;
+    final effectiveTheme = widget.theme ?? tTheme?.theme ?? TTimeCounterTheme.defaultTheme;
+    _effectiveMillisecond = widget.millisecond ?? tTheme?.millisecond ?? false;
+    _effectiveSplitWithUnit = widget.splitWithUnit ?? tTheme?.splitWithUnit ?? false;
     _style = widget.style ??
         TTimeCounterStyle.generateStyle(
           context,
-          size: widget.size,
-          theme: widget.theme,
-          splitWithUnit: widget.splitWithUnit,
+          size: effectiveSize,
+          theme: effectiveTheme,
+          splitWithUnit: _effectiveSplitWithUnit,
         );
     timeUnitMap = {
       'D': context.resource.days,
@@ -225,7 +234,7 @@ class _TTimeCounterState extends State<TTimeCounter>
   }
 
   List<Widget> _buildTimeWidget(BuildContext context) {
-    final format = widget.millisecond
+    final format = _effectiveMillisecond
         ? '${widget.format.replaceAll(RegExp(r':S+$'), '')}:SSS'
         : widget.format;
     final matches = _timeReg.allMatches(format);
@@ -235,7 +244,7 @@ class _TTimeCounterState extends State<TTimeCounter>
           final timeType = match.group(0) ?? '';
           return _buildTextWidget(
             timeMap[timeType] ?? '0',
-            widget.splitWithUnit
+            _effectiveSplitWithUnit
                 ? timeUnitMap[timeType[0]] ?? ''
                 : _getMark(format, timeType),
           );

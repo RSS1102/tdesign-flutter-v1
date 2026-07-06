@@ -64,7 +64,6 @@ class TSteps extends StatefulWidget {
     this.simple = false,
     this.readOnly = false,
     this.verticalSelect = false,
-    this.themeData,
   });
 
   /// 步骤条数据
@@ -92,7 +91,6 @@ class TSteps extends StatefulWidget {
   final bool verticalSelect;
 
   /// 子树级主题数据（v1.0 新增）
-  final TStepsThemeData? themeData;
 
   @override
   _TStepsState createState() => _TStepsState();
@@ -111,8 +109,7 @@ class _TStepsState extends State<TSteps> {
 
   /// 从 ThemeData 解析有效值
   TStepsThemeData _resolveTheme() {
-    return widget.themeData ??
-        Theme.of(context).extension<TStepsThemeData>() ??
+    return Theme.of(context).extension<TStepsThemeData>() ??
         const TStepsThemeData();
   }
 

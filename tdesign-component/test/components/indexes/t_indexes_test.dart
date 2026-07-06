@@ -123,13 +123,13 @@ void main() {
       expect(find.byType(TIndexes), findsOneWidget);
     });
 
-    testWidgets('使用 themeData 参数', (tester) async {
+    testWidgets('使用 mergeExtension 子树覆盖', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TIndexes(
           indexList: const ['A', 'B'],
-          themeData: const TIndexesThemeData(capsuleTheme: true),
           builderContent: (context, index) => ListTile(title: Text('内容$index')),
         ),
+        indexesTheme: const TIndexesThemeData(capsuleTheme: true),
       ));
       expect(find.byType(TIndexes), findsOneWidget);
     });

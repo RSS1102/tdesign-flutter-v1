@@ -112,7 +112,6 @@ class _CalendarPickerPanel extends StatelessWidget {
     this.footer,
     this.minDate,
     this.maxDate,
-    this.style,
     this.subtitleBuilder,
     this.cellBuilder,
     this.autoPopOnSingleSelect = true,
@@ -128,7 +127,6 @@ class _CalendarPickerPanel extends StatelessWidget {
   final Widget Function(List<DateTime> selected)? footer;
   final DateTime? minDate;
   final DateTime? maxDate;
-  final TCalendarStyle? style;
   final TCalendarSubtitleBuilder? subtitleBuilder;
   final TCalendarCellBuilder? cellBuilder;
   final bool autoPopOnSingleSelect;
@@ -181,7 +179,6 @@ void _showCalendarPickerSheet({
   Widget Function(List<DateTime> selected)? footer,
   DateTime? minDate,
   DateTime? maxDate,
-  TCalendarStyle? style,
   TCalendarSubtitleBuilder? subtitleBuilder,
   TCalendarCellBuilder? cellBuilder,
   bool autoPopOnSingleSelect = true,
@@ -829,7 +826,6 @@ class _StyleDemoState extends State<_StyleDemo> {
                       initialValue: textSelected,
                       minDate: DateTime(2022, 1, 1),
                       maxDate: DateTime(2022, 2, 15),
-                      style: const TCalendarStyle(cellHeight: 80),
                       subtitleBuilder: _buildPriceSubtitle,
                       onConfirm: (value) =>
                           _customSubtitleSelected.value = _normalizeDateList(value),
@@ -849,7 +845,6 @@ class _StyleDemoState extends State<_StyleDemo> {
                       title: '请选择日期',
                       type: TCalendarVariant.single,
                       initialValue: cellValue,
-                      style: const TCalendarStyle(cellHeight: 80),
                       cellBuilder: _buildCustomDayCell,
                       onConfirm: (value) =>
                           _customCellSelected.value = _normalizeDateList(value),

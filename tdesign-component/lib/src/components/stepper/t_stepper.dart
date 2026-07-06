@@ -327,6 +327,9 @@ class _TStepperState extends State<TStepper> {
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
                         isDense: true,
                         contentPadding: EdgeInsets.zero,
                       ),
@@ -450,7 +453,7 @@ class TStepperIconButton extends StatelessWidget {
     }
   }
 
-  Icon _getIcon(context) {
+  Icon _getIcon(BuildContext context) {
     var iconType = type == TStepperIconType.add ? Icons.add : Icons.remove;
 
     return Icon(iconType,

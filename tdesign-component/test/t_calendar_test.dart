@@ -628,12 +628,16 @@ class _RuntimeStyleHarnessState extends State<_RuntimeStyleHarness> {
         ),
         SizedBox(
           height: _calendarHeightFor(_cellHeight),
-          child: TCalendar(
-            type: TCalendarVariant.single,
-            minDate: _day(2024, 6, 1),
-            maxDate: _day(2024, 6, 30),
-            style: TCalendarStyle(cellHeight: _cellHeight),
-            onChanged: (_) {},
+          child: Theme(
+            data: Theme.of(context).mergeExtension(
+              TCalendarThemeData(cellHeight: _cellHeight),
+            ),
+            child: TCalendar(
+              type: TCalendarVariant.single,
+              minDate: _day(2024, 6, 1),
+              maxDate: _day(2024, 6, 30),
+              onChanged: (_) {},
+            ),
           ),
         ),
       ],

@@ -4,12 +4,12 @@ import '../../../tdesign_flutter.dart';
 
 class TCascader {
   /// 显示多级选择器
-  static void showMultiCascader(context,
+  static void showMultiCascader(BuildContext context,
       {String? title,
       required List<Map> data,
       List<int>? initialIndexes,
       String? theme,
-      required onChanged,
+      required MultiCascaderCallback onChanged,
       Duration duration = const Duration(milliseconds: 100),
       Color? barrierColor,
       double cascaderHeight = 500,

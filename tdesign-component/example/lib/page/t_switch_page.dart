@@ -55,18 +55,18 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithBase(BuildContext context) {
-    return const TCell(
+    return TCell(
       title: '基础开关',
-      noteWidget: TSwitch(),
+      noteWidget: _StatefulSwitch(),
     );
   }
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithText(BuildContext context) {
-    return const TCell(
+    return TCell(
       title: '带文字开关',
-      noteWidget: TSwitch(
-        value: true,
+      noteWidget: _StatefulSwitch(
+        initialValue: true,
         variant: TSwitchVariant.text,
       ),
     );
@@ -74,10 +74,10 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithIcon(BuildContext context) {
-    return const TCell(
+    return TCell(
       title: '带图标开关',
-      noteWidget: TSwitch(
-        value: true,
+      noteWidget: _StatefulSwitch(
+        initialValue: true,
         variant: TSwitchVariant.icon,
       ),
     );
@@ -85,10 +85,10 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithColor(BuildContext context) {
-    return const TCell(
+    return TCell(
       title: '自定义颜色开关',
-      noteWidget: TSwitch(
-        value: true,
+      noteWidget: _StatefulSwitch(
+        initialValue: true,
         trackOnColor: Colors.green,
       ),
     );
@@ -140,42 +140,42 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithSizeLarge(BuildContext context) {
-    return const TCell(
+    return TCell(
       title: '大尺寸32',
-      noteWidget: TSwitch(
+      noteWidget: _StatefulSwitch(
         size: TSwitchSize.large,
-        value: true,
+        initialValue: true,
       ),
     );
   }
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithSizeMed(BuildContext context) {
-    return const TCell(
+    return TCell(
       title: '中尺寸28',
-      noteWidget: TSwitch(
+      noteWidget: _StatefulSwitch(
         size: TSwitchSize.medium,
-        value: true,
+        initialValue: true,
       ),
     );
   }
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithSizeSmall(BuildContext context) {
-    return const TCell(
+    return TCell(
       title: '小尺寸24',
-      noteWidget: TSwitch(
+      noteWidget: _StatefulSwitch(
         size: TSwitchSize.small,
-        value: true,
+        initialValue: true,
       ),
     );
   }
 
   @Demo(group: 'switch')
   Widget _customText(BuildContext context) {
-    return const TCell(
+    return TCell(
       title: '基础开关',
-      noteWidget: TSwitch(
+      noteWidget: _StatefulSwitch(
         variant: TSwitchVariant.text,
         openText: '1111',
         closeText: '—',
@@ -185,17 +185,72 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _customTextFont(BuildContext context) {
-    return const TCell(
+    return TCell(
       title: '基础开关',
-      noteWidget: TSwitch(
+      noteWidget: _StatefulSwitch(
         variant: TSwitchVariant.text,
         openText: '开',
         closeText: '关',
         thumbContentOffColor: Colors.red,
         thumbContentOnColor: Colors.green,
-        thumbContentOnFont: TextStyle(fontSize: 18),
-        thumbContentOffFont: TextStyle(fontSize: 12),
+        thumbContentOnFont: const TextStyle(fontSize: 18),
+        thumbContentOffFont: const TextStyle(fontSize: 12),
       ),
+    );
+  }
+}
+
+/// 自动管理开关状态的 TSwitch 包装器
+class _StatefulSwitch extends StatefulWidget {
+  const _StatefulSwitch({
+    this.initialValue = false,
+    this.size,
+    this.variant,
+    this.trackOnColor,
+    this.thumbContentOnColor,
+    this.thumbContentOffColor,
+    this.thumbContentOnFont,
+    this.thumbContentOffFont,
+    this.openText,
+    this.closeText,
+  });
+
+  final bool initialValue;
+  final TSwitchSize? size;
+  final TSwitchVariant? variant;
+  final Color? trackOnColor;
+  final Color? thumbContentOnColor;
+  final Color? thumbContentOffColor;
+  final TextStyle? thumbContentOnFont;
+  final TextStyle? thumbContentOffFont;
+  final String? openText;
+  final String? closeText;
+
+  @override
+  State<_StatefulSwitch> createState() => _StatefulSwitchState();
+}
+
+class _StatefulSwitchState extends State<_StatefulSwitch> {
+  late bool _value = widget.initialValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return TSwitch(
+      value: _value,
+      size: widget.size,
+      variant: widget.variant,
+      trackOnColor: widget.trackOnColor,
+      thumbContentOnColor: widget.thumbContentOnColor,
+      thumbContentOffColor: widget.thumbContentOffColor,
+      thumbContentOnFont: widget.thumbContentOnFont,
+      thumbContentOffFont: widget.thumbContentOffFont,
+      openText: widget.openText,
+      closeText: widget.closeText,
+      onChanged: (value) {
+        setState(() {
+          _value = value;
+        });
+      },
     );
   }
 }

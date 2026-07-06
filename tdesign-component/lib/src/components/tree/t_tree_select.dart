@@ -58,9 +58,9 @@ class TTreeSelect extends StatefulWidget {
     this.value = const [],
     this.onChanged,
     this.multiple = false,
-    this.style = TTreeSelectStyle.normal,
-    this.height = 336,
-    this.outwardCornerRadius = 9,
+    this.style,
+    this.height,
+    this.outwardCornerRadius,
   }) : super(key: key);
 
   /// 展示的选项列表
@@ -73,16 +73,16 @@ class TTreeSelect extends StatefulWidget {
   final TTreeSelectChangeEvent? onChanged;
 
   /// 高度
-  final double height;
+  final double? height;
 
   /// 支持多选
   final bool multiple;
 
   /// 一级菜单样式
-  final TTreeSelectStyle style;
+  final TTreeSelectStyle? style;
 
   /// 一级菜单选中项的外弯折圆角半径，默认为 9
-  final double outwardCornerRadius;
+  final double? outwardCornerRadius;
 
   @override
   State<TTreeSelect> createState() => _TTreeSelectState();
@@ -166,9 +166,15 @@ class _TTreeSelectState extends State<TTreeSelect> {
 
   @override
   Widget build(BuildContext context) {
+    // P1: 组件级 ThemeExtension
+    final theme = Theme.of(context).extension<TTreeSelectThemeData>();
+    final effectiveHeight = widget.height ?? theme?.height ?? 336;
+    final effectiveStyle = widget.style ?? theme?.style ?? TTreeSelectStyle.normal;
+    final effectiveOutwardCornerRadius = widget.outwardCornerRadius ?? theme?.outwardCornerRadius ?? 9;
+
     return Container(
         color: context.tTheme.bgColorContainer,
-        height: widget.height,
+        height: effectiveHeight,
         child: Row(
           children: [
             /// 一级菜单
@@ -212,7 +218,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
                                 ? context.tTheme.bgColorContainer
                                 : null,
                             border: isSelected &&
-                                    widget.style == TTreeSelectStyle.outline
+                                    effectiveStyle == TTreeSelectStyle.outline
                                 ? Border(
                                     left: BorderSide(
                                       color:
@@ -244,7 +250,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             top: 0,
                             right: 0,
                             child: CustomPaint(
-                              size: Size(widget.outwardCornerRadius, widget.outwardCornerRadius),
+                              size: Size(effectiveOutwardCornerRadius, effectiveOutwardCornerRadius),
                               painter: _OutwardCornerPainter(
                                 color:
                                     context.tTheme.bgColorContainer,
@@ -258,7 +264,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             bottom: 0,
                             right: 0,
                             child: CustomPaint(
-                              size: Size(widget.outwardCornerRadius, widget.outwardCornerRadius),
+                              size: Size(effectiveOutwardCornerRadius, effectiveOutwardCornerRadius),
                               painter: _OutwardCornerPainter(
                                 color:
                                     context.tTheme.bgColorContainer,

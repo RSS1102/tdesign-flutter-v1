@@ -106,7 +106,7 @@ class TTimeCounterStyle {
     TTimeCounterTheme? theme,
     bool? splitWithUnit,
   }) {
-    timeFontFamily = TThemeData.defaultData().numberFontFamily;
+    timeFontFamily = context.tTheme.numberFontFamily;
     late Font? font;
     switch (size ?? TTimeCounterSize.medium) {
       case TTimeCounterSize.small:
