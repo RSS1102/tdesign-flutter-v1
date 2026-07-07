@@ -59,3 +59,13 @@ TStepper(
 | `lib/src/components/stepper/t_stepper_theme_data.dart` | 新增（TStepperThemeData + TStepperColorScheme） |
 | `lib/src/components/stepper/t_stepper.dart` | 参数重命名 + 删除 defaultValue + 移除重复枚举 + 修复 import |
 | `lib/tdesign_flutter.dart` | 新增 export |
+
+## 后续修复（2026-07-06）
+
+### 1. `_getIcon` dynamic context 修复
+
+`TStepperIconButton._getIcon(context)` 的 `context` 参数缺少 `BuildContext` 类型注解（默认 `dynamic`），导致 `context.tTheme` 扩展方法运行时抛 `NoSuchMethodError`。修复为 `Icon _getIcon(BuildContext context)`。
+
+### 2. M3 InputDecoration 下划线泄漏修复
+
+`InputDecoration(border: InputBorder.none)` 未设 `enabledBorder`/`focusedBorder`/`disabledBorder`，M3 默认下划线可见。补全 3 个 border 属性为 `InputBorder.none`。

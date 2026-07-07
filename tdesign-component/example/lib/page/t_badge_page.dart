@@ -311,6 +311,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildCircleBadge(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           const Icon(TIcons.notification),
@@ -328,6 +329,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildSquareBadge(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           const Icon(TIcons.notification),
@@ -348,6 +350,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildBubbleBadge(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           Container(
@@ -369,7 +372,8 @@ class _TBadgePageState extends State<TBadgePage> {
 
   @Demo(group: 'badge')
   Widget _buildSubscriptBadge(BuildContext context) {
-    return const Stack(
+    return Stack(
+      clipBehavior: Clip.none,
       alignment: Alignment.topRight,
       children: [
         TCell(title: '单行标题'),
@@ -382,6 +386,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildLargeBadge(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           const TAvatar(size: TAvatarSize.large, variant: TAvatarVariant.icon),
@@ -400,6 +405,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildMediumBadge(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           const TAvatar(size: TAvatarSize.medium, variant: TAvatarVariant.icon),
@@ -415,8 +421,9 @@ class _TBadgePageState extends State<TBadgePage> {
 
   @Demo(group: 'badge')
   Widget _buildLessThanMaxCountBadge(BuildContext context) {
-    return const SizedBox(
+    return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           Positioned(
             left: 0,
@@ -440,8 +447,9 @@ class _TBadgePageState extends State<TBadgePage> {
 
   @Demo(group: 'badge')
   Widget _buildMoreThanMaxCountBadge(BuildContext context) {
-    return const SizedBox(
+    return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           Positioned(left: 0, bottom: 0, child: Icon(TIcons.notification)),
           Positioned(

@@ -258,8 +258,6 @@ TTimeCounter _buildUnitSimple(BuildContext context) {
 
 @Demo(group: 'timeCounter')
 TTimeCounter _buildCustomUnitSimple(BuildContext context) {
-  var style = TTimeCounterStyle.generateStyle(context);
-  style.timeColor = context.tTheme.errorNormalColor;
   return TTimeCounter(
     time: 60 * 60 * 1000,
     splitWithUnit: true,
@@ -376,33 +374,27 @@ TTimeCounter _buildUnitLargeSize(BuildContext context) {
 
 @Demo(group: 'timeCounter')
 TTimeCounter _buildCustomUnitSmallSize(BuildContext context) {
-  var style =
-      TTimeCounterStyle.generateStyle(context, size: TTimeCounterSize.small);
-  style.timeColor = context.tTheme.errorNormalColor;
   return TTimeCounter(
     time: 60 * 60 * 1000,
+    size: TTimeCounterSize.small,
     splitWithUnit: true,
   );
 }
 
 @Demo(group: 'timeCounter')
 TTimeCounter _buildCustomUnitMediumSize(BuildContext context) {
-  var style =
-      TTimeCounterStyle.generateStyle(context, size: TTimeCounterSize.medium);
-  style.timeColor = context.tTheme.errorNormalColor;
   return TTimeCounter(
     time: 60 * 60 * 1000,
+    size: TTimeCounterSize.medium,
     splitWithUnit: true,
   );
 }
 
 @Demo(group: 'timeCounter')
 TTimeCounter _buildCustomUnitLargeSize(BuildContext context) {
-  var style =
-      TTimeCounterStyle.generateStyle(context, size: TTimeCounterSize.large);
-  style.timeColor = context.tTheme.errorNormalColor;
   return TTimeCounter(
     time: 60 * 60 * 1000,
+    size: TTimeCounterSize.large,
     splitWithUnit: true,
   );
 }

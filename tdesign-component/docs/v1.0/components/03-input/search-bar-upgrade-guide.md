@@ -66,3 +66,13 @@ TSearchBar(
 | `lib/src/components/search/t_search_bar_theme_data.dart` | 新增（TSearchBarThemeData + TSearchBarStyle/TSearchBarAlignment） |
 | `lib/src/components/search/t_search_bar.dart` | 参数重命名 + 删除旧枚举 + 删除 typedef + L4 迁入 Theme |
 | `lib/tdesign_flutter.dart` | 新增 export |
+
+## 后续修复（2026-07-06）
+
+### 1. P1 ThemeExtension 读取补全
+
+`TSearchBarThemeData` 定义了 7 个字段但 build 方法从未读取。修复：添加 `Theme.of(context).extension<TSearchBarThemeData>()` 读取，`style`/`alignment`/`backgroundColor`/`cursorHeight` 支持 `widget.field ?? theme?.field ?? hardDefault` 三级回退。
+
+### 2. M3 InputDecoration 下划线泄漏修复
+
+TextField 的 `InputDecoration(border: InputBorder.none)` 未设 `enabledBorder`/`focusedBorder`/`disabledBorder`，M3 默认下划线可见。补全 3 个 border 属性为 `InputBorder.none`。

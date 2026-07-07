@@ -330,3 +330,13 @@ cd example && flutter build apk --debug
 | `onLongPress` 移除 | 外包 `GestureDetector` 包裹 |
 | `disabled` 语义变化 | 旧 `disabled: true` + `onTap:` → V1.0 `onPressed: null` 丢失回调 |
 | `TButtonStyle` 动态代码 | 迁入 resolve 函数或 Theme |
+
+---
+
+## 6. 后续修复（2026-07-06）
+
+### M3 textStyle 字号覆盖
+
+非渐变模式 `ElevatedButton` 的 `ButtonStyle` 未设 `textStyle`，M3 `labelLarge`（14px/w500/letterSpacing 0.1）覆盖 TDesign 按字号应变化的字体大小。
+
+**修复**：在 `TButtonResolve.resolve()` 中新增 `textStyle` 步骤，用 `_fontSizeForSize(size)`（large=16/medium=14/small=12/extraSmall=10）覆盖 M3 默认字号。颜色/elevation/surfaceTintColor 等已由 TButtonResolve 正确覆盖。

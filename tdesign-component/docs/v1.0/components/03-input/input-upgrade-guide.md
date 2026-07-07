@@ -79,3 +79,9 @@ D 类组件用 `enabled: false` 或 `readOnly: true`，不用 `onChanged: null`�
 | `lib/src/components/input/t_input_resolve.dart` | 新增（静态解析器 + Chinese2Formatter） |
 | `lib/src/components/input/t_input.dart` | 枚举重命名 + 参数重命名 + L4 迁入 Theme |
 | `lib/tdesign_flutter.dart` | 替换旧 export |
+
+## 后续修复（2026-07-06）
+
+### M3 InputDecoration 下划线泄漏修复
+
+`input_view.dart` 中 `InputDecoration` 已设 `enabledBorder`/`focusedBorder` 为透明，但未设 `disabledBorder`/`errorBorder`/`focusedErrorBorder`，禁用/错误态显示 M3 灰色/红色下划线。补全 3 个 border 属性为透明 `UnderlineInputBorder`。TTextarea 复用 TInputView，自动生效。

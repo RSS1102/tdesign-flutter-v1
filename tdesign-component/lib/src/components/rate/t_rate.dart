@@ -107,6 +107,9 @@ class TRate extends StatefulWidget {
 }
 
 class _TRateState extends State<TRate> with TickerProviderStateMixin {
+  /// B/C 类禁用约定：onChanged 为 null 时禁用
+  bool get _isDisabled => widget.onChanged == null;
+
   /// 节流
   final _throttle = Throttle(delay: const Duration(milliseconds: 100));
 
@@ -204,27 +207,27 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
       children: [
         GestureDetector(
           onTapDown: (event) {
-            if (widget.disabled == true) {
+            if (_isDisabled) {
               return;
             }
             _isClick = true;
           },
           onTapUp: (details) {
-            if (widget.disabled == true) {
+            if (_isDisabled) {
               return;
             }
             _changeSelect(details.globalPosition, true);
             _hideTip();
           },
           onHorizontalDragUpdate: (details) {
-            if (widget.disabled == true) {
+            if (_isDisabled) {
               return;
             }
             _isClick = false;
             _changeSelect(details.globalPosition);
           },
           onHorizontalDragEnd: (details) {
-            if (widget.disabled == true) {
+            if (_isDisabled) {
               return;
             }
             _hideTip();

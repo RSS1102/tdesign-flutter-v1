@@ -528,10 +528,9 @@ class _TFormPageState extends State<TFormPage> {
                 padding: const EdgeInsets.only(right: 18),
                 child: TStepper(
                   theme: TStepperColorScheme.filled,
-                  disabled: _formDisableState,
                   eventController: _stepController!,
                   value: int.parse(_formData['age']),
-                  onChanged: (value) {
+                  onChanged: _formDisableState ? null : (value) {
                     _itemNotifier['age']?.upDataForm('$value');
                   },
                 ),
@@ -551,8 +550,7 @@ class _TFormPageState extends State<TFormPage> {
                     count: 5,
                     value: double.parse(_formData['description']),
                     allowHalf: false,
-                    disabled: _formDisableState,
-                    onChanged: (value) {
+                    onChanged: _formDisableState ? null : (value) {
                       setState(() {
                         _formData['description'] = '$value';
                       });
@@ -597,11 +595,7 @@ class _TFormPageState extends State<TFormPage> {
                   max: 6,
                   onError: print,
                   onValidate: print,
-                  disabled: _formDisableState,
-                  onChanged: ((imgList, type) {
-                    if (_formDisableState) {
-                      return;
-                    }
+                  onChanged: _formDisableState ? null : ((imgList, type) {
                     files = _onValueChanged(files, imgList, type);
                     List imgs =
                         files.map((e) => e.remotePath ?? e.assetPath).toList();
@@ -822,10 +816,9 @@ class _TFormPageState extends State<TFormPage> {
                 padding: const EdgeInsets.only(right: 18),
                 child: TStepper(
                   theme: TStepperColorScheme.filled,
-                  disabled: _formDisableState,
                   eventController: _stepController!,
                   value: int.parse(_formData['age']),
-                  onChanged: (value) {
+                  onChanged: _formDisableState ? null : (value) {
                     _itemNotifier['age']?.upDataForm('$value');
                   },
                 ),
@@ -846,8 +839,7 @@ class _TFormPageState extends State<TFormPage> {
                     count: 5,
                     value: double.parse(_formData['description']),
                     allowHalf: false,
-                    disabled: _formDisableState,
-                    onChanged: (value) {
+                    onChanged: _formDisableState ? null : (value) {
                       setState(() {
                         _formData['description'] = '$value';
                       });
@@ -895,11 +887,7 @@ class _TFormPageState extends State<TFormPage> {
                   max: 6,
                   onError: print,
                   onValidate: print,
-                  disabled: _formDisableState,
-                  onChanged: ((imgList, type) {
-                    if (_formDisableState) {
-                      return;
-                    }
+                  onChanged: _formDisableState ? null : ((imgList, type) {
                     files = _onValueChanged(files, imgList, type);
                     List imgs =
                         files.map((e) => e.remotePath ?? e.assetPath).toList();

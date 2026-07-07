@@ -129,7 +129,6 @@ class TUpload extends StatefulWidget {
     this.width = 80.0,
     this.height = 80.0,
     this.type = TUploadVariant.roundedSquare,
-    this.disabled = false,
     this.enabledReplaceType = false,
     this.wrapSpacing,
     this.wrapRunSpacing,
@@ -182,9 +181,6 @@ class TUpload extends StatefulWidget {
   /// 是否启用replace功能
   final bool? enabledReplaceType;
 
-  ///是否禁用
-  final bool? disabled;
-
   /// 多图布局时的 spacing
   final double? wrapSpacing;
 
@@ -202,6 +198,9 @@ class TUpload extends StatefulWidget {
 }
 
 class _TUploadState extends State<TUpload> {
+  /// A 类禁用约定：onChanged 为 null 时禁用上传操作
+  bool get _isDisabled => widget.onChanged == null;
+
   List<TUploadFile> fileList = [];
 
   bool get canUpload => widget.multiple
@@ -379,7 +378,7 @@ class _TUploadState extends State<TUpload> {
     if (canUpload) {
       children.add(
         _buildUploadBox(context, shouldDisplay: canUpload, onTap: () async {
-          if (widget.disabled!) {
+          if (_isDisabled) {
             return;
           }
           if (widget.onUploadTap != null) {

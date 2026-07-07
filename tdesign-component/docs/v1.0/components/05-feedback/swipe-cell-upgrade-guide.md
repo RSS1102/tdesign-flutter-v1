@@ -5,52 +5,58 @@
 | 变更类型 | 说明 |
 |---------|------|
 | New | 新增 `TSwipeCellThemeData` ThemeExtension |
-| New | 新增 `themeData` 参数 |
-| Migration | `slidableKey`/`opened`/`groupTag`/`closeWhenOpened`/`closeWhenTapped`/`dragStartBehavior`/`duration` 从构造器迁入 `TSwipeCellThemeData` |
+| Removed | 移除 `themeData` 构造器参数（改用 `mergeExtension` 子树覆盖） |
+| Migration | `slidableKey`/`opened`/`groupTag`/`closeWhenOpened`/`closeWhenTapped`/`dragStartBehavior`/`duration` 迁入 `TSwipeCellThemeData` |
 | Rename | `onChange`→`onChanged` |
 | Rename | `disabled`→`enabled`（默认 `true`，`false` 表示禁用） |
 | Compatible | `cell`/`controller`/`direction` 保留为实例参数 |
-| Compatible | `TSwipeDirection`/`close`/`of` 保留 |
 
 ## 迁移清单
 
-### 1. L4 参数迁入 `TSwipeCellThemeData`
+### 1. L4 参数迁入 `TSwipeCellThemeData` + `themeData` 移除
 
-**0.2.x:**
-```dart
-TSwipeCell(
-  cell: TCell(title: '标题'),
-  disabled: false,
-  slidableKey: Key('1'),
-  groupTag: 'group1',
-  closeWhenOpened: true,
-  closeWhenTapped: true,
-  duration: Duration(milliseconds: 300),
-  onChange: (direction, open) { ... },
-  right: TSwipeCellPanel(...),
-);
-```
+`themeData` 构造器参数已移除（对齐 theme.md §2.1）。样式通过 `Theme.of(context).mergeExtension(...)` 子树覆盖。
 
-**v1.0:**
+**❌ 已移除:**
 ```dart
 TSwipeCell(
   cell: TCell(title: '标题'),
   enabled: true,
-  themeData: TSwipeCellThemeData(
+  themeData: TSwipeCellThemeData(  // 已删除
     slidableKey: Key('1'),
     groupTag: 'group1',
-    closeWhenOpened: true,
-    closeWhenTapped: true,
-    duration: Duration(milliseconds: 300),
   ),
   onChanged: (direction, open) { ... },
   right: TSwipeCellPanel(...),
 );
 ```
 
+**✅ v1.0:**
+```dart
+Theme(
+  data: Theme.of(context).mergeExtension(
+    TSwipeCellThemeData(
+      slidableKey: Key('1'),
+      groupTag: 'group1',
+      closeWhenOpened: true,
+    ),
+  ),
+  child: TSwipeCell(
+    cell: TCell(title: '标题'),
+    enabled: true,
+    onChanged: (direction, open) { ... },
+    right: TSwipeCellPanel(...),
+  ),
+);
+```
+
 ### 2. `disabled` → `enabled`
 
 `disabled: true` 等同于 `enabled: false`。默认值从 `disabled: false` 变为 `enabled: true`。
+
+### 3. 优先级规则
+
+构造器参数 > `Theme.of(context).extension<TSwipeCellThemeData>()` > 内置默认值
 
 ## 保留的实例参数
 
@@ -69,9 +75,9 @@ TSwipeCell(
 | 文件 | 变更 |
 |------|------|
 | `lib/src/components/swipe_cell/t_swipe_cell_theme_data.dart` | 新增 |
-| `lib/src/components/swipe_cell/t_swipe_cell.dart` | L4 参数迁入 Theme，`onChange`→`onChanged`，`disabled`→`enabled` |
+| `lib/src/components/swipe_cell/t_swipe_cell.dart` | L4 参数迁入 Theme；移除 `themeData`；P1 读取；`onChange`→`onChanged`，`disabled`→`enabled` |
 | `lib/tdesign_flutter.dart` | 新增 theme_data export |
-| `example/lib/page/t_swipe_cell_page.dart` | 全部改为新 API |
+| `example/lib/page/t_swipe_cell_page.dart` | 全部改为 `mergeExtension` 模式 |
 | `example/assets/api/swipe-cell_api.md` | API 文档同步 |
 
 ## 验证命令
@@ -79,5 +85,5 @@ TSwipeCell(
 ```bash
 cd tdesign-component
 flutter analyze lib/src/components/swipe_cell
-flutter build web --release --no-web-resources-cdn
+flutter test test/components/swipe_cell/
 ```

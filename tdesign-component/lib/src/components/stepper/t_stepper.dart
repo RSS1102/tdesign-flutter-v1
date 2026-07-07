@@ -100,6 +100,9 @@ class TStepper extends StatefulWidget {
 }
 
 class _TStepperState extends State<TStepper> {
+  /// B/C 类禁用约定：onChanged 为 null 时禁用全部操作
+  bool get _isDisabled => widget.onChanged == null;
+
   late TStepperController _controller;
   late TextEditingController _textController;
   final FocusNode _focusNode = FocusNode();
@@ -315,11 +318,11 @@ class _TStepperState extends State<TStepper> {
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: TextField(
                       controller: _textController,
-                      enabled: !widget.disabled && !widget.disableInput,
+                      enabled: !_isDisabled && !widget.disableInput,
                       focusNode: _focusNode,
                       style: TextStyle(
                           fontSize: _getFontSize(),
-                          color: widget.disabled
+                          color: _isDisabled
                               ? context.tTheme.textDisabledColor
                               : context.tTheme.textColorPrimary),
                       textAlign: TextAlign.center,

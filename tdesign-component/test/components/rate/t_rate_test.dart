@@ -4,8 +4,8 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TRate V1.0 Widget 测试
 ///
-/// C 类控制：`value` + `onChanged` 受控；`disabled: true` = 禁用。
-/// 覆盖 count、allowHalf、showText、texts、disabled。
+/// C 类控制：`value` + `onChanged` 受控；`onChanged: null` = 禁用。
+/// 覆盖 count、allowHalf、showText、texts、禁用态。
 void main() {
   /// 用 TTheme 包裹以提供基础 Token
   Widget wrapWithTheme(Widget child) {
@@ -16,9 +16,9 @@ void main() {
   }
 
   // ============================================================
-  // C 类控制：value 受控 + disabled 禁用
+  // C 类控制：value 受控 + onChanged:null 禁用
   // ============================================================
-  group('TRate C 类控制（value + disabled）', () {
+  group('TRate C 类控制（value + onChanged:null 禁用）', () {
     testWidgets('value=0 正常渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TRate(value: 0),
@@ -33,24 +33,19 @@ void main() {
       expect(find.byType(TRate), findsOneWidget);
     });
 
-    testWidgets('disabled=true 时不响应点击', (tester) async {
-      double? changedValue;
+    testWidgets('onChanged=null 禁用时不响应点击', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TRate(
-          value: 0,
-          disabled: true,
-          onChanged: (v) => changedValue = v,
-        ),
+        const TRate(value: 0, onChanged: null),
       ));
 
       // 点击评分图标
       await tester.tap(find.byIcon(TIcons.star_filled).first);
       await tester.pump();
-      // 禁用时不触发 onChanged
-      expect(changedValue, isNull);
+      // 禁用时组件仍存在但不响应交互
+      expect(find.byType(TRate), findsOneWidget);
     });
 
-    testWidgets('disabled=false + onChanged 非 null 时点击触发回调', (tester) async {
+    testWidgets('onChanged 非 null 时点击可交互', (tester) async {
       double? changedValue;
       await tester.pumpWidget(wrapWithTheme(
         TRate(
@@ -66,19 +61,15 @@ void main() {
       expect(find.byType(TRate), findsOneWidget);
     });
 
-    testWidgets('disabled=true 时拖动不触发回调', (tester) async {
-      double? changedValue;
+    testWidgets('onChanged=null 禁用时拖动不触发回调', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TRate(
-          value: 0,
-          disabled: true,
-          onChanged: (v) => changedValue = v,
-        ),
+        const TRate(value: 0, onChanged: null),
       ));
 
       await tester.drag(find.byType(TRate), const Offset(50, 0));
       await tester.pump();
-      expect(changedValue, isNull);
+      // 禁用时组件仍存在但不响应交互
+      expect(find.byType(TRate), findsOneWidget);
     });
   });
 

@@ -171,3 +171,17 @@ cd tdesign-component
 flutter analyze lib/src/components/slider
 flutter build web --release --no-web-resources-cdn
 ```
+
+## 后续修复（2026-07-06）
+
+### Thumb/Scale 文字颜色跟肤修复
+
+`TSliderThemeData` 的 `thumbTextStyle`/`disabledThumbTextStyle`/`scaleTextStyle`/`disabledScaleTextStyle` 颜色延迟解析未实现——8 个 Shape 的 paint 方法直接使用 `themeData.thumbTextStyle`（默认 null），TextSpan(style: null) 渲染为黑色。
+
+**修复**：在 `TSliderThemeData` 中新增 `_token` 字段（由 `sliderThemeData(token)` 方法设置）+ 4 个 `effective*` getter：
+- `effectiveThumbTextStyle` = `TextStyle(color: token.textColorPrimary).merge(thumbTextStyle)`
+- `effectiveDisabledThumbTextStyle` = `TextStyle(color: token.textDisabledColor).merge(disabledThumbTextStyle)`
+- `effectiveScaleTextStyle` = `TextStyle(color: token.textColorSecondary).merge(scaleTextStyle)`
+- `effectiveDisabledScaleTextStyle` = `TextStyle(color: token.textDisabledColor).merge(disabledScaleTextStyle)`
+
+8 个 paint 方法的 `themeData.thumbTextStyle` → `themeData.effectiveThumbTextStyle` 等。

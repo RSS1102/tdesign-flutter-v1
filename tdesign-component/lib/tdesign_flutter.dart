@@ -176,7 +176,8 @@ export 'src/components/text/t_text_theme_data.dart' show TTextThemeData;
 export 'src/components/textarea/t_textarea.dart';
 export 'src/components/time_counter/t_time_counter.dart';
 export 'src/components/time_counter/t_time_counter_controller.dart';
-export 'src/components/time_counter/t_time_counter_style.dart';
+export 'src/components/time_counter/t_time_counter_style.dart'
+    show TTimeCounterDirection, TTimeCounterSize, TTimeCounterTheme;
 export 'src/components/time_counter/t_time_counter_theme_data.dart'
     show TTimeCounterThemeData;
 export 'src/components/toast/t_toast.dart';

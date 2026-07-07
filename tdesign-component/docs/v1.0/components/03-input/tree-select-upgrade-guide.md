@@ -51,3 +51,9 @@ TTreeSelect(
 | `lib/src/components/tree/t_tree_select_theme_data.dart` | 新增（TTreeSelectThemeData） |
 | `lib/src/components/tree/t_tree_select.dart` | 参数重命名 + State 引用同步 + L4 迁入 Theme |
 | `lib/tdesign_flutter.dart` | 新增 export |
+
+## 后续修复（2026-07-06）
+
+### P1 ThemeExtension 读取补全 + 构造器字段改可空
+
+构造器 `style`/`height`/`outwardCornerRadius` 改为可空（原非空带默认值），build 方法添加 `Theme.of(context).extension<TTreeSelectThemeData>()` 读取，支持 `widget.field ?? theme?.field ?? hardDefault` 三级回退。
