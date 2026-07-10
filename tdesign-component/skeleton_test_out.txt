@@ -1,0 +1,94 @@
+﻿
+00:00 +0: loading E:/tdesign-flutter-v1/tdesign-component/test/components/skeleton/t_skeleton_test.dart                                                                                                
+00:01 +0: loading E:/tdesign-flutter-v1/tdesign-component/test/components/skeleton/t_skeleton_test.dart                                                                                                
+00:01 +0 -1: loading E:/tdesign-flutter-v1/tdesign-component/test/components/skeleton/t_skeleton_test.dart [E]                                                                                         
+  Failed to load "E:/tdesign-flutter-v1/tdesign-component/test/components/skeleton/t_skeleton_test.dart":
+  Compilation failed for testPath=E:/tdesign-flutter-v1/tdesign-component/test/components/skeleton/t_skeleton_test.dart: test/components/skeleton/t_skeleton_test.dart:27:51: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+        await tester.pumpWidget(wrapWithTheme(const TSkeleton()));
+                                                    ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:34:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(variant: TSkeletonVariant.avatar),
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:42:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(variant: TSkeletonVariant.image),
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:50:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(variant: TSkeletonVariant.text),
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:58:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(variant: TSkeletonVariant.paragraph),
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:78:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:91:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:104:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(variant: TSkeletonVariant.text),
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:128:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(delay: 0),
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:136:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(delay: 500),
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:147:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(delay: 100),
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:159:19: Error: Cannot invoke a non-'const' constructor where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+            rowCol: TSkeletonRowCol(objects: [
+                    ^^^^^^^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:171:19: Error: Cannot invoke a non-'const' constructor where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+            rowCol: TSkeletonRowCol(objects: [
+                    ^^^^^^^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:188:19: Error: Cannot invoke a non-'const' constructor where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+            rowCol: TSkeletonRowCol(objects: [
+                    ^^^^^^^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:203:19: Error: Cannot invoke a non-'const' constructor where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+            rowCol: TSkeletonRowCol(objects: [
+                    ^^^^^^^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:215:19: Error: Cannot invoke a non-'const' constructor where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+            rowCol: TSkeletonRowCol(objects: [
+                    ^^^^^^^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:227:19: Error: Cannot invoke a non-'const' constructor where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+            rowCol: TSkeletonRowCol(objects: [
+                    ^^^^^^^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:244:19: Error: Cannot invoke a non-'const' constructor where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+            rowCol: TSkeletonRowCol(objects: [
+                    ^^^^^^^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:287:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(delay: 0, variant: TSkeletonVariant.avatar),
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:295:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(variant: TSkeletonVariant.paragraph),
+                ^^^^^^^^^
+  test/components/skeleton/t_skeleton_test.dart:304:15: Error: Cannot invoke a non-'const' factory where a const expression is expected.
+  Try using a constructor or factory that is 'const'.
+          const TSkeleton(variant: TSkeletonVariant.text),
+                ^^^^^^^^^
+  .
+
+To run this test again: C:\tools\flutter\bin\cache\dart-sdk\bin\dart.exe test E:/tdesign-flutter-v1/tdesign-component/test/components/skeleton/t_skeleton_test.dart -p vm --plain-name "loading E:/tdesign-flutter-v1/tdesign-component/test/components/skeleton/t_skeleton_test.dart"
+
+00:01 +0 -1: Some tests failed.                                                                                                                                                                        

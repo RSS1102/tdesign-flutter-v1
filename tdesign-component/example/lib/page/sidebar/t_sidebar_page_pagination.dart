@@ -70,7 +70,7 @@ class TSideBarPaginationPageState extends State<TSideBarPaginationPage> {
       children: [
         SizedBox(
           child: TSideBar(
-            style: TSideBarStyle.normal,
+            style: TSideBarVariant.normal,
             value: currentValue,
             controller: _sideBarController,
             children: list

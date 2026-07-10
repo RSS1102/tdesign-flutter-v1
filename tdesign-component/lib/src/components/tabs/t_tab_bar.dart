@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import 't_horizontal_tab_bar.dart';
-import 't_tab_bar_theme_data.dart';
 
 /// 标签栏
 ///
@@ -161,8 +160,7 @@ class _TTabBarState extends State<TTabBar> {
                               width: widget.dividerHeight)))),
       child: THorizontalTabBar(
         physics: widget.physics ?? _themeData.physics,
-        isScrollable:
-            widget.isScrollable ?? _themeData.isScrollable ?? false,
+        isScrollable: widget.isScrollable,
         indicator: widget.indicator ?? _getIndicator(),
         indicatorColor: widget.indicatorColor ?? _themeData.indicatorColor,
         unselectedLabelColor:

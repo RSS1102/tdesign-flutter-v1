@@ -102,21 +102,21 @@ class TCheckboxPageState extends State<TCheckboxPage> {
         TCheckbox(
           id: '0',
           title: '多选标题',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
         TCheckbox(
           id: '1',
           title: '多选标题',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
         TCheckbox(
           id: '2',
           title: '上限四字',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
@@ -134,28 +134,28 @@ class TCheckboxPageState extends State<TCheckboxPage> {
         TCheckbox(
           id: '0',
           title: '多选标题0',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
         TCheckbox(
           id: '1',
           title: '多选标题1',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
         TCheckbox(
           id: '2',
           title: '多选标题2',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
         TCheckbox(
           id: '3',
           title: '多选标题3',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
@@ -237,13 +237,13 @@ class TCheckboxPageState extends State<TCheckboxPage> {
           TCheckbox(
             id: '0',
             title: '选项禁用-已选',
-            style: TCheckboxStyle.circle,
+            style: TCheckboxVariant.circle,
             enabled: false,
           ),
           TCheckbox(
             id: '1',
             title: '选项禁用-默认',
-            style: TCheckboxStyle.circle,
+            style: TCheckboxVariant.circle,
             enabled: false,
           ),
         ],
@@ -256,7 +256,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
     return Column(
       children: [
         TCheckboxGroupContainer(
-          style: TCheckboxStyle.check,
+          style: TCheckboxVariant.check,
           selectIds: const ['index:0'],
           child: const TCheckbox(
             id: 'index:0',
@@ -266,7 +266,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
         const SizedBox(
         ),
         TCheckboxGroupContainer(
-          style: TCheckboxStyle.square,
+          style: TCheckboxVariant.square,
           selectIds: const ['index:0'],
           child: const TCheckbox(
             id: 'index:0',
@@ -429,7 +429,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
             disableColor: context.tTheme.errorColor1,
             id: '0',
             title: '选项禁用-已选',
-            style: TCheckboxStyle.circle,
+            style: TCheckboxVariant.circle,
             enabled: false,
           ),
           TCheckbox(
@@ -437,7 +437,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
             disableColor: context.tTheme.errorColor1,
             id: '1',
             title: '选项禁用-默认',
-            style: TCheckboxStyle.circle,
+            style: TCheckboxVariant.circle,
           ),
           TCheckbox(
             selectColor: context.tTheme.errorColor3,
@@ -476,7 +476,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
             id: '0',
             title: '选项禁用-已选',
             subTitle: '描述文本',
-            style: TCheckboxStyle.circle,
+            style: TCheckboxVariant.circle,
             enabled: false,
             titleFont: context.tTheme.fontBodySmall,
             subTitleFont: context.tTheme.fontBodyExtraSmall,
@@ -485,7 +485,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
             id: '1',
             title: '选项禁用-默认',
             subTitle: '描述文本',
-            style: TCheckboxStyle.circle,
+            style: TCheckboxVariant.circle,
             titleFont: context.tTheme.fontBodySmall,
             subTitleFont: context.tTheme.fontBodyExtraSmall,
           ),

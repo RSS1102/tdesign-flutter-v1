@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter, TextInputFormatter;
@@ -155,8 +155,6 @@ class _TStepperState extends State<TStepper> {
         return 38;
       case TStepperSize.large:
         return 45;
-      default:
-        return 38;
     }
   }
 
@@ -173,8 +171,6 @@ class _TStepperState extends State<TStepper> {
         return 24;
       case TStepperSize.large:
         return 28;
-      default:
-        return 24;
     }
   }
 
@@ -187,7 +183,6 @@ class _TStepperState extends State<TStepper> {
       case TStepperColorScheme.outline:
         return null;
       case TStepperColorScheme.normal:
-      default:
         return null;
     }
   }
@@ -200,8 +195,6 @@ class _TStepperState extends State<TStepper> {
         return 12;
       case TStepperSize.large:
         return 16;
-      default:
-        return 12;
     }
   }
 
@@ -451,8 +444,6 @@ class TStepperIconButton extends StatelessWidget {
         return 16;
       case TStepperSize.small:
         return 12;
-      default:
-        return 16;
     }
   }
 
@@ -475,7 +466,6 @@ class TStepperIconButton extends StatelessWidget {
       case TStepperColorScheme.outline:
         return disabled ? context.tTheme.bgColorComponentDisabled : null;
       case TStepperColorScheme.normal:
-      default:
         return null;
     }
   }

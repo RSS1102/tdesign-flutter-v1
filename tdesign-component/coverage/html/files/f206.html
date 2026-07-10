@@ -1,0 +1,1662 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/tabs/t_horizontal_tab_bar.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/tabs/t_horizontal_tab_bar.dart</h1></header><div class='meta'>行覆盖 <b>56.0%</b> (353/630) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>// Copyright 2014 The Flutter Authors. All rights reserved.</div>
+<div class='row nod'><span class='ln'>2</span>// Use of this source code is governed by a BSD-style license that can be</div>
+<div class='row nod'><span class='ln'>3</span>// found in the LICENSE file.</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;dart:math&#x27; as math;</div>
+<div class='row nod'><span class='ln'>6</span>import &#x27;dart:ui&#x27; show lerpDouble;</div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span>import &#x27;package:flutter/foundation.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>9</span>import &#x27;package:flutter/gestures.dart&#x27; show DragStartBehavior;</div>
+<div class='row nod'><span class='ln'>10</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>11</span>import &#x27;package:flutter/rendering.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>const double _kTabHeight = 46.0;</div>
+<div class='row nod'><span class='ln'>16</span>const double _kTextAndIconTabHeight = 72.0;</div>
+<div class='row nod'><span class='ln'>17</span>const double _kStartOffset = 52.0;</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>class _TabStyle extends AnimatedWidget {</div>
+<div class='row cov'><span class='ln'>20</span>  const _TabStyle({</div>
+<div class='row nod'><span class='ln'>21</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>22</span>    required Animation&lt;double&gt; animation,</div>
+<div class='row nod'><span class='ln'>23</span>    required this.selected,</div>
+<div class='row nod'><span class='ln'>24</span>    required this.labelColor,</div>
+<div class='row nod'><span class='ln'>25</span>    required this.unselectedLabelColor,</div>
+<div class='row nod'><span class='ln'>26</span>    required this.labelStyle,</div>
+<div class='row nod'><span class='ln'>27</span>    required this.unselectedLabelStyle,</div>
+<div class='row nod'><span class='ln'>28</span>    required this.child,</div>
+<div class='row cov'><span class='ln'>29</span>  }) : super(key: key, listenable: animation);</div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row nod'><span class='ln'>31</span>  final TextStyle? labelStyle;</div>
+<div class='row nod'><span class='ln'>32</span>  final TextStyle? unselectedLabelStyle;</div>
+<div class='row nod'><span class='ln'>33</span>  final bool selected;</div>
+<div class='row nod'><span class='ln'>34</span>  final Color? labelColor;</div>
+<div class='row nod'><span class='ln'>35</span>  final Color? unselectedLabelColor;</div>
+<div class='row nod'><span class='ln'>36</span>  final Widget child;</div>
+<div class='row nod'><span class='ln'>37</span></div>
+<div class='row cov'><span class='ln'>38</span>  @override</div>
+<div class='row nod'><span class='ln'>39</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>40</span>    final tabBarTheme = TabBarTheme.of(context);</div>
+<div class='row cov'><span class='ln'>41</span>    final animation = listenable as Animation&lt;double&gt;;</div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row nod'><span class='ln'>43</span>    // To enable TextStyle.lerp(style1, style2, value), both styles must have</div>
+<div class='row nod'><span class='ln'>44</span>    // the same value of inherit. Force that to be inherit=true here.</div>
+<div class='row cov'><span class='ln'>45</span>    final defaultStyle = (labelStyle ??</div>
+<div class='row unc'><span class='ln'>46</span>▶             tabBarTheme.labelStyle ??</div>
+<div class='row unc'><span class='ln'>47</span>▶             TextStyle(</div>
+<div class='row unc'><span class='ln'>48</span>▶                 height: context.tTheme.fontBodyMedium?.height ?? 1.57,</div>
+<div class='row unc'><span class='ln'>49</span>▶                 fontSize: context.tTheme.fontBodyMedium?.size ?? 14))</div>
+<div class='row cov'><span class='ln'>50</span>        .copyWith(inherit: true);</div>
+<div class='row cov'><span class='ln'>51</span>    final defaultUnselectedStyle = (unselectedLabelStyle ??</div>
+<div class='row unc'><span class='ln'>52</span>▶             tabBarTheme.unselectedLabelStyle ??</div>
+<div class='row unc'><span class='ln'>53</span>▶             labelStyle ??</div>
+<div class='row unc'><span class='ln'>54</span>▶             TextStyle(</div>
+<div class='row unc'><span class='ln'>55</span>▶                 height: context.tTheme.fontBodyMedium?.height ?? 1.57,</div>
+<div class='row unc'><span class='ln'>56</span>▶                 fontSize: context.tTheme.fontBodyMedium?.size ?? 14))</div>
+<div class='row cov'><span class='ln'>57</span>        .copyWith(inherit: true);</div>
+<div class='row cov'><span class='ln'>58</span>    final textStyle = selected</div>
+<div class='row cov'><span class='ln'>59</span>        ? TextStyle.lerp(defaultStyle, defaultUnselectedStyle, animation.value)!</div>
+<div class='row cov'><span class='ln'>60</span>        : TextStyle.lerp(</div>
+<div class='row cov'><span class='ln'>61</span>            defaultUnselectedStyle, defaultStyle, animation.value)!;</div>
+<div class='row nod'><span class='ln'>62</span></div>
+<div class='row cov'><span class='ln'>63</span>    final selectedColor = labelColor ??</div>
+<div class='row unc'><span class='ln'>64</span>▶         tabBarTheme.labelColor ??</div>
+<div class='row unc'><span class='ln'>65</span>▶         labelStyle?.color ??</div>
+<div class='row unc'><span class='ln'>66</span>▶         context.tTheme.brandNormalColor;</div>
+<div class='row cov'><span class='ln'>67</span>    final unselectedColor = unselectedLabelColor ??</div>
+<div class='row cov'><span class='ln'>68</span>        tabBarTheme.unselectedLabelColor ??</div>
+<div class='row cov'><span class='ln'>69</span>        unselectedLabelStyle?.color ??</div>
+<div class='row cov'><span class='ln'>70</span>        context.tTheme.textColorPrimary;</div>
+<div class='row nod'><span class='ln'>71</span></div>
+<div class='row cov'><span class='ln'>72</span>    final color = selected</div>
+<div class='row cov'><span class='ln'>73</span>        ? Color.lerp(selectedColor, unselectedColor, animation.value)!</div>
+<div class='row cov'><span class='ln'>74</span>        : Color.lerp(unselectedColor, selectedColor, animation.value)!;</div>
+<div class='row nod'><span class='ln'>75</span></div>
+<div class='row cov'><span class='ln'>76</span>    return DefaultTextStyle(</div>
+<div class='row cov'><span class='ln'>77</span>      style: textStyle.copyWith(color: color),</div>
+<div class='row cov'><span class='ln'>78</span>      child: IconTheme.merge(</div>
+<div class='row cov'><span class='ln'>79</span>        data: IconThemeData(</div>
+<div class='row nod'><span class='ln'>80</span>          size: 24.0,</div>
+<div class='row nod'><span class='ln'>81</span>          color: color,</div>
+<div class='row nod'><span class='ln'>82</span>        ),</div>
+<div class='row cov'><span class='ln'>83</span>        child: child,</div>
+<div class='row nod'><span class='ln'>84</span>      ),</div>
+<div class='row nod'><span class='ln'>85</span>    );</div>
+<div class='row nod'><span class='ln'>86</span>  }</div>
+<div class='row nod'><span class='ln'>87</span>}</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row nod'><span class='ln'>89</span>class THorizontalTabBar extends StatefulWidget implements PreferredSizeWidget {</div>
+<div class='row nod'><span class='ln'>90</span>  /// Creates a material design tab bar.</div>
+<div class='row nod'><span class='ln'>91</span>  ///</div>
+<div class='row nod'><span class='ln'>92</span>  /// The [tabs] argument must not be null and its length must match the [controller]&#x27;s</div>
+<div class='row nod'><span class='ln'>93</span>  /// [TabController.length].</div>
+<div class='row nod'><span class='ln'>94</span>  ///</div>
+<div class='row nod'><span class='ln'>95</span>  /// If a [TabController] is not provided, then there must be a</div>
+<div class='row nod'><span class='ln'>96</span>  /// [DefaultTabController] ancestor.</div>
+<div class='row nod'><span class='ln'>97</span>  ///</div>
+<div class='row nod'><span class='ln'>98</span>  /// The [indicatorWeight] parameter defaults to 2, and must not be null.</div>
+<div class='row nod'><span class='ln'>99</span>  ///</div>
+<div class='row nod'><span class='ln'>100</span>  /// The [indicatorPadding] parameter defaults to [EdgeInsets.zero], and must not be null.</div>
+<div class='row nod'><span class='ln'>101</span>  ///</div>
+<div class='row nod'><span class='ln'>102</span>  /// If [indicator] is not null or provided from [TabBarTheme],</div>
+<div class='row nod'><span class='ln'>103</span>  /// then [indicatorWeight], [indicatorPadding], and [indicatorColor] are ignored.</div>
+<div class='row cov'><span class='ln'>104</span>  const THorizontalTabBar({</div>
+<div class='row nod'><span class='ln'>105</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>106</span>    required this.tabs,</div>
+<div class='row nod'><span class='ln'>107</span>    this.controller,</div>
+<div class='row nod'><span class='ln'>108</span>    this.isScrollable = false,</div>
+<div class='row nod'><span class='ln'>109</span>    this.padding,</div>
+<div class='row nod'><span class='ln'>110</span>    this.indicatorColor,</div>
+<div class='row nod'><span class='ln'>111</span>    this.automaticIndicatorColorAdjustment = true,</div>
+<div class='row nod'><span class='ln'>112</span>    this.indicatorWeight = 2.0,</div>
+<div class='row nod'><span class='ln'>113</span>    this.indicatorPadding = EdgeInsets.zero,</div>
+<div class='row nod'><span class='ln'>114</span>    this.indicator,</div>
+<div class='row nod'><span class='ln'>115</span>    this.indicatorSize,</div>
+<div class='row nod'><span class='ln'>116</span>    this.labelColor,</div>
+<div class='row nod'><span class='ln'>117</span>    this.labelStyle,</div>
+<div class='row nod'><span class='ln'>118</span>    this.labelPadding,</div>
+<div class='row nod'><span class='ln'>119</span>    this.unselectedLabelColor,</div>
+<div class='row nod'><span class='ln'>120</span>    this.unselectedLabelStyle,</div>
+<div class='row nod'><span class='ln'>121</span>    this.dragStartBehavior = DragStartBehavior.start,</div>
+<div class='row nod'><span class='ln'>122</span>    this.overlayColor,</div>
+<div class='row nod'><span class='ln'>123</span>    this.mouseCursor,</div>
+<div class='row nod'><span class='ln'>124</span>    this.enableFeedback,</div>
+<div class='row nod'><span class='ln'>125</span>    this.onTap,</div>
+<div class='row nod'><span class='ln'>126</span>    this.physics,</div>
+<div class='row nod'><span class='ln'>127</span>    this.outlineType,</div>
+<div class='row nod'><span class='ln'>128</span>    this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>129</span>    this.selectedBgColor,</div>
+<div class='row nod'><span class='ln'>130</span>    this.unSelectedBgColor,</div>
+<div class='row nod'><span class='ln'>131</span>    this.tabAlignment,</div>
+<div class='row cov'><span class='ln'>132</span>  })  : assert(indicator != null || (indicatorWeight &gt; 0.0)),</div>
+<div class='row cov'><span class='ln'>133</span>        super(key: key);</div>
+<div class='row nod'><span class='ln'>134</span></div>
+<div class='row nod'><span class='ln'>135</span>  /// Typically a list of two or more [Tab] widgets.</div>
+<div class='row nod'><span class='ln'>136</span>  ///</div>
+<div class='row nod'><span class='ln'>137</span>  /// The length of this list must match the [controller]&#x27;s [TabController.length]</div>
+<div class='row nod'><span class='ln'>138</span>  /// and the length of the [THorizontalTabBarView.children] list.</div>
+<div class='row nod'><span class='ln'>139</span>  final List&lt;TTab&gt; tabs;</div>
+<div class='row nod'><span class='ln'>140</span></div>
+<div class='row nod'><span class='ln'>141</span>  /// This widget&#x27;s selection and animation state.</div>
+<div class='row nod'><span class='ln'>142</span>  ///</div>
+<div class='row nod'><span class='ln'>143</span>  /// If [TabController] is not provided, then the value of [DefaultTabController.of]</div>
+<div class='row nod'><span class='ln'>144</span>  /// will be used.</div>
+<div class='row nod'><span class='ln'>145</span>  final TabController? controller;</div>
+<div class='row nod'><span class='ln'>146</span></div>
+<div class='row nod'><span class='ln'>147</span>  /// Whether this tab bar can be scrolled horizontally.</div>
+<div class='row nod'><span class='ln'>148</span>  ///</div>
+<div class='row nod'><span class='ln'>149</span>  /// If [isScrollable] is true, then each tab is as wide as needed for its label</div>
+<div class='row nod'><span class='ln'>150</span>  /// and the entire [THorizontalTabBar] is scrollable. Otherwise each tab gets an equal</div>
+<div class='row nod'><span class='ln'>151</span>  /// share of the available space.</div>
+<div class='row nod'><span class='ln'>152</span>  final bool isScrollable;</div>
+<div class='row nod'><span class='ln'>153</span></div>
+<div class='row nod'><span class='ln'>154</span>  /// The amount of space by which to inset the tab bar.</div>
+<div class='row nod'><span class='ln'>155</span>  ///</div>
+<div class='row nod'><span class='ln'>156</span>  /// When [isScrollable] is false, this will yield the same result as if you had wrapped your</div>
+<div class='row nod'><span class='ln'>157</span>  /// [THorizontalTabBar] in a [Padding] widget. When [isScrollable] is true, the scrollable itself is inset,</div>
+<div class='row nod'><span class='ln'>158</span>  /// allowing the padding to scroll with the tab bar, rather than enclosing it.</div>
+<div class='row nod'><span class='ln'>159</span>  final EdgeInsetsGeometry? padding;</div>
+<div class='row nod'><span class='ln'>160</span></div>
+<div class='row nod'><span class='ln'>161</span>  /// The color of the line that appears below the selected tab.</div>
+<div class='row nod'><span class='ln'>162</span>  ///</div>
+<div class='row nod'><span class='ln'>163</span>  /// If this parameter is null, then the value of the Theme&#x27;s indicatorColor</div>
+<div class='row nod'><span class='ln'>164</span>  /// property is used.</div>
+<div class='row nod'><span class='ln'>165</span>  ///</div>
+<div class='row nod'><span class='ln'>166</span>  /// If [indicator] is specified or provided from [TabBarTheme],</div>
+<div class='row nod'><span class='ln'>167</span>  /// this property is ignored.</div>
+<div class='row nod'><span class='ln'>168</span>  final Color? indicatorColor;</div>
+<div class='row nod'><span class='ln'>169</span></div>
+<div class='row nod'><span class='ln'>170</span>  /// The thickness of the line that appears below the selected tab.</div>
+<div class='row nod'><span class='ln'>171</span>  ///</div>
+<div class='row nod'><span class='ln'>172</span>  /// The value of this parameter must be greater than zero and its default</div>
+<div class='row nod'><span class='ln'>173</span>  /// value is 2.0.</div>
+<div class='row nod'><span class='ln'>174</span>  ///</div>
+<div class='row nod'><span class='ln'>175</span>  /// If [indicator] is specified or provided from [TabBarTheme],</div>
+<div class='row nod'><span class='ln'>176</span>  /// this property is ignored.</div>
+<div class='row nod'><span class='ln'>177</span>  final double indicatorWeight;</div>
+<div class='row nod'><span class='ln'>178</span></div>
+<div class='row nod'><span class='ln'>179</span>  /// Padding for indicator.</div>
+<div class='row nod'><span class='ln'>180</span>  /// This property will now no longer be ignored even if indicator is declared</div>
+<div class='row nod'><span class='ln'>181</span>  /// or provided by [TabBarTheme]</div>
+<div class='row nod'><span class='ln'>182</span>  ///</div>
+<div class='row nod'><span class='ln'>183</span>  /// For [isScrollable] tab bars, specifying [kTabLabelPadding] will align</div>
+<div class='row nod'><span class='ln'>184</span>  /// the indicator with the tab&#x27;s text for [Tab] widgets and all but the</div>
+<div class='row nod'><span class='ln'>185</span>  /// shortest [Tab.text] values.</div>
+<div class='row nod'><span class='ln'>186</span>  ///</div>
+<div class='row nod'><span class='ln'>187</span>  /// The default value of [indicatorPadding] is [EdgeInsets.zero].</div>
+<div class='row nod'><span class='ln'>188</span>  final EdgeInsetsGeometry indicatorPadding;</div>
+<div class='row nod'><span class='ln'>189</span></div>
+<div class='row nod'><span class='ln'>190</span>  /// Defines the appearance of the selected tab indicator.</div>
+<div class='row nod'><span class='ln'>191</span>  ///</div>
+<div class='row nod'><span class='ln'>192</span>  /// If [indicator] is specified or provided from [TabBarTheme],</div>
+<div class='row nod'><span class='ln'>193</span>  /// the [indicatorColor], and [indicatorWeight] properties are ignored.</div>
+<div class='row nod'><span class='ln'>194</span>  ///</div>
+<div class='row nod'><span class='ln'>195</span>  /// The default, underline-style, selected tab indicator can be defined with</div>
+<div class='row nod'><span class='ln'>196</span>  /// [UnderlineTabIndicator].</div>
+<div class='row nod'><span class='ln'>197</span>  ///</div>
+<div class='row nod'><span class='ln'>198</span>  /// The indicator&#x27;s size is based on the tab&#x27;s bounds. If [indicatorSize]</div>
+<div class='row nod'><span class='ln'>199</span>  /// is [TabBarIndicatorSize.tab] the tab&#x27;s bounds are as wide as the space</div>
+<div class='row nod'><span class='ln'>200</span>  /// occupied by the tab in the tab bar. If [indicatorSize] is</div>
+<div class='row nod'><span class='ln'>201</span>  /// [TabBarIndicatorSize.label], then the tab&#x27;s bounds are only as wide as</div>
+<div class='row nod'><span class='ln'>202</span>  /// the tab widget itself.</div>
+<div class='row nod'><span class='ln'>203</span>  final Decoration? indicator;</div>
+<div class='row nod'><span class='ln'>204</span></div>
+<div class='row nod'><span class='ln'>205</span>  /// Whether this tab bar should automatically adjust the [indicatorColor].</div>
+<div class='row nod'><span class='ln'>206</span>  ///</div>
+<div class='row nod'><span class='ln'>207</span>  /// If [automaticIndicatorColorAdjustment] is true,</div>
+<div class='row nod'><span class='ln'>208</span>  /// then the [indicatorColor] will be automatically adjusted to [Colors.white]</div>
+<div class='row nod'><span class='ln'>209</span>  /// when the [indicatorColor] is same as [Material.color] of the [Material] parent widget.</div>
+<div class='row nod'><span class='ln'>210</span>  final bool automaticIndicatorColorAdjustment;</div>
+<div class='row nod'><span class='ln'>211</span></div>
+<div class='row nod'><span class='ln'>212</span>  /// Defines how the selected tab indicator&#x27;s size is computed.</div>
+<div class='row nod'><span class='ln'>213</span>  ///</div>
+<div class='row nod'><span class='ln'>214</span>  /// The size of the selected tab indicator is defined relative to the</div>
+<div class='row nod'><span class='ln'>215</span>  /// tab&#x27;s overall bounds if [indicatorSize] is [TabBarIndicatorSize.tab]</div>
+<div class='row nod'><span class='ln'>216</span>  /// (the default) or relative to the bounds of the tab&#x27;s widget if</div>
+<div class='row nod'><span class='ln'>217</span>  /// [indicatorSize] is [TabBarIndicatorSize.label].</div>
+<div class='row nod'><span class='ln'>218</span>  ///</div>
+<div class='row nod'><span class='ln'>219</span>  /// The selected tab&#x27;s location appearance can be refined further with</div>
+<div class='row nod'><span class='ln'>220</span>  /// the [indicatorColor], [indicatorWeight], [indicatorPadding], and</div>
+<div class='row nod'><span class='ln'>221</span>  /// [indicator] properties.</div>
+<div class='row nod'><span class='ln'>222</span>  final TabBarIndicatorSize? indicatorSize;</div>
+<div class='row nod'><span class='ln'>223</span></div>
+<div class='row nod'><span class='ln'>224</span>  /// The color of selected tab labels.</div>
+<div class='row nod'><span class='ln'>225</span>  ///</div>
+<div class='row nod'><span class='ln'>226</span>  /// Unselected tab labels are rendered with the same color rendered at 70%</div>
+<div class='row nod'><span class='ln'>227</span>  /// opacity unless [unselectedLabelColor] is non-null.</div>
+<div class='row nod'><span class='ln'>228</span>  ///</div>
+<div class='row nod'><span class='ln'>229</span>  /// If this parameter is null, then the color of the [ThemeData.primaryTextTheme]&#x27;s</div>
+<div class='row nod'><span class='ln'>230</span>  /// bodyText1 text color is used.</div>
+<div class='row nod'><span class='ln'>231</span>  final Color? labelColor;</div>
+<div class='row nod'><span class='ln'>232</span></div>
+<div class='row nod'><span class='ln'>233</span>  /// The color of unselected tab labels.</div>
+<div class='row nod'><span class='ln'>234</span>  ///</div>
+<div class='row nod'><span class='ln'>235</span>  /// If this property is null, unselected tab labels are rendered with the</div>
+<div class='row nod'><span class='ln'>236</span>  /// [labelColor] with 70% opacity.</div>
+<div class='row nod'><span class='ln'>237</span>  final Color? unselectedLabelColor;</div>
+<div class='row nod'><span class='ln'>238</span></div>
+<div class='row nod'><span class='ln'>239</span>  /// The text style of the selected tab labels.</div>
+<div class='row nod'><span class='ln'>240</span>  ///</div>
+<div class='row nod'><span class='ln'>241</span>  /// If [unselectedLabelStyle] is null, then this text style will be used for</div>
+<div class='row nod'><span class='ln'>242</span>  /// both selected and unselected label styles.</div>
+<div class='row nod'><span class='ln'>243</span>  ///</div>
+<div class='row nod'><span class='ln'>244</span>  /// If this property is null, then the text style of the</div>
+<div class='row nod'><span class='ln'>245</span>  /// [ThemeData.primaryTextTheme]&#x27;s bodyText1 definition is used.</div>
+<div class='row nod'><span class='ln'>246</span>  final TextStyle? labelStyle;</div>
+<div class='row nod'><span class='ln'>247</span></div>
+<div class='row nod'><span class='ln'>248</span>  /// The padding added to each of the tab labels.</div>
+<div class='row nod'><span class='ln'>249</span>  ///</div>
+<div class='row nod'><span class='ln'>250</span>  /// If there are few tabs with both icon and text and few</div>
+<div class='row nod'><span class='ln'>251</span>  /// tabs with only icon or text, this padding is vertically</div>
+<div class='row nod'><span class='ln'>252</span>  /// adjusted to provide uniform padding to all tabs.</div>
+<div class='row nod'><span class='ln'>253</span>  ///</div>
+<div class='row nod'><span class='ln'>254</span>  /// If this property is null, then kTabLabelPadding is used.</div>
+<div class='row nod'><span class='ln'>255</span>  final EdgeInsetsGeometry? labelPadding;</div>
+<div class='row nod'><span class='ln'>256</span></div>
+<div class='row nod'><span class='ln'>257</span>  /// The text style of the unselected tab labels.</div>
+<div class='row nod'><span class='ln'>258</span>  ///</div>
+<div class='row nod'><span class='ln'>259</span>  /// If this property is null, then the [labelStyle] value is used. If [labelStyle]</div>
+<div class='row nod'><span class='ln'>260</span>  /// is null, then the text style of the [ThemeData.primaryTextTheme]&#x27;s</div>
+<div class='row nod'><span class='ln'>261</span>  /// bodyText1 definition is used.</div>
+<div class='row nod'><span class='ln'>262</span>  final TextStyle? unselectedLabelStyle;</div>
+<div class='row nod'><span class='ln'>263</span></div>
+<div class='row nod'><span class='ln'>264</span>  /// Defines the ink response focus, hover, and splash colors.</div>
+<div class='row nod'><span class='ln'>265</span>  ///</div>
+<div class='row nod'><span class='ln'>266</span>  /// If non-null, it is resolved against one of [WidgetState.focused],</div>
+<div class='row nod'><span class='ln'>267</span>  /// [WidgetState.hovered], and [WidgetState.pressed].</div>
+<div class='row nod'><span class='ln'>268</span>  ///</div>
+<div class='row nod'><span class='ln'>269</span>  /// [WidgetState.pressed] triggers a ripple (an ink splash), per</div>
+<div class='row nod'><span class='ln'>270</span>  /// the current Material Design spec. The [overlayColor] doesn&#x27;t map</div>
+<div class='row nod'><span class='ln'>271</span>  /// a state to [InkResponse.highlightColor] because a separate highlight</div>
+<div class='row nod'><span class='ln'>272</span>  /// is not used by the current design guidelines. See</div>
+<div class='row nod'><span class='ln'>273</span>  /// https://material.io/design/interaction/states.html#pressed</div>
+<div class='row nod'><span class='ln'>274</span>  ///</div>
+<div class='row nod'><span class='ln'>275</span>  /// If the overlay color is null or resolves to null, then the default values</div>
+<div class='row nod'><span class='ln'>276</span>  /// for [InkResponse.focusColor], [InkResponse.hoverColor], [InkResponse.splashColor]</div>
+<div class='row nod'><span class='ln'>277</span>  /// will be used instead.</div>
+<div class='row nod'><span class='ln'>278</span>  final WidgetStateProperty&lt;Color?&gt;? overlayColor;</div>
+<div class='row nod'><span class='ln'>279</span></div>
+<div class='row nod'><span class='ln'>280</span>  /// {@macro flutter.widgets.scrollable.dragStartBehavior}</div>
+<div class='row nod'><span class='ln'>281</span>  final DragStartBehavior dragStartBehavior;</div>
+<div class='row nod'><span class='ln'>282</span></div>
+<div class='row nod'><span class='ln'>283</span>  /// The cursor for a mouse pointer when it enters or is hovering over the</div>
+<div class='row nod'><span class='ln'>284</span>  /// individual tab widgets.</div>
+<div class='row nod'><span class='ln'>285</span>  ///</div>
+<div class='row nod'><span class='ln'>286</span>  /// If this property is null, [SystemMouseCursors.click] will be used.</div>
+<div class='row nod'><span class='ln'>287</span>  final MouseCursor? mouseCursor;</div>
+<div class='row nod'><span class='ln'>288</span></div>
+<div class='row nod'><span class='ln'>289</span>  /// Whether detected gestures should provide acoustic and/or haptic feedback.</div>
+<div class='row nod'><span class='ln'>290</span>  ///</div>
+<div class='row nod'><span class='ln'>291</span>  /// For example, on Android a tap will produce a clicking sound and a long-press</div>
+<div class='row nod'><span class='ln'>292</span>  /// will produce a short vibration, when feedback is enabled.</div>
+<div class='row nod'><span class='ln'>293</span>  ///</div>
+<div class='row nod'><span class='ln'>294</span>  /// Defaults to true.</div>
+<div class='row nod'><span class='ln'>295</span>  final bool? enableFeedback;</div>
+<div class='row nod'><span class='ln'>296</span></div>
+<div class='row nod'><span class='ln'>297</span>  /// An optional callback that&#x27;s called when the [THorizontalTabBar] is tapped.</div>
+<div class='row nod'><span class='ln'>298</span>  ///</div>
+<div class='row nod'><span class='ln'>299</span>  /// The callback is applied to the index of the tab where the tap occurred.</div>
+<div class='row nod'><span class='ln'>300</span>  ///</div>
+<div class='row nod'><span class='ln'>301</span>  /// This callback has no effect on the default handling of taps. It&#x27;s for</div>
+<div class='row nod'><span class='ln'>302</span>  /// applications that want to do a little extra work when a tab is tapped,</div>
+<div class='row nod'><span class='ln'>303</span>  /// even if the tap doesn&#x27;t change the TabController&#x27;s index. THorizontalTabBar [onTap]</div>
+<div class='row nod'><span class='ln'>304</span>  /// callbacks should not make changes to the TabController since that would</div>
+<div class='row nod'><span class='ln'>305</span>  /// interfere with the default tap handler.</div>
+<div class='row nod'><span class='ln'>306</span>  final ValueChanged&lt;int&gt;? onTap;</div>
+<div class='row nod'><span class='ln'>307</span></div>
+<div class='row nod'><span class='ln'>308</span>  /// How the [THorizontalTabBar]&#x27;s scroll view should respond to user input.</div>
+<div class='row nod'><span class='ln'>309</span>  ///</div>
+<div class='row nod'><span class='ln'>310</span>  /// For example, determines how the scroll view continues to animate after the</div>
+<div class='row nod'><span class='ln'>311</span>  /// user stops dragging the scroll view.</div>
+<div class='row nod'><span class='ln'>312</span>  ///</div>
+<div class='row nod'><span class='ln'>313</span>  /// Defaults to matching platform conventions.</div>
+<div class='row nod'><span class='ln'>314</span>  final ScrollPhysics? physics;</div>
+<div class='row nod'><span class='ln'>315</span></div>
+<div class='row nod'><span class='ln'>316</span>  /// 选项卡样式</div>
+<div class='row nod'><span class='ln'>317</span>  final TTabBarVariant? outlineType;</div>
+<div class='row nod'><span class='ln'>318</span></div>
+<div class='row nod'><span class='ln'>319</span>  /// tabBar背景色</div>
+<div class='row nod'><span class='ln'>320</span>  final Color? backgroundColor;</div>
+<div class='row nod'><span class='ln'>321</span></div>
+<div class='row nod'><span class='ln'>322</span>  /// 被选中背景色</div>
+<div class='row nod'><span class='ln'>323</span>  final Color? selectedBgColor;</div>
+<div class='row nod'><span class='ln'>324</span></div>
+<div class='row nod'><span class='ln'>325</span>  /// 未选中背景色</div>
+<div class='row nod'><span class='ln'>326</span>  final Color? unSelectedBgColor;</div>
+<div class='row nod'><span class='ln'>327</span></div>
+<div class='row nod'><span class='ln'>328</span>  /// Tab 对齐方式</div>
+<div class='row nod'><span class='ln'>329</span>  final TabAlignment? tabAlignment;</div>
+<div class='row nod'><span class='ln'>330</span></div>
+<div class='row nod'><span class='ln'>331</span>  /// A size whose height depends on if the tabs have both icons and text.</div>
+<div class='row nod'><span class='ln'>332</span>  ///</div>
+<div class='row nod'><span class='ln'>333</span>  /// [AppBar] uses this size to compute its own preferred size.</div>
+<div class='row unc'><span class='ln'>334</span>▶   @override</div>
+<div class='row nod'><span class='ln'>335</span>  Size get preferredSize {</div>
+<div class='row nod'><span class='ln'>336</span>    var maxHeight = _kTabHeight;</div>
+<div class='row unc'><span class='ln'>337</span>▶     for (final Widget item in tabs) {</div>
+<div class='row unc'><span class='ln'>338</span>▶       if (item is PreferredSizeWidget) {</div>
+<div class='row unc'><span class='ln'>339</span>▶         final itemHeight = item.preferredSize.height;</div>
+<div class='row unc'><span class='ln'>340</span>▶         maxHeight = math.max(itemHeight, maxHeight);</div>
+<div class='row nod'><span class='ln'>341</span>      }</div>
+<div class='row nod'><span class='ln'>342</span>    }</div>
+<div class='row unc'><span class='ln'>343</span>▶     return Size.fromHeight(maxHeight + indicatorWeight);</div>
+<div class='row nod'><span class='ln'>344</span>  }</div>
+<div class='row nod'><span class='ln'>345</span></div>
+<div class='row nod'><span class='ln'>346</span>  /// Returns whether the [THorizontalTabBar] contains a tab with both text and icon.</div>
+<div class='row nod'><span class='ln'>347</span>  ///</div>
+<div class='row nod'><span class='ln'>348</span>  /// [THorizontalTabBar] uses this to give uniform padding to all tabs in cases where</div>
+<div class='row nod'><span class='ln'>349</span>  /// there are some tabs with both text and icon and some which contain only</div>
+<div class='row nod'><span class='ln'>350</span>  /// text or icon.</div>
+<div class='row cov'><span class='ln'>351</span>  bool get tabHasTextAndIcon {</div>
+<div class='row cov'><span class='ln'>352</span>    for (final Widget item in tabs) {</div>
+<div class='row cov'><span class='ln'>353</span>      if (item is PreferredSizeWidget) {</div>
+<div class='row cov'><span class='ln'>354</span>        if (item.preferredSize.height == _kTextAndIconTabHeight) {</div>
+<div class='row nod'><span class='ln'>355</span>          return true;</div>
+<div class='row nod'><span class='ln'>356</span>        }</div>
+<div class='row nod'><span class='ln'>357</span>      }</div>
+<div class='row nod'><span class='ln'>358</span>    }</div>
+<div class='row nod'><span class='ln'>359</span>    return false;</div>
+<div class='row nod'><span class='ln'>360</span>  }</div>
+<div class='row nod'><span class='ln'>361</span></div>
+<div class='row cov'><span class='ln'>362</span>  @override</div>
+<div class='row cov'><span class='ln'>363</span>  State&lt;THorizontalTabBar&gt; createState() =&gt; _THorizontalTabBarState();</div>
+<div class='row nod'><span class='ln'>364</span>}</div>
+<div class='row nod'><span class='ln'>365</span></div>
+<div class='row nod'><span class='ln'>366</span>class _ChangeAnimation extends Animation&lt;double&gt;</div>
+<div class='row nod'><span class='ln'>367</span>    with AnimationWithParentMixin&lt;double&gt; {</div>
+<div class='row cov'><span class='ln'>368</span>  _ChangeAnimation(this.controller);</div>
+<div class='row nod'><span class='ln'>369</span></div>
+<div class='row nod'><span class='ln'>370</span>  final TabController controller;</div>
+<div class='row nod'><span class='ln'>371</span></div>
+<div class='row cov'><span class='ln'>372</span>  @override</div>
+<div class='row cov'><span class='ln'>373</span>  Animation&lt;double&gt; get parent =&gt; controller.animation!;</div>
+<div class='row nod'><span class='ln'>374</span></div>
+<div class='row unc'><span class='ln'>375</span>▶   @override</div>
+<div class='row nod'><span class='ln'>376</span>  void removeStatusListener(AnimationStatusListener listener) {</div>
+<div class='row unc'><span class='ln'>377</span>▶     if (controller.animation != null) {</div>
+<div class='row unc'><span class='ln'>378</span>▶       super.removeStatusListener(listener);</div>
+<div class='row nod'><span class='ln'>379</span>    }</div>
+<div class='row nod'><span class='ln'>380</span>  }</div>
+<div class='row nod'><span class='ln'>381</span></div>
+<div class='row cov'><span class='ln'>382</span>  @override</div>
+<div class='row nod'><span class='ln'>383</span>  void removeListener(VoidCallback listener) {</div>
+<div class='row cov'><span class='ln'>384</span>    if (controller.animation != null) {</div>
+<div class='row cov'><span class='ln'>385</span>      super.removeListener(listener);</div>
+<div class='row nod'><span class='ln'>386</span>    }</div>
+<div class='row nod'><span class='ln'>387</span>  }</div>
+<div class='row nod'><span class='ln'>388</span></div>
+<div class='row cov'><span class='ln'>389</span>  @override</div>
+<div class='row cov'><span class='ln'>390</span>  double get value =&gt; _indexChangeProgress(controller);</div>
+<div class='row nod'><span class='ln'>391</span>}</div>
+<div class='row nod'><span class='ln'>392</span></div>
+<div class='row nod'><span class='ln'>393</span>class _IndicatorPainter extends CustomPainter {</div>
+<div class='row cov'><span class='ln'>394</span>  _IndicatorPainter({</div>
+<div class='row nod'><span class='ln'>395</span>    required this.controller,</div>
+<div class='row nod'><span class='ln'>396</span>    required this.indicator,</div>
+<div class='row nod'><span class='ln'>397</span>    required this.indicatorSize,</div>
+<div class='row nod'><span class='ln'>398</span>    required this.tabKeys,</div>
+<div class='row nod'><span class='ln'>399</span>    required _IndicatorPainter? old,</div>
+<div class='row nod'><span class='ln'>400</span>    required this.indicatorPadding,</div>
+<div class='row cov'><span class='ln'>401</span>  }) : super(repaint: controller.animation) {</div>
+<div class='row nod'><span class='ln'>402</span>    if (old != null) {</div>
+<div class='row unc'><span class='ln'>403</span>▶       saveTabOffsets(old._currentTabOffsets, old._currentTextDirection);</div>
+<div class='row nod'><span class='ln'>404</span>    }</div>
+<div class='row nod'><span class='ln'>405</span>  }</div>
+<div class='row nod'><span class='ln'>406</span></div>
+<div class='row nod'><span class='ln'>407</span>  final TabController controller;</div>
+<div class='row nod'><span class='ln'>408</span>  final Decoration indicator;</div>
+<div class='row nod'><span class='ln'>409</span>  final TabBarIndicatorSize? indicatorSize;</div>
+<div class='row nod'><span class='ln'>410</span>  final EdgeInsetsGeometry indicatorPadding;</div>
+<div class='row nod'><span class='ln'>411</span>  final List&lt;GlobalKey&gt; tabKeys;</div>
+<div class='row nod'><span class='ln'>412</span></div>
+<div class='row nod'><span class='ln'>413</span>  // _currentTabOffsets and _currentTextDirection are set each time TabBar</div>
+<div class='row nod'><span class='ln'>414</span>  // layout is completed. These values can be null when TabBar contains no</div>
+<div class='row nod'><span class='ln'>415</span>  // tabs, since there are nothing to lay out.</div>
+<div class='row nod'><span class='ln'>416</span>  List&lt;double&gt;? _currentTabOffsets;</div>
+<div class='row nod'><span class='ln'>417</span>  TextDirection? _currentTextDirection;</div>
+<div class='row nod'><span class='ln'>418</span></div>
+<div class='row nod'><span class='ln'>419</span>  Rect? _currentRect;</div>
+<div class='row nod'><span class='ln'>420</span>  BoxPainter? _painter;</div>
+<div class='row nod'><span class='ln'>421</span>  bool _needsPaint = false;</div>
+<div class='row nod'><span class='ln'>422</span></div>
+<div class='row unc'><span class='ln'>423</span>▶   void markNeedsPaint() {</div>
+<div class='row unc'><span class='ln'>424</span>▶     _needsPaint = true;</div>
+<div class='row nod'><span class='ln'>425</span>  }</div>
+<div class='row nod'><span class='ln'>426</span></div>
+<div class='row cov'><span class='ln'>427</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>428</span>    _painter?.dispose();</div>
+<div class='row nod'><span class='ln'>429</span>  }</div>
+<div class='row nod'><span class='ln'>430</span></div>
+<div class='row cov'><span class='ln'>431</span>  void saveTabOffsets(List&lt;double&gt;? tabOffsets, TextDirection? textDirection) {</div>
+<div class='row cov'><span class='ln'>432</span>    _currentTabOffsets = tabOffsets;</div>
+<div class='row cov'><span class='ln'>433</span>    _currentTextDirection = textDirection;</div>
+<div class='row nod'><span class='ln'>434</span>  }</div>
+<div class='row nod'><span class='ln'>435</span></div>
+<div class='row nod'><span class='ln'>436</span>  // _currentTabOffsets[index] is the offset of the start edge of the tab at index, and</div>
+<div class='row nod'><span class='ln'>437</span>  // _currentTabOffsets[_currentTabOffsets.length] is the end edge of the last tab.</div>
+<div class='row cov'><span class='ln'>438</span>  int get maxTabIndex =&gt; _currentTabOffsets!.length - 2;</div>
+<div class='row nod'><span class='ln'>439</span></div>
+<div class='row cov'><span class='ln'>440</span>  double centerOf(int tabIndex) {</div>
+<div class='row cov'><span class='ln'>441</span>    assert(_currentTabOffsets != null);</div>
+<div class='row cov'><span class='ln'>442</span>    assert(_currentTabOffsets!.isNotEmpty);</div>
+<div class='row cov'><span class='ln'>443</span>    assert(tabIndex &gt;= 0);</div>
+<div class='row cov'><span class='ln'>444</span>    assert(tabIndex &lt;= maxTabIndex);</div>
+<div class='row cov'><span class='ln'>445</span>    return (_currentTabOffsets![tabIndex] + _currentTabOffsets![tabIndex + 1]) /</div>
+<div class='row nod'><span class='ln'>446</span>        2.0;</div>
+<div class='row nod'><span class='ln'>447</span>  }</div>
+<div class='row nod'><span class='ln'>448</span></div>
+<div class='row cov'><span class='ln'>449</span>  Rect indicatorRect(Size tabBarSize, int tabIndex) {</div>
+<div class='row cov'><span class='ln'>450</span>    assert(_currentTabOffsets != null);</div>
+<div class='row cov'><span class='ln'>451</span>    assert(_currentTextDirection != null);</div>
+<div class='row cov'><span class='ln'>452</span>    assert(_currentTabOffsets!.isNotEmpty);</div>
+<div class='row cov'><span class='ln'>453</span>    assert(tabIndex &gt;= 0);</div>
+<div class='row cov'><span class='ln'>454</span>    assert(tabIndex &lt;= maxTabIndex);</div>
+<div class='row nod'><span class='ln'>455</span>    double tabLeft, tabRight;</div>
+<div class='row cov'><span class='ln'>456</span>    switch (_currentTextDirection!) {</div>
+<div class='row cov'><span class='ln'>457</span>      case TextDirection.rtl:</div>
+<div class='row unc'><span class='ln'>458</span>▶         tabLeft = _currentTabOffsets![tabIndex + 1];</div>
+<div class='row unc'><span class='ln'>459</span>▶         tabRight = _currentTabOffsets![tabIndex];</div>
+<div class='row nod'><span class='ln'>460</span>        break;</div>
+<div class='row cov'><span class='ln'>461</span>      case TextDirection.ltr:</div>
+<div class='row cov'><span class='ln'>462</span>        tabLeft = _currentTabOffsets![tabIndex];</div>
+<div class='row cov'><span class='ln'>463</span>        tabRight = _currentTabOffsets![tabIndex + 1];</div>
+<div class='row nod'><span class='ln'>464</span>        break;</div>
+<div class='row nod'><span class='ln'>465</span>    }</div>
+<div class='row nod'><span class='ln'>466</span></div>
+<div class='row cov'><span class='ln'>467</span>    if (indicatorSize == TabBarIndicatorSize.label) {</div>
+<div class='row unc'><span class='ln'>468</span>▶       final tabWidth = tabKeys[tabIndex].currentContext!.size!.width;</div>
+<div class='row unc'><span class='ln'>469</span>▶       final delta = ((tabRight - tabLeft) - tabWidth) / 2.0;</div>
+<div class='row unc'><span class='ln'>470</span>▶       tabLeft += delta;</div>
+<div class='row unc'><span class='ln'>471</span>▶       tabRight -= delta;</div>
+<div class='row nod'><span class='ln'>472</span>    }</div>
+<div class='row nod'><span class='ln'>473</span></div>
+<div class='row cov'><span class='ln'>474</span>    final insets = indicatorPadding.resolve(_currentTextDirection);</div>
+<div class='row nod'><span class='ln'>475</span>    final rect =</div>
+<div class='row cov'><span class='ln'>476</span>        Rect.fromLTWH(tabLeft, 0.0, tabRight - tabLeft, tabBarSize.height);</div>
+<div class='row nod'><span class='ln'>477</span></div>
+<div class='row cov'><span class='ln'>478</span>    if (!(rect.size &gt;= insets.collapsedSize)) {</div>
+<div class='row unc'><span class='ln'>479</span>▶       throw FlutterError(</div>
+<div class='row nod'><span class='ln'>480</span>        &#x27;indicatorPadding insets should be less than Tab Size\n&#x27;</div>
+<div class='row unc'><span class='ln'>481</span>▶         &#x27;Rect Size : ${rect.size}, Insets: ${insets.toString()}&#x27;,</div>
+<div class='row nod'><span class='ln'>482</span>      );</div>
+<div class='row nod'><span class='ln'>483</span>    }</div>
+<div class='row cov'><span class='ln'>484</span>    return insets.deflateRect(rect);</div>
+<div class='row nod'><span class='ln'>485</span>  }</div>
+<div class='row nod'><span class='ln'>486</span></div>
+<div class='row cov'><span class='ln'>487</span>  @override</div>
+<div class='row nod'><span class='ln'>488</span>  void paint(Canvas canvas, Size size) {</div>
+<div class='row cov'><span class='ln'>489</span>    _needsPaint = false;</div>
+<div class='row cov'><span class='ln'>490</span>    _painter ??= indicator.createBoxPainter(markNeedsPaint);</div>
+<div class='row nod'><span class='ln'>491</span></div>
+<div class='row cov'><span class='ln'>492</span>    final index = controller.index.toDouble();</div>
+<div class='row cov'><span class='ln'>493</span>    final value = controller.animation!.value;</div>
+<div class='row cov'><span class='ln'>494</span>    final ltr = index &gt; value;</div>
+<div class='row cov'><span class='ln'>495</span>    final from = (ltr ? value.floor() : value.ceil()).clamp(0, maxTabIndex);</div>
+<div class='row cov'><span class='ln'>496</span>    final to = (ltr ? from + 1 : from - 1).clamp(0, maxTabIndex);</div>
+<div class='row cov'><span class='ln'>497</span>    final fromRect = indicatorRect(size, from);</div>
+<div class='row cov'><span class='ln'>498</span>    final toRect = indicatorRect(size, to);</div>
+<div class='row cov'><span class='ln'>499</span>    _currentRect = Rect.lerp(fromRect, toRect, (value - from).abs());</div>
+<div class='row cov'><span class='ln'>500</span>    assert(_currentRect != null);</div>
+<div class='row nod'><span class='ln'>501</span></div>
+<div class='row cov'><span class='ln'>502</span>    final configuration = ImageConfiguration(</div>
+<div class='row cov'><span class='ln'>503</span>      size: _currentRect!.size,</div>
+<div class='row cov'><span class='ln'>504</span>      textDirection: _currentTextDirection,</div>
+<div class='row nod'><span class='ln'>505</span>    );</div>
+<div class='row cov'><span class='ln'>506</span>    _painter!.paint(canvas, _currentRect!.topLeft, configuration);</div>
+<div class='row nod'><span class='ln'>507</span>  }</div>
+<div class='row nod'><span class='ln'>508</span></div>
+<div class='row unc'><span class='ln'>509</span>▶   @override</div>
+<div class='row nod'><span class='ln'>510</span>  bool shouldRepaint(_IndicatorPainter old) {</div>
+<div class='row unc'><span class='ln'>511</span>▶     return _needsPaint ||</div>
+<div class='row unc'><span class='ln'>512</span>▶         controller != old.controller ||</div>
+<div class='row unc'><span class='ln'>513</span>▶         indicator != old.indicator ||</div>
+<div class='row unc'><span class='ln'>514</span>▶         tabKeys.length != old.tabKeys.length ||</div>
+<div class='row unc'><span class='ln'>515</span>▶         (!listEquals(_currentTabOffsets, old._currentTabOffsets)) ||</div>
+<div class='row unc'><span class='ln'>516</span>▶         _currentTextDirection != old._currentTextDirection;</div>
+<div class='row nod'><span class='ln'>517</span>  }</div>
+<div class='row nod'><span class='ln'>518</span>}</div>
+<div class='row nod'><span class='ln'>519</span></div>
+<div class='row cov'><span class='ln'>520</span>double _indexChangeProgress(TabController controller) {</div>
+<div class='row cov'><span class='ln'>521</span>  final controllerValue = controller.animation!.value;</div>
+<div class='row cov'><span class='ln'>522</span>  final previousIndex = controller.previousIndex.toDouble();</div>
+<div class='row cov'><span class='ln'>523</span>  final currentIndex = controller.index.toDouble();</div>
+<div class='row nod'><span class='ln'>524</span></div>
+<div class='row nod'><span class='ln'>525</span>  // The controller&#x27;s offset is changing because the user is dragging the</div>
+<div class='row nod'><span class='ln'>526</span>  // TabBarView&#x27;s PageView to the left or right.</div>
+<div class='row cov'><span class='ln'>527</span>  if (!controller.indexIsChanging) {</div>
+<div class='row unc'><span class='ln'>528</span>▶     return (currentIndex - controllerValue).abs().clamp(0.0, 1.0);</div>
+<div class='row nod'><span class='ln'>529</span>  }</div>
+<div class='row nod'><span class='ln'>530</span></div>
+<div class='row nod'><span class='ln'>531</span>  // The TabController animation&#x27;s value is changing from previousIndex to currentIndex.</div>
+<div class='row cov'><span class='ln'>532</span>  return (controllerValue - currentIndex).abs() /</div>
+<div class='row cov'><span class='ln'>533</span>      (currentIndex - previousIndex).abs();</div>
+<div class='row nod'><span class='ln'>534</span>}</div>
+<div class='row nod'><span class='ln'>535</span></div>
+<div class='row nod'><span class='ln'>536</span>class _THorizontalTabBarState extends State&lt;THorizontalTabBar&gt; {</div>
+<div class='row nod'><span class='ln'>537</span>  ScrollController? _scrollController;</div>
+<div class='row nod'><span class='ln'>538</span>  TabController? _controller;</div>
+<div class='row nod'><span class='ln'>539</span>  _IndicatorPainter? _indicatorPainter;</div>
+<div class='row nod'><span class='ln'>540</span>  int? _currentIndex;</div>
+<div class='row nod'><span class='ln'>541</span>  late double _tabStripWidth;</div>
+<div class='row nod'><span class='ln'>542</span>  late List&lt;GlobalKey&gt; _tabKeys;</div>
+<div class='row nod'><span class='ln'>543</span></div>
+<div class='row cov'><span class='ln'>544</span>  @override</div>
+<div class='row nod'><span class='ln'>545</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>546</span>    super.initState();</div>
+<div class='row nod'><span class='ln'>547</span>    // If indicatorSize is TabIndicatorSize.label, _tabKeys[i] is used to find</div>
+<div class='row nod'><span class='ln'>548</span>    // the width of tab widget i. See _IndicatorPainter.indicatorRect().</div>
+<div class='row cov'><span class='ln'>549</span>    _tabKeys = widget.tabs.map((Widget tab) =&gt; GlobalKey()).toList();</div>
+<div class='row nod'><span class='ln'>550</span>  }</div>
+<div class='row nod'><span class='ln'>551</span></div>
+<div class='row cov'><span class='ln'>552</span>  Decoration get _indicator {</div>
+<div class='row cov'><span class='ln'>553</span>    if (widget.indicator != null) {</div>
+<div class='row cov'><span class='ln'>554</span>      return widget.indicator!;</div>
+<div class='row nod'><span class='ln'>555</span>    }</div>
+<div class='row unc'><span class='ln'>556</span>▶     final tabBarTheme = TabBarTheme.of(context);</div>
+<div class='row unc'><span class='ln'>557</span>▶     if (tabBarTheme.indicator != null) {</div>
+<div class='row unc'><span class='ln'>558</span>▶       return tabBarTheme.indicator!;</div>
+<div class='row nod'><span class='ln'>559</span>    }</div>
+<div class='row nod'><span class='ln'>560</span></div>
+<div class='row nod'><span class='ln'>561</span>    // ignore: deprecated_member_use</div>
+<div class='row unc'><span class='ln'>562</span>▶     var color = widget.indicatorColor ?? Theme.of(context).indicatorColor;</div>
+<div class='row nod'><span class='ln'>563</span>    // ThemeData tries to avoid this by having indicatorColor avoid being the</div>
+<div class='row nod'><span class='ln'>564</span>    // primaryColor. However, it&#x27;s possible that the tab bar is on a</div>
+<div class='row nod'><span class='ln'>565</span>    // Material that isn&#x27;t the primaryColor. In that case, if the indicator</div>
+<div class='row nod'><span class='ln'>566</span>    // color ends up matching the material&#x27;s color, then this overrides it.</div>
+<div class='row nod'><span class='ln'>567</span>    // When that happens, automatic transitions of the theme will likely look</div>
+<div class='row nod'><span class='ln'>568</span>    // ugly as the indicator color suddenly snaps to white at one end, but it&#x27;s</div>
+<div class='row nod'><span class='ln'>569</span>    // not clear how to avoid that any further.</div>
+<div class='row nod'><span class='ln'>570</span>    //</div>
+<div class='row nod'><span class='ln'>571</span>    // The material&#x27;s color might be null (if it&#x27;s a transparency). In that case</div>
+<div class='row nod'><span class='ln'>572</span>    // there&#x27;s no good way for us to find out what the color is so we don&#x27;t.</div>
+<div class='row nod'><span class='ln'>573</span>    //</div>
+<div class='row nod'><span class='ln'>574</span>    // TODO(xu-baolin): Remove automatic adjustment to white color indicator</div>
+<div class='row nod'><span class='ln'>575</span>    // with a better long-term solution.</div>
+<div class='row nod'><span class='ln'>576</span>    // https://github.com/flutter/flutter/pull/68171#pullrequestreview-517753917</div>
+<div class='row unc'><span class='ln'>577</span>▶     if (widget.automaticIndicatorColorAdjustment &amp;&amp;</div>
+<div class='row unc'><span class='ln'>578</span>▶         color.toARGB32() == Material.of(context).color?.toARGB32()) {</div>
+<div class='row nod'><span class='ln'>579</span>      color = Colors.white;</div>
+<div class='row nod'><span class='ln'>580</span>    }</div>
+<div class='row nod'><span class='ln'>581</span></div>
+<div class='row unc'><span class='ln'>582</span>▶     return UnderlineTabIndicator(</div>
+<div class='row unc'><span class='ln'>583</span>▶       borderSide: BorderSide(</div>
+<div class='row unc'><span class='ln'>584</span>▶         width: widget.indicatorWeight,</div>
+<div class='row nod'><span class='ln'>585</span>        color: color,</div>
+<div class='row nod'><span class='ln'>586</span>      ),</div>
+<div class='row nod'><span class='ln'>587</span>    );</div>
+<div class='row nod'><span class='ln'>588</span>  }</div>
+<div class='row nod'><span class='ln'>589</span></div>
+<div class='row nod'><span class='ln'>590</span>  // If the THorizontalTabBar is rebuilt with a new tab controller, the caller should</div>
+<div class='row nod'><span class='ln'>591</span>  // dispose the old one. In that case the old controller&#x27;s animation will be</div>
+<div class='row nod'><span class='ln'>592</span>  // null and should not be accessed.</div>
+<div class='row cov'><span class='ln'>593</span>  bool get _controllerIsValid =&gt; _controller?.animation != null;</div>
+<div class='row nod'><span class='ln'>594</span></div>
+<div class='row cov'><span class='ln'>595</span>  void _updateTabController() {</div>
+<div class='row cov'><span class='ln'>596</span>    final newController = widget.controller ?? DefaultTabController.of(context);</div>
+<div class='row cov'><span class='ln'>597</span>    assert(() {</div>
+<div class='row nod'><span class='ln'>598</span>      return true;</div>
+<div class='row cov'><span class='ln'>599</span>    }());</div>
+<div class='row nod'><span class='ln'>600</span></div>
+<div class='row cov'><span class='ln'>601</span>    if (newController == _controller) {</div>
+<div class='row nod'><span class='ln'>602</span>      return;</div>
+<div class='row nod'><span class='ln'>603</span>    }</div>
+<div class='row nod'><span class='ln'>604</span></div>
+<div class='row cov'><span class='ln'>605</span>    if (_controllerIsValid) {</div>
+<div class='row unc'><span class='ln'>606</span>▶       _controller!.animation!.removeListener(_handleTabControllerAnimationTick);</div>
+<div class='row unc'><span class='ln'>607</span>▶       _controller!.removeListener(_handleTabControllerTick);</div>
+<div class='row nod'><span class='ln'>608</span>    }</div>
+<div class='row cov'><span class='ln'>609</span>    _controller = newController;</div>
+<div class='row cov'><span class='ln'>610</span>    if (_controller != null) {</div>
+<div class='row cov'><span class='ln'>611</span>      _controller!.animation!.addListener(_handleTabControllerAnimationTick);</div>
+<div class='row cov'><span class='ln'>612</span>      _controller!.addListener(_handleTabControllerTick);</div>
+<div class='row cov'><span class='ln'>613</span>      _currentIndex = _controller!.index;</div>
+<div class='row nod'><span class='ln'>614</span>    }</div>
+<div class='row nod'><span class='ln'>615</span>  }</div>
+<div class='row nod'><span class='ln'>616</span></div>
+<div class='row cov'><span class='ln'>617</span>  void _initIndicatorPainter() {</div>
+<div class='row cov'><span class='ln'>618</span>    _indicatorPainter = !_controllerIsValid</div>
+<div class='row nod'><span class='ln'>619</span>        ? null</div>
+<div class='row cov'><span class='ln'>620</span>        : _IndicatorPainter(</div>
+<div class='row cov'><span class='ln'>621</span>            controller: _controller!,</div>
+<div class='row cov'><span class='ln'>622</span>            indicator: _indicator,</div>
+<div class='row nod'><span class='ln'>623</span>            indicatorSize:</div>
+<div class='row cov'><span class='ln'>624</span>                widget.indicatorSize ?? TabBarTheme.of(context).indicatorSize,</div>
+<div class='row cov'><span class='ln'>625</span>            indicatorPadding: widget.indicatorPadding,</div>
+<div class='row cov'><span class='ln'>626</span>            tabKeys: _tabKeys,</div>
+<div class='row cov'><span class='ln'>627</span>            old: _indicatorPainter,</div>
+<div class='row nod'><span class='ln'>628</span>          );</div>
+<div class='row nod'><span class='ln'>629</span>  }</div>
+<div class='row nod'><span class='ln'>630</span></div>
+<div class='row cov'><span class='ln'>631</span>  @override</div>
+<div class='row nod'><span class='ln'>632</span>  void didChangeDependencies() {</div>
+<div class='row cov'><span class='ln'>633</span>    super.didChangeDependencies();</div>
+<div class='row cov'><span class='ln'>634</span>    assert(debugCheckHasMaterial(context));</div>
+<div class='row cov'><span class='ln'>635</span>    _updateTabController();</div>
+<div class='row cov'><span class='ln'>636</span>    _initIndicatorPainter();</div>
+<div class='row nod'><span class='ln'>637</span>  }</div>
+<div class='row nod'><span class='ln'>638</span></div>
+<div class='row unc'><span class='ln'>639</span>▶   @override</div>
+<div class='row nod'><span class='ln'>640</span>  void didUpdateWidget(THorizontalTabBar oldWidget) {</div>
+<div class='row unc'><span class='ln'>641</span>▶     super.didUpdateWidget(oldWidget);</div>
+<div class='row unc'><span class='ln'>642</span>▶     if (widget.controller != oldWidget.controller) {</div>
+<div class='row unc'><span class='ln'>643</span>▶       _updateTabController();</div>
+<div class='row unc'><span class='ln'>644</span>▶       _initIndicatorPainter();</div>
+<div class='row unc'><span class='ln'>645</span>▶     } else if (widget.indicatorColor != oldWidget.indicatorColor ||</div>
+<div class='row unc'><span class='ln'>646</span>▶         widget.indicatorWeight != oldWidget.indicatorWeight ||</div>
+<div class='row unc'><span class='ln'>647</span>▶         widget.indicatorSize != oldWidget.indicatorSize ||</div>
+<div class='row unc'><span class='ln'>648</span>▶         widget.indicator != oldWidget.indicator) {</div>
+<div class='row unc'><span class='ln'>649</span>▶       _initIndicatorPainter();</div>
+<div class='row nod'><span class='ln'>650</span>    }</div>
+<div class='row nod'><span class='ln'>651</span></div>
+<div class='row unc'><span class='ln'>652</span>▶     if (widget.tabs.length &gt; oldWidget.tabs.length) {</div>
+<div class='row unc'><span class='ln'>653</span>▶       final delta = widget.tabs.length - oldWidget.tabs.length;</div>
+<div class='row unc'><span class='ln'>654</span>▶       _tabKeys.addAll(List&lt;GlobalKey&gt;.generate(delta, (int n) =&gt; GlobalKey()));</div>
+<div class='row unc'><span class='ln'>655</span>▶     } else if (widget.tabs.length &lt; oldWidget.tabs.length) {</div>
+<div class='row unc'><span class='ln'>656</span>▶       _tabKeys.removeRange(widget.tabs.length, oldWidget.tabs.length);</div>
+<div class='row nod'><span class='ln'>657</span>    }</div>
+<div class='row nod'><span class='ln'>658</span>  }</div>
+<div class='row nod'><span class='ln'>659</span></div>
+<div class='row cov'><span class='ln'>660</span>  @override</div>
+<div class='row nod'><span class='ln'>661</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>662</span>    _indicatorPainter!.dispose();</div>
+<div class='row cov'><span class='ln'>663</span>    if (_controllerIsValid) {</div>
+<div class='row cov'><span class='ln'>664</span>      _controller!.animation!.removeListener(_handleTabControllerAnimationTick);</div>
+<div class='row cov'><span class='ln'>665</span>      _controller!.removeListener(_handleTabControllerTick);</div>
+<div class='row nod'><span class='ln'>666</span>    }</div>
+<div class='row cov'><span class='ln'>667</span>    _controller = null;</div>
+<div class='row nod'><span class='ln'>668</span>    // We don&#x27;t own the _controller Animation, so it&#x27;s not disposed here.</div>
+<div class='row cov'><span class='ln'>669</span>    super.dispose();</div>
+<div class='row nod'><span class='ln'>670</span>  }</div>
+<div class='row nod'><span class='ln'>671</span></div>
+<div class='row unc'><span class='ln'>672</span>▶   int get maxTabIndex =&gt; _indicatorPainter!.maxTabIndex;</div>
+<div class='row nod'><span class='ln'>673</span></div>
+<div class='row cov'><span class='ln'>674</span>  double _tabScrollOffset(</div>
+<div class='row nod'><span class='ln'>675</span>      int index, double viewportWidth, double minExtent, double maxExtent) {</div>
+<div class='row cov'><span class='ln'>676</span>    if (!widget.isScrollable) {</div>
+<div class='row nod'><span class='ln'>677</span>      return 0.0;</div>
+<div class='row nod'><span class='ln'>678</span>    }</div>
+<div class='row cov'><span class='ln'>679</span>    var tabCenter = _indicatorPainter!.centerOf(index);</div>
+<div class='row cov'><span class='ln'>680</span>    switch (Directionality.of(context)) {</div>
+<div class='row cov'><span class='ln'>681</span>      case TextDirection.rtl:</div>
+<div class='row unc'><span class='ln'>682</span>▶         tabCenter = _tabStripWidth - tabCenter;</div>
+<div class='row nod'><span class='ln'>683</span>        break;</div>
+<div class='row cov'><span class='ln'>684</span>      case TextDirection.ltr:</div>
+<div class='row nod'><span class='ln'>685</span>        break;</div>
+<div class='row nod'><span class='ln'>686</span>    }</div>
+<div class='row cov'><span class='ln'>687</span>    return (tabCenter - viewportWidth / 2.0).clamp(minExtent, maxExtent);</div>
+<div class='row nod'><span class='ln'>688</span>  }</div>
+<div class='row nod'><span class='ln'>689</span></div>
+<div class='row unc'><span class='ln'>690</span>▶   double _tabCenteredScrollOffset(int index) {</div>
+<div class='row unc'><span class='ln'>691</span>▶     final position = _scrollController!.position;</div>
+<div class='row unc'><span class='ln'>692</span>▶     return _tabScrollOffset(index, position.viewportDimension,</div>
+<div class='row unc'><span class='ln'>693</span>▶         position.minScrollExtent, position.maxScrollExtent);</div>
+<div class='row nod'><span class='ln'>694</span>  }</div>
+<div class='row nod'><span class='ln'>695</span></div>
+<div class='row cov'><span class='ln'>696</span>  double _initialScrollOffset(</div>
+<div class='row nod'><span class='ln'>697</span>      double viewportWidth, double minExtent, double maxExtent) {</div>
+<div class='row cov'><span class='ln'>698</span>    return _tabScrollOffset(</div>
+<div class='row cov'><span class='ln'>699</span>        _currentIndex!, viewportWidth, minExtent, maxExtent);</div>
+<div class='row nod'><span class='ln'>700</span>  }</div>
+<div class='row nod'><span class='ln'>701</span></div>
+<div class='row unc'><span class='ln'>702</span>▶   void _scrollToCurrentIndex() {</div>
+<div class='row unc'><span class='ln'>703</span>▶     final offset = _tabCenteredScrollOffset(_currentIndex!);</div>
+<div class='row unc'><span class='ln'>704</span>▶     _scrollController!</div>
+<div class='row unc'><span class='ln'>705</span>▶         .animateTo(offset, duration: kTabScrollDuration, curve: Curves.ease);</div>
+<div class='row nod'><span class='ln'>706</span>  }</div>
+<div class='row nod'><span class='ln'>707</span></div>
+<div class='row unc'><span class='ln'>708</span>▶   void _scrollToControllerValue() {</div>
+<div class='row unc'><span class='ln'>709</span>▶     final leadingPosition = _currentIndex! &gt; 0</div>
+<div class='row unc'><span class='ln'>710</span>▶         ? _tabCenteredScrollOffset(_currentIndex! - 1)</div>
+<div class='row nod'><span class='ln'>711</span>        : null;</div>
+<div class='row unc'><span class='ln'>712</span>▶     final middlePosition = _tabCenteredScrollOffset(_currentIndex!);</div>
+<div class='row unc'><span class='ln'>713</span>▶     final trailingPosition = _currentIndex! &lt; maxTabIndex</div>
+<div class='row unc'><span class='ln'>714</span>▶         ? _tabCenteredScrollOffset(_currentIndex! + 1)</div>
+<div class='row nod'><span class='ln'>715</span>        : null;</div>
+<div class='row nod'><span class='ln'>716</span></div>
+<div class='row unc'><span class='ln'>717</span>▶     final index = _controller!.index.toDouble();</div>
+<div class='row unc'><span class='ln'>718</span>▶     final value = _controller!.animation!.value;</div>
+<div class='row nod'><span class='ln'>719</span>    final double offset;</div>
+<div class='row unc'><span class='ln'>720</span>▶     if (value == index - 1.0) {</div>
+<div class='row nod'><span class='ln'>721</span>      offset = leadingPosition ?? middlePosition;</div>
+<div class='row unc'><span class='ln'>722</span>▶     } else if (value == index + 1.0) {</div>
+<div class='row nod'><span class='ln'>723</span>      offset = trailingPosition ?? middlePosition;</div>
+<div class='row unc'><span class='ln'>724</span>▶     } else if (value == index) {</div>
+<div class='row nod'><span class='ln'>725</span>      offset = middlePosition;</div>
+<div class='row unc'><span class='ln'>726</span>▶     } else if (value &lt; index) {</div>
+<div class='row nod'><span class='ln'>727</span>      offset = leadingPosition == null</div>
+<div class='row nod'><span class='ln'>728</span>          ? middlePosition</div>
+<div class='row unc'><span class='ln'>729</span>▶           : lerpDouble(middlePosition, leadingPosition, index - value)!;</div>
+<div class='row nod'><span class='ln'>730</span>    } else {</div>
+<div class='row nod'><span class='ln'>731</span>      offset = trailingPosition == null</div>
+<div class='row nod'><span class='ln'>732</span>          ? middlePosition</div>
+<div class='row unc'><span class='ln'>733</span>▶           : lerpDouble(middlePosition, trailingPosition, value - index)!;</div>
+<div class='row nod'><span class='ln'>734</span>    }</div>
+<div class='row nod'><span class='ln'>735</span></div>
+<div class='row unc'><span class='ln'>736</span>▶     _scrollController!.jumpTo(offset);</div>
+<div class='row nod'><span class='ln'>737</span>  }</div>
+<div class='row nod'><span class='ln'>738</span></div>
+<div class='row cov'><span class='ln'>739</span>  void _handleTabControllerAnimationTick() {</div>
+<div class='row cov'><span class='ln'>740</span>    assert(mounted);</div>
+<div class='row cov'><span class='ln'>741</span>    if (!_controller!.indexIsChanging &amp;&amp; widget.isScrollable) {</div>
+<div class='row nod'><span class='ln'>742</span>      // Sync the THorizontalTabBar&#x27;s scroll position with the THorizontalTabBarView&#x27;s PageView.</div>
+<div class='row unc'><span class='ln'>743</span>▶       _currentIndex = _controller!.index;</div>
+<div class='row unc'><span class='ln'>744</span>▶       _scrollToControllerValue();</div>
+<div class='row nod'><span class='ln'>745</span>    }</div>
+<div class='row nod'><span class='ln'>746</span>  }</div>
+<div class='row nod'><span class='ln'>747</span></div>
+<div class='row cov'><span class='ln'>748</span>  void _handleTabControllerTick() {</div>
+<div class='row cov'><span class='ln'>749</span>    if (_controller!.index != _currentIndex) {</div>
+<div class='row cov'><span class='ln'>750</span>      _currentIndex = _controller!.index;</div>
+<div class='row cov'><span class='ln'>751</span>      if (widget.isScrollable) {</div>
+<div class='row unc'><span class='ln'>752</span>▶         _scrollToCurrentIndex();</div>
+<div class='row nod'><span class='ln'>753</span>      }</div>
+<div class='row nod'><span class='ln'>754</span>    }</div>
+<div class='row cov'><span class='ln'>755</span>    setState(() {</div>
+<div class='row nod'><span class='ln'>756</span>      // Rebuild the tabs after a (potentially animated) index change</div>
+<div class='row nod'><span class='ln'>757</span>      // has completed.</div>
+<div class='row nod'><span class='ln'>758</span>    });</div>
+<div class='row nod'><span class='ln'>759</span>  }</div>
+<div class='row nod'><span class='ln'>760</span></div>
+<div class='row nod'><span class='ln'>761</span>  // Called each time layout completes.</div>
+<div class='row cov'><span class='ln'>762</span>  void _saveTabOffsets(</div>
+<div class='row nod'><span class='ln'>763</span>      List&lt;double&gt; tabOffsets, TextDirection textDirection, double width) {</div>
+<div class='row cov'><span class='ln'>764</span>    _tabStripWidth = width;</div>
+<div class='row cov'><span class='ln'>765</span>    _indicatorPainter?.saveTabOffsets(tabOffsets, textDirection);</div>
+<div class='row nod'><span class='ln'>766</span>  }</div>
+<div class='row nod'><span class='ln'>767</span></div>
+<div class='row cov'><span class='ln'>768</span>  void _handleTap(int index) {</div>
+<div class='row cov'><span class='ln'>769</span>    assert(index &gt;= 0 &amp;&amp; index &lt; widget.tabs.length);</div>
+<div class='row cov'><span class='ln'>770</span>    _controller!.animateTo(index);</div>
+<div class='row cov'><span class='ln'>771</span>    widget.onTap?.call(index);</div>
+<div class='row nod'><span class='ln'>772</span>  }</div>
+<div class='row nod'><span class='ln'>773</span></div>
+<div class='row cov'><span class='ln'>774</span>  Widget _buildStyledTab(</div>
+<div class='row nod'><span class='ln'>775</span>      Widget child, bool selected, Animation&lt;double&gt; animation) {</div>
+<div class='row cov'><span class='ln'>776</span>    return _TabStyle(</div>
+<div class='row nod'><span class='ln'>777</span>      animation: animation,</div>
+<div class='row nod'><span class='ln'>778</span>      selected: selected,</div>
+<div class='row cov'><span class='ln'>779</span>      labelColor: widget.labelColor,</div>
+<div class='row cov'><span class='ln'>780</span>      unselectedLabelColor: widget.unselectedLabelColor,</div>
+<div class='row cov'><span class='ln'>781</span>      labelStyle: widget.labelStyle,</div>
+<div class='row cov'><span class='ln'>782</span>      unselectedLabelStyle: widget.unselectedLabelStyle,</div>
+<div class='row nod'><span class='ln'>783</span>      child: child,</div>
+<div class='row nod'><span class='ln'>784</span>    );</div>
+<div class='row nod'><span class='ln'>785</span>  }</div>
+<div class='row nod'><span class='ln'>786</span></div>
+<div class='row cov'><span class='ln'>787</span>  BoxDecoration? _getContentDecorateInner(int index) {</div>
+<div class='row cov'><span class='ln'>788</span>    if (widget.outlineType == TTabBarVariant.capsule) {</div>
+<div class='row cov'><span class='ln'>789</span>      return BoxDecoration(</div>
+<div class='row cov'><span class='ln'>790</span>          color: index == _currentIndex</div>
+<div class='row cov'><span class='ln'>791</span>              ? (widget.selectedBgColor ?? context.tTheme.brandColor1)</div>
+<div class='row cov'><span class='ln'>792</span>              : (widget.unSelectedBgColor ?? context.tTheme.grayColor1),</div>
+<div class='row cov'><span class='ln'>793</span>          borderRadius: BorderRadius.circular(32));</div>
+<div class='row nod'><span class='ln'>794</span>    }</div>
+<div class='row nod'><span class='ln'>795</span>    return null;</div>
+<div class='row nod'><span class='ln'>796</span>  }</div>
+<div class='row nod'><span class='ln'>797</span></div>
+<div class='row cov'><span class='ln'>798</span>  BoxDecoration? _getContentDecorateOuter(int index) {</div>
+<div class='row cov'><span class='ln'>799</span>    if (widget.outlineType == TTabBarVariant.capsule) {</div>
+<div class='row cov'><span class='ln'>800</span>      return BoxDecoration(</div>
+<div class='row cov'><span class='ln'>801</span>        color: widget.backgroundColor ?? context.tTheme.bgColorContainer,</div>
+<div class='row nod'><span class='ln'>802</span>      );</div>
+<div class='row cov'><span class='ln'>803</span>    } else if (widget.outlineType == TTabBarVariant.card) {</div>
+<div class='row cov'><span class='ln'>804</span>      if (index == _currentIndex) {</div>
+<div class='row cov'><span class='ln'>805</span>        return BoxDecoration(</div>
+<div class='row nod'><span class='ln'>806</span>            color:</div>
+<div class='row cov'><span class='ln'>807</span>                widget.backgroundColor ?? context.tTheme.bgColorContainer,</div>
+<div class='row cov'><span class='ln'>808</span>            borderRadius: BorderRadius.only(</div>
+<div class='row cov'><span class='ln'>809</span>                topRight: Radius.circular(index + 1 &lt; widget.tabs.length</div>
+<div class='row cov'><span class='ln'>810</span>                    ? context.tTheme.radiusLarge</div>
+<div class='row nod'><span class='ln'>811</span>                    : 0),</div>
+<div class='row cov'><span class='ln'>812</span>                topLeft: Radius.circular(</div>
+<div class='row cov'><span class='ln'>813</span>                    index &gt; 0 ? context.tTheme.radiusLarge : 0)));</div>
+<div class='row nod'><span class='ln'>814</span>      } else {</div>
+<div class='row cov'><span class='ln'>815</span>        return BoxDecoration(</div>
+<div class='row cov'><span class='ln'>816</span>          color: context.tTheme.bgColorSecondaryContainer,</div>
+<div class='row cov'><span class='ln'>817</span>          borderRadius: BorderRadius.only(</div>
+<div class='row cov'><span class='ln'>818</span>            bottomLeft: Radius.circular(index - 1 == _currentIndex</div>
+<div class='row cov'><span class='ln'>819</span>                ? context.tTheme.radiusLarge</div>
+<div class='row nod'><span class='ln'>820</span>                : 0),</div>
+<div class='row cov'><span class='ln'>821</span>            bottomRight: Radius.circular(index + 1 == _currentIndex</div>
+<div class='row unc'><span class='ln'>822</span>▶                 ? context.tTheme.radiusLarge</div>
+<div class='row nod'><span class='ln'>823</span>                : 0),</div>
+<div class='row nod'><span class='ln'>824</span>          ),</div>
+<div class='row nod'><span class='ln'>825</span>        );</div>
+<div class='row nod'><span class='ln'>826</span>      }</div>
+<div class='row nod'><span class='ln'>827</span>    }</div>
+<div class='row nod'><span class='ln'>828</span>    return null;</div>
+<div class='row nod'><span class='ln'>829</span>  }</div>
+<div class='row nod'><span class='ln'>830</span></div>
+<div class='row cov'><span class='ln'>831</span>  Color? _getBackgroundColor(int index) {</div>
+<div class='row cov'><span class='ln'>832</span>    if (widget.outlineType == TTabBarVariant.card) {</div>
+<div class='row cov'><span class='ln'>833</span>      if (index == _currentIndex) {</div>
+<div class='row cov'><span class='ln'>834</span>        return context.tTheme.bgColorSecondaryContainer;</div>
+<div class='row nod'><span class='ln'>835</span>      }</div>
+<div class='row nod'><span class='ln'>836</span>    }</div>
+<div class='row nod'><span class='ln'>837</span>    return null;</div>
+<div class='row nod'><span class='ln'>838</span>  }</div>
+<div class='row nod'><span class='ln'>839</span></div>
+<div class='row cov'><span class='ln'>840</span>  TabAlignment get _defaults {</div>
+<div class='row cov'><span class='ln'>841</span>    return widget.isScrollable ? TabAlignment.start : TabAlignment.fill;</div>
+<div class='row nod'><span class='ln'>842</span>  }</div>
+<div class='row nod'><span class='ln'>843</span></div>
+<div class='row cov'><span class='ln'>844</span>  bool _debugTabAlignmentIsValid(TabAlignment tabAlignment) {</div>
+<div class='row cov'><span class='ln'>845</span>    assert(() {</div>
+<div class='row cov'><span class='ln'>846</span>      if (widget.isScrollable &amp;&amp; tabAlignment == TabAlignment.fill) {</div>
+<div class='row unc'><span class='ln'>847</span>▶         throw FlutterError(</div>
+<div class='row unc'><span class='ln'>848</span>▶           &#x27;$tabAlignment is only valid for non-scrollable tab bars.&#x27;,</div>
+<div class='row nod'><span class='ln'>849</span>        );</div>
+<div class='row nod'><span class='ln'>850</span>      }</div>
+<div class='row cov'><span class='ln'>851</span>      if (!widget.isScrollable &amp;&amp;</div>
+<div class='row cov'><span class='ln'>852</span>          (tabAlignment == TabAlignment.start ||</div>
+<div class='row cov'><span class='ln'>853</span>              tabAlignment == TabAlignment.startOffset)) {</div>
+<div class='row unc'><span class='ln'>854</span>▶         throw FlutterError(</div>
+<div class='row unc'><span class='ln'>855</span>▶           &#x27;$tabAlignment is only valid for scrollable tab bars.&#x27;,</div>
+<div class='row nod'><span class='ln'>856</span>        );</div>
+<div class='row nod'><span class='ln'>857</span>      }</div>
+<div class='row nod'><span class='ln'>858</span>      return true;</div>
+<div class='row cov'><span class='ln'>859</span>    }());</div>
+<div class='row nod'><span class='ln'>860</span>    return true;</div>
+<div class='row nod'><span class='ln'>861</span>  }</div>
+<div class='row nod'><span class='ln'>862</span></div>
+<div class='row cov'><span class='ln'>863</span>  @override</div>
+<div class='row nod'><span class='ln'>864</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>865</span>    final tabBarTheme = TabBarTheme.of(context);</div>
+<div class='row nod'><span class='ln'>866</span>    final effectiveTabAlignment =</div>
+<div class='row cov'><span class='ln'>867</span>        widget.tabAlignment ?? tabBarTheme.tabAlignment ?? _defaults;</div>
+<div class='row cov'><span class='ln'>868</span>    assert(_debugTabAlignmentIsValid(effectiveTabAlignment));</div>
+<div class='row cov'><span class='ln'>869</span>    assert(debugCheckHasMaterialLocalizations(context));</div>
+<div class='row cov'><span class='ln'>870</span>    assert(() {</div>
+<div class='row cov'><span class='ln'>871</span>      if (_controller!.length != widget.tabs.length) {</div>
+<div class='row unc'><span class='ln'>872</span>▶         throw FlutterError(</div>
+<div class='row unc'><span class='ln'>873</span>▶           &quot;Controller&#x27;s length property (${_controller!.length}) does not match the &quot;</div>
+<div class='row unc'><span class='ln'>874</span>▶           &quot;number of tabs (${widget.tabs.length}) present in THorizontalTabBar&#x27;s tabs property.&quot;,</div>
+<div class='row nod'><span class='ln'>875</span>        );</div>
+<div class='row nod'><span class='ln'>876</span>      }</div>
+<div class='row nod'><span class='ln'>877</span>      return true;</div>
+<div class='row cov'><span class='ln'>878</span>    }());</div>
+<div class='row cov'><span class='ln'>879</span>    final localizations = MaterialLocalizations.of(context);</div>
+<div class='row cov'><span class='ln'>880</span>    if (_controller!.length == 0) {</div>
+<div class='row unc'><span class='ln'>881</span>▶       return Container(</div>
+<div class='row unc'><span class='ln'>882</span>▶         height: _kTabHeight + widget.indicatorWeight,</div>
+<div class='row nod'><span class='ln'>883</span>      );</div>
+<div class='row nod'><span class='ln'>884</span>    }</div>
+<div class='row nod'><span class='ln'>885</span></div>
+<div class='row cov'><span class='ln'>886</span>    final wrappedTabs = List&lt;Widget&gt;.generate(widget.tabs.length, (int index) {</div>
+<div class='row nod'><span class='ln'>887</span>      const verticalAdjustment = (_kTextAndIconTabHeight - _kTabHeight) / 2.0;</div>
+<div class='row nod'><span class='ln'>888</span>      EdgeInsetsGeometry? adjustedPadding;</div>
+<div class='row nod'><span class='ln'>889</span></div>
+<div class='row cov'><span class='ln'>890</span>      final tab = widget.tabs[index];</div>
+<div class='row cov'><span class='ln'>891</span>      if (widget.tabHasTextAndIcon &amp;&amp; tab.preferredSize.height == _kTabHeight) {</div>
+<div class='row unc'><span class='ln'>892</span>▶         if (widget.labelPadding != null || tabBarTheme.labelPadding != null) {</div>
+<div class='row unc'><span class='ln'>893</span>▶           adjustedPadding = (widget.labelPadding ?? tabBarTheme.labelPadding!)</div>
+<div class='row unc'><span class='ln'>894</span>▶               .add(const EdgeInsets.symmetric(vertical: verticalAdjustment));</div>
+<div class='row nod'><span class='ln'>895</span>        } else {</div>
+<div class='row nod'><span class='ln'>896</span>          adjustedPadding = const EdgeInsets.symmetric(</div>
+<div class='row nod'><span class='ln'>897</span>              vertical: verticalAdjustment, horizontal: 16.0);</div>
+<div class='row nod'><span class='ln'>898</span>        }</div>
+<div class='row nod'><span class='ln'>899</span>      }</div>
+<div class='row nod'><span class='ln'>900</span>      // tab.size=20;</div>
+<div class='row nod'><span class='ln'>901</span>      EdgeInsetsGeometry? capsuleDefaultPadding;</div>
+<div class='row cov'><span class='ln'>902</span>      if (widget.outlineType == TTabBarVariant.capsule) {</div>
+<div class='row nod'><span class='ln'>903</span>        capsuleDefaultPadding = const EdgeInsets.all(4);</div>
+<div class='row nod'><span class='ln'>904</span>      }</div>
+<div class='row cov'><span class='ln'>905</span>      return Container(</div>
+<div class='row cov'><span class='ln'>906</span>        color: _getBackgroundColor(index),</div>
+<div class='row cov'><span class='ln'>907</span>        child: Container(</div>
+<div class='row cov'><span class='ln'>908</span>          decoration: _getContentDecorateOuter(index),</div>
+<div class='row cov'><span class='ln'>909</span>          child: Center(</div>
+<div class='row nod'><span class='ln'>910</span>            heightFactor: 1.0,</div>
+<div class='row cov'><span class='ln'>911</span>            child: Padding(</div>
+<div class='row nod'><span class='ln'>912</span>              padding: adjustedPadding ??</div>
+<div class='row cov'><span class='ln'>913</span>                  widget.labelPadding ??</div>
+<div class='row nod'><span class='ln'>914</span>                  capsuleDefaultPadding ??</div>
+<div class='row unc'><span class='ln'>915</span>▶                   tabBarTheme.labelPadding ??</div>
+<div class='row nod'><span class='ln'>916</span>                  kTabLabelPadding,</div>
+<div class='row cov'><span class='ln'>917</span>              child: KeyedSubtree(</div>
+<div class='row cov'><span class='ln'>918</span>                key: _tabKeys[index],</div>
+<div class='row cov'><span class='ln'>919</span>                child: Container(</div>
+<div class='row cov'><span class='ln'>920</span>                  decoration: _getContentDecorateInner(index),</div>
+<div class='row cov'><span class='ln'>921</span>                  child: widget.tabs[index],</div>
+<div class='row nod'><span class='ln'>922</span>                ),</div>
+<div class='row nod'><span class='ln'>923</span>              ),</div>
+<div class='row nod'><span class='ln'>924</span>            ),</div>
+<div class='row nod'><span class='ln'>925</span>          ),</div>
+<div class='row nod'><span class='ln'>926</span>        ),</div>
+<div class='row nod'><span class='ln'>927</span>      );</div>
+<div class='row nod'><span class='ln'>928</span>    });</div>
+<div class='row nod'><span class='ln'>929</span></div>
+<div class='row nod'><span class='ln'>930</span>    // If the controller was provided by DefaultTabController and we&#x27;re part</div>
+<div class='row nod'><span class='ln'>931</span>    // of a Hero (typically the AppBar), then we will not be able to find the</div>
+<div class='row nod'><span class='ln'>932</span>    // controller during a Hero transition. See https://github.com/flutter/flutter/issues/213.</div>
+<div class='row cov'><span class='ln'>933</span>    if (_controller != null) {</div>
+<div class='row cov'><span class='ln'>934</span>      final previousIndex = _controller!.previousIndex;</div>
+<div class='row nod'><span class='ln'>935</span></div>
+<div class='row cov'><span class='ln'>936</span>      if (_controller!.indexIsChanging) {</div>
+<div class='row nod'><span class='ln'>937</span>        // The user tapped on a tab, the tab controller&#x27;s animation is running.</div>
+<div class='row cov'><span class='ln'>938</span>        assert(_currentIndex != previousIndex);</div>
+<div class='row cov'><span class='ln'>939</span>        final Animation&lt;double&gt; animation = _ChangeAnimation(_controller!);</div>
+<div class='row cov'><span class='ln'>940</span>        wrappedTabs[_currentIndex!] =</div>
+<div class='row cov'><span class='ln'>941</span>            _buildStyledTab(wrappedTabs[_currentIndex!], true, animation);</div>
+<div class='row cov'><span class='ln'>942</span>        wrappedTabs[previousIndex] =</div>
+<div class='row cov'><span class='ln'>943</span>            _buildStyledTab(wrappedTabs[previousIndex], false, animation);</div>
+<div class='row nod'><span class='ln'>944</span>      } else {</div>
+<div class='row nod'><span class='ln'>945</span>        // The user is dragging the THorizontalTabBarView&#x27;s PageView left or right.</div>
+<div class='row cov'><span class='ln'>946</span>        final tabIndex = _currentIndex!;</div>
+<div class='row nod'><span class='ln'>947</span>        final Animation&lt;double&gt; centerAnimation =</div>
+<div class='row cov'><span class='ln'>948</span>            _DragAnimation(_controller!, tabIndex);</div>
+<div class='row cov'><span class='ln'>949</span>        wrappedTabs[tabIndex] =</div>
+<div class='row cov'><span class='ln'>950</span>            _buildStyledTab(wrappedTabs[tabIndex], true, centerAnimation);</div>
+<div class='row cov'><span class='ln'>951</span>        if (_currentIndex! &gt; 0) {</div>
+<div class='row cov'><span class='ln'>952</span>          final tabIndex = _currentIndex! - 1;</div>
+<div class='row nod'><span class='ln'>953</span>          final Animation&lt;double&gt; previousAnimation =</div>
+<div class='row cov'><span class='ln'>954</span>              ReverseAnimation(_DragAnimation(_controller!, tabIndex));</div>
+<div class='row cov'><span class='ln'>955</span>          wrappedTabs[tabIndex] =</div>
+<div class='row cov'><span class='ln'>956</span>              _buildStyledTab(wrappedTabs[tabIndex], false, previousAnimation);</div>
+<div class='row nod'><span class='ln'>957</span>        }</div>
+<div class='row cov'><span class='ln'>958</span>        if (_currentIndex! &lt; widget.tabs.length - 1) {</div>
+<div class='row cov'><span class='ln'>959</span>          final tabIndex = _currentIndex! + 1;</div>
+<div class='row nod'><span class='ln'>960</span>          final Animation&lt;double&gt; nextAnimation =</div>
+<div class='row cov'><span class='ln'>961</span>              ReverseAnimation(_DragAnimation(_controller!, tabIndex));</div>
+<div class='row cov'><span class='ln'>962</span>          wrappedTabs[tabIndex] =</div>
+<div class='row cov'><span class='ln'>963</span>              _buildStyledTab(wrappedTabs[tabIndex], false, nextAnimation);</div>
+<div class='row nod'><span class='ln'>964</span>        }</div>
+<div class='row nod'><span class='ln'>965</span>      }</div>
+<div class='row nod'><span class='ln'>966</span>    }</div>
+<div class='row nod'><span class='ln'>967</span></div>
+<div class='row nod'><span class='ln'>968</span>    // Add the tap handler to each tab. If the tab bar is not scrollable,</div>
+<div class='row nod'><span class='ln'>969</span>    // then give all of the tabs equal flexibility so that they each occupy</div>
+<div class='row nod'><span class='ln'>970</span>    // the same share of the tab bar&#x27;s overall width.</div>
+<div class='row cov'><span class='ln'>971</span>    final tabCount = widget.tabs.length;</div>
+<div class='row cov'><span class='ln'>972</span>    for (var index = 0; index &lt; tabCount; index += 1) {</div>
+<div class='row cov'><span class='ln'>973</span>      wrappedTabs[index] = Opacity(</div>
+<div class='row cov'><span class='ln'>974</span>        opacity: widget.tabs[index].enabled ? 1.0 : 0.4,</div>
+<div class='row cov'><span class='ln'>975</span>        child: IgnorePointer(</div>
+<div class='row cov'><span class='ln'>976</span>          ignoring: !widget.tabs[index].enabled,</div>
+<div class='row cov'><span class='ln'>977</span>          child: InkWell(</div>
+<div class='row cov'><span class='ln'>978</span>            mouseCursor: widget.mouseCursor ?? SystemMouseCursors.click,</div>
+<div class='row cov'><span class='ln'>979</span>            onTap: () {</div>
+<div class='row cov'><span class='ln'>980</span>              _handleTap(index);</div>
+<div class='row nod'><span class='ln'>981</span>            },</div>
+<div class='row cov'><span class='ln'>982</span>            enableFeedback: widget.enableFeedback ?? true,</div>
+<div class='row cov'><span class='ln'>983</span>            overlayColor: widget.overlayColor,</div>
+<div class='row cov'><span class='ln'>984</span>            child: Container(</div>
+<div class='row cov'><span class='ln'>985</span>              padding: widget.outlineType == TTabBarVariant.filled</div>
+<div class='row cov'><span class='ln'>986</span>                  ? EdgeInsets.only(bottom: widget.indicatorWeight)</div>
+<div class='row nod'><span class='ln'>987</span>                  : EdgeInsets.zero,</div>
+<div class='row cov'><span class='ln'>988</span>              child: Stack(</div>
+<div class='row cov'><span class='ln'>989</span>                children: &lt;Widget&gt;[</div>
+<div class='row cov'><span class='ln'>990</span>                  wrappedTabs[index],</div>
+<div class='row cov'><span class='ln'>991</span>                  Semantics(</div>
+<div class='row cov'><span class='ln'>992</span>                    selected: index == _currentIndex,</div>
+<div class='row cov'><span class='ln'>993</span>                    label: localizations.tabLabel(</div>
+<div class='row cov'><span class='ln'>994</span>                        tabIndex: index + 1, tabCount: tabCount),</div>
+<div class='row nod'><span class='ln'>995</span>                  ),</div>
+<div class='row nod'><span class='ln'>996</span>                ],</div>
+<div class='row nod'><span class='ln'>997</span>              ),</div>
+<div class='row nod'><span class='ln'>998</span>            ),</div>
+<div class='row nod'><span class='ln'>999</span>          ),</div>
+<div class='row nod'><span class='ln'>1000</span>        ),</div>
+<div class='row nod'><span class='ln'>1001</span>      );</div>
+<div class='row cov'><span class='ln'>1002</span>      if (!widget.isScrollable &amp;&amp; effectiveTabAlignment == TabAlignment.fill) {</div>
+<div class='row cov'><span class='ln'>1003</span>        wrappedTabs[index] = Expanded(child: wrappedTabs[index]);</div>
+<div class='row nod'><span class='ln'>1004</span>      }</div>
+<div class='row nod'><span class='ln'>1005</span>    }</div>
+<div class='row nod'><span class='ln'>1006</span></div>
+<div class='row cov'><span class='ln'>1007</span>    Widget tHorizontalTabBar = CustomPaint(</div>
+<div class='row cov'><span class='ln'>1008</span>      painter: _indicatorPainter,</div>
+<div class='row cov'><span class='ln'>1009</span>      child: _TabStyle(</div>
+<div class='row nod'><span class='ln'>1010</span>        animation: kAlwaysDismissedAnimation,</div>
+<div class='row nod'><span class='ln'>1011</span>        selected: false,</div>
+<div class='row cov'><span class='ln'>1012</span>        labelColor: widget.labelColor,</div>
+<div class='row cov'><span class='ln'>1013</span>        unselectedLabelColor: widget.unselectedLabelColor,</div>
+<div class='row cov'><span class='ln'>1014</span>        labelStyle: widget.labelStyle,</div>
+<div class='row cov'><span class='ln'>1015</span>        unselectedLabelStyle: widget.unselectedLabelStyle,</div>
+<div class='row cov'><span class='ln'>1016</span>        child: _TabLabelBar(</div>
+<div class='row cov'><span class='ln'>1017</span>          onPerformLayout: _saveTabOffsets,</div>
+<div class='row cov'><span class='ln'>1018</span>          mainAxisSize: effectiveTabAlignment == TabAlignment.fill</div>
+<div class='row nod'><span class='ln'>1019</span>              ? MainAxisSize.max</div>
+<div class='row nod'><span class='ln'>1020</span>              : MainAxisSize.min,</div>
+<div class='row nod'><span class='ln'>1021</span>          children: wrappedTabs,</div>
+<div class='row nod'><span class='ln'>1022</span>        ),</div>
+<div class='row nod'><span class='ln'>1023</span>      ),</div>
+<div class='row nod'><span class='ln'>1024</span>    );</div>
+<div class='row nod'><span class='ln'>1025</span></div>
+<div class='row cov'><span class='ln'>1026</span>    if (widget.isScrollable) {</div>
+<div class='row nod'><span class='ln'>1027</span>      final effectivePadding =</div>
+<div class='row cov'><span class='ln'>1028</span>          effectiveTabAlignment == TabAlignment.startOffset</div>
+<div class='row nod'><span class='ln'>1029</span>              ? const EdgeInsetsDirectional.only(start: _kStartOffset)</div>
+<div class='row unc'><span class='ln'>1030</span>▶                   .add(widget.padding ?? EdgeInsets.zero)</div>
+<div class='row cov'><span class='ln'>1031</span>              : widget.padding;</div>
+<div class='row cov'><span class='ln'>1032</span>      _scrollController ??= _TabBarScrollController(this);</div>
+<div class='row cov'><span class='ln'>1033</span>      tHorizontalTabBar = SingleChildScrollView(</div>
+<div class='row cov'><span class='ln'>1034</span>        dragStartBehavior: widget.dragStartBehavior,</div>
+<div class='row nod'><span class='ln'>1035</span>        scrollDirection: Axis.horizontal,</div>
+<div class='row cov'><span class='ln'>1036</span>        controller: _scrollController,</div>
+<div class='row nod'><span class='ln'>1037</span>        padding: effectivePadding,</div>
+<div class='row cov'><span class='ln'>1038</span>        physics: widget.physics,</div>
+<div class='row nod'><span class='ln'>1039</span>        child: tHorizontalTabBar,</div>
+<div class='row nod'><span class='ln'>1040</span>      );</div>
+<div class='row cov'><span class='ln'>1041</span>    } else if (widget.padding != null) {</div>
+<div class='row unc'><span class='ln'>1042</span>▶       tHorizontalTabBar = Padding(</div>
+<div class='row unc'><span class='ln'>1043</span>▶         padding: widget.padding!,</div>
+<div class='row nod'><span class='ln'>1044</span>        child: tHorizontalTabBar,</div>
+<div class='row nod'><span class='ln'>1045</span>      );</div>
+<div class='row nod'><span class='ln'>1046</span>    }</div>
+<div class='row nod'><span class='ln'>1047</span></div>
+<div class='row nod'><span class='ln'>1048</span>    return tHorizontalTabBar;</div>
+<div class='row nod'><span class='ln'>1049</span>  }</div>
+<div class='row nod'><span class='ln'>1050</span>}</div>
+<div class='row nod'><span class='ln'>1051</span></div>
+<div class='row nod'><span class='ln'>1052</span>typedef _LayoutCallback = void Function(</div>
+<div class='row nod'><span class='ln'>1053</span>    List&lt;double&gt; xOffsets, TextDirection textDirection, double width);</div>
+<div class='row nod'><span class='ln'>1054</span></div>
+<div class='row nod'><span class='ln'>1055</span>// This class, and TabBarScrollPosition, only exist to handle the case</div>
+<div class='row nod'><span class='ln'>1056</span>// where a scrollable TabBar has a non-zero initialIndex.</div>
+<div class='row nod'><span class='ln'>1057</span>class _TabBarScrollController extends ScrollController {</div>
+<div class='row cov'><span class='ln'>1058</span>  _TabBarScrollController(this.tabBar);</div>
+<div class='row nod'><span class='ln'>1059</span></div>
+<div class='row nod'><span class='ln'>1060</span>  final _THorizontalTabBarState tabBar;</div>
+<div class='row nod'><span class='ln'>1061</span></div>
+<div class='row cov'><span class='ln'>1062</span>  @override</div>
+<div class='row nod'><span class='ln'>1063</span>  ScrollPosition createScrollPosition(ScrollPhysics physics,</div>
+<div class='row nod'><span class='ln'>1064</span>      ScrollContext context, ScrollPosition? oldPosition) {</div>
+<div class='row cov'><span class='ln'>1065</span>    return _TabBarScrollPosition(</div>
+<div class='row nod'><span class='ln'>1066</span>      physics: physics,</div>
+<div class='row nod'><span class='ln'>1067</span>      context: context,</div>
+<div class='row nod'><span class='ln'>1068</span>      oldPosition: oldPosition,</div>
+<div class='row cov'><span class='ln'>1069</span>      tabBar: tabBar,</div>
+<div class='row nod'><span class='ln'>1070</span>    );</div>
+<div class='row nod'><span class='ln'>1071</span>  }</div>
+<div class='row nod'><span class='ln'>1072</span>}</div>
+<div class='row nod'><span class='ln'>1073</span></div>
+<div class='row nod'><span class='ln'>1074</span>// This class, and TabBarScrollController, only exist to handle the case</div>
+<div class='row nod'><span class='ln'>1075</span>// where a scrollable TabBar has a non-zero initialIndex. In that case we can</div>
+<div class='row nod'><span class='ln'>1076</span>// only compute the scroll position&#x27;s initial scroll offset (the &quot;correct&quot;</div>
+<div class='row nod'><span class='ln'>1077</span>// pixels value) after the TabBar viewport width and scroll limits are known.</div>
+<div class='row nod'><span class='ln'>1078</span>class _TabBarScrollPosition extends ScrollPositionWithSingleContext {</div>
+<div class='row cov'><span class='ln'>1079</span>  _TabBarScrollPosition({</div>
+<div class='row nod'><span class='ln'>1080</span>    required ScrollPhysics physics,</div>
+<div class='row nod'><span class='ln'>1081</span>    required ScrollContext context,</div>
+<div class='row nod'><span class='ln'>1082</span>    required ScrollPosition? oldPosition,</div>
+<div class='row nod'><span class='ln'>1083</span>    required this.tabBar,</div>
+<div class='row cov'><span class='ln'>1084</span>  }) : super(</div>
+<div class='row nod'><span class='ln'>1085</span>          physics: physics,</div>
+<div class='row nod'><span class='ln'>1086</span>          context: context,</div>
+<div class='row nod'><span class='ln'>1087</span>          initialPixels: null,</div>
+<div class='row nod'><span class='ln'>1088</span>          oldPosition: oldPosition,</div>
+<div class='row nod'><span class='ln'>1089</span>        );</div>
+<div class='row nod'><span class='ln'>1090</span></div>
+<div class='row nod'><span class='ln'>1091</span>  final _THorizontalTabBarState tabBar;</div>
+<div class='row nod'><span class='ln'>1092</span></div>
+<div class='row nod'><span class='ln'>1093</span>  bool? _initialViewportDimensionWasZero;</div>
+<div class='row nod'><span class='ln'>1094</span></div>
+<div class='row cov'><span class='ln'>1095</span>  @override</div>
+<div class='row nod'><span class='ln'>1096</span>  bool applyContentDimensions(double minScrollExtent, double maxScrollExtent) {</div>
+<div class='row nod'><span class='ln'>1097</span>    var result = true;</div>
+<div class='row cov'><span class='ln'>1098</span>    if (_initialViewportDimensionWasZero != true) {</div>
+<div class='row nod'><span class='ln'>1099</span>      // If the viewport never had a non-zero dimension, we just want to jump</div>
+<div class='row nod'><span class='ln'>1100</span>      // to the initial scroll position to avoid strange scrolling effects in</div>
+<div class='row nod'><span class='ln'>1101</span>      // release mode: In release mode, the viewport temporarily may have a</div>
+<div class='row nod'><span class='ln'>1102</span>      // dimension of zero before the actual dimension is calculated. In that</div>
+<div class='row nod'><span class='ln'>1103</span>      // scenario, setting the actual dimension would cause a strange scroll</div>
+<div class='row nod'><span class='ln'>1104</span>      // effect without this guard because the super call below would starts a</div>
+<div class='row nod'><span class='ln'>1105</span>      // ballistic scroll activity.</div>
+<div class='row cov'><span class='ln'>1106</span>      _initialViewportDimensionWasZero = viewportDimension != 0.0;</div>
+<div class='row cov'><span class='ln'>1107</span>      correctPixels(tabBar._initialScrollOffset(</div>
+<div class='row cov'><span class='ln'>1108</span>          viewportDimension, minScrollExtent, maxScrollExtent));</div>
+<div class='row nod'><span class='ln'>1109</span>      result = false;</div>
+<div class='row nod'><span class='ln'>1110</span>    }</div>
+<div class='row cov'><span class='ln'>1111</span>    return super.applyContentDimensions(minScrollExtent, maxScrollExtent) &amp;&amp;</div>
+<div class='row nod'><span class='ln'>1112</span>        result;</div>
+<div class='row nod'><span class='ln'>1113</span>  }</div>
+<div class='row nod'><span class='ln'>1114</span>}</div>
+<div class='row nod'><span class='ln'>1115</span></div>
+<div class='row nod'><span class='ln'>1116</span>class _TabLabelBarRenderer extends RenderFlex {</div>
+<div class='row cov'><span class='ln'>1117</span>  _TabLabelBarRenderer({</div>
+<div class='row nod'><span class='ln'>1118</span>    List&lt;RenderBox&gt;? children,</div>
+<div class='row nod'><span class='ln'>1119</span>    required Axis direction,</div>
+<div class='row nod'><span class='ln'>1120</span>    required MainAxisSize mainAxisSize,</div>
+<div class='row nod'><span class='ln'>1121</span>    required MainAxisAlignment mainAxisAlignment,</div>
+<div class='row nod'><span class='ln'>1122</span>    required CrossAxisAlignment crossAxisAlignment,</div>
+<div class='row nod'><span class='ln'>1123</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>1124</span>    required VerticalDirection verticalDirection,</div>
+<div class='row nod'><span class='ln'>1125</span>    required this.onPerformLayout,</div>
+<div class='row cov'><span class='ln'>1126</span>  }) : super(</div>
+<div class='row nod'><span class='ln'>1127</span>          children: children,</div>
+<div class='row nod'><span class='ln'>1128</span>          direction: direction,</div>
+<div class='row nod'><span class='ln'>1129</span>          mainAxisSize: mainAxisSize,</div>
+<div class='row nod'><span class='ln'>1130</span>          mainAxisAlignment: mainAxisAlignment,</div>
+<div class='row nod'><span class='ln'>1131</span>          crossAxisAlignment: crossAxisAlignment,</div>
+<div class='row nod'><span class='ln'>1132</span>          textDirection: textDirection,</div>
+<div class='row nod'><span class='ln'>1133</span>          verticalDirection: verticalDirection,</div>
+<div class='row nod'><span class='ln'>1134</span>        );</div>
+<div class='row nod'><span class='ln'>1135</span></div>
+<div class='row nod'><span class='ln'>1136</span>  _LayoutCallback onPerformLayout;</div>
+<div class='row nod'><span class='ln'>1137</span></div>
+<div class='row cov'><span class='ln'>1138</span>  @override</div>
+<div class='row nod'><span class='ln'>1139</span>  void performLayout() {</div>
+<div class='row cov'><span class='ln'>1140</span>    super.performLayout();</div>
+<div class='row nod'><span class='ln'>1141</span>    // xOffsets will contain childCount+1 values, giving the offsets of the</div>
+<div class='row nod'><span class='ln'>1142</span>    // leading edge of the first tab as the first value, of the leading edge of</div>
+<div class='row nod'><span class='ln'>1143</span>    // the each subsequent tab as each subsequent value, and of the trailing</div>
+<div class='row nod'><span class='ln'>1144</span>    // edge of the last tab as the last value.</div>
+<div class='row cov'><span class='ln'>1145</span>    var child = firstChild;</div>
+<div class='row cov'><span class='ln'>1146</span>    final xOffsets = &lt;double&gt;[];</div>
+<div class='row nod'><span class='ln'>1147</span>    while (child != null) {</div>
+<div class='row cov'><span class='ln'>1148</span>      final childParentData = child.parentData! as FlexParentData;</div>
+<div class='row cov'><span class='ln'>1149</span>      xOffsets.add(childParentData.offset.dx);</div>
+<div class='row cov'><span class='ln'>1150</span>      assert(child.parentData == childParentData);</div>
+<div class='row cov'><span class='ln'>1151</span>      child = childParentData.nextSibling;</div>
+<div class='row nod'><span class='ln'>1152</span>    }</div>
+<div class='row cov'><span class='ln'>1153</span>    assert(textDirection != null);</div>
+<div class='row cov'><span class='ln'>1154</span>    switch (textDirection!) {</div>
+<div class='row cov'><span class='ln'>1155</span>      case TextDirection.rtl:</div>
+<div class='row unc'><span class='ln'>1156</span>▶         xOffsets.insert(0, size.width);</div>
+<div class='row nod'><span class='ln'>1157</span>        break;</div>
+<div class='row cov'><span class='ln'>1158</span>      case TextDirection.ltr:</div>
+<div class='row cov'><span class='ln'>1159</span>        xOffsets.add(size.width);</div>
+<div class='row nod'><span class='ln'>1160</span>        break;</div>
+<div class='row nod'><span class='ln'>1161</span>    }</div>
+<div class='row cov'><span class='ln'>1162</span>    onPerformLayout(xOffsets, textDirection!, size.width);</div>
+<div class='row nod'><span class='ln'>1163</span>  }</div>
+<div class='row nod'><span class='ln'>1164</span>}</div>
+<div class='row nod'><span class='ln'>1165</span></div>
+<div class='row nod'><span class='ln'>1166</span>// This class and its renderer class only exist to report the widths of the tabs</div>
+<div class='row nod'><span class='ln'>1167</span>// upon layout. The tab widths are only used at paint time (see _IndicatorPainter)</div>
+<div class='row nod'><span class='ln'>1168</span>// or in response to input.</div>
+<div class='row nod'><span class='ln'>1169</span>class _TabLabelBar extends Flex {</div>
+<div class='row cov'><span class='ln'>1170</span>  const _TabLabelBar({</div>
+<div class='row nod'><span class='ln'>1171</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>1172</span>    List&lt;Widget&gt; children = const &lt;Widget&gt;[],</div>
+<div class='row nod'><span class='ln'>1173</span>    required this.onPerformLayout,</div>
+<div class='row nod'><span class='ln'>1174</span>    required super.mainAxisSize,</div>
+<div class='row cov'><span class='ln'>1175</span>  }) : super(</div>
+<div class='row nod'><span class='ln'>1176</span>          key: key,</div>
+<div class='row nod'><span class='ln'>1177</span>          children: children,</div>
+<div class='row nod'><span class='ln'>1178</span>          direction: Axis.horizontal,</div>
+<div class='row nod'><span class='ln'>1179</span>          mainAxisAlignment: MainAxisAlignment.start,</div>
+<div class='row nod'><span class='ln'>1180</span>          crossAxisAlignment: CrossAxisAlignment.center,</div>
+<div class='row nod'><span class='ln'>1181</span>          verticalDirection: VerticalDirection.down,</div>
+<div class='row nod'><span class='ln'>1182</span>        );</div>
+<div class='row nod'><span class='ln'>1183</span></div>
+<div class='row nod'><span class='ln'>1184</span>  final _LayoutCallback onPerformLayout;</div>
+<div class='row nod'><span class='ln'>1185</span></div>
+<div class='row cov'><span class='ln'>1186</span>  @override</div>
+<div class='row nod'><span class='ln'>1187</span>  RenderFlex createRenderObject(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>1188</span>    return _TabLabelBarRenderer(</div>
+<div class='row cov'><span class='ln'>1189</span>      direction: direction,</div>
+<div class='row cov'><span class='ln'>1190</span>      mainAxisAlignment: mainAxisAlignment,</div>
+<div class='row cov'><span class='ln'>1191</span>      mainAxisSize: mainAxisSize,</div>
+<div class='row cov'><span class='ln'>1192</span>      crossAxisAlignment: crossAxisAlignment,</div>
+<div class='row cov'><span class='ln'>1193</span>      textDirection: getEffectiveTextDirection(context)!,</div>
+<div class='row cov'><span class='ln'>1194</span>      verticalDirection: verticalDirection,</div>
+<div class='row cov'><span class='ln'>1195</span>      onPerformLayout: onPerformLayout,</div>
+<div class='row nod'><span class='ln'>1196</span>    );</div>
+<div class='row nod'><span class='ln'>1197</span>  }</div>
+<div class='row nod'><span class='ln'>1198</span></div>
+<div class='row cov'><span class='ln'>1199</span>  @override</div>
+<div class='row nod'><span class='ln'>1200</span>  void updateRenderObject(</div>
+<div class='row nod'><span class='ln'>1201</span>      BuildContext context, _TabLabelBarRenderer renderObject) {</div>
+<div class='row cov'><span class='ln'>1202</span>    super.updateRenderObject(context, renderObject);</div>
+<div class='row cov'><span class='ln'>1203</span>    renderObject.onPerformLayout = onPerformLayout;</div>
+<div class='row nod'><span class='ln'>1204</span>  }</div>
+<div class='row nod'><span class='ln'>1205</span>}</div>
+<div class='row nod'><span class='ln'>1206</span></div>
+<div class='row nod'><span class='ln'>1207</span>class _DragAnimation extends Animation&lt;double&gt;</div>
+<div class='row nod'><span class='ln'>1208</span>    with AnimationWithParentMixin&lt;double&gt; {</div>
+<div class='row cov'><span class='ln'>1209</span>  _DragAnimation(this.controller, this.index);</div>
+<div class='row nod'><span class='ln'>1210</span></div>
+<div class='row nod'><span class='ln'>1211</span>  final TabController controller;</div>
+<div class='row nod'><span class='ln'>1212</span>  final int index;</div>
+<div class='row nod'><span class='ln'>1213</span></div>
+<div class='row cov'><span class='ln'>1214</span>  @override</div>
+<div class='row cov'><span class='ln'>1215</span>  Animation&lt;double&gt; get parent =&gt; controller.animation!;</div>
+<div class='row nod'><span class='ln'>1216</span></div>
+<div class='row cov'><span class='ln'>1217</span>  @override</div>
+<div class='row nod'><span class='ln'>1218</span>  void removeStatusListener(AnimationStatusListener listener) {</div>
+<div class='row cov'><span class='ln'>1219</span>    if (controller.animation != null) {</div>
+<div class='row cov'><span class='ln'>1220</span>      super.removeStatusListener(listener);</div>
+<div class='row nod'><span class='ln'>1221</span>    }</div>
+<div class='row nod'><span class='ln'>1222</span>  }</div>
+<div class='row nod'><span class='ln'>1223</span></div>
+<div class='row cov'><span class='ln'>1224</span>  @override</div>
+<div class='row nod'><span class='ln'>1225</span>  void removeListener(VoidCallback listener) {</div>
+<div class='row cov'><span class='ln'>1226</span>    if (controller.animation != null) {</div>
+<div class='row cov'><span class='ln'>1227</span>      super.removeListener(listener);</div>
+<div class='row nod'><span class='ln'>1228</span>    }</div>
+<div class='row nod'><span class='ln'>1229</span>  }</div>
+<div class='row nod'><span class='ln'>1230</span></div>
+<div class='row cov'><span class='ln'>1231</span>  @override</div>
+<div class='row nod'><span class='ln'>1232</span>  double get value {</div>
+<div class='row cov'><span class='ln'>1233</span>    assert(!controller.indexIsChanging);</div>
+<div class='row cov'><span class='ln'>1234</span>    final controllerMaxValue = (controller.length - 1).toDouble();</div>
+<div class='row nod'><span class='ln'>1235</span>    final controllerValue =</div>
+<div class='row cov'><span class='ln'>1236</span>        controller.animation!.value.clamp(0.0, controllerMaxValue);</div>
+<div class='row cov'><span class='ln'>1237</span>    return (controllerValue - index.toDouble()).abs().clamp(0.0, 1.0);</div>
+<div class='row nod'><span class='ln'>1238</span>  }</div>
+<div class='row nod'><span class='ln'>1239</span>}</div>
+<div class='row nod'><span class='ln'>1240</span></div>
+<div class='row nod'><span class='ln'>1241</span>/// A page view that displays the widget which corresponds to the currently</div>
+<div class='row nod'><span class='ln'>1242</span>/// selected tab.</div>
+<div class='row nod'><span class='ln'>1243</span>///</div>
+<div class='row nod'><span class='ln'>1244</span>/// This widget is typically used in conjunction with a [THorizontalTabBar].</div>
+<div class='row nod'><span class='ln'>1245</span>///</div>
+<div class='row nod'><span class='ln'>1246</span>/// {@youtube 560 315 https://www.youtube.com/watch?v=POtoEH-5l40}</div>
+<div class='row nod'><span class='ln'>1247</span>///</div>
+<div class='row nod'><span class='ln'>1248</span>/// If a [TabController] is not provided, then there must be a [DefaultTabController]</div>
+<div class='row nod'><span class='ln'>1249</span>/// ancestor.</div>
+<div class='row nod'><span class='ln'>1250</span>///</div>
+<div class='row nod'><span class='ln'>1251</span>/// The tab controller&#x27;s [TabController.length] must equal the length of the</div>
+<div class='row nod'><span class='ln'>1252</span>/// [children] list and the length of the [THorizontalTabBar.tabs] list.</div>
+<div class='row nod'><span class='ln'>1253</span>///</div>
+<div class='row nod'><span class='ln'>1254</span>/// To see a sample implementation, visit the [TabController] documentation.</div>
+<div class='row nod'><span class='ln'>1255</span>class THorizontalTabBarView extends StatefulWidget {</div>
+<div class='row nod'><span class='ln'>1256</span>  /// Creates a page view with one child per tab.</div>
+<div class='row nod'><span class='ln'>1257</span>  ///</div>
+<div class='row nod'><span class='ln'>1258</span>  /// The length of [children] must be the same as the [controller]&#x27;s length.</div>
+<div class='row unc'><span class='ln'>1259</span>▶   const THorizontalTabBarView({</div>
+<div class='row nod'><span class='ln'>1260</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>1261</span>    required this.children,</div>
+<div class='row nod'><span class='ln'>1262</span>    this.controller,</div>
+<div class='row nod'><span class='ln'>1263</span>    this.physics,</div>
+<div class='row nod'><span class='ln'>1264</span>    this.dragStartBehavior = DragStartBehavior.start,</div>
+<div class='row unc'><span class='ln'>1265</span>▶   }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>1266</span></div>
+<div class='row nod'><span class='ln'>1267</span>  /// This widget&#x27;s selection and animation state.</div>
+<div class='row nod'><span class='ln'>1268</span>  ///</div>
+<div class='row nod'><span class='ln'>1269</span>  /// If [TabController] is not provided, then the value of [DefaultTabController.of]</div>
+<div class='row nod'><span class='ln'>1270</span>  /// will be used.</div>
+<div class='row nod'><span class='ln'>1271</span>  final TabController? controller;</div>
+<div class='row nod'><span class='ln'>1272</span></div>
+<div class='row nod'><span class='ln'>1273</span>  /// One widget per tab.</div>
+<div class='row nod'><span class='ln'>1274</span>  ///</div>
+<div class='row nod'><span class='ln'>1275</span>  /// Its length must match the length of the [THorizontalTabBar.tabs]</div>
+<div class='row nod'><span class='ln'>1276</span>  /// list, as well as the [controller]&#x27;s [TabController.length].</div>
+<div class='row nod'><span class='ln'>1277</span>  final List&lt;Widget&gt; children;</div>
+<div class='row nod'><span class='ln'>1278</span></div>
+<div class='row nod'><span class='ln'>1279</span>  /// How the page view should respond to user input.</div>
+<div class='row nod'><span class='ln'>1280</span>  ///</div>
+<div class='row nod'><span class='ln'>1281</span>  /// For example, determines how the page view continues to animate after the</div>
+<div class='row nod'><span class='ln'>1282</span>  /// user stops dragging the page view.</div>
+<div class='row nod'><span class='ln'>1283</span>  ///</div>
+<div class='row nod'><span class='ln'>1284</span>  /// The physics are modified to snap to page boundaries using</div>
+<div class='row nod'><span class='ln'>1285</span>  /// [PageScrollPhysics] prior to being used.</div>
+<div class='row nod'><span class='ln'>1286</span>  ///</div>
+<div class='row nod'><span class='ln'>1287</span>  /// Defaults to matching platform conventions.</div>
+<div class='row nod'><span class='ln'>1288</span>  final ScrollPhysics? physics;</div>
+<div class='row nod'><span class='ln'>1289</span></div>
+<div class='row nod'><span class='ln'>1290</span>  /// {@macro flutter.widgets.scrollable.dragStartBehavior}</div>
+<div class='row nod'><span class='ln'>1291</span>  final DragStartBehavior dragStartBehavior;</div>
+<div class='row nod'><span class='ln'>1292</span></div>
+<div class='row unc'><span class='ln'>1293</span>▶   @override</div>
+<div class='row unc'><span class='ln'>1294</span>▶   State&lt;THorizontalTabBarView&gt; createState() =&gt; _THorizontalTabBarViewState();</div>
+<div class='row nod'><span class='ln'>1295</span>}</div>
+<div class='row nod'><span class='ln'>1296</span></div>
+<div class='row nod'><span class='ln'>1297</span>class _THorizontalTabBarViewState extends State&lt;THorizontalTabBarView&gt; {</div>
+<div class='row nod'><span class='ln'>1298</span>  TabController? _controller;</div>
+<div class='row nod'><span class='ln'>1299</span>  late PageController _pageController;</div>
+<div class='row nod'><span class='ln'>1300</span>  late List&lt;Widget&gt; _children;</div>
+<div class='row nod'><span class='ln'>1301</span>  late List&lt;Widget&gt; _childrenWithKey;</div>
+<div class='row nod'><span class='ln'>1302</span>  int? _currentIndex;</div>
+<div class='row nod'><span class='ln'>1303</span>  int _warpUnderwayCount = 0;</div>
+<div class='row nod'><span class='ln'>1304</span></div>
+<div class='row nod'><span class='ln'>1305</span>  // If the THorizontalTabBarView is rebuilt with a new tab controller, the caller should</div>
+<div class='row nod'><span class='ln'>1306</span>  // dispose the old one. In that case the old controller&#x27;s animation will be</div>
+<div class='row nod'><span class='ln'>1307</span>  // null and should not be accessed.</div>
+<div class='row unc'><span class='ln'>1308</span>▶   bool get _controllerIsValid =&gt; _controller?.animation != null;</div>
+<div class='row nod'><span class='ln'>1309</span></div>
+<div class='row unc'><span class='ln'>1310</span>▶   void _updateTabController() {</div>
+<div class='row unc'><span class='ln'>1311</span>▶     final newController = widget.controller ?? DefaultTabController.of(context);</div>
+<div class='row unc'><span class='ln'>1312</span>▶     assert(() {</div>
+<div class='row nod'><span class='ln'>1313</span>      return true;</div>
+<div class='row unc'><span class='ln'>1314</span>▶     }());</div>
+<div class='row nod'><span class='ln'>1315</span></div>
+<div class='row unc'><span class='ln'>1316</span>▶     if (newController == _controller) {</div>
+<div class='row nod'><span class='ln'>1317</span>      return;</div>
+<div class='row nod'><span class='ln'>1318</span>    }</div>
+<div class='row nod'><span class='ln'>1319</span></div>
+<div class='row unc'><span class='ln'>1320</span>▶     if (_controllerIsValid) {</div>
+<div class='row unc'><span class='ln'>1321</span>▶       _controller!.animation!.removeListener(_handleTabControllerAnimationTick);</div>
+<div class='row nod'><span class='ln'>1322</span>    }</div>
+<div class='row unc'><span class='ln'>1323</span>▶     _controller = newController;</div>
+<div class='row unc'><span class='ln'>1324</span>▶     if (_controller != null) {</div>
+<div class='row unc'><span class='ln'>1325</span>▶       _controller!.animation!.addListener(_handleTabControllerAnimationTick);</div>
+<div class='row nod'><span class='ln'>1326</span>    }</div>
+<div class='row nod'><span class='ln'>1327</span>  }</div>
+<div class='row nod'><span class='ln'>1328</span></div>
+<div class='row unc'><span class='ln'>1329</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1330</span>  void initState() {</div>
+<div class='row unc'><span class='ln'>1331</span>▶     super.initState();</div>
+<div class='row unc'><span class='ln'>1332</span>▶     _updateChildren();</div>
+<div class='row nod'><span class='ln'>1333</span>  }</div>
+<div class='row nod'><span class='ln'>1334</span></div>
+<div class='row unc'><span class='ln'>1335</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1336</span>  void didChangeDependencies() {</div>
+<div class='row unc'><span class='ln'>1337</span>▶     super.didChangeDependencies();</div>
+<div class='row unc'><span class='ln'>1338</span>▶     _updateTabController();</div>
+<div class='row unc'><span class='ln'>1339</span>▶     _currentIndex = _controller!.index;</div>
+<div class='row unc'><span class='ln'>1340</span>▶     _pageController = PageController(initialPage: _currentIndex!);</div>
+<div class='row nod'><span class='ln'>1341</span>  }</div>
+<div class='row nod'><span class='ln'>1342</span></div>
+<div class='row unc'><span class='ln'>1343</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1344</span>  void didUpdateWidget(THorizontalTabBarView oldWidget) {</div>
+<div class='row unc'><span class='ln'>1345</span>▶     super.didUpdateWidget(oldWidget);</div>
+<div class='row unc'><span class='ln'>1346</span>▶     if (widget.controller != oldWidget.controller) {</div>
+<div class='row unc'><span class='ln'>1347</span>▶       _updateTabController();</div>
+<div class='row unc'><span class='ln'>1348</span>▶       _currentIndex = _controller!.index;</div>
+<div class='row unc'><span class='ln'>1349</span>▶       _pageController.jumpToPage(_currentIndex!);</div>
+<div class='row nod'><span class='ln'>1350</span>    }</div>
+<div class='row unc'><span class='ln'>1351</span>▶     if (widget.children != oldWidget.children &amp;&amp; _warpUnderwayCount == 0) {</div>
+<div class='row unc'><span class='ln'>1352</span>▶       _updateChildren();</div>
+<div class='row nod'><span class='ln'>1353</span>    }</div>
+<div class='row nod'><span class='ln'>1354</span>  }</div>
+<div class='row nod'><span class='ln'>1355</span></div>
+<div class='row unc'><span class='ln'>1356</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1357</span>  void dispose() {</div>
+<div class='row unc'><span class='ln'>1358</span>▶     if (_controllerIsValid) {</div>
+<div class='row unc'><span class='ln'>1359</span>▶       _controller!.animation!.removeListener(_handleTabControllerAnimationTick);</div>
+<div class='row nod'><span class='ln'>1360</span>    }</div>
+<div class='row unc'><span class='ln'>1361</span>▶     _controller = null;</div>
+<div class='row nod'><span class='ln'>1362</span>    // We don&#x27;t own the _controller Animation, so it&#x27;s not disposed here.</div>
+<div class='row unc'><span class='ln'>1363</span>▶     super.dispose();</div>
+<div class='row nod'><span class='ln'>1364</span>  }</div>
+<div class='row nod'><span class='ln'>1365</span></div>
+<div class='row unc'><span class='ln'>1366</span>▶   void _updateChildren() {</div>
+<div class='row unc'><span class='ln'>1367</span>▶     _children = widget.children;</div>
+<div class='row unc'><span class='ln'>1368</span>▶     _childrenWithKey = KeyedSubtree.ensureUniqueKeysForList(widget.children);</div>
+<div class='row nod'><span class='ln'>1369</span>  }</div>
+<div class='row nod'><span class='ln'>1370</span></div>
+<div class='row unc'><span class='ln'>1371</span>▶   void _handleTabControllerAnimationTick() {</div>
+<div class='row unc'><span class='ln'>1372</span>▶     if (_warpUnderwayCount &gt; 0 || !_controller!.indexIsChanging) {</div>
+<div class='row nod'><span class='ln'>1373</span>      return;</div>
+<div class='row nod'><span class='ln'>1374</span>    } // This widget is driving the controller&#x27;s animation.</div>
+<div class='row nod'><span class='ln'>1375</span></div>
+<div class='row unc'><span class='ln'>1376</span>▶     if (_controller!.index != _currentIndex) {</div>
+<div class='row unc'><span class='ln'>1377</span>▶       _currentIndex = _controller!.index;</div>
+<div class='row unc'><span class='ln'>1378</span>▶       _warpToCurrentIndex();</div>
+<div class='row nod'><span class='ln'>1379</span>    }</div>
+<div class='row nod'><span class='ln'>1380</span>  }</div>
+<div class='row nod'><span class='ln'>1381</span></div>
+<div class='row unc'><span class='ln'>1382</span>▶   Future&lt;void&gt; _warpToCurrentIndex() async {</div>
+<div class='row unc'><span class='ln'>1383</span>▶     if (!mounted) {</div>
+<div class='row unc'><span class='ln'>1384</span>▶       return Future&lt;void&gt;.value();</div>
+<div class='row nod'><span class='ln'>1385</span>    }</div>
+<div class='row nod'><span class='ln'>1386</span></div>
+<div class='row unc'><span class='ln'>1387</span>▶     if (_pageController.page == _currentIndex!.toDouble()) {</div>
+<div class='row unc'><span class='ln'>1388</span>▶       return Future&lt;void&gt;.value();</div>
+<div class='row nod'><span class='ln'>1389</span>    }</div>
+<div class='row nod'><span class='ln'>1390</span></div>
+<div class='row unc'><span class='ln'>1391</span>▶     final duration = _controller!.animationDuration;</div>
+<div class='row nod'><span class='ln'>1392</span></div>
+<div class='row unc'><span class='ln'>1393</span>▶     if (duration == Duration.zero) {</div>
+<div class='row unc'><span class='ln'>1394</span>▶       _pageController.jumpToPage(_currentIndex!);</div>
+<div class='row unc'><span class='ln'>1395</span>▶       return Future&lt;void&gt;.value();</div>
+<div class='row nod'><span class='ln'>1396</span>    }</div>
+<div class='row nod'><span class='ln'>1397</span></div>
+<div class='row unc'><span class='ln'>1398</span>▶     final previousIndex = _controller!.previousIndex;</div>
+<div class='row nod'><span class='ln'>1399</span></div>
+<div class='row unc'><span class='ln'>1400</span>▶     if ((_currentIndex! - previousIndex).abs() == 1) {</div>
+<div class='row unc'><span class='ln'>1401</span>▶       _warpUnderwayCount += 1;</div>
+<div class='row unc'><span class='ln'>1402</span>▶       await _pageController.animateToPage(_currentIndex!,</div>
+<div class='row nod'><span class='ln'>1403</span>          duration: duration, curve: Curves.ease);</div>
+<div class='row unc'><span class='ln'>1404</span>▶       _warpUnderwayCount -= 1;</div>
+<div class='row unc'><span class='ln'>1405</span>▶       return Future&lt;void&gt;.value();</div>
+<div class='row nod'><span class='ln'>1406</span>    }</div>
+<div class='row nod'><span class='ln'>1407</span></div>
+<div class='row unc'><span class='ln'>1408</span>▶     assert((_currentIndex! - previousIndex).abs() &gt; 1);</div>
+<div class='row unc'><span class='ln'>1409</span>▶     final initialPage = _currentIndex! &gt; previousIndex</div>
+<div class='row unc'><span class='ln'>1410</span>▶         ? _currentIndex! - 1</div>
+<div class='row unc'><span class='ln'>1411</span>▶         : _currentIndex! + 1;</div>
+<div class='row unc'><span class='ln'>1412</span>▶     final originalChildren = _childrenWithKey;</div>
+<div class='row unc'><span class='ln'>1413</span>▶     setState(() {</div>
+<div class='row unc'><span class='ln'>1414</span>▶       _warpUnderwayCount += 1;</div>
+<div class='row nod'><span class='ln'>1415</span></div>
+<div class='row unc'><span class='ln'>1416</span>▶       _childrenWithKey = List&lt;Widget&gt;.of(_childrenWithKey, growable: false);</div>
+<div class='row unc'><span class='ln'>1417</span>▶       final temp = _childrenWithKey[initialPage];</div>
+<div class='row unc'><span class='ln'>1418</span>▶       _childrenWithKey[initialPage] = _childrenWithKey[previousIndex];</div>
+<div class='row unc'><span class='ln'>1419</span>▶       _childrenWithKey[previousIndex] = temp;</div>
+<div class='row nod'><span class='ln'>1420</span>    });</div>
+<div class='row unc'><span class='ln'>1421</span>▶     _pageController.jumpToPage(initialPage);</div>
+<div class='row nod'><span class='ln'>1422</span></div>
+<div class='row unc'><span class='ln'>1423</span>▶     await _pageController.animateToPage(_currentIndex!,</div>
+<div class='row nod'><span class='ln'>1424</span>        duration: duration, curve: Curves.ease);</div>
+<div class='row unc'><span class='ln'>1425</span>▶     if (!mounted) {</div>
+<div class='row unc'><span class='ln'>1426</span>▶       return Future&lt;void&gt;.value();</div>
+<div class='row nod'><span class='ln'>1427</span>    }</div>
+<div class='row unc'><span class='ln'>1428</span>▶     setState(() {</div>
+<div class='row unc'><span class='ln'>1429</span>▶       _warpUnderwayCount -= 1;</div>
+<div class='row unc'><span class='ln'>1430</span>▶       if (widget.children != _children) {</div>
+<div class='row unc'><span class='ln'>1431</span>▶         _updateChildren();</div>
+<div class='row nod'><span class='ln'>1432</span>      } else {</div>
+<div class='row unc'><span class='ln'>1433</span>▶         _childrenWithKey = originalChildren;</div>
+<div class='row nod'><span class='ln'>1434</span>      }</div>
+<div class='row nod'><span class='ln'>1435</span>    });</div>
+<div class='row nod'><span class='ln'>1436</span>  }</div>
+<div class='row nod'><span class='ln'>1437</span></div>
+<div class='row nod'><span class='ln'>1438</span>  // Called when the PageView scrolls</div>
+<div class='row unc'><span class='ln'>1439</span>▶   bool _handleScrollNotification(ScrollNotification notification) {</div>
+<div class='row unc'><span class='ln'>1440</span>▶     if (_warpUnderwayCount &gt; 0) {</div>
+<div class='row nod'><span class='ln'>1441</span>      return false;</div>
+<div class='row nod'><span class='ln'>1442</span>    }</div>
+<div class='row nod'><span class='ln'>1443</span></div>
+<div class='row unc'><span class='ln'>1444</span>▶     if (notification.depth != 0) {</div>
+<div class='row nod'><span class='ln'>1445</span>      return false;</div>
+<div class='row nod'><span class='ln'>1446</span>    }</div>
+<div class='row nod'><span class='ln'>1447</span></div>
+<div class='row unc'><span class='ln'>1448</span>▶     _warpUnderwayCount += 1;</div>
+<div class='row unc'><span class='ln'>1449</span>▶     if (notification is ScrollUpdateNotification &amp;&amp;</div>
+<div class='row unc'><span class='ln'>1450</span>▶         !_controller!.indexIsChanging) {</div>
+<div class='row unc'><span class='ln'>1451</span>▶       if ((_pageController.page! - _controller!.index).abs() &gt; 1.0) {</div>
+<div class='row unc'><span class='ln'>1452</span>▶         _controller!.index = _pageController.page!.round();</div>
+<div class='row unc'><span class='ln'>1453</span>▶         _currentIndex = _controller!.index;</div>
+<div class='row nod'><span class='ln'>1454</span>      }</div>
+<div class='row unc'><span class='ln'>1455</span>▶       _controller!.offset =</div>
+<div class='row unc'><span class='ln'>1456</span>▶           (_pageController.page! - _controller!.index).clamp(-1.0, 1.0);</div>
+<div class='row unc'><span class='ln'>1457</span>▶     } else if (notification is ScrollEndNotification) {</div>
+<div class='row unc'><span class='ln'>1458</span>▶       _controller!.index = _pageController.page!.round();</div>
+<div class='row unc'><span class='ln'>1459</span>▶       _currentIndex = _controller!.index;</div>
+<div class='row unc'><span class='ln'>1460</span>▶       if (!_controller!.indexIsChanging) {</div>
+<div class='row unc'><span class='ln'>1461</span>▶         _controller!.offset =</div>
+<div class='row unc'><span class='ln'>1462</span>▶             (_pageController.page! - _controller!.index).clamp(-1.0, 1.0);</div>
+<div class='row nod'><span class='ln'>1463</span>      }</div>
+<div class='row nod'><span class='ln'>1464</span>    }</div>
+<div class='row unc'><span class='ln'>1465</span>▶     _warpUnderwayCount -= 1;</div>
+<div class='row nod'><span class='ln'>1466</span></div>
+<div class='row nod'><span class='ln'>1467</span>    return false;</div>
+<div class='row nod'><span class='ln'>1468</span>  }</div>
+<div class='row nod'><span class='ln'>1469</span></div>
+<div class='row unc'><span class='ln'>1470</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1471</span>  Widget build(BuildContext context) {</div>
+<div class='row unc'><span class='ln'>1472</span>▶     assert(() {</div>
+<div class='row unc'><span class='ln'>1473</span>▶       if (_controller!.length != widget.children.length) {</div>
+<div class='row unc'><span class='ln'>1474</span>▶         throw FlutterError(</div>
+<div class='row unc'><span class='ln'>1475</span>▶           &quot;Controller&#x27;s length property (${_controller!.length}) does not match the &quot;</div>
+<div class='row unc'><span class='ln'>1476</span>▶           &quot;number of tabs (${widget.children.length}) present in THorizontalTabBar&#x27;s tabs property.&quot;,</div>
+<div class='row nod'><span class='ln'>1477</span>        );</div>
+<div class='row nod'><span class='ln'>1478</span>      }</div>
+<div class='row nod'><span class='ln'>1479</span>      return true;</div>
+<div class='row unc'><span class='ln'>1480</span>▶     }());</div>
+<div class='row unc'><span class='ln'>1481</span>▶     return NotificationListener&lt;ScrollNotification&gt;(</div>
+<div class='row unc'><span class='ln'>1482</span>▶       onNotification: _handleScrollNotification,</div>
+<div class='row unc'><span class='ln'>1483</span>▶       child: PageView(</div>
+<div class='row unc'><span class='ln'>1484</span>▶         dragStartBehavior: widget.dragStartBehavior,</div>
+<div class='row unc'><span class='ln'>1485</span>▶         controller: _pageController,</div>
+<div class='row unc'><span class='ln'>1486</span>▶         physics: widget.physics == null</div>
+<div class='row unc'><span class='ln'>1487</span>▶             ? const PageScrollPhysics().applyTo(const ClampingScrollPhysics())</div>
+<div class='row unc'><span class='ln'>1488</span>▶             : const PageScrollPhysics().applyTo(widget.physics),</div>
+<div class='row unc'><span class='ln'>1489</span>▶         children: _childrenWithKey,</div>
+<div class='row nod'><span class='ln'>1490</span>      ),</div>
+<div class='row nod'><span class='ln'>1491</span>    );</div>
+<div class='row nod'><span class='ln'>1492</span>  }</div>
+<div class='row nod'><span class='ln'>1493</span>}</div>
+<div class='row nod'><span class='ln'>1494</span></div>
+<div class='row nod'><span class='ln'>1495</span>/// Displays a single circle with the specified border and background colors.</div>
+<div class='row nod'><span class='ln'>1496</span>///</div>
+<div class='row nod'><span class='ln'>1497</span>/// Used by [TabPageSelector] to indicate the selected page.</div>
+<div class='row nod'><span class='ln'>1498</span>class TabPageSelectorIndicator extends StatelessWidget {</div>
+<div class='row nod'><span class='ln'>1499</span>  /// Creates an indicator used by [TabPageSelector].</div>
+<div class='row nod'><span class='ln'>1500</span>  ///</div>
+<div class='row nod'><span class='ln'>1501</span>  /// The [backgroundColor], [borderColor], and [size] parameters must not be null.</div>
+<div class='row unc'><span class='ln'>1502</span>▶   const TabPageSelectorIndicator({</div>
+<div class='row nod'><span class='ln'>1503</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>1504</span>    required this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>1505</span>    required this.borderColor,</div>
+<div class='row nod'><span class='ln'>1506</span>    required this.size,</div>
+<div class='row unc'><span class='ln'>1507</span>▶   }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>1508</span></div>
+<div class='row nod'><span class='ln'>1509</span>  /// The indicator circle&#x27;s background color.</div>
+<div class='row nod'><span class='ln'>1510</span>  final Color backgroundColor;</div>
+<div class='row nod'><span class='ln'>1511</span></div>
+<div class='row nod'><span class='ln'>1512</span>  /// The indicator circle&#x27;s border color.</div>
+<div class='row nod'><span class='ln'>1513</span>  final Color borderColor;</div>
+<div class='row nod'><span class='ln'>1514</span></div>
+<div class='row nod'><span class='ln'>1515</span>  /// The indicator circle&#x27;s diameter.</div>
+<div class='row nod'><span class='ln'>1516</span>  final double size;</div>
+<div class='row nod'><span class='ln'>1517</span></div>
+<div class='row unc'><span class='ln'>1518</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1519</span>  Widget build(BuildContext context) {</div>
+<div class='row unc'><span class='ln'>1520</span>▶     return Container(</div>
+<div class='row unc'><span class='ln'>1521</span>▶       width: size,</div>
+<div class='row unc'><span class='ln'>1522</span>▶       height: size,</div>
+<div class='row nod'><span class='ln'>1523</span>      margin: const EdgeInsets.all(4.0),</div>
+<div class='row unc'><span class='ln'>1524</span>▶       decoration: BoxDecoration(</div>
+<div class='row unc'><span class='ln'>1525</span>▶         color: backgroundColor,</div>
+<div class='row unc'><span class='ln'>1526</span>▶         border: Border.all(color: borderColor),</div>
+<div class='row nod'><span class='ln'>1527</span>        shape: BoxShape.circle,</div>
+<div class='row nod'><span class='ln'>1528</span>      ),</div>
+<div class='row nod'><span class='ln'>1529</span>    );</div>
+<div class='row nod'><span class='ln'>1530</span>  }</div>
+<div class='row nod'><span class='ln'>1531</span>}</div>
+<div class='row nod'><span class='ln'>1532</span></div>
+<div class='row nod'><span class='ln'>1533</span>/// Displays a row of small circular indicators, one per tab.</div>
+<div class='row nod'><span class='ln'>1534</span>///</div>
+<div class='row nod'><span class='ln'>1535</span>/// The selected tab&#x27;s indicator is highlighted. Often used in conjunction with</div>
+<div class='row nod'><span class='ln'>1536</span>/// a [THorizontalTabBarView].</div>
+<div class='row nod'><span class='ln'>1537</span>///</div>
+<div class='row nod'><span class='ln'>1538</span>/// If a [TabController] is not provided, then there must be a</div>
+<div class='row nod'><span class='ln'>1539</span>/// [DefaultTabController] ancestor.</div>
+<div class='row nod'><span class='ln'>1540</span>class TabPageSelector extends StatelessWidget {</div>
+<div class='row nod'><span class='ln'>1541</span>  /// Creates a compact widget that indicates which tab has been selected.</div>
+<div class='row unc'><span class='ln'>1542</span>▶   const TabPageSelector({</div>
+<div class='row nod'><span class='ln'>1543</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>1544</span>    this.controller,</div>
+<div class='row nod'><span class='ln'>1545</span>    this.indicatorSize = 12.0,</div>
+<div class='row nod'><span class='ln'>1546</span>    this.color,</div>
+<div class='row nod'><span class='ln'>1547</span>    this.selectedColor,</div>
+<div class='row unc'><span class='ln'>1548</span>▶   })  : assert(indicatorSize &gt; 0.0),</div>
+<div class='row unc'><span class='ln'>1549</span>▶         super(key: key);</div>
+<div class='row nod'><span class='ln'>1550</span></div>
+<div class='row nod'><span class='ln'>1551</span>  /// This widget&#x27;s selection and animation state.</div>
+<div class='row nod'><span class='ln'>1552</span>  ///</div>
+<div class='row nod'><span class='ln'>1553</span>  /// If [TabController] is not provided, then the value of</div>
+<div class='row nod'><span class='ln'>1554</span>  /// [DefaultTabController.of] will be used.</div>
+<div class='row nod'><span class='ln'>1555</span>  final TabController? controller;</div>
+<div class='row nod'><span class='ln'>1556</span></div>
+<div class='row nod'><span class='ln'>1557</span>  /// The indicator circle&#x27;s diameter (the default value is 12.0).</div>
+<div class='row nod'><span class='ln'>1558</span>  final double indicatorSize;</div>
+<div class='row nod'><span class='ln'>1559</span></div>
+<div class='row nod'><span class='ln'>1560</span>  /// The indicator circle&#x27;s fill color for unselected pages.</div>
+<div class='row nod'><span class='ln'>1561</span>  ///</div>
+<div class='row nod'><span class='ln'>1562</span>  /// If this parameter is null, then the indicator is filled with [Colors.transparent].</div>
+<div class='row nod'><span class='ln'>1563</span>  final Color? color;</div>
+<div class='row nod'><span class='ln'>1564</span></div>
+<div class='row nod'><span class='ln'>1565</span>  /// The indicator circle&#x27;s fill color for selected pages and border color</div>
+<div class='row nod'><span class='ln'>1566</span>  /// for all indicator circles.</div>
+<div class='row nod'><span class='ln'>1567</span>  ///</div>
+<div class='row nod'><span class='ln'>1568</span>  /// If this parameter is null, then the indicator is filled with the theme&#x27;s</div>
+<div class='row nod'><span class='ln'>1569</span>  /// [ColorScheme.secondary].</div>
+<div class='row nod'><span class='ln'>1570</span>  final Color? selectedColor;</div>
+<div class='row nod'><span class='ln'>1571</span></div>
+<div class='row unc'><span class='ln'>1572</span>▶   Widget _buildTabIndicator(</div>
+<div class='row nod'><span class='ln'>1573</span>    int tabIndex,</div>
+<div class='row nod'><span class='ln'>1574</span>    TabController tabController,</div>
+<div class='row nod'><span class='ln'>1575</span>    ColorTween selectedColorTween,</div>
+<div class='row nod'><span class='ln'>1576</span>    ColorTween previousColorTween,</div>
+<div class='row nod'><span class='ln'>1577</span>  ) {</div>
+<div class='row nod'><span class='ln'>1578</span>    final Color background;</div>
+<div class='row unc'><span class='ln'>1579</span>▶     if (tabController.indexIsChanging) {</div>
+<div class='row nod'><span class='ln'>1580</span>      // The selection&#x27;s animation is animating from previousValue to value.</div>
+<div class='row unc'><span class='ln'>1581</span>▶       final t = 1.0 - _indexChangeProgress(tabController);</div>
+<div class='row unc'><span class='ln'>1582</span>▶       if (tabController.index == tabIndex) {</div>
+<div class='row unc'><span class='ln'>1583</span>▶         background = selectedColorTween.lerp(t)!;</div>
+<div class='row unc'><span class='ln'>1584</span>▶       } else if (tabController.previousIndex == tabIndex) {</div>
+<div class='row unc'><span class='ln'>1585</span>▶         background = previousColorTween.lerp(t)!;</div>
+<div class='row nod'><span class='ln'>1586</span>      } else {</div>
+<div class='row unc'><span class='ln'>1587</span>▶         background = selectedColorTween.begin!;</div>
+<div class='row nod'><span class='ln'>1588</span>      }</div>
+<div class='row nod'><span class='ln'>1589</span>    } else {</div>
+<div class='row nod'><span class='ln'>1590</span>      // The selection&#x27;s offset reflects how far the THorizontalTabBarView has / been dragged</div>
+<div class='row nod'><span class='ln'>1591</span>      // to the previous page (-1.0 to 0.0) or the next page (0.0 to 1.0).</div>
+<div class='row unc'><span class='ln'>1592</span>▶       final offset = tabController.offset;</div>
+<div class='row unc'><span class='ln'>1593</span>▶       if (tabController.index == tabIndex) {</div>
+<div class='row unc'><span class='ln'>1594</span>▶         background = selectedColorTween.lerp(1.0 - offset.abs())!;</div>
+<div class='row unc'><span class='ln'>1595</span>▶       } else if (tabController.index == tabIndex - 1 &amp;&amp; offset &gt; 0.0) {</div>
+<div class='row unc'><span class='ln'>1596</span>▶         background = selectedColorTween.lerp(offset)!;</div>
+<div class='row unc'><span class='ln'>1597</span>▶       } else if (tabController.index == tabIndex + 1 &amp;&amp; offset &lt; 0.0) {</div>
+<div class='row unc'><span class='ln'>1598</span>▶         background = selectedColorTween.lerp(-offset)!;</div>
+<div class='row nod'><span class='ln'>1599</span>      } else {</div>
+<div class='row unc'><span class='ln'>1600</span>▶         background = selectedColorTween.begin!;</div>
+<div class='row nod'><span class='ln'>1601</span>      }</div>
+<div class='row nod'><span class='ln'>1602</span>    }</div>
+<div class='row unc'><span class='ln'>1603</span>▶     return TabPageSelectorIndicator(</div>
+<div class='row nod'><span class='ln'>1604</span>      backgroundColor: background,</div>
+<div class='row unc'><span class='ln'>1605</span>▶       borderColor: selectedColorTween.end!,</div>
+<div class='row unc'><span class='ln'>1606</span>▶       size: indicatorSize,</div>
+<div class='row nod'><span class='ln'>1607</span>    );</div>
+<div class='row nod'><span class='ln'>1608</span>  }</div>
+<div class='row nod'><span class='ln'>1609</span></div>
+<div class='row unc'><span class='ln'>1610</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1611</span>  Widget build(BuildContext context) {</div>
+<div class='row unc'><span class='ln'>1612</span>▶     final fixColor = color ?? Colors.transparent;</div>
+<div class='row nod'><span class='ln'>1613</span>    final fixSelectedColor =</div>
+<div class='row unc'><span class='ln'>1614</span>▶         selectedColor ?? Theme.of(context).colorScheme.secondary;</div>
+<div class='row nod'><span class='ln'>1615</span>    final selectedColorTween =</div>
+<div class='row unc'><span class='ln'>1616</span>▶         ColorTween(begin: fixColor, end: fixSelectedColor);</div>
+<div class='row nod'><span class='ln'>1617</span>    final previousColorTween =</div>
+<div class='row unc'><span class='ln'>1618</span>▶         ColorTween(begin: fixSelectedColor, end: fixColor);</div>
+<div class='row unc'><span class='ln'>1619</span>▶     final tabController = controller ?? DefaultTabController.of(context);</div>
+<div class='row unc'><span class='ln'>1620</span>▶     final localizations = MaterialLocalizations.of(context);</div>
+<div class='row unc'><span class='ln'>1621</span>▶     assert(() {</div>
+<div class='row nod'><span class='ln'>1622</span>      return true;</div>
+<div class='row unc'><span class='ln'>1623</span>▶     }());</div>
+<div class='row unc'><span class='ln'>1624</span>▶     final Animation&lt;double&gt; animation = CurvedAnimation(</div>
+<div class='row unc'><span class='ln'>1625</span>▶       parent: tabController.animation!,</div>
+<div class='row nod'><span class='ln'>1626</span>      curve: Curves.fastOutSlowIn,</div>
+<div class='row nod'><span class='ln'>1627</span>    );</div>
+<div class='row unc'><span class='ln'>1628</span>▶     return AnimatedBuilder(</div>
+<div class='row nod'><span class='ln'>1629</span>      animation: animation,</div>
+<div class='row unc'><span class='ln'>1630</span>▶       builder: (BuildContext context, Widget? child) {</div>
+<div class='row unc'><span class='ln'>1631</span>▶         return Semantics(</div>
+<div class='row unc'><span class='ln'>1632</span>▶           label: localizations.tabLabel(</div>
+<div class='row unc'><span class='ln'>1633</span>▶               tabIndex: tabController.index + 1,</div>
+<div class='row unc'><span class='ln'>1634</span>▶               tabCount: tabController.length),</div>
+<div class='row unc'><span class='ln'>1635</span>▶           child: Row(</div>
+<div class='row nod'><span class='ln'>1636</span>            mainAxisSize: MainAxisSize.min,</div>
+<div class='row nod'><span class='ln'>1637</span>            children:</div>
+<div class='row unc'><span class='ln'>1638</span>▶                 List&lt;Widget&gt;.generate(tabController.length, (int tabIndex) {</div>
+<div class='row unc'><span class='ln'>1639</span>▶               return _buildTabIndicator(tabIndex, tabController,</div>
+<div class='row nod'><span class='ln'>1640</span>                  selectedColorTween, previousColorTween);</div>
+<div class='row unc'><span class='ln'>1641</span>▶             }).toList(),</div>
+<div class='row nod'><span class='ln'>1642</span>          ),</div>
+<div class='row nod'><span class='ln'>1643</span>        );</div>
+<div class='row nod'><span class='ln'>1644</span>      },</div>
+<div class='row nod'><span class='ln'>1645</span>    );</div>
+<div class='row nod'><span class='ln'>1646</span>  }</div>
+<div class='row nod'><span class='ln'>1647</span>}</div>
+<div class='row nod'><span class='ln'>1648</span></div>
+</pre></body></html>

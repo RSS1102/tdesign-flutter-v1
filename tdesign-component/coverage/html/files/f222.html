@@ -1,0 +1,1106 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/tree/t_tree_select.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/tree/t_tree_select.dart</h1></header><div class='meta'>行覆盖 <b>85.5%</b> (194/227) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:math&#x27; as math;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span></div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span></div>
+<div class='row nod'><span class='ln'>9</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span></div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>/// 树形选择变更事件回调</div>
+<div class='row cov'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>///</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>/// values 选中值列表，[level] 变更层级（1/2/3）</div>
+<div class='row nod'><span class='ln'>18</span>typedef TTreeSelectChangeEvent = void Function(List&lt;dynamic&gt;, int level);</div>
+<div class='row nod'><span class='ln'>19</span></div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row cov'><span class='ln'>21</span></div>
+<div class='row nod'><span class='ln'>22</span>/// 树形选择选项数据模型</div>
+<div class='row nod'><span class='ln'>23</span></div>
+<div class='row nod'><span class='ln'>24</span>class TSelectOption {</div>
+<div class='row nod'><span class='ln'>25</span></div>
+<div class='row nod'><span class='ln'>26</span>  TSelectOption({</div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row nod'><span class='ln'>28</span>    required this.label,</div>
+<div class='row nod'><span class='ln'>29</span></div>
+<div class='row nod'><span class='ln'>30</span>    required this.value,</div>
+<div class='row nod'><span class='ln'>31</span></div>
+<div class='row nod'><span class='ln'>32</span>    this.children = const [],</div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span>    this.multiple = false,</div>
+<div class='row nod'><span class='ln'>35</span></div>
+<div class='row nod'><span class='ln'>36</span>    this.maxLines = 1,</div>
+<div class='row nod'><span class='ln'>37</span></div>
+<div class='row nod'><span class='ln'>38</span>    this.columnWidth,</div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row nod'><span class='ln'>40</span>  }) : assert(maxLines &gt; 0, &#x27;maxLines must be greater than 0&#x27;);</div>
+<div class='row nod'><span class='ln'>41</span></div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row nod'><span class='ln'>43</span></div>
+<div class='row nod'><span class='ln'>44</span>  /// 标签</div>
+<div class='row nod'><span class='ln'>45</span></div>
+<div class='row nod'><span class='ln'>46</span>  final String label;</div>
+<div class='row nod'><span class='ln'>47</span></div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row nod'><span class='ln'>49</span></div>
+<div class='row nod'><span class='ln'>50</span>  /// 值</div>
+<div class='row nod'><span class='ln'>51</span></div>
+<div class='row nod'><span class='ln'>52</span>  final dynamic value;</div>
+<div class='row nod'><span class='ln'>53</span></div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row cov'><span class='ln'>55</span></div>
+<div class='row nod'><span class='ln'>56</span>  /// 子选项</div>
+<div class='row nod'><span class='ln'>57</span></div>
+<div class='row nod'><span class='ln'>58</span>  List&lt;TSelectOption&gt; children;</div>
+<div class='row nod'><span class='ln'>59</span></div>
+<div class='row nod'><span class='ln'>60</span></div>
+<div class='row nod'><span class='ln'>61</span></div>
+<div class='row nod'><span class='ln'>62</span>  /// 当前子项支持多选</div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row cov'><span class='ln'>64</span>  final bool multiple;</div>
+<div class='row nod'><span class='ln'>65</span></div>
+<div class='row nod'><span class='ln'>66</span></div>
+<div class='row nod'><span class='ln'>67</span></div>
+<div class='row nod'><span class='ln'>68</span>  /// 最大显示行数</div>
+<div class='row nod'><span class='ln'>69</span></div>
+<div class='row nod'><span class='ln'>70</span>  final int maxLines;</div>
+<div class='row nod'><span class='ln'>71</span></div>
+<div class='row nod'><span class='ln'>72</span></div>
+<div class='row nod'><span class='ln'>73</span></div>
+<div class='row nod'><span class='ln'>74</span>  /// 自定义宽度，允许用户指定每个选项的宽度</div>
+<div class='row nod'><span class='ln'>75</span></div>
+<div class='row nod'><span class='ln'>76</span>  final double? columnWidth;</div>
+<div class='row nod'><span class='ln'>77</span></div>
+<div class='row nod'><span class='ln'>78</span>}</div>
+<div class='row nod'><span class='ln'>79</span></div>
+<div class='row nod'><span class='ln'>80</span></div>
+<div class='row nod'><span class='ln'>81</span></div>
+<div class='row nod'><span class='ln'>82</span>/// 一级菜单样式</div>
+<div class='row nod'><span class='ln'>83</span></div>
+<div class='row nod'><span class='ln'>84</span>enum TTreeSelectStyle {</div>
+<div class='row nod'><span class='ln'>85</span></div>
+<div class='row nod'><span class='ln'>86</span>  /// 普通样式</div>
+<div class='row cov'><span class='ln'>87</span></div>
+<div class='row cov'><span class='ln'>88</span>  normal,</div>
+<div class='row nod'><span class='ln'>89</span></div>
+<div class='row nod'><span class='ln'>90</span></div>
+<div class='row nod'><span class='ln'>91</span></div>
+<div class='row nod'><span class='ln'>92</span>  /// 描边样式（选中项左侧有蓝色边框）</div>
+<div class='row nod'><span class='ln'>93</span></div>
+<div class='row nod'><span class='ln'>94</span>  outline,</div>
+<div class='row nod'><span class='ln'>95</span></div>
+<div class='row nod'><span class='ln'>96</span>}</div>
+<div class='row cov'><span class='ln'>97</span></div>
+<div class='row nod'><span class='ln'>98</span></div>
+<div class='row cov'><span class='ln'>99</span></div>
+<div class='row nod'><span class='ln'>100</span>/// 树形选择器</div>
+<div class='row cov'><span class='ln'>101</span></div>
+<div class='row nod'><span class='ln'>102</span>///</div>
+<div class='row cov'><span class='ln'>103</span></div>
+<div class='row nod'><span class='ln'>104</span>/// 支持单选/多选，最多三级菜单。</div>
+<div class='row cov'><span class='ln'>105</span></div>
+<div class='row nod'><span class='ln'>106</span>class TTreeSelect extends StatefulWidget {</div>
+<div class='row cov'><span class='ln'>107</span></div>
+<div class='row cov'><span class='ln'>108</span>  const TTreeSelect({</div>
+<div class='row cov'><span class='ln'>109</span></div>
+<div class='row cov'><span class='ln'>110</span>    Key? key,</div>
+<div class='row unc'><span class='ln'>111</span>▶ </div>
+<div class='row cov'><span class='ln'>112</span>    this.options = const [],</div>
+<div class='row nod'><span class='ln'>113</span></div>
+<div class='row cov'><span class='ln'>114</span>    this.value = const [],</div>
+<div class='row unc'><span class='ln'>115</span>▶ </div>
+<div class='row cov'><span class='ln'>116</span>    this.onChanged,</div>
+<div class='row cov'><span class='ln'>117</span></div>
+<div class='row unc'><span class='ln'>118</span>▶     this.multiple = false,</div>
+<div class='row cov'><span class='ln'>119</span></div>
+<div class='row nod'><span class='ln'>120</span>    this.style,</div>
+<div class='row cov'><span class='ln'>121</span></div>
+<div class='row nod'><span class='ln'>122</span>    this.height,</div>
+<div class='row cov'><span class='ln'>123</span></div>
+<div class='row nod'><span class='ln'>124</span>    this.outwardCornerRadius,</div>
+<div class='row nod'><span class='ln'>125</span></div>
+<div class='row cov'><span class='ln'>126</span>  }) : super(key: key);</div>
+<div class='row cov'><span class='ln'>127</span></div>
+<div class='row cov'><span class='ln'>128</span></div>
+<div class='row cov'><span class='ln'>129</span></div>
+<div class='row cov'><span class='ln'>130</span>  /// 展示的选项列表</div>
+<div class='row cov'><span class='ln'>131</span></div>
+<div class='row cov'><span class='ln'>132</span>  final List&lt;TSelectOption&gt; options;</div>
+<div class='row nod'><span class='ln'>133</span></div>
+<div class='row nod'><span class='ln'>134</span></div>
+<div class='row nod'><span class='ln'>135</span></div>
+<div class='row cov'><span class='ln'>136</span>  /// 初始值，对应options中的value值</div>
+<div class='row nod'><span class='ln'>137</span></div>
+<div class='row cov'><span class='ln'>138</span>  final List&lt;dynamic&gt; value;</div>
+<div class='row cov'><span class='ln'>139</span></div>
+<div class='row cov'><span class='ln'>140</span></div>
+<div class='row nod'><span class='ln'>141</span></div>
+<div class='row nod'><span class='ln'>142</span>  /// 选中值发生变化</div>
+<div class='row unc'><span class='ln'>143</span>▶ </div>
+<div class='row nod'><span class='ln'>144</span>  final TTreeSelectChangeEvent? onChanged;</div>
+<div class='row unc'><span class='ln'>145</span>▶ </div>
+<div class='row nod'><span class='ln'>146</span></div>
+<div class='row unc'><span class='ln'>147</span>▶ </div>
+<div class='row nod'><span class='ln'>148</span>  /// 高度</div>
+<div class='row unc'><span class='ln'>149</span>▶ </div>
+<div class='row unc'><span class='ln'>150</span>▶   final double? height;</div>
+<div class='row unc'><span class='ln'>151</span>▶ </div>
+<div class='row nod'><span class='ln'>152</span></div>
+<div class='row nod'><span class='ln'>153</span></div>
+<div class='row nod'><span class='ln'>154</span>  /// 支持多选</div>
+<div class='row cov'><span class='ln'>155</span></div>
+<div class='row cov'><span class='ln'>156</span>  final bool multiple;</div>
+<div class='row nod'><span class='ln'>157</span></div>
+<div class='row nod'><span class='ln'>158</span></div>
+<div class='row cov'><span class='ln'>159</span></div>
+<div class='row cov'><span class='ln'>160</span>  /// 一级菜单样式</div>
+<div class='row cov'><span class='ln'>161</span></div>
+<div class='row cov'><span class='ln'>162</span>  final TTreeSelectStyle? style;</div>
+<div class='row cov'><span class='ln'>163</span></div>
+<div class='row nod'><span class='ln'>164</span></div>
+<div class='row nod'><span class='ln'>165</span></div>
+<div class='row nod'><span class='ln'>166</span>  /// 一级菜单选中项的外弯折圆角半径，默认为 9</div>
+<div class='row nod'><span class='ln'>167</span></div>
+<div class='row cov'><span class='ln'>168</span>  final double? outwardCornerRadius;</div>
+<div class='row nod'><span class='ln'>169</span></div>
+<div class='row nod'><span class='ln'>170</span></div>
+<div class='row nod'><span class='ln'>171</span></div>
+<div class='row nod'><span class='ln'>172</span>  @override</div>
+<div class='row cov'><span class='ln'>173</span></div>
+<div class='row nod'><span class='ln'>174</span>  State&lt;TTreeSelect&gt; createState() =&gt; _TTreeSelectState();</div>
+<div class='row nod'><span class='ln'>175</span></div>
+<div class='row cov'><span class='ln'>176</span>}</div>
+<div class='row cov'><span class='ln'>177</span></div>
+<div class='row cov'><span class='ln'>178</span></div>
+<div class='row cov'><span class='ln'>179</span></div>
+<div class='row nod'><span class='ln'>180</span>class _TTreeSelectState extends State&lt;TTreeSelect&gt; {</div>
+<div class='row cov'><span class='ln'>181</span></div>
+<div class='row cov'><span class='ln'>182</span>  ScrollController controller2 = ScrollController();</div>
+<div class='row nod'><span class='ln'>183</span></div>
+<div class='row cov'><span class='ln'>184</span>  ScrollController controller3 = ScrollController();</div>
+<div class='row cov'><span class='ln'>185</span></div>
+<div class='row nod'><span class='ln'>186</span></div>
+<div class='row cov'><span class='ln'>187</span></div>
+<div class='row cov'><span class='ln'>188</span>  List&lt;dynamic&gt; values = [];</div>
+<div class='row cov'><span class='ln'>189</span></div>
+<div class='row cov'><span class='ln'>190</span></div>
+<div class='row cov'><span class='ln'>191</span></div>
+<div class='row cov'><span class='ln'>192</span>  int get currentLevel =&gt; values.length + 1;</div>
+<div class='row cov'><span class='ln'>193</span></div>
+<div class='row cov'><span class='ln'>194</span></div>
+<div class='row nod'><span class='ln'>195</span></div>
+<div class='row cov'><span class='ln'>196</span>  dynamic get firstValue =&gt; values.isNotEmpty ? values[0] : null;</div>
+<div class='row cov'><span class='ln'>197</span></div>
+<div class='row nod'><span class='ln'>198</span></div>
+<div class='row cov'><span class='ln'>199</span></div>
+<div class='row cov'><span class='ln'>200</span>  dynamic get secondValue =&gt; values.length &gt;= 2 ? values[1] : null;</div>
+<div class='row nod'><span class='ln'>201</span></div>
+<div class='row cov'><span class='ln'>202</span></div>
+<div class='row cov'><span class='ln'>203</span></div>
+<div class='row nod'><span class='ln'>204</span>  dynamic get thirdValue =&gt; values.length &gt;= 3 ? values[2] : null;</div>
+<div class='row cov'><span class='ln'>205</span></div>
+<div class='row cov'><span class='ln'>206</span></div>
+<div class='row unc'><span class='ln'>207</span>▶ </div>
+<div class='row nod'><span class='ln'>208</span>  List&lt;TSelectOption&gt; get firstOptions =&gt; widget.options;</div>
+<div class='row cov'><span class='ln'>209</span></div>
+<div class='row cov'><span class='ln'>210</span></div>
+<div class='row cov'><span class='ln'>211</span></div>
+<div class='row nod'><span class='ln'>212</span>  List&lt;TSelectOption&gt; get secondOptions =&gt; maxLevel() &lt;= 1 || values.isEmpty</div>
+<div class='row nod'><span class='ln'>213</span></div>
+<div class='row cov'><span class='ln'>214</span>      ? []</div>
+<div class='row nod'><span class='ln'>215</span></div>
+<div class='row nod'><span class='ln'>216</span>      : firstOptions</div>
+<div class='row cov'><span class='ln'>217</span></div>
+<div class='row cov'><span class='ln'>218</span>          .firstWhere((opt) =&gt; opt.value == firstValue,</div>
+<div class='row cov'><span class='ln'>219</span></div>
+<div class='row nod'><span class='ln'>220</span>              orElse: () =&gt; TSelectOption(value: -1, label: &#x27;&#x27;, children: []))</div>
+<div class='row nod'><span class='ln'>221</span></div>
+<div class='row cov'><span class='ln'>222</span>          .children;</div>
+<div class='row nod'><span class='ln'>223</span></div>
+<div class='row cov'><span class='ln'>224</span></div>
+<div class='row nod'><span class='ln'>225</span></div>
+<div class='row nod'><span class='ln'>226</span>  List&lt;TSelectOption&gt; get thirdOptions =&gt; maxLevel() &lt;= 2 || currentLevel &lt; 3</div>
+<div class='row cov'><span class='ln'>227</span></div>
+<div class='row cov'><span class='ln'>228</span>      ? []</div>
+<div class='row cov'><span class='ln'>229</span></div>
+<div class='row nod'><span class='ln'>230</span>      : secondOptions</div>
+<div class='row cov'><span class='ln'>231</span></div>
+<div class='row nod'><span class='ln'>232</span>          .firstWhere((opt) =&gt; opt.value == secondValue,</div>
+<div class='row nod'><span class='ln'>233</span></div>
+<div class='row nod'><span class='ln'>234</span>              orElse: () =&gt; TSelectOption(value: -1, label: &#x27;&#x27;, children: []))</div>
+<div class='row nod'><span class='ln'>235</span></div>
+<div class='row nod'><span class='ln'>236</span>          .children;</div>
+<div class='row cov'><span class='ln'>237</span></div>
+<div class='row cov'><span class='ln'>238</span></div>
+<div class='row cov'><span class='ln'>239</span></div>
+<div class='row nod'><span class='ln'>240</span>  @override</div>
+<div class='row cov'><span class='ln'>241</span></div>
+<div class='row nod'><span class='ln'>242</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>243</span></div>
+<div class='row nod'><span class='ln'>244</span>    super.initState();</div>
+<div class='row cov'><span class='ln'>245</span></div>
+<div class='row cov'><span class='ln'>246</span></div>
+<div class='row nod'><span class='ln'>247</span></div>
+<div class='row nod'><span class='ln'>248</span>    // 深拷贝一层，避免外部传入 const/不可修改列表时，内部对 values[1] 等子列表的增删报错</div>
+<div class='row nod'><span class='ln'>249</span></div>
+<div class='row nod'><span class='ln'>250</span>    values = (widget.value ?? [])</div>
+<div class='row nod'><span class='ln'>251</span></div>
+<div class='row nod'><span class='ln'>252</span>        .map((e) =&gt; e is List ? List.from(e as List) : e)</div>
+<div class='row nod'><span class='ln'>253</span></div>
+<div class='row nod'><span class='ln'>254</span>        .toList();</div>
+<div class='row cov'><span class='ln'>255</span></div>
+<div class='row nod'><span class='ln'>256</span>    if (values.isEmpty &amp;&amp; widget.options.isNotEmpty) {</div>
+<div class='row nod'><span class='ln'>257</span></div>
+<div class='row cov'><span class='ln'>258</span>      final option = widget.options[0];</div>
+<div class='row cov'><span class='ln'>259</span></div>
+<div class='row cov'><span class='ln'>260</span>      values.add(</div>
+<div class='row nod'><span class='ln'>261</span></div>
+<div class='row cov'><span class='ln'>262</span>          (widget.multiple || option.multiple) ? [option.value] : option.value);</div>
+<div class='row nod'><span class='ln'>263</span></div>
+<div class='row nod'><span class='ln'>264</span>    }</div>
+<div class='row nod'><span class='ln'>265</span></div>
+<div class='row nod'><span class='ln'>266</span>  }</div>
+<div class='row nod'><span class='ln'>267</span></div>
+<div class='row nod'><span class='ln'>268</span></div>
+<div class='row cov'><span class='ln'>269</span></div>
+<div class='row nod'><span class='ln'>270</span>  @override</div>
+<div class='row nod'><span class='ln'>271</span></div>
+<div class='row cov'><span class='ln'>272</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>273</span></div>
+<div class='row cov'><span class='ln'>274</span>    controller2.dispose();</div>
+<div class='row nod'><span class='ln'>275</span></div>
+<div class='row cov'><span class='ln'>276</span>    controller3.dispose();</div>
+<div class='row nod'><span class='ln'>277</span></div>
+<div class='row nod'><span class='ln'>278</span>    super.dispose();</div>
+<div class='row nod'><span class='ln'>279</span></div>
+<div class='row nod'><span class='ln'>280</span>  }</div>
+<div class='row nod'><span class='ln'>281</span></div>
+<div class='row nod'><span class='ln'>282</span></div>
+<div class='row nod'><span class='ln'>283</span></div>
+<div class='row nod'><span class='ln'>284</span>  @override</div>
+<div class='row nod'><span class='ln'>285</span></div>
+<div class='row nod'><span class='ln'>286</span>  void didUpdateWidget(TTreeSelect oldWidget) {</div>
+<div class='row nod'><span class='ln'>287</span></div>
+<div class='row nod'><span class='ln'>288</span>    super.didUpdateWidget(oldWidget);</div>
+<div class='row cov'><span class='ln'>289</span></div>
+<div class='row nod'><span class='ln'>290</span>    // 外部传入的 defaultValue 发生变化时，更新 values</div>
+<div class='row nod'><span class='ln'>291</span></div>
+<div class='row nod'><span class='ln'>292</span>    if (widget.value != oldWidget.value) {</div>
+<div class='row nod'><span class='ln'>293</span></div>
+<div class='row cov'><span class='ln'>294</span>      // 深拷贝一层，与 initState 保持一致</div>
+<div class='row nod'><span class='ln'>295</span></div>
+<div class='row cov'><span class='ln'>296</span>      values = (widget.value ?? [])</div>
+<div class='row cov'><span class='ln'>297</span></div>
+<div class='row cov'><span class='ln'>298</span>          .map((e) =&gt; e is List ? List.from(e as List) : e)</div>
+<div class='row nod'><span class='ln'>299</span></div>
+<div class='row cov'><span class='ln'>300</span>          .toList();</div>
+<div class='row cov'><span class='ln'>301</span></div>
+<div class='row nod'><span class='ln'>302</span>    }</div>
+<div class='row cov'><span class='ln'>303</span></div>
+<div class='row cov'><span class='ln'>304</span>  }</div>
+<div class='row cov'><span class='ln'>305</span></div>
+<div class='row nod'><span class='ln'>306</span></div>
+<div class='row cov'><span class='ln'>307</span></div>
+<div class='row cov'><span class='ln'>308</span>  int maxLevel() {</div>
+<div class='row nod'><span class='ln'>309</span></div>
+<div class='row nod'><span class='ln'>310</span>    if (widget.options.isEmpty) {</div>
+<div class='row nod'><span class='ln'>311</span></div>
+<div class='row cov'><span class='ln'>312</span>      return 1;</div>
+<div class='row cov'><span class='ln'>313</span></div>
+<div class='row unc'><span class='ln'>314</span>▶     }</div>
+<div class='row unc'><span class='ln'>315</span>▶ </div>
+<div class='row nod'><span class='ln'>316</span>    var secondLevelOptions = widget.options</div>
+<div class='row cov'><span class='ln'>317</span></div>
+<div class='row cov'><span class='ln'>318</span>        .where((element) =&gt; element.children.isNotEmpty)</div>
+<div class='row nod'><span class='ln'>319</span></div>
+<div class='row nod'><span class='ln'>320</span>        .map((ele) =&gt; ele.children)</div>
+<div class='row nod'><span class='ln'>321</span></div>
+<div class='row nod'><span class='ln'>322</span>        .toList();</div>
+<div class='row nod'><span class='ln'>323</span></div>
+<div class='row cov'><span class='ln'>324</span>    if (secondLevelOptions.isEmpty) {</div>
+<div class='row cov'><span class='ln'>325</span></div>
+<div class='row cov'><span class='ln'>326</span>      return 1;</div>
+<div class='row cov'><span class='ln'>327</span></div>
+<div class='row nod'><span class='ln'>328</span>    }</div>
+<div class='row nod'><span class='ln'>329</span></div>
+<div class='row nod'><span class='ln'>330</span></div>
+<div class='row nod'><span class='ln'>331</span></div>
+<div class='row nod'><span class='ln'>332</span>    var hasThirdLevel = secondLevelOptions</div>
+<div class='row cov'><span class='ln'>333</span></div>
+<div class='row nod'><span class='ln'>334</span>        .any((list) =&gt; list.any((element) =&gt; element.children.isNotEmpty));</div>
+<div class='row cov'><span class='ln'>335</span></div>
+<div class='row nod'><span class='ln'>336</span></div>
+<div class='row cov'><span class='ln'>337</span></div>
+<div class='row cov'><span class='ln'>338</span>    return hasThirdLevel ? 3 : 2;</div>
+<div class='row cov'><span class='ln'>339</span></div>
+<div class='row nod'><span class='ln'>340</span>  }</div>
+<div class='row nod'><span class='ln'>341</span></div>
+<div class='row nod'><span class='ln'>342</span></div>
+<div class='row cov'><span class='ln'>343</span></div>
+<div class='row cov'><span class='ln'>344</span>  @override</div>
+<div class='row cov'><span class='ln'>345</span></div>
+<div class='row cov'><span class='ln'>346</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>347</span></div>
+<div class='row cov'><span class='ln'>348</span>    // P1: 组件级 ThemeExtension</div>
+<div class='row cov'><span class='ln'>349</span></div>
+<div class='row cov'><span class='ln'>350</span>    final theme = Theme.of(context).extension&lt;TTreeSelectThemeData&gt;();</div>
+<div class='row cov'><span class='ln'>351</span></div>
+<div class='row nod'><span class='ln'>352</span>    final effectiveHeight = widget.height ?? theme?.height ?? 336;</div>
+<div class='row nod'><span class='ln'>353</span></div>
+<div class='row cov'><span class='ln'>354</span>    final effectiveStyle = widget.style ?? theme?.style ?? TTreeSelectStyle.normal;</div>
+<div class='row cov'><span class='ln'>355</span></div>
+<div class='row cov'><span class='ln'>356</span>    final effectiveOutwardCornerRadius = widget.outwardCornerRadius ?? theme?.outwardCornerRadius ?? 9;</div>
+<div class='row cov'><span class='ln'>357</span></div>
+<div class='row nod'><span class='ln'>358</span></div>
+<div class='row nod'><span class='ln'>359</span></div>
+<div class='row unc'><span class='ln'>360</span>▶     return Container(</div>
+<div class='row nod'><span class='ln'>361</span></div>
+<div class='row nod'><span class='ln'>362</span>        color: context.tTheme.bgColorContainer,</div>
+<div class='row unc'><span class='ln'>363</span>▶ </div>
+<div class='row unc'><span class='ln'>364</span>▶         height: effectiveHeight,</div>
+<div class='row nod'><span class='ln'>365</span></div>
+<div class='row nod'><span class='ln'>366</span>        child: Row(</div>
+<div class='row nod'><span class='ln'>367</span></div>
+<div class='row nod'><span class='ln'>368</span>          children: [</div>
+<div class='row cov'><span class='ln'>369</span></div>
+<div class='row nod'><span class='ln'>370</span>            /// 一级菜单</div>
+<div class='row nod'><span class='ln'>371</span></div>
+<div class='row cov'><span class='ln'>372</span>            Container(</div>
+<div class='row cov'><span class='ln'>373</span></div>
+<div class='row nod'><span class='ln'>374</span>              width: _getLevelWidth(widget.options, 1) ?? 106,</div>
+<div class='row cov'><span class='ln'>375</span></div>
+<div class='row nod'><span class='ln'>376</span>              color: context.tTheme.bgColorSecondaryContainer,</div>
+<div class='row cov'><span class='ln'>377</span></div>
+<div class='row nod'><span class='ln'>378</span>              child: ListView.builder(</div>
+<div class='row cov'><span class='ln'>379</span></div>
+<div class='row nod'><span class='ln'>380</span>                itemCount: widget.options.length,</div>
+<div class='row cov'><span class='ln'>381</span></div>
+<div class='row cov'><span class='ln'>382</span>                itemBuilder: (context, index) {</div>
+<div class='row cov'><span class='ln'>383</span></div>
+<div class='row cov'><span class='ln'>384</span>                  final option = widget.options[index];</div>
+<div class='row cov'><span class='ln'>385</span></div>
+<div class='row unc'><span class='ln'>386</span>▶                   final isSelected = firstValue == option.value;</div>
+<div class='row nod'><span class='ln'>387</span></div>
+<div class='row cov'><span class='ln'>388</span>                  // 判断上一个和下一个选项是否被选中</div>
+<div class='row nod'><span class='ln'>389</span></div>
+<div class='row cov'><span class='ln'>390</span>                  final isPrevSelected = index &gt; 0 &amp;&amp;</div>
+<div class='row cov'><span class='ln'>391</span></div>
+<div class='row nod'><span class='ln'>392</span>                      firstValue == widget.options[index - 1].value;</div>
+<div class='row unc'><span class='ln'>393</span>▶ </div>
+<div class='row nod'><span class='ln'>394</span>                  final isNextSelected =</div>
+<div class='row cov'><span class='ln'>395</span></div>
+<div class='row nod'><span class='ln'>396</span>                      index &lt; widget.options.length - 1 &amp;&amp;</div>
+<div class='row nod'><span class='ln'>397</span></div>
+<div class='row unc'><span class='ln'>398</span>▶                           firstValue == widget.options[index + 1].value;</div>
+<div class='row nod'><span class='ln'>399</span></div>
+<div class='row cov'><span class='ln'>400</span></div>
+<div class='row unc'><span class='ln'>401</span>▶ </div>
+<div class='row nod'><span class='ln'>402</span>                  return GestureDetector(</div>
+<div class='row nod'><span class='ln'>403</span></div>
+<div class='row nod'><span class='ln'>404</span>                    onTap: () {</div>
+<div class='row unc'><span class='ln'>405</span>▶ </div>
+<div class='row unc'><span class='ln'>406</span>▶                       // todo 点击一级菜单时直接重置整个 values 数组可能导致二级或三级选择的数据丢失</div>
+<div class='row unc'><span class='ln'>407</span>▶ </div>
+<div class='row unc'><span class='ln'>408</span>▶                       setState(() {</div>
+<div class='row nod'><span class='ln'>409</span></div>
+<div class='row nod'><span class='ln'>410</span>                        if (values.isEmpty) {</div>
+<div class='row nod'><span class='ln'>411</span></div>
+<div class='row unc'><span class='ln'>412</span>▶                           values.add(option.value);</div>
+<div class='row unc'><span class='ln'>413</span>▶ </div>
+<div class='row unc'><span class='ln'>414</span>▶                         } else {</div>
+<div class='row unc'><span class='ln'>415</span>▶ </div>
+<div class='row unc'><span class='ln'>416</span>▶                           values = [option.value];</div>
+<div class='row nod'><span class='ln'>417</span></div>
+<div class='row nod'><span class='ln'>418</span>                          if (controller2.hasClients) {</div>
+<div class='row nod'><span class='ln'>419</span></div>
+<div class='row unc'><span class='ln'>420</span>▶                             controller2.jumpTo(0);</div>
+<div class='row unc'><span class='ln'>421</span>▶ </div>
+<div class='row nod'><span class='ln'>422</span>                          }</div>
+<div class='row unc'><span class='ln'>423</span>▶ </div>
+<div class='row nod'><span class='ln'>424</span>                        }</div>
+<div class='row unc'><span class='ln'>425</span>▶ </div>
+<div class='row nod'><span class='ln'>426</span>                        widget.onChanged?.call(values, 1);</div>
+<div class='row nod'><span class='ln'>427</span></div>
+<div class='row unc'><span class='ln'>428</span>▶                       });</div>
+<div class='row nod'><span class='ln'>429</span></div>
+<div class='row nod'><span class='ln'>430</span>                    },</div>
+<div class='row nod'><span class='ln'>431</span></div>
+<div class='row cov'><span class='ln'>432</span>                    child: Stack(</div>
+<div class='row nod'><span class='ln'>433</span></div>
+<div class='row nod'><span class='ln'>434</span>                      children: [</div>
+<div class='row cov'><span class='ln'>435</span></div>
+<div class='row cov'><span class='ln'>436</span>                        Container(</div>
+<div class='row cov'><span class='ln'>437</span></div>
+<div class='row nod'><span class='ln'>438</span>                          width: double.infinity,</div>
+<div class='row cov'><span class='ln'>439</span></div>
+<div class='row nod'><span class='ln'>440</span>                          padding: const EdgeInsets.all(16),</div>
+<div class='row cov'><span class='ln'>441</span></div>
+<div class='row cov'><span class='ln'>442</span>                          decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>443</span></div>
+<div class='row nod'><span class='ln'>444</span>                            color: isSelected</div>
+<div class='row nod'><span class='ln'>445</span></div>
+<div class='row cov'><span class='ln'>446</span>                                ? context.tTheme.bgColorContainer</div>
+<div class='row cov'><span class='ln'>447</span></div>
+<div class='row nod'><span class='ln'>448</span>                                : null,</div>
+<div class='row nod'><span class='ln'>449</span></div>
+<div class='row cov'><span class='ln'>450</span>                            border: isSelected &amp;&amp;</div>
+<div class='row nod'><span class='ln'>451</span></div>
+<div class='row nod'><span class='ln'>452</span>                                    effectiveStyle == TTreeSelectStyle.outline</div>
+<div class='row cov'><span class='ln'>453</span></div>
+<div class='row cov'><span class='ln'>454</span>                                ? Border(</div>
+<div class='row nod'><span class='ln'>455</span></div>
+<div class='row nod'><span class='ln'>456</span>                                    left: BorderSide(</div>
+<div class='row nod'><span class='ln'>457</span></div>
+<div class='row nod'><span class='ln'>458</span>                                      color:</div>
+<div class='row nod'><span class='ln'>459</span></div>
+<div class='row nod'><span class='ln'>460</span>                                          context.tTheme.brandNormalColor,</div>
+<div class='row nod'><span class='ln'>461</span></div>
+<div class='row cov'><span class='ln'>462</span>                                      width: 3,</div>
+<div class='row nod'><span class='ln'>463</span></div>
+<div class='row cov'><span class='ln'>464</span>                                    ),</div>
+<div class='row nod'><span class='ln'>465</span></div>
+<div class='row nod'><span class='ln'>466</span>                                  )</div>
+<div class='row cov'><span class='ln'>467</span></div>
+<div class='row nod'><span class='ln'>468</span>                                : null,</div>
+<div class='row cov'><span class='ln'>469</span></div>
+<div class='row nod'><span class='ln'>470</span>                          ),</div>
+<div class='row cov'><span class='ln'>471</span></div>
+<div class='row nod'><span class='ln'>472</span>                          child: Text(</div>
+<div class='row nod'><span class='ln'>473</span></div>
+<div class='row nod'><span class='ln'>474</span>                            option.label,</div>
+<div class='row nod'><span class='ln'>475</span></div>
+<div class='row nod'><span class='ln'>476</span>                            maxLines: option.maxLines,</div>
+<div class='row nod'><span class='ln'>477</span></div>
+<div class='row nod'><span class='ln'>478</span>                            overflow: TextOverflow.ellipsis,</div>
+<div class='row nod'><span class='ln'>479</span></div>
+<div class='row nod'><span class='ln'>480</span>                            style: TextStyle(</div>
+<div class='row nod'><span class='ln'>481</span></div>
+<div class='row nod'><span class='ln'>482</span>                              fontSize:</div>
+<div class='row nod'><span class='ln'>483</span></div>
+<div class='row nod'><span class='ln'>484</span>                                  context.tTheme.fontBodyLarge?.size ?? 16,</div>
+<div class='row nod'><span class='ln'>485</span></div>
+<div class='row nod'><span class='ln'>486</span>                              color: isSelected</div>
+<div class='row nod'><span class='ln'>487</span></div>
+<div class='row nod'><span class='ln'>488</span>                                  ? context.tTheme.brandNormalColor</div>
+<div class='row nod'><span class='ln'>489</span></div>
+<div class='row nod'><span class='ln'>490</span>                                  : context.tTheme.textColorPrimary,</div>
+<div class='row nod'><span class='ln'>491</span></div>
+<div class='row nod'><span class='ln'>492</span>                              fontWeight: isSelected</div>
+<div class='row nod'><span class='ln'>493</span></div>
+<div class='row nod'><span class='ln'>494</span>                                  ? FontWeight.w600</div>
+<div class='row nod'><span class='ln'>495</span></div>
+<div class='row nod'><span class='ln'>496</span>                                  : FontWeight.normal,</div>
+<div class='row nod'><span class='ln'>497</span></div>
+<div class='row nod'><span class='ln'>498</span>                            ),</div>
+<div class='row nod'><span class='ln'>499</span></div>
+<div class='row nod'><span class='ln'>500</span>                          ),</div>
+<div class='row cov'><span class='ln'>501</span></div>
+<div class='row nod'><span class='ln'>502</span>                        ),</div>
+<div class='row cov'><span class='ln'>503</span></div>
+<div class='row nod'><span class='ln'>504</span>                        // 未选中项：如果上一个是选中项，在右上角画向外弯折圆角</div>
+<div class='row cov'><span class='ln'>505</span></div>
+<div class='row cov'><span class='ln'>506</span>                        if (!isSelected &amp;&amp; isPrevSelected)</div>
+<div class='row cov'><span class='ln'>507</span></div>
+<div class='row nod'><span class='ln'>508</span>                          Positioned(</div>
+<div class='row cov'><span class='ln'>509</span></div>
+<div class='row cov'><span class='ln'>510</span>                            top: 0,</div>
+<div class='row nod'><span class='ln'>511</span></div>
+<div class='row cov'><span class='ln'>512</span>                            right: 0,</div>
+<div class='row cov'><span class='ln'>513</span></div>
+<div class='row nod'><span class='ln'>514</span>                            child: CustomPaint(</div>
+<div class='row cov'><span class='ln'>515</span></div>
+<div class='row cov'><span class='ln'>516</span>                              size: Size(effectiveOutwardCornerRadius, effectiveOutwardCornerRadius),</div>
+<div class='row cov'><span class='ln'>517</span></div>
+<div class='row cov'><span class='ln'>518</span>                              painter: _OutwardCornerPainter(</div>
+<div class='row nod'><span class='ln'>519</span></div>
+<div class='row cov'><span class='ln'>520</span>                                color:</div>
+<div class='row nod'><span class='ln'>521</span></div>
+<div class='row nod'><span class='ln'>522</span>                                    context.tTheme.bgColorContainer,</div>
+<div class='row cov'><span class='ln'>523</span></div>
+<div class='row nod'><span class='ln'>524</span>                                corner: _Corner.topRight,</div>
+<div class='row cov'><span class='ln'>525</span></div>
+<div class='row nod'><span class='ln'>526</span>                              ),</div>
+<div class='row cov'><span class='ln'>527</span></div>
+<div class='row cov'><span class='ln'>528</span>                            ),</div>
+<div class='row cov'><span class='ln'>529</span></div>
+<div class='row cov'><span class='ln'>530</span>                          ),</div>
+<div class='row cov'><span class='ln'>531</span></div>
+<div class='row cov'><span class='ln'>532</span>                        // 未选中项：如果下一个是选中项，在右下角画向外弯折圆角</div>
+<div class='row nod'><span class='ln'>533</span></div>
+<div class='row nod'><span class='ln'>534</span>                        if (!isSelected &amp;&amp; isNextSelected)</div>
+<div class='row cov'><span class='ln'>535</span></div>
+<div class='row nod'><span class='ln'>536</span>                          Positioned(</div>
+<div class='row nod'><span class='ln'>537</span></div>
+<div class='row nod'><span class='ln'>538</span>                            bottom: 0,</div>
+<div class='row cov'><span class='ln'>539</span></div>
+<div class='row nod'><span class='ln'>540</span>                            right: 0,</div>
+<div class='row nod'><span class='ln'>541</span></div>
+<div class='row cov'><span class='ln'>542</span>                            child: CustomPaint(</div>
+<div class='row nod'><span class='ln'>543</span></div>
+<div class='row cov'><span class='ln'>544</span>                              size: Size(effectiveOutwardCornerRadius, effectiveOutwardCornerRadius),</div>
+<div class='row nod'><span class='ln'>545</span></div>
+<div class='row nod'><span class='ln'>546</span>                              painter: _OutwardCornerPainter(</div>
+<div class='row nod'><span class='ln'>547</span></div>
+<div class='row nod'><span class='ln'>548</span>                                color:</div>
+<div class='row nod'><span class='ln'>549</span></div>
+<div class='row nod'><span class='ln'>550</span>                                    context.tTheme.bgColorContainer,</div>
+<div class='row nod'><span class='ln'>551</span></div>
+<div class='row nod'><span class='ln'>552</span>                                corner: _Corner.bottomRight,</div>
+<div class='row nod'><span class='ln'>553</span></div>
+<div class='row nod'><span class='ln'>554</span>                              ),</div>
+<div class='row nod'><span class='ln'>555</span></div>
+<div class='row nod'><span class='ln'>556</span>                            ),</div>
+<div class='row nod'><span class='ln'>557</span></div>
+<div class='row nod'><span class='ln'>558</span>                          ),</div>
+<div class='row nod'><span class='ln'>559</span></div>
+<div class='row nod'><span class='ln'>560</span>                      ],</div>
+<div class='row nod'><span class='ln'>561</span></div>
+<div class='row nod'><span class='ln'>562</span>                    ),</div>
+<div class='row nod'><span class='ln'>563</span></div>
+<div class='row nod'><span class='ln'>564</span>                  );</div>
+<div class='row nod'><span class='ln'>565</span></div>
+<div class='row nod'><span class='ln'>566</span>                },</div>
+<div class='row nod'><span class='ln'>567</span></div>
+<div class='row nod'><span class='ln'>568</span>              ),</div>
+<div class='row nod'><span class='ln'>569</span></div>
+<div class='row nod'><span class='ln'>570</span>            ),</div>
+<div class='row nod'><span class='ln'>571</span></div>
+<div class='row nod'><span class='ln'>572</span></div>
+<div class='row nod'><span class='ln'>573</span></div>
+<div class='row nod'><span class='ln'>574</span>            /// 右侧 二、三级菜单</div>
+<div class='row nod'><span class='ln'>575</span></div>
+<div class='row nod'><span class='ln'>576</span>            Expanded(child: _buildRightParts(context))</div>
+<div class='row nod'><span class='ln'>577</span></div>
+<div class='row nod'><span class='ln'>578</span>          ],</div>
+<div class='row nod'><span class='ln'>579</span></div>
+<div class='row nod'><span class='ln'>580</span>        ));</div>
+<div class='row nod'><span class='ln'>581</span></div>
+<div class='row nod'><span class='ln'>582</span>  }</div>
+<div class='row nod'><span class='ln'>583</span></div>
+<div class='row nod'><span class='ln'>584</span></div>
+<div class='row nod'><span class='ln'>585</span></div>
+<div class='row nod'><span class='ln'>586</span>  Widget _buildRightParts(BuildContext context) {</div>
+<div class='row nod'><span class='ln'>587</span></div>
+<div class='row nod'><span class='ln'>588</span>    // 判断是否应该显示三级菜单</div>
+<div class='row nod'><span class='ln'>589</span></div>
+<div class='row nod'><span class='ln'>590</span>    final showThirdLevel = values.length &gt;= 2 &amp;&amp;</div>
+<div class='row nod'><span class='ln'>591</span></div>
+<div class='row nod'><span class='ln'>592</span>        secondOptions</div>
+<div class='row nod'><span class='ln'>593</span></div>
+<div class='row nod'><span class='ln'>594</span>            .any((opt) =&gt; opt.value == secondValue &amp;&amp; opt.children.isNotEmpty);</div>
+<div class='row nod'><span class='ln'>595</span></div>
+<div class='row nod'><span class='ln'>596</span></div>
+<div class='row nod'><span class='ln'>597</span></div>
+<div class='row nod'><span class='ln'>598</span>    return Row(</div>
+<div class='row nod'><span class='ln'>599</span></div>
+<div class='row nod'><span class='ln'>600</span>      children: [</div>
+<div class='row nod'><span class='ln'>601</span></div>
+<div class='row nod'><span class='ln'>602</span>        showThirdLevel</div>
+<div class='row nod'><span class='ln'>603</span></div>
+<div class='row nod'><span class='ln'>604</span>            ? SizedBox(</div>
+<div class='row nod'><span class='ln'>605</span></div>
+<div class='row nod'><span class='ln'>606</span>                width: _getLevelWidth(secondOptions, 2) ?? 103,</div>
+<div class='row nod'><span class='ln'>607</span></div>
+<div class='row nod'><span class='ln'>608</span>                child: _buildNextColumn(context, level: 2, lastColumn: false),</div>
+<div class='row nod'><span class='ln'>609</span></div>
+<div class='row nod'><span class='ln'>610</span>              )</div>
+<div class='row nod'><span class='ln'>611</span></div>
+<div class='row nod'><span class='ln'>612</span>            : Expanded(</div>
+<div class='row nod'><span class='ln'>613</span></div>
+<div class='row nod'><span class='ln'>614</span>                child: _buildNextColumn(context, level: 2),</div>
+<div class='row nod'><span class='ln'>615</span></div>
+<div class='row nod'><span class='ln'>616</span>              ),</div>
+<div class='row nod'><span class='ln'>617</span></div>
+<div class='row nod'><span class='ln'>618</span>        if (showThirdLevel)</div>
+<div class='row nod'><span class='ln'>619</span></div>
+<div class='row nod'><span class='ln'>620</span>          // 三级菜单</div>
+<div class='row nod'><span class='ln'>621</span></div>
+<div class='row nod'><span class='ln'>622</span>          _getLevelWidth(thirdOptions, 3) != null</div>
+<div class='row nod'><span class='ln'>623</span></div>
+<div class='row nod'><span class='ln'>624</span>              ? SizedBox(</div>
+<div class='row nod'><span class='ln'>625</span></div>
+<div class='row nod'><span class='ln'>626</span>                  width: _getLevelWidth(thirdOptions, 3),</div>
+<div class='row nod'><span class='ln'>627</span></div>
+<div class='row nod'><span class='ln'>628</span>                  child: _buildNextColumn(context, level: 3),</div>
+<div class='row nod'><span class='ln'>629</span></div>
+<div class='row nod'><span class='ln'>630</span>                )</div>
+<div class='row nod'><span class='ln'>631</span></div>
+<div class='row nod'><span class='ln'>632</span>              : Expanded(</div>
+<div class='row nod'><span class='ln'>633</span></div>
+<div class='row nod'><span class='ln'>634</span>                  child: _buildNextColumn(context, level: 3),</div>
+<div class='row nod'><span class='ln'>635</span></div>
+<div class='row nod'><span class='ln'>636</span>                ),</div>
+<div class='row nod'><span class='ln'>637</span></div>
+<div class='row nod'><span class='ln'>638</span>      ],</div>
+<div class='row nod'><span class='ln'>639</span></div>
+<div class='row nod'><span class='ln'>640</span>    );</div>
+<div class='row nod'><span class='ln'>641</span></div>
+<div class='row nod'><span class='ln'>642</span>  }</div>
+<div class='row nod'><span class='ln'>643</span></div>
+<div class='row nod'><span class='ln'>644</span></div>
+<div class='row nod'><span class='ln'>645</span></div>
+<div class='row nod'><span class='ln'>646</span>  double? _getLevelWidth(List&lt;TSelectOption&gt; options, int level) {</div>
+<div class='row nod'><span class='ln'>647</span></div>
+<div class='row nod'><span class='ln'>648</span>    for (final option in options) {</div>
+<div class='row nod'><span class='ln'>649</span></div>
+<div class='row nod'><span class='ln'>650</span>      if (option.columnWidth != null) {</div>
+<div class='row nod'><span class='ln'>651</span></div>
+<div class='row nod'><span class='ln'>652</span>        return option.columnWidth;</div>
+<div class='row nod'><span class='ln'>653</span></div>
+<div class='row nod'><span class='ln'>654</span>      }</div>
+<div class='row nod'><span class='ln'>655</span></div>
+<div class='row nod'><span class='ln'>656</span>    }</div>
+<div class='row nod'><span class='ln'>657</span></div>
+<div class='row nod'><span class='ln'>658</span>    return null;</div>
+<div class='row nod'><span class='ln'>659</span></div>
+<div class='row nod'><span class='ln'>660</span>  }</div>
+<div class='row nod'><span class='ln'>661</span></div>
+<div class='row nod'><span class='ln'>662</span></div>
+<div class='row nod'><span class='ln'>663</span></div>
+<div class='row nod'><span class='ln'>664</span>  Widget _buildNextColumn(BuildContext context,</div>
+<div class='row nod'><span class='ln'>665</span></div>
+<div class='row nod'><span class='ln'>666</span>      {int level = 2, bool lastColumn = true}) {</div>
+<div class='row nod'><span class='ln'>667</span></div>
+<div class='row nod'><span class='ln'>668</span>    var displayOptions = level == 2 ? secondOptions : thirdOptions;</div>
+<div class='row nod'><span class='ln'>669</span></div>
+<div class='row nod'><span class='ln'>670</span></div>
+<div class='row nod'><span class='ln'>671</span></div>
+<div class='row nod'><span class='ln'>672</span>    return LayoutBuilder(</div>
+<div class='row nod'><span class='ln'>673</span></div>
+<div class='row nod'><span class='ln'>674</span>      builder: (context, constraints) {</div>
+<div class='row nod'><span class='ln'>675</span></div>
+<div class='row nod'><span class='ln'>676</span>        return MediaQuery.removePadding(</div>
+<div class='row nod'><span class='ln'>677</span></div>
+<div class='row nod'><span class='ln'>678</span>          context: context,</div>
+<div class='row nod'><span class='ln'>679</span></div>
+<div class='row nod'><span class='ln'>680</span>          removeTop: true,</div>
+<div class='row nod'><span class='ln'>681</span></div>
+<div class='row nod'><span class='ln'>682</span>          removeBottom: true,</div>
+<div class='row nod'><span class='ln'>683</span></div>
+<div class='row nod'><span class='ln'>684</span>          child: ListView.builder(</div>
+<div class='row nod'><span class='ln'>685</span></div>
+<div class='row nod'><span class='ln'>686</span>            controller: level == 2 ? controller2 : controller3,</div>
+<div class='row nod'><span class='ln'>687</span></div>
+<div class='row nod'><span class='ln'>688</span>            itemCount: displayOptions.length,</div>
+<div class='row nod'><span class='ln'>689</span></div>
+<div class='row nod'><span class='ln'>690</span>            itemBuilder: (BuildContext ctx, int index) {</div>
+<div class='row nod'><span class='ln'>691</span></div>
+<div class='row nod'><span class='ln'>692</span>              var currentValue = displayOptions[index].value;</div>
+<div class='row nod'><span class='ln'>693</span></div>
+<div class='row nod'><span class='ln'>694</span>              final isMultiple = widget.multiple</div>
+<div class='row nod'><span class='ln'>695</span></div>
+<div class='row nod'><span class='ln'>696</span>                  ? widget.multiple</div>
+<div class='row nod'><span class='ln'>697</span></div>
+<div class='row nod'><span class='ln'>698</span>                  : displayOptions[index].multiple;</div>
+<div class='row nod'><span class='ln'>699</span></div>
+<div class='row nod'><span class='ln'>700</span>              final maxLines = displayOptions[index].maxLines;</div>
+<div class='row nod'><span class='ln'>701</span></div>
+<div class='row nod'><span class='ln'>702</span>              var selected = false;</div>
+<div class='row nod'><span class='ln'>703</span></div>
+<div class='row nod'><span class='ln'>704</span>              if (isMultiple) {</div>
+<div class='row nod'><span class='ln'>705</span></div>
+<div class='row nod'><span class='ln'>706</span>                if (level == 2) {</div>
+<div class='row nod'><span class='ln'>707</span></div>
+<div class='row nod'><span class='ln'>708</span>                  if (maxLevel() == 2) {</div>
+<div class='row nod'><span class='ln'>709</span></div>
+<div class='row nod'><span class='ln'>710</span>                    selected = secondValue != null</div>
+<div class='row nod'><span class='ln'>711</span></div>
+<div class='row nod'><span class='ln'>712</span>                        ? (secondValue as List&lt;dynamic&gt;).contains(currentValue)</div>
+<div class='row nod'><span class='ln'>713</span></div>
+<div class='row nod'><span class='ln'>714</span>                        : false;</div>
+<div class='row nod'><span class='ln'>715</span></div>
+<div class='row nod'><span class='ln'>716</span>                  } else {</div>
+<div class='row nod'><span class='ln'>717</span></div>
+<div class='row nod'><span class='ln'>718</span>                    selected = secondValue == currentValue;</div>
+<div class='row nod'><span class='ln'>719</span></div>
+<div class='row nod'><span class='ln'>720</span>                  }</div>
+<div class='row nod'><span class='ln'>721</span></div>
+<div class='row nod'><span class='ln'>722</span>                } else {</div>
+<div class='row nod'><span class='ln'>723</span></div>
+<div class='row nod'><span class='ln'>724</span>                  selected = thirdValue != null</div>
+<div class='row nod'><span class='ln'>725</span></div>
+<div class='row nod'><span class='ln'>726</span>                      ? (thirdValue as List&lt;dynamic&gt;).contains(currentValue)</div>
+<div class='row nod'><span class='ln'>727</span></div>
+<div class='row nod'><span class='ln'>728</span>                      : false;</div>
+<div class='row nod'><span class='ln'>729</span></div>
+<div class='row nod'><span class='ln'>730</span>                }</div>
+<div class='row nod'><span class='ln'>731</span></div>
+<div class='row nod'><span class='ln'>732</span>              } else {</div>
+<div class='row nod'><span class='ln'>733</span></div>
+<div class='row nod'><span class='ln'>734</span>                selected =</div>
+<div class='row nod'><span class='ln'>735</span></div>
+<div class='row nod'><span class='ln'>736</span>                    (level == 2 ? secondValue : thirdValue) == currentValue;</div>
+<div class='row nod'><span class='ln'>737</span></div>
+<div class='row nod'><span class='ln'>738</span>              }</div>
+<div class='row nod'><span class='ln'>739</span></div>
+<div class='row nod'><span class='ln'>740</span></div>
+<div class='row nod'><span class='ln'>741</span></div>
+<div class='row nod'><span class='ln'>742</span>              return Container(</div>
+<div class='row nod'><span class='ln'>743</span></div>
+<div class='row nod'><span class='ln'>744</span>                constraints: BoxConstraints(</div>
+<div class='row nod'><span class='ln'>745</span></div>
+<div class='row nod'><span class='ln'>746</span>                  minHeight: 56,</div>
+<div class='row nod'><span class='ln'>747</span></div>
+<div class='row nod'><span class='ln'>748</span>                  maxWidth: constraints.maxWidth,</div>
+<div class='row nod'><span class='ln'>749</span></div>
+<div class='row nod'><span class='ln'>750</span>                ),</div>
+<div class='row nod'><span class='ln'>751</span></div>
+<div class='row nod'><span class='ln'>752</span>                child: GestureDetector(</div>
+<div class='row nod'><span class='ln'>753</span></div>
+<div class='row nod'><span class='ln'>754</span>                  behavior: HitTestBehavior.translucent,</div>
+<div class='row nod'><span class='ln'>755</span></div>
+<div class='row nod'><span class='ln'>756</span>                  onTap: () {</div>
+<div class='row nod'><span class='ln'>757</span></div>
+<div class='row nod'><span class='ln'>758</span>                    /// todo 逻辑过于冗余，待优化</div>
+<div class='row nod'><span class='ln'>759</span></div>
+<div class='row nod'><span class='ln'>760</span>                    setState(() {</div>
+<div class='row nod'><span class='ln'>761</span></div>
+<div class='row nod'><span class='ln'>762</span>                      if (level == 2) {</div>
+<div class='row nod'><span class='ln'>763</span></div>
+<div class='row nod'><span class='ln'>764</span>                        switch (values.length) {</div>
+<div class='row nod'><span class='ln'>765</span></div>
+<div class='row nod'><span class='ln'>766</span>                          case 1:</div>
+<div class='row nod'><span class='ln'>767</span></div>
+<div class='row nod'><span class='ln'>768</span>                            values.add(</div>
+<div class='row nod'><span class='ln'>769</span></div>
+<div class='row nod'><span class='ln'>770</span>                                isMultiple ? [currentValue] : currentValue);</div>
+<div class='row nod'><span class='ln'>771</span></div>
+<div class='row nod'><span class='ln'>772</span>                            break;</div>
+<div class='row nod'><span class='ln'>773</span></div>
+<div class='row nod'><span class='ln'>774</span>                          case 2:</div>
+<div class='row nod'><span class='ln'>775</span></div>
+<div class='row nod'><span class='ln'>776</span>                            if (isMultiple) {</div>
+<div class='row nod'><span class='ln'>777</span></div>
+<div class='row nod'><span class='ln'>778</span>                              var hasContains = (values[1] as List&lt;dynamic&gt;)</div>
+<div class='row nod'><span class='ln'>779</span></div>
+<div class='row nod'><span class='ln'>780</span>                                  .contains(currentValue);</div>
+<div class='row nod'><span class='ln'>781</span></div>
+<div class='row nod'><span class='ln'>782</span>                              if (hasContains) {</div>
+<div class='row nod'><span class='ln'>783</span></div>
+<div class='row nod'><span class='ln'>784</span>                                (values[1] as List&lt;dynamic&gt;).remove(currentValue);</div>
+<div class='row nod'><span class='ln'>785</span></div>
+<div class='row nod'><span class='ln'>786</span>                              } else {</div>
+<div class='row nod'><span class='ln'>787</span></div>
+<div class='row nod'><span class='ln'>788</span>                                (values[1] as List&lt;dynamic&gt;).add(currentValue);</div>
+<div class='row nod'><span class='ln'>789</span></div>
+<div class='row nod'><span class='ln'>790</span>                              }</div>
+<div class='row nod'><span class='ln'>791</span></div>
+<div class='row nod'><span class='ln'>792</span>                            } else {</div>
+<div class='row nod'><span class='ln'>793</span></div>
+<div class='row nod'><span class='ln'>794</span>                              values[1] = currentValue;</div>
+<div class='row nod'><span class='ln'>795</span></div>
+<div class='row nod'><span class='ln'>796</span>                            }</div>
+<div class='row nod'><span class='ln'>797</span></div>
+<div class='row nod'><span class='ln'>798</span>                            if (controller3.hasClients) {</div>
+<div class='row nod'><span class='ln'>799</span></div>
+<div class='row nod'><span class='ln'>800</span>                              controller3.jumpTo(0);</div>
+<div class='row nod'><span class='ln'>801</span></div>
+<div class='row nod'><span class='ln'>802</span>                            }</div>
+<div class='row nod'><span class='ln'>803</span></div>
+<div class='row nod'><span class='ln'>804</span>                            break;</div>
+<div class='row nod'><span class='ln'>805</span></div>
+<div class='row nod'><span class='ln'>806</span>                          default:</div>
+<div class='row nod'><span class='ln'>807</span></div>
+<div class='row nod'><span class='ln'>808</span>                            values[1] = currentValue;</div>
+<div class='row nod'><span class='ln'>809</span></div>
+<div class='row nod'><span class='ln'>810</span>                            values.removeLast();</div>
+<div class='row nod'><span class='ln'>811</span></div>
+<div class='row nod'><span class='ln'>812</span>                            if (controller3.hasClients) {</div>
+<div class='row nod'><span class='ln'>813</span></div>
+<div class='row nod'><span class='ln'>814</span>                              controller3.jumpTo(0);</div>
+<div class='row nod'><span class='ln'>815</span></div>
+<div class='row nod'><span class='ln'>816</span>                            }</div>
+<div class='row nod'><span class='ln'>817</span></div>
+<div class='row nod'><span class='ln'>818</span>                        }</div>
+<div class='row nod'><span class='ln'>819</span></div>
+<div class='row nod'><span class='ln'>820</span>                      } else {</div>
+<div class='row nod'><span class='ln'>821</span></div>
+<div class='row nod'><span class='ln'>822</span>                        switch (values.length) {</div>
+<div class='row nod'><span class='ln'>823</span></div>
+<div class='row nod'><span class='ln'>824</span>                          case 1:</div>
+<div class='row nod'><span class='ln'>825</span></div>
+<div class='row nod'><span class='ln'>826</span>                          case 2:</div>
+<div class='row nod'><span class='ln'>827</span></div>
+<div class='row nod'><span class='ln'>828</span>                            values.add(</div>
+<div class='row nod'><span class='ln'>829</span></div>
+<div class='row nod'><span class='ln'>830</span>                                isMultiple ? [currentValue] : currentValue);</div>
+<div class='row nod'><span class='ln'>831</span></div>
+<div class='row nod'><span class='ln'>832</span>                            break;</div>
+<div class='row nod'><span class='ln'>833</span></div>
+<div class='row nod'><span class='ln'>834</span>                          default:</div>
+<div class='row nod'><span class='ln'>835</span></div>
+<div class='row nod'><span class='ln'>836</span>                            if (isMultiple) {</div>
+<div class='row nod'><span class='ln'>837</span></div>
+<div class='row nod'><span class='ln'>838</span>                              var hasContains = (values[2] as List&lt;dynamic&gt;)</div>
+<div class='row nod'><span class='ln'>839</span></div>
+<div class='row nod'><span class='ln'>840</span>                                  .contains(currentValue);</div>
+<div class='row nod'><span class='ln'>841</span></div>
+<div class='row nod'><span class='ln'>842</span>                              if (hasContains) {</div>
+<div class='row nod'><span class='ln'>843</span></div>
+<div class='row nod'><span class='ln'>844</span>                                (values[2] as List&lt;dynamic&gt;).remove(currentValue);</div>
+<div class='row nod'><span class='ln'>845</span></div>
+<div class='row nod'><span class='ln'>846</span>                              } else {</div>
+<div class='row nod'><span class='ln'>847</span></div>
+<div class='row nod'><span class='ln'>848</span>                                (values[2] as List&lt;dynamic&gt;).add(currentValue);</div>
+<div class='row nod'><span class='ln'>849</span></div>
+<div class='row nod'><span class='ln'>850</span>                              }</div>
+<div class='row nod'><span class='ln'>851</span></div>
+<div class='row nod'><span class='ln'>852</span>                            } else {</div>
+<div class='row nod'><span class='ln'>853</span></div>
+<div class='row nod'><span class='ln'>854</span>                              values[2] = currentValue;</div>
+<div class='row nod'><span class='ln'>855</span></div>
+<div class='row nod'><span class='ln'>856</span>                            }</div>
+<div class='row nod'><span class='ln'>857</span></div>
+<div class='row nod'><span class='ln'>858</span>                        }</div>
+<div class='row nod'><span class='ln'>859</span></div>
+<div class='row nod'><span class='ln'>860</span>                      }</div>
+<div class='row nod'><span class='ln'>861</span></div>
+<div class='row nod'><span class='ln'>862</span>                      widget.onChanged?.call(values, level);</div>
+<div class='row nod'><span class='ln'>863</span></div>
+<div class='row nod'><span class='ln'>864</span>                    });</div>
+<div class='row nod'><span class='ln'>865</span></div>
+<div class='row nod'><span class='ln'>866</span>                  },</div>
+<div class='row nod'><span class='ln'>867</span></div>
+<div class='row nod'><span class='ln'>868</span>                  child: ConstrainedBox(</div>
+<div class='row nod'><span class='ln'>869</span></div>
+<div class='row nod'><span class='ln'>870</span>                    constraints: BoxConstraints(</div>
+<div class='row nod'><span class='ln'>871</span></div>
+<div class='row nod'><span class='ln'>872</span>                      minWidth: constraints.maxWidth,</div>
+<div class='row nod'><span class='ln'>873</span></div>
+<div class='row nod'><span class='ln'>874</span>                    ),</div>
+<div class='row nod'><span class='ln'>875</span></div>
+<div class='row nod'><span class='ln'>876</span>                    child: Row(</div>
+<div class='row nod'><span class='ln'>877</span></div>
+<div class='row nod'><span class='ln'>878</span>                      mainAxisAlignment: MainAxisAlignment.spaceBetween,</div>
+<div class='row nod'><span class='ln'>879</span></div>
+<div class='row nod'><span class='ln'>880</span>                      children: [</div>
+<div class='row nod'><span class='ln'>881</span></div>
+<div class='row nod'><span class='ln'>882</span>                        Expanded(</div>
+<div class='row nod'><span class='ln'>883</span></div>
+<div class='row nod'><span class='ln'>884</span>                          child: Padding(</div>
+<div class='row nod'><span class='ln'>885</span></div>
+<div class='row nod'><span class='ln'>886</span>                            padding: const EdgeInsets.only(</div>
+<div class='row nod'><span class='ln'>887</span></div>
+<div class='row nod'><span class='ln'>888</span>                                top: 16, left: 16, bottom: 16),</div>
+<div class='row nod'><span class='ln'>889</span></div>
+<div class='row nod'><span class='ln'>890</span>                            child: Text(</div>
+<div class='row nod'><span class='ln'>891</span></div>
+<div class='row nod'><span class='ln'>892</span>                              displayOptions[index].label,</div>
+<div class='row nod'><span class='ln'>893</span></div>
+<div class='row nod'><span class='ln'>894</span>                              maxLines: maxLines,</div>
+<div class='row nod'><span class='ln'>895</span></div>
+<div class='row nod'><span class='ln'>896</span>                              overflow: TextOverflow.ellipsis,</div>
+<div class='row nod'><span class='ln'>897</span></div>
+<div class='row nod'><span class='ln'>898</span>                              style: TextStyle(</div>
+<div class='row nod'><span class='ln'>899</span></div>
+<div class='row nod'><span class='ln'>900</span>                                fontSize: 16,</div>
+<div class='row nod'><span class='ln'>901</span></div>
+<div class='row nod'><span class='ln'>902</span>                                color: (!lastColumn &amp;&amp; selected)</div>
+<div class='row nod'><span class='ln'>903</span></div>
+<div class='row nod'><span class='ln'>904</span>                                    ? context.tTheme.brandNormalColor</div>
+<div class='row nod'><span class='ln'>905</span></div>
+<div class='row nod'><span class='ln'>906</span>                                    : context.tTheme.textColorPrimary,</div>
+<div class='row nod'><span class='ln'>907</span></div>
+<div class='row nod'><span class='ln'>908</span>                                fontWeight: (!lastColumn &amp;&amp; selected)</div>
+<div class='row nod'><span class='ln'>909</span></div>
+<div class='row nod'><span class='ln'>910</span>                                    ? FontWeight.w600</div>
+<div class='row nod'><span class='ln'>911</span></div>
+<div class='row nod'><span class='ln'>912</span>                                    : FontWeight.w400,</div>
+<div class='row nod'><span class='ln'>913</span></div>
+<div class='row nod'><span class='ln'>914</span>                              ),</div>
+<div class='row nod'><span class='ln'>915</span></div>
+<div class='row nod'><span class='ln'>916</span>                            ),</div>
+<div class='row nod'><span class='ln'>917</span></div>
+<div class='row nod'><span class='ln'>918</span>                          ),</div>
+<div class='row nod'><span class='ln'>919</span></div>
+<div class='row nod'><span class='ln'>920</span>                        ),</div>
+<div class='row nod'><span class='ln'>921</span></div>
+<div class='row nod'><span class='ln'>922</span>                        Visibility(</div>
+<div class='row nod'><span class='ln'>923</span></div>
+<div class='row nod'><span class='ln'>924</span>                          visible: lastColumn &amp;&amp; selected,</div>
+<div class='row nod'><span class='ln'>925</span></div>
+<div class='row nod'><span class='ln'>926</span>                          child: SizedBox(</div>
+<div class='row nod'><span class='ln'>927</span></div>
+<div class='row nod'><span class='ln'>928</span>                            width: 56,</div>
+<div class='row nod'><span class='ln'>929</span></div>
+<div class='row nod'><span class='ln'>930</span>                            height: 56,</div>
+<div class='row nod'><span class='ln'>931</span></div>
+<div class='row nod'><span class='ln'>932</span>                            child: Padding(</div>
+<div class='row nod'><span class='ln'>933</span></div>
+<div class='row nod'><span class='ln'>934</span>                              padding: const EdgeInsets.all(16),</div>
+<div class='row nod'><span class='ln'>935</span></div>
+<div class='row nod'><span class='ln'>936</span>                              child: Icon(</div>
+<div class='row nod'><span class='ln'>937</span></div>
+<div class='row nod'><span class='ln'>938</span>                                TIcons.check,</div>
+<div class='row nod'><span class='ln'>939</span></div>
+<div class='row nod'><span class='ln'>940</span>                                color: context.tTheme.brandNormalColor,</div>
+<div class='row nod'><span class='ln'>941</span></div>
+<div class='row nod'><span class='ln'>942</span>                              ),</div>
+<div class='row nod'><span class='ln'>943</span></div>
+<div class='row nod'><span class='ln'>944</span>                            ),</div>
+<div class='row nod'><span class='ln'>945</span></div>
+<div class='row nod'><span class='ln'>946</span>                          ),</div>
+<div class='row nod'><span class='ln'>947</span></div>
+<div class='row nod'><span class='ln'>948</span>                        )</div>
+<div class='row nod'><span class='ln'>949</span></div>
+<div class='row nod'><span class='ln'>950</span>                      ],</div>
+<div class='row nod'><span class='ln'>951</span></div>
+<div class='row nod'><span class='ln'>952</span>                    ),</div>
+<div class='row nod'><span class='ln'>953</span></div>
+<div class='row nod'><span class='ln'>954</span>                  ),</div>
+<div class='row nod'><span class='ln'>955</span></div>
+<div class='row nod'><span class='ln'>956</span>                ),</div>
+<div class='row nod'><span class='ln'>957</span></div>
+<div class='row nod'><span class='ln'>958</span>              );</div>
+<div class='row nod'><span class='ln'>959</span></div>
+<div class='row nod'><span class='ln'>960</span>            },</div>
+<div class='row nod'><span class='ln'>961</span></div>
+<div class='row nod'><span class='ln'>962</span>          ),</div>
+<div class='row nod'><span class='ln'>963</span></div>
+<div class='row nod'><span class='ln'>964</span>        );</div>
+<div class='row nod'><span class='ln'>965</span></div>
+<div class='row nod'><span class='ln'>966</span>      },</div>
+<div class='row nod'><span class='ln'>967</span></div>
+<div class='row nod'><span class='ln'>968</span>    );</div>
+<div class='row nod'><span class='ln'>969</span></div>
+<div class='row nod'><span class='ln'>970</span>  }</div>
+<div class='row nod'><span class='ln'>971</span></div>
+<div class='row nod'><span class='ln'>972</span>}</div>
+<div class='row nod'><span class='ln'>973</span></div>
+<div class='row nod'><span class='ln'>974</span></div>
+<div class='row nod'><span class='ln'>975</span></div>
+<div class='row nod'><span class='ln'>976</span>/// 向外弯折圆角的位置枚举</div>
+<div class='row nod'><span class='ln'>977</span></div>
+<div class='row nod'><span class='ln'>978</span>enum _Corner {</div>
+<div class='row nod'><span class='ln'>979</span></div>
+<div class='row nod'><span class='ln'>980</span>  topRight,</div>
+<div class='row nod'><span class='ln'>981</span></div>
+<div class='row nod'><span class='ln'>982</span>  bottomRight,</div>
+<div class='row nod'><span class='ln'>983</span></div>
+<div class='row nod'><span class='ln'>984</span>}</div>
+<div class='row nod'><span class='ln'>985</span></div>
+<div class='row nod'><span class='ln'>986</span></div>
+<div class='row nod'><span class='ln'>987</span></div>
+<div class='row nod'><span class='ln'>988</span>/// 自定义画笔：绘制向外弯折的圆角效果</div>
+<div class='row nod'><span class='ln'>989</span></div>
+<div class='row nod'><span class='ln'>990</span>/// 原理：在选中项的右上角/右下角绘制一个填充色的矩形，然后用白色圆弧挖出一个反向圆角</div>
+<div class='row nod'><span class='ln'>991</span></div>
+<div class='row nod'><span class='ln'>992</span>class _OutwardCornerPainter extends CustomPainter {</div>
+<div class='row nod'><span class='ln'>993</span></div>
+<div class='row nod'><span class='ln'>994</span>  final Color color;</div>
+<div class='row nod'><span class='ln'>995</span></div>
+<div class='row nod'><span class='ln'>996</span>  final _Corner corner;</div>
+<div class='row nod'><span class='ln'>997</span></div>
+<div class='row nod'><span class='ln'>998</span></div>
+<div class='row nod'><span class='ln'>999</span></div>
+<div class='row nod'><span class='ln'>1000</span>  _OutwardCornerPainter({required this.color, required this.corner});</div>
+<div class='row nod'><span class='ln'>1001</span></div>
+<div class='row nod'><span class='ln'>1002</span></div>
+<div class='row nod'><span class='ln'>1003</span></div>
+<div class='row nod'><span class='ln'>1004</span>  @override</div>
+<div class='row nod'><span class='ln'>1005</span></div>
+<div class='row nod'><span class='ln'>1006</span>  void paint(Canvas canvas, Size size) {</div>
+<div class='row nod'><span class='ln'>1007</span></div>
+<div class='row nod'><span class='ln'>1008</span>    final paint = Paint()</div>
+<div class='row nod'><span class='ln'>1009</span></div>
+<div class='row nod'><span class='ln'>1010</span>      ..color = color</div>
+<div class='row nod'><span class='ln'>1011</span></div>
+<div class='row nod'><span class='ln'>1012</span>      ..style = PaintingStyle.fill;</div>
+<div class='row nod'><span class='ln'>1013</span></div>
+<div class='row nod'><span class='ln'>1014</span></div>
+<div class='row nod'><span class='ln'>1015</span></div>
+<div class='row nod'><span class='ln'>1016</span>    final path = Path();</div>
+<div class='row nod'><span class='ln'>1017</span></div>
+<div class='row nod'><span class='ln'>1018</span>    final r = size.width;</div>
+<div class='row nod'><span class='ln'>1019</span></div>
+<div class='row nod'><span class='ln'>1020</span></div>
+<div class='row nod'><span class='ln'>1021</span></div>
+<div class='row nod'><span class='ln'>1022</span>    switch (corner) {</div>
+<div class='row nod'><span class='ln'>1023</span></div>
+<div class='row nod'><span class='ln'>1024</span>      case _Corner.topRight:</div>
+<div class='row nod'><span class='ln'>1025</span></div>
+<div class='row nod'><span class='ln'>1026</span>        // 从右上角开始，画一个矩形区域，然后用圆弧挖出向外弯折的效果</div>
+<div class='row nod'><span class='ln'>1027</span></div>
+<div class='row nod'><span class='ln'>1028</span>        path.moveTo(0, 0);</div>
+<div class='row nod'><span class='ln'>1029</span></div>
+<div class='row nod'><span class='ln'>1030</span>        path.lineTo(r, 0);</div>
+<div class='row nod'><span class='ln'>1031</span></div>
+<div class='row nod'><span class='ln'>1032</span>        path.lineTo(r, r);</div>
+<div class='row nod'><span class='ln'>1033</span></div>
+<div class='row nod'><span class='ln'>1034</span>        path.arcToPoint(</div>
+<div class='row nod'><span class='ln'>1035</span></div>
+<div class='row nod'><span class='ln'>1036</span>          const Offset(0, 0),</div>
+<div class='row nod'><span class='ln'>1037</span></div>
+<div class='row nod'><span class='ln'>1038</span>          radius: Radius.circular(r),</div>
+<div class='row nod'><span class='ln'>1039</span></div>
+<div class='row nod'><span class='ln'>1040</span>          clockwise: false,</div>
+<div class='row nod'><span class='ln'>1041</span></div>
+<div class='row nod'><span class='ln'>1042</span>        );</div>
+<div class='row nod'><span class='ln'>1043</span></div>
+<div class='row nod'><span class='ln'>1044</span>        path.close();</div>
+<div class='row nod'><span class='ln'>1045</span></div>
+<div class='row nod'><span class='ln'>1046</span>        break;</div>
+<div class='row nod'><span class='ln'>1047</span></div>
+<div class='row nod'><span class='ln'>1048</span>      case _Corner.bottomRight:</div>
+<div class='row nod'><span class='ln'>1049</span></div>
+<div class='row nod'><span class='ln'>1050</span>        // 从右下角开始，画一个矩形区域，然后用圆弧挖出向外弯折的效果</div>
+<div class='row nod'><span class='ln'>1051</span></div>
+<div class='row nod'><span class='ln'>1052</span>        path.moveTo(r, 0);</div>
+<div class='row nod'><span class='ln'>1053</span></div>
+<div class='row nod'><span class='ln'>1054</span>        path.lineTo(r, r);</div>
+<div class='row nod'><span class='ln'>1055</span></div>
+<div class='row nod'><span class='ln'>1056</span>        path.lineTo(0, r);</div>
+<div class='row nod'><span class='ln'>1057</span></div>
+<div class='row nod'><span class='ln'>1058</span>        path.arcToPoint(</div>
+<div class='row nod'><span class='ln'>1059</span></div>
+<div class='row nod'><span class='ln'>1060</span>          Offset(r, 0),</div>
+<div class='row nod'><span class='ln'>1061</span></div>
+<div class='row nod'><span class='ln'>1062</span>          radius: Radius.circular(r),</div>
+<div class='row nod'><span class='ln'>1063</span></div>
+<div class='row nod'><span class='ln'>1064</span>          clockwise: false,</div>
+<div class='row nod'><span class='ln'>1065</span></div>
+<div class='row nod'><span class='ln'>1066</span>        );</div>
+<div class='row nod'><span class='ln'>1067</span></div>
+<div class='row nod'><span class='ln'>1068</span>        path.close();</div>
+<div class='row nod'><span class='ln'>1069</span></div>
+<div class='row nod'><span class='ln'>1070</span>        break;</div>
+<div class='row nod'><span class='ln'>1071</span></div>
+<div class='row nod'><span class='ln'>1072</span>    }</div>
+<div class='row nod'><span class='ln'>1073</span></div>
+<div class='row nod'><span class='ln'>1074</span></div>
+<div class='row nod'><span class='ln'>1075</span></div>
+<div class='row nod'><span class='ln'>1076</span>    canvas.drawPath(path, paint);</div>
+<div class='row nod'><span class='ln'>1077</span></div>
+<div class='row nod'><span class='ln'>1078</span>  }</div>
+<div class='row nod'><span class='ln'>1079</span></div>
+<div class='row nod'><span class='ln'>1080</span></div>
+<div class='row nod'><span class='ln'>1081</span></div>
+<div class='row nod'><span class='ln'>1082</span>  @override</div>
+<div class='row nod'><span class='ln'>1083</span></div>
+<div class='row nod'><span class='ln'>1084</span>  bool shouldRepaint(covariant _OutwardCornerPainter oldDelegate) {</div>
+<div class='row nod'><span class='ln'>1085</span></div>
+<div class='row nod'><span class='ln'>1086</span>    return oldDelegate.color != color || oldDelegate.corner != corner;</div>
+<div class='row nod'><span class='ln'>1087</span></div>
+<div class='row nod'><span class='ln'>1088</span>  }</div>
+<div class='row nod'><span class='ln'>1089</span></div>
+<div class='row nod'><span class='ln'>1090</span>}</div>
+<div class='row nod'><span class='ln'>1091</span></div>
+<div class='row nod'><span class='ln'>1092</span></div>
+</pre></body></html>

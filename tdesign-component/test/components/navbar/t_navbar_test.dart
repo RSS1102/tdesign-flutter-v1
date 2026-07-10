@@ -181,10 +181,6 @@ void main() {
       ));
       // preferredSize 仅反映构造器 height，Theme height 影响实际渲染高度
       // 验证渲染的 Container 高度而非 preferredSize
-      final container = tester.widgetList<Container>(find.byType(Container)).firstWhere(
-        (c) => c.constraints == null && c.decoration == null,
-        orElse: () => tester.widgetList<Container>(find.byType(Container)).first,
-      );
       expect(find.byType(TNavBar), findsOneWidget);
     });
   });

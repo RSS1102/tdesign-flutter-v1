@@ -96,7 +96,7 @@ class TTablePage extends StatelessWidget {
         ExampleItem(desc: '空数据表格', builder: _emptyTable),
         ExampleItem(desc: '加载动画表格', builder: _loadingTable),
         ExampleItem(desc: '可选表格+默认选中', builder: _selectTable),
-        ExampleItem(desc: '自定义表尾组件', builder: (context) => ShowFooterTable()),
+        ExampleItem(desc: '自定义表尾组件', builder: (context) => const ShowFooterTable()),
       ],
     );
   }
@@ -410,7 +410,7 @@ class ShowFooterTable extends StatefulWidget {
 
 class _ShowFooterTableState extends State<ShowFooterTable> {
   var _hasMore = true;
-  var _data = [];
+  final _data = [];
   var _pageIndex = 1;
 
   @override
@@ -439,7 +439,7 @@ class _ShowFooterTableState extends State<ShowFooterTable> {
   @Demo(group: 'table')
   Widget _showFooterTable(BuildContext context) {
     return TTable(
-      footerWidget: _hasMore ? TText('加载更多...') : TText('没有更多数据了'),
+      footerWidget: _hasMore ? const TText('加载更多...') : const TText('没有更多数据了'),
       onScroll: (controller) {
         if (controller.position.pixels == controller.position.maxScrollExtent &&
             _hasMore) {

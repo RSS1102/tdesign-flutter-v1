@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
-import 't_result_theme_data.dart';
 
 /// 结果形态
 enum TResultVariant { defaultTheme, success, warning, error }

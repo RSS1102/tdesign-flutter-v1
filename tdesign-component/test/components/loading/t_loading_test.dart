@@ -131,8 +131,8 @@ void main() {
     testWidgets('mergeExtension 覆盖 customIcon 自定义图标', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TLoading(size: TLoadingSize.medium),
-        loadingTheme: TLoadingThemeData(
-          customIcon: const Icon(Icons.refresh, size: 24),
+        loadingTheme: const TLoadingThemeData(
+          customIcon: Icon(Icons.refresh, size: 24),
         ),
       ));
       expect(find.byIcon(Icons.refresh), findsOneWidget);

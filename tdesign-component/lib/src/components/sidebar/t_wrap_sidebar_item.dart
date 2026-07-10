@@ -43,7 +43,7 @@ class TWrapSideBarItem extends StatelessWidget {
   final bool topAdjacent;
   final bool bottomAdjacent;
   final VoidCallback? onTap;
-  final TSideBarStyle style;
+  final TSideBarVariant style;
 
   static const preLineWidth = 3.0;
 
@@ -51,7 +51,7 @@ class TWrapSideBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: style == TSideBarStyle.normal
+      child: style == TSideBarVariant.normal
           ? renderNormalItem(context)
           : renderOutlineItem(context),
     );

@@ -107,15 +107,8 @@ class _TStepsState extends State<TSteps> {
     return index;
   }
 
-  /// 从 ThemeData 解析有效值
-  TStepsThemeData _resolveTheme() {
-    return Theme.of(context).extension<TStepsThemeData>() ??
-        const TStepsThemeData();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = _resolveTheme();
     final effectiveIndex = widget.value ?? widget.activeIndex;
     final effectiveStatus = widget.status;
     final effectiveSimple = widget.simple;

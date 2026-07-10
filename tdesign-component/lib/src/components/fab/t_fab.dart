@@ -87,10 +87,10 @@ class TFab extends StatelessWidget {
   final double? bottom;
 
   /// 拖拽轴向：true/[TFabDragAxis.all] 全向，[TFabDragAxis.vertical]/[TFabDragAxis.horizontal] 单轴
-  final dynamic draggable; // bool | TFabDragAxis
+  final Object? draggable;
 
   /// 拖拽结束吸附：[TFabMagnet.left]/[TFabMagnet.right]/true（左右均可）
-  final dynamic magnet; // bool | TFabMagnet
+  final Object? magnet;
 
   /// 水平拖拽边界限制
   final TFabBounds? xBounds;

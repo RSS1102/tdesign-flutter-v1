@@ -101,7 +101,7 @@ class TCheckbox extends StatefulWidget {
   final double? spacing;
 
   /// 复选框样式：圆形或方形
-  final TCheckboxStyle? style;
+  final TCheckboxVariant? style;
 
   /// 复选框大小
   final TCheckBoxSize size;
@@ -157,17 +157,17 @@ class TCheckbox extends StatefulWidget {
     Widget current;
     var size = 24.0;
     final style =
-        this.style ?? groupState?.widget.style ?? TCheckboxStyle.circle;
+        this.style ?? groupState?.widget.style ?? TCheckboxVariant.circle;
     final theme = context.tTheme;
-    final deSelectedColor = style == TCheckboxStyle.check
+    final deSelectedColor = style == TCheckboxVariant.check
         ? Colors.transparent
         : theme.componentBorderColor;
     current = Icon(
-      style == TCheckboxStyle.circle
+      style == TCheckboxVariant.circle
           ? isChecked
               ? TIcons.check_circle_filled
               : TIcons.circle
-          : style == TCheckboxStyle.square
+          : style == TCheckboxVariant.square
               ? isChecked
                   ? TIcons.check_rectangle_filled
                   : TIcons.rectangle

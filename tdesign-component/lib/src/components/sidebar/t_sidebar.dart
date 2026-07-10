@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_sidebar_theme_data.dart';
 import 't_wrap_sidebar_item.dart';
 
 class SideItemProps {
@@ -66,7 +65,7 @@ class TSideBar extends StatefulWidget {
   final TextStyle? selectedTextStyle;
 
   /// 样式（优先级高于 ThemeData）
-  final TSideBarStyle? style;
+  final TSideBarVariant? style;
 
   /// 高度（优先级高于 ThemeData）
   final double? height;
@@ -245,7 +244,7 @@ class _TSideBarState extends State<TSideBar> {
   @override
   Widget build(BuildContext context) {
     final theme = _resolveTheme();
-    final effectiveStyle = widget.style ?? theme.style ?? TSideBarStyle.normal;
+    final effectiveStyle = widget.style ?? theme.style ?? TSideBarVariant.normal;
     if (_loading) {
       widget.controller?.loading = true;
       if (widget.loadingWidget != null) {

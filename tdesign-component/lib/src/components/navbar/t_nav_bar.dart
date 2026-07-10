@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
-import 't_nav_bar_theme_data.dart';
 
 /// NavBar 操作项回调类型
 typedef TBarItemAction = void Function();
@@ -294,7 +293,7 @@ class _TNavBarState extends State<TNavBar> {
   Widget build(BuildContext context) {
     var _backgroundColor = _effectiveBackgroundColor;
     if (_backgroundColor != Colors.transparent) {
-      _backgroundColor = _backgroundColor.withOpacity(_effectiveOpacity);
+      _backgroundColor = _backgroundColor.withValues(alpha: _effectiveOpacity);
     }
 
     // screenAdaptation 由外层处理，组件不做自动适配

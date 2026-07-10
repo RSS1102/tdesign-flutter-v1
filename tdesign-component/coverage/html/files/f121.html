@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/indexes/t_indexes_list.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/indexes/t_indexes_list.dart</h1></header><div class='meta'>行覆盖 <b>100.0%</b> (100/100) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:async&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span>import &#x27;package:flutter/rendering.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;package:flutter/scheduler.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>8</span>import &#x27;../../util/iterable_ext.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>9</span>import &#x27;sticky_header/sticky_header_widget.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>10</span>import &#x27;t_indexes_anchor.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>11</span></div>
+<div class='row nod'><span class='ln'>12</span>/// 索引</div>
+<div class='row nod'><span class='ln'>13</span>class TIndexesList extends StatefulWidget {</div>
+<div class='row cov'><span class='ln'>14</span>  const TIndexesList({</div>
+<div class='row nod'><span class='ln'>15</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>16</span>    required this.indexList,</div>
+<div class='row nod'><span class='ln'>17</span>    this.indexListMaxHeight = 0.8,</div>
+<div class='row nod'><span class='ln'>18</span>    required this.activeIndex,</div>
+<div class='row nod'><span class='ln'>19</span>    required this.onSelect,</div>
+<div class='row nod'><span class='ln'>20</span>    this.builderIndex,</div>
+<div class='row cov'><span class='ln'>21</span>  }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>  /// 索引字符列表。不传默认 A-Z</div>
+<div class='row nod'><span class='ln'>24</span>  final List&lt;String&gt; indexList;</div>
+<div class='row nod'><span class='ln'>25</span></div>
+<div class='row nod'><span class='ln'>26</span>  /// 索引列表最大高度（父容器高度的百分比，默认0.8）</div>
+<div class='row nod'><span class='ln'>27</span>  final double indexListMaxHeight;</div>
+<div class='row nod'><span class='ln'>28</span></div>
+<div class='row nod'><span class='ln'>29</span>  /// 选中索引</div>
+<div class='row nod'><span class='ln'>30</span>  final ValueNotifier&lt;String&gt; activeIndex;</div>
+<div class='row nod'><span class='ln'>31</span></div>
+<div class='row nod'><span class='ln'>32</span>  /// 点击侧边栏时触发事件</div>
+<div class='row nod'><span class='ln'>33</span>  final void Function(String newIndex, String oldIndex) onSelect;</div>
+<div class='row nod'><span class='ln'>34</span></div>
+<div class='row nod'><span class='ln'>35</span>  /// 索引文本自定义构建，包括索引激活左侧提示</div>
+<div class='row nod'><span class='ln'>36</span>  final Widget Function(BuildContext context, String index, bool isActive)?</div>
+<div class='row nod'><span class='ln'>37</span>      builderIndex;</div>
+<div class='row nod'><span class='ln'>38</span></div>
+<div class='row cov'><span class='ln'>39</span>  @override</div>
+<div class='row cov'><span class='ln'>40</span>  State&lt;TIndexesList&gt; createState() =&gt; _TIndexesListState();</div>
+<div class='row nod'><span class='ln'>41</span>}</div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row nod'><span class='ln'>43</span>class _TIndexesListState extends State&lt;TIndexesList&gt; {</div>
+<div class='row nod'><span class='ln'>44</span>  late Map&lt;String, GlobalKey&gt; _containerKeys;</div>
+<div class='row nod'><span class='ln'>45</span>  final _indexSize = 20.0;</div>
+<div class='row nod'><span class='ln'>46</span>  Timer? _hideTipTimer;</div>
+<div class='row nod'><span class='ln'>47</span>  var _showTip = false;</div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row cov'><span class='ln'>49</span>  @override</div>
+<div class='row nod'><span class='ln'>50</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>51</span>    super.initState();</div>
+<div class='row cov'><span class='ln'>52</span>    _initContainerKeys();</div>
+<div class='row nod'><span class='ln'>53</span>  }</div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row cov'><span class='ln'>55</span>  void _initContainerKeys() {</div>
+<div class='row cov'><span class='ln'>56</span>    _containerKeys =</div>
+<div class='row cov'><span class='ln'>57</span>        widget.indexList.asMap().map((index, e) =&gt; MapEntry(e, GlobalKey()));</div>
+<div class='row nod'><span class='ln'>58</span>  }</div>
+<div class='row nod'><span class='ln'>59</span></div>
+<div class='row cov'><span class='ln'>60</span>  @override</div>
+<div class='row nod'><span class='ln'>61</span>  void didUpdateWidget(TIndexesList oldWidget) {</div>
+<div class='row cov'><span class='ln'>62</span>    super.didUpdateWidget(oldWidget);</div>
+<div class='row cov'><span class='ln'>63</span>    if (widget.indexList != oldWidget.indexList) {</div>
+<div class='row cov'><span class='ln'>64</span>      _initContainerKeys();</div>
+<div class='row nod'><span class='ln'>65</span>    }</div>
+<div class='row nod'><span class='ln'>66</span>  }</div>
+<div class='row nod'><span class='ln'>67</span></div>
+<div class='row cov'><span class='ln'>68</span>  @override</div>
+<div class='row nod'><span class='ln'>69</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>70</span>    _hideTipTimer?.cancel();</div>
+<div class='row cov'><span class='ln'>71</span>    super.dispose();</div>
+<div class='row nod'><span class='ln'>72</span>  }</div>
+<div class='row nod'><span class='ln'>73</span></div>
+<div class='row cov'><span class='ln'>74</span>  @override</div>
+<div class='row nod'><span class='ln'>75</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>76</span>    return Positioned(</div>
+<div class='row cov'><span class='ln'>77</span>      right: context.tTheme.spacer8,</div>
+<div class='row nod'><span class='ln'>78</span>      top: 0,</div>
+<div class='row nod'><span class='ln'>79</span>      bottom: 0,</div>
+<div class='row cov'><span class='ln'>80</span>      child: Align(</div>
+<div class='row cov'><span class='ln'>81</span>        child: FractionallySizedBox(</div>
+<div class='row cov'><span class='ln'>82</span>          heightFactor: widget.indexListMaxHeight,</div>
+<div class='row cov'><span class='ln'>83</span>          child: Align(</div>
+<div class='row cov'><span class='ln'>84</span>            child: GestureDetector(</div>
+<div class='row nod'><span class='ln'>85</span>              behavior: HitTestBehavior.opaque,</div>
+<div class='row cov'><span class='ln'>86</span>              onVerticalDragUpdate: (details) {</div>
+<div class='row cov'><span class='ln'>87</span>                _changeSelect(details.globalPosition);</div>
+<div class='row nod'><span class='ln'>88</span>              },</div>
+<div class='row cov'><span class='ln'>89</span>              onTapUp: (details) {</div>
+<div class='row cov'><span class='ln'>90</span>                _changeSelect(details.globalPosition);</div>
+<div class='row cov'><span class='ln'>91</span>                _hideTip();</div>
+<div class='row nod'><span class='ln'>92</span>              },</div>
+<div class='row cov'><span class='ln'>93</span>              onVerticalDragEnd: (details) {</div>
+<div class='row cov'><span class='ln'>94</span>                _hideTip();</div>
+<div class='row nod'><span class='ln'>95</span>              },</div>
+<div class='row cov'><span class='ln'>96</span>              child: ValueListenableBuilder(</div>
+<div class='row cov'><span class='ln'>97</span>                valueListenable: widget.activeIndex,</div>
+<div class='row cov'><span class='ln'>98</span>                builder: (context, value, child) {</div>
+<div class='row cov'><span class='ln'>99</span>                  return Column(</div>
+<div class='row nod'><span class='ln'>100</span>                    mainAxisSize: MainAxisSize.min,</div>
+<div class='row cov'><span class='ln'>101</span>                    children: widget.indexList.map(</div>
+<div class='row cov'><span class='ln'>102</span>                      (e) {</div>
+<div class='row cov'><span class='ln'>103</span>                        final isActive = value == e;</div>
+<div class='row cov'><span class='ln'>104</span>                        if (widget.builderIndex != null) {</div>
+<div class='row cov'><span class='ln'>105</span>                          return Container(</div>
+<div class='row cov'><span class='ln'>106</span>                            key: _containerKeys[e],</div>
+<div class='row cov'><span class='ln'>107</span>                            child: widget.builderIndex!(context, e, isActive),</div>
+<div class='row nod'><span class='ln'>108</span>                          );</div>
+<div class='row nod'><span class='ln'>109</span>                        }</div>
+<div class='row cov'><span class='ln'>110</span>                        return Stack(</div>
+<div class='row nod'><span class='ln'>111</span>                          clipBehavior: Clip.none,</div>
+<div class='row cov'><span class='ln'>112</span>                          children: [</div>
+<div class='row cov'><span class='ln'>113</span>                            if (_showTip &amp;&amp; value == e)</div>
+<div class='row cov'><span class='ln'>114</span>                              Positioned(</div>
+<div class='row cov'><span class='ln'>115</span>                                top: -context.tTheme.spacer48 / 2 +</div>
+<div class='row cov'><span class='ln'>116</span>                                    _indexSize / 2,</div>
+<div class='row cov'><span class='ln'>117</span>                                left: -context.tTheme.spacer48,</div>
+<div class='row cov'><span class='ln'>118</span>                                child: Container(</div>
+<div class='row cov'><span class='ln'>119</span>                                  height: context.tTheme.spacer48,</div>
+<div class='row cov'><span class='ln'>120</span>                                  width: context.tTheme.spacer48,</div>
+<div class='row cov'><span class='ln'>121</span>                                  decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>122</span>                                    borderRadius: BorderRadius.circular(</div>
+<div class='row cov'><span class='ln'>123</span>                                        context.tTheme.radiusCircle),</div>
+<div class='row cov'><span class='ln'>124</span>                                    color: context.tTheme.brandLightColor,</div>
+<div class='row nod'><span class='ln'>125</span>                                  ),</div>
+<div class='row cov'><span class='ln'>126</span>                                  child: Center(</div>
+<div class='row cov'><span class='ln'>127</span>                                    child: TText(</div>
+<div class='row nod'><span class='ln'>128</span>                                      e,</div>
+<div class='row nod'><span class='ln'>129</span>                                      forceVerticalCenter: true,</div>
+<div class='row cov'><span class='ln'>130</span>                                      font: context.tTheme</div>
+<div class='row cov'><span class='ln'>131</span>                                          .fontTitleExtraLarge,</div>
+<div class='row nod'><span class='ln'>132</span>                                      textColor:</div>
+<div class='row cov'><span class='ln'>133</span>                                          context.tTheme.brandNormalColor,</div>
+<div class='row nod'><span class='ln'>134</span>                                    ),</div>
+<div class='row nod'><span class='ln'>135</span>                                  ),</div>
+<div class='row nod'><span class='ln'>136</span>                                ),</div>
+<div class='row nod'><span class='ln'>137</span>                              ),</div>
+<div class='row cov'><span class='ln'>138</span>                            Container(</div>
+<div class='row cov'><span class='ln'>139</span>                              key: _containerKeys[e],</div>
+<div class='row cov'><span class='ln'>140</span>                              padding: EdgeInsets.only(</div>
+<div class='row cov'><span class='ln'>141</span>                                  left: context.tTheme.spacer8),</div>
+<div class='row cov'><span class='ln'>142</span>                              child: Container(</div>
+<div class='row cov'><span class='ln'>143</span>                                width: _indexSize,</div>
+<div class='row cov'><span class='ln'>144</span>                                height: _indexSize,</div>
+<div class='row nod'><span class='ln'>145</span>                                decoration: isActive</div>
+<div class='row cov'><span class='ln'>146</span>                                    ? BoxDecoration(</div>
+<div class='row cov'><span class='ln'>147</span>                                        borderRadius: BorderRadius.circular(</div>
+<div class='row cov'><span class='ln'>148</span>                                            context.tTheme.radiusCircle),</div>
+<div class='row cov'><span class='ln'>149</span>                                        color: context.tTheme</div>
+<div class='row cov'><span class='ln'>150</span>                                            .brandNormalColor,</div>
+<div class='row nod'><span class='ln'>151</span>                                      )</div>
+<div class='row nod'><span class='ln'>152</span>                                    : null,</div>
+<div class='row cov'><span class='ln'>153</span>                                child: Center(</div>
+<div class='row cov'><span class='ln'>154</span>                                  child: TText(</div>
+<div class='row nod'><span class='ln'>155</span>                                    e,</div>
+<div class='row nod'><span class='ln'>156</span>                                    forceVerticalCenter: true,</div>
+<div class='row nod'><span class='ln'>157</span>                                    font: isActive</div>
+<div class='row cov'><span class='ln'>158</span>                                        ? context.tTheme.fontMarkSmall</div>
+<div class='row cov'><span class='ln'>159</span>                                        : context.tTheme.fontLinkSmall,</div>
+<div class='row nod'><span class='ln'>160</span>                                    textColor: isActive</div>
+<div class='row cov'><span class='ln'>161</span>                                        ? context.tTheme.textColorAnti</div>
+<div class='row cov'><span class='ln'>162</span>                                        : context.tTheme.textColorPrimary,</div>
+<div class='row nod'><span class='ln'>163</span>                                  ),</div>
+<div class='row nod'><span class='ln'>164</span>                                ),</div>
+<div class='row nod'><span class='ln'>165</span>                              ),</div>
+<div class='row nod'><span class='ln'>166</span>                            ),</div>
+<div class='row nod'><span class='ln'>167</span>                          ],</div>
+<div class='row nod'><span class='ln'>168</span>                        );</div>
+<div class='row nod'><span class='ln'>169</span>                      },</div>
+<div class='row cov'><span class='ln'>170</span>                    ).toList(),</div>
+<div class='row nod'><span class='ln'>171</span>                  );</div>
+<div class='row nod'><span class='ln'>172</span>                },</div>
+<div class='row nod'><span class='ln'>173</span>              ),</div>
+<div class='row nod'><span class='ln'>174</span>            ),</div>
+<div class='row nod'><span class='ln'>175</span>          ),</div>
+<div class='row nod'><span class='ln'>176</span>        ),</div>
+<div class='row nod'><span class='ln'>177</span>      ),</div>
+<div class='row nod'><span class='ln'>178</span>    );</div>
+<div class='row nod'><span class='ln'>179</span>  }</div>
+<div class='row nod'><span class='ln'>180</span></div>
+<div class='row cov'><span class='ln'>181</span>  void _changeSelect(Offset globalPosition) {</div>
+<div class='row cov'><span class='ln'>182</span>    final newIndex = _fingerInsideContainer(globalPosition);</div>
+<div class='row cov'><span class='ln'>183</span>    if (newIndex != null &amp;&amp; newIndex != widget.activeIndex.value) {</div>
+<div class='row cov'><span class='ln'>184</span>      final oldIndex = widget.activeIndex.value;</div>
+<div class='row cov'><span class='ln'>185</span>      widget.activeIndex.value = newIndex;</div>
+<div class='row cov'><span class='ln'>186</span>      _showTip = true;</div>
+<div class='row cov'><span class='ln'>187</span>      widget.onSelect.call(newIndex, oldIndex);</div>
+<div class='row nod'><span class='ln'>188</span>    }</div>
+<div class='row nod'><span class='ln'>189</span>  }</div>
+<div class='row nod'><span class='ln'>190</span></div>
+<div class='row cov'><span class='ln'>191</span>  String? _fingerInsideContainer(Offset globalPosition) {</div>
+<div class='row cov'><span class='ln'>192</span>    for (var entry in _containerKeys.entries) {</div>
+<div class='row nod'><span class='ln'>193</span>      final renderBox =</div>
+<div class='row cov'><span class='ln'>194</span>          entry.value.currentContext?.findRenderObject() as RenderBox?;</div>
+<div class='row nod'><span class='ln'>195</span>      if (renderBox != null) {</div>
+<div class='row cov'><span class='ln'>196</span>        final localPosition = renderBox.globalToLocal(globalPosition);</div>
+<div class='row nod'><span class='ln'>197</span>        final isIn =</div>
+<div class='row cov'><span class='ln'>198</span>            renderBox.hitTest(BoxHitTestResult(), position: localPosition);</div>
+<div class='row nod'><span class='ln'>199</span>        if (isIn) {</div>
+<div class='row cov'><span class='ln'>200</span>          return entry.key;</div>
+<div class='row nod'><span class='ln'>201</span>        }</div>
+<div class='row nod'><span class='ln'>202</span>      }</div>
+<div class='row nod'><span class='ln'>203</span>    }</div>
+<div class='row nod'><span class='ln'>204</span>    return null;</div>
+<div class='row nod'><span class='ln'>205</span>  }</div>
+<div class='row nod'><span class='ln'>206</span></div>
+<div class='row cov'><span class='ln'>207</span>  void _hideTip() {</div>
+<div class='row cov'><span class='ln'>208</span>    _hideTipTimer?.cancel();</div>
+<div class='row cov'><span class='ln'>209</span>    _hideTipTimer = Timer(</div>
+<div class='row nod'><span class='ln'>210</span>      const Duration(seconds: 1),</div>
+<div class='row cov'><span class='ln'>211</span>      () {</div>
+<div class='row cov'><span class='ln'>212</span>        setState(() {</div>
+<div class='row cov'><span class='ln'>213</span>          _showTip = false;</div>
+<div class='row nod'><span class='ln'>214</span>        });</div>
+<div class='row nod'><span class='ln'>215</span>      },</div>
+<div class='row nod'><span class='ln'>216</span>    );</div>
+<div class='row nod'><span class='ln'>217</span>  }</div>
+<div class='row nod'><span class='ln'>218</span>}</div>
+<div class='row nod'><span class='ln'>219</span></div>
+</pre></body></html>

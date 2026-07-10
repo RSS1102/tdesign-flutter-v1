@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tdesign_flutter/src/components/dialog/t_dialog_widget.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TDialog V1.0 Widget 测试
@@ -11,7 +12,7 @@ void main() {
   Widget wrapWithTheme(Widget child) {
     return MaterialApp(
       theme: ThemeData(extensions: [TThemeData.defaultData()]),
-      home: Scaffold(body: Center(child: child)),
+      home: Scaffold(body: child),
     );
   }
 
@@ -82,7 +83,7 @@ void main() {
     });
 
     testWidgets('onPressed 回调触发', (tester) async {
-      bool confirmed = false;
+      var confirmed = false;
       await tester.pumpWidget(wrapWithButton(() {
         showDialog(
           context: tester.element(find.byType(TButton)),
@@ -272,6 +273,115 @@ void main() {
       await tester.tap(find.byType(TButton));
       await tester.pumpAndSettle();
       expect(find.text('宽度'), findsOneWidget);
+    });
+  });
+
+  group('TDialogButtonOptions', () {
+    test('构造并读取字段', () {
+      final opt = TDialogButtonOptions(
+        title: '确定',
+        onPressed: () {},
+        titleColor: Colors.red,
+      );
+      expect(opt.title, '确定');
+      expect(opt.titleColor, Colors.red);
+    });
+  });
+
+  group('TConfirmDialog 扩展', () {
+    testWidgets('buttonWidget 自定义按钮渲染', (tester) async {
+      await tester.pumpWidget(wrapWithButton(() {
+        showDialog(
+          context: tester.element(find.byType(TButton)),
+          builder: (context) => const TConfirmDialog(
+            title: '标题',
+            buttonWidget: Text('自定义按钮'),
+          ),
+        );
+      }));
+      await tester.tap(find.byType(TButton));
+      await tester.pumpAndSettle();
+      expect(find.text('自定义按钮'), findsOneWidget);
+    });
+
+    testWidgets('contentMaxHeight>0 生效', (tester) async {
+      await tester.pumpWidget(wrapWithButton(() {
+        showDialog(
+          context: tester.element(find.byType(TButton)),
+          builder: (context) => const TConfirmDialog(
+            title: '标题',
+            content: '内容',
+            contentMaxHeight: 100,
+          ),
+        );
+      }));
+      await tester.tap(find.byType(TButton));
+      await tester.pumpAndSettle();
+      expect(find.text('内容'), findsOneWidget);
+    });
+
+    testWidgets('无 onPressed 点击按钮关闭弹窗', (tester) async {
+      await tester.pumpWidget(wrapWithButton(() {
+        showDialog(
+          context: tester.element(find.byType(TButton)),
+          builder: (context) => const TConfirmDialog(
+            title: '关闭标题',
+            buttonText: '确认关闭',
+          ),
+        );
+      }));
+      await tester.tap(find.byType(TButton));
+      await tester.pumpAndSettle();
+      expect(find.text('确认关闭'), findsOneWidget);
+      await tester.tap(find.text('确认关闭'));
+      await tester.pumpAndSettle();
+      expect(find.text('确认关闭'), findsNothing);
+    });
+  });
+
+  group('TDialog 多按钮', () {
+    testWidgets('HorizontalNormalButtons 左右按钮点击', (tester) async {
+      var left = false;
+      var right = false;
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(extensions: [TThemeData.defaultData()]),
+        home: Scaffold(
+          body: HorizontalNormalButtons(
+            leftBtn: TDialogButtonOptions(
+                title: '左', onPressed: () => left = true),
+            rightBtn: TDialogButtonOptions(
+                title: '右', onPressed: () => right = true),
+          ),
+        ),
+      ));
+      await tester.tap(find.text('左'));
+      await tester.pump();
+      await tester.tap(find.text('右'));
+      await tester.pump();
+      expect(left, isTrue);
+      expect(right, isTrue);
+    });
+
+    testWidgets('HorizontalTextButtons 左右文字按钮点击', (tester) async {
+      var left = false;
+      var right = false;
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(extensions: [TThemeData.defaultData()]),
+        home: Scaffold(
+          body: HorizontalTextButtons(
+            leftBtn: TDialogButtonOptions(
+                title: '左', onPressed: () => left = true),
+            rightBtn: TDialogButtonOptions(
+                title: '右', onPressed: () => right = true),
+          ),
+        ),
+      ));
+      await tester.tap(find.text('左'));
+      await tester.pump();
+      await tester.tap(find.text('右'));
+      await tester.pump();
+      expect(left, isTrue);
+      expect(right, isTrue);
     });
   });
 }

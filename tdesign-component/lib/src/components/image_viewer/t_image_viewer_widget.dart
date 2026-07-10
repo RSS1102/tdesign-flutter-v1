@@ -124,11 +124,13 @@ class TImageViewerWidget extends StatefulWidget {
 
 class _TImageViewerWidgetState extends State<TImageViewerWidget> {
   int _index = 1;
+  List<dynamic> _images = [];
   var swiperController = SwiperController();
 
   @override
   void initState() {
     super.initState();
+    _images = List.from(widget.images);
     if (widget.images.isEmpty) {
       throw FlutterError('images must not be empty');
     }
@@ -140,6 +142,14 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
       throw FlutterError('labels.length must be equals images.length');
     }
     _index = (widget.defaultIndex ?? 0) + 1;
+  }
+
+  @override
+  void didUpdateWidget(TImageViewerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.images != oldWidget.images) {
+      _images = List.from(widget.images);
+    }
   }
 
   Widget _getImage(dynamic image) {
@@ -220,7 +230,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
           Visibility(
             visible: widget.showIndex ?? false,
             child: Text(
-              '$_index / ${widget.images.length}',
+              '$_index / ${_images.length}',
               textAlign: TextAlign.center,
               style: widget.indexStyle ??
                   TextStyle(
@@ -231,7 +241,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
       );
     }
     return Text(
-      (widget.showIndex ?? false) ? '$_index / ${widget.images.length}' : '',
+      (widget.showIndex ?? false) ? '$_index / ${_images.length}' : '',
       textAlign: TextAlign.center,
       style: widget.indexStyle ??
           TextStyle(color: context.tTheme.textColorAnti),
@@ -265,11 +275,11 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
       visible: widget.deleteBtn ?? false,
       child: GestureDetector(
         onTap: () {
-          if (widget.images.length == 1 &&
+          if (_images.length == 1 &&
               !(widget.ignoreDeleteError ?? false)) {
             throw FlutterError('images must not be empty');
           }
-          widget.images.removeAt(_index - 1);
+          _images.removeAt(_index - 1);
           widget.onDelete?.call(_index - 1);
           setState(() {
             // // if(_index == widget.images.length){
@@ -310,21 +320,21 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
           left: 0,
           right: 0,
           child: Swiper(
-            key: ValueKey(widget.images.length),
+            key: ValueKey(_images.length),
             controller: swiperController,
             index: _index - 1,
             loop: widget.loop ?? true,
             autoplay: widget.autoplay ?? false,
             duration: widget.duration ?? kDefaultAutoplayTransactionDuration,
             itemBuilder: (BuildContext context, int index) {
-              var image = widget.images[index];
+              var image = _images[index];
               return GestureDetector(
                 onTap: () => widget.onTap?.call(index),
                 onLongPress: () => widget.onLongPress?.call(index),
                 child: _getImage(image),
               );
             },
-            itemCount: widget.images.length,
+            itemCount: _images.length,
             onIndexChanged: (index) {
               if ((widget.showIndex ?? false) || widget.labels != null) {
                 setState(() {

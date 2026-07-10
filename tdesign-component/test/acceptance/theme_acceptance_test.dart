@@ -10,8 +10,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
-import 'package:tdesign_flutter/src/components/button/t_button_theme_data.dart';
-import 'package:tdesign_flutter/src/components/tag/t_tag_theme_data.dart';
 
 /// 验收辅助：用 TThemeData + 组件 Theme 包裹组件
 Widget wrapWithTheme(

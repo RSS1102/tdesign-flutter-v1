@@ -35,7 +35,7 @@ class _TImageViewerPageState extends State<TImageViewerPage> {
           closeBtn: true,
         );
       },
-      child: TImage(
+      child: const TImage(
         src: 'https://tdesign.gtimg.com/site/avatar.jpg',
         variant: TImageVariant.roundedSquare,
       ),

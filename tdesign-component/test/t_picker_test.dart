@@ -1836,6 +1836,7 @@ void main() {
 
         final node = tester.getSemantics(find.bySemanticsLabel('第 1 列'));
         final data = node.getSemanticsData();
+        // ignore: deprecated_member_use
         expect(data.hasFlag(SemanticsFlag.isEnabled), isFalse);
         h.dispose();
       });

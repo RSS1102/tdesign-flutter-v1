@@ -55,6 +55,6 @@ class _TSelectTagPageState extends State<TSelectTagPage> {
   }
 
   Widget _buildDisabled(BuildContext context) {
-    return TSelectTag('禁用标签', value: false, onChanged: null);
+    return const TSelectTag('禁用标签', value: false, onChanged: null);
   }
 }

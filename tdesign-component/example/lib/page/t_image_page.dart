@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'package:tdesign_flutter/src/components/loading/t_circle_indicator.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 import '../../base/example_widget.dart';
 import '../annotation/demo.dart';

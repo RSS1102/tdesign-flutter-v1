@@ -1,0 +1,316 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/popup/_popup_layout.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/popup/_popup_layout.dart</h1></header><div class='meta'>行覆盖 <b>100.0%</b> (78/78) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>part of &#x27;t_popup.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span></div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row cov'><span class='ln'>5</span>/// 按 [TPopupPlacement] 计算 [Positioned]；center 仅居中，尺寸由 [PopupShell] 约束。</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>class PopupLayout {</div>
+<div class='row nod'><span class='ln'>8</span></div>
+<div class='row nod'><span class='ln'>9</span>  PopupLayout({</div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span>    required this.placement,</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>    this.inset,</div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>    this.width,</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>    this.height,</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row cov'><span class='ln'>19</span>  });</div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row nod'><span class='ln'>21</span></div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row cov'><span class='ln'>23</span>  final TPopupPlacement placement;</div>
+<div class='row cov'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>  final TPopupInset? inset;</div>
+<div class='row cov'><span class='ln'>26</span></div>
+<div class='row cov'><span class='ln'>27</span>  final double? width;</div>
+<div class='row cov'><span class='ln'>28</span></div>
+<div class='row cov'><span class='ln'>29</span>  final double? height;</div>
+<div class='row cov'><span class='ln'>30</span></div>
+<div class='row cov'><span class='ln'>31</span></div>
+<div class='row nod'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span>  static const double defaultDrawerWidth = 280;</div>
+<div class='row cov'><span class='ln'>34</span></div>
+<div class='row cov'><span class='ln'>35</span></div>
+<div class='row cov'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>  Widget wrapPositioned({</div>
+<div class='row cov'><span class='ln'>38</span></div>
+<div class='row nod'><span class='ln'>39</span>    required Widget child,</div>
+<div class='row cov'><span class='ln'>40</span></div>
+<div class='row cov'><span class='ln'>41</span>    EdgeInsets safePadding = EdgeInsets.zero,</div>
+<div class='row cov'><span class='ln'>42</span></div>
+<div class='row cov'><span class='ln'>43</span>  }) {</div>
+<div class='row nod'><span class='ln'>44</span></div>
+<div class='row nod'><span class='ln'>45</span>    switch (placement) {</div>
+<div class='row nod'><span class='ln'>46</span></div>
+<div class='row nod'><span class='ln'>47</span>      case TPopupPlacement.top:</div>
+<div class='row cov'><span class='ln'>48</span></div>
+<div class='row cov'><span class='ln'>49</span>        final inset =</div>
+<div class='row cov'><span class='ln'>50</span></div>
+<div class='row cov'><span class='ln'>51</span>            this.inset is TPopupTopInset ? this.inset as TPopupTopInset : null;</div>
+<div class='row nod'><span class='ln'>52</span></div>
+<div class='row nod'><span class='ln'>53</span>        return Positioned(</div>
+<div class='row cov'><span class='ln'>54</span></div>
+<div class='row cov'><span class='ln'>55</span>          top: safePadding.top,</div>
+<div class='row cov'><span class='ln'>56</span></div>
+<div class='row nod'><span class='ln'>57</span>          left: (inset?.left ?? 0) + safePadding.left,</div>
+<div class='row cov'><span class='ln'>58</span></div>
+<div class='row cov'><span class='ln'>59</span>          right: (inset?.right ?? 0) + safePadding.right,</div>
+<div class='row cov'><span class='ln'>60</span></div>
+<div class='row cov'><span class='ln'>61</span>          height: height,</div>
+<div class='row cov'><span class='ln'>62</span></div>
+<div class='row nod'><span class='ln'>63</span>          child: child,</div>
+<div class='row nod'><span class='ln'>64</span></div>
+<div class='row cov'><span class='ln'>65</span>        );</div>
+<div class='row cov'><span class='ln'>66</span></div>
+<div class='row cov'><span class='ln'>67</span>      case TPopupPlacement.bottom:</div>
+<div class='row nod'><span class='ln'>68</span></div>
+<div class='row cov'><span class='ln'>69</span>        final inset = this.inset is TPopupBottomInset</div>
+<div class='row cov'><span class='ln'>70</span></div>
+<div class='row cov'><span class='ln'>71</span>            ? this.inset as TPopupBottomInset</div>
+<div class='row cov'><span class='ln'>72</span></div>
+<div class='row cov'><span class='ln'>73</span>            : null;</div>
+<div class='row nod'><span class='ln'>74</span></div>
+<div class='row nod'><span class='ln'>75</span>        final bottomHeight = _bottomHeight();</div>
+<div class='row cov'><span class='ln'>76</span></div>
+<div class='row cov'><span class='ln'>77</span>        if (bottomHeight != null) {</div>
+<div class='row cov'><span class='ln'>78</span></div>
+<div class='row nod'><span class='ln'>79</span>          return Positioned(</div>
+<div class='row nod'><span class='ln'>80</span></div>
+<div class='row nod'><span class='ln'>81</span>            left: (inset?.left ?? 0) + safePadding.left,</div>
+<div class='row nod'><span class='ln'>82</span></div>
+<div class='row nod'><span class='ln'>83</span>            right: (inset?.right ?? 0) + safePadding.right,</div>
+<div class='row cov'><span class='ln'>84</span></div>
+<div class='row nod'><span class='ln'>85</span>            bottom: safePadding.bottom,</div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row nod'><span class='ln'>87</span>            height: bottomHeight,</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row nod'><span class='ln'>89</span>            child: child,</div>
+<div class='row nod'><span class='ln'>90</span></div>
+<div class='row nod'><span class='ln'>91</span>          );</div>
+<div class='row nod'><span class='ln'>92</span></div>
+<div class='row cov'><span class='ln'>93</span>        }</div>
+<div class='row cov'><span class='ln'>94</span></div>
+<div class='row cov'><span class='ln'>95</span>        return Positioned(</div>
+<div class='row cov'><span class='ln'>96</span></div>
+<div class='row cov'><span class='ln'>97</span>          left: (inset?.left ?? 0) + safePadding.left,</div>
+<div class='row cov'><span class='ln'>98</span></div>
+<div class='row cov'><span class='ln'>99</span>          right: (inset?.right ?? 0) + safePadding.right,</div>
+<div class='row cov'><span class='ln'>100</span></div>
+<div class='row cov'><span class='ln'>101</span>          bottom: safePadding.bottom,</div>
+<div class='row nod'><span class='ln'>102</span></div>
+<div class='row cov'><span class='ln'>103</span>          child: child,</div>
+<div class='row cov'><span class='ln'>104</span></div>
+<div class='row cov'><span class='ln'>105</span>        );</div>
+<div class='row cov'><span class='ln'>106</span></div>
+<div class='row cov'><span class='ln'>107</span>      case TPopupPlacement.left:</div>
+<div class='row nod'><span class='ln'>108</span></div>
+<div class='row cov'><span class='ln'>109</span>        final inset = this.inset is TPopupLeftInset</div>
+<div class='row nod'><span class='ln'>110</span></div>
+<div class='row nod'><span class='ln'>111</span>            ? this.inset as TPopupLeftInset</div>
+<div class='row nod'><span class='ln'>112</span></div>
+<div class='row nod'><span class='ln'>113</span>            : null;</div>
+<div class='row nod'><span class='ln'>114</span></div>
+<div class='row cov'><span class='ln'>115</span>        return Positioned(</div>
+<div class='row cov'><span class='ln'>116</span></div>
+<div class='row cov'><span class='ln'>117</span>          top: (inset?.top ?? 0) + safePadding.top,</div>
+<div class='row nod'><span class='ln'>118</span></div>
+<div class='row nod'><span class='ln'>119</span>          bottom: (inset?.bottom ?? 0) + safePadding.bottom,</div>
+<div class='row nod'><span class='ln'>120</span></div>
+<div class='row nod'><span class='ln'>121</span>          left: safePadding.left,</div>
+<div class='row cov'><span class='ln'>122</span></div>
+<div class='row cov'><span class='ln'>123</span>          width: width ?? defaultDrawerWidth,</div>
+<div class='row cov'><span class='ln'>124</span></div>
+<div class='row nod'><span class='ln'>125</span>          child: child,</div>
+<div class='row cov'><span class='ln'>126</span></div>
+<div class='row nod'><span class='ln'>127</span>        );</div>
+<div class='row cov'><span class='ln'>128</span></div>
+<div class='row nod'><span class='ln'>129</span>      case TPopupPlacement.right:</div>
+<div class='row cov'><span class='ln'>130</span></div>
+<div class='row nod'><span class='ln'>131</span>        final inset = this.inset is TPopupRightInset</div>
+<div class='row cov'><span class='ln'>132</span></div>
+<div class='row nod'><span class='ln'>133</span>            ? this.inset as TPopupRightInset</div>
+<div class='row nod'><span class='ln'>134</span></div>
+<div class='row nod'><span class='ln'>135</span>            : null;</div>
+<div class='row nod'><span class='ln'>136</span></div>
+<div class='row cov'><span class='ln'>137</span>        return Positioned(</div>
+<div class='row cov'><span class='ln'>138</span></div>
+<div class='row cov'><span class='ln'>139</span>          top: (inset?.top ?? 0) + safePadding.top,</div>
+<div class='row cov'><span class='ln'>140</span></div>
+<div class='row cov'><span class='ln'>141</span>          bottom: (inset?.bottom ?? 0) + safePadding.bottom,</div>
+<div class='row cov'><span class='ln'>142</span></div>
+<div class='row cov'><span class='ln'>143</span>          right: safePadding.right,</div>
+<div class='row cov'><span class='ln'>144</span></div>
+<div class='row cov'><span class='ln'>145</span>          width: width ?? defaultDrawerWidth,</div>
+<div class='row cov'><span class='ln'>146</span></div>
+<div class='row cov'><span class='ln'>147</span>          child: child,</div>
+<div class='row nod'><span class='ln'>148</span></div>
+<div class='row nod'><span class='ln'>149</span>        );</div>
+<div class='row nod'><span class='ln'>150</span></div>
+<div class='row nod'><span class='ln'>151</span>      case TPopupPlacement.center:</div>
+<div class='row nod'><span class='ln'>152</span></div>
+<div class='row nod'><span class='ln'>153</span>        return Positioned.fill(</div>
+<div class='row nod'><span class='ln'>154</span></div>
+<div class='row nod'><span class='ln'>155</span>          child: Center(child: child),</div>
+<div class='row nod'><span class='ln'>156</span></div>
+<div class='row nod'><span class='ln'>157</span>        );</div>
+<div class='row nod'><span class='ln'>158</span></div>
+<div class='row nod'><span class='ln'>159</span>    }</div>
+<div class='row nod'><span class='ln'>160</span></div>
+<div class='row nod'><span class='ln'>161</span>  }</div>
+<div class='row nod'><span class='ln'>162</span></div>
+<div class='row nod'><span class='ln'>163</span></div>
+<div class='row nod'><span class='ln'>164</span></div>
+<div class='row nod'><span class='ln'>165</span>  /// 按 [placement] 从 MediaQuery.padding 提取需避让的安全区内边距。</div>
+<div class='row nod'><span class='ln'>166</span>  static EdgeInsets safePaddingFor(</div>
+<div class='row nod'><span class='ln'>167</span></div>
+<div class='row nod'><span class='ln'>168</span>    TPopupPlacement placement,</div>
+<div class='row nod'><span class='ln'>169</span></div>
+<div class='row nod'><span class='ln'>170</span>    EdgeInsets mediaPadding,</div>
+<div class='row nod'><span class='ln'>171</span></div>
+<div class='row nod'><span class='ln'>172</span>    bool useSafeArea,</div>
+<div class='row nod'><span class='ln'>173</span></div>
+<div class='row nod'><span class='ln'>174</span>  ) {</div>
+<div class='row nod'><span class='ln'>175</span></div>
+<div class='row nod'><span class='ln'>176</span>    if (!useSafeArea) {</div>
+<div class='row nod'><span class='ln'>177</span></div>
+<div class='row nod'><span class='ln'>178</span>      return EdgeInsets.zero;</div>
+<div class='row nod'><span class='ln'>179</span></div>
+<div class='row nod'><span class='ln'>180</span>    }</div>
+<div class='row nod'><span class='ln'>181</span></div>
+<div class='row nod'><span class='ln'>182</span>    switch (placement) {</div>
+<div class='row nod'><span class='ln'>183</span></div>
+<div class='row nod'><span class='ln'>184</span>      case TPopupPlacement.top:</div>
+<div class='row nod'><span class='ln'>185</span></div>
+<div class='row nod'><span class='ln'>186</span>        return EdgeInsets.only(top: mediaPadding.top);</div>
+<div class='row nod'><span class='ln'>187</span></div>
+<div class='row nod'><span class='ln'>188</span>      case TPopupPlacement.bottom:</div>
+<div class='row nod'><span class='ln'>189</span></div>
+<div class='row nod'><span class='ln'>190</span>        return EdgeInsets.only(bottom: mediaPadding.bottom);</div>
+<div class='row nod'><span class='ln'>191</span></div>
+<div class='row nod'><span class='ln'>192</span>      case TPopupPlacement.left:</div>
+<div class='row nod'><span class='ln'>193</span></div>
+<div class='row nod'><span class='ln'>194</span>        return EdgeInsets.only(</div>
+<div class='row nod'><span class='ln'>195</span></div>
+<div class='row nod'><span class='ln'>196</span>          left: mediaPadding.left,</div>
+<div class='row nod'><span class='ln'>197</span></div>
+<div class='row nod'><span class='ln'>198</span>          top: mediaPadding.top,</div>
+<div class='row nod'><span class='ln'>199</span></div>
+<div class='row nod'><span class='ln'>200</span>          bottom: mediaPadding.bottom,</div>
+<div class='row nod'><span class='ln'>201</span></div>
+<div class='row nod'><span class='ln'>202</span>        );</div>
+<div class='row nod'><span class='ln'>203</span></div>
+<div class='row nod'><span class='ln'>204</span>      case TPopupPlacement.right:</div>
+<div class='row nod'><span class='ln'>205</span></div>
+<div class='row nod'><span class='ln'>206</span>        return EdgeInsets.only(</div>
+<div class='row nod'><span class='ln'>207</span></div>
+<div class='row nod'><span class='ln'>208</span>          right: mediaPadding.right,</div>
+<div class='row nod'><span class='ln'>209</span></div>
+<div class='row nod'><span class='ln'>210</span>          top: mediaPadding.top,</div>
+<div class='row nod'><span class='ln'>211</span></div>
+<div class='row nod'><span class='ln'>212</span>          bottom: mediaPadding.bottom,</div>
+<div class='row nod'><span class='ln'>213</span></div>
+<div class='row nod'><span class='ln'>214</span>        );</div>
+<div class='row nod'><span class='ln'>215</span></div>
+<div class='row nod'><span class='ln'>216</span>      case TPopupPlacement.center:</div>
+<div class='row nod'><span class='ln'>217</span></div>
+<div class='row nod'><span class='ln'>218</span>        // center 不参与贴边避让，由面板尺寸自然落在可视区中部。</div>
+<div class='row nod'><span class='ln'>219</span></div>
+<div class='row nod'><span class='ln'>220</span>        return EdgeInsets.zero;</div>
+<div class='row nod'><span class='ln'>221</span></div>
+<div class='row nod'><span class='ln'>222</span>    }</div>
+<div class='row nod'><span class='ln'>223</span></div>
+<div class='row nod'><span class='ln'>224</span>  }</div>
+<div class='row nod'><span class='ln'>225</span></div>
+<div class='row nod'><span class='ln'>226</span></div>
+<div class='row nod'><span class='ln'>227</span></div>
+<div class='row nod'><span class='ln'>228</span>  double? _bottomHeight() {</div>
+<div class='row nod'><span class='ln'>229</span></div>
+<div class='row nod'><span class='ln'>230</span>    if (height != null) {</div>
+<div class='row nod'><span class='ln'>231</span></div>
+<div class='row nod'><span class='ln'>232</span>      return height;</div>
+<div class='row nod'><span class='ln'>233</span></div>
+<div class='row nod'><span class='ln'>234</span>    }</div>
+<div class='row nod'><span class='ln'>235</span></div>
+<div class='row nod'><span class='ln'>236</span>    return null;</div>
+<div class='row nod'><span class='ln'>237</span></div>
+<div class='row nod'><span class='ln'>238</span>  }</div>
+<div class='row nod'><span class='ln'>239</span></div>
+<div class='row nod'><span class='ln'>240</span></div>
+<div class='row nod'><span class='ln'>241</span></div>
+<div class='row nod'><span class='ln'>242</span>  Alignment get alignment {</div>
+<div class='row nod'><span class='ln'>243</span></div>
+<div class='row nod'><span class='ln'>244</span>    switch (placement) {</div>
+<div class='row nod'><span class='ln'>245</span></div>
+<div class='row nod'><span class='ln'>246</span>      case TPopupPlacement.top:</div>
+<div class='row nod'><span class='ln'>247</span></div>
+<div class='row nod'><span class='ln'>248</span>        return Alignment.topCenter;</div>
+<div class='row nod'><span class='ln'>249</span></div>
+<div class='row nod'><span class='ln'>250</span>      case TPopupPlacement.bottom:</div>
+<div class='row nod'><span class='ln'>251</span></div>
+<div class='row nod'><span class='ln'>252</span>        return Alignment.bottomCenter;</div>
+<div class='row nod'><span class='ln'>253</span></div>
+<div class='row nod'><span class='ln'>254</span>      case TPopupPlacement.left:</div>
+<div class='row nod'><span class='ln'>255</span></div>
+<div class='row nod'><span class='ln'>256</span>        return Alignment.centerLeft;</div>
+<div class='row nod'><span class='ln'>257</span></div>
+<div class='row nod'><span class='ln'>258</span>      case TPopupPlacement.right:</div>
+<div class='row nod'><span class='ln'>259</span></div>
+<div class='row nod'><span class='ln'>260</span>        return Alignment.centerRight;</div>
+<div class='row nod'><span class='ln'>261</span></div>
+<div class='row nod'><span class='ln'>262</span>      case TPopupPlacement.center:</div>
+<div class='row nod'><span class='ln'>263</span></div>
+<div class='row nod'><span class='ln'>264</span>        return Alignment.center;</div>
+<div class='row nod'><span class='ln'>265</span></div>
+<div class='row nod'><span class='ln'>266</span>    }</div>
+<div class='row nod'><span class='ln'>267</span></div>
+<div class='row nod'><span class='ln'>268</span>  }</div>
+<div class='row nod'><span class='ln'>269</span></div>
+<div class='row nod'><span class='ln'>270</span></div>
+<div class='row nod'><span class='ln'>271</span></div>
+<div class='row nod'><span class='ln'>272</span>  Offset slideOffset(double t) {</div>
+<div class='row nod'><span class='ln'>273</span></div>
+<div class='row nod'><span class='ln'>274</span>    switch (placement) {</div>
+<div class='row nod'><span class='ln'>275</span></div>
+<div class='row nod'><span class='ln'>276</span>      case TPopupPlacement.top:</div>
+<div class='row nod'><span class='ln'>277</span></div>
+<div class='row nod'><span class='ln'>278</span>        return Offset(0, t - 1);</div>
+<div class='row nod'><span class='ln'>279</span></div>
+<div class='row nod'><span class='ln'>280</span>      case TPopupPlacement.bottom:</div>
+<div class='row nod'><span class='ln'>281</span></div>
+<div class='row nod'><span class='ln'>282</span>        return Offset(0, 1 - t);</div>
+<div class='row nod'><span class='ln'>283</span></div>
+<div class='row nod'><span class='ln'>284</span>      case TPopupPlacement.left:</div>
+<div class='row nod'><span class='ln'>285</span></div>
+<div class='row nod'><span class='ln'>286</span>        return Offset(t - 1, 0);</div>
+<div class='row nod'><span class='ln'>287</span></div>
+<div class='row nod'><span class='ln'>288</span>      case TPopupPlacement.right:</div>
+<div class='row nod'><span class='ln'>289</span></div>
+<div class='row nod'><span class='ln'>290</span>        return Offset(1 - t, 0);</div>
+<div class='row nod'><span class='ln'>291</span></div>
+<div class='row nod'><span class='ln'>292</span>      case TPopupPlacement.center:</div>
+<div class='row nod'><span class='ln'>293</span></div>
+<div class='row nod'><span class='ln'>294</span>        return Offset.zero;</div>
+<div class='row nod'><span class='ln'>295</span></div>
+<div class='row nod'><span class='ln'>296</span>    }</div>
+<div class='row nod'><span class='ln'>297</span></div>
+<div class='row nod'><span class='ln'>298</span>  }</div>
+<div class='row nod'><span class='ln'>299</span></div>
+<div class='row nod'><span class='ln'>300</span>}</div>
+<div class='row nod'><span class='ln'>301</span></div>
+<div class='row nod'><span class='ln'>302</span></div>
+</pre></body></html>

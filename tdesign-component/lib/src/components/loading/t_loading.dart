@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
 import 't_activity_indicator.dart';
 import 't_circle_indicator.dart';
-import 't_loading_theme_data.dart';
 import 't_point_indicator.dart';
 
 /// Loading 尺寸
@@ -83,7 +82,7 @@ class TLoading extends StatelessWidget {
     } else {
       Widget? indicator;
       if (effectiveCustomIcon != null) {
-        indicator = effectiveCustomIcon!;
+        indicator = effectiveCustomIcon;
       } else {
         switch (icon!) {
           case TLoadingIcon.activity:
@@ -106,9 +105,6 @@ class TLoading extends StatelessWidget {
                   : (size == TLoadingSize.medium ? 16 : 20),
               duration: innerDuration,
             );
-            break;
-          default:
-            indicator = _getCircleIndicator(effectiveIconColor, innerDuration);
             break;
         }
       }

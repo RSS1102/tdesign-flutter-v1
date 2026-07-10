@@ -2,6 +2,10 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
+import '../../../tdesign_flutter.dart' show TBackTop;
+
+import 't_backtop.dart' show TBackTop;
+
 /// 返回顶部形状
 enum TBackTopShape {
   /// 圆形

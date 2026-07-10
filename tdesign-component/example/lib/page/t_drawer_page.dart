@@ -78,7 +78,7 @@ Widget _buildBaseSimple(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: Text('基础抽屉'),
+      child: const Text('基础抽屉'),
       variant: TButtonVariant.outline,
       colorScheme: TButtonColorScheme.primary,
       size: TButtonSize.large,
@@ -105,7 +105,7 @@ Widget _buildIconSimple(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: Text('带图标抽屉'),
+      child: const Text('带图标抽屉'),
       variant: TButtonVariant.outline,
       colorScheme: TButtonColorScheme.primary,
       size: TButtonSize.large,
@@ -131,7 +131,7 @@ Widget _buildTitleSimple(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: Text('带图标抽屉'),
+      child: const Text('带图标抽屉'),
       variant: TButtonVariant.outline,
       colorScheme: TButtonColorScheme.primary,
       size: TButtonSize.large,
@@ -157,7 +157,7 @@ Widget _buildBottomSimple(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: Text('带底部插槽样式'),
+      child: const Text('带底部插槽样式'),
       variant: TButtonVariant.outline,
       colorScheme: TButtonColorScheme.primary,
       size: TButtonSize.large,
@@ -170,10 +170,10 @@ Widget _buildBottomSimple(BuildContext context) {
           placement: TDrawerPlacement.left,
           items: List.generate(
               drawerItemLength, (index) => TDrawerItem(title: '菜单${index + 1}')),
-          footer: SizedBox(
+          footer: const SizedBox(
             width: double.infinity,
             child: TButton(
-              child: const Text('操作'),
+              child: Text('操作'),
               variant: TButtonVariant.outline,
               size: TButtonSize.large,
             ),
@@ -194,7 +194,7 @@ Widget _buildColorSimple(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: Text('自定义背景色'),
+      child: const Text('自定义背景色'),
       variant: TButtonVariant.outline,
       colorScheme: TButtonColorScheme.primary,
       size: TButtonSize.large,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tdesign_flutter/src/components/button/t_button_theme_data.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 import '../../annotation/demo.dart';
 import '../../base/example_widget.dart';

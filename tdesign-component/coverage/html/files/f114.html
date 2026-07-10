@@ -1,0 +1,180 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/image_viewer/t_image_viewer_theme_data.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/image_viewer/t_image_viewer_theme_data.dart</h1></header><div class='meta'>行覆盖 <b>0.0%</b> (0/22) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:ui&#x27; show lerpDouble;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span></div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span></div>
+<div class='row nod'><span class='ln'>9</span>/// 图片预览组件级 ThemeExtension</div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span>class TImageViewerThemeData extends ThemeExtension&lt;TImageViewerThemeData&gt; {</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>  /// 预览页背景色</div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>  final Color? backgroundColor;</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span></div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>  /// 导航栏背景色</div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row nod'><span class='ln'>21</span>  final Color? appBarBackgroundColor;</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span></div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>  /// 图标颜色</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row nod'><span class='ln'>27</span>  final Color? iconColor;</div>
+<div class='row nod'><span class='ln'>28</span></div>
+<div class='row nod'><span class='ln'>29</span></div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row unc'><span class='ln'>31</span>▶   /// 标签文字样式</div>
+<div class='row nod'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span>  final TextStyle? labelStyle;</div>
+<div class='row nod'><span class='ln'>34</span></div>
+<div class='row nod'><span class='ln'>35</span></div>
+<div class='row nod'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>  /// 页码文字样式</div>
+<div class='row nod'><span class='ln'>38</span></div>
+<div class='row nod'><span class='ln'>39</span>  final TextStyle? indexStyle;</div>
+<div class='row nod'><span class='ln'>40</span></div>
+<div class='row nod'><span class='ln'>41</span></div>
+<div class='row unc'><span class='ln'>42</span>▶ </div>
+<div class='row nod'><span class='ln'>43</span>  /// 蒙层颜色</div>
+<div class='row nod'><span class='ln'>44</span></div>
+<div class='row nod'><span class='ln'>45</span>  final Color? barrierColor;</div>
+<div class='row nod'><span class='ln'>46</span></div>
+<div class='row nod'><span class='ln'>47</span></div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row nod'><span class='ln'>49</span>  /// 预览区默认宽度</div>
+<div class='row nod'><span class='ln'>50</span></div>
+<div class='row nod'><span class='ln'>51</span>  final double? viewerWidth;</div>
+<div class='row nod'><span class='ln'>52</span></div>
+<div class='row unc'><span class='ln'>53</span>▶ </div>
+<div class='row unc'><span class='ln'>54</span>▶ </div>
+<div class='row nod'><span class='ln'>55</span>  /// 预览区默认高度</div>
+<div class='row unc'><span class='ln'>56</span>▶ </div>
+<div class='row unc'><span class='ln'>57</span>▶   final double? viewerHeight;</div>
+<div class='row unc'><span class='ln'>58</span>▶ </div>
+<div class='row unc'><span class='ln'>59</span>▶ </div>
+<div class='row unc'><span class='ln'>60</span>▶ </div>
+<div class='row unc'><span class='ln'>61</span>▶   const TImageViewerThemeData({</div>
+<div class='row unc'><span class='ln'>62</span>▶ </div>
+<div class='row nod'><span class='ln'>63</span>    this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>64</span></div>
+<div class='row nod'><span class='ln'>65</span>    this.appBarBackgroundColor,</div>
+<div class='row unc'><span class='ln'>66</span>▶ </div>
+<div class='row nod'><span class='ln'>67</span>    this.iconColor,</div>
+<div class='row nod'><span class='ln'>68</span></div>
+<div class='row unc'><span class='ln'>69</span>▶     this.labelStyle,</div>
+<div class='row nod'><span class='ln'>70</span></div>
+<div class='row nod'><span class='ln'>71</span>    this.indexStyle,</div>
+<div class='row unc'><span class='ln'>72</span>▶ </div>
+<div class='row unc'><span class='ln'>73</span>▶     this.barrierColor,</div>
+<div class='row nod'><span class='ln'>74</span></div>
+<div class='row unc'><span class='ln'>75</span>▶     this.viewerWidth,</div>
+<div class='row unc'><span class='ln'>76</span>▶ </div>
+<div class='row unc'><span class='ln'>77</span>▶     this.viewerHeight,</div>
+<div class='row unc'><span class='ln'>78</span>▶ </div>
+<div class='row unc'><span class='ln'>79</span>▶   });</div>
+<div class='row unc'><span class='ln'>80</span>▶ </div>
+<div class='row unc'><span class='ln'>81</span>▶ </div>
+<div class='row nod'><span class='ln'>82</span></div>
+<div class='row nod'><span class='ln'>83</span>  @override</div>
+<div class='row nod'><span class='ln'>84</span></div>
+<div class='row nod'><span class='ln'>85</span>  TImageViewerThemeData copyWith({</div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row nod'><span class='ln'>87</span>    Color? backgroundColor,</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row nod'><span class='ln'>89</span>    Color? appBarBackgroundColor,</div>
+<div class='row nod'><span class='ln'>90</span></div>
+<div class='row nod'><span class='ln'>91</span>    Color? iconColor,</div>
+<div class='row nod'><span class='ln'>92</span></div>
+<div class='row nod'><span class='ln'>93</span>    TextStyle? labelStyle,</div>
+<div class='row nod'><span class='ln'>94</span></div>
+<div class='row nod'><span class='ln'>95</span>    TextStyle? indexStyle,</div>
+<div class='row nod'><span class='ln'>96</span></div>
+<div class='row nod'><span class='ln'>97</span>    Color? barrierColor,</div>
+<div class='row nod'><span class='ln'>98</span></div>
+<div class='row nod'><span class='ln'>99</span>    double? viewerWidth,</div>
+<div class='row nod'><span class='ln'>100</span></div>
+<div class='row nod'><span class='ln'>101</span>    double? viewerHeight,</div>
+<div class='row nod'><span class='ln'>102</span></div>
+<div class='row nod'><span class='ln'>103</span>  }) {</div>
+<div class='row nod'><span class='ln'>104</span></div>
+<div class='row nod'><span class='ln'>105</span>    return TImageViewerThemeData(</div>
+<div class='row nod'><span class='ln'>106</span></div>
+<div class='row nod'><span class='ln'>107</span>      backgroundColor: backgroundColor ?? this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>108</span></div>
+<div class='row nod'><span class='ln'>109</span>      appBarBackgroundColor:</div>
+<div class='row nod'><span class='ln'>110</span></div>
+<div class='row nod'><span class='ln'>111</span>          appBarBackgroundColor ?? this.appBarBackgroundColor,</div>
+<div class='row nod'><span class='ln'>112</span></div>
+<div class='row nod'><span class='ln'>113</span>      iconColor: iconColor ?? this.iconColor,</div>
+<div class='row nod'><span class='ln'>114</span></div>
+<div class='row nod'><span class='ln'>115</span>      labelStyle: labelStyle ?? this.labelStyle,</div>
+<div class='row nod'><span class='ln'>116</span></div>
+<div class='row nod'><span class='ln'>117</span>      indexStyle: indexStyle ?? this.indexStyle,</div>
+<div class='row nod'><span class='ln'>118</span></div>
+<div class='row nod'><span class='ln'>119</span>      barrierColor: barrierColor ?? this.barrierColor,</div>
+<div class='row nod'><span class='ln'>120</span></div>
+<div class='row nod'><span class='ln'>121</span>      viewerWidth: viewerWidth ?? this.viewerWidth,</div>
+<div class='row nod'><span class='ln'>122</span></div>
+<div class='row nod'><span class='ln'>123</span>      viewerHeight: viewerHeight ?? this.viewerHeight,</div>
+<div class='row nod'><span class='ln'>124</span></div>
+<div class='row nod'><span class='ln'>125</span>    );</div>
+<div class='row nod'><span class='ln'>126</span></div>
+<div class='row nod'><span class='ln'>127</span>  }</div>
+<div class='row nod'><span class='ln'>128</span></div>
+<div class='row nod'><span class='ln'>129</span></div>
+<div class='row nod'><span class='ln'>130</span></div>
+<div class='row nod'><span class='ln'>131</span>  @override</div>
+<div class='row nod'><span class='ln'>132</span></div>
+<div class='row nod'><span class='ln'>133</span>  TImageViewerThemeData lerp(</div>
+<div class='row nod'><span class='ln'>134</span></div>
+<div class='row nod'><span class='ln'>135</span>      ThemeExtension&lt;TImageViewerThemeData&gt;? other, double t) {</div>
+<div class='row nod'><span class='ln'>136</span></div>
+<div class='row nod'><span class='ln'>137</span>    if (other is! TImageViewerThemeData) {</div>
+<div class='row nod'><span class='ln'>138</span>      return this;</div>
+<div class='row nod'><span class='ln'>139</span>    }</div>
+<div class='row nod'><span class='ln'>140</span>    return TImageViewerThemeData(</div>
+<div class='row nod'><span class='ln'>141</span></div>
+<div class='row nod'><span class='ln'>142</span>      backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),</div>
+<div class='row nod'><span class='ln'>143</span></div>
+<div class='row nod'><span class='ln'>144</span>      appBarBackgroundColor:</div>
+<div class='row nod'><span class='ln'>145</span></div>
+<div class='row nod'><span class='ln'>146</span>          Color.lerp(appBarBackgroundColor, other.appBarBackgroundColor, t),</div>
+<div class='row nod'><span class='ln'>147</span></div>
+<div class='row nod'><span class='ln'>148</span>      iconColor: Color.lerp(iconColor, other.iconColor, t),</div>
+<div class='row nod'><span class='ln'>149</span></div>
+<div class='row nod'><span class='ln'>150</span>      labelStyle: TextStyle.lerp(labelStyle, other.labelStyle, t),</div>
+<div class='row nod'><span class='ln'>151</span></div>
+<div class='row nod'><span class='ln'>152</span>      indexStyle: TextStyle.lerp(indexStyle, other.indexStyle, t),</div>
+<div class='row nod'><span class='ln'>153</span></div>
+<div class='row nod'><span class='ln'>154</span>      barrierColor: Color.lerp(barrierColor, other.barrierColor, t),</div>
+<div class='row nod'><span class='ln'>155</span></div>
+<div class='row nod'><span class='ln'>156</span>      viewerWidth: lerpDouble(viewerWidth, other.viewerWidth, t),</div>
+<div class='row nod'><span class='ln'>157</span></div>
+<div class='row nod'><span class='ln'>158</span>      viewerHeight: lerpDouble(viewerHeight, other.viewerHeight, t),</div>
+<div class='row nod'><span class='ln'>159</span></div>
+<div class='row nod'><span class='ln'>160</span>    );</div>
+<div class='row nod'><span class='ln'>161</span></div>
+<div class='row nod'><span class='ln'>162</span>  }</div>
+<div class='row nod'><span class='ln'>163</span></div>
+<div class='row nod'><span class='ln'>164</span>}</div>
+<div class='row nod'><span class='ln'>165</span></div>
+<div class='row nod'><span class='ln'>166</span></div>
+</pre></body></html>

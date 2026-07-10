@@ -6,7 +6,7 @@ import '../../util/auto_size.dart';
 /// 单选框按钮,继承自TCheckbox，字段含义与父类一致
 class TRadio extends TCheckbox {
   /// 单选框按钮样式
-  final TRadioStyle radioStyle;
+  final TRadioVariant radioStyle;
 
   const TRadio({
     String? id,
@@ -25,7 +25,7 @@ class TRadio extends TCheckbox {
     bool? cardMode,
     bool? showDivider,
     TCheckBoxSize size = TCheckBoxSize.small,
-    this.radioStyle = TRadioStyle.circle,
+    this.radioStyle = TRadioVariant.circle,
     TContentDirection contentDirection = TContentDirection.right,
     IconBuilder? customIconBuilder,
     Color? titleColor,
@@ -66,7 +66,7 @@ class TRadio extends TCheckbox {
     if (cardMode == true) {
       return Container();
     }
-    TRadioStyle? style;
+    TRadioVariant? style;
     if (groupState is TRadioGroupState) {
       style = (groupState.widget as TRadioGroup).radioCheckStyle;
     }
@@ -77,7 +77,7 @@ class TRadio extends TCheckbox {
     final theme = context.tTheme;
 
     // 由于镂空圆没有现成icon，因而自己画一个
-    if (style == TRadioStyle.hollowCircle) {
+    if (style == TRadioVariant.hollowCircle) {
       return SizedBox(
         width: size,
         height: size,
@@ -93,10 +93,10 @@ class TRadio extends TCheckbox {
 
     IconData? iconData;
     switch (style) {
-      case TRadioStyle.check:
+      case TRadioVariant.check:
         iconData = isSelected ? TIcons.check : null;
         break;
-      case TRadioStyle.square:
+      case TRadioVariant.square:
         iconData =
             isSelected ? TIcons.check_rectangle_filled : TIcons.rectangle;
         break;
@@ -175,7 +175,7 @@ class TRadioGroup extends TCheckboxGroup {
   final bool strictMode;
 
   /// 勾选样式
-  final TRadioStyle? radioCheckStyle;
+  final TRadioVariant? radioCheckStyle;
 
   /// 是否显示下划线
   final bool showDivider;

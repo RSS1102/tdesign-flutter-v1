@@ -222,6 +222,7 @@ class _TIconPageState extends State<TIconPage> {
               setState(() {
                 iconList = TIcons.allIconsMap.entries.toList();
               });
+              return null;
             },
           ),
           TCell(

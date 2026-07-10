@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/loading/t_circle_indicator.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/loading/t_circle_indicator.dart</h1></header><div class='meta'>行覆盖 <b>78.7%</b> (37/47) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>/*</div>
+<div class='row nod'><span class='ln'>2</span> * Created by haozhicao@tencent.com on 6/28/22.</div>
+<div class='row nod'><span class='ln'>3</span> * t_circle_indicator.dart</div>
+<div class='row nod'><span class='ln'>4</span> * </div>
+<div class='row nod'><span class='ln'>5</span> */</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>import &#x27;dart:math&#x27;;</div>
+<div class='row nod'><span class='ln'>8</span>import &#x27;dart:ui&#x27; as ui;</div>
+<div class='row nod'><span class='ln'>9</span></div>
+<div class='row nod'><span class='ln'>10</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>11</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>class TCircleIndicator extends StatefulWidget {</div>
+<div class='row cov'><span class='ln'>14</span>  const TCircleIndicator({</div>
+<div class='row nod'><span class='ln'>15</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>16</span>    this.color,</div>
+<div class='row nod'><span class='ln'>17</span>    this.size = 20.0,</div>
+<div class='row nod'><span class='ln'>18</span>    this.lineWidth = 3.0,</div>
+<div class='row nod'><span class='ln'>19</span>    this.duration = 1000,</div>
+<div class='row cov'><span class='ln'>20</span>  }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>21</span></div>
+<div class='row nod'><span class='ln'>22</span>  final Color? color;</div>
+<div class='row nod'><span class='ln'>23</span>  final double size;</div>
+<div class='row nod'><span class='ln'>24</span>  final double lineWidth;</div>
+<div class='row nod'><span class='ln'>25</span>  final int duration;</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row cov'><span class='ln'>27</span>  @override</div>
+<div class='row cov'><span class='ln'>28</span>  _TCircleIndicatorState createState() =&gt; _TCircleIndicatorState();</div>
+<div class='row nod'><span class='ln'>29</span>}</div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row nod'><span class='ln'>31</span>class _TCircleIndicatorState extends State&lt;TCircleIndicator&gt;</div>
+<div class='row nod'><span class='ln'>32</span>    with SingleTickerProviderStateMixin {</div>
+<div class='row nod'><span class='ln'>33</span>  late AnimationController _controller;</div>
+<div class='row nod'><span class='ln'>34</span>  late Animation&lt;double&gt; _animation1;</div>
+<div class='row nod'><span class='ln'>35</span></div>
+<div class='row cov'><span class='ln'>36</span>  @override</div>
+<div class='row nod'><span class='ln'>37</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>38</span>    super.initState();</div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row cov'><span class='ln'>40</span>    _controller = AnimationController(</div>
+<div class='row cov'><span class='ln'>41</span>        vsync: this, duration: Duration(milliseconds: widget.duration))</div>
+<div class='row cov'><span class='ln'>42</span>      ..addListener(() =&gt; setState(() {}))</div>
+<div class='row cov'><span class='ln'>43</span>      ..repeat();</div>
+<div class='row cov'><span class='ln'>44</span>    _animation1 = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(</div>
+<div class='row cov'><span class='ln'>45</span>        parent: _controller,</div>
+<div class='row nod'><span class='ln'>46</span>        curve: const Interval(0.0, 1.0, curve: Curves.linear)));</div>
+<div class='row nod'><span class='ln'>47</span>  }</div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row unc'><span class='ln'>49</span>▶   @override</div>
+<div class='row nod'><span class='ln'>50</span>  void didUpdateWidget(covariant TCircleIndicator oldWidget) {</div>
+<div class='row unc'><span class='ln'>51</span>▶     super.didUpdateWidget(oldWidget);</div>
+<div class='row unc'><span class='ln'>52</span>▶     if (widget.duration != oldWidget.duration) {</div>
+<div class='row unc'><span class='ln'>53</span>▶       _controller.duration = Duration(milliseconds: widget.duration);</div>
+<div class='row unc'><span class='ln'>54</span>▶       _controller.repeat();</div>
+<div class='row nod'><span class='ln'>55</span>    }</div>
+<div class='row nod'><span class='ln'>56</span>  }</div>
+<div class='row nod'><span class='ln'>57</span></div>
+<div class='row cov'><span class='ln'>58</span>  @override</div>
+<div class='row nod'><span class='ln'>59</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>60</span>    _controller.dispose();</div>
+<div class='row cov'><span class='ln'>61</span>    super.dispose();</div>
+<div class='row nod'><span class='ln'>62</span>  }</div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row cov'><span class='ln'>64</span>  @override</div>
+<div class='row nod'><span class='ln'>65</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>66</span>    var value = (_animation1.value) * 2 * pi;</div>
+<div class='row cov'><span class='ln'>67</span>    var paintColor = widget.color ?? context.tTheme.brandNormalColor;</div>
+<div class='row cov'><span class='ln'>68</span>    return Transform(</div>
+<div class='row cov'><span class='ln'>69</span>      transform: Matrix4.identity()..rotateZ(value),</div>
+<div class='row nod'><span class='ln'>70</span>      alignment: FractionalOffset.center,</div>
+<div class='row cov'><span class='ln'>71</span>      child: SizedBox.fromSize(</div>
+<div class='row cov'><span class='ln'>72</span>        size: Size.square(widget.size),</div>
+<div class='row cov'><span class='ln'>73</span>        child: CustomPaint(</div>
+<div class='row cov'><span class='ln'>74</span>          painter: _CirclePaint(color: paintColor, width: widget.lineWidth),</div>
+<div class='row nod'><span class='ln'>75</span>        ),</div>
+<div class='row nod'><span class='ln'>76</span>      ),</div>
+<div class='row nod'><span class='ln'>77</span>    );</div>
+<div class='row nod'><span class='ln'>78</span>  }</div>
+<div class='row nod'><span class='ln'>79</span>}</div>
+<div class='row nod'><span class='ln'>80</span></div>
+<div class='row nod'><span class='ln'>81</span>class _CirclePaint extends CustomPainter {</div>
+<div class='row nod'><span class='ln'>82</span>  final Color color;</div>
+<div class='row nod'><span class='ln'>83</span>  final double width;</div>
+<div class='row nod'><span class='ln'>84</span></div>
+<div class='row cov'><span class='ln'>85</span>  _CirclePaint({required this.color, required this.width});</div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row nod'><span class='ln'>87</span>  final _paint = Paint()..style = PaintingStyle.stroke;</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row cov'><span class='ln'>89</span>  @override</div>
+<div class='row nod'><span class='ln'>90</span>  void paint(Canvas canvas, Size size) {</div>
+<div class='row cov'><span class='ln'>91</span>    var minLength = min(size.width, size.height);</div>
+<div class='row cov'><span class='ln'>92</span>    _paint.strokeWidth = width;</div>
+<div class='row cov'><span class='ln'>93</span>    _paint.shader = ui.Gradient.sweep(Offset(size.width / 2, size.height / 2),</div>
+<div class='row cov'><span class='ln'>94</span>        [const Color(0x01ffffff), color]);</div>
+<div class='row cov'><span class='ln'>95</span>    if (minLength == size.width) {</div>
+<div class='row nod'><span class='ln'>96</span>      // strokeWidth是居中位置的，需要减去width/2，使其向内绘制</div>
+<div class='row cov'><span class='ln'>97</span>      canvas.drawArc(</div>
+<div class='row cov'><span class='ln'>98</span>          Rect.fromLTWH(width / 2, (size.height - size.width) / 2 + width / 2,</div>
+<div class='row cov'><span class='ln'>99</span>              size.width - width, size.width - width),</div>
+<div class='row nod'><span class='ln'>100</span>          0,</div>
+<div class='row cov'><span class='ln'>101</span>          pi * 2,</div>
+<div class='row nod'><span class='ln'>102</span>          false,</div>
+<div class='row cov'><span class='ln'>103</span>          _paint);</div>
+<div class='row nod'><span class='ln'>104</span>    } else {</div>
+<div class='row unc'><span class='ln'>105</span>▶       canvas.drawArc(</div>
+<div class='row unc'><span class='ln'>106</span>▶           Rect.fromLTWH((size.width - size.height) / 2 + width / 2, width / 2,</div>
+<div class='row unc'><span class='ln'>107</span>▶               size.height - width, size.height - width),</div>
+<div class='row nod'><span class='ln'>108</span>          0,</div>
+<div class='row unc'><span class='ln'>109</span>▶           pi * 2,</div>
+<div class='row nod'><span class='ln'>110</span>          false,</div>
+<div class='row unc'><span class='ln'>111</span>▶           _paint);</div>
+<div class='row nod'><span class='ln'>112</span>    }</div>
+<div class='row nod'><span class='ln'>113</span>  }</div>
+<div class='row nod'><span class='ln'>114</span></div>
+<div class='row cov'><span class='ln'>115</span>  @override</div>
+<div class='row nod'><span class='ln'>116</span>  bool shouldRepaint(CustomPainter oldDelegate) {</div>
+<div class='row nod'><span class='ln'>117</span>    return true;</div>
+<div class='row nod'><span class='ln'>118</span>  }</div>
+<div class='row nod'><span class='ln'>119</span>}</div>
+<div class='row nod'><span class='ln'>120</span></div>
+</pre></body></html>

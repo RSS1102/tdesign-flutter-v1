@@ -1,0 +1,145 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/tabbar/t_bottom_tab_bar_theme_data.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/tabbar/t_bottom_tab_bar_theme_data.dart</h1></header><div class='meta'>行覆盖 <b>94.3%</b> (33/35) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:ui&#x27; show lerpDouble;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>/// 底部标签栏 ThemeExtension</div>
+<div class='row nod'><span class='ln'>6</span>///</div>
+<div class='row nod'><span class='ln'>7</span>/// 管理 TBottomTabBar 的子树级默认样式（高度、颜色、分割线、指示器动画等）。</div>
+<div class='row nod'><span class='ln'>8</span>/// 构造器参数优先级高于 ThemeData。</div>
+<div class='row nod'><span class='ln'>9</span>class TBottomTabBarThemeData extends ThemeExtension&lt;TBottomTabBarThemeData&gt; {</div>
+<div class='row nod'><span class='ln'>10</span>  /// 默认高度</div>
+<div class='row nod'><span class='ln'>11</span>  final double? barHeight;</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>  /// 默认选中时背景颜色</div>
+<div class='row nod'><span class='ln'>14</span>  final Color? selectedBgColor;</div>
+<div class='row nod'><span class='ln'>15</span></div>
+<div class='row nod'><span class='ln'>16</span>  /// 默认未选中时背景颜色</div>
+<div class='row nod'><span class='ln'>17</span>  final Color? unselectedBgColor;</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>  /// 默认背景颜色</div>
+<div class='row nod'><span class='ln'>20</span>  final Color? backgroundColor;</div>
+<div class='row nod'><span class='ln'>21</span></div>
+<div class='row nod'><span class='ln'>22</span>  /// 默认 icon 与文本中间距离</div>
+<div class='row nod'><span class='ln'>23</span>  final double? centerDistance;</div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>  /// 默认是否使用竖线分隔</div>
+<div class='row nod'><span class='ln'>26</span>  final bool? useVerticalDivider;</div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row nod'><span class='ln'>28</span>  /// 默认分割线高度</div>
+<div class='row nod'><span class='ln'>29</span>  final double? dividerHeight;</div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row nod'><span class='ln'>31</span>  /// 默认分割线厚度</div>
+<div class='row nod'><span class='ln'>32</span>  final double? dividerThickness;</div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span>  /// 默认分割线颜色</div>
+<div class='row nod'><span class='ln'>35</span>  final Color? dividerColor;</div>
+<div class='row nod'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>  /// 默认是否展示 bar 上边线</div>
+<div class='row nod'><span class='ln'>38</span>  final bool? showTopBorder;</div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row nod'><span class='ln'>40</span>  /// 默认上边线样式</div>
+<div class='row nod'><span class='ln'>41</span>  final BorderSide? topBorder;</div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row nod'><span class='ln'>43</span>  /// 默认是否需要水波纹效果</div>
+<div class='row nod'><span class='ln'>44</span>  final bool? needInkWell;</div>
+<div class='row nod'><span class='ln'>45</span></div>
+<div class='row nod'><span class='ln'>46</span>  /// 默认动画时长</div>
+<div class='row nod'><span class='ln'>47</span>  final Duration? animationDuration;</div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row nod'><span class='ln'>49</span>  /// 默认动画曲线</div>
+<div class='row nod'><span class='ln'>50</span>  final Curve? animationCurve;</div>
+<div class='row nod'><span class='ln'>51</span></div>
+<div class='row cov'><span class='ln'>52</span>  const TBottomTabBarThemeData({</div>
+<div class='row nod'><span class='ln'>53</span>    this.barHeight,</div>
+<div class='row nod'><span class='ln'>54</span>    this.selectedBgColor,</div>
+<div class='row nod'><span class='ln'>55</span>    this.unselectedBgColor,</div>
+<div class='row nod'><span class='ln'>56</span>    this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>57</span>    this.centerDistance,</div>
+<div class='row nod'><span class='ln'>58</span>    this.useVerticalDivider,</div>
+<div class='row nod'><span class='ln'>59</span>    this.dividerHeight,</div>
+<div class='row nod'><span class='ln'>60</span>    this.dividerThickness,</div>
+<div class='row nod'><span class='ln'>61</span>    this.dividerColor,</div>
+<div class='row nod'><span class='ln'>62</span>    this.showTopBorder,</div>
+<div class='row nod'><span class='ln'>63</span>    this.topBorder,</div>
+<div class='row nod'><span class='ln'>64</span>    this.needInkWell,</div>
+<div class='row nod'><span class='ln'>65</span>    this.animationDuration,</div>
+<div class='row nod'><span class='ln'>66</span>    this.animationCurve,</div>
+<div class='row nod'><span class='ln'>67</span>  });</div>
+<div class='row nod'><span class='ln'>68</span></div>
+<div class='row cov'><span class='ln'>69</span>  @override</div>
+<div class='row nod'><span class='ln'>70</span>  TBottomTabBarThemeData copyWith({</div>
+<div class='row nod'><span class='ln'>71</span>    double? barHeight,</div>
+<div class='row nod'><span class='ln'>72</span>    Color? selectedBgColor,</div>
+<div class='row nod'><span class='ln'>73</span>    Color? unselectedBgColor,</div>
+<div class='row nod'><span class='ln'>74</span>    Color? backgroundColor,</div>
+<div class='row nod'><span class='ln'>75</span>    double? centerDistance,</div>
+<div class='row nod'><span class='ln'>76</span>    bool? useVerticalDivider,</div>
+<div class='row nod'><span class='ln'>77</span>    double? dividerHeight,</div>
+<div class='row nod'><span class='ln'>78</span>    double? dividerThickness,</div>
+<div class='row nod'><span class='ln'>79</span>    Color? dividerColor,</div>
+<div class='row nod'><span class='ln'>80</span>    bool? showTopBorder,</div>
+<div class='row nod'><span class='ln'>81</span>    BorderSide? topBorder,</div>
+<div class='row nod'><span class='ln'>82</span>    bool? needInkWell,</div>
+<div class='row nod'><span class='ln'>83</span>    Duration? animationDuration,</div>
+<div class='row nod'><span class='ln'>84</span>    Curve? animationCurve,</div>
+<div class='row nod'><span class='ln'>85</span>  }) {</div>
+<div class='row cov'><span class='ln'>86</span>    return TBottomTabBarThemeData(</div>
+<div class='row unc'><span class='ln'>87</span>▶       barHeight: barHeight ?? this.barHeight,</div>
+<div class='row cov'><span class='ln'>88</span>      selectedBgColor: selectedBgColor ?? this.selectedBgColor,</div>
+<div class='row cov'><span class='ln'>89</span>      unselectedBgColor: unselectedBgColor ?? this.unselectedBgColor,</div>
+<div class='row unc'><span class='ln'>90</span>▶       backgroundColor: backgroundColor ?? this.backgroundColor,</div>
+<div class='row cov'><span class='ln'>91</span>      centerDistance: centerDistance ?? this.centerDistance,</div>
+<div class='row cov'><span class='ln'>92</span>      useVerticalDivider: useVerticalDivider ?? this.useVerticalDivider,</div>
+<div class='row cov'><span class='ln'>93</span>      dividerHeight: dividerHeight ?? this.dividerHeight,</div>
+<div class='row cov'><span class='ln'>94</span>      dividerThickness: dividerThickness ?? this.dividerThickness,</div>
+<div class='row cov'><span class='ln'>95</span>      dividerColor: dividerColor ?? this.dividerColor,</div>
+<div class='row cov'><span class='ln'>96</span>      showTopBorder: showTopBorder ?? this.showTopBorder,</div>
+<div class='row cov'><span class='ln'>97</span>      topBorder: topBorder ?? this.topBorder,</div>
+<div class='row cov'><span class='ln'>98</span>      needInkWell: needInkWell ?? this.needInkWell,</div>
+<div class='row cov'><span class='ln'>99</span>      animationDuration: animationDuration ?? this.animationDuration,</div>
+<div class='row cov'><span class='ln'>100</span>      animationCurve: animationCurve ?? this.animationCurve,</div>
+<div class='row nod'><span class='ln'>101</span>    );</div>
+<div class='row nod'><span class='ln'>102</span>  }</div>
+<div class='row nod'><span class='ln'>103</span></div>
+<div class='row cov'><span class='ln'>104</span>  @override</div>
+<div class='row nod'><span class='ln'>105</span>  TBottomTabBarThemeData lerp(</div>
+<div class='row nod'><span class='ln'>106</span>      ThemeExtension&lt;TBottomTabBarThemeData&gt;? other, double t) {</div>
+<div class='row cov'><span class='ln'>107</span>    if (other is! TBottomTabBarThemeData) {</div>
+<div class='row nod'><span class='ln'>108</span>      return this;</div>
+<div class='row nod'><span class='ln'>109</span>    }</div>
+<div class='row cov'><span class='ln'>110</span>    return TBottomTabBarThemeData(</div>
+<div class='row cov'><span class='ln'>111</span>      barHeight: lerpDouble(barHeight, other.barHeight, t),</div>
+<div class='row cov'><span class='ln'>112</span>      selectedBgColor: Color.lerp(selectedBgColor, other.selectedBgColor, t),</div>
+<div class='row nod'><span class='ln'>113</span>      unselectedBgColor:</div>
+<div class='row cov'><span class='ln'>114</span>          Color.lerp(unselectedBgColor, other.unselectedBgColor, t),</div>
+<div class='row cov'><span class='ln'>115</span>      backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),</div>
+<div class='row cov'><span class='ln'>116</span>      centerDistance: lerpDouble(centerDistance, other.centerDistance, t),</div>
+<div class='row nod'><span class='ln'>117</span>      useVerticalDivider:</div>
+<div class='row cov'><span class='ln'>118</span>          t &lt;= 0.5 ? useVerticalDivider : other.useVerticalDivider,</div>
+<div class='row cov'><span class='ln'>119</span>      dividerHeight: lerpDouble(dividerHeight, other.dividerHeight, t),</div>
+<div class='row cov'><span class='ln'>120</span>      dividerThickness: lerpDouble(dividerThickness, other.dividerThickness, t),</div>
+<div class='row cov'><span class='ln'>121</span>      dividerColor: Color.lerp(dividerColor, other.dividerColor, t),</div>
+<div class='row cov'><span class='ln'>122</span>      showTopBorder: t &lt;= 0.5 ? showTopBorder : other.showTopBorder,</div>
+<div class='row cov'><span class='ln'>123</span>      topBorder: BorderSide.lerp(</div>
+<div class='row cov'><span class='ln'>124</span>          topBorder ?? BorderSide.none, other.topBorder ?? BorderSide.none, t),</div>
+<div class='row cov'><span class='ln'>125</span>      needInkWell: t &lt;= 0.5 ? needInkWell : other.needInkWell,</div>
+<div class='row cov'><span class='ln'>126</span>      animationDuration: t &lt;= 0.5 ? animationDuration : other.animationDuration,</div>
+<div class='row cov'><span class='ln'>127</span>      animationCurve: t &lt;= 0.5 ? animationCurve : other.animationCurve,</div>
+<div class='row nod'><span class='ln'>128</span>    );</div>
+<div class='row nod'><span class='ln'>129</span>  }</div>
+<div class='row nod'><span class='ln'>130</span>}</div>
+<div class='row nod'><span class='ln'>131</span></div>
+</pre></body></html>

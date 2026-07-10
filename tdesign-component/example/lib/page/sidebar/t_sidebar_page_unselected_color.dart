@@ -146,7 +146,7 @@ class TSideBarUnSelectedColorPageState
             SizedBox(
               child: TSideBar(
                 unSelectedColor: Colors.red,
-                style: TSideBarStyle.normal,
+                style: TSideBarVariant.normal,
                 value: currentValue,
                 controller: _sideBarController,
                 onChanged: onChanged,

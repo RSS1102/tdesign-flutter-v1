@@ -17,7 +17,7 @@ class TCustomTab extends StatefulWidget {
 }
 
 class _TCustomTabState extends State<TCustomTab> {
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   int _currentTabIndex = 0;
 
   @override

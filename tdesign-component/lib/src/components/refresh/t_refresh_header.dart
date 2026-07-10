@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import '../../util/context_extension.dart';
-import 't_refresh_theme_data.dart';
 
 /// TDesign刷新头部
 /// 结合EasyRefresh类实现下拉刷新,继承自Header类，字段含义与父类一致
@@ -57,7 +56,7 @@ class TRefreshHeader extends Header {
         finalLoadingIcon =
             loadingIcon ?? themeData?.loadingIcon ?? TLoadingIcon.circle,
         finalBackgroundColor = backgroundColor ?? themeData?.backgroundColor,
-        this.themeData = themeData,
+        themeData = themeData,
         assert(
             (triggerDistance ?? themeData?.triggerDistance ?? 48.0) > 0.0),
         assert(

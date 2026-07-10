@@ -40,7 +40,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
         color: context.tTheme.bgColorContainer,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _buildLinksWithVariant(TLinkType.basic),
+          children: _buildLinksWithVariant(TLinkVariant.basic),
         ));
   }
 
@@ -50,7 +50,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
         color: context.tTheme.bgColorContainer,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _buildLinksWithVariant(TLinkType.underline),
+          children: _buildLinksWithVariant(TLinkVariant.underline),
         ));
   }
 
@@ -60,20 +60,20 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
         color: context.tTheme.bgColorContainer,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: _buildLinksWithVariant(TLinkType.icon),
+          children: _buildLinksWithVariant(TLinkVariant.icon),
         ));
   }
 
-  List<Widget> _buildLinksWithVariant(TLinkType variant) {
+  List<Widget> _buildLinksWithVariant(TLinkVariant variant) {
     return [
       TLink(
-        child: Text('跳转链接'),
+        child: const Text('跳转链接'),
         colorScheme: TLinkColorScheme.primary,
         variant: variant,
         size: TLinkSize.medium,
       ),
       TLink(
-        child: Text('跳转链接'),
+        child: const Text('跳转链接'),
         colorScheme: TLinkColorScheme.defaultTheme,
         variant: variant,
         size: TLinkSize.medium,
@@ -149,9 +149,9 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
   TLink _buildLinkWithColorScheme(TLinkColorScheme colorScheme,
       {bool disabled = false}) {
     return TLink(
-      child: Text('跳转链接'),
+      child: const Text('跳转链接'),
       colorScheme: colorScheme,
-      variant: TLinkType.basic,
+      variant: TLinkVariant.basic,
       size: TLinkSize.medium,
       onPressed: disabled ? null : () {},
     );
@@ -178,7 +178,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
     return TLink(
       child: Text('${label}号链接'),
       colorScheme: TLinkColorScheme.primary,
-      variant: TLinkType.icon,
+      variant: TLinkVariant.icon,
       size: size,
       onPressed: () {},
     );

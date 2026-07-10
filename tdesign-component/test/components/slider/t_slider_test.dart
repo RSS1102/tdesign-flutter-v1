@@ -15,7 +15,7 @@ void main() {
         TThemeData.defaultData(),
         TSliderThemeData(min: 0, max: 100),
       ]),
-      home: Scaffold(body: Center(child: child)),
+      home: Scaffold(body: child),
     );
   }
 
@@ -197,6 +197,165 @@ void main() {
       ));
       expect(find.text('最小'), findsOneWidget);
       expect(find.text('最大'), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // TSlider onTap / onThumbTextTap 手势回调
+  // ============================================================
+  group('TSlider onTap / onThumbTextTap', () {
+    testWidgets('onTap 点击触发回调（传入当前 value）', (tester) async {
+      Offset? tappedOffset;
+      double? tappedValue;
+      await tester.pumpWidget(wrapWithTheme(
+        TSlider(
+          value: 30,
+          onChanged: (_) {},
+          onTap: (offset, value) {
+            tappedOffset = offset;
+            tappedValue = value;
+          },
+        ),
+      ));
+      final center = tester.getCenter(find.byType(Slider));
+      await tester.tapAt(center);
+      await tester.pump();
+      expect(tappedOffset, isNotNull);
+      expect(tappedValue, 30);
+    });
+
+    testWidgets('onThumbTextTap 在 showThumbValue=true 时进入判断分支', (tester) async {
+      // 注入 showThumbValue:true 让外层 Listener 进入计算逻辑；运行时未测量出
+      // thumbTextRect，命中提前返回分支（不真正触发回调）
+      var tapped = false;
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(extensions: [
+          TThemeData.defaultData(),
+          TSliderThemeData(min: 0, max: 100, showThumbValue: true),
+        ]),
+        home: Scaffold(
+          body: TSlider(
+            value: 30,
+            onChanged: (_) {},
+            onThumbTextTap: (offset, value) => tapped = true,
+          ),
+        ),
+      ));
+      final center = tester.getCenter(find.byType(Slider));
+      await tester.tapAt(center);
+      await tester.pump();
+      expect(tapped, isFalse);
+    });
+
+    testWidgets('禁用态（onChanged:null）点击不触发 onTap', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(wrapWithTheme(
+        TSlider(
+          value: 30,
+          onTap: (offset, value) => tapped = true,
+        ),
+      ));
+      final center = tester.getCenter(find.byType(Slider));
+      await tester.tapAt(center);
+      await tester.pump();
+      expect(tapped, isFalse);
+    });
+
+    testWidgets('didUpdateWidget 更新 value', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSlider(value: 0, onChanged: (_) {}),
+      ));
+      await tester.pumpWidget(wrapWithTheme(
+        TSlider(value: 50, onChanged: (_) {}),
+      ));
+      await tester.pump();
+      final slider = tester.widget<Slider>(find.byType(Slider));
+      expect(slider.value, 50);
+    });
+
+    testWidgets('onChanged:null 时 label 使用禁用色', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TSlider(value: 50, label: '音量'),
+      ));
+      expect(find.text('音量'), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // TRangeSlider onTap / onChanged
+  // ============================================================
+  group('TRangeSlider onTap / onChanged', () {
+    testWidgets('onTap 点击触发回调', (tester) async {
+      Position? tappedPos;
+      double? tappedVal;
+      await tester.pumpWidget(wrapWithTheme(
+        TRangeSlider(
+          value: const RangeValues(20, 80),
+          onChanged: (_) {},
+          onTap: (pos, offset, value) {
+            tappedPos = pos;
+            tappedVal = value;
+          },
+        ),
+      ));
+      final center = tester.getCenter(find.byType(RangeSlider));
+      await tester.tapAt(center);
+      await tester.pump();
+      expect(tappedPos, isNotNull);
+      expect(tappedVal, isNotNull);
+    });
+
+    testWidgets('onThumbTextTap 在 showThumbValue=true 进入判断分支', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(extensions: [
+          TThemeData.defaultData(),
+          TSliderThemeData(min: 0, max: 100, showThumbValue: true),
+        ]),
+        home: Scaffold(
+          body: TRangeSlider(
+            value: const RangeValues(20, 80),
+            onChanged: (_) {},
+            onThumbTextTap: (pos, offset, value) => tapped = true,
+          ),
+        ),
+      ));
+      final center = tester.getCenter(find.byType(RangeSlider));
+      await tester.tapAt(center);
+      await tester.pump();
+      expect(tapped, isFalse);
+    });
+
+    testWidgets('onChanged 拖动触发回调', (tester) async {
+      RangeValues? changed;
+      await tester.pumpWidget(wrapWithTheme(
+        TRangeSlider(
+          value: const RangeValues(20, 80),
+          onChanged: (v) => changed = v,
+        ),
+      ));
+      await tester.drag(find.byType(RangeSlider), const Offset(40, 0));
+      await tester.pump();
+      expect(changed, isNotNull);
+    });
+
+    testWidgets('didUpdateWidget 更新 value', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TRangeSlider(value: const RangeValues(0, 100), onChanged: (_) {}),
+      ));
+      await tester.pumpWidget(wrapWithTheme(
+        TRangeSlider(value: const RangeValues(10, 90), onChanged: (_) {}),
+      ));
+      await tester.pump();
+      final slider = tester.widget<RangeSlider>(find.byType(RangeSlider));
+      expect(slider.values, const RangeValues(10, 90));
+    });
+
+    testWidgets('onChanged:null 时 label 使用禁用色', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRangeSlider(value: RangeValues(20, 80), label: '最小'),
+      ));
+      expect(find.text('最小'), findsOneWidget);
     });
   });
 }

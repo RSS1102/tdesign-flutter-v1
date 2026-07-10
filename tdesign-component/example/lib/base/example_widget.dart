@@ -7,13 +7,11 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-import '../page/t_theme_page.dart';
 import '../provider/theme_mode_provider.dart';
-import 'syntax_highlighter.dart';
-import 'api_widget.dart';
 import 'example_base.dart';
 import 'example_route.dart';
 import 'notification_center.dart';
+import 'syntax_highlighter.dart';
 import 'web_md_tool.dart';
 
 var navBarkey = GlobalKey();
@@ -105,7 +103,7 @@ class _ExamplePageState extends State<ExamplePage> {
         floatingActionButton: widget.floatingActionButton,
         body: ScrollbarTheme(
             data: ScrollbarThemeData(
-              trackVisibility: MaterialStateProperty.all(true),
+              trackVisibility: WidgetStateProperty.all(true),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +136,7 @@ class _ExamplePageState extends State<ExamplePage> {
                                           child: Column(
                                             children: [
                                               TButton(
-                                                child: Text('生成Web使用md'),
+                                                child: const Text('生成Web使用md'),
                                                 variant: TButtonVariant.fill,
                                                 onPressed: () =>
                                                     WebMdTool.generateWebMd(
@@ -156,7 +154,7 @@ class _ExamplePageState extends State<ExamplePage> {
                                                             : null),
                                               ),
                                               TButton(
-                                                child: Text('返回首页'),
+                                                child: const Text('返回首页'),
                                                 variant: TButtonVariant.fill,
                                                 onPressed: () =>
                                                     Navigator.of(context)
@@ -201,7 +199,7 @@ class _ExamplePageState extends State<ExamplePage> {
               child: Column(
                 children: [
                   TButton(
-                    child: Text('生成Web使用md'),
+                    child: const Text('生成Web使用md'),
                     variant: TButtonVariant.fill,
                     onPressed: () => WebMdTool.generateWebMd(
                         model: model,
@@ -213,7 +211,7 @@ class _ExamplePageState extends State<ExamplePage> {
                             widget.showSingleChild ? widget.singleChild : null),
                   ),
                   TButton(
-                    child: Text('返回首页'),
+                    child: const Text('返回首页'),
                     variant: TButtonVariant.fill,
                     onPressed: () => Navigator.of(context).maybePop(),
                   ),
@@ -568,7 +566,7 @@ class _CodeWrapperState extends State<CodeWrapper> {
               child: GestureDetector(
                 onTap: _showCodePanel,
                 child: Container(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                   alignment: Alignment.center,
                   child: TText(
                     'code',
@@ -608,7 +606,7 @@ class _CodeWrapperState extends State<CodeWrapper> {
     codeString ??= await loadCodeString();
     await showModalBottomSheet(
         isScrollControlled: true,
-        barrierColor: Colors.black.withOpacity(0.5),
+        barrierColor: Colors.black.withValues(alpha: 0.5),
         context: context,
         builder: (_) {
           if (codeString!.isEmpty) {

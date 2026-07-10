@@ -90,19 +90,19 @@ class TRadioPageState extends State<TRadioPage> {
         TRadio(
           id: '0',
           title: '单选标题',
-          radioStyle: TRadioStyle.circle,
+          radioStyle: TRadioVariant.circle,
           showDivider: false,
         ),
         TRadio(
           id: '1',
           title: '单选标题',
-          radioStyle: TRadioStyle.circle,
+          radioStyle: TRadioVariant.circle,
           showDivider: false,
         ),
         TRadio(
           id: '2',
           title: '上限四字',
-          radioStyle: TRadioStyle.circle,
+          radioStyle: TRadioVariant.circle,
           showDivider: false,
         ),
       ],
@@ -136,13 +136,13 @@ class TRadioPageState extends State<TRadioPage> {
           TRadio(
             id: '0',
             title: '选项禁用-已选',
-            radioStyle: TRadioStyle.circle,
+            radioStyle: TRadioVariant.circle,
             enabled: false,
           ),
           TRadio(
             id: '1',
             title: '选项禁用-默认',
-            radioStyle: TRadioStyle.circle,
+            radioStyle: TRadioVariant.circle,
             enabled: false,
           ),
         ],
@@ -155,7 +155,7 @@ class TRadioPageState extends State<TRadioPage> {
     return Column(
       children: [
         TRadioGroup(
-          radioCheckStyle: TRadioStyle.check,
+          radioCheckStyle: TRadioVariant.check,
           selectId: 'index:0',
           child: const TRadio(
             id: 'index:0',
@@ -165,7 +165,7 @@ class TRadioPageState extends State<TRadioPage> {
         const SizedBox(
         ),
         TRadioGroup(
-          radioCheckStyle: TRadioStyle.hollowCircle,
+          radioCheckStyle: TRadioVariant.hollowCircle,
           selectId: 'index:0',
           child: const TRadio(
             id: 'index:0',
@@ -308,19 +308,19 @@ class TRadioPageState extends State<TRadioPage> {
         TRadio(
           id: '0',
           title: '单选标题',
-          radioStyle: TRadioStyle.circle,
+          radioStyle: TRadioVariant.circle,
           showDivider: false,
         ),
         TRadio(
           id: '1',
           title: '单选标题',
-          radioStyle: TRadioStyle.circle,
+          radioStyle: TRadioVariant.circle,
           showDivider: false,
         ),
         TRadio(
           id: '2',
           title: '上限四字',
-          radioStyle: TRadioStyle.circle,
+          radioStyle: TRadioVariant.circle,
           showDivider: false,
         ),
       ],
@@ -341,19 +341,19 @@ class TRadioPageState extends State<TRadioPage> {
         TRadio(
           id: '0',
           title: '单选标题',
-          radioStyle: TRadioStyle.circle,
+          radioStyle: TRadioVariant.circle,
           showDivider: false,
         ),
         TRadio(
           id: '1',
           title: '单选标题',
-          radioStyle: TRadioStyle.circle,
+          radioStyle: TRadioVariant.circle,
           showDivider: false,
         ),
         TRadio(
           id: '2',
           title: '上限四字',
-          radioStyle: TRadioStyle.circle,
+          radioStyle: TRadioVariant.circle,
           showDivider: false,
         ),
       ],
@@ -407,7 +407,7 @@ class TRadioPageState extends State<TRadioPage> {
             selectColor: context.tTheme.errorColor3,
             titleFont: context.tTheme.fontBodySmall,
             subTitleFont: context.tTheme.fontBodyExtraSmall,
-            radioStyle: TRadioStyle.hollowCircle,
+            radioStyle: TRadioVariant.hollowCircle,
           ),
           TRadio(
             id: 'index:6',
@@ -449,7 +449,7 @@ class TRadioPageState extends State<TRadioPage> {
             id: '0',
             title: '选项禁用-已选',
             subTitle: '描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息',
-            radioStyle: TRadioStyle.circle,
+            radioStyle: TRadioVariant.circle,
             enabled: false,
             disableColor: context.tTheme.errorDisabledColor,
             titleFont: context.tTheme.fontBodySmall,
@@ -458,7 +458,7 @@ class TRadioPageState extends State<TRadioPage> {
           TRadio(
             id: '1',
             title: '选项禁用-默认',
-            radioStyle: TRadioStyle.circle,
+            radioStyle: TRadioVariant.circle,
             enabled: false,
             disableColor: context.tTheme.errorDisabledColor,
             titleFont: context.tTheme.fontBodySmall,
@@ -475,7 +475,7 @@ class TRadioPageState extends State<TRadioPage> {
       id: '0',
       title: '选项禁用-已选',
       subTitle: '描述信息',
-      radioStyle: TRadioStyle.circle,
+      radioStyle: TRadioVariant.circle,
       checkBoxLeftSpace: 0,
       disableColor: context.tTheme.errorDisabledColor,
       titleFont: context.tTheme.fontBodySmall,

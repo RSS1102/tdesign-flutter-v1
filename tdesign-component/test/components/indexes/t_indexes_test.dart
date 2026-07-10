@@ -166,4 +166,189 @@ void main() {
       expect(find.byType(TIndexes), findsOneWidget);
     });
   });
+
+  group('TIndexesList 手势交互', () {
+    testWidgets('点击侧边索引触发 onSelect 并更新激活项', (tester) async {
+      final active = ValueNotifier<String>('A');
+      String? selected;
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 300,
+          width: 80,
+          child: Stack(
+            children: [
+              TIndexesList(
+                indexList: const ['A', 'B', 'C'],
+                activeIndex: active,
+                onSelect: (newIndex, oldIndex) => selected = newIndex,
+              ),
+            ],
+          ),
+        ),
+      ));
+      final bCenter = tester.getCenter(find.text('B'));
+      await tester.tapAt(bCenter);
+      await tester.pump();
+      expect(selected, 'B');
+      expect(active.value, 'B');
+    });
+  });
+
+  group('TIndexes 选中/回调/滚动', () {
+    testWidgets('点击侧边索引触发 onSelect/onChanged/onChange 并滚动（向上）', (tester) async {
+      String? selected;
+      String? changed;
+      String? onChange;
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 400,
+          width: 200,
+          child: TIndexes(
+            indexList: const ['A', 'B', 'C'],
+            onSelect: (i) => selected = i,
+            onChanged: (i) => changed = i,
+            onChange: (i) => onChange = i,
+            builderContent: (context, index) => SizedBox(
+              height: 120,
+              child: ListTile(title: Text('内容$index')),
+            ),
+          ),
+        ),
+      ));
+      final bFinder =
+          find.descendant(of: find.byType(TIndexesList), matching: find.text('B'));
+      final bCenter = tester.getCenter(bFinder);
+      await tester.tapAt(bCenter);
+      // 等待 _scrollToTarget 内部 postFrameCallback 与 _hideTip 计时器
+      await tester.pump(const Duration(seconds: 1, milliseconds: 200));
+      expect(selected, 'B');
+      expect(changed, 'B');
+      expect(onChange, 'B');
+    });
+
+    testWidgets('从高位选中低位触发向下滚动分支', (tester) async {
+      String? selected;
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 400,
+          width: 200,
+          child: TIndexes(
+            indexList: const ['A', 'B', 'C'],
+            onSelect: (i) => selected = i,
+            builderContent: (context, index) => SizedBox(
+              height: 120,
+              child: ListTile(title: Text('内容$index')),
+            ),
+          ),
+        ),
+      ));
+      final listFinder = find.byType(TIndexesList);
+      final bFinder = find.descendant(of: listFinder, matching: find.text('B'));
+      await tester.tapAt(tester.getCenter(bFinder));
+      await tester.pump(const Duration(seconds: 1, milliseconds: 200));
+      // 先选 B，再选 A（oldIndex=B > newIndex=A → 向下滚动分支）
+      final aFinder = find.descendant(of: listFinder, matching: find.text('A'));
+      await tester.tapAt(tester.getCenter(aFinder));
+      await tester.pump(const Duration(seconds: 1, milliseconds: 200));
+      expect(selected, 'A');
+    });
+
+    testWidgets('didUpdateWidget 更新 indexList', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TIndexes(
+          indexList: const ['A', 'B'],
+          builderContent: (context, index) => ListTile(title: Text('内容$index')),
+        ),
+      ));
+      await tester.pumpWidget(wrapWithTheme(
+        TIndexes(
+          indexList: const ['A', 'B', 'C'],
+          builderContent: (context, index) => ListTile(title: Text('内容$index')),
+        ),
+      ));
+      await tester.pump();
+      expect(find.byType(TIndexes), findsOneWidget);
+    });
+  });
+
+  group('TIndexesList 进阶交互', () {
+    testWidgets('didUpdateWidget 重建索引键', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 300,
+          width: 80,
+          child: Stack(
+            children: [
+              TIndexesList(
+                indexList: const ['A', 'B', 'C'],
+                activeIndex: ValueNotifier('A'),
+                onSelect: (newIndex, oldIndex) {},
+              ),
+            ],
+          ),
+        ),
+      ));
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 300,
+          width: 80,
+          child: Stack(
+            children: [
+              TIndexesList(
+                indexList: const ['A', 'B', 'C', 'D'],
+                activeIndex: ValueNotifier('A'),
+                onSelect: (newIndex, oldIndex) {},
+              ),
+            ],
+          ),
+        ),
+      ));
+      await tester.pump();
+      expect(find.byType(TIndexesList), findsOneWidget);
+    });
+
+    testWidgets('自定义 builderIndex 渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 300,
+          width: 80,
+          child: Stack(
+            children: [
+              TIndexesList(
+                indexList: const ['A', 'B'],
+                activeIndex: ValueNotifier('A'),
+                onSelect: (newIndex, oldIndex) {},
+                builderIndex: (context, e, isActive) =>
+                    Container(key: Key('idx-$e'), child: Text('项$e')),
+              ),
+            ],
+          ),
+        ),
+      ));
+      expect(find.text('项A'), findsOneWidget);
+    });
+
+    testWidgets('竖向拖动触发 _changeSelect 与 _hideTip', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 300,
+          width: 80,
+          child: Stack(
+            children: [
+              TIndexesList(
+                indexList: const ['A', 'B', 'C', 'D'],
+                activeIndex: ValueNotifier('A'),
+                onSelect: (newIndex, oldIndex) {},
+              ),
+            ],
+          ),
+        ),
+      ));
+      final listCenter = tester.getCenter(find.byType(TIndexesList));
+      await tester.dragFrom(listCenter, const Offset(0, 40));
+      // 等待 _hideTip 计时器触发 setState
+      await tester.pump(const Duration(seconds: 1, milliseconds: 200));
+      expect(find.byType(TIndexesList), findsOneWidget);
+    });
+  });
 }

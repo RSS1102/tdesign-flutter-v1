@@ -153,7 +153,7 @@ Widget _buildSimple(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: Text('基础用法'),
+      child: const Text('基础用法'),
       size: TButtonSize.large,
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
@@ -186,7 +186,7 @@ Widget _buildOther(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: Text('胶囊索引'),
+      child: const Text('胶囊索引'),
       size: TButtonSize.large,
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
@@ -220,7 +220,7 @@ Widget _buildCustomIndexes(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: Text('自定义索引'),
+      child: const Text('自定义索引'),
       size: TButtonSize.large,
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,

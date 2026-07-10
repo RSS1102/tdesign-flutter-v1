@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
-import 'package:tdesign_flutter/src/components/icon/t_icon_theme_data.dart';
 
 /// TIcon v1.0 Widget 测试
 ///
@@ -19,7 +18,7 @@ void main() {
       theme: ThemeData(
         extensions: [TThemeData.defaultData(), ...extensions],
       ),
-      home: Scaffold(body: Center(child: child)),
+      home: Scaffold(body: child),
     );
   }
 
@@ -176,7 +175,7 @@ void main() {
         TThemeData.defaultData(),
         const TIconThemeData(size: 32.0, color: Colors.green),
       ]),
-      home: Scaffold(body: Center(child: TIcon(TIcons.home))),
+      home: const Scaffold(body: Center(child: TIcon(TIcons.home))),
     ));
     final icon = tester.widget<Icon>(find.byIcon(TIcons.home));
     expect(icon.size, 32.0);
@@ -186,7 +185,7 @@ void main() {
   testWidgets('T08 - 多个 TIcon 同时渲染', (tester) async {
     await tester.pumpWidget(MaterialApp(
       theme: ThemeData(extensions: [TThemeData.defaultData()]),
-      home: Scaffold(body: Center(child: Row(children: [
+      home: const Scaffold(body: Center(child: Row(children: [
         TIcon(TIcons.home),
         TIcon(TIcons.search),
         TIcon(TIcons.user),

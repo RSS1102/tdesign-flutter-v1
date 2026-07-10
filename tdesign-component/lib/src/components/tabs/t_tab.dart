@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_tab_bar_theme_data.dart';
 
 /// Tab 组件 v1.0
 ///

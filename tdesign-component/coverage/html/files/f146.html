@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/picker/picker_value.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/picker/picker_value.dart</h1></header><div class='meta'>行覆盖 <b>100.0%</b> (7/7) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/foundation.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;picker_option.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>/// onChange 回传的各列选中快照</div>
+<div class='row nod'><span class='ln'>6</span>@immutable</div>
+<div class='row nod'><span class='ln'>7</span>class TPickerValue {</div>
+<div class='row cov'><span class='ln'>8</span>  TPickerValue({</div>
+<div class='row nod'><span class='ln'>9</span>    required this.selectedOptions,</div>
+<div class='row nod'><span class='ln'>10</span>    required this.indexes,</div>
+<div class='row nod'><span class='ln'>11</span>  });</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>  /// 每列选中的完整 [TPickerOption]</div>
+<div class='row nod'><span class='ln'>14</span>  final List&lt;TPickerOption&gt; selectedOptions;</div>
+<div class='row nod'><span class='ln'>15</span></div>
+<div class='row nod'><span class='ln'>16</span>  /// 每列选中项索引</div>
+<div class='row nod'><span class='ln'>17</span>  final List&lt;int&gt; indexes;</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>  /// 各列选中项的 value（提交表单用，懒计算）</div>
+<div class='row cov'><span class='ln'>20</span>  late final List&lt;dynamic&gt; values =</div>
+<div class='row cov'><span class='ln'>21</span>      List.unmodifiable(selectedOptions.map((o) =&gt; o.value));</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>  /// 各列选中项的 label（展示用，懒计算）</div>
+<div class='row cov'><span class='ln'>24</span>  late final List&lt;String&gt; labels =</div>
+<div class='row cov'><span class='ln'>25</span>      List.unmodifiable(selectedOptions.map((o) =&gt; o.label));</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row cov'><span class='ln'>27</span>  @override</div>
+<div class='row nod'><span class='ln'>28</span>  String toString() =&gt;</div>
+<div class='row cov'><span class='ln'>29</span>      &#x27;TPickerValue(labels: $labels, values: $values, indexes: $indexes)&#x27;;</div>
+<div class='row nod'><span class='ln'>30</span>}</div>
+<div class='row nod'><span class='ln'>31</span></div>
+</pre></body></html>

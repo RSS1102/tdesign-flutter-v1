@@ -1,0 +1,112 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/loading/t_point_indicator.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/loading/t_point_indicator.dart</h1></header><div class='meta'>行覆盖 <b>87.2%</b> (34/39) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>/*</div>
+<div class='row nod'><span class='ln'>2</span> * Created by haozhicao@tencent.com on 6/28/22.</div>
+<div class='row nod'><span class='ln'>3</span> * t_point_indicator.dart</div>
+<div class='row nod'><span class='ln'>4</span> * </div>
+<div class='row nod'><span class='ln'>5</span> */</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>import &#x27;dart:math&#x27; as math;</div>
+<div class='row nod'><span class='ln'>8</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>9</span></div>
+<div class='row nod'><span class='ln'>10</span>class TPointBounceIndicator extends StatefulWidget {</div>
+<div class='row cov'><span class='ln'>11</span>  const TPointBounceIndicator({</div>
+<div class='row nod'><span class='ln'>12</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>13</span>    this.color,</div>
+<div class='row nod'><span class='ln'>14</span>    this.size = 20.0,</div>
+<div class='row nod'><span class='ln'>15</span>    this.duration = 1400,</div>
+<div class='row nod'><span class='ln'>16</span>    this.controller,</div>
+<div class='row cov'><span class='ln'>17</span>  }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>  final Color? color;</div>
+<div class='row nod'><span class='ln'>20</span>  final double size;</div>
+<div class='row nod'><span class='ln'>21</span>  final int duration;</div>
+<div class='row nod'><span class='ln'>22</span>  final AnimationController? controller;</div>
+<div class='row nod'><span class='ln'>23</span></div>
+<div class='row cov'><span class='ln'>24</span>  @override</div>
+<div class='row cov'><span class='ln'>25</span>  _TPointBounceIndicatorState createState() =&gt; _TPointBounceIndicatorState();</div>
+<div class='row nod'><span class='ln'>26</span>}</div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row nod'><span class='ln'>28</span>class _TPointBounceIndicatorState extends State&lt;TPointBounceIndicator&gt;</div>
+<div class='row nod'><span class='ln'>29</span>    with SingleTickerProviderStateMixin {</div>
+<div class='row nod'><span class='ln'>30</span>  late AnimationController _controller;</div>
+<div class='row nod'><span class='ln'>31</span></div>
+<div class='row cov'><span class='ln'>32</span>  @override</div>
+<div class='row nod'><span class='ln'>33</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>34</span>    super.initState();</div>
+<div class='row nod'><span class='ln'>35</span></div>
+<div class='row cov'><span class='ln'>36</span>    _controller = (widget.controller ??</div>
+<div class='row cov'><span class='ln'>37</span>        AnimationController(</div>
+<div class='row cov'><span class='ln'>38</span>            vsync: this, duration: Duration(milliseconds: widget.duration)))</div>
+<div class='row cov'><span class='ln'>39</span>      ..repeat();</div>
+<div class='row nod'><span class='ln'>40</span>  }</div>
+<div class='row nod'><span class='ln'>41</span></div>
+<div class='row unc'><span class='ln'>42</span>▶   @override</div>
+<div class='row nod'><span class='ln'>43</span>  void didUpdateWidget(covariant TPointBounceIndicator oldWidget) {</div>
+<div class='row unc'><span class='ln'>44</span>▶     super.didUpdateWidget(oldWidget);</div>
+<div class='row unc'><span class='ln'>45</span>▶     if (widget.duration != oldWidget.duration) {</div>
+<div class='row unc'><span class='ln'>46</span>▶       _controller.duration = Duration(milliseconds: widget.duration);</div>
+<div class='row unc'><span class='ln'>47</span>▶       _controller.repeat();</div>
+<div class='row nod'><span class='ln'>48</span>    }</div>
+<div class='row nod'><span class='ln'>49</span>  }</div>
+<div class='row nod'><span class='ln'>50</span></div>
+<div class='row cov'><span class='ln'>51</span>  @override</div>
+<div class='row nod'><span class='ln'>52</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>53</span>    if (widget.controller == null) {</div>
+<div class='row cov'><span class='ln'>54</span>      _controller.dispose();</div>
+<div class='row nod'><span class='ln'>55</span>    }</div>
+<div class='row cov'><span class='ln'>56</span>    super.dispose();</div>
+<div class='row nod'><span class='ln'>57</span>  }</div>
+<div class='row nod'><span class='ln'>58</span></div>
+<div class='row cov'><span class='ln'>59</span>  @override</div>
+<div class='row nod'><span class='ln'>60</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>61</span>    return Center(</div>
+<div class='row cov'><span class='ln'>62</span>      child: SizedBox.fromSize(</div>
+<div class='row cov'><span class='ln'>63</span>        size: Size(widget.size * 3.5, widget.size),</div>
+<div class='row cov'><span class='ln'>64</span>        child: Row(</div>
+<div class='row nod'><span class='ln'>65</span>          mainAxisAlignment: MainAxisAlignment.spaceEvenly,</div>
+<div class='row cov'><span class='ln'>66</span>          children: List.generate(3, (i) {</div>
+<div class='row cov'><span class='ln'>67</span>            return ScaleTransition(</div>
+<div class='row cov'><span class='ln'>68</span>              scale: DelayTween(begin: 0.0, end: 1.0, delay: i * .2)</div>
+<div class='row cov'><span class='ln'>69</span>                  .animate(_controller),</div>
+<div class='row cov'><span class='ln'>70</span>              child: SizedBox.fromSize(</div>
+<div class='row cov'><span class='ln'>71</span>                  size: Size.square(widget.size * 0.5), child: _itemBuilder(i)),</div>
+<div class='row nod'><span class='ln'>72</span>            );</div>
+<div class='row nod'><span class='ln'>73</span>          }),</div>
+<div class='row nod'><span class='ln'>74</span>        ),</div>
+<div class='row nod'><span class='ln'>75</span>      ),</div>
+<div class='row nod'><span class='ln'>76</span>    );</div>
+<div class='row nod'><span class='ln'>77</span>  }</div>
+<div class='row nod'><span class='ln'>78</span></div>
+<div class='row cov'><span class='ln'>79</span>  Widget _itemBuilder(int index) {</div>
+<div class='row cov'><span class='ln'>80</span>    return DecoratedBox(</div>
+<div class='row cov'><span class='ln'>81</span>        decoration: BoxDecoration(color: widget.color, shape: BoxShape.circle));</div>
+<div class='row nod'><span class='ln'>82</span>  }</div>
+<div class='row nod'><span class='ln'>83</span>}</div>
+<div class='row nod'><span class='ln'>84</span></div>
+<div class='row nod'><span class='ln'>85</span>class DelayTween extends Tween&lt;double&gt; {</div>
+<div class='row cov'><span class='ln'>86</span>  DelayTween({double? begin, double? end, required this.delay})</div>
+<div class='row cov'><span class='ln'>87</span>      : super(begin: begin, end: end);</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row nod'><span class='ln'>89</span>  final double delay;</div>
+<div class='row nod'><span class='ln'>90</span></div>
+<div class='row cov'><span class='ln'>91</span>  @override</div>
+<div class='row nod'><span class='ln'>92</span>  double lerp(double t) =&gt;</div>
+<div class='row cov'><span class='ln'>93</span>      super.lerp((math.sin((t - delay) * 2 * math.pi) + 1) / 2);</div>
+<div class='row nod'><span class='ln'>94</span></div>
+<div class='row cov'><span class='ln'>95</span>  @override</div>
+<div class='row cov'><span class='ln'>96</span>  double evaluate(Animation&lt;double&gt; animation) =&gt; lerp(animation.value);</div>
+<div class='row nod'><span class='ln'>97</span>}</div>
+<div class='row nod'><span class='ln'>98</span></div>
+</pre></body></html>

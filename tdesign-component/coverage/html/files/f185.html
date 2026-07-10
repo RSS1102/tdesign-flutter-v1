@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/steps/t_steps_vertical.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/steps/t_steps_vertical.dart</h1></header><div class='meta'>行覆盖 <b>100.0%</b> (14/14) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span>import &#x27;t_steps_vertical_item.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>5</span></div>
+<div class='row nod'><span class='ln'>6</span>/// Steps步骤条，垂直步骤</div>
+<div class='row nod'><span class='ln'>7</span>class TStepsVertical extends StatelessWidget {</div>
+<div class='row nod'><span class='ln'>8</span>  /// 步骤条数据列表</div>
+<div class='row nod'><span class='ln'>9</span>  final List&lt;TStepsItemData&gt; steps;</div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span>  /// 当前激活的步骤索引</div>
+<div class='row nod'><span class='ln'>12</span>  final int activeIndex;</div>
+<div class='row nod'><span class='ln'>13</span></div>
+<div class='row nod'><span class='ln'>14</span>  /// 步骤条状态</div>
+<div class='row nod'><span class='ln'>15</span>  final TStepsStatus status;</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>  /// 是否为简略模式</div>
+<div class='row nod'><span class='ln'>18</span>  final bool simple;</div>
+<div class='row nod'><span class='ln'>19</span></div>
+<div class='row nod'><span class='ln'>20</span>  /// 是否为只读模式（纯展示）</div>
+<div class='row nod'><span class='ln'>21</span>  final bool readOnly;</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>  /// 垂直模式下是否可点击选择</div>
+<div class='row nod'><span class='ln'>24</span>  final bool verticalSelect;</div>
+<div class='row nod'><span class='ln'>25</span></div>
+<div class='row cov'><span class='ln'>26</span>  const TStepsVertical({</div>
+<div class='row nod'><span class='ln'>27</span>    super.key,</div>
+<div class='row nod'><span class='ln'>28</span>    required this.steps,</div>
+<div class='row nod'><span class='ln'>29</span>    required this.activeIndex,</div>
+<div class='row nod'><span class='ln'>30</span>    required this.status,</div>
+<div class='row nod'><span class='ln'>31</span>    required this.simple,</div>
+<div class='row nod'><span class='ln'>32</span>    required this.readOnly,</div>
+<div class='row nod'><span class='ln'>33</span>    required this.verticalSelect,</div>
+<div class='row nod'><span class='ln'>34</span>  });</div>
+<div class='row nod'><span class='ln'>35</span></div>
+<div class='row cov'><span class='ln'>36</span>  @override</div>
+<div class='row nod'><span class='ln'>37</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>38</span>    final stepsCount = steps.length;</div>
+<div class='row cov'><span class='ln'>39</span>    List&lt;Widget&gt; stepsVerticalItem = steps.asMap().entries.map((item) {</div>
+<div class='row cov'><span class='ln'>40</span>      return TStepsVerticalItem(</div>
+<div class='row cov'><span class='ln'>41</span>        index: item.key,</div>
+<div class='row cov'><span class='ln'>42</span>        data: item.value,</div>
+<div class='row nod'><span class='ln'>43</span>        stepsCount: stepsCount,</div>
+<div class='row cov'><span class='ln'>44</span>        activeIndex: activeIndex,</div>
+<div class='row cov'><span class='ln'>45</span>        status: status,</div>
+<div class='row cov'><span class='ln'>46</span>        simple: simple,</div>
+<div class='row cov'><span class='ln'>47</span>        readOnly: readOnly,</div>
+<div class='row cov'><span class='ln'>48</span>        verticalSelect: verticalSelect,</div>
+<div class='row nod'><span class='ln'>49</span>      );</div>
+<div class='row cov'><span class='ln'>50</span>    }).toList();</div>
+<div class='row nod'><span class='ln'>51</span></div>
+<div class='row cov'><span class='ln'>52</span>    return Column(</div>
+<div class='row nod'><span class='ln'>53</span>      mainAxisAlignment: MainAxisAlignment.start,</div>
+<div class='row nod'><span class='ln'>54</span>      children: stepsVerticalItem,</div>
+<div class='row nod'><span class='ln'>55</span>    );</div>
+<div class='row nod'><span class='ln'>56</span>  }</div>
+<div class='row nod'><span class='ln'>57</span>}</div>
+<div class='row nod'><span class='ln'>58</span></div>
+</pre></body></html>

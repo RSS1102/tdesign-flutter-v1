@@ -11,7 +11,7 @@ void main() {
   Widget wrapWithTheme(Widget child) {
     return MaterialApp(
       theme: ThemeData(extensions: [TThemeData.defaultData()]),
-      home: Scaffold(body: Center(child: child)),
+      home: Scaffold(body: child),
     );
   }
 
@@ -46,11 +46,10 @@ void main() {
     });
 
     testWidgets('onChanged 非 null 时点击可交互', (tester) async {
-      double? changedValue;
       await tester.pumpWidget(wrapWithTheme(
         TRate(
           value: 0,
-          onChanged: (v) => changedValue = v,
+          onChanged: (_) {},
         ),
       ));
 
@@ -206,6 +205,537 @@ void main() {
         const TRate(value: 3, placement: PlacementEnum.top),
       ));
       expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('placement=bottom 正常渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 3, placement: PlacementEnum.bottom),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // disabled 禁用
+  // ============================================================
+  group('TRate disabled 禁用', () {
+    testWidgets('disabled=true 正常渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 3, disabled: true),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('disabled=true + onChanged=null 禁用渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 2, disabled: true, onChanged: null),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // showText 更多文案场景
+  // ============================================================
+  group('TRate showText 更多场景', () {
+    testWidgets('showText=true + value=5 显示最后一个文案', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 5,
+          showText: true,
+          texts: ['极差', '失望', '一般', '满意', '惊喜'],
+        ),
+      ));
+      expect(find.text('惊喜'), findsOneWidget);
+    });
+
+    testWidgets('showText=true + value=1 显示第一个文案', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 1,
+          showText: true,
+          texts: ['极差', '失望', '一般', '满意', '惊喜'],
+        ),
+      ));
+      expect(find.text('极差'), findsOneWidget);
+    });
+
+    testWidgets('showText=true + allowHalf=true + value=2.5', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 2.5,
+          showText: true,
+          allowHalf: true,
+          texts: ['极差', '失望', '一般', '满意', '惊喜',
+            '极差半', '失望半', '一般半', '满意半', '惊喜半'],
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('showText=true + value=0 显示未评分', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 0, showText: true),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('builderText 自定义文案构建', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(
+          value: 3,
+          showText: true,
+          builderText: (context, value) => Text('评分: $value'),
+        ),
+      ));
+      expect(find.text('评分: 3.0'), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // direction / alignment 方向与对齐
+  // ============================================================
+  group('TRate direction / alignment', () {
+    testWidgets('direction=vertical 垂直方向', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          direction: Axis.vertical,
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('mainAxisAlignment=center', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('crossAxisAlignment=start', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('mainAxisSize=max', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          mainAxisSize: MainAxisSize.max,
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // gap 间距
+  // ============================================================
+  group('TRate gap 间距', () {
+    testWidgets('自定义 gap=10', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 3, gap: 10),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('gap=0', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 3, gap: 0),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // iconTextGap 图标与文字间距
+  // ============================================================
+  group('TRate iconTextGap', () {
+    testWidgets('自定义 iconTextGap=20', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          showText: true,
+          iconTextGap: 20,
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('iconTextGap + direction=vertical', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          showText: true,
+          direction: Axis.vertical,
+          iconTextGap: 12,
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // textWidth 文案宽度
+  // ============================================================
+  group('TRate textWidth', () {
+    testWidgets('自定义 textWidth=60', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          showText: true,
+          textWidth: 60,
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // 自定义颜色（双色数组）
+  // ============================================================
+  group('TRate 自定义颜色', () {
+    testWidgets('color 双色数组 [选中色, 未选中色]', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          color: [Colors.red, Colors.grey],
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('color 单色数组（只有选中色）', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          color: [Colors.blue],
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('color 空数组（使用默认色）', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          color: [],
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // 自定义图标（双图标数组）
+  // ============================================================
+  group('TRate 自定义图标', () {
+    testWidgets('icon 双图标数组 [选中, 未选中]', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          icon: [Icons.star, Icons.star_border],
+        ),
+      ));
+      expect(find.byIcon(Icons.star), findsWidgets);
+    });
+
+    testWidgets('icon 单图标数组（只有选中图标）', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(
+          value: 3,
+          icon: [Icons.favorite],
+        ),
+      ));
+      expect(find.byIcon(Icons.favorite), findsWidgets);
+    });
+  });
+
+  // ============================================================
+  // count 边界场景
+  // ============================================================
+  group('TRate count 边界场景', () {
+    testWidgets('count=1 渲染 1 个评分项', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 0, count: 1),
+      ));
+      expect(find.byIcon(TIcons.star_filled), findsNWidgets(2));
+    });
+
+    testWidgets('count=2 渲染 2 个评分项', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 0, count: 2),
+      ));
+      expect(find.byIcon(TIcons.star_filled), findsNWidgets(4));
+    });
+
+    testWidgets('count=null 默认 5 个', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 0, count: null),
+      ));
+      expect(find.byIcon(TIcons.star_filled), findsNWidgets(10));
+    });
+  });
+
+  // ============================================================
+  // value 变化（didUpdateWidget）
+  // ============================================================
+  group('TRate value 变化', () {
+    testWidgets('value 从 0 变为 3 更新显示', (tester) async {
+      double value = 0;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TRate(
+              value: value,
+              onChanged: (v) {},
+            );
+          },
+        ),
+      ));
+      expect(find.byType(TRate), findsOneWidget);
+
+      setState(() => value = 3);
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('value 从 3 变为 0 更新显示', (tester) async {
+      double value = 3;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TRate(
+              value: value,
+              onChanged: (v) {},
+            );
+          },
+        ),
+      ));
+      setState(() => value = 0);
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('count 变化重建 GlobalKey', (tester) async {
+      var count = 5;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TRate(
+              value: 0,
+              count: count,
+              onChanged: (v) {},
+            );
+          },
+        ),
+      ));
+      setState(() => count = 3);
+      await tester.pumpAndSettle();
+      expect(find.byIcon(TIcons.star_filled), findsNWidgets(6));
+    });
+
+    testWidgets('allowHalf 变化更新 tipSize', (tester) async {
+      var allowHalf = false;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TRate(
+              value: 2,
+              allowHalf: allowHalf,
+              onChanged: (v) {},
+            );
+          },
+        ),
+      ));
+      setState(() => allowHalf = true);
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // TRateThemeData
+  // ============================================================
+  group('TRateThemeData', () {
+    test('默认构造', () {
+      const data = TRateThemeData();
+      expect(data.allowHalf, null);
+      expect(data.color, null);
+      expect(data.count, null);
+      expect(data.gap, null);
+      expect(data.placement, null);
+      expect(data.showText, null);
+      expect(data.textWidth, null);
+      expect(data.mainAxisAlignment, null);
+      expect(data.crossAxisAlignment, null);
+      expect(data.mainAxisSize, null);
+      expect(data.iconTextGap, null);
+    });
+
+    test('带参数构造', () {
+      const data = TRateThemeData(
+        allowHalf: true,
+        color: [Colors.red, Colors.grey],
+        count: 5,
+        gap: 8,
+        placement: PlacementEnum.top,
+        showText: true,
+        textWidth: 48,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        iconTextGap: 16,
+      );
+      expect(data.allowHalf, true);
+      expect(data.color, [Colors.red, Colors.grey]);
+      expect(data.count, 5);
+      expect(data.gap, 8);
+      expect(data.placement, PlacementEnum.top);
+      expect(data.showText, true);
+      expect(data.textWidth, 48);
+      expect(data.mainAxisAlignment, MainAxisAlignment.center);
+      expect(data.crossAxisAlignment, CrossAxisAlignment.start);
+      expect(data.mainAxisSize, MainAxisSize.max);
+      expect(data.iconTextGap, 16);
+    });
+
+    test('copyWith 全字段覆盖', () {
+      const data = TRateThemeData();
+      final copied = data.copyWith(
+        allowHalf: true,
+        color: [Colors.red, Colors.grey],
+        count: 5,
+        gap: 8,
+        placement: PlacementEnum.top,
+        showText: true,
+        textWidth: 48,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        iconTextGap: 16,
+      );
+      expect(copied.allowHalf, true);
+      expect(copied.color, [Colors.red, Colors.grey]);
+      expect(copied.count, 5);
+      expect(copied.gap, 8);
+      expect(copied.placement, PlacementEnum.top);
+      expect(copied.showText, true);
+      expect(copied.textWidth, 48);
+      expect(copied.mainAxisAlignment, MainAxisAlignment.center);
+      expect(copied.crossAxisAlignment, CrossAxisAlignment.start);
+      expect(copied.mainAxisSize, MainAxisSize.max);
+      expect(copied.iconTextGap, 16);
+    });
+
+    test('lerp 正常插值 t < 0.5', () {
+      const data1 = TRateThemeData(
+        allowHalf: false,
+        count: 3,
+        gap: 4,
+        placement: PlacementEnum.none,
+        showText: false,
+        textWidth: 40,
+        iconTextGap: 8,
+      );
+      const data2 = TRateThemeData(
+        allowHalf: true,
+        count: 5,
+        gap: 10,
+        placement: PlacementEnum.top,
+        showText: true,
+        textWidth: 60,
+        iconTextGap: 16,
+      );
+      final lerped = data1.lerp(data2, 0.3);
+      expect(lerped.allowHalf, false); // t < 0.5 取 data1
+      expect(lerped.count, 3);
+      expect(lerped.placement, PlacementEnum.none);
+      expect(lerped.showText, false);
+    });
+
+    test('lerp t >= 0.5 取 other', () {
+      const data1 = TRateThemeData(
+        allowHalf: false,
+        count: 3,
+        placement: PlacementEnum.none,
+        showText: false,
+      );
+      const data2 = TRateThemeData(
+        allowHalf: true,
+        count: 5,
+        placement: PlacementEnum.top,
+        showText: true,
+      );
+      final lerped = data1.lerp(data2, 0.6);
+      expect(lerped.allowHalf, true);
+      expect(lerped.count, 5);
+      expect(lerped.placement, PlacementEnum.top);
+      expect(lerped.showText, true);
+    });
+
+    test('lerp 非 TRateThemeData 返回自身', () {
+      const data = TRateThemeData(count: 5);
+      final lerped = data.lerp(null, 0.5);
+      expect(lerped, same(data));
+    });
+  });
+
+  // ============================================================
+  // PlacementEnum 枚举
+  // ============================================================
+  group('PlacementEnum 枚举', () {
+    test('枚举值', () {
+      expect(PlacementEnum.values.length, 3);
+      expect(PlacementEnum.values, contains(PlacementEnum.none));
+      expect(PlacementEnum.values, contains(PlacementEnum.top));
+      expect(PlacementEnum.values, contains(PlacementEnum.bottom));
+    });
+  });
+
+  // ============================================================
+  // size 自定义图标大小
+  // ============================================================
+  group('TRate size 自定义', () {
+    testWidgets('size=16 小图标', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 3, size: 16),
+      ));
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.star_filled).first);
+      expect(icon.size, 16);
+    });
+
+    testWidgets('size=32 大图标', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 3, size: 32),
+      ));
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.star_filled).first);
+      expect(icon.size, 32);
+    });
+
+    testWidgets('size=null 默认 24', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TRate(value: 3, size: null),
+      ));
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.star_filled).first);
+      expect(icon.size, 24);
     });
   });
 }

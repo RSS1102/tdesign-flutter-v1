@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
-import 'package:tdesign_flutter/src/components/button/t_button_theme_data.dart';
 
 /// TButton V1.0 Widget 测试
 ///
@@ -18,7 +17,7 @@ void main() {
       theme: ThemeData(
         extensions: [TThemeData.defaultData(), ...themeExtensions],
       ),
-      home: Scaffold(body: Center(child: child)),
+      home: Scaffold(body: child),
     );
   }
 
@@ -28,8 +27,8 @@ void main() {
   group('TButton 禁用（A 类控制）', () {
     testWidgets('onPressed: null 表示禁用', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('禁用按钮'),
+        const TButton(
+          child: Text('禁用按钮'),
           onPressed: null,
         ),
       ));
@@ -39,7 +38,7 @@ void main() {
     });
 
     testWidgets('onPressed 非 null 正常响应点击', (tester) async {
-      bool tapped = false;
+      var tapped = false;
       await tester.pumpWidget(wrapWithTheme(
         TButton(
           child: const Text('可点击'),
@@ -84,8 +83,8 @@ void main() {
   group('TButton shape 五档', () {
     testWidgets('shape: rectangle 正常渲染（默认圆角）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('rectangle'),
+        const TButton(
+          child: Text('rectangle'),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(shape: TButtonShape.rectangle),
@@ -97,8 +96,8 @@ void main() {
 
     testWidgets('shape: round 正常渲染（大圆角）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('round'),
+        const TButton(
+          child: Text('round'),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(shape: TButtonShape.round),
@@ -110,8 +109,8 @@ void main() {
 
     testWidgets('shape: square 正常渲染（直角 + 等宽高）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('square'),
+        const TButton(
+          child: Text('square'),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(shape: TButtonShape.square),
@@ -127,8 +126,8 @@ void main() {
 
     testWidgets('shape: circle 正常渲染（圆形）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('circle'),
+        const TButton(
+          child: Text('circle'),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(shape: TButtonShape.circle),
@@ -144,8 +143,8 @@ void main() {
 
     testWidgets('shape: filled 正常渲染（零圆角）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('filled'),
+        const TButton(
+          child: Text('filled'),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(shape: TButtonShape.filled),
@@ -157,8 +156,8 @@ void main() {
 
     testWidgets('square 渲染为直角（BorderRadius.zero）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('square'),
+        const TButton(
+          child: Text('square'),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(shape: TButtonShape.square),
@@ -175,8 +174,8 @@ void main() {
 
     testWidgets('rectangle 渲染有圆角', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('rect'),
+        const TButton(
+          child: Text('rect'),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(shape: TButtonShape.rectangle),
@@ -197,9 +196,9 @@ void main() {
   group('TButton icon 图标', () {
     testWidgets('icon 传入 Icon widget 正常渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          icon: const Icon(Icons.add),
-          child: const Text('带图标'),
+        const TButton(
+          icon: Icon(Icons.add),
+          child: Text('带图标'),
           onPressed: null,
         ),
       ));
@@ -209,8 +208,8 @@ void main() {
 
     testWidgets('纯 icon 按钮（无 child）正常渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          icon: const Icon(Icons.star),
+        const TButton(
+          icon: Icon(Icons.star),
           onPressed: null,
         ),
       ));
@@ -221,8 +220,8 @@ void main() {
 
     testWidgets('纯 icon + circle shape 渲染正确', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          icon: const Icon(Icons.favorite),
+        const TButton(
+          icon: Icon(Icons.favorite),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(shape: TButtonShape.circle),
@@ -237,8 +236,8 @@ void main() {
 
     testWidgets('纯 icon + square shape 等宽高', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          icon: const Icon(Icons.home),
+        const TButton(
+          icon: Icon(Icons.home),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(shape: TButtonShape.square),
@@ -328,8 +327,8 @@ void main() {
 
     testWidgets('未传 size 且 Theme 未设 defaultSize 时 fallback 为 medium', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('默认尺寸'),
+        const TButton(
+          child: Text('默认尺寸'),
           onPressed: null,
         ),
       ));
@@ -345,8 +344,8 @@ void main() {
 
     testWidgets('未传 size 但 Theme 设置了 defaultSize 时读取 Theme 值', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('Theme尺寸'),
+        const TButton(
+          child: Text('Theme尺寸'),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(defaultSize: TButtonSize.large),
@@ -379,8 +378,8 @@ void main() {
   group('TButton P0 style 覆盖', () {
     testWidgets('实例 style 覆盖默认背景色', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('自定义'),
+        const TButton(
+          child: Text('自定义'),
           style: ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(Colors.red),
           ),
@@ -531,7 +530,7 @@ void main() {
       final bgColor = button.style?.backgroundColor?.resolve({});
       // fill primary 启用态应非透明
       expect(bgColor, isNotNull);
-      expect(bgColor!.opacity, greaterThan(0));
+      expect(bgColor!.a, greaterThan(0));
     });
   });
 
@@ -541,8 +540,8 @@ void main() {
   group('TButton Theme 子树', () {
     testWidgets('mergeExtension 覆盖构造器未传项', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('Theme注入'),
+        const TButton(
+          child: Text('Theme注入'),
           onPressed: null,
         ),
         buttonTheme: const TButtonThemeData(
@@ -583,8 +582,8 @@ void main() {
   group('TButton child 内容', () {
     testWidgets('child 为 Text 时正常渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('文本内容'),
+        const TButton(
+          child: Text('文本内容'),
           onPressed: null,
         ),
       ));
@@ -594,8 +593,8 @@ void main() {
 
     testWidgets('child 为自定义复杂 Widget 时正常渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Row(
+        const TButton(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.star, size: 16),
@@ -613,8 +612,8 @@ void main() {
 
     testWidgets('child 为 null 且 icon 存在时仅渲染 icon', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          icon: const Icon(Icons.check),
+        const TButton(
+          icon: Icon(Icons.check),
           onPressed: null,
         ),
       ));
@@ -630,8 +629,8 @@ void main() {
   group('TButton 默认行为', () {
     testWidgets('未传 variant 时默认 fill', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          child: const Text('默认变体'),
+        const TButton(
+          child: Text('默认变体'),
           onPressed: null,
         ),
       ));
@@ -645,9 +644,9 @@ void main() {
 
     testWidgets('默认 iconPosition 为 left', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          icon: const Icon(Icons.add),
-          child: const Text('按钮'),
+        const TButton(
+          icon: Icon(Icons.add),
+          child: Text('按钮'),
           onPressed: null,
         ),
       ));

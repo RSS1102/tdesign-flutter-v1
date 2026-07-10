@@ -79,42 +79,42 @@ class _TPickerPageState extends State<TPickerPage> {
 
   final linkedItems = TPickerLinked({
     const TPickerOption(label: '广东省', value: 'GD'): {
-      const TPickerOption(label: '深圳市', value: 'SZ'): [
-        const TPickerOption(label: '南山区', value: 'NS'),
-        const TPickerOption(label: '福田区', value: 'FT'),
-        const TPickerOption(label: '宝安区', value: 'BA'),
-        const TPickerOption(label: '罗湖区', value: 'LH'),
-        const TPickerOption(label: '龙岗区', value: 'LG'),
+      const TPickerOption(label: '深圳市', value: 'SZ'): const [
+        TPickerOption(label: '南山区', value: 'NS'),
+        TPickerOption(label: '福田区', value: 'FT'),
+        TPickerOption(label: '宝安区', value: 'BA'),
+        TPickerOption(label: '罗湖区', value: 'LH'),
+        TPickerOption(label: '龙岗区', value: 'LG'),
       ],
-      const TPickerOption(label: '广州市', value: 'GZ'): [
-        const TPickerOption(label: '天河区', value: 'TH'),
-        const TPickerOption(label: '越秀区', value: 'YX'),
-        const TPickerOption(label: '白云区', value: 'BY'),
-        const TPickerOption(label: '花都区', value: 'HD'),
+      const TPickerOption(label: '广州市', value: 'GZ'): const [
+        TPickerOption(label: '天河区', value: 'TH'),
+        TPickerOption(label: '越秀区', value: 'YX'),
+        TPickerOption(label: '白云区', value: 'BY'),
+        TPickerOption(label: '花都区', value: 'HD'),
       ],
-      const TPickerOption(label: '佛山市', value: 'FS'): [
-        const TPickerOption(label: '顺德区', value: 'SD'),
-        const TPickerOption(label: '南海区', value: 'NH'),
-        const TPickerOption(label: '禅城区', value: 'CC'),
+      const TPickerOption(label: '佛山市', value: 'FS'): const [
+        TPickerOption(label: '顺德区', value: 'SD'),
+        TPickerOption(label: '南海区', value: 'NH'),
+        TPickerOption(label: '禅城区', value: 'CC'),
       ],
     },
     const TPickerOption(label: '浙江省', value: 'ZJ'): {
-      const TPickerOption(label: '杭州市', value: 'HZ'): [
-        const TPickerOption(label: '西湖区', value: 'XH'),
-        const TPickerOption(label: '余杭区', value: 'YH'),
-        const TPickerOption(label: '萧山区', value: 'XS'),
+      const TPickerOption(label: '杭州市', value: 'HZ'): const [
+        TPickerOption(label: '西湖区', value: 'XH'),
+        TPickerOption(label: '余杭区', value: 'YH'),
+        TPickerOption(label: '萧山区', value: 'XS'),
       ],
-      const TPickerOption(label: '宁波市', value: 'NB'): [
-        const TPickerOption(label: '江东区', value: 'JD'),
-        const TPickerOption(label: '北仑区', value: 'BL'),
+      const TPickerOption(label: '宁波市', value: 'NB'): const [
+        TPickerOption(label: '江东区', value: 'JD'),
+        TPickerOption(label: '北仑区', value: 'BL'),
       ],
     },
     // 直辖市（只有 2 级：市 → 区），用于测试"3 列 ↔ 2 列"切换
-    const TPickerOption(label: '重庆市', value: 'CQ'): [
-      const TPickerOption(label: '渝中区', value: 'YZ'),
-      const TPickerOption(label: '江北区', value: 'JB'),
-      const TPickerOption(label: '渝北区', value: 'YB'),
-      const TPickerOption(label: '南岸区', value: 'NA'),
+    const TPickerOption(label: '重庆市', value: 'CQ'): const [
+      TPickerOption(label: '渝中区', value: 'YZ'),
+      TPickerOption(label: '江北区', value: 'JB'),
+      TPickerOption(label: '渝北区', value: 'YB'),
+      TPickerOption(label: '南岸区', value: 'NA'),
     ],
   });
 
@@ -183,6 +183,7 @@ class _TPickerPageState extends State<TPickerPage> {
   bool globalDisabled = false;
 
   // ========== 全局 disabled 开关 ==========
+  @override
   Widget build(BuildContext context) {
     return ExamplePage(
       title: tTitle(),
@@ -604,7 +605,7 @@ class _TPickerPageState extends State<TPickerPage> {
                         decoration: BoxDecoration(
                           color: context.tTheme
                               .fontGyColor1
-                              .withOpacity(0.72),
+                              .withValues(alpha: 0.72),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(

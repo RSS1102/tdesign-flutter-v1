@@ -72,7 +72,7 @@ class _TSearchBarPageState extends State<TSearchBarPage> {
         TSearchBar(
           hintText: '搜索预设文案',
           // 方形
-          style: TSearchBarStyle.square,
+          style: TSearchBarVariant.square,
           onChanged: (String text) {
             setState(() {
               inputText = text;
@@ -83,7 +83,7 @@ class _TSearchBarPageState extends State<TSearchBarPage> {
         TSearchBar(
           hintText: '搜索预设文案',
           // 圆形
-          style: TSearchBarStyle.round,
+          style: TSearchBarVariant.round,
           onChanged: (String text) {
             setState(() {
               inputText = text;

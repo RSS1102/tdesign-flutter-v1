@@ -6,7 +6,6 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'tabbar_test.dart';
 
 void main() async {
-  kTextNeedGlobalFontFamily = true;
   WidgetsFlutterBinding.ensureInitialized();
 
   var jsonString = await rootBundle.loadString('assets/theme.json');
@@ -49,8 +48,8 @@ Padding body(BuildContext context) {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TButton(
-          text: '按钮 ',
-          onTap: () {
+          child: const Text('按钮 '),
+          onPressed: () {
             TLoadingController.show(context);
             TLoadingController.dismiss();
           },
@@ -74,7 +73,7 @@ Padding body(BuildContext context) {
         //     fontFamily: FontFamily(fontFamily: 'test1'),
         //   ),
         // ),
-        TInput(
+        const TInput(
           // label: '标签文字',
           // controller: controller[0],
           layout: TInputLayout.cardStyle,
@@ -125,7 +124,7 @@ PreferredSizeWidget _buildAppBar(BuildContext context) {
         padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
         hintText: '搜索预设文案',
         mediumStyle: true,
-        style: TSearchBarStyle.round,
+        style: TSearchBarVariant.round,
         onChanged: (String text) {
           print('input：$text');
         },

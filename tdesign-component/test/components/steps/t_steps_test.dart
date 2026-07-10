@@ -29,7 +29,7 @@ void main() {
     });
 
     test('至少需要一个非空值断言', () {
-      expect(() => TStepsItemData(), throwsA(isA<AssertionError>()));
+      expect(TStepsItemData.new, throwsA(isA<AssertionError>()));
     });
 
     test('自定义内容构造', () {

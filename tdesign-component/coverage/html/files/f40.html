@@ -1,0 +1,402 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/calendar/t_calendar_style.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/calendar/t_calendar_style.dart</h1></header><div class='meta'>行覆盖 <b>100.0%</b> (76/76) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span></div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span>// ---------------------------------------------------------------------------</div>
+<div class='row nod'><span class='ln'>9</span></div>
+<div class='row nod'><span class='ln'>10</span>// TCalendarStyle — 日历样式配置</div>
+<div class='row nod'><span class='ln'>11</span></div>
+<div class='row nod'><span class='ln'>12</span>// ---------------------------------------------------------------------------</div>
+<div class='row nod'><span class='ln'>13</span></div>
+<div class='row cov'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span></div>
+<div class='row nod'><span class='ln'>16</span>/// [TCalendar] 的样式配置，通过 TCalendar.style 传入。</div>
+<div class='row nod'><span class='ln'>17</span>///</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>/// 使用 [TCalendarStyle.generateStyle] 获取主题默认样式，</div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row nod'><span class='ln'>21</span>/// 再用 [forSelectType] 按 [DateSelectType] 区分选中/区间等态下的文字与装饰。</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>class TCalendarStyle {</div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>  const TCalendarStyle({</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row nod'><span class='ln'>27</span>    this.decoration,</div>
+<div class='row nod'><span class='ln'>28</span></div>
+<div class='row nod'><span class='ln'>29</span>    this.weekdayStyle,</div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row nod'><span class='ln'>31</span>    this.monthTitleStyle,</div>
+<div class='row nod'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span>    this.dayStyle,</div>
+<div class='row nod'><span class='ln'>34</span></div>
+<div class='row nod'><span class='ln'>35</span>    this.todayDayStyle,</div>
+<div class='row nod'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>    this.cellDecoration,</div>
+<div class='row nod'><span class='ln'>38</span></div>
+<div class='row nod'><span class='ln'>39</span>    this.subtitleStyle,</div>
+<div class='row nod'><span class='ln'>40</span></div>
+<div class='row nod'><span class='ln'>41</span>    this.cellHeight = 60,</div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row nod'><span class='ln'>43</span>    this.monthTitleHeight = 22,</div>
+<div class='row nod'><span class='ln'>44</span></div>
+<div class='row nod'><span class='ln'>45</span>    this.verticalGap,</div>
+<div class='row nod'><span class='ln'>46</span></div>
+<div class='row nod'><span class='ln'>47</span>    this.bodyPadding,</div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row nod'><span class='ln'>49</span>    this.weekdayGap,</div>
+<div class='row nod'><span class='ln'>50</span></div>
+<div class='row nod'><span class='ln'>51</span>    this.centreColor,</div>
+<div class='row nod'><span class='ln'>52</span></div>
+<div class='row nod'><span class='ln'>53</span>  });</div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row nod'><span class='ln'>55</span></div>
+<div class='row nod'><span class='ln'>56</span></div>
+<div class='row nod'><span class='ln'>57</span>  /// 组件容器装饰</div>
+<div class='row nod'><span class='ln'>58</span></div>
+<div class='row nod'><span class='ln'>59</span>  final BoxDecoration? decoration;</div>
+<div class='row nod'><span class='ln'>60</span></div>
+<div class='row nod'><span class='ln'>61</span></div>
+<div class='row nod'><span class='ln'>62</span></div>
+<div class='row nod'><span class='ln'>63</span>  /// 星期文字样式</div>
+<div class='row nod'><span class='ln'>64</span></div>
+<div class='row nod'><span class='ln'>65</span>  final TextStyle? weekdayStyle;</div>
+<div class='row nod'><span class='ln'>66</span></div>
+<div class='row nod'><span class='ln'>67</span></div>
+<div class='row nod'><span class='ln'>68</span></div>
+<div class='row nod'><span class='ln'>69</span>  /// 月份标题文字样式</div>
+<div class='row cov'><span class='ln'>70</span></div>
+<div class='row nod'><span class='ln'>71</span>  final TextStyle? monthTitleStyle;</div>
+<div class='row nod'><span class='ln'>72</span></div>
+<div class='row nod'><span class='ln'>73</span></div>
+<div class='row nod'><span class='ln'>74</span></div>
+<div class='row cov'><span class='ln'>75</span>  /// 日期数字样式</div>
+<div class='row nod'><span class='ln'>76</span></div>
+<div class='row nod'><span class='ln'>77</span>  final TextStyle? dayStyle;</div>
+<div class='row nod'><span class='ln'>78</span></div>
+<div class='row cov'><span class='ln'>79</span></div>
+<div class='row cov'><span class='ln'>80</span></div>
+<div class='row cov'><span class='ln'>81</span>  /// 今天日期数字样式</div>
+<div class='row cov'><span class='ln'>82</span></div>
+<div class='row cov'><span class='ln'>83</span>  final TextStyle? todayDayStyle;</div>
+<div class='row nod'><span class='ln'>84</span></div>
+<div class='row nod'><span class='ln'>85</span></div>
+<div class='row cov'><span class='ln'>86</span></div>
+<div class='row cov'><span class='ln'>87</span>  /// 日期单元格装饰（选中状态）</div>
+<div class='row cov'><span class='ln'>88</span></div>
+<div class='row nod'><span class='ln'>89</span>  final BoxDecoration? cellDecoration;</div>
+<div class='row cov'><span class='ln'>90</span></div>
+<div class='row cov'><span class='ln'>91</span></div>
+<div class='row cov'><span class='ln'>92</span></div>
+<div class='row cov'><span class='ln'>93</span>  /// 副标题样式</div>
+<div class='row nod'><span class='ln'>94</span></div>
+<div class='row cov'><span class='ln'>95</span>  final TextStyle? subtitleStyle;</div>
+<div class='row cov'><span class='ln'>96</span></div>
+<div class='row cov'><span class='ln'>97</span></div>
+<div class='row cov'><span class='ln'>98</span></div>
+<div class='row cov'><span class='ln'>99</span>  /// 日期单元格高度，默认 60</div>
+<div class='row nod'><span class='ln'>100</span></div>
+<div class='row cov'><span class='ln'>101</span>  final double cellHeight;</div>
+<div class='row cov'><span class='ln'>102</span></div>
+<div class='row cov'><span class='ln'>103</span></div>
+<div class='row cov'><span class='ln'>104</span></div>
+<div class='row cov'><span class='ln'>105</span>  /// 月份标题高度，默认 22</div>
+<div class='row nod'><span class='ln'>106</span></div>
+<div class='row cov'><span class='ln'>107</span>  final double monthTitleHeight;</div>
+<div class='row cov'><span class='ln'>108</span></div>
+<div class='row cov'><span class='ln'>109</span></div>
+<div class='row nod'><span class='ln'>110</span></div>
+<div class='row nod'><span class='ln'>111</span>  /// 日期格垂直间距，水平间距为 [verticalGap] / 2</div>
+<div class='row nod'><span class='ln'>112</span></div>
+<div class='row nod'><span class='ln'>113</span>  final double? verticalGap;</div>
+<div class='row cov'><span class='ln'>114</span></div>
+<div class='row cov'><span class='ln'>115</span></div>
+<div class='row cov'><span class='ln'>116</span></div>
+<div class='row cov'><span class='ln'>117</span>  /// 内边距</div>
+<div class='row cov'><span class='ln'>118</span></div>
+<div class='row cov'><span class='ln'>119</span>  final double? bodyPadding;</div>
+<div class='row nod'><span class='ln'>120</span></div>
+<div class='row cov'><span class='ln'>121</span></div>
+<div class='row cov'><span class='ln'>122</span></div>
+<div class='row cov'><span class='ln'>123</span>  /// 星期之间的水平间距</div>
+<div class='row nod'><span class='ln'>124</span></div>
+<div class='row nod'><span class='ln'>125</span>  final double? weekdayGap;</div>
+<div class='row cov'><span class='ln'>126</span></div>
+<div class='row nod'><span class='ln'>127</span></div>
+<div class='row cov'><span class='ln'>128</span></div>
+<div class='row cov'><span class='ln'>129</span>  /// 区间中间格背景与格间衔接条颜色；[forSelectType] 中设为 TTheme.brandLightColor。</div>
+<div class='row nod'><span class='ln'>130</span>  final Color? centreColor;</div>
+<div class='row cov'><span class='ln'>131</span></div>
+<div class='row nod'><span class='ln'>132</span></div>
+<div class='row cov'><span class='ln'>133</span></div>
+<div class='row cov'><span class='ln'>134</span>  /// 星期标题高度</div>
+<div class='row cov'><span class='ln'>135</span></div>
+<div class='row nod'><span class='ln'>136</span>  double get weekdayHeight =&gt; _kDefaultWeekdayHeight;</div>
+<div class='row nod'><span class='ln'>137</span></div>
+<div class='row cov'><span class='ln'>138</span></div>
+<div class='row cov'><span class='ln'>139</span></div>
+<div class='row nod'><span class='ln'>140</span>  static const _kDefaultWeekdayHeight = 46.0;</div>
+<div class='row cov'><span class='ln'>141</span></div>
+<div class='row nod'><span class='ln'>142</span></div>
+<div class='row cov'><span class='ln'>143</span></div>
+<div class='row nod'><span class='ln'>144</span>  /// 生成默认样式</div>
+<div class='row cov'><span class='ln'>145</span></div>
+<div class='row nod'><span class='ln'>146</span>  static TCalendarStyle generateStyle({BuildContext? context}) {</div>
+<div class='row nod'><span class='ln'>147</span></div>
+<div class='row cov'><span class='ln'>148</span>    if (context == null) {</div>
+<div class='row cov'><span class='ln'>149</span></div>
+<div class='row nod'><span class='ln'>150</span>      return const TCalendarStyle();</div>
+<div class='row cov'><span class='ln'>151</span></div>
+<div class='row nod'><span class='ln'>152</span>    }</div>
+<div class='row cov'><span class='ln'>153</span></div>
+<div class='row cov'><span class='ln'>154</span>    return TCalendarStyle(</div>
+<div class='row cov'><span class='ln'>155</span></div>
+<div class='row cov'><span class='ln'>156</span>      decoration: BoxDecoration(</div>
+<div class='row nod'><span class='ln'>157</span></div>
+<div class='row nod'><span class='ln'>158</span>        color: context.tTheme.bgColorContainer,</div>
+<div class='row cov'><span class='ln'>159</span></div>
+<div class='row cov'><span class='ln'>160</span>        borderRadius: BorderRadius.vertical(</div>
+<div class='row nod'><span class='ln'>161</span></div>
+<div class='row cov'><span class='ln'>162</span>          top: Radius.circular(context.tTheme.radiusExtraLarge),</div>
+<div class='row cov'><span class='ln'>163</span></div>
+<div class='row cov'><span class='ln'>164</span>        ),</div>
+<div class='row cov'><span class='ln'>165</span></div>
+<div class='row nod'><span class='ln'>166</span>      ),</div>
+<div class='row nod'><span class='ln'>167</span></div>
+<div class='row nod'><span class='ln'>168</span>      weekdayStyle: TextStyle(</div>
+<div class='row cov'><span class='ln'>169</span></div>
+<div class='row cov'><span class='ln'>170</span>        fontSize: context.tTheme.fontTitleSmall?.size,</div>
+<div class='row nod'><span class='ln'>171</span></div>
+<div class='row cov'><span class='ln'>172</span>        color: context.tTheme.textColorSecondary,</div>
+<div class='row nod'><span class='ln'>173</span></div>
+<div class='row cov'><span class='ln'>174</span>      ),</div>
+<div class='row cov'><span class='ln'>175</span></div>
+<div class='row cov'><span class='ln'>176</span>      monthTitleStyle: TextStyle(</div>
+<div class='row cov'><span class='ln'>177</span></div>
+<div class='row nod'><span class='ln'>178</span>        fontSize: context.tTheme.fontMarkMedium?.size,</div>
+<div class='row nod'><span class='ln'>179</span></div>
+<div class='row cov'><span class='ln'>180</span>        fontWeight: context.tTheme.fontMarkMedium?.fontWeight,</div>
+<div class='row cov'><span class='ln'>181</span></div>
+<div class='row nod'><span class='ln'>182</span>        color: context.tTheme.textColorPrimary,</div>
+<div class='row cov'><span class='ln'>183</span></div>
+<div class='row nod'><span class='ln'>184</span>      ),</div>
+<div class='row cov'><span class='ln'>185</span></div>
+<div class='row cov'><span class='ln'>186</span>      dayStyle: TextStyle(</div>
+<div class='row cov'><span class='ln'>187</span></div>
+<div class='row cov'><span class='ln'>188</span>        fontSize: context.tTheme.fontTitleMedium?.size,</div>
+<div class='row nod'><span class='ln'>189</span></div>
+<div class='row nod'><span class='ln'>190</span>        height: context.tTheme.fontTitleMedium?.height,</div>
+<div class='row nod'><span class='ln'>191</span></div>
+<div class='row nod'><span class='ln'>192</span>        fontWeight: context.tTheme.fontTitleMedium?.fontWeight,</div>
+<div class='row nod'><span class='ln'>193</span></div>
+<div class='row nod'><span class='ln'>194</span>        color: context.tTheme.textColorPrimary,</div>
+<div class='row nod'><span class='ln'>195</span></div>
+<div class='row nod'><span class='ln'>196</span>      ),</div>
+<div class='row nod'><span class='ln'>197</span></div>
+<div class='row nod'><span class='ln'>198</span>      todayDayStyle: TextStyle(</div>
+<div class='row nod'><span class='ln'>199</span></div>
+<div class='row nod'><span class='ln'>200</span>        fontSize: context.tTheme.fontTitleMedium?.size,</div>
+<div class='row nod'><span class='ln'>201</span></div>
+<div class='row nod'><span class='ln'>202</span>        height: context.tTheme.fontTitleMedium?.height,</div>
+<div class='row nod'><span class='ln'>203</span></div>
+<div class='row nod'><span class='ln'>204</span>        fontWeight: context.tTheme.fontTitleMedium?.fontWeight,</div>
+<div class='row nod'><span class='ln'>205</span></div>
+<div class='row nod'><span class='ln'>206</span>        color: context.tTheme.brandNormalColor,</div>
+<div class='row nod'><span class='ln'>207</span></div>
+<div class='row nod'><span class='ln'>208</span>      ),</div>
+<div class='row nod'><span class='ln'>209</span></div>
+<div class='row nod'><span class='ln'>210</span>      verticalGap: context.tTheme.spacer8,</div>
+<div class='row nod'><span class='ln'>211</span></div>
+<div class='row nod'><span class='ln'>212</span>      bodyPadding: context.tTheme.spacer16,</div>
+<div class='row nod'><span class='ln'>213</span></div>
+<div class='row nod'><span class='ln'>214</span>      weekdayGap: context.tTheme.spacer4,</div>
+<div class='row nod'><span class='ln'>215</span></div>
+<div class='row nod'><span class='ln'>216</span>    );</div>
+<div class='row nod'><span class='ln'>217</span></div>
+<div class='row nod'><span class='ln'>218</span>  }</div>
+<div class='row nod'><span class='ln'>219</span></div>
+<div class='row nod'><span class='ln'>220</span></div>
+<div class='row nod'><span class='ln'>221</span></div>
+<div class='row nod'><span class='ln'>222</span>  /// 按选中态生成单元格样式</div>
+<div class='row nod'><span class='ln'>223</span></div>
+<div class='row nod'><span class='ln'>224</span>  TCalendarStyle forSelectType(BuildContext context, DateSelectType? type) {</div>
+<div class='row nod'><span class='ln'>225</span></div>
+<div class='row nod'><span class='ln'>226</span>    final radius6 = context.tTheme.radiusDefault;</div>
+<div class='row nod'><span class='ln'>227</span></div>
+<div class='row nod'><span class='ln'>228</span>    final defStyle = TextStyle(</div>
+<div class='row nod'><span class='ln'>229</span></div>
+<div class='row nod'><span class='ln'>230</span>      fontSize: context.tTheme.fontTitleMedium?.size,</div>
+<div class='row nod'><span class='ln'>231</span></div>
+<div class='row nod'><span class='ln'>232</span>      height: context.tTheme.fontTitleMedium?.height,</div>
+<div class='row nod'><span class='ln'>233</span></div>
+<div class='row nod'><span class='ln'>234</span>      fontWeight: context.tTheme.fontTitleMedium?.fontWeight,</div>
+<div class='row nod'><span class='ln'>235</span></div>
+<div class='row nod'><span class='ln'>236</span>    );</div>
+<div class='row nod'><span class='ln'>237</span></div>
+<div class='row nod'><span class='ln'>238</span>    final subtitleBase = TextStyle(</div>
+<div class='row nod'><span class='ln'>239</span></div>
+<div class='row nod'><span class='ln'>240</span>      fontSize: context.tTheme.fontBodyExtraSmall?.size,</div>
+<div class='row nod'><span class='ln'>241</span></div>
+<div class='row nod'><span class='ln'>242</span>      height: context.tTheme.fontBodyExtraSmall?.height,</div>
+<div class='row nod'><span class='ln'>243</span></div>
+<div class='row nod'><span class='ln'>244</span>      fontWeight: FontWeight.w400,</div>
+<div class='row nod'><span class='ln'>245</span></div>
+<div class='row nod'><span class='ln'>246</span>    );</div>
+<div class='row nod'><span class='ln'>247</span></div>
+<div class='row nod'><span class='ln'>248</span>    final rangeCentreColor = context.tTheme.brandLightColor;</div>
+<div class='row nod'><span class='ln'>249</span></div>
+<div class='row nod'><span class='ln'>250</span>    switch (type) {</div>
+<div class='row nod'><span class='ln'>251</span></div>
+<div class='row nod'><span class='ln'>252</span>      case DateSelectType.empty:</div>
+<div class='row nod'><span class='ln'>253</span></div>
+<div class='row nod'><span class='ln'>254</span>        return TCalendarStyle(</div>
+<div class='row nod'><span class='ln'>255</span></div>
+<div class='row nod'><span class='ln'>256</span>          centreColor: rangeCentreColor,</div>
+<div class='row nod'><span class='ln'>257</span></div>
+<div class='row nod'><span class='ln'>258</span>          dayStyle: defStyle.copyWith(color: context.tTheme.textColorPrimary),</div>
+<div class='row nod'><span class='ln'>259</span></div>
+<div class='row nod'><span class='ln'>260</span>          todayDayStyle:</div>
+<div class='row nod'><span class='ln'>261</span></div>
+<div class='row nod'><span class='ln'>262</span>              defStyle.copyWith(color: context.tTheme.brandNormalColor),</div>
+<div class='row nod'><span class='ln'>263</span></div>
+<div class='row nod'><span class='ln'>264</span>          subtitleStyle: subtitleBase.copyWith(</div>
+<div class='row nod'><span class='ln'>265</span></div>
+<div class='row nod'><span class='ln'>266</span>              color: context.tTheme.textColorPlaceholder),</div>
+<div class='row nod'><span class='ln'>267</span></div>
+<div class='row nod'><span class='ln'>268</span>          cellDecoration: null,</div>
+<div class='row nod'><span class='ln'>269</span></div>
+<div class='row nod'><span class='ln'>270</span>        );</div>
+<div class='row nod'><span class='ln'>271</span></div>
+<div class='row nod'><span class='ln'>272</span>      case DateSelectType.disabled:</div>
+<div class='row nod'><span class='ln'>273</span></div>
+<div class='row nod'><span class='ln'>274</span>        return TCalendarStyle(</div>
+<div class='row nod'><span class='ln'>275</span></div>
+<div class='row nod'><span class='ln'>276</span>          centreColor: rangeCentreColor,</div>
+<div class='row nod'><span class='ln'>277</span></div>
+<div class='row nod'><span class='ln'>278</span>          dayStyle: defStyle.copyWith(color: context.tTheme.textDisabledColor),</div>
+<div class='row nod'><span class='ln'>279</span></div>
+<div class='row nod'><span class='ln'>280</span>          todayDayStyle:</div>
+<div class='row nod'><span class='ln'>281</span></div>
+<div class='row nod'><span class='ln'>282</span>              defStyle.copyWith(color: context.tTheme.brandDisabledColor),</div>
+<div class='row nod'><span class='ln'>283</span></div>
+<div class='row nod'><span class='ln'>284</span>          subtitleStyle:</div>
+<div class='row nod'><span class='ln'>285</span></div>
+<div class='row nod'><span class='ln'>286</span>              subtitleBase.copyWith(color: context.tTheme.textDisabledColor),</div>
+<div class='row nod'><span class='ln'>287</span></div>
+<div class='row nod'><span class='ln'>288</span>          cellDecoration: null,</div>
+<div class='row nod'><span class='ln'>289</span></div>
+<div class='row nod'><span class='ln'>290</span>        );</div>
+<div class='row nod'><span class='ln'>291</span></div>
+<div class='row nod'><span class='ln'>292</span>      case DateSelectType.selected:</div>
+<div class='row nod'><span class='ln'>293</span></div>
+<div class='row nod'><span class='ln'>294</span>        return TCalendarStyle(</div>
+<div class='row nod'><span class='ln'>295</span></div>
+<div class='row nod'><span class='ln'>296</span>          centreColor: rangeCentreColor,</div>
+<div class='row nod'><span class='ln'>297</span></div>
+<div class='row nod'><span class='ln'>298</span>          dayStyle: defStyle.copyWith(color: context.tTheme.textColorAnti),</div>
+<div class='row nod'><span class='ln'>299</span></div>
+<div class='row nod'><span class='ln'>300</span>          subtitleStyle:</div>
+<div class='row nod'><span class='ln'>301</span></div>
+<div class='row nod'><span class='ln'>302</span>              subtitleBase.copyWith(color: context.tTheme.textColorAnti),</div>
+<div class='row nod'><span class='ln'>303</span></div>
+<div class='row nod'><span class='ln'>304</span>          cellDecoration: BoxDecoration(</div>
+<div class='row nod'><span class='ln'>305</span></div>
+<div class='row nod'><span class='ln'>306</span>            borderRadius: BorderRadius.circular(radius6),</div>
+<div class='row nod'><span class='ln'>307</span></div>
+<div class='row nod'><span class='ln'>308</span>            color: context.tTheme.brandNormalColor,</div>
+<div class='row nod'><span class='ln'>309</span></div>
+<div class='row nod'><span class='ln'>310</span>          ),</div>
+<div class='row nod'><span class='ln'>311</span></div>
+<div class='row nod'><span class='ln'>312</span>        );</div>
+<div class='row nod'><span class='ln'>313</span></div>
+<div class='row nod'><span class='ln'>314</span>      case DateSelectType.centre:</div>
+<div class='row nod'><span class='ln'>315</span></div>
+<div class='row nod'><span class='ln'>316</span>        return TCalendarStyle(</div>
+<div class='row nod'><span class='ln'>317</span></div>
+<div class='row nod'><span class='ln'>318</span>          centreColor: rangeCentreColor,</div>
+<div class='row nod'><span class='ln'>319</span></div>
+<div class='row nod'><span class='ln'>320</span>          dayStyle: defStyle.copyWith(color: context.tTheme.textColorPrimary),</div>
+<div class='row nod'><span class='ln'>321</span></div>
+<div class='row nod'><span class='ln'>322</span>          subtitleStyle: subtitleBase.copyWith(</div>
+<div class='row nod'><span class='ln'>323</span></div>
+<div class='row nod'><span class='ln'>324</span>              color: context.tTheme.textColorPlaceholder),</div>
+<div class='row nod'><span class='ln'>325</span></div>
+<div class='row nod'><span class='ln'>326</span>          cellDecoration: BoxDecoration(</div>
+<div class='row nod'><span class='ln'>327</span></div>
+<div class='row nod'><span class='ln'>328</span>            color: rangeCentreColor,</div>
+<div class='row nod'><span class='ln'>329</span></div>
+<div class='row nod'><span class='ln'>330</span>          ),</div>
+<div class='row nod'><span class='ln'>331</span></div>
+<div class='row nod'><span class='ln'>332</span>        );</div>
+<div class='row nod'><span class='ln'>333</span></div>
+<div class='row nod'><span class='ln'>334</span>      case DateSelectType.start:</div>
+<div class='row nod'><span class='ln'>335</span></div>
+<div class='row nod'><span class='ln'>336</span>        return TCalendarStyle(</div>
+<div class='row nod'><span class='ln'>337</span></div>
+<div class='row nod'><span class='ln'>338</span>          centreColor: rangeCentreColor,</div>
+<div class='row nod'><span class='ln'>339</span></div>
+<div class='row nod'><span class='ln'>340</span>          dayStyle: defStyle.copyWith(color: context.tTheme.textColorAnti),</div>
+<div class='row nod'><span class='ln'>341</span></div>
+<div class='row nod'><span class='ln'>342</span>          subtitleStyle:</div>
+<div class='row nod'><span class='ln'>343</span></div>
+<div class='row nod'><span class='ln'>344</span>              subtitleBase.copyWith(color: context.tTheme.textColorAnti),</div>
+<div class='row nod'><span class='ln'>345</span></div>
+<div class='row nod'><span class='ln'>346</span>          cellDecoration: BoxDecoration(</div>
+<div class='row nod'><span class='ln'>347</span></div>
+<div class='row nod'><span class='ln'>348</span>            color: context.tTheme.brandNormalColor,</div>
+<div class='row nod'><span class='ln'>349</span></div>
+<div class='row nod'><span class='ln'>350</span>            borderRadius: BorderRadius.horizontal(left: Radius.circular(radius6)),</div>
+<div class='row nod'><span class='ln'>351</span></div>
+<div class='row nod'><span class='ln'>352</span>          ),</div>
+<div class='row nod'><span class='ln'>353</span></div>
+<div class='row nod'><span class='ln'>354</span>        );</div>
+<div class='row nod'><span class='ln'>355</span></div>
+<div class='row nod'><span class='ln'>356</span>      case DateSelectType.end:</div>
+<div class='row nod'><span class='ln'>357</span></div>
+<div class='row nod'><span class='ln'>358</span>        return TCalendarStyle(</div>
+<div class='row nod'><span class='ln'>359</span></div>
+<div class='row nod'><span class='ln'>360</span>          centreColor: rangeCentreColor,</div>
+<div class='row nod'><span class='ln'>361</span></div>
+<div class='row nod'><span class='ln'>362</span>          dayStyle: defStyle.copyWith(color: context.tTheme.textColorAnti),</div>
+<div class='row nod'><span class='ln'>363</span></div>
+<div class='row nod'><span class='ln'>364</span>          subtitleStyle:</div>
+<div class='row nod'><span class='ln'>365</span></div>
+<div class='row nod'><span class='ln'>366</span>              subtitleBase.copyWith(color: context.tTheme.textColorAnti),</div>
+<div class='row nod'><span class='ln'>367</span></div>
+<div class='row nod'><span class='ln'>368</span>          cellDecoration: BoxDecoration(</div>
+<div class='row nod'><span class='ln'>369</span></div>
+<div class='row nod'><span class='ln'>370</span>            color: context.tTheme.brandNormalColor,</div>
+<div class='row nod'><span class='ln'>371</span></div>
+<div class='row nod'><span class='ln'>372</span>            borderRadius: BorderRadius.horizontal(right: Radius.circular(radius6)),</div>
+<div class='row nod'><span class='ln'>373</span></div>
+<div class='row nod'><span class='ln'>374</span>          ),</div>
+<div class='row nod'><span class='ln'>375</span></div>
+<div class='row nod'><span class='ln'>376</span>        );</div>
+<div class='row nod'><span class='ln'>377</span></div>
+<div class='row nod'><span class='ln'>378</span>      default:</div>
+<div class='row nod'><span class='ln'>379</span></div>
+<div class='row nod'><span class='ln'>380</span>        return this;</div>
+<div class='row nod'><span class='ln'>381</span></div>
+<div class='row nod'><span class='ln'>382</span>    }</div>
+<div class='row nod'><span class='ln'>383</span></div>
+<div class='row nod'><span class='ln'>384</span>  }</div>
+<div class='row nod'><span class='ln'>385</span></div>
+<div class='row nod'><span class='ln'>386</span>}</div>
+<div class='row nod'><span class='ln'>387</span></div>
+<div class='row nod'><span class='ln'>388</span></div>
+</pre></body></html>

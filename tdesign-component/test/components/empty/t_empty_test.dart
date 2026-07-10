@@ -8,7 +8,7 @@ void main() {
   Widget wrapWithTheme(Widget child) {
     return MaterialApp(
       theme: ThemeData(extensions: [TThemeData.defaultData()]),
-      home: Scaffold(body: Center(child: child)),
+      home: Scaffold(body: child),
     );
   }
 
@@ -80,7 +80,7 @@ void main() {
 
   group('TEmpty onPressed', () {
     testWidgets('onPressed 回调触发', (tester) async {
-      bool tapped = false;
+      var tapped = false;
       await tester.pumpWidget(wrapWithTheme(
         TEmpty(
           variant: TEmptyVariant.operation,
@@ -109,10 +109,10 @@ void main() {
   group('TEmpty customOperationWidget', () {
     testWidgets('自定义操作组件', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TEmpty(
+        const TEmpty(
           variant: TEmptyVariant.operation,
           emptyText: '自定义',
-          customOperationWidget: const Text('自定义操作'),
+          customOperationWidget: Text('自定义操作'),
         ),
       ));
       expect(find.text('自定义操作'), findsOneWidget);
@@ -120,9 +120,9 @@ void main() {
 
     testWidgets('自定义 image 组件', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TEmpty(
+        const TEmpty(
           emptyText: '自定义图',
-          image: const Icon(Icons.image, size: 80),
+          image: Icon(Icons.image, size: 80),
         ),
       ));
       expect(find.byIcon(Icons.image), findsOneWidget);
@@ -153,6 +153,32 @@ void main() {
       ));
       expect(find.text('失败'), findsOneWidget);
       expect(find.text('重新加载'), findsOneWidget);
+    });
+  });
+
+  group('TEmpty Theme 覆盖', () {
+    testWidgets('TEmptyThemeData 自定义文字颜色/字体/按钮主题', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(extensions: [
+            TThemeData.defaultData(),
+            TEmptyThemeData(
+              emptyTextColor: Colors.red,
+              emptyTextFont: Font(size: 14, lineHeight: 20),
+              operationTheme: TButtonColorScheme.primary,
+            ),
+          ]),
+          home: const Scaffold(
+            body: TEmpty(
+              variant: TEmptyVariant.operation,
+              emptyText: '主题文案',
+              operationText: '主题按钮',
+            ),
+          ),
+        ),
+      );
+      expect(find.text('主题文案'), findsOneWidget);
+      expect(find.text('主题按钮'), findsOneWidget);
     });
   });
 }

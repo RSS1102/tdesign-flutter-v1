@@ -1,0 +1,1182 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/calendar/t_calendar_body.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/calendar/t_calendar_body.dart</h1></header><div class='meta'>行覆盖 <b>85.7%</b> (209/244) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;../../util/context_extension.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>import &#x27;../../util/iterable_ext.dart&#x27;;</div>
+<div class='row cov'><span class='ln'>8</span></div>
+<div class='row nod'><span class='ln'>9</span></div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span>/// 日历滚动主体（月份列表 + 日期格），由 [TCalendar] 内部组装，一般无需直接使用。</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>class TCalendarBody extends StatefulWidget {</div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>  const TCalendarBody({</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>    required this.type,</div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row nod'><span class='ln'>21</span>    this.initialValue,</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>    required this.firstDayOfWeek,</div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>    required this.minDate,</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row nod'><span class='ln'>27</span>    required this.maxDate,</div>
+<div class='row cov'><span class='ln'>28</span></div>
+<div class='row nod'><span class='ln'>29</span>    required this.builder,</div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row nod'><span class='ln'>31</span>    required this.bodyPadding,</div>
+<div class='row nod'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span>    required this.monthNames,</div>
+<div class='row nod'><span class='ln'>34</span></div>
+<div class='row nod'><span class='ln'>35</span>    this.monthTitleStyle,</div>
+<div class='row nod'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>    this.monthTitleBuilder,</div>
+<div class='row nod'><span class='ln'>38</span></div>
+<div class='row nod'><span class='ln'>39</span>    required this.cellHeight,</div>
+<div class='row nod'><span class='ln'>40</span></div>
+<div class='row nod'><span class='ln'>41</span>    required this.monthTitleHeight,</div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row nod'><span class='ln'>43</span>    required this.verticalGap,</div>
+<div class='row nod'><span class='ln'>44</span></div>
+<div class='row nod'><span class='ln'>45</span>    required this.animateTo,</div>
+<div class='row nod'><span class='ln'>46</span></div>
+<div class='row nod'><span class='ln'>47</span>    this.onMonthChange,</div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row nod'><span class='ln'>49</span>    this.anchorDate,</div>
+<div class='row nod'><span class='ln'>50</span></div>
+<div class='row nod'><span class='ln'>51</span>    this.onCellGenerated,</div>
+<div class='row nod'><span class='ln'>52</span></div>
+<div class='row nod'><span class='ln'>53</span>    this.onCacheInvalidated,</div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row nod'><span class='ln'>55</span>  }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>56</span></div>
+<div class='row nod'><span class='ln'>57</span></div>
+<div class='row nod'><span class='ln'>58</span></div>
+<div class='row nod'><span class='ln'>59</span>  final TCalendarVariant type;</div>
+<div class='row nod'><span class='ln'>60</span></div>
+<div class='row nod'><span class='ln'>61</span></div>
+<div class='row nod'><span class='ln'>62</span></div>
+<div class='row nod'><span class='ln'>63</span>  /// 用于新建单元格时标记选中/区间态的快照（来自 [TCalendar] 内部缓存，非运行期受控 prop）。</div>
+<div class='row nod'><span class='ln'>64</span></div>
+<div class='row nod'><span class='ln'>65</span>  final List&lt;DateTime&gt;? initialValue;</div>
+<div class='row cov'><span class='ln'>66</span></div>
+<div class='row cov'><span class='ln'>67</span></div>
+<div class='row nod'><span class='ln'>68</span></div>
+<div class='row nod'><span class='ln'>69</span>  /// 首屏及运行期滚动目标月份；优先于 [initialValue] 决定 _calcScrollOffset。</div>
+<div class='row nod'><span class='ln'>70</span>  final DateTime? anchorDate;</div>
+<div class='row nod'><span class='ln'>71</span></div>
+<div class='row nod'><span class='ln'>72</span>  final int firstDayOfWeek;</div>
+<div class='row nod'><span class='ln'>73</span></div>
+<div class='row nod'><span class='ln'>74</span>  final DateTime minDate;</div>
+<div class='row nod'><span class='ln'>75</span></div>
+<div class='row nod'><span class='ln'>76</span>  final DateTime maxDate;</div>
+<div class='row nod'><span class='ln'>77</span></div>
+<div class='row nod'><span class='ln'>78</span>  final Widget Function(</div>
+<div class='row nod'><span class='ln'>79</span></div>
+<div class='row nod'><span class='ln'>80</span>    TCalendarCellModel? cell,</div>
+<div class='row nod'><span class='ln'>81</span></div>
+<div class='row nod'><span class='ln'>82</span>    List&lt;TCalendarCellModel?&gt; dateList,</div>
+<div class='row nod'><span class='ln'>83</span></div>
+<div class='row nod'><span class='ln'>84</span>    int rowIndex,</div>
+<div class='row nod'><span class='ln'>85</span></div>
+<div class='row nod'><span class='ln'>86</span>    int colIndex,</div>
+<div class='row nod'><span class='ln'>87</span></div>
+<div class='row nod'><span class='ln'>88</span>  ) builder;</div>
+<div class='row nod'><span class='ln'>89</span></div>
+<div class='row nod'><span class='ln'>90</span>  final double bodyPadding;</div>
+<div class='row nod'><span class='ln'>91</span></div>
+<div class='row cov'><span class='ln'>92</span>  final List&lt;String&gt; monthNames;</div>
+<div class='row nod'><span class='ln'>93</span></div>
+<div class='row cov'><span class='ln'>94</span>  final TextStyle? monthTitleStyle;</div>
+<div class='row cov'><span class='ln'>95</span></div>
+<div class='row cov'><span class='ln'>96</span>  final Widget Function(</div>
+<div class='row cov'><span class='ln'>97</span></div>
+<div class='row cov'><span class='ln'>98</span>    BuildContext context,</div>
+<div class='row nod'><span class='ln'>99</span></div>
+<div class='row nod'><span class='ln'>100</span>    DateTime monthDate,</div>
+<div class='row cov'><span class='ln'>101</span></div>
+<div class='row nod'><span class='ln'>102</span>  )? monthTitleBuilder;</div>
+<div class='row nod'><span class='ln'>103</span></div>
+<div class='row cov'><span class='ln'>104</span>  final double monthTitleHeight;</div>
+<div class='row nod'><span class='ln'>105</span></div>
+<div class='row cov'><span class='ln'>106</span>  final double verticalGap;</div>
+<div class='row cov'><span class='ln'>107</span></div>
+<div class='row cov'><span class='ln'>108</span>  final double cellHeight;</div>
+<div class='row nod'><span class='ln'>109</span></div>
+<div class='row cov'><span class='ln'>110</span>  final bool animateTo;</div>
+<div class='row cov'><span class='ln'>111</span></div>
+<div class='row cov'><span class='ln'>112</span>  final ValueChanged&lt;DateTime&gt;? onMonthChange;</div>
+<div class='row cov'><span class='ln'>113</span></div>
+<div class='row cov'><span class='ln'>114</span></div>
+<div class='row nod'><span class='ln'>115</span></div>
+<div class='row cov'><span class='ln'>116</span>  /// 在每个月份的单元格列表新生成时回调，便于上层登记选中引用。</div>
+<div class='row nod'><span class='ln'>117</span></div>
+<div class='row nod'><span class='ln'>118</span>  final void Function(DateTime monthDate, List&lt;TCalendarCellModel?&gt; cells)?</div>
+<div class='row nod'><span class='ln'>119</span></div>
+<div class='row cov'><span class='ln'>120</span>      onCellGenerated;</div>
+<div class='row cov'><span class='ln'>121</span></div>
+<div class='row cov'><span class='ln'>122</span></div>
+<div class='row cov'><span class='ln'>123</span></div>
+<div class='row cov'><span class='ln'>124</span>  /// 当 `_data` 整体被清空时回调，上层清空选中映射。</div>
+<div class='row nod'><span class='ln'>125</span></div>
+<div class='row nod'><span class='ln'>126</span>  final VoidCallback? onCacheInvalidated;</div>
+<div class='row nod'><span class='ln'>127</span></div>
+<div class='row cov'><span class='ln'>128</span></div>
+<div class='row cov'><span class='ln'>129</span></div>
+<div class='row nod'><span class='ln'>130</span>  @override</div>
+<div class='row cov'><span class='ln'>131</span></div>
+<div class='row cov'><span class='ln'>132</span>  State&lt;TCalendarBody&gt; createState() =&gt; _TCalendarBodyState();</div>
+<div class='row nod'><span class='ln'>133</span></div>
+<div class='row cov'><span class='ln'>134</span>}</div>
+<div class='row cov'><span class='ln'>135</span></div>
+<div class='row nod'><span class='ln'>136</span></div>
+<div class='row nod'><span class='ln'>137</span></div>
+<div class='row nod'><span class='ln'>138</span>class _TCalendarBodyState extends State&lt;TCalendarBody&gt; {</div>
+<div class='row cov'><span class='ln'>139</span></div>
+<div class='row cov'><span class='ln'>140</span>  late final ScrollController _scrollController;</div>
+<div class='row nod'><span class='ln'>141</span></div>
+<div class='row nod'><span class='ln'>142</span>  int? _lastNotifiedMonthKey;</div>
+<div class='row nod'><span class='ln'>143</span></div>
+<div class='row cov'><span class='ln'>144</span>  final _data = &lt;DateTime, List&lt;TCalendarCellModel?&gt;&gt;{};</div>
+<div class='row nod'><span class='ln'>145</span></div>
+<div class='row nod'><span class='ln'>146</span>  final _monthHeight = &lt;int, double&gt;{};</div>
+<div class='row nod'><span class='ln'>147</span></div>
+<div class='row cov'><span class='ln'>148</span>  late List&lt;DateTime&gt; _months;</div>
+<div class='row nod'><span class='ln'>149</span></div>
+<div class='row nod'><span class='ln'>150</span>  late DateTime _min;</div>
+<div class='row cov'><span class='ln'>151</span></div>
+<div class='row nod'><span class='ln'>152</span>  late DateTime _max;</div>
+<div class='row nod'><span class='ln'>153</span></div>
+<div class='row nod'><span class='ln'>154</span></div>
+<div class='row nod'><span class='ln'>155</span></div>
+<div class='row nod'><span class='ln'>156</span>  /// 月份累计高度的前缀和：`_prefixHeights[i]` = 第 0..i-1 月的高度之和。</div>
+<div class='row nod'><span class='ln'>157</span></div>
+<div class='row cov'><span class='ln'>158</span>  /// 长度为 `_months.length + 1`，用于 O(log n) 二分查找可见月份。</div>
+<div class='row nod'><span class='ln'>159</span></div>
+<div class='row nod'><span class='ln'>160</span>  late List&lt;double&gt; _prefixHeights;</div>
+<div class='row cov'><span class='ln'>161</span></div>
+<div class='row cov'><span class='ln'>162</span></div>
+<div class='row nod'><span class='ln'>163</span></div>
+<div class='row nod'><span class='ln'>164</span>  /// 程序化滚动期间静默 onMonthChange 回调，避免高频中间值打扰外部。</div>
+<div class='row nod'><span class='ln'>165</span></div>
+<div class='row nod'><span class='ln'>166</span>  ///</div>
+<div class='row nod'><span class='ln'>167</span></div>
+<div class='row nod'><span class='ln'>168</span>  /// 生命周期：</div>
+<div class='row cov'><span class='ln'>169</span></div>
+<div class='row nod'><span class='ln'>170</span>  /// - 由 `_smoothScrollTo` 在滚动开始时设为 true；</div>
+<div class='row cov'><span class='ln'>171</span></div>
+<div class='row cov'><span class='ln'>172</span>  /// - 由 `_runAnimateTo.whenComplete` 在动画完成或被打断时复位 false；</div>
+<div class='row cov'><span class='ln'>173</span></div>
+<div class='row nod'><span class='ln'>174</span>  /// - `addPostFrameCallback` 中检测到 controller 已分离时也会兜底复位，</div>
+<div class='row nod'><span class='ln'>175</span></div>
+<div class='row cov'><span class='ln'>176</span>  ///   避免外部永久收不到 onMonthChange 回调。</div>
+<div class='row cov'><span class='ln'>177</span></div>
+<div class='row cov'><span class='ln'>178</span>  bool _programmaticScroll = false;</div>
+<div class='row cov'><span class='ln'>179</span></div>
+<div class='row cov'><span class='ln'>180</span></div>
+<div class='row nod'><span class='ln'>181</span></div>
+<div class='row nod'><span class='ln'>182</span>  @override</div>
+<div class='row nod'><span class='ln'>183</span></div>
+<div class='row nod'><span class='ln'>184</span>  void initState() {</div>
+<div class='row nod'><span class='ln'>185</span></div>
+<div class='row nod'><span class='ln'>186</span>    super.initState();</div>
+<div class='row nod'><span class='ln'>187</span></div>
+<div class='row nod'><span class='ln'>188</span>    _initMonths();</div>
+<div class='row nod'><span class='ln'>189</span></div>
+<div class='row nod'><span class='ln'>190</span>    final initialOffset = _calcScrollOffset();</div>
+<div class='row nod'><span class='ln'>191</span></div>
+<div class='row nod'><span class='ln'>192</span>    _scrollController = ScrollController(initialScrollOffset: initialOffset);</div>
+<div class='row cov'><span class='ln'>193</span></div>
+<div class='row cov'><span class='ln'>194</span>    _scrollController.addListener(_onScroll);</div>
+<div class='row nod'><span class='ln'>195</span></div>
+<div class='row cov'><span class='ln'>196</span>    // 首屏预热：在第一帧之前生成初始可见月份的数据，避免 itemBuilder</div>
+<div class='row cov'><span class='ln'>197</span></div>
+<div class='row cov'><span class='ln'>198</span>    // 第一次 build 时缓存为空，回退路径产生不必要的重算。</div>
+<div class='row nod'><span class='ln'>199</span></div>
+<div class='row cov'><span class='ln'>200</span>    _warmupCacheAround(_indexAtOffset(initialOffset));</div>
+<div class='row nod'><span class='ln'>201</span></div>
+<div class='row nod'><span class='ln'>202</span>  }</div>
+<div class='row cov'><span class='ln'>203</span></div>
+<div class='row nod'><span class='ln'>204</span></div>
+<div class='row nod'><span class='ln'>205</span></div>
+<div class='row cov'><span class='ln'>206</span>  @override</div>
+<div class='row cov'><span class='ln'>207</span></div>
+<div class='row nod'><span class='ln'>208</span>  void didUpdateWidget(covariant TCalendarBody oldWidget) {</div>
+<div class='row nod'><span class='ln'>209</span></div>
+<div class='row nod'><span class='ln'>210</span>    super.didUpdateWidget(oldWidget);</div>
+<div class='row cov'><span class='ln'>211</span></div>
+<div class='row cov'><span class='ln'>212</span>    final rangeChanged = oldWidget.minDate != widget.minDate ||</div>
+<div class='row cov'><span class='ln'>213</span></div>
+<div class='row cov'><span class='ln'>214</span>        oldWidget.maxDate != widget.maxDate;</div>
+<div class='row nod'><span class='ln'>215</span></div>
+<div class='row nod'><span class='ln'>216</span>    final weekStartChanged =</div>
+<div class='row cov'><span class='ln'>217</span></div>
+<div class='row nod'><span class='ln'>218</span>        oldWidget.firstDayOfWeek != widget.firstDayOfWeek;</div>
+<div class='row nod'><span class='ln'>219</span></div>
+<div class='row nod'><span class='ln'>220</span>    final layoutMetricsChanged = oldWidget.cellHeight != widget.cellHeight ||</div>
+<div class='row nod'><span class='ln'>221</span></div>
+<div class='row nod'><span class='ln'>222</span>        oldWidget.monthTitleHeight != widget.monthTitleHeight ||</div>
+<div class='row nod'><span class='ln'>223</span></div>
+<div class='row nod'><span class='ln'>224</span>        oldWidget.verticalGap != widget.verticalGap ||</div>
+<div class='row nod'><span class='ln'>225</span></div>
+<div class='row cov'><span class='ln'>226</span>        oldWidget.bodyPadding != widget.bodyPadding;</div>
+<div class='row cov'><span class='ln'>227</span></div>
+<div class='row nod'><span class='ln'>228</span>    final selectionChanged =</div>
+<div class='row cov'><span class='ln'>229</span></div>
+<div class='row nod'><span class='ln'>230</span>        !_listEqualsDate(oldWidget.initialValue, widget.initialValue);</div>
+<div class='row nod'><span class='ln'>231</span></div>
+<div class='row cov'><span class='ln'>232</span></div>
+<div class='row nod'><span class='ln'>233</span></div>
+<div class='row cov'><span class='ln'>234</span>    if (rangeChanged) {</div>
+<div class='row nod'><span class='ln'>235</span></div>
+<div class='row nod'><span class='ln'>236</span>      // 可选范围变更：重建月份列表并清空格点/高度缓存，与 refactor 前行为一致。</div>
+<div class='row nod'><span class='ln'>237</span></div>
+<div class='row cov'><span class='ln'>238</span>      _monthHeight.clear();</div>
+<div class='row cov'><span class='ln'>239</span></div>
+<div class='row cov'><span class='ln'>240</span>      _data.clear();</div>
+<div class='row cov'><span class='ln'>241</span></div>
+<div class='row nod'><span class='ln'>242</span>      widget.onCacheInvalidated?.call();</div>
+<div class='row cov'><span class='ln'>243</span></div>
+<div class='row cov'><span class='ln'>244</span>      _lastNotifiedMonthKey = null;</div>
+<div class='row nod'><span class='ln'>245</span></div>
+<div class='row nod'><span class='ln'>246</span>      _initMonths();</div>
+<div class='row cov'><span class='ln'>247</span></div>
+<div class='row cov'><span class='ln'>248</span>    } else if (selectionChanged || weekStartChanged || layoutMetricsChanged) {</div>
+<div class='row nod'><span class='ln'>249</span></div>
+<div class='row nod'><span class='ln'>250</span>      // 选中、周起始或布局参数变更：重建格点；布局变更时同步月份高度缓存。</div>
+<div class='row cov'><span class='ln'>251</span></div>
+<div class='row cov'><span class='ln'>252</span>      if (layoutMetricsChanged) {</div>
+<div class='row cov'><span class='ln'>253</span></div>
+<div class='row nod'><span class='ln'>254</span>        _monthHeight.clear();</div>
+<div class='row cov'><span class='ln'>255</span></div>
+<div class='row cov'><span class='ln'>256</span>        _rebuildIndex();</div>
+<div class='row cov'><span class='ln'>257</span></div>
+<div class='row cov'><span class='ln'>258</span>      }</div>
+<div class='row nod'><span class='ln'>259</span></div>
+<div class='row nod'><span class='ln'>260</span>      _data.clear();</div>
+<div class='row cov'><span class='ln'>261</span></div>
+<div class='row cov'><span class='ln'>262</span>      widget.onCacheInvalidated?.call();</div>
+<div class='row nod'><span class='ln'>263</span></div>
+<div class='row nod'><span class='ln'>264</span>    }</div>
+<div class='row nod'><span class='ln'>265</span></div>
+<div class='row nod'><span class='ln'>266</span>    if (_shouldScrollToAnchor(oldWidget)) {</div>
+<div class='row nod'><span class='ln'>267</span></div>
+<div class='row nod'><span class='ln'>268</span>      _scrollToItem();</div>
+<div class='row nod'><span class='ln'>269</span></div>
+<div class='row cov'><span class='ln'>270</span>    }</div>
+<div class='row cov'><span class='ln'>271</span></div>
+<div class='row nod'><span class='ln'>272</span>  }</div>
+<div class='row nod'><span class='ln'>273</span></div>
+<div class='row nod'><span class='ln'>274</span></div>
+<div class='row cov'><span class='ln'>275</span></div>
+<div class='row cov'><span class='ln'>276</span>  bool _shouldScrollToAnchor(TCalendarBody oldWidget) {</div>
+<div class='row cov'><span class='ln'>277</span></div>
+<div class='row cov'><span class='ln'>278</span>    final anchor = widget.anchorDate;</div>
+<div class='row cov'><span class='ln'>279</span></div>
+<div class='row cov'><span class='ln'>280</span>    if (anchor == null) {</div>
+<div class='row cov'><span class='ln'>281</span></div>
+<div class='row cov'><span class='ln'>282</span>      return false;</div>
+<div class='row nod'><span class='ln'>283</span></div>
+<div class='row nod'><span class='ln'>284</span>    }</div>
+<div class='row nod'><span class='ln'>285</span></div>
+<div class='row nod'><span class='ln'>286</span>    final oldAnchor = oldWidget.anchorDate;</div>
+<div class='row nod'><span class='ln'>287</span></div>
+<div class='row nod'><span class='ln'>288</span>    if (oldAnchor == null) {</div>
+<div class='row nod'><span class='ln'>289</span></div>
+<div class='row nod'><span class='ln'>290</span>      return true;</div>
+<div class='row cov'><span class='ln'>291</span></div>
+<div class='row cov'><span class='ln'>292</span>    }</div>
+<div class='row nod'><span class='ln'>293</span></div>
+<div class='row nod'><span class='ln'>294</span>    return anchor.year != oldAnchor.year || anchor.month != oldAnchor.month;</div>
+<div class='row cov'><span class='ln'>295</span></div>
+<div class='row cov'><span class='ln'>296</span>  }</div>
+<div class='row nod'><span class='ln'>297</span></div>
+<div class='row cov'><span class='ln'>298</span></div>
+<div class='row cov'><span class='ln'>299</span></div>
+<div class='row nod'><span class='ln'>300</span>  static bool _listEqualsDate(List&lt;DateTime&gt;? a, List&lt;DateTime&gt;? b) {</div>
+<div class='row nod'><span class='ln'>301</span></div>
+<div class='row nod'><span class='ln'>302</span>    if (identical(a, b)) {</div>
+<div class='row cov'><span class='ln'>303</span></div>
+<div class='row nod'><span class='ln'>304</span>      return true;</div>
+<div class='row cov'><span class='ln'>305</span></div>
+<div class='row cov'><span class='ln'>306</span>    }</div>
+<div class='row cov'><span class='ln'>307</span></div>
+<div class='row cov'><span class='ln'>308</span>    if (a == null || b == null) {</div>
+<div class='row cov'><span class='ln'>309</span></div>
+<div class='row cov'><span class='ln'>310</span>      return false;</div>
+<div class='row cov'><span class='ln'>311</span></div>
+<div class='row cov'><span class='ln'>312</span>    }</div>
+<div class='row cov'><span class='ln'>313</span></div>
+<div class='row cov'><span class='ln'>314</span>    if (a.length != b.length) {</div>
+<div class='row cov'><span class='ln'>315</span></div>
+<div class='row nod'><span class='ln'>316</span>      return false;</div>
+<div class='row nod'><span class='ln'>317</span></div>
+<div class='row nod'><span class='ln'>318</span>    }</div>
+<div class='row cov'><span class='ln'>319</span></div>
+<div class='row nod'><span class='ln'>320</span>    for (var i = 0; i &lt; a.length; i++) {</div>
+<div class='row nod'><span class='ln'>321</span></div>
+<div class='row nod'><span class='ln'>322</span>      if (a[i] != b[i]) {</div>
+<div class='row cov'><span class='ln'>323</span></div>
+<div class='row cov'><span class='ln'>324</span>        return false;</div>
+<div class='row cov'><span class='ln'>325</span></div>
+<div class='row nod'><span class='ln'>326</span>      }</div>
+<div class='row nod'><span class='ln'>327</span></div>
+<div class='row nod'><span class='ln'>328</span>    }</div>
+<div class='row nod'><span class='ln'>329</span></div>
+<div class='row cov'><span class='ln'>330</span>    return true;</div>
+<div class='row cov'><span class='ln'>331</span></div>
+<div class='row cov'><span class='ln'>332</span>  }</div>
+<div class='row nod'><span class='ln'>333</span></div>
+<div class='row nod'><span class='ln'>334</span></div>
+<div class='row nod'><span class='ln'>335</span></div>
+<div class='row nod'><span class='ln'>336</span>  @override</div>
+<div class='row cov'><span class='ln'>337</span></div>
+<div class='row nod'><span class='ln'>338</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>339</span></div>
+<div class='row cov'><span class='ln'>340</span>    _scrollController.removeListener(_onScroll);</div>
+<div class='row cov'><span class='ln'>341</span></div>
+<div class='row cov'><span class='ln'>342</span>    _scrollController.dispose();</div>
+<div class='row unc'><span class='ln'>343</span>▶ </div>
+<div class='row nod'><span class='ln'>344</span>    super.dispose();</div>
+<div class='row cov'><span class='ln'>345</span></div>
+<div class='row cov'><span class='ln'>346</span>  }</div>
+<div class='row cov'><span class='ln'>347</span></div>
+<div class='row cov'><span class='ln'>348</span></div>
+<div class='row cov'><span class='ln'>349</span></div>
+<div class='row cov'><span class='ln'>350</span>  void _initMonths() {</div>
+<div class='row cov'><span class='ln'>351</span></div>
+<div class='row cov'><span class='ln'>352</span>    _min = widget.minDate;</div>
+<div class='row cov'><span class='ln'>353</span></div>
+<div class='row cov'><span class='ln'>354</span>    _max = widget.maxDate;</div>
+<div class='row cov'><span class='ln'>355</span></div>
+<div class='row cov'><span class='ln'>356</span>    _months = _monthsBetween(_min, _max);</div>
+<div class='row cov'><span class='ln'>357</span></div>
+<div class='row nod'><span class='ln'>358</span>    _rebuildIndex();</div>
+<div class='row nod'><span class='ln'>359</span></div>
+<div class='row nod'><span class='ln'>360</span>  }</div>
+<div class='row nod'><span class='ln'>361</span></div>
+<div class='row nod'><span class='ln'>362</span></div>
+<div class='row nod'><span class='ln'>363</span></div>
+<div class='row nod'><span class='ln'>364</span>  /// 重建月份前缀和。</div>
+<div class='row nod'><span class='ln'>365</span></div>
+<div class='row nod'><span class='ln'>366</span>  ///</div>
+<div class='row nod'><span class='ln'>367</span></div>
+<div class='row cov'><span class='ln'>368</span>  /// 性能考量：</div>
+<div class='row cov'><span class='ln'>369</span></div>
+<div class='row cov'><span class='ln'>370</span>  /// - 此前 `_calcScrollOffset` / `_onScroll` 都是 O(n) 线性扫描，</div>
+<div class='row nod'><span class='ln'>371</span></div>
+<div class='row nod'><span class='ln'>372</span>  ///   `_months.length` 默认 ~1572 时滚动期间累计开销显著。</div>
+<div class='row nod'><span class='ln'>373</span></div>
+<div class='row nod'><span class='ln'>374</span>  /// - 改为预计算前缀和 + 二分查找后，单次查询 O(log n)，</div>
+<div class='row nod'><span class='ln'>375</span></div>
+<div class='row nod'><span class='ln'>376</span>  ///   滚动监听不再因列表长度而劣化。</div>
+<div class='row cov'><span class='ln'>377</span></div>
+<div class='row cov'><span class='ln'>378</span>  ///</div>
+<div class='row nod'><span class='ln'>379</span></div>
+<div class='row cov'><span class='ln'>380</span>  /// 月份索引不再使用反查 Map：因为 `_months` 按月份单调递增，</div>
+<div class='row cov'><span class='ln'>381</span></div>
+<div class='row nod'><span class='ln'>382</span>  /// 给定 monthKey 只需 `monthKey - firstKey` 即可 O(1) 算出索引。</div>
+<div class='row nod'><span class='ln'>383</span></div>
+<div class='row cov'><span class='ln'>384</span>  void _rebuildIndex() {</div>
+<div class='row unc'><span class='ln'>385</span>▶ </div>
+<div class='row nod'><span class='ln'>386</span>    _prefixHeights = List&lt;double&gt;.filled(_months.length + 1, 0.0);</div>
+<div class='row nod'><span class='ln'>387</span></div>
+<div class='row unc'><span class='ln'>388</span>▶     var acc = 0.0;</div>
+<div class='row unc'><span class='ln'>389</span>▶ </div>
+<div class='row nod'><span class='ln'>390</span>    for (var i = 0; i &lt; _months.length; i++) {</div>
+<div class='row nod'><span class='ln'>391</span></div>
+<div class='row nod'><span class='ln'>392</span>      _prefixHeights[i] = acc;</div>
+<div class='row cov'><span class='ln'>393</span></div>
+<div class='row cov'><span class='ln'>394</span>      acc += _getMonthHeight(_months, i, _monthHeight);</div>
+<div class='row cov'><span class='ln'>395</span></div>
+<div class='row cov'><span class='ln'>396</span>    }</div>
+<div class='row nod'><span class='ln'>397</span></div>
+<div class='row cov'><span class='ln'>398</span>    _prefixHeights[_months.length] = acc;</div>
+<div class='row unc'><span class='ln'>399</span>▶ </div>
+<div class='row nod'><span class='ln'>400</span>  }</div>
+<div class='row cov'><span class='ln'>401</span></div>
+<div class='row nod'><span class='ln'>402</span></div>
+<div class='row nod'><span class='ln'>403</span></div>
+<div class='row nod'><span class='ln'>404</span>  static int _monthKey(DateTime d) =&gt; d.year * 12 + d.month;</div>
+<div class='row cov'><span class='ln'>405</span></div>
+<div class='row cov'><span class='ln'>406</span></div>
+<div class='row nod'><span class='ln'>407</span></div>
+<div class='row nod'><span class='ln'>408</span>  /// 二分查找：给定滚动偏移量，返回当前可见的月份索引。</div>
+<div class='row nod'><span class='ln'>409</span></div>
+<div class='row nod'><span class='ln'>410</span>  int _indexAtOffset(double offset) {</div>
+<div class='row nod'><span class='ln'>411</span></div>
+<div class='row nod'><span class='ln'>412</span>    if (_months.isEmpty) {</div>
+<div class='row nod'><span class='ln'>413</span></div>
+<div class='row nod'><span class='ln'>414</span>      return 0;</div>
+<div class='row nod'><span class='ln'>415</span></div>
+<div class='row nod'><span class='ln'>416</span>    }</div>
+<div class='row nod'><span class='ln'>417</span></div>
+<div class='row nod'><span class='ln'>418</span>    var lo = 0;</div>
+<div class='row nod'><span class='ln'>419</span></div>
+<div class='row nod'><span class='ln'>420</span>    var hi = _months.length - 1;</div>
+<div class='row nod'><span class='ln'>421</span></div>
+<div class='row nod'><span class='ln'>422</span>    while (lo &lt; hi) {</div>
+<div class='row nod'><span class='ln'>423</span></div>
+<div class='row unc'><span class='ln'>424</span>▶       final mid = (lo + hi + 1) &gt;&gt; 1;</div>
+<div class='row unc'><span class='ln'>425</span>▶ </div>
+<div class='row unc'><span class='ln'>426</span>▶       if (_prefixHeights[mid] &lt;= offset) {</div>
+<div class='row nod'><span class='ln'>427</span></div>
+<div class='row nod'><span class='ln'>428</span>        lo = mid;</div>
+<div class='row nod'><span class='ln'>429</span></div>
+<div class='row unc'><span class='ln'>430</span>▶       } else {</div>
+<div class='row nod'><span class='ln'>431</span></div>
+<div class='row unc'><span class='ln'>432</span>▶         hi = mid - 1;</div>
+<div class='row nod'><span class='ln'>433</span></div>
+<div class='row unc'><span class='ln'>434</span>▶       }</div>
+<div class='row unc'><span class='ln'>435</span>▶ </div>
+<div class='row unc'><span class='ln'>436</span>▶     }</div>
+<div class='row unc'><span class='ln'>437</span>▶ </div>
+<div class='row unc'><span class='ln'>438</span>▶     return lo;</div>
+<div class='row unc'><span class='ln'>439</span>▶ </div>
+<div class='row nod'><span class='ln'>440</span>  }</div>
+<div class='row nod'><span class='ln'>441</span></div>
+<div class='row nod'><span class='ln'>442</span></div>
+<div class='row nod'><span class='ln'>443</span></div>
+<div class='row unc'><span class='ln'>444</span>▶   /// 计算首屏滚动偏移：优先 anchorDate，否则取 initialValue 最早一日，再否则为 0。</div>
+<div class='row unc'><span class='ln'>445</span>▶   ///</div>
+<div class='row unc'><span class='ln'>446</span>▶ </div>
+<div class='row nod'><span class='ln'>447</span>  /// 越界时 clamp 到 minDate/maxDate 对应的首尾月，避免锚点落在范围外时静默回顶。</div>
+<div class='row nod'><span class='ln'>448</span>  double _calcScrollOffset() {</div>
+<div class='row nod'><span class='ln'>449</span></div>
+<div class='row nod'><span class='ln'>450</span>    var scrollToDate = widget.anchorDate;</div>
+<div class='row unc'><span class='ln'>451</span>▶ </div>
+<div class='row unc'><span class='ln'>452</span>▶     if (scrollToDate == null) {</div>
+<div class='row unc'><span class='ln'>453</span>▶ </div>
+<div class='row unc'><span class='ln'>454</span>▶       if (widget.initialValue == null || widget.initialValue!.isEmpty) {</div>
+<div class='row nod'><span class='ln'>455</span></div>
+<div class='row unc'><span class='ln'>456</span>▶         return 0.0;</div>
+<div class='row nod'><span class='ln'>457</span></div>
+<div class='row nod'><span class='ln'>458</span>      }</div>
+<div class='row nod'><span class='ln'>459</span></div>
+<div class='row nod'><span class='ln'>460</span>      scrollToDate = widget.initialValue!.reduce((a, b) =&gt; a.isBefore(b) ? a : b);</div>
+<div class='row nod'><span class='ln'>461</span></div>
+<div class='row nod'><span class='ln'>462</span>    }</div>
+<div class='row unc'><span class='ln'>463</span>▶ </div>
+<div class='row nod'><span class='ln'>464</span>    if (_months.isEmpty) {</div>
+<div class='row nod'><span class='ln'>465</span></div>
+<div class='row nod'><span class='ln'>466</span>      return 0.0;</div>
+<div class='row nod'><span class='ln'>467</span></div>
+<div class='row nod'><span class='ln'>468</span>    }</div>
+<div class='row nod'><span class='ln'>469</span></div>
+<div class='row nod'><span class='ln'>470</span>    // 用 (年*12 + 月) 作为可比较的标量，规避日级别比较带来的边界陷阱。</div>
+<div class='row nod'><span class='ln'>471</span></div>
+<div class='row unc'><span class='ln'>472</span>▶     final firstKey = _monthKey(_months.first);</div>
+<div class='row unc'><span class='ln'>473</span>▶ </div>
+<div class='row unc'><span class='ln'>474</span>▶     final lastKey = _monthKey(_months.last);</div>
+<div class='row nod'><span class='ln'>475</span></div>
+<div class='row nod'><span class='ln'>476</span>    final targetKey = _monthKey(scrollToDate);</div>
+<div class='row unc'><span class='ln'>477</span>▶ </div>
+<div class='row unc'><span class='ln'>478</span>▶     final clampedKey = targetKey.clamp(firstKey, lastKey);</div>
+<div class='row unc'><span class='ln'>479</span>▶ </div>
+<div class='row nod'><span class='ln'>480</span>    // O(1) 算术：月份 key 是单调递增的整数，索引 = clampedKey - firstKey。</div>
+<div class='row unc'><span class='ln'>481</span>▶ </div>
+<div class='row nod'><span class='ln'>482</span>    final idx = clampedKey - firstKey;</div>
+<div class='row nod'><span class='ln'>483</span></div>
+<div class='row unc'><span class='ln'>484</span>▶     return _prefixHeights[idx];</div>
+<div class='row nod'><span class='ln'>485</span></div>
+<div class='row nod'><span class='ln'>486</span>  }</div>
+<div class='row unc'><span class='ln'>487</span>▶ </div>
+<div class='row unc'><span class='ln'>488</span>▶ </div>
+<div class='row nod'><span class='ln'>489</span></div>
+<div class='row nod'><span class='ln'>490</span>  void _onScroll() {</div>
+<div class='row nod'><span class='ln'>491</span></div>
+<div class='row nod'><span class='ln'>492</span>    if (_months.isEmpty) {</div>
+<div class='row cov'><span class='ln'>493</span></div>
+<div class='row cov'><span class='ln'>494</span>      return;</div>
+<div class='row cov'><span class='ln'>495</span></div>
+<div class='row cov'><span class='ln'>496</span>    }</div>
+<div class='row cov'><span class='ln'>497</span></div>
+<div class='row cov'><span class='ln'>498</span>    final i = _indexAtOffset(_scrollController.offset);</div>
+<div class='row nod'><span class='ln'>499</span></div>
+<div class='row nod'><span class='ln'>500</span>    final currentMonth = _months[i];</div>
+<div class='row nod'><span class='ln'>501</span></div>
+<div class='row nod'><span class='ln'>502</span>    final currentKey = _monthKey(currentMonth);</div>
+<div class='row cov'><span class='ln'>503</span></div>
+<div class='row nod'><span class='ln'>504</span>    // 只在月份真正变化时回调，且程序化滚动期间静默，避免动画中间值打扰外部。</div>
+<div class='row cov'><span class='ln'>505</span></div>
+<div class='row cov'><span class='ln'>506</span>    if (_lastNotifiedMonthKey != currentKey) {</div>
+<div class='row cov'><span class='ln'>507</span></div>
+<div class='row cov'><span class='ln'>508</span>      _lastNotifiedMonthKey = currentKey;</div>
+<div class='row cov'><span class='ln'>509</span></div>
+<div class='row cov'><span class='ln'>510</span>      if (!_programmaticScroll) {</div>
+<div class='row nod'><span class='ln'>511</span></div>
+<div class='row cov'><span class='ln'>512</span>        widget.onMonthChange?.call(currentMonth);</div>
+<div class='row nod'><span class='ln'>513</span></div>
+<div class='row cov'><span class='ln'>514</span>      }</div>
+<div class='row cov'><span class='ln'>515</span></div>
+<div class='row cov'><span class='ln'>516</span>    }</div>
+<div class='row nod'><span class='ln'>517</span></div>
+<div class='row nod'><span class='ln'>518</span>    _warmupCacheAround(i);</div>
+<div class='row cov'><span class='ln'>519</span></div>
+<div class='row cov'><span class='ln'>520</span>    _cleanupCache(i);</div>
+<div class='row cov'><span class='ln'>521</span></div>
+<div class='row nod'><span class='ln'>522</span>  }</div>
+<div class='row nod'><span class='ln'>523</span></div>
+<div class='row cov'><span class='ln'>524</span></div>
+<div class='row cov'><span class='ln'>525</span></div>
+<div class='row nod'><span class='ln'>526</span>  /// 预热当前可见月份及其前后相邻月份的缓存。</div>
+<div class='row cov'><span class='ln'>527</span></div>
+<div class='row cov'><span class='ln'>528</span>  ///</div>
+<div class='row nod'><span class='ln'>529</span></div>
+<div class='row nod'><span class='ln'>530</span>  /// 把&quot;写入 _data&quot;这一副作用从 itemBuilder 中分离出来，避免 build 阶段写状态。</div>
+<div class='row cov'><span class='ln'>531</span></div>
+<div class='row cov'><span class='ln'>532</span>  /// 范围 ±2 月（共 5 个月）足以覆盖单屏可见与上下少量预渲染月份，超出部分</div>
+<div class='row nod'><span class='ln'>533</span></div>
+<div class='row nod'><span class='ln'>534</span>  /// 由 itemBuilder 走 fallback 直接计算（仍不写缓存）。</div>
+<div class='row cov'><span class='ln'>535</span></div>
+<div class='row cov'><span class='ln'>536</span>  void _warmupCacheAround(int currentIndex) {</div>
+<div class='row nod'><span class='ln'>537</span></div>
+<div class='row nod'><span class='ln'>538</span>    if (_months.isEmpty) {</div>
+<div class='row nod'><span class='ln'>539</span></div>
+<div class='row nod'><span class='ln'>540</span>      return;</div>
+<div class='row cov'><span class='ln'>541</span></div>
+<div class='row nod'><span class='ln'>542</span>    }</div>
+<div class='row cov'><span class='ln'>543</span></div>
+<div class='row cov'><span class='ln'>544</span>    const radius = 2;</div>
+<div class='row nod'><span class='ln'>545</span></div>
+<div class='row nod'><span class='ln'>546</span>    final lo = (currentIndex - radius).clamp(0, _months.length - 1);</div>
+<div class='row cov'><span class='ln'>547</span></div>
+<div class='row cov'><span class='ln'>548</span>    final hi = (currentIndex + radius).clamp(0, _months.length - 1);</div>
+<div class='row cov'><span class='ln'>549</span></div>
+<div class='row cov'><span class='ln'>550</span>    for (var i = lo; i &lt;= hi; i++) {</div>
+<div class='row nod'><span class='ln'>551</span></div>
+<div class='row nod'><span class='ln'>552</span>      final monthDate = _months[i];</div>
+<div class='row nod'><span class='ln'>553</span></div>
+<div class='row nod'><span class='ln'>554</span>      if (!_data.containsKey(monthDate)) {</div>
+<div class='row cov'><span class='ln'>555</span></div>
+<div class='row cov'><span class='ln'>556</span>        final tdates = _getDaysInMonth(monthDate, _min, _max);</div>
+<div class='row cov'><span class='ln'>557</span></div>
+<div class='row cov'><span class='ln'>558</span>        _data[monthDate] = tdates;</div>
+<div class='row cov'><span class='ln'>559</span></div>
+<div class='row cov'><span class='ln'>560</span>        widget.onCellGenerated?.call(monthDate, tdates);</div>
+<div class='row cov'><span class='ln'>561</span></div>
+<div class='row nod'><span class='ln'>562</span>      }</div>
+<div class='row nod'><span class='ln'>563</span></div>
+<div class='row nod'><span class='ln'>564</span>    }</div>
+<div class='row nod'><span class='ln'>565</span></div>
+<div class='row cov'><span class='ln'>566</span>  }</div>
+<div class='row nod'><span class='ln'>567</span></div>
+<div class='row cov'><span class='ln'>568</span></div>
+<div class='row nod'><span class='ln'>569</span></div>
+<div class='row nod'><span class='ln'>570</span>  /// 清理距离当前可见月份过远的缓存数据，避免在 itemBuilder 中执行副作用。</div>
+<div class='row cov'><span class='ln'>571</span></div>
+<div class='row cov'><span class='ln'>572</span>  ///</div>
+<div class='row nod'><span class='ln'>573</span></div>
+<div class='row cov'><span class='ln'>574</span>  /// `_data` 实际只会缓存可见月份附近的少量项（受本方法 ±10 范围限制，</div>
+<div class='row cov'><span class='ln'>575</span></div>
+<div class='row cov'><span class='ln'>576</span>  /// 上限约 21 项），遍历开销可忽略，无需额外节流。</div>
+<div class='row cov'><span class='ln'>577</span></div>
+<div class='row cov'><span class='ln'>578</span>  void _cleanupCache(int currentIndex) {</div>
+<div class='row cov'><span class='ln'>579</span></div>
+<div class='row cov'><span class='ln'>580</span>    if (_months.isEmpty) {</div>
+<div class='row cov'><span class='ln'>581</span></div>
+<div class='row cov'><span class='ln'>582</span>      return;</div>
+<div class='row nod'><span class='ln'>583</span></div>
+<div class='row nod'><span class='ln'>584</span>    }</div>
+<div class='row nod'><span class='ln'>585</span></div>
+<div class='row nod'><span class='ln'>586</span>    final firstKey = _monthKey(_months.first);</div>
+<div class='row nod'><span class='ln'>587</span></div>
+<div class='row nod'><span class='ln'>588</span>    _data.removeWhere((key, _) {</div>
+<div class='row nod'><span class='ln'>589</span></div>
+<div class='row nod'><span class='ln'>590</span>      // 用月份 key 算术替代 List.indexOf 的 O(n) 扫描。</div>
+<div class='row nod'><span class='ln'>591</span></div>
+<div class='row nod'><span class='ln'>592</span>      final monthIdx = _monthKey(key) - firstKey;</div>
+<div class='row nod'><span class='ln'>593</span></div>
+<div class='row nod'><span class='ln'>594</span>      return monthIdx &lt; currentIndex - 10 || monthIdx &gt; currentIndex + 10;</div>
+<div class='row nod'><span class='ln'>595</span></div>
+<div class='row nod'><span class='ln'>596</span>    });</div>
+<div class='row nod'><span class='ln'>597</span></div>
+<div class='row nod'><span class='ln'>598</span>  }</div>
+<div class='row nod'><span class='ln'>599</span></div>
+<div class='row nod'><span class='ln'>600</span></div>
+<div class='row nod'><span class='ln'>601</span></div>
+<div class='row nod'><span class='ln'>602</span>  @override</div>
+<div class='row nod'><span class='ln'>603</span></div>
+<div class='row nod'><span class='ln'>604</span>  Widget build(BuildContext context) {</div>
+<div class='row nod'><span class='ln'>605</span></div>
+<div class='row nod'><span class='ln'>606</span>    return ListView.builder(</div>
+<div class='row nod'><span class='ln'>607</span></div>
+<div class='row nod'><span class='ln'>608</span>      padding: EdgeInsets.all(widget.bodyPadding),</div>
+<div class='row nod'><span class='ln'>609</span></div>
+<div class='row nod'><span class='ln'>610</span>      controller: _scrollController,</div>
+<div class='row nod'><span class='ln'>611</span></div>
+<div class='row nod'><span class='ln'>612</span>      itemCount: _months.length,</div>
+<div class='row nod'><span class='ln'>613</span></div>
+<div class='row nod'><span class='ln'>614</span>      itemExtentBuilder: (index, dimensions) =&gt;</div>
+<div class='row nod'><span class='ln'>615</span></div>
+<div class='row nod'><span class='ln'>616</span>          _getMonthHeight(_months, index, _monthHeight),</div>
+<div class='row nod'><span class='ln'>617</span></div>
+<div class='row nod'><span class='ln'>618</span>      itemBuilder: (context, index) {</div>
+<div class='row nod'><span class='ln'>619</span></div>
+<div class='row nod'><span class='ln'>620</span>        final monthDate = _months[index];</div>
+<div class='row nod'><span class='ln'>621</span></div>
+<div class='row nod'><span class='ln'>622</span>        final monthYear = monthDate.year.toString() + context.resource.year;</div>
+<div class='row nod'><span class='ln'>623</span></div>
+<div class='row nod'><span class='ln'>624</span>        final monthMonth = widget.monthNames[monthDate.month - 1];</div>
+<div class='row nod'><span class='ln'>625</span></div>
+<div class='row nod'><span class='ln'>626</span>        final monthDateText = &#x27;$monthYear $monthMonth&#x27;;</div>
+<div class='row nod'><span class='ln'>627</span></div>
+<div class='row nod'><span class='ln'>628</span>        // 只读：build 不写状态。命中缓存直接用，未命中走纯函数计算并安排</div>
+<div class='row nod'><span class='ln'>629</span></div>
+<div class='row nod'><span class='ln'>630</span>        // 在下一帧补写缓存（postFrameCallback），避免 build 阶段副作用。</div>
+<div class='row nod'><span class='ln'>631</span></div>
+<div class='row nod'><span class='ln'>632</span>        List&lt;TCalendarCellModel?&gt; monthData;</div>
+<div class='row nod'><span class='ln'>633</span></div>
+<div class='row nod'><span class='ln'>634</span>        final cached = _data[monthDate];</div>
+<div class='row nod'><span class='ln'>635</span></div>
+<div class='row nod'><span class='ln'>636</span>        if (cached != null) {</div>
+<div class='row nod'><span class='ln'>637</span></div>
+<div class='row nod'><span class='ln'>638</span>          monthData = cached;</div>
+<div class='row nod'><span class='ln'>639</span></div>
+<div class='row nod'><span class='ln'>640</span>        } else {</div>
+<div class='row nod'><span class='ln'>641</span></div>
+<div class='row nod'><span class='ln'>642</span>          monthData = _getDaysInMonth(monthDate, _min, _max);</div>
+<div class='row nod'><span class='ln'>643</span></div>
+<div class='row nod'><span class='ln'>644</span>          WidgetsBinding.instance.addPostFrameCallback((_) {</div>
+<div class='row nod'><span class='ln'>645</span></div>
+<div class='row nod'><span class='ln'>646</span>            if (!mounted) {</div>
+<div class='row nod'><span class='ln'>647</span></div>
+<div class='row nod'><span class='ln'>648</span>              return;</div>
+<div class='row nod'><span class='ln'>649</span></div>
+<div class='row nod'><span class='ln'>650</span>            }</div>
+<div class='row nod'><span class='ln'>651</span></div>
+<div class='row nod'><span class='ln'>652</span>            // 仅当下一帧仍未被其他路径填充时写入，幂等。</div>
+<div class='row nod'><span class='ln'>653</span></div>
+<div class='row nod'><span class='ln'>654</span>            // 注册回调也只在真正写入这条新数据时触发，避免重复登记。</div>
+<div class='row nod'><span class='ln'>655</span></div>
+<div class='row nod'><span class='ln'>656</span>            if (!_data.containsKey(monthDate)) {</div>
+<div class='row nod'><span class='ln'>657</span></div>
+<div class='row nod'><span class='ln'>658</span>              _data[monthDate] = monthData;</div>
+<div class='row nod'><span class='ln'>659</span></div>
+<div class='row nod'><span class='ln'>660</span>              widget.onCellGenerated?.call(monthDate, monthData);</div>
+<div class='row nod'><span class='ln'>661</span></div>
+<div class='row nod'><span class='ln'>662</span>            }</div>
+<div class='row nod'><span class='ln'>663</span></div>
+<div class='row nod'><span class='ln'>664</span>          });</div>
+<div class='row nod'><span class='ln'>665</span></div>
+<div class='row nod'><span class='ln'>666</span>        }</div>
+<div class='row nod'><span class='ln'>667</span></div>
+<div class='row nod'><span class='ln'>668</span></div>
+<div class='row nod'><span class='ln'>669</span></div>
+<div class='row nod'><span class='ln'>670</span>        return Column(</div>
+<div class='row nod'><span class='ln'>671</span></div>
+<div class='row nod'><span class='ln'>672</span>          crossAxisAlignment: CrossAxisAlignment.start,</div>
+<div class='row nod'><span class='ln'>673</span></div>
+<div class='row nod'><span class='ln'>674</span>          children: [</div>
+<div class='row nod'><span class='ln'>675</span></div>
+<div class='row nod'><span class='ln'>676</span>            SizedBox(</div>
+<div class='row nod'><span class='ln'>677</span></div>
+<div class='row nod'><span class='ln'>678</span>              height: widget.monthTitleHeight,</div>
+<div class='row nod'><span class='ln'>679</span></div>
+<div class='row nod'><span class='ln'>680</span>              child: widget.monthTitleBuilder?.call(context, monthDate) ??</div>
+<div class='row nod'><span class='ln'>681</span></div>
+<div class='row nod'><span class='ln'>682</span>                  TText(monthDateText, style: widget.monthTitleStyle),</div>
+<div class='row nod'><span class='ln'>683</span></div>
+<div class='row nod'><span class='ln'>684</span>            ),</div>
+<div class='row nod'><span class='ln'>685</span></div>
+<div class='row nod'><span class='ln'>686</span>            ...List.generate(</div>
+<div class='row nod'><span class='ln'>687</span></div>
+<div class='row nod'><span class='ln'>688</span>              (monthData.length / 7).ceil(),</div>
+<div class='row nod'><span class='ln'>689</span></div>
+<div class='row nod'><span class='ln'>690</span>              (rowIndex) =&gt; [</div>
+<div class='row nod'><span class='ln'>691</span></div>
+<div class='row nod'><span class='ln'>692</span>                SizedBox(height: widget.verticalGap),</div>
+<div class='row nod'><span class='ln'>693</span></div>
+<div class='row nod'><span class='ln'>694</span>                Row(</div>
+<div class='row nod'><span class='ln'>695</span></div>
+<div class='row nod'><span class='ln'>696</span>                  children: [</div>
+<div class='row nod'><span class='ln'>697</span></div>
+<div class='row nod'><span class='ln'>698</span>                    for (int colIndex = 0; colIndex &lt; 7; colIndex++) ...[</div>
+<div class='row nod'><span class='ln'>699</span></div>
+<div class='row nod'><span class='ln'>700</span>                      if (colIndex != 0)</div>
+<div class='row nod'><span class='ln'>701</span></div>
+<div class='row nod'><span class='ln'>702</span>                        SizedBox(width: widget.verticalGap / 2),</div>
+<div class='row nod'><span class='ln'>703</span></div>
+<div class='row nod'><span class='ln'>704</span>                      Expanded(</div>
+<div class='row nod'><span class='ln'>705</span></div>
+<div class='row nod'><span class='ln'>706</span>                        child: widget.builder(</div>
+<div class='row nod'><span class='ln'>707</span></div>
+<div class='row nod'><span class='ln'>708</span>                          (rowIndex * 7 + colIndex &lt; monthData.length)</div>
+<div class='row nod'><span class='ln'>709</span></div>
+<div class='row nod'><span class='ln'>710</span>                              ? monthData[rowIndex * 7 + colIndex]</div>
+<div class='row nod'><span class='ln'>711</span></div>
+<div class='row nod'><span class='ln'>712</span>                              : null,</div>
+<div class='row nod'><span class='ln'>713</span></div>
+<div class='row nod'><span class='ln'>714</span>                          monthData,</div>
+<div class='row nod'><span class='ln'>715</span></div>
+<div class='row nod'><span class='ln'>716</span>                          rowIndex,</div>
+<div class='row nod'><span class='ln'>717</span></div>
+<div class='row nod'><span class='ln'>718</span>                          colIndex,</div>
+<div class='row nod'><span class='ln'>719</span></div>
+<div class='row nod'><span class='ln'>720</span>                        ),</div>
+<div class='row nod'><span class='ln'>721</span></div>
+<div class='row nod'><span class='ln'>722</span>                      ),</div>
+<div class='row nod'><span class='ln'>723</span></div>
+<div class='row nod'><span class='ln'>724</span>                    ]</div>
+<div class='row nod'><span class='ln'>725</span></div>
+<div class='row nod'><span class='ln'>726</span>                  ],</div>
+<div class='row nod'><span class='ln'>727</span></div>
+<div class='row nod'><span class='ln'>728</span>                ),</div>
+<div class='row nod'><span class='ln'>729</span></div>
+<div class='row nod'><span class='ln'>730</span>              ],</div>
+<div class='row nod'><span class='ln'>731</span></div>
+<div class='row nod'><span class='ln'>732</span>            ).expand((element) =&gt; element).toList(),</div>
+<div class='row nod'><span class='ln'>733</span></div>
+<div class='row nod'><span class='ln'>734</span>            SizedBox(</div>
+<div class='row nod'><span class='ln'>735</span></div>
+<div class='row nod'><span class='ln'>736</span>                height: index == _months.length - 1 ? 0 : widget.bodyPadding),</div>
+<div class='row nod'><span class='ln'>737</span></div>
+<div class='row nod'><span class='ln'>738</span>          ],</div>
+<div class='row nod'><span class='ln'>739</span></div>
+<div class='row nod'><span class='ln'>740</span>        );</div>
+<div class='row nod'><span class='ln'>741</span></div>
+<div class='row nod'><span class='ln'>742</span>      },</div>
+<div class='row nod'><span class='ln'>743</span></div>
+<div class='row nod'><span class='ln'>744</span>    );</div>
+<div class='row nod'><span class='ln'>745</span></div>
+<div class='row nod'><span class='ln'>746</span>  }</div>
+<div class='row nod'><span class='ln'>747</span></div>
+<div class='row nod'><span class='ln'>748</span></div>
+<div class='row nod'><span class='ln'>749</span></div>
+<div class='row nod'><span class='ln'>750</span>  void _scrollToItem() {</div>
+<div class='row nod'><span class='ln'>751</span></div>
+<div class='row nod'><span class='ln'>752</span>    final height = _calcScrollOffset();</div>
+<div class='row nod'><span class='ln'>753</span></div>
+<div class='row nod'><span class='ln'>754</span>    // 等待 ScrollController 完成 attach 后再滚动，最多重试若干帧。</div>
+<div class='row nod'><span class='ln'>755</span></div>
+<div class='row nod'><span class='ln'>756</span>    void attemptScroll([int retry = 0]) {</div>
+<div class='row nod'><span class='ln'>757</span></div>
+<div class='row nod'><span class='ln'>758</span>      if (!mounted) {</div>
+<div class='row nod'><span class='ln'>759</span></div>
+<div class='row nod'><span class='ln'>760</span>        return;</div>
+<div class='row nod'><span class='ln'>761</span></div>
+<div class='row nod'><span class='ln'>762</span>      }</div>
+<div class='row nod'><span class='ln'>763</span></div>
+<div class='row nod'><span class='ln'>764</span>      if (!_scrollController.hasClients) {</div>
+<div class='row nod'><span class='ln'>765</span></div>
+<div class='row nod'><span class='ln'>766</span>        if (retry &gt;= 5) {</div>
+<div class='row nod'><span class='ln'>767</span></div>
+<div class='row nod'><span class='ln'>768</span>          return;</div>
+<div class='row nod'><span class='ln'>769</span></div>
+<div class='row nod'><span class='ln'>770</span>        }</div>
+<div class='row nod'><span class='ln'>771</span></div>
+<div class='row nod'><span class='ln'>772</span>        WidgetsBinding.instance.addPostFrameCallback((_) {</div>
+<div class='row nod'><span class='ln'>773</span></div>
+<div class='row nod'><span class='ln'>774</span>          attemptScroll(retry + 1);</div>
+<div class='row nod'><span class='ln'>775</span></div>
+<div class='row nod'><span class='ln'>776</span>        });</div>
+<div class='row nod'><span class='ln'>777</span></div>
+<div class='row nod'><span class='ln'>778</span>        return;</div>
+<div class='row nod'><span class='ln'>779</span></div>
+<div class='row nod'><span class='ln'>780</span>      }</div>
+<div class='row nod'><span class='ln'>781</span></div>
+<div class='row nod'><span class='ln'>782</span>      final position = _scrollController.position;</div>
+<div class='row nod'><span class='ln'>783</span></div>
+<div class='row nod'><span class='ln'>784</span>      final clamped = height.clamp(</div>
+<div class='row nod'><span class='ln'>785</span></div>
+<div class='row nod'><span class='ln'>786</span>        position.minScrollExtent,</div>
+<div class='row nod'><span class='ln'>787</span></div>
+<div class='row nod'><span class='ln'>788</span>        position.maxScrollExtent,</div>
+<div class='row nod'><span class='ln'>789</span></div>
+<div class='row nod'><span class='ln'>790</span>      );</div>
+<div class='row nod'><span class='ln'>791</span></div>
+<div class='row nod'><span class='ln'>792</span>      if (widget.animateTo) {</div>
+<div class='row nod'><span class='ln'>793</span></div>
+<div class='row nod'><span class='ln'>794</span>        _smoothScrollTo(position, clamped);</div>
+<div class='row nod'><span class='ln'>795</span></div>
+<div class='row nod'><span class='ln'>796</span>      } else {</div>
+<div class='row nod'><span class='ln'>797</span></div>
+<div class='row nod'><span class='ln'>798</span>        _scrollController.jumpTo(clamped);</div>
+<div class='row nod'><span class='ln'>799</span></div>
+<div class='row nod'><span class='ln'>800</span>      }</div>
+<div class='row nod'><span class='ln'>801</span></div>
+<div class='row nod'><span class='ln'>802</span>    }</div>
+<div class='row nod'><span class='ln'>803</span></div>
+<div class='row nod'><span class='ln'>804</span></div>
+<div class='row nod'><span class='ln'>805</span></div>
+<div class='row nod'><span class='ln'>806</span>    WidgetsBinding.instance.addPostFrameCallback((_) {</div>
+<div class='row nod'><span class='ln'>807</span></div>
+<div class='row nod'><span class='ln'>808</span>      attemptScroll();</div>
+<div class='row nod'><span class='ln'>809</span></div>
+<div class='row nod'><span class='ln'>810</span>    });</div>
+<div class='row nod'><span class='ln'>811</span></div>
+<div class='row nod'><span class='ln'>812</span>  }</div>
+<div class='row nod'><span class='ln'>813</span></div>
+<div class='row nod'><span class='ln'>814</span></div>
+<div class='row nod'><span class='ln'>815</span></div>
+<div class='row nod'><span class='ln'>816</span>  /// 长距离滚动优化：先 jumpTo 到目标附近，再做一小段动画补尾。</div>
+<div class='row nod'><span class='ln'>817</span></div>
+<div class='row nod'><span class='ln'>818</span>  ///</div>
+<div class='row nod'><span class='ln'>819</span></div>
+<div class='row nod'><span class='ln'>820</span>  /// 背景：`ListView.builder` 在跨度极大（如跨年）时一次性高速滚动会引发：</div>
+<div class='row nod'><span class='ln'>821</span></div>
+<div class='row nod'><span class='ln'>822</span>  ///   1) itemBuilder 短时间内被调用数十次，每月还要计算农历/节气，主线程被打满</div>
+<div class='row nod'><span class='ln'>823</span></div>
+<div class='row nod'><span class='ln'>824</span>  ///   2) `_onScroll` 沿途反复触发，进一步加重负载</div>
+<div class='row nod'><span class='ln'>825</span></div>
+<div class='row nod'><span class='ln'>826</span>  /// 视觉表现就是&quot;卡顿/掉帧&quot;。</div>
+<div class='row nod'><span class='ln'>827</span></div>
+<div class='row nod'><span class='ln'>828</span>  ///</div>
+<div class='row nod'><span class='ln'>829</span></div>
+<div class='row nod'><span class='ln'>830</span>  /// 优化策略（参考 iOS 通讯录 / 微信会话列表的&quot;远距离跳转&quot;行为）：</div>
+<div class='row nod'><span class='ln'>831</span></div>
+<div class='row nod'><span class='ln'>832</span>  ///   - 跨度 ≤ 3 屏：保持原有 200ms 平滑动画，体验无变化</div>
+<div class='row nod'><span class='ln'>833</span></div>
+<div class='row nod'><span class='ln'>834</span>  ///   - 跨度  &gt; 3 屏：先 jumpTo 到距离目标 1 屏的位置（瞬时，无 build 压力），</div>
+<div class='row nod'><span class='ln'>835</span></div>
+<div class='row nod'><span class='ln'>836</span>  ///                  再用 180ms 平滑滚完最后这 1 屏，仍保留&quot;滑过去&quot;的视觉过渡</div>
+<div class='row nod'><span class='ln'>837</span></div>
+<div class='row nod'><span class='ln'>838</span>  ///</div>
+<div class='row nod'><span class='ln'>839</span></div>
+<div class='row nod'><span class='ln'>840</span>  /// 同时把整段滚动标记为「程序化滚动」：期间 `_onScroll` 不向外回调</div>
+<div class='row nod'><span class='ln'>841</span></div>
+<div class='row nod'><span class='ln'>842</span>  /// onMonthChange，由调用方负责设置目标月份显示，避免中间月份打扰外部状态。</div>
+<div class='row nod'><span class='ln'>843</span></div>
+<div class='row nod'><span class='ln'>844</span>  void _smoothScrollTo(ScrollPosition position, double target) {</div>
+<div class='row nod'><span class='ln'>845</span></div>
+<div class='row nod'><span class='ln'>846</span>    final delta = (target - position.pixels).abs();</div>
+<div class='row nod'><span class='ln'>847</span></div>
+<div class='row nod'><span class='ln'>848</span>    final viewport = position.viewportDimension;</div>
+<div class='row nod'><span class='ln'>849</span></div>
+<div class='row nod'><span class='ln'>850</span>    // 阈值：超过 3 个屏幕高度就走 jump + animate 的组合方案</div>
+<div class='row nod'><span class='ln'>851</span></div>
+<div class='row nod'><span class='ln'>852</span>    const thresholdInViewports = 3.0;</div>
+<div class='row nod'><span class='ln'>853</span></div>
+<div class='row nod'><span class='ln'>854</span></div>
+<div class='row nod'><span class='ln'>855</span></div>
+<div class='row nod'><span class='ln'>856</span>    _programmaticScroll = true;</div>
+<div class='row nod'><span class='ln'>857</span></div>
+<div class='row nod'><span class='ln'>858</span></div>
+<div class='row nod'><span class='ln'>859</span></div>
+<div class='row nod'><span class='ln'>860</span>    if (viewport &gt; 0 &amp;&amp; delta &gt; viewport * thresholdInViewports) {</div>
+<div class='row nod'><span class='ln'>861</span></div>
+<div class='row nod'><span class='ln'>862</span>      // 朝目标方向跳到距离目标 1 屏的位置，给最后一段留出动画空间</div>
+<div class='row nod'><span class='ln'>863</span></div>
+<div class='row nod'><span class='ln'>864</span>      final preJump = target &gt; position.pixels</div>
+<div class='row nod'><span class='ln'>865</span></div>
+<div class='row nod'><span class='ln'>866</span>          ? target - viewport</div>
+<div class='row nod'><span class='ln'>867</span></div>
+<div class='row nod'><span class='ln'>868</span>          : target + viewport;</div>
+<div class='row nod'><span class='ln'>869</span></div>
+<div class='row nod'><span class='ln'>870</span>      _scrollController.jumpTo(preJump.clamp(</div>
+<div class='row nod'><span class='ln'>871</span></div>
+<div class='row nod'><span class='ln'>872</span>        position.minScrollExtent,</div>
+<div class='row nod'><span class='ln'>873</span></div>
+<div class='row nod'><span class='ln'>874</span>        position.maxScrollExtent,</div>
+<div class='row nod'><span class='ln'>875</span></div>
+<div class='row nod'><span class='ln'>876</span>      ));</div>
+<div class='row nod'><span class='ln'>877</span></div>
+<div class='row nod'><span class='ln'>878</span>      // 关键：jumpTo 后必须等 ListView 完成一次 layout（itemExtentBuilder 重新算</div>
+<div class='row nod'><span class='ln'>879</span></div>
+<div class='row nod'><span class='ln'>880</span>      // viewport，可见 item 重新生成），否则紧接着 animateTo 可能拿到陈旧的</div>
+<div class='row nod'><span class='ln'>881</span></div>
+<div class='row nod'><span class='ln'>882</span>      // maxScrollExtent / pixels，触发断言或滚到错误位置。</div>
+<div class='row nod'><span class='ln'>883</span></div>
+<div class='row nod'><span class='ln'>884</span>      WidgetsBinding.instance.addPostFrameCallback((_) {</div>
+<div class='row nod'><span class='ln'>885</span></div>
+<div class='row nod'><span class='ln'>886</span>        if (!mounted || !_scrollController.hasClients) {</div>
+<div class='row nod'><span class='ln'>887</span></div>
+<div class='row nod'><span class='ln'>888</span>          _programmaticScroll = false;</div>
+<div class='row nod'><span class='ln'>889</span></div>
+<div class='row nod'><span class='ln'>890</span>          return;</div>
+<div class='row nod'><span class='ln'>891</span></div>
+<div class='row nod'><span class='ln'>892</span>        }</div>
+<div class='row nod'><span class='ln'>893</span></div>
+<div class='row nod'><span class='ln'>894</span>        // 重新 clamp 一次：jumpTo 后 maxScrollExtent 可能因 itemExtentBuilder</div>
+<div class='row nod'><span class='ln'>895</span></div>
+<div class='row nod'><span class='ln'>896</span>        // 重算而变化（虽然我们用的是固定高度算法，但稳妥起见仍兜底）。</div>
+<div class='row nod'><span class='ln'>897</span></div>
+<div class='row nod'><span class='ln'>898</span>        final pos = _scrollController.position;</div>
+<div class='row nod'><span class='ln'>899</span></div>
+<div class='row nod'><span class='ln'>900</span>        final clampedTarget = target.clamp(</div>
+<div class='row nod'><span class='ln'>901</span></div>
+<div class='row nod'><span class='ln'>902</span>          pos.minScrollExtent,</div>
+<div class='row nod'><span class='ln'>903</span></div>
+<div class='row nod'><span class='ln'>904</span>          pos.maxScrollExtent,</div>
+<div class='row nod'><span class='ln'>905</span></div>
+<div class='row nod'><span class='ln'>906</span>        );</div>
+<div class='row nod'><span class='ln'>907</span></div>
+<div class='row nod'><span class='ln'>908</span>        _runAnimateTo(</div>
+<div class='row nod'><span class='ln'>909</span></div>
+<div class='row nod'><span class='ln'>910</span>          clampedTarget,</div>
+<div class='row nod'><span class='ln'>911</span></div>
+<div class='row nod'><span class='ln'>912</span>          const Duration(milliseconds: 180),</div>
+<div class='row nod'><span class='ln'>913</span></div>
+<div class='row nod'><span class='ln'>914</span>          Curves.easeOut,</div>
+<div class='row nod'><span class='ln'>915</span></div>
+<div class='row nod'><span class='ln'>916</span>        );</div>
+<div class='row nod'><span class='ln'>917</span></div>
+<div class='row nod'><span class='ln'>918</span>      });</div>
+<div class='row nod'><span class='ln'>919</span></div>
+<div class='row nod'><span class='ln'>920</span>    } else {</div>
+<div class='row nod'><span class='ln'>921</span></div>
+<div class='row nod'><span class='ln'>922</span>      _runAnimateTo(</div>
+<div class='row nod'><span class='ln'>923</span></div>
+<div class='row nod'><span class='ln'>924</span>        target,</div>
+<div class='row nod'><span class='ln'>925</span></div>
+<div class='row nod'><span class='ln'>926</span>        const Duration(milliseconds: 200),</div>
+<div class='row nod'><span class='ln'>927</span></div>
+<div class='row nod'><span class='ln'>928</span>        Curves.easeInOut,</div>
+<div class='row nod'><span class='ln'>929</span></div>
+<div class='row nod'><span class='ln'>930</span>      );</div>
+<div class='row nod'><span class='ln'>931</span></div>
+<div class='row nod'><span class='ln'>932</span>    }</div>
+<div class='row nod'><span class='ln'>933</span></div>
+<div class='row nod'><span class='ln'>934</span>  }</div>
+<div class='row nod'><span class='ln'>935</span></div>
+<div class='row nod'><span class='ln'>936</span></div>
+<div class='row nod'><span class='ln'>937</span></div>
+<div class='row nod'><span class='ln'>938</span>  /// 统一的 animateTo 包装：处理动画完成 / 中断时的状态恢复。</div>
+<div class='row nod'><span class='ln'>939</span></div>
+<div class='row nod'><span class='ln'>940</span>  void _runAnimateTo(double target, Duration duration, Curve curve) {</div>
+<div class='row nod'><span class='ln'>941</span></div>
+<div class='row nod'><span class='ln'>942</span>    if (!_scrollController.hasClients) {</div>
+<div class='row nod'><span class='ln'>943</span></div>
+<div class='row nod'><span class='ln'>944</span>      _programmaticScroll = false;</div>
+<div class='row nod'><span class='ln'>945</span></div>
+<div class='row nod'><span class='ln'>946</span>      return;</div>
+<div class='row nod'><span class='ln'>947</span></div>
+<div class='row nod'><span class='ln'>948</span>    }</div>
+<div class='row nod'><span class='ln'>949</span></div>
+<div class='row nod'><span class='ln'>950</span>    _scrollController</div>
+<div class='row nod'><span class='ln'>951</span></div>
+<div class='row nod'><span class='ln'>952</span>        .animateTo(target, duration: duration, curve: curve)</div>
+<div class='row nod'><span class='ln'>953</span></div>
+<div class='row nod'><span class='ln'>954</span>        .whenComplete(() {</div>
+<div class='row nod'><span class='ln'>955</span></div>
+<div class='row nod'><span class='ln'>956</span>      // State 已 dispose 时直接退出，不再触碰 _scrollController（已 dispose）。</div>
+<div class='row nod'><span class='ln'>957</span></div>
+<div class='row nod'><span class='ln'>958</span>      if (!mounted) {</div>
+<div class='row nod'><span class='ln'>959</span></div>
+<div class='row nod'><span class='ln'>960</span>        return;</div>
+<div class='row nod'><span class='ln'>961</span></div>
+<div class='row nod'><span class='ln'>962</span>      }</div>
+<div class='row nod'><span class='ln'>963</span></div>
+<div class='row nod'><span class='ln'>964</span>      _programmaticScroll = false;</div>
+<div class='row nod'><span class='ln'>965</span></div>
+<div class='row nod'><span class='ln'>966</span>      // 落定后补发一次 onMonthChange，让外部确认最终月份；</div>
+<div class='row nod'><span class='ln'>967</span></div>
+<div class='row nod'><span class='ln'>968</span>      // _onScroll 内部仅在 monthKey 变化时回调，幂等。</div>
+<div class='row nod'><span class='ln'>969</span></div>
+<div class='row nod'><span class='ln'>970</span>      if (_scrollController.hasClients) {</div>
+<div class='row nod'><span class='ln'>971</span></div>
+<div class='row nod'><span class='ln'>972</span>        _onScroll();</div>
+<div class='row nod'><span class='ln'>973</span></div>
+<div class='row nod'><span class='ln'>974</span>      }</div>
+<div class='row nod'><span class='ln'>975</span></div>
+<div class='row nod'><span class='ln'>976</span>    });</div>
+<div class='row nod'><span class='ln'>977</span></div>
+<div class='row nod'><span class='ln'>978</span>  }</div>
+<div class='row nod'><span class='ln'>979</span></div>
+<div class='row nod'><span class='ln'>980</span></div>
+<div class='row nod'><span class='ln'>981</span></div>
+<div class='row nod'><span class='ln'>982</span>  List&lt;DateTime&gt; _monthsBetween(DateTime min, DateTime max) {</div>
+<div class='row nod'><span class='ln'>983</span></div>
+<div class='row nod'><span class='ln'>984</span>    final months = &lt;DateTime&gt;[];</div>
+<div class='row nod'><span class='ln'>985</span></div>
+<div class='row nod'><span class='ln'>986</span>    var current = DateTime(min.year, min.month);</div>
+<div class='row nod'><span class='ln'>987</span></div>
+<div class='row nod'><span class='ln'>988</span>    while (current.compareTo(max) &lt;= 0) {</div>
+<div class='row nod'><span class='ln'>989</span></div>
+<div class='row nod'><span class='ln'>990</span>      months.add(current);</div>
+<div class='row nod'><span class='ln'>991</span></div>
+<div class='row nod'><span class='ln'>992</span>      current = DateTime(current.year, current.month + 1);</div>
+<div class='row nod'><span class='ln'>993</span></div>
+<div class='row nod'><span class='ln'>994</span>    }</div>
+<div class='row nod'><span class='ln'>995</span></div>
+<div class='row nod'><span class='ln'>996</span>    return months;</div>
+<div class='row nod'><span class='ln'>997</span></div>
+<div class='row nod'><span class='ln'>998</span>  }</div>
+<div class='row nod'><span class='ln'>999</span></div>
+<div class='row nod'><span class='ln'>1000</span></div>
+<div class='row nod'><span class='ln'>1001</span></div>
+<div class='row nod'><span class='ln'>1002</span>  List&lt;TCalendarCellModel?&gt; _getDaysInMonth(</div>
+<div class='row nod'><span class='ln'>1003</span></div>
+<div class='row nod'><span class='ln'>1004</span>      DateTime curDate, DateTime min, DateTime max) {</div>
+<div class='row nod'><span class='ln'>1005</span></div>
+<div class='row nod'><span class='ln'>1006</span>    final daysInMonth = List&lt;TCalendarCellModel?&gt;.generate(</div>
+<div class='row nod'><span class='ln'>1007</span></div>
+<div class='row nod'><span class='ln'>1008</span>        _getPreOffset(curDate), (index) =&gt; null);</div>
+<div class='row nod'><span class='ln'>1009</span></div>
+<div class='row nod'><span class='ln'>1010</span>    final daysInMonthCount = DateTime(curDate.year, curDate.month + 1, 0)</div>
+<div class='row nod'><span class='ln'>1011</span></div>
+<div class='row nod'><span class='ln'>1012</span>        .day; // 获取下个月的第一天的前一天，即当前月的最后一天</div>
+<div class='row nod'><span class='ln'>1013</span></div>
+<div class='row nod'><span class='ln'>1014</span>    for (var day = 1; day &lt;= daysInMonthCount; day++) {</div>
+<div class='row nod'><span class='ln'>1015</span></div>
+<div class='row nod'><span class='ln'>1016</span>      final date = DateTime(curDate.year, curDate.month, day);</div>
+<div class='row nod'><span class='ln'>1017</span></div>
+<div class='row nod'><span class='ln'>1018</span>      var selectType = DateSelectType.empty;</div>
+<div class='row nod'><span class='ln'>1019</span></div>
+<div class='row nod'><span class='ln'>1020</span>      if (date.compareTo(min) == -1 || date.compareTo(max) == 1) {</div>
+<div class='row nod'><span class='ln'>1021</span></div>
+<div class='row nod'><span class='ln'>1022</span>        selectType = DateSelectType.disabled;</div>
+<div class='row nod'><span class='ln'>1023</span></div>
+<div class='row nod'><span class='ln'>1024</span>      } else if (widget.type == TCalendarVariant.single &amp;&amp;</div>
+<div class='row nod'><span class='ln'>1025</span></div>
+<div class='row nod'><span class='ln'>1026</span>          (widget.initialValue?.length ?? 0) &gt;= 1) {</div>
+<div class='row nod'><span class='ln'>1027</span></div>
+<div class='row nod'><span class='ln'>1028</span>        if (date.compareTo(widget.initialValue![0]) == 0) {</div>
+<div class='row nod'><span class='ln'>1029</span></div>
+<div class='row nod'><span class='ln'>1030</span>          selectType = DateSelectType.selected;</div>
+<div class='row nod'><span class='ln'>1031</span></div>
+<div class='row nod'><span class='ln'>1032</span>        }</div>
+<div class='row nod'><span class='ln'>1033</span></div>
+<div class='row nod'><span class='ln'>1034</span>      } else if (widget.type == TCalendarVariant.multiple &amp;&amp;</div>
+<div class='row nod'><span class='ln'>1035</span></div>
+<div class='row nod'><span class='ln'>1036</span>          widget.initialValue != null) {</div>
+<div class='row nod'><span class='ln'>1037</span></div>
+<div class='row nod'><span class='ln'>1038</span>        if (widget.initialValue!.isContains((e) =&gt; date.compareTo(e) == 0)) {</div>
+<div class='row nod'><span class='ln'>1039</span></div>
+<div class='row nod'><span class='ln'>1040</span>          selectType = DateSelectType.selected;</div>
+<div class='row nod'><span class='ln'>1041</span></div>
+<div class='row nod'><span class='ln'>1042</span>        }</div>
+<div class='row nod'><span class='ln'>1043</span></div>
+<div class='row nod'><span class='ln'>1044</span>      } else if (widget.type == TCalendarVariant.range &amp;&amp;</div>
+<div class='row nod'><span class='ln'>1045</span></div>
+<div class='row nod'><span class='ln'>1046</span>          (widget.initialValue?.length ?? 0) &gt;= 1) {</div>
+<div class='row nod'><span class='ln'>1047</span></div>
+<div class='row nod'><span class='ln'>1048</span>        final end =</div>
+<div class='row nod'><span class='ln'>1049</span></div>
+<div class='row nod'><span class='ln'>1050</span>            (widget.initialValue?.length ?? 0) &gt; 1 ? widget.initialValue![1] : null;</div>
+<div class='row nod'><span class='ln'>1051</span></div>
+<div class='row nod'><span class='ln'>1052</span>        if (date.compareTo(widget.initialValue![0]) == 0) {</div>
+<div class='row nod'><span class='ln'>1053</span></div>
+<div class='row nod'><span class='ln'>1054</span>          selectType = DateSelectType.start;</div>
+<div class='row nod'><span class='ln'>1055</span></div>
+<div class='row nod'><span class='ln'>1056</span>        }</div>
+<div class='row nod'><span class='ln'>1057</span></div>
+<div class='row nod'><span class='ln'>1058</span>        if (end != null &amp;&amp; widget.initialValue![0].compareTo(end) &lt; 0) {</div>
+<div class='row nod'><span class='ln'>1059</span></div>
+<div class='row nod'><span class='ln'>1060</span>          if (date.compareTo(end) == 0) {</div>
+<div class='row nod'><span class='ln'>1061</span></div>
+<div class='row nod'><span class='ln'>1062</span>            selectType = DateSelectType.end;</div>
+<div class='row nod'><span class='ln'>1063</span></div>
+<div class='row nod'><span class='ln'>1064</span>          }</div>
+<div class='row nod'><span class='ln'>1065</span></div>
+<div class='row nod'><span class='ln'>1066</span>          if (date.compareTo(widget.initialValue![0]) == 1 &amp;&amp;</div>
+<div class='row nod'><span class='ln'>1067</span></div>
+<div class='row nod'><span class='ln'>1068</span>              date.compareTo(end) == -1) {</div>
+<div class='row nod'><span class='ln'>1069</span></div>
+<div class='row nod'><span class='ln'>1070</span>            selectType = DateSelectType.centre;</div>
+<div class='row nod'><span class='ln'>1071</span></div>
+<div class='row nod'><span class='ln'>1072</span>          }</div>
+<div class='row nod'><span class='ln'>1073</span></div>
+<div class='row nod'><span class='ln'>1074</span>        }</div>
+<div class='row nod'><span class='ln'>1075</span></div>
+<div class='row nod'><span class='ln'>1076</span>      }</div>
+<div class='row nod'><span class='ln'>1077</span></div>
+<div class='row nod'><span class='ln'>1078</span>      daysInMonth.add(TCalendarCellModel(</div>
+<div class='row nod'><span class='ln'>1079</span></div>
+<div class='row nod'><span class='ln'>1080</span>        date: date,</div>
+<div class='row nod'><span class='ln'>1081</span></div>
+<div class='row nod'><span class='ln'>1082</span>        typeNotifier: DateSelectTypeNotifier(selectType),</div>
+<div class='row nod'><span class='ln'>1083</span></div>
+<div class='row nod'><span class='ln'>1084</span>        isLastDayOfMonth: daysInMonthCount == day,</div>
+<div class='row nod'><span class='ln'>1085</span></div>
+<div class='row nod'><span class='ln'>1086</span>      ));</div>
+<div class='row nod'><span class='ln'>1087</span></div>
+<div class='row nod'><span class='ln'>1088</span>    }</div>
+<div class='row nod'><span class='ln'>1089</span></div>
+<div class='row nod'><span class='ln'>1090</span>    var sufOffset = 7 - daysInMonth.length % 7;</div>
+<div class='row nod'><span class='ln'>1091</span></div>
+<div class='row nod'><span class='ln'>1092</span>    sufOffset = sufOffset == 7 ? 0 : sufOffset;</div>
+<div class='row nod'><span class='ln'>1093</span></div>
+<div class='row nod'><span class='ln'>1094</span>    for (var i = 0; i &lt; sufOffset; i++) {</div>
+<div class='row nod'><span class='ln'>1095</span></div>
+<div class='row nod'><span class='ln'>1096</span>      daysInMonth.add(null);</div>
+<div class='row nod'><span class='ln'>1097</span></div>
+<div class='row nod'><span class='ln'>1098</span>    }</div>
+<div class='row nod'><span class='ln'>1099</span></div>
+<div class='row nod'><span class='ln'>1100</span>    return daysInMonth;</div>
+<div class='row nod'><span class='ln'>1101</span></div>
+<div class='row nod'><span class='ln'>1102</span>  }</div>
+<div class='row nod'><span class='ln'>1103</span></div>
+<div class='row nod'><span class='ln'>1104</span></div>
+<div class='row nod'><span class='ln'>1105</span></div>
+<div class='row nod'><span class='ln'>1106</span>  int _getPreOffset(DateTime date) {</div>
+<div class='row nod'><span class='ln'>1107</span></div>
+<div class='row nod'><span class='ln'>1108</span>    final year = date.year;</div>
+<div class='row nod'><span class='ln'>1109</span></div>
+<div class='row nod'><span class='ln'>1110</span>    final month = date.month;</div>
+<div class='row nod'><span class='ln'>1111</span></div>
+<div class='row nod'><span class='ln'>1112</span>    var dayOneWeek = DateTime(year, month).weekday;</div>
+<div class='row nod'><span class='ln'>1113</span></div>
+<div class='row nod'><span class='ln'>1114</span>    dayOneWeek = dayOneWeek == 7 ? 0 : dayOneWeek;</div>
+<div class='row nod'><span class='ln'>1115</span></div>
+<div class='row nod'><span class='ln'>1116</span>    var preOffset = dayOneWeek - widget.firstDayOfWeek;</div>
+<div class='row nod'><span class='ln'>1117</span></div>
+<div class='row nod'><span class='ln'>1118</span>    preOffset = preOffset &lt; 0 ? preOffset + 7 : preOffset;</div>
+<div class='row nod'><span class='ln'>1119</span></div>
+<div class='row nod'><span class='ln'>1120</span>    return preOffset;</div>
+<div class='row nod'><span class='ln'>1121</span></div>
+<div class='row nod'><span class='ln'>1122</span>  }</div>
+<div class='row nod'><span class='ln'>1123</span></div>
+<div class='row nod'><span class='ln'>1124</span></div>
+<div class='row nod'><span class='ln'>1125</span></div>
+<div class='row nod'><span class='ln'>1126</span>  /// 获取月份高度，带缓存</div>
+<div class='row nod'><span class='ln'>1127</span></div>
+<div class='row nod'><span class='ln'>1128</span>  double _getMonthHeight(</div>
+<div class='row nod'><span class='ln'>1129</span></div>
+<div class='row nod'><span class='ln'>1130</span>      List&lt;DateTime&gt; months, int index, Map&lt;int, double&gt; monthHeight) {</div>
+<div class='row nod'><span class='ln'>1131</span></div>
+<div class='row nod'><span class='ln'>1132</span>    if (months.getOrNull(index) == null) {</div>
+<div class='row nod'><span class='ln'>1133</span></div>
+<div class='row nod'><span class='ln'>1134</span>      return 1;</div>
+<div class='row nod'><span class='ln'>1135</span></div>
+<div class='row nod'><span class='ln'>1136</span>    }</div>
+<div class='row nod'><span class='ln'>1137</span></div>
+<div class='row nod'><span class='ln'>1138</span>    if (monthHeight.containsKey(index)) {</div>
+<div class='row nod'><span class='ln'>1139</span></div>
+<div class='row nod'><span class='ln'>1140</span>      return monthHeight[index]!;</div>
+<div class='row nod'><span class='ln'>1141</span></div>
+<div class='row nod'><span class='ln'>1142</span>    }</div>
+<div class='row nod'><span class='ln'>1143</span></div>
+<div class='row nod'><span class='ln'>1144</span>    final item = months[index];</div>
+<div class='row nod'><span class='ln'>1145</span></div>
+<div class='row nod'><span class='ln'>1146</span>    final isLast = index == months.length - 1;</div>
+<div class='row nod'><span class='ln'>1147</span></div>
+<div class='row nod'><span class='ln'>1148</span>    final preOffset = _getPreOffset(item);</div>
+<div class='row nod'><span class='ln'>1149</span></div>
+<div class='row nod'><span class='ln'>1150</span>    final daysInMonthCount = DateTime(item.year, item.month + 1, 0).day;</div>
+<div class='row nod'><span class='ln'>1151</span></div>
+<div class='row nod'><span class='ln'>1152</span>    final daysInMonth = preOffset + daysInMonthCount;</div>
+<div class='row nod'><span class='ln'>1153</span></div>
+<div class='row nod'><span class='ln'>1154</span>    final height = widget.monthTitleHeight +</div>
+<div class='row nod'><span class='ln'>1155</span></div>
+<div class='row nod'><span class='ln'>1156</span>        (daysInMonth / 7).ceil() * (widget.verticalGap + widget.cellHeight) +</div>
+<div class='row nod'><span class='ln'>1157</span></div>
+<div class='row nod'><span class='ln'>1158</span>        (isLast ? 0 : widget.bodyPadding);</div>
+<div class='row nod'><span class='ln'>1159</span></div>
+<div class='row nod'><span class='ln'>1160</span>    monthHeight[index] = height;</div>
+<div class='row nod'><span class='ln'>1161</span></div>
+<div class='row nod'><span class='ln'>1162</span>    return height;</div>
+<div class='row nod'><span class='ln'>1163</span></div>
+<div class='row nod'><span class='ln'>1164</span>  }</div>
+<div class='row nod'><span class='ln'>1165</span></div>
+<div class='row nod'><span class='ln'>1166</span>}</div>
+<div class='row nod'><span class='ln'>1167</span></div>
+<div class='row nod'><span class='ln'>1168</span></div>
+</pre></body></html>

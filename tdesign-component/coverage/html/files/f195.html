@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/swiper/t_swiper_theme_data.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/swiper/t_swiper_theme_data.dart</h1></header><div class='meta'>行覆盖 <b>85.7%</b> (12/14) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:ui&#x27; show lerpDouble;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span></div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span></div>
+<div class='row nod'><span class='ln'>9</span>/// 轮播指示器形态</div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span>enum TSwiperPaginationVariant { none, dots, dotsBar, fraction, controls }</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span></div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>/// 切换效果</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>enum TSwiperPageEffect { none, cardMargin, scaleAndFade }</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span></div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row nod'><span class='ln'>21</span>/// 轮播组件级 ThemeExtension</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>class TSwiperThemeData extends ThemeExtension&lt;TSwiperThemeData&gt; {</div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row cov'><span class='ln'>25</span>  /// 未传 TSwiper.pagination 时的默认指示器形态</div>
+<div class='row nod'><span class='ln'>26</span>  final TSwiperPaginationVariant? pagination;</div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row nod'><span class='ln'>28</span></div>
+<div class='row nod'><span class='ln'>29</span></div>
+<div class='row nod'><span class='ln'>30</span>  /// 未传 TSwiper.pageEffect 时的默认切换效果</div>
+<div class='row nod'><span class='ln'>31</span>  final TSwiperPageEffect? pageEffect;</div>
+<div class='row cov'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span></div>
+<div class='row nod'><span class='ln'>35</span>  /// 指示器外边距</div>
+<div class='row nod'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>  final EdgeInsetsGeometry? paginationMargin;</div>
+<div class='row nod'><span class='ln'>38</span></div>
+<div class='row cov'><span class='ln'>39</span></div>
+<div class='row unc'><span class='ln'>40</span>▶ </div>
+<div class='row cov'><span class='ln'>41</span>  /// 自动播放间隔</div>
+<div class='row cov'><span class='ln'>42</span></div>
+<div class='row unc'><span class='ln'>43</span>▶   final Duration? autoplayInterval;</div>
+<div class='row nod'><span class='ln'>44</span></div>
+<div class='row nod'><span class='ln'>45</span></div>
+<div class='row nod'><span class='ln'>46</span></div>
+<div class='row cov'><span class='ln'>47</span>  const TSwiperThemeData({</div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row cov'><span class='ln'>49</span>    this.pagination,</div>
+<div class='row nod'><span class='ln'>50</span></div>
+<div class='row nod'><span class='ln'>51</span>    this.pageEffect,</div>
+<div class='row cov'><span class='ln'>52</span></div>
+<div class='row cov'><span class='ln'>53</span>    this.paginationMargin,</div>
+<div class='row cov'><span class='ln'>54</span></div>
+<div class='row nod'><span class='ln'>55</span>    this.autoplayInterval,</div>
+<div class='row cov'><span class='ln'>56</span></div>
+<div class='row nod'><span class='ln'>57</span>  });</div>
+<div class='row cov'><span class='ln'>58</span></div>
+<div class='row nod'><span class='ln'>59</span></div>
+<div class='row nod'><span class='ln'>60</span></div>
+<div class='row nod'><span class='ln'>61</span>  @override</div>
+<div class='row nod'><span class='ln'>62</span></div>
+<div class='row nod'><span class='ln'>63</span>  TSwiperThemeData copyWith({</div>
+<div class='row nod'><span class='ln'>64</span></div>
+<div class='row nod'><span class='ln'>65</span>    TSwiperPaginationVariant? pagination,</div>
+<div class='row nod'><span class='ln'>66</span></div>
+<div class='row nod'><span class='ln'>67</span>    TSwiperPageEffect? pageEffect,</div>
+<div class='row nod'><span class='ln'>68</span></div>
+<div class='row nod'><span class='ln'>69</span>    EdgeInsetsGeometry? paginationMargin,</div>
+<div class='row nod'><span class='ln'>70</span></div>
+<div class='row nod'><span class='ln'>71</span>    Duration? autoplayInterval,</div>
+<div class='row nod'><span class='ln'>72</span></div>
+<div class='row nod'><span class='ln'>73</span>  }) {</div>
+<div class='row nod'><span class='ln'>74</span></div>
+<div class='row nod'><span class='ln'>75</span>    return TSwiperThemeData(</div>
+<div class='row nod'><span class='ln'>76</span></div>
+<div class='row nod'><span class='ln'>77</span>      pagination: pagination ?? this.pagination,</div>
+<div class='row nod'><span class='ln'>78</span></div>
+<div class='row nod'><span class='ln'>79</span>      pageEffect: pageEffect ?? this.pageEffect,</div>
+<div class='row nod'><span class='ln'>80</span></div>
+<div class='row nod'><span class='ln'>81</span>      paginationMargin: paginationMargin ?? this.paginationMargin,</div>
+<div class='row nod'><span class='ln'>82</span></div>
+<div class='row nod'><span class='ln'>83</span>      autoplayInterval: autoplayInterval ?? this.autoplayInterval,</div>
+<div class='row nod'><span class='ln'>84</span></div>
+<div class='row nod'><span class='ln'>85</span>    );</div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row nod'><span class='ln'>87</span>  }</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row nod'><span class='ln'>89</span></div>
+<div class='row nod'><span class='ln'>90</span></div>
+<div class='row nod'><span class='ln'>91</span>  @override</div>
+<div class='row nod'><span class='ln'>92</span></div>
+<div class='row nod'><span class='ln'>93</span>  TSwiperThemeData lerp(ThemeExtension&lt;TSwiperThemeData&gt;? other, double t) {</div>
+<div class='row nod'><span class='ln'>94</span></div>
+<div class='row nod'><span class='ln'>95</span>    if (other is! TSwiperThemeData) {</div>
+<div class='row nod'><span class='ln'>96</span>      return this;</div>
+<div class='row nod'><span class='ln'>97</span>    }</div>
+<div class='row nod'><span class='ln'>98</span>    return TSwiperThemeData(</div>
+<div class='row nod'><span class='ln'>99</span></div>
+<div class='row nod'><span class='ln'>100</span>      pagination: t &lt; 0.5 ? pagination : other.pagination,</div>
+<div class='row nod'><span class='ln'>101</span></div>
+<div class='row nod'><span class='ln'>102</span>      pageEffect: t &lt; 0.5 ? pageEffect : other.pageEffect,</div>
+<div class='row nod'><span class='ln'>103</span></div>
+<div class='row nod'><span class='ln'>104</span>      paginationMargin:</div>
+<div class='row nod'><span class='ln'>105</span></div>
+<div class='row nod'><span class='ln'>106</span>          EdgeInsetsGeometry.lerp(paginationMargin, other.paginationMargin, t),</div>
+<div class='row nod'><span class='ln'>107</span></div>
+<div class='row nod'><span class='ln'>108</span>      autoplayInterval:</div>
+<div class='row nod'><span class='ln'>109</span></div>
+<div class='row nod'><span class='ln'>110</span>          t &lt; 0.5 ? autoplayInterval : other.autoplayInterval,</div>
+<div class='row nod'><span class='ln'>111</span></div>
+<div class='row nod'><span class='ln'>112</span>    );</div>
+<div class='row nod'><span class='ln'>113</span></div>
+<div class='row nod'><span class='ln'>114</span>  }</div>
+<div class='row nod'><span class='ln'>115</span></div>
+<div class='row nod'><span class='ln'>116</span>}</div>
+<div class='row nod'><span class='ln'>117</span></div>
+<div class='row nod'><span class='ln'>118</span></div>
+</pre></body></html>

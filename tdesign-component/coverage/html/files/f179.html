@@ -1,0 +1,2160 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/slider/t_slider_theme.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/slider/t_slider_theme.dart</h1></header><div class='meta'>行覆盖 <b>49.0%</b> (382/780) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>///</div>
+<div class='row nod'><span class='ln'>2</span>///  Created by arvinwli@tencent.com on 4/24/23.</div>
+<div class='row nod'><span class='ln'>3</span>///</div>
+<div class='row nod'><span class='ln'>4</span>import &#x27;dart:math&#x27; as math;</div>
+<div class='row nod'><span class='ln'>5</span></div>
+<div class='row nod'><span class='ln'>6</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>9</span></div>
+<div class='row nod'><span class='ln'>10</span>/// 刻度显示格式化</div>
+<div class='row nod'><span class='ln'>11</span>typedef ScaleFormatter = String Function(double value);</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>/// 修改系统主题的回调</div>
+<div class='row nod'><span class='ln'>14</span>typedef OnSliderThemeDataUpdate = SliderThemeData Function(</div>
+<div class='row nod'><span class='ln'>15</span>  SliderThemeData sliderThemeData,</div>
+<div class='row nod'><span class='ln'>16</span>);</div>
+<div class='row nod'><span class='ln'>17</span></div>
+<div class='row nod'><span class='ln'>18</span>/// slider 显示样式配置（v1.0 ThemeExtension）</div>
+<div class='row nod'><span class='ln'>19</span>///</div>
+<div class='row nod'><span class='ln'>20</span>/// 通过 `Theme.of(context).extension&lt;TSliderThemeData&gt;()` 读取，</div>
+<div class='row nod'><span class='ln'>21</span>/// 子树覆盖用 `Theme.of(context).mergeExtension(TSliderThemeData(...))`。</div>
+<div class='row nod'><span class='ln'>22</span>/// 颜色解析延迟到 [normal] / [capsule] 调用时，由调用方传入 `TThemeData token`。</div>
+<div class='row nod'><span class='ln'>23</span>class TSliderThemeData extends ThemeExtension&lt;TSliderThemeData&gt; {</div>
+<div class='row nod'><span class='ln'>24</span>  /// 是否显示游标值</div>
+<div class='row nod'><span class='ln'>25</span>  final bool showThumbValue;</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row nod'><span class='ln'>27</span>  /// 游标上文本样式（颜色延迟到 normal/capsule 中解析）</div>
+<div class='row nod'><span class='ln'>28</span>  final TextStyle? thumbTextStyle;</div>
+<div class='row nod'><span class='ln'>29</span></div>
+<div class='row nod'><span class='ln'>30</span>  /// disable 时游标的样式（颜色延迟到 normal/capsule 中解析）</div>
+<div class='row nod'><span class='ln'>31</span>  final TextStyle? disabledThumbTextStyle;</div>
+<div class='row nod'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span>  /// 是否显示刻度值</div>
+<div class='row nod'><span class='ln'>34</span>  final bool showScaleValue;</div>
+<div class='row nod'><span class='ln'>35</span></div>
+<div class='row nod'><span class='ln'>36</span>  /// 刻度值的格式化</div>
+<div class='row nod'><span class='ln'>37</span>  final ScaleFormatter? scaleFormatter;</div>
+<div class='row nod'><span class='ln'>38</span></div>
+<div class='row nod'><span class='ln'>39</span>  /// 刻度值的样式（颜色延迟到 normal/capsule 中解析）</div>
+<div class='row nod'><span class='ln'>40</span>  final TextStyle? scaleTextStyle;</div>
+<div class='row nod'><span class='ln'>41</span></div>
+<div class='row nod'><span class='ln'>42</span>  /// disabled 状态时刻度的样式（颜色延迟到 normal/capsule 中解析）</div>
+<div class='row nod'><span class='ln'>43</span>  final TextStyle? disabledScaleTextStyle;</div>
+<div class='row nod'><span class='ln'>44</span></div>
+<div class='row nod'><span class='ln'>45</span>  /// 分割几块</div>
+<div class='row nod'><span class='ln'>46</span>  final int? divisions;</div>
+<div class='row nod'><span class='ln'>47</span></div>
+<div class='row nod'><span class='ln'>48</span>  /// 最小值</div>
+<div class='row nod'><span class='ln'>49</span>  final double min;</div>
+<div class='row nod'><span class='ln'>50</span></div>
+<div class='row nod'><span class='ln'>51</span>  /// 最大值</div>
+<div class='row nod'><span class='ln'>52</span>  final double max;</div>
+<div class='row nod'><span class='ln'>53</span></div>
+<div class='row nod'><span class='ln'>54</span>  /// 运行时测量的数据，这里用于组件内部使用</div>
+<div class='row nod'><span class='ln'>55</span>  /// 每个 Widget 实例应通过 [copyWith] 创建独立副本以隔离测量数据</div>
+<div class='row nod'><span class='ln'>56</span>  final SliderMeasureData sliderMeasureData;</div>
+<div class='row nod'><span class='ln'>57</span></div>
+<div class='row nod'><span class='ln'>58</span>  /// 系统 SliderThemeData 缓存</div>
+<div class='row nod'><span class='ln'>59</span>  SliderThemeData? _sliderThemeData;</div>
+<div class='row nod'><span class='ln'>60</span></div>
+<div class='row nod'><span class='ln'>61</span>  /// 是否为胶囊类型</div>
+<div class='row nod'><span class='ln'>62</span>  final bool _capsule;</div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row nod'><span class='ln'>64</span>  /// 运行时 token 引用（由 sliderThemeData(token) 设置，供 effective* getter 解析颜色）</div>
+<div class='row nod'><span class='ln'>65</span>  TThemeData? _token;</div>
+<div class='row nod'><span class='ln'>66</span></div>
+<div class='row nod'><span class='ln'>67</span>  /// 激活颜色</div>
+<div class='row nod'><span class='ln'>68</span>  final Color? activeTrackColor;</div>
+<div class='row nod'><span class='ln'>69</span></div>
+<div class='row nod'><span class='ln'>70</span>  /// 非激活颜色</div>
+<div class='row nod'><span class='ln'>71</span>  final Color? inactiveTrackColor;</div>
+<div class='row nod'><span class='ln'>72</span></div>
+<div class='row nod'><span class='ln'>73</span>  /// 普通构建方法</div>
+<div class='row cov'><span class='ln'>74</span>  TSliderThemeData({</div>
+<div class='row nod'><span class='ln'>75</span>    this.showScaleValue = false,</div>
+<div class='row nod'><span class='ln'>76</span>    this.showThumbValue = false,</div>
+<div class='row nod'><span class='ln'>77</span>    this.divisions,</div>
+<div class='row nod'><span class='ln'>78</span>    TextStyle? scaleTextStyle,</div>
+<div class='row nod'><span class='ln'>79</span>    TextStyle? disabledScaleTextStyle,</div>
+<div class='row nod'><span class='ln'>80</span>    TextStyle? thumbTextStyle,</div>
+<div class='row nod'><span class='ln'>81</span>    TextStyle? disabledThumbTextStyle,</div>
+<div class='row nod'><span class='ln'>82</span>    this.min = 0.0,</div>
+<div class='row nod'><span class='ln'>83</span>    this.max = 1.0,</div>
+<div class='row nod'><span class='ln'>84</span>    this.scaleFormatter,</div>
+<div class='row nod'><span class='ln'>85</span>    this.activeTrackColor,</div>
+<div class='row nod'><span class='ln'>86</span>    this.inactiveTrackColor,</div>
+<div class='row nod'><span class='ln'>87</span>    SliderThemeData? sliderThemeData,</div>
+<div class='row nod'><span class='ln'>88</span>  })  : scaleTextStyle = scaleTextStyle,</div>
+<div class='row nod'><span class='ln'>89</span>        disabledScaleTextStyle = disabledScaleTextStyle,</div>
+<div class='row nod'><span class='ln'>90</span>        thumbTextStyle = thumbTextStyle,</div>
+<div class='row nod'><span class='ln'>91</span>        disabledThumbTextStyle = disabledThumbTextStyle,</div>
+<div class='row nod'><span class='ln'>92</span>        _sliderThemeData = sliderThemeData,</div>
+<div class='row nod'><span class='ln'>93</span>        _capsule = false,</div>
+<div class='row cov'><span class='ln'>94</span>        sliderMeasureData = SliderMeasureData();</div>
+<div class='row nod'><span class='ln'>95</span></div>
+<div class='row nod'><span class='ln'>96</span>  /// 胶囊型构建方法</div>
+<div class='row cov'><span class='ln'>97</span>  TSliderThemeData.capsule({</div>
+<div class='row nod'><span class='ln'>98</span>    this.showScaleValue = false,</div>
+<div class='row nod'><span class='ln'>99</span>    this.showThumbValue = false,</div>
+<div class='row nod'><span class='ln'>100</span>    this.divisions,</div>
+<div class='row nod'><span class='ln'>101</span>    TextStyle? scaleTextStyle,</div>
+<div class='row nod'><span class='ln'>102</span>    TextStyle? disabledScaleTextStyle,</div>
+<div class='row nod'><span class='ln'>103</span>    TextStyle? thumbTextStyle,</div>
+<div class='row nod'><span class='ln'>104</span>    TextStyle? disabledThumbTextStyle,</div>
+<div class='row nod'><span class='ln'>105</span>    this.min = 0.0,</div>
+<div class='row nod'><span class='ln'>106</span>    this.max = 1.0,</div>
+<div class='row nod'><span class='ln'>107</span>    this.scaleFormatter,</div>
+<div class='row nod'><span class='ln'>108</span>    this.activeTrackColor,</div>
+<div class='row nod'><span class='ln'>109</span>    this.inactiveTrackColor,</div>
+<div class='row nod'><span class='ln'>110</span>    SliderThemeData? sliderThemeData,</div>
+<div class='row nod'><span class='ln'>111</span>  })  : scaleTextStyle = scaleTextStyle,</div>
+<div class='row nod'><span class='ln'>112</span>        disabledScaleTextStyle = disabledScaleTextStyle,</div>
+<div class='row nod'><span class='ln'>113</span>        thumbTextStyle = thumbTextStyle,</div>
+<div class='row nod'><span class='ln'>114</span>        disabledThumbTextStyle = disabledThumbTextStyle,</div>
+<div class='row nod'><span class='ln'>115</span>        _sliderThemeData = sliderThemeData,</div>
+<div class='row nod'><span class='ln'>116</span>        _capsule = true,</div>
+<div class='row cov'><span class='ln'>117</span>        sliderMeasureData = SliderMeasureData();</div>
+<div class='row nod'><span class='ln'>118</span></div>
+<div class='row nod'><span class='ln'>119</span>  /// 私有构造器，用于 copyWith 内部创建副本</div>
+<div class='row cov'><span class='ln'>120</span>  TSliderThemeData._internal({</div>
+<div class='row nod'><span class='ln'>121</span>    required this.showScaleValue,</div>
+<div class='row nod'><span class='ln'>122</span>    required this.showThumbValue,</div>
+<div class='row nod'><span class='ln'>123</span>    required this.scaleTextStyle,</div>
+<div class='row nod'><span class='ln'>124</span>    required this.disabledScaleTextStyle,</div>
+<div class='row nod'><span class='ln'>125</span>    required this.thumbTextStyle,</div>
+<div class='row nod'><span class='ln'>126</span>    required this.disabledThumbTextStyle,</div>
+<div class='row nod'><span class='ln'>127</span>    required this.divisions,</div>
+<div class='row nod'><span class='ln'>128</span>    required this.min,</div>
+<div class='row nod'><span class='ln'>129</span>    required this.max,</div>
+<div class='row nod'><span class='ln'>130</span>    required this.scaleFormatter,</div>
+<div class='row nod'><span class='ln'>131</span>    required this.activeTrackColor,</div>
+<div class='row nod'><span class='ln'>132</span>    required this.inactiveTrackColor,</div>
+<div class='row nod'><span class='ln'>133</span>    required bool capsule,</div>
+<div class='row nod'><span class='ln'>134</span>    required this.sliderMeasureData,</div>
+<div class='row nod'><span class='ln'>135</span>    SliderThemeData? sliderThemeData,</div>
+<div class='row nod'><span class='ln'>136</span>  })  : _capsule = capsule,</div>
+<div class='row nod'><span class='ln'>137</span>        _sliderThemeData = sliderThemeData;</div>
+<div class='row nod'><span class='ln'>138</span></div>
+<div class='row nod'><span class='ln'>139</span>  /// 获取系统主题（接收 token 参数延迟解析颜色）</div>
+<div class='row cov'><span class='ln'>140</span>  SliderThemeData sliderThemeData(TThemeData token) {</div>
+<div class='row cov'><span class='ln'>141</span>    _token = token;</div>
+<div class='row cov'><span class='ln'>142</span>    _sliderThemeData ??= _capsule ? capsule(token) : normal(token);</div>
+<div class='row cov'><span class='ln'>143</span>    return _sliderThemeData!;</div>
+<div class='row nod'><span class='ln'>144</span>  }</div>
+<div class='row nod'><span class='ln'>145</span></div>
+<div class='row nod'><span class='ln'>146</span>  /// 游标文本样式（带主题色回退）</div>
+<div class='row cov'><span class='ln'>147</span>  TextStyle get effectiveThumbTextStyle =&gt;</div>
+<div class='row cov'><span class='ln'>148</span>      TextStyle(color: _token?.textColorPrimary ?? Colors.black87)</div>
+<div class='row cov'><span class='ln'>149</span>          .merge(thumbTextStyle);</div>
+<div class='row nod'><span class='ln'>150</span></div>
+<div class='row nod'><span class='ln'>151</span>  /// 禁用态游标文本样式（带主题色回退）</div>
+<div class='row unc'><span class='ln'>152</span>▶   TextStyle get effectiveDisabledThumbTextStyle =&gt;</div>
+<div class='row unc'><span class='ln'>153</span>▶       TextStyle(color: _token?.textDisabledColor ?? Colors.grey)</div>
+<div class='row unc'><span class='ln'>154</span>▶           .merge(disabledThumbTextStyle);</div>
+<div class='row nod'><span class='ln'>155</span></div>
+<div class='row nod'><span class='ln'>156</span>  /// 刻度文本样式（带主题色回退）</div>
+<div class='row unc'><span class='ln'>157</span>▶   TextStyle get effectiveScaleTextStyle =&gt;</div>
+<div class='row unc'><span class='ln'>158</span>▶       TextStyle(color: _token?.textColorSecondary ?? Colors.black54)</div>
+<div class='row unc'><span class='ln'>159</span>▶           .merge(scaleTextStyle);</div>
+<div class='row nod'><span class='ln'>160</span></div>
+<div class='row nod'><span class='ln'>161</span>  /// 禁用态刻度文本样式（带主题色回退）</div>
+<div class='row unc'><span class='ln'>162</span>▶   TextStyle get effectiveDisabledScaleTextStyle =&gt;</div>
+<div class='row unc'><span class='ln'>163</span>▶       TextStyle(color: _token?.textDisabledColor ?? Colors.grey)</div>
+<div class='row unc'><span class='ln'>164</span>▶           .merge(disabledScaleTextStyle);</div>
+<div class='row nod'><span class='ln'>165</span></div>
+<div class='row nod'><span class='ln'>166</span>  /// 更新系统主题</div>
+<div class='row unc'><span class='ln'>167</span>▶   void updateSliderThemeData(</div>
+<div class='row nod'><span class='ln'>168</span>    TThemeData token,</div>
+<div class='row nod'><span class='ln'>169</span>    OnSliderThemeDataUpdate onSliderThemeDataUpdate,</div>
+<div class='row nod'><span class='ln'>170</span>  ) {</div>
+<div class='row unc'><span class='ln'>171</span>▶     _sliderThemeData = onSliderThemeDataUpdate(sliderThemeData(token));</div>
+<div class='row nod'><span class='ln'>172</span>  }</div>
+<div class='row nod'><span class='ln'>173</span></div>
+<div class='row nod'><span class='ln'>174</span>  /// 构建普通系统主题</div>
+<div class='row cov'><span class='ln'>175</span>  SliderThemeData normal(TThemeData token) {</div>
+<div class='row cov'><span class='ln'>176</span>    return SliderThemeData(</div>
+<div class='row nod'><span class='ln'>177</span>      trackHeight: 4,</div>
+<div class='row cov'><span class='ln'>178</span>      activeTrackColor: activeTrackColor ?? token.brandNormalColor,</div>
+<div class='row cov'><span class='ln'>179</span>      inactiveTrackColor: inactiveTrackColor ?? token.bgColorComponent,</div>
+<div class='row cov'><span class='ln'>180</span>      disabledActiveTrackColor: token.brandDisabledColor,</div>
+<div class='row cov'><span class='ln'>181</span>      disabledInactiveTrackColor: token.bgColorComponentDisabled,</div>
+<div class='row cov'><span class='ln'>182</span>      activeTickMarkColor: token.brandNormalColor,</div>
+<div class='row cov'><span class='ln'>183</span>      inactiveTickMarkColor: token.bgColorComponent,</div>
+<div class='row cov'><span class='ln'>184</span>      disabledActiveTickMarkColor: token.brandDisabledColor,</div>
+<div class='row cov'><span class='ln'>185</span>      disabledInactiveTickMarkColor: token.bgColorComponentDisabled,</div>
+<div class='row nod'><span class='ln'>186</span>      thumbColor: Colors.white,</div>
+<div class='row cov'><span class='ln'>187</span>      disabledThumbColor: token.bgColorSecondaryContainer,</div>
+<div class='row nod'><span class='ln'>188</span>      overlayShape: const TNoOverlayShape(),</div>
+<div class='row cov'><span class='ln'>189</span>      tickMarkShape: TRoundSliderTickMarkShape(themeData: this),</div>
+<div class='row cov'><span class='ln'>190</span>      thumbShape: TRoundSliderThumbShape(</div>
+<div class='row nod'><span class='ln'>191</span>        themeData: this,</div>
+<div class='row cov'><span class='ln'>192</span>        strokeColor: token.componentStrokeColor,</div>
+<div class='row nod'><span class='ln'>193</span>      ),</div>
+<div class='row cov'><span class='ln'>194</span>      trackShape: TRoundedRectSliderTrackShape(themeData: this),</div>
+<div class='row cov'><span class='ln'>195</span>      rangeTickMarkShape: TRoundRangeSliderTickMarkShape(themeData: this),</div>
+<div class='row cov'><span class='ln'>196</span>      rangeThumbShape: TRoundRangeSliderThumbShape(</div>
+<div class='row nod'><span class='ln'>197</span>        themeData: this,</div>
+<div class='row cov'><span class='ln'>198</span>        strokeColor: token.componentStrokeColor,</div>
+<div class='row nod'><span class='ln'>199</span>      ),</div>
+<div class='row cov'><span class='ln'>200</span>      rangeTrackShape: TRoundedRectRangeSliderTrackShape(themeData: this),</div>
+<div class='row nod'><span class='ln'>201</span>      showValueIndicator: ShowValueIndicator.never,</div>
+<div class='row nod'><span class='ln'>202</span>    );</div>
+<div class='row nod'><span class='ln'>203</span>  }</div>
+<div class='row nod'><span class='ln'>204</span></div>
+<div class='row nod'><span class='ln'>205</span>  /// 构建胶囊型系统主题</div>
+<div class='row cov'><span class='ln'>206</span>  SliderThemeData capsule(TThemeData token) {</div>
+<div class='row cov'><span class='ln'>207</span>    return SliderThemeData(</div>
+<div class='row cov'><span class='ln'>208</span>      trackShape: TCapsuleRectSliderTrackShape(</div>
+<div class='row nod'><span class='ln'>209</span>        themeData: this,</div>
+<div class='row cov'><span class='ln'>210</span>        trackColorWhenShowScale: token.bgColorContainerActive,</div>
+<div class='row nod'><span class='ln'>211</span>      ),</div>
+<div class='row cov'><span class='ln'>212</span>      tickMarkShape: TCapsuleSliderTickMarkShape(themeData: this),</div>
+<div class='row cov'><span class='ln'>213</span>      thumbShape: TCapsuleSliderThumbShape(</div>
+<div class='row nod'><span class='ln'>214</span>        themeData: this,</div>
+<div class='row cov'><span class='ln'>215</span>        strokeColor: token.componentStrokeColor,</div>
+<div class='row nod'><span class='ln'>216</span>      ),</div>
+<div class='row cov'><span class='ln'>217</span>      rangeTrackShape: TCapsuleRectRangeSliderTrackShape(</div>
+<div class='row nod'><span class='ln'>218</span>        themeData: this,</div>
+<div class='row cov'><span class='ln'>219</span>        trackColorWhenShowScale: token.bgColorContainerActive,</div>
+<div class='row nod'><span class='ln'>220</span>      ),</div>
+<div class='row cov'><span class='ln'>221</span>      rangeTickMarkShape: TCapsuleRangeSliderTickMarkShape(themeData: this),</div>
+<div class='row cov'><span class='ln'>222</span>      rangeThumbShape: TCapsuleRangeSliderThumbShape(</div>
+<div class='row nod'><span class='ln'>223</span>        themeData: this,</div>
+<div class='row cov'><span class='ln'>224</span>        strokeColor: token.componentStrokeColor,</div>
+<div class='row nod'><span class='ln'>225</span>      ),</div>
+<div class='row cov'><span class='ln'>226</span>      activeTickMarkColor: token.bgColorContainerActive,</div>
+<div class='row cov'><span class='ln'>227</span>      inactiveTickMarkColor: token.bgColorContainerActive,</div>
+<div class='row cov'><span class='ln'>228</span>      disabledActiveTickMarkColor: token.bgColorContainerActive,</div>
+<div class='row cov'><span class='ln'>229</span>      disabledInactiveTickMarkColor: token.bgColorContainerActive,</div>
+<div class='row nod'><span class='ln'>230</span>      thumbColor: Colors.white,</div>
+<div class='row cov'><span class='ln'>231</span>      disabledThumbColor: token.bgColorSecondaryContainer,</div>
+<div class='row nod'><span class='ln'>232</span>      trackHeight: 24,</div>
+<div class='row cov'><span class='ln'>233</span>      activeTrackColor: activeTrackColor ?? token.brandNormalColor,</div>
+<div class='row cov'><span class='ln'>234</span>      inactiveTrackColor: inactiveTrackColor ?? token.bgColorComponent,</div>
+<div class='row cov'><span class='ln'>235</span>      disabledActiveTrackColor: token.brandDisabledColor,</div>
+<div class='row cov'><span class='ln'>236</span>      disabledInactiveTrackColor: token.bgColorComponentDisabled,</div>
+<div class='row nod'><span class='ln'>237</span>      overlayShape: const TNoOverlayShape(),</div>
+<div class='row nod'><span class='ln'>238</span>      showValueIndicator: ShowValueIndicator.never,</div>
+<div class='row nod'><span class='ln'>239</span>    );</div>
+<div class='row nod'><span class='ln'>240</span>  }</div>
+<div class='row nod'><span class='ln'>241</span></div>
+<div class='row nod'><span class='ln'>242</span>  /// 复制数据，创建工作副本（隔离 sliderMeasureData 运行时数据）</div>
+<div class='row cov'><span class='ln'>243</span>  @override</div>
+<div class='row nod'><span class='ln'>244</span>  TSliderThemeData copyWith({</div>
+<div class='row nod'><span class='ln'>245</span>    bool? showScaleValue,</div>
+<div class='row nod'><span class='ln'>246</span>    bool? showThumbValue,</div>
+<div class='row nod'><span class='ln'>247</span>    TextStyle? disabledScaleTextStyle,</div>
+<div class='row nod'><span class='ln'>248</span>    TextStyle? disabledThumbTextStyle,</div>
+<div class='row nod'><span class='ln'>249</span>    TextStyle? scaleTextStyle,</div>
+<div class='row nod'><span class='ln'>250</span>    TextStyle? thumbTextStyle,</div>
+<div class='row nod'><span class='ln'>251</span>    int? divisions,</div>
+<div class='row nod'><span class='ln'>252</span>    double? min,</div>
+<div class='row nod'><span class='ln'>253</span>    double? max,</div>
+<div class='row nod'><span class='ln'>254</span>    ScaleFormatter? scaleFormatter,</div>
+<div class='row nod'><span class='ln'>255</span>    Color? activeTrackColor,</div>
+<div class='row nod'><span class='ln'>256</span>    Color? inactiveTrackColor,</div>
+<div class='row nod'><span class='ln'>257</span>  }) {</div>
+<div class='row cov'><span class='ln'>258</span>    return TSliderThemeData._internal(</div>
+<div class='row cov'><span class='ln'>259</span>      showScaleValue: showScaleValue ?? this.showScaleValue,</div>
+<div class='row cov'><span class='ln'>260</span>      showThumbValue: showThumbValue ?? this.showThumbValue,</div>
+<div class='row nod'><span class='ln'>261</span>      disabledScaleTextStyle:</div>
+<div class='row cov'><span class='ln'>262</span>          disabledScaleTextStyle ?? this.disabledScaleTextStyle,</div>
+<div class='row nod'><span class='ln'>263</span>      disabledThumbTextStyle:</div>
+<div class='row cov'><span class='ln'>264</span>          disabledThumbTextStyle ?? this.disabledThumbTextStyle,</div>
+<div class='row cov'><span class='ln'>265</span>      scaleTextStyle: scaleTextStyle ?? this.scaleTextStyle,</div>
+<div class='row cov'><span class='ln'>266</span>      thumbTextStyle: thumbTextStyle ?? this.thumbTextStyle,</div>
+<div class='row cov'><span class='ln'>267</span>      divisions: divisions ?? this.divisions,</div>
+<div class='row cov'><span class='ln'>268</span>      min: min ?? this.min,</div>
+<div class='row cov'><span class='ln'>269</span>      max: max ?? this.max,</div>
+<div class='row cov'><span class='ln'>270</span>      scaleFormatter: scaleFormatter ?? this.scaleFormatter,</div>
+<div class='row cov'><span class='ln'>271</span>      activeTrackColor: activeTrackColor ?? this.activeTrackColor,</div>
+<div class='row cov'><span class='ln'>272</span>      inactiveTrackColor: inactiveTrackColor ?? this.inactiveTrackColor,</div>
+<div class='row cov'><span class='ln'>273</span>      capsule: _capsule,</div>
+<div class='row cov'><span class='ln'>274</span>      sliderMeasureData: SliderMeasureData(),</div>
+<div class='row nod'><span class='ln'>275</span>    );</div>
+<div class='row nod'><span class='ln'>276</span>  }</div>
+<div class='row nod'><span class='ln'>277</span></div>
+<div class='row unc'><span class='ln'>278</span>▶   @override</div>
+<div class='row nod'><span class='ln'>279</span>  TSliderThemeData lerp(ThemeExtension&lt;TSliderThemeData&gt;? other, double t) {</div>
+<div class='row unc'><span class='ln'>280</span>▶     if (other is! TSliderThemeData) {</div>
+<div class='row nod'><span class='ln'>281</span>      return this;</div>
+<div class='row nod'><span class='ln'>282</span>    }</div>
+<div class='row nod'><span class='ln'>283</span>    // 无法 lerp 的字段（函数、可变对象）采用阈值切换</div>
+<div class='row unc'><span class='ln'>284</span>▶     if (t &lt; 0.5) {</div>
+<div class='row nod'><span class='ln'>285</span>      return this;</div>
+<div class='row nod'><span class='ln'>286</span>    }</div>
+<div class='row nod'><span class='ln'>287</span>    return other;</div>
+<div class='row nod'><span class='ln'>288</span>  }</div>
+<div class='row nod'><span class='ln'>289</span>}</div>
+<div class='row nod'><span class='ln'>290</span></div>
+<div class='row nod'><span class='ln'>291</span>/// 内部测量数据</div>
+<div class='row nod'><span class='ln'>292</span>class SliderMeasureData {</div>
+<div class='row nod'><span class='ln'>293</span>  Rect? trackerRect;</div>
+<div class='row nod'><span class='ln'>294</span>  Offset? thumbCenter;</div>
+<div class='row nod'><span class='ln'>295</span>  Rect? thumbTextRect;</div>
+<div class='row nod'><span class='ln'>296</span>  Rect? startRangeThumbTextRect;</div>
+<div class='row nod'><span class='ln'>297</span>  Rect? endRangeThumbTextRect;</div>
+<div class='row nod'><span class='ln'>298</span>}</div>
+<div class='row nod'><span class='ln'>299</span></div>
+<div class='row nod'><span class='ln'>300</span>/// Slider轨道绘制</div>
+<div class='row nod'><span class='ln'>301</span>class TRoundedRectSliderTrackShape extends SliderTrackShape</div>
+<div class='row nod'><span class='ln'>302</span>    with BaseSliderTrackShape {</div>
+<div class='row nod'><span class='ln'>303</span>  /// Create a slider track that draws two rectangles with rounded outer edges.</div>
+<div class='row cov'><span class='ln'>304</span>  const TRoundedRectSliderTrackShape({required this.themeData});</div>
+<div class='row nod'><span class='ln'>305</span></div>
+<div class='row nod'><span class='ln'>306</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>307</span></div>
+<div class='row cov'><span class='ln'>308</span>  @override</div>
+<div class='row nod'><span class='ln'>309</span>  void paint(</div>
+<div class='row nod'><span class='ln'>310</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>311</span>    Offset offset, {</div>
+<div class='row nod'><span class='ln'>312</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>313</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>314</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>315</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>316</span>    required Offset thumbCenter,</div>
+<div class='row nod'><span class='ln'>317</span>    Offset? secondaryOffset,</div>
+<div class='row nod'><span class='ln'>318</span>    bool isDiscrete = false,</div>
+<div class='row nod'><span class='ln'>319</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>320</span>    double additionalActiveTrackHeight = 2,</div>
+<div class='row nod'><span class='ln'>321</span>  }) {</div>
+<div class='row cov'><span class='ln'>322</span>    assert(sliderTheme.disabledActiveTrackColor != null);</div>
+<div class='row cov'><span class='ln'>323</span>    assert(sliderTheme.disabledInactiveTrackColor != null);</div>
+<div class='row cov'><span class='ln'>324</span>    assert(sliderTheme.activeTrackColor != null);</div>
+<div class='row cov'><span class='ln'>325</span>    assert(sliderTheme.inactiveTrackColor != null);</div>
+<div class='row cov'><span class='ln'>326</span>    assert(sliderTheme.thumbShape != null);</div>
+<div class='row nod'><span class='ln'>327</span>    // If the slider [SliderThemeData.trackHeight] is less than or equal to 0,</div>
+<div class='row nod'><span class='ln'>328</span>    // then it makes no difference whether the track is painted or not,</div>
+<div class='row nod'><span class='ln'>329</span>    // therefore the painting can be a no-op.</div>
+<div class='row cov'><span class='ln'>330</span>    if (sliderTheme.trackHeight == null || sliderTheme.trackHeight! &lt;= 0) {</div>
+<div class='row nod'><span class='ln'>331</span>      return;</div>
+<div class='row nod'><span class='ln'>332</span>    }</div>
+<div class='row nod'><span class='ln'>333</span></div>
+<div class='row nod'><span class='ln'>334</span>    // Assign the track segment paints, which are leading: active and</div>
+<div class='row nod'><span class='ln'>335</span>    // trailing: inactive.</div>
+<div class='row cov'><span class='ln'>336</span>    final activeTrackColorTween = ColorTween(</div>
+<div class='row cov'><span class='ln'>337</span>        begin: sliderTheme.disabledActiveTrackColor,</div>
+<div class='row cov'><span class='ln'>338</span>        end: sliderTheme.activeTrackColor);</div>
+<div class='row cov'><span class='ln'>339</span>    final inactiveTrackColorTween = ColorTween(</div>
+<div class='row cov'><span class='ln'>340</span>        begin: sliderTheme.disabledInactiveTrackColor,</div>
+<div class='row cov'><span class='ln'>341</span>        end: sliderTheme.inactiveTrackColor);</div>
+<div class='row cov'><span class='ln'>342</span>    final activePaint = Paint()</div>
+<div class='row cov'><span class='ln'>343</span>      ..color = activeTrackColorTween.evaluate(enableAnimation)!;</div>
+<div class='row cov'><span class='ln'>344</span>    final inactivePaint = Paint()</div>
+<div class='row cov'><span class='ln'>345</span>      ..color = inactiveTrackColorTween.evaluate(enableAnimation)!;</div>
+<div class='row nod'><span class='ln'>346</span>    final Paint leftTrackPaint;</div>
+<div class='row nod'><span class='ln'>347</span>    final Paint rightTrackPaint;</div>
+<div class='row nod'><span class='ln'>348</span>    switch (textDirection) {</div>
+<div class='row cov'><span class='ln'>349</span>      case TextDirection.ltr:</div>
+<div class='row nod'><span class='ln'>350</span>        leftTrackPaint = activePaint;</div>
+<div class='row nod'><span class='ln'>351</span>        rightTrackPaint = inactivePaint;</div>
+<div class='row nod'><span class='ln'>352</span>        break;</div>
+<div class='row unc'><span class='ln'>353</span>▶       case TextDirection.rtl:</div>
+<div class='row nod'><span class='ln'>354</span>        leftTrackPaint = inactivePaint;</div>
+<div class='row nod'><span class='ln'>355</span>        rightTrackPaint = activePaint;</div>
+<div class='row nod'><span class='ln'>356</span>        break;</div>
+<div class='row nod'><span class='ln'>357</span>    }</div>
+<div class='row nod'><span class='ln'>358</span></div>
+<div class='row cov'><span class='ln'>359</span>    final trackRect = getPreferredRect(</div>
+<div class='row nod'><span class='ln'>360</span>      parentBox: parentBox,</div>
+<div class='row nod'><span class='ln'>361</span>      offset: offset,</div>
+<div class='row nod'><span class='ln'>362</span>      sliderTheme: sliderTheme,</div>
+<div class='row nod'><span class='ln'>363</span>      isEnabled: isEnabled,</div>
+<div class='row nod'><span class='ln'>364</span>      isDiscrete: isDiscrete,</div>
+<div class='row nod'><span class='ln'>365</span>    );</div>
+<div class='row nod'><span class='ln'>366</span>    // record size ,Use it when calculating thumb text position</div>
+<div class='row cov'><span class='ln'>367</span>    themeData.sliderMeasureData.trackerRect = trackRect;</div>
+<div class='row cov'><span class='ln'>368</span>    final trackRadius = Radius.circular(trackRect.height / 2);</div>
+<div class='row nod'><span class='ln'>369</span>    final activeTrackRadius =</div>
+<div class='row cov'><span class='ln'>370</span>        Radius.circular((trackRect.height + additionalActiveTrackHeight) / 2);</div>
+<div class='row nod'><span class='ln'>371</span></div>
+<div class='row cov'><span class='ln'>372</span>    context.canvas.drawRRect(</div>
+<div class='row cov'><span class='ln'>373</span>      RRect.fromLTRBAndCorners(</div>
+<div class='row cov'><span class='ln'>374</span>        trackRect.left,</div>
+<div class='row cov'><span class='ln'>375</span>        (textDirection == TextDirection.rtl)</div>
+<div class='row unc'><span class='ln'>376</span>▶             ? trackRect.top - (additionalActiveTrackHeight / 2)</div>
+<div class='row cov'><span class='ln'>377</span>            : trackRect.top,</div>
+<div class='row cov'><span class='ln'>378</span>        thumbCenter.dx,</div>
+<div class='row cov'><span class='ln'>379</span>        (textDirection == TextDirection.rtl)</div>
+<div class='row unc'><span class='ln'>380</span>▶             ? trackRect.bottom + (additionalActiveTrackHeight / 2)</div>
+<div class='row cov'><span class='ln'>381</span>            : trackRect.bottom,</div>
+<div class='row cov'><span class='ln'>382</span>        topLeft: (textDirection == TextDirection.ltr)</div>
+<div class='row nod'><span class='ln'>383</span>            ? activeTrackRadius</div>
+<div class='row nod'><span class='ln'>384</span>            : trackRadius,</div>
+<div class='row cov'><span class='ln'>385</span>        bottomLeft: (textDirection == TextDirection.ltr)</div>
+<div class='row nod'><span class='ln'>386</span>            ? activeTrackRadius</div>
+<div class='row nod'><span class='ln'>387</span>            : trackRadius,</div>
+<div class='row nod'><span class='ln'>388</span>      ),</div>
+<div class='row nod'><span class='ln'>389</span>      leftTrackPaint,</div>
+<div class='row nod'><span class='ln'>390</span>    );</div>
+<div class='row cov'><span class='ln'>391</span>    context.canvas.drawRRect(</div>
+<div class='row cov'><span class='ln'>392</span>      RRect.fromLTRBAndCorners(</div>
+<div class='row cov'><span class='ln'>393</span>        thumbCenter.dx,</div>
+<div class='row cov'><span class='ln'>394</span>        (textDirection == TextDirection.rtl)</div>
+<div class='row unc'><span class='ln'>395</span>▶             ? trackRect.top - (additionalActiveTrackHeight / 2)</div>
+<div class='row cov'><span class='ln'>396</span>            : trackRect.top,</div>
+<div class='row cov'><span class='ln'>397</span>        trackRect.right,</div>
+<div class='row cov'><span class='ln'>398</span>        (textDirection == TextDirection.rtl)</div>
+<div class='row unc'><span class='ln'>399</span>▶             ? trackRect.bottom + (additionalActiveTrackHeight / 2)</div>
+<div class='row cov'><span class='ln'>400</span>            : trackRect.bottom,</div>
+<div class='row cov'><span class='ln'>401</span>        topRight: (textDirection == TextDirection.rtl)</div>
+<div class='row nod'><span class='ln'>402</span>            ? activeTrackRadius</div>
+<div class='row nod'><span class='ln'>403</span>            : trackRadius,</div>
+<div class='row cov'><span class='ln'>404</span>        bottomRight: (textDirection == TextDirection.rtl)</div>
+<div class='row nod'><span class='ln'>405</span>            ? activeTrackRadius</div>
+<div class='row nod'><span class='ln'>406</span>            : trackRadius,</div>
+<div class='row nod'><span class='ln'>407</span>      ),</div>
+<div class='row nod'><span class='ln'>408</span>      rightTrackPaint,</div>
+<div class='row nod'><span class='ln'>409</span>    );</div>
+<div class='row nod'><span class='ln'>410</span>  }</div>
+<div class='row nod'><span class='ln'>411</span>}</div>
+<div class='row nod'><span class='ln'>412</span></div>
+<div class='row nod'><span class='ln'>413</span>/// 游标的绘制</div>
+<div class='row nod'><span class='ln'>414</span>class TRoundSliderThumbShape extends SliderComponentShape {</div>
+<div class='row nod'><span class='ln'>415</span>  /// Create a slider thumb that draws a circle.</div>
+<div class='row cov'><span class='ln'>416</span>  const TRoundSliderThumbShape({</div>
+<div class='row nod'><span class='ln'>417</span>    this.enabledThumbRadius = 10.0,</div>
+<div class='row nod'><span class='ln'>418</span>    this.disabledThumbRadius,</div>
+<div class='row nod'><span class='ln'>419</span>    this.elevation = 4.0,</div>
+<div class='row nod'><span class='ln'>420</span>    this.pressedElevation = 4.0,</div>
+<div class='row nod'><span class='ln'>421</span>    required this.themeData,</div>
+<div class='row nod'><span class='ln'>422</span>    required this.strokeColor,</div>
+<div class='row nod'><span class='ln'>423</span>  });</div>
+<div class='row nod'><span class='ln'>424</span></div>
+<div class='row nod'><span class='ln'>425</span>  /// The preferred radius of the round thumb shape when the slider is enabled.</div>
+<div class='row nod'><span class='ln'>426</span>  ///</div>
+<div class='row nod'><span class='ln'>427</span>  /// If it is not provided, then the Material Design default of 10 is used.</div>
+<div class='row nod'><span class='ln'>428</span>  final double enabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>429</span></div>
+<div class='row nod'><span class='ln'>430</span>  /// The preferred radius of the round thumb shape when the slider is disabled.</div>
+<div class='row nod'><span class='ln'>431</span>  ///</div>
+<div class='row nod'><span class='ln'>432</span>  /// If no disabledRadius is provided, then it is equal to the</div>
+<div class='row nod'><span class='ln'>433</span>  /// [enabledThumbRadius]</div>
+<div class='row nod'><span class='ln'>434</span>  final double? disabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>435</span></div>
+<div class='row cov'><span class='ln'>436</span>  double get _disabledThumbRadius =&gt; disabledThumbRadius ?? enabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>437</span></div>
+<div class='row nod'><span class='ln'>438</span>  /// The resting elevation adds shadow to the unpressed thumb.</div>
+<div class='row nod'><span class='ln'>439</span>  ///</div>
+<div class='row nod'><span class='ln'>440</span>  /// The default is 1.</div>
+<div class='row nod'><span class='ln'>441</span>  ///</div>
+<div class='row nod'><span class='ln'>442</span>  /// Use 0 for no shadow. The higher the value, the larger the shadow. For</div>
+<div class='row nod'><span class='ln'>443</span>  /// example, a value of 12 will create a very large shadow.</div>
+<div class='row nod'><span class='ln'>444</span>  ///</div>
+<div class='row nod'><span class='ln'>445</span>  final double elevation;</div>
+<div class='row nod'><span class='ln'>446</span></div>
+<div class='row nod'><span class='ln'>447</span>  /// The pressed elevation adds shadow to the pressed thumb.</div>
+<div class='row nod'><span class='ln'>448</span>  ///</div>
+<div class='row nod'><span class='ln'>449</span>  /// The default is 6.</div>
+<div class='row nod'><span class='ln'>450</span>  ///</div>
+<div class='row nod'><span class='ln'>451</span>  /// Use 0 for no shadow. The higher the value, the larger the shadow. For</div>
+<div class='row nod'><span class='ln'>452</span>  /// example, a value of 12 will create a very large shadow.</div>
+<div class='row nod'><span class='ln'>453</span>  final double pressedElevation;</div>
+<div class='row nod'><span class='ln'>454</span></div>
+<div class='row nod'><span class='ln'>455</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>456</span></div>
+<div class='row nod'><span class='ln'>457</span>  /// 游标描边颜色（v1.0：从 buildContext.tTheme 改为直接传入 Color）</div>
+<div class='row nod'><span class='ln'>458</span>  final Color strokeColor;</div>
+<div class='row nod'><span class='ln'>459</span></div>
+<div class='row cov'><span class='ln'>460</span>  @override</div>
+<div class='row nod'><span class='ln'>461</span>  Size getPreferredSize(bool isEnabled, bool isDiscrete) {</div>
+<div class='row cov'><span class='ln'>462</span>    return Size.fromRadius(</div>
+<div class='row cov'><span class='ln'>463</span>        isEnabled == true ? enabledThumbRadius : _disabledThumbRadius);</div>
+<div class='row nod'><span class='ln'>464</span>  }</div>
+<div class='row nod'><span class='ln'>465</span></div>
+<div class='row cov'><span class='ln'>466</span>  @override</div>
+<div class='row nod'><span class='ln'>467</span>  void paint(</div>
+<div class='row nod'><span class='ln'>468</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>469</span>    Offset center, {</div>
+<div class='row nod'><span class='ln'>470</span>    required Animation&lt;double&gt; activationAnimation,</div>
+<div class='row nod'><span class='ln'>471</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>472</span>    required bool isDiscrete,</div>
+<div class='row nod'><span class='ln'>473</span>    required TextPainter labelPainter,</div>
+<div class='row nod'><span class='ln'>474</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>475</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>476</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>477</span>    required double value,</div>
+<div class='row nod'><span class='ln'>478</span>    required double textScaleFactor,</div>
+<div class='row nod'><span class='ln'>479</span>    required Size sizeWithOverflow,</div>
+<div class='row nod'><span class='ln'>480</span>  }) {</div>
+<div class='row cov'><span class='ln'>481</span>    assert(sliderTheme.disabledThumbColor != null);</div>
+<div class='row cov'><span class='ln'>482</span>    assert(sliderTheme.thumbColor != null);</div>
+<div class='row nod'><span class='ln'>483</span></div>
+<div class='row cov'><span class='ln'>484</span>    final canvas = context.canvas;</div>
+<div class='row cov'><span class='ln'>485</span>    final radiusTween = Tween&lt;double&gt;(</div>
+<div class='row cov'><span class='ln'>486</span>      begin: _disabledThumbRadius,</div>
+<div class='row cov'><span class='ln'>487</span>      end: enabledThumbRadius,</div>
+<div class='row nod'><span class='ln'>488</span>    );</div>
+<div class='row cov'><span class='ln'>489</span>    final colorTween = ColorTween(</div>
+<div class='row cov'><span class='ln'>490</span>      begin: sliderTheme.disabledThumbColor,</div>
+<div class='row cov'><span class='ln'>491</span>      end: sliderTheme.thumbColor,</div>
+<div class='row nod'><span class='ln'>492</span>    );</div>
+<div class='row nod'><span class='ln'>493</span></div>
+<div class='row cov'><span class='ln'>494</span>    final color = colorTween.evaluate(enableAnimation)!;</div>
+<div class='row cov'><span class='ln'>495</span>    final radius = radiusTween.evaluate(enableAnimation);</div>
+<div class='row nod'><span class='ln'>496</span></div>
+<div class='row cov'><span class='ln'>497</span>    final elevationTween = Tween&lt;double&gt;(</div>
+<div class='row cov'><span class='ln'>498</span>      begin: elevation,</div>
+<div class='row cov'><span class='ln'>499</span>      end: pressedElevation,</div>
+<div class='row nod'><span class='ln'>500</span>    );</div>
+<div class='row nod'><span class='ln'>501</span></div>
+<div class='row cov'><span class='ln'>502</span>    final evaluatedElevation = elevationTween.evaluate(activationAnimation);</div>
+<div class='row cov'><span class='ln'>503</span>    final path = Path()</div>
+<div class='row cov'><span class='ln'>504</span>      ..addArc(</div>
+<div class='row cov'><span class='ln'>505</span>          Rect.fromCenter(</div>
+<div class='row cov'><span class='ln'>506</span>              center: center, width: 2 * radius, height: 2 * radius),</div>
+<div class='row nod'><span class='ln'>507</span>          0,</div>
+<div class='row cov'><span class='ln'>508</span>          math.pi * 2);</div>
+<div class='row nod'><span class='ln'>509</span></div>
+<div class='row nod'><span class='ln'>510</span>    var paintShadows = true;</div>
+<div class='row nod'><span class='ln'>511</span></div>
+<div class='row nod'><span class='ln'>512</span>    if (paintShadows) {</div>
+<div class='row cov'><span class='ln'>513</span>      canvas.drawShadow(</div>
+<div class='row nod'><span class='ln'>514</span>          path, const Color.fromRGBO(0, 0, 0, 0.5), evaluatedElevation, true);</div>
+<div class='row nod'><span class='ln'>515</span>    }</div>
+<div class='row nod'><span class='ln'>516</span>    // draw thumb text</div>
+<div class='row cov'><span class='ln'>517</span>    if (themeData.showThumbValue &amp;&amp;</div>
+<div class='row cov'><span class='ln'>518</span>        themeData.sliderMeasureData.trackerRect != null) {</div>
+<div class='row cov'><span class='ln'>519</span>      var trackerRect = themeData.sliderMeasureData.trackerRect!;</div>
+<div class='row cov'><span class='ln'>520</span>      var ratio = (center.dx - trackerRect.left) /</div>
+<div class='row cov'><span class='ln'>521</span>          (trackerRect.right - trackerRect.left);</div>
+<div class='row nod'><span class='ln'>522</span>      //计算滑块的值</div>
+<div class='row cov'><span class='ln'>523</span>      var value = (themeData.max - themeData.min) * ratio + themeData.min;</div>
+<div class='row nod'><span class='ln'>524</span>      //格式化显示</div>
+<div class='row cov'><span class='ln'>525</span>      var formatterValue = themeData.scaleFormatter == null</div>
+<div class='row cov'><span class='ln'>526</span>          ? value.toStringAsFixed(2)</div>
+<div class='row unc'><span class='ln'>527</span>▶           : themeData.scaleFormatter!(value);</div>
+<div class='row nod'><span class='ln'>528</span>      //绘制数值</div>
+<div class='row cov'><span class='ln'>529</span>      var painter = TextPainter(</div>
+<div class='row cov'><span class='ln'>530</span>          text: TextSpan(</div>
+<div class='row cov'><span class='ln'>531</span>              text: &#x27;$formatterValue&#x27;,</div>
+<div class='row cov'><span class='ln'>532</span>              style: enableAnimation.value &gt; 0</div>
+<div class='row cov'><span class='ln'>533</span>                  ? themeData.effectiveThumbTextStyle</div>
+<div class='row unc'><span class='ln'>534</span>▶                   : themeData.effectiveDisabledThumbTextStyle),</div>
+<div class='row nod'><span class='ln'>535</span>          textDirection: TextDirection.ltr,</div>
+<div class='row nod'><span class='ln'>536</span>          textAlign: TextAlign.center)</div>
+<div class='row cov'><span class='ln'>537</span>        ..layout(maxWidth: 100);</div>
+<div class='row nod'><span class='ln'>538</span></div>
+<div class='row cov'><span class='ln'>539</span>      var textPosition = Offset(</div>
+<div class='row cov'><span class='ln'>540</span>          center.dx - painter.width / 2, center.dy - painter.height - 14);</div>
+<div class='row cov'><span class='ln'>541</span>      painter.paint(context.canvas, textPosition);</div>
+<div class='row cov'><span class='ln'>542</span>      themeData.sliderMeasureData.thumbTextRect = Rect.fromLTWH(</div>
+<div class='row cov'><span class='ln'>543</span>          center.dx - painter.width / 2,</div>
+<div class='row cov'><span class='ln'>544</span>          center.dy - painter.height - 14,</div>
+<div class='row cov'><span class='ln'>545</span>          painter.width,</div>
+<div class='row cov'><span class='ln'>546</span>          painter.height);</div>
+<div class='row nod'><span class='ln'>547</span>    }</div>
+<div class='row cov'><span class='ln'>548</span>    var paint = Paint();</div>
+<div class='row cov'><span class='ln'>549</span>    paint.color = color;</div>
+<div class='row cov'><span class='ln'>550</span>    canvas.drawCircle(</div>
+<div class='row nod'><span class='ln'>551</span>      center,</div>
+<div class='row nod'><span class='ln'>552</span>      radius,</div>
+<div class='row nod'><span class='ln'>553</span>      paint,</div>
+<div class='row nod'><span class='ln'>554</span>    );</div>
+<div class='row cov'><span class='ln'>555</span>    canvas.drawArc(</div>
+<div class='row cov'><span class='ln'>556</span>        Rect.fromCircle(center: center, radius: radius),</div>
+<div class='row nod'><span class='ln'>557</span>        0,</div>
+<div class='row cov'><span class='ln'>558</span>        2 * math.pi,</div>
+<div class='row nod'><span class='ln'>559</span>        false,</div>
+<div class='row cov'><span class='ln'>560</span>        Paint()</div>
+<div class='row cov'><span class='ln'>561</span>          ..style = PaintingStyle.stroke</div>
+<div class='row cov'><span class='ln'>562</span>          ..strokeWidth = 1</div>
+<div class='row cov'><span class='ln'>563</span>          ..color = strokeColor);</div>
+<div class='row nod'><span class='ln'>564</span>  }</div>
+<div class='row nod'><span class='ln'>565</span>}</div>
+<div class='row nod'><span class='ln'>566</span></div>
+<div class='row nod'><span class='ln'>567</span>///系统用于绘制Overlay，这里不做绘制，只做slider的宽高计算</div>
+<div class='row nod'><span class='ln'>568</span>class TNoOverlayShape extends SliderComponentShape {</div>
+<div class='row cov'><span class='ln'>569</span>  const TNoOverlayShape();</div>
+<div class='row nod'><span class='ln'>570</span></div>
+<div class='row cov'><span class='ln'>571</span>  @override</div>
+<div class='row nod'><span class='ln'>572</span>  Size getPreferredSize(bool isEnabled, bool isDiscrete) {</div>
+<div class='row nod'><span class='ln'>573</span>    return const Size(0, 40);</div>
+<div class='row nod'><span class='ln'>574</span>  }</div>
+<div class='row nod'><span class='ln'>575</span></div>
+<div class='row unc'><span class='ln'>576</span>▶   @override</div>
+<div class='row nod'><span class='ln'>577</span>  void paint(</div>
+<div class='row nod'><span class='ln'>578</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>579</span>    Offset center, {</div>
+<div class='row nod'><span class='ln'>580</span>    required Animation&lt;double&gt; activationAnimation,</div>
+<div class='row nod'><span class='ln'>581</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>582</span>    required bool isDiscrete,</div>
+<div class='row nod'><span class='ln'>583</span>    required TextPainter labelPainter,</div>
+<div class='row nod'><span class='ln'>584</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>585</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>586</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>587</span>    required double value,</div>
+<div class='row nod'><span class='ln'>588</span>    required double textScaleFactor,</div>
+<div class='row nod'><span class='ln'>589</span>    required Size sizeWithOverflow,</div>
+<div class='row nod'><span class='ln'>590</span>  }) {}</div>
+<div class='row nod'><span class='ln'>591</span>}</div>
+<div class='row nod'><span class='ln'>592</span></div>
+<div class='row nod'><span class='ln'>593</span>///</div>
+<div class='row nod'><span class='ln'>594</span>/// 刻度绘制</div>
+<div class='row nod'><span class='ln'>595</span>///</div>
+<div class='row nod'><span class='ln'>596</span>class TRoundSliderTickMarkShape extends SliderTickMarkShape {</div>
+<div class='row nod'><span class='ln'>597</span>  /// Create a slider tick mark that draws a circle.</div>
+<div class='row cov'><span class='ln'>598</span>  const TRoundSliderTickMarkShape({</div>
+<div class='row nod'><span class='ln'>599</span>    this.tickMarkRadius,</div>
+<div class='row nod'><span class='ln'>600</span>    required this.themeData,</div>
+<div class='row nod'><span class='ln'>601</span>  });</div>
+<div class='row nod'><span class='ln'>602</span></div>
+<div class='row nod'><span class='ln'>603</span>  /// The preferred radius of the round tick mark.</div>
+<div class='row nod'><span class='ln'>604</span>  ///</div>
+<div class='row nod'><span class='ln'>605</span>  /// If it is not provided, then 1/4 of the [SliderThemeData.trackHeight] is used.</div>
+<div class='row nod'><span class='ln'>606</span>  final double? tickMarkRadius;</div>
+<div class='row nod'><span class='ln'>607</span></div>
+<div class='row nod'><span class='ln'>608</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>609</span></div>
+<div class='row unc'><span class='ln'>610</span>▶   @override</div>
+<div class='row nod'><span class='ln'>611</span>  Size getPreferredSize({</div>
+<div class='row nod'><span class='ln'>612</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>613</span>    required bool isEnabled,</div>
+<div class='row nod'><span class='ln'>614</span>  }) {</div>
+<div class='row unc'><span class='ln'>615</span>▶     assert(sliderTheme.trackHeight != null);</div>
+<div class='row nod'><span class='ln'>616</span>    // The tick marks are tiny circles. If no radius is provided, then the</div>
+<div class='row nod'><span class='ln'>617</span>    // radius is defaulted to be a fraction of the</div>
+<div class='row nod'><span class='ln'>618</span>    // [SliderThemeData.trackHeight]. The fraction is 1/4.</div>
+<div class='row unc'><span class='ln'>619</span>▶     return Size.fromRadius(tickMarkRadius ?? 4);</div>
+<div class='row nod'><span class='ln'>620</span>  }</div>
+<div class='row nod'><span class='ln'>621</span></div>
+<div class='row unc'><span class='ln'>622</span>▶   @override</div>
+<div class='row nod'><span class='ln'>623</span>  void paint(</div>
+<div class='row nod'><span class='ln'>624</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>625</span>    Offset center, {</div>
+<div class='row nod'><span class='ln'>626</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>627</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>628</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>629</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>630</span>    required Offset thumbCenter,</div>
+<div class='row nod'><span class='ln'>631</span>    required bool isEnabled,</div>
+<div class='row nod'><span class='ln'>632</span>  }) {</div>
+<div class='row unc'><span class='ln'>633</span>▶     assert(sliderTheme.disabledActiveTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>634</span>▶     assert(sliderTheme.disabledInactiveTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>635</span>▶     assert(sliderTheme.activeTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>636</span>▶     assert(sliderTheme.inactiveTickMarkColor != null);</div>
+<div class='row nod'><span class='ln'>637</span>    // The paint color of the tick mark depends on its position relative</div>
+<div class='row nod'><span class='ln'>638</span>    // to the thumb and the text direction.</div>
+<div class='row nod'><span class='ln'>639</span>    Color? begin;</div>
+<div class='row nod'><span class='ln'>640</span>    Color? end;</div>
+<div class='row nod'><span class='ln'>641</span>    switch (textDirection) {</div>
+<div class='row unc'><span class='ln'>642</span>▶       case TextDirection.ltr:</div>
+<div class='row unc'><span class='ln'>643</span>▶         final isTickMarkRightOfThumb = center.dx &gt; thumbCenter.dx;</div>
+<div class='row nod'><span class='ln'>644</span>        begin = isTickMarkRightOfThumb</div>
+<div class='row unc'><span class='ln'>645</span>▶             ? sliderTheme.disabledInactiveTickMarkColor</div>
+<div class='row unc'><span class='ln'>646</span>▶             : sliderTheme.disabledActiveTickMarkColor;</div>
+<div class='row nod'><span class='ln'>647</span>        end = isTickMarkRightOfThumb</div>
+<div class='row unc'><span class='ln'>648</span>▶             ? sliderTheme.inactiveTickMarkColor</div>
+<div class='row unc'><span class='ln'>649</span>▶             : sliderTheme.activeTickMarkColor;</div>
+<div class='row nod'><span class='ln'>650</span>        break;</div>
+<div class='row unc'><span class='ln'>651</span>▶       case TextDirection.rtl:</div>
+<div class='row unc'><span class='ln'>652</span>▶         final isTickMarkLeftOfThumb = center.dx &lt; thumbCenter.dx;</div>
+<div class='row nod'><span class='ln'>653</span>        begin = isTickMarkLeftOfThumb</div>
+<div class='row unc'><span class='ln'>654</span>▶             ? sliderTheme.disabledInactiveTickMarkColor</div>
+<div class='row unc'><span class='ln'>655</span>▶             : sliderTheme.disabledActiveTickMarkColor;</div>
+<div class='row nod'><span class='ln'>656</span>        end = isTickMarkLeftOfThumb</div>
+<div class='row unc'><span class='ln'>657</span>▶             ? sliderTheme.inactiveTickMarkColor</div>
+<div class='row unc'><span class='ln'>658</span>▶             : sliderTheme.activeTickMarkColor;</div>
+<div class='row nod'><span class='ln'>659</span>        break;</div>
+<div class='row nod'><span class='ln'>660</span>    }</div>
+<div class='row unc'><span class='ln'>661</span>▶     final paint = Paint()</div>
+<div class='row unc'><span class='ln'>662</span>▶       ..color = ColorTween(begin: begin, end: end).evaluate(enableAnimation)!;</div>
+<div class='row nod'><span class='ln'>663</span></div>
+<div class='row nod'><span class='ln'>664</span>    // The tick marks are tiny circles that are the same height as the track.</div>
+<div class='row unc'><span class='ln'>665</span>▶     final tickMarkRadius = getPreferredSize(</div>
+<div class='row nod'><span class='ln'>666</span>          isEnabled: isEnabled,</div>
+<div class='row nod'><span class='ln'>667</span>          sliderTheme: sliderTheme,</div>
+<div class='row unc'><span class='ln'>668</span>▶         ).width /</div>
+<div class='row nod'><span class='ln'>669</span>        2;</div>
+<div class='row unc'><span class='ln'>670</span>▶     if (tickMarkRadius &gt; 0 &amp;&amp; themeData.showScaleValue) {</div>
+<div class='row unc'><span class='ln'>671</span>▶       assert(themeData.divisions != null);</div>
+<div class='row unc'><span class='ln'>672</span>▶       var rect = sliderTheme.trackShape</div>
+<div class='row unc'><span class='ln'>673</span>▶           ?.getPreferredRect(parentBox: parentBox, sliderTheme: sliderTheme);</div>
+<div class='row unc'><span class='ln'>674</span>▶       if (rect != null &amp;&amp; themeData.divisions! &gt; 0) {</div>
+<div class='row nod'><span class='ln'>675</span>        //轨道的高度</div>
+<div class='row unc'><span class='ln'>676</span>▶         var trackHeight = rect.bottom - rect.top;</div>
+<div class='row nod'><span class='ln'>677</span>        //最左边的刻度中心到最右边刻度中心的长度</div>
+<div class='row unc'><span class='ln'>678</span>▶         var markWidth = (rect.right - rect.left) - trackHeight;</div>
+<div class='row nod'><span class='ln'>679</span>        //最左边刻度的起点</div>
+<div class='row unc'><span class='ln'>680</span>▶         var markStart = rect.left + trackHeight / 2;</div>
+<div class='row nod'><span class='ln'>681</span>        //每个刻度的宽度</div>
+<div class='row unc'><span class='ln'>682</span>▶         var perWidth = markWidth / themeData.divisions!;</div>
+<div class='row unc'><span class='ln'>683</span>▶         assert(perWidth &gt; 0);</div>
+<div class='row nod'><span class='ln'>684</span>        //计算当前是第几个刻度</div>
+<div class='row unc'><span class='ln'>685</span>▶         var index = ((center.dx - markStart) / perWidth).round();</div>
+<div class='row nod'><span class='ln'>686</span>        //获取当前刻度的值</div>
+<div class='row unc'><span class='ln'>687</span>▶         var value = themeData.min +</div>
+<div class='row unc'><span class='ln'>688</span>▶             index * ((themeData.max - themeData.min) / themeData.divisions!);</div>
+<div class='row nod'><span class='ln'>689</span>        //格式化数值</div>
+<div class='row unc'><span class='ln'>690</span>▶         var valueFormatter = themeData.scaleFormatter != null</div>
+<div class='row unc'><span class='ln'>691</span>▶             ? themeData.scaleFormatter!(value)</div>
+<div class='row unc'><span class='ln'>692</span>▶             : value.toString();</div>
+<div class='row nod'><span class='ln'>693</span>        //绘制刻度的值</div>
+<div class='row unc'><span class='ln'>694</span>▶         var painter = TextPainter(</div>
+<div class='row unc'><span class='ln'>695</span>▶             text: TextSpan(</div>
+<div class='row nod'><span class='ln'>696</span>                text: valueFormatter,</div>
+<div class='row unc'><span class='ln'>697</span>▶                 style: enableAnimation.value &gt; 0</div>
+<div class='row unc'><span class='ln'>698</span>▶                     ? themeData.effectiveScaleTextStyle</div>
+<div class='row unc'><span class='ln'>699</span>▶                     : themeData.effectiveDisabledScaleTextStyle),</div>
+<div class='row nod'><span class='ln'>700</span>            textDirection: TextDirection.ltr,</div>
+<div class='row nod'><span class='ln'>701</span>            textAlign: TextAlign.center)</div>
+<div class='row unc'><span class='ln'>702</span>▶           ..layout(maxWidth: 100);</div>
+<div class='row nod'><span class='ln'>703</span>        //绘制的x</div>
+<div class='row unc'><span class='ln'>704</span>▶         var x = center.dx - painter.size.width / 2;</div>
+<div class='row unc'><span class='ln'>705</span>▶         if (index == 0) {</div>
+<div class='row unc'><span class='ln'>706</span>▶           x = center.dx - trackHeight;</div>
+<div class='row unc'><span class='ln'>707</span>▶         } else if (index == themeData.divisions) {</div>
+<div class='row unc'><span class='ln'>708</span>▶           x = center.dx - painter.size.width + trackHeight;</div>
+<div class='row nod'><span class='ln'>709</span>        }</div>
+<div class='row unc'><span class='ln'>710</span>▶         painter.paint(</div>
+<div class='row unc'><span class='ln'>711</span>▶             context.canvas, Offset(x, center.dy - painter.height - 14));</div>
+<div class='row nod'><span class='ln'>712</span>      }</div>
+<div class='row nod'><span class='ln'>713</span>      //绘制刻度</div>
+<div class='row unc'><span class='ln'>714</span>▶       context.canvas.drawCircle(center, tickMarkRadius, paint);</div>
+<div class='row nod'><span class='ln'>715</span>    }</div>
+<div class='row nod'><span class='ln'>716</span>  }</div>
+<div class='row nod'><span class='ln'>717</span>}</div>
+<div class='row nod'><span class='ln'>718</span></div>
+<div class='row nod'><span class='ln'>719</span>/// Base track shape that provides an implementation of [getPreferredRect] for</div>
+<div class='row nod'><span class='ln'>720</span>/// default sizing.</div>
+<div class='row nod'><span class='ln'>721</span>///</div>
+<div class='row nod'><span class='ln'>722</span>/// The height is set from [SliderThemeData.trackHeight] and the width of the</div>
+<div class='row nod'><span class='ln'>723</span>/// parent box less the larger of the widths of [SliderThemeData.rangeThumbShape] and</div>
+<div class='row nod'><span class='ln'>724</span>/// [SliderThemeData.overlayShape].</div>
+<div class='row nod'><span class='ln'>725</span>///</div>
+<div class='row nod'><span class='ln'>726</span>/// See also:</div>
+<div class='row nod'><span class='ln'>727</span>///</div>
+<div class='row nod'><span class='ln'>728</span>///  * [RectangularRangeSliderTrackShape], which is a track shape with sharp</div>
+<div class='row nod'><span class='ln'>729</span>///    rectangular edges</div>
+<div class='row nod'><span class='ln'>730</span>mixin TBaseRangeSliderTrackShape {</div>
+<div class='row nod'><span class='ln'>731</span>  /// Returns a rect that represents the track bounds that fits within the</div>
+<div class='row nod'><span class='ln'>732</span>  /// [Slider].</div>
+<div class='row nod'><span class='ln'>733</span>  ///</div>
+<div class='row nod'><span class='ln'>734</span>  /// The width is the width of the [Slider] or [RangeSlider], but padded by</div>
+<div class='row nod'><span class='ln'>735</span>  /// the max of the overlay and thumb radius. The height is defined by the</div>
+<div class='row nod'><span class='ln'>736</span>  /// [SliderThemeData.trackHeight].</div>
+<div class='row nod'><span class='ln'>737</span>  ///</div>
+<div class='row nod'><span class='ln'>738</span>  /// The [Rect] is centered both horizontally and vertically within the slider</div>
+<div class='row nod'><span class='ln'>739</span>  /// bounds.</div>
+<div class='row cov'><span class='ln'>740</span>  Rect getPreferredRect({</div>
+<div class='row nod'><span class='ln'>741</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>742</span>    Offset offset = Offset.zero,</div>
+<div class='row nod'><span class='ln'>743</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>744</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>745</span>    bool isDiscrete = false,</div>
+<div class='row nod'><span class='ln'>746</span>  }) {</div>
+<div class='row cov'><span class='ln'>747</span>    assert(sliderTheme.rangeThumbShape != null);</div>
+<div class='row cov'><span class='ln'>748</span>    assert(sliderTheme.overlayShape != null);</div>
+<div class='row cov'><span class='ln'>749</span>    final thumbWidth = sliderTheme.rangeThumbShape!</div>
+<div class='row cov'><span class='ln'>750</span>        .getPreferredSize(isEnabled, isDiscrete)</div>
+<div class='row cov'><span class='ln'>751</span>        .width;</div>
+<div class='row nod'><span class='ln'>752</span>    final overlayWidth =</div>
+<div class='row cov'><span class='ln'>753</span>        sliderTheme.overlayShape!.getPreferredSize(isEnabled, isDiscrete).width;</div>
+<div class='row cov'><span class='ln'>754</span>    final trackHeight = sliderTheme.trackHeight!;</div>
+<div class='row cov'><span class='ln'>755</span>    assert(overlayWidth &gt;= 0);</div>
+<div class='row cov'><span class='ln'>756</span>    assert(trackHeight &gt;= 0);</div>
+<div class='row nod'><span class='ln'>757</span></div>
+<div class='row cov'><span class='ln'>758</span>    final trackLeft = offset.dx + math.max(overlayWidth / 2, thumbWidth / 2);</div>
+<div class='row cov'><span class='ln'>759</span>    final trackTop = offset.dy + (parentBox.size.height - trackHeight) / 2;</div>
+<div class='row nod'><span class='ln'>760</span>    final trackRight =</div>
+<div class='row cov'><span class='ln'>761</span>        trackLeft + parentBox.size.width - math.max(thumbWidth, overlayWidth);</div>
+<div class='row cov'><span class='ln'>762</span>    final trackBottom = trackTop + trackHeight;</div>
+<div class='row cov'><span class='ln'>763</span>    final rect = Rect.fromLTRB(math.min(trackLeft, trackRight), trackTop,</div>
+<div class='row cov'><span class='ln'>764</span>        math.max(trackLeft, trackRight), trackBottom);</div>
+<div class='row nod'><span class='ln'>765</span>    // If the parentBox&#x27;size less than slider&#x27;s size the trackRight will be less than trackLeft, so switch them.</div>
+<div class='row nod'><span class='ln'>766</span>    return rect;</div>
+<div class='row nod'><span class='ln'>767</span>  }</div>
+<div class='row nod'><span class='ln'>768</span>}</div>
+<div class='row nod'><span class='ln'>769</span></div>
+<div class='row nod'><span class='ln'>770</span>/// The default shape of a [TRangeSlider]&#x27;s track.</div>
+<div class='row nod'><span class='ln'>771</span>///</div>
+<div class='row nod'><span class='ln'>772</span>/// It paints a solid colored rectangle with rounded edges, vertically centered</div>
+<div class='row nod'><span class='ln'>773</span>/// in the `parentBox`. The track rectangle extends to the bounds of the</div>
+<div class='row nod'><span class='ln'>774</span>/// `parentBox`, but is padded by the larger of [RoundSliderOverlayShape]&#x27;s</div>
+<div class='row nod'><span class='ln'>775</span>/// radius and [RoundRangeSliderThumbShape]&#x27;s radius. The height is defined by</div>
+<div class='row nod'><span class='ln'>776</span>/// the [SliderThemeData.trackHeight]. The color is determined by the</div>
+<div class='row nod'><span class='ln'>777</span>/// [RangeSlider]&#x27;s enabled state and the track segment&#x27;s active state which are</div>
+<div class='row nod'><span class='ln'>778</span>/// defined by:</div>
+<div class='row nod'><span class='ln'>779</span>///   [SliderThemeData.activeTrackColor],</div>
+<div class='row nod'><span class='ln'>780</span>///   [SliderThemeData.inactiveTrackColor],</div>
+<div class='row nod'><span class='ln'>781</span>///   [SliderThemeData.disabledActiveTrackColor],</div>
+<div class='row nod'><span class='ln'>782</span>///   [SliderThemeData.disabledInactiveTrackColor].</div>
+<div class='row nod'><span class='ln'>783</span>///</div>
+<div class='row nod'><span class='ln'>784</span>/// {@macro flutter.material.RangeSliderTickMarkShape.paint.trackSegment}</div>
+<div class='row nod'><span class='ln'>785</span>///</div>
+<div class='row nod'><span class='ln'>786</span>/// ![A range slider widget, consisting of 5 divisions and showing the rounded rect range slider track shape.]</div>
+<div class='row nod'><span class='ln'>787</span>/// (https://flutter.github.io/assets-for-api-docs/assets/material/rounded_rect_range_slider_track_shape.png)</div>
+<div class='row nod'><span class='ln'>788</span>///</div>
+<div class='row nod'><span class='ln'>789</span>/// See also:</div>
+<div class='row nod'><span class='ln'>790</span>///</div>
+<div class='row nod'><span class='ln'>791</span>///  * [RangeSlider], for the component that is meant to display this shape.</div>
+<div class='row nod'><span class='ln'>792</span>///  * [SliderThemeData], where an instance of this class is set to inform the</div>
+<div class='row nod'><span class='ln'>793</span>///    slider of the visual details of the its track.</div>
+<div class='row nod'><span class='ln'>794</span>///  * [RangeSliderTrackShape], which can be used to create custom shapes for</div>
+<div class='row nod'><span class='ln'>795</span>///    the [RangeSlider]&#x27;s track.</div>
+<div class='row nod'><span class='ln'>796</span>///  * [RectangularRangeSliderTrackShape], for a similar track with sharp edges.</div>
+<div class='row nod'><span class='ln'>797</span>class TRoundedRectRangeSliderTrackShape extends RangeSliderTrackShape</div>
+<div class='row nod'><span class='ln'>798</span>    with TBaseRangeSliderTrackShape {</div>
+<div class='row nod'><span class='ln'>799</span>  /// Create a slider track with rounded outer edges.</div>
+<div class='row nod'><span class='ln'>800</span>  ///</div>
+<div class='row nod'><span class='ln'>801</span>  /// The middle track segment is the selected range and is active, and the two</div>
+<div class='row nod'><span class='ln'>802</span>  /// outer track segments are inactive.</div>
+<div class='row cov'><span class='ln'>803</span>  const TRoundedRectRangeSliderTrackShape({required this.themeData});</div>
+<div class='row nod'><span class='ln'>804</span></div>
+<div class='row nod'><span class='ln'>805</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>806</span></div>
+<div class='row cov'><span class='ln'>807</span>  @override</div>
+<div class='row nod'><span class='ln'>808</span>  void paint(</div>
+<div class='row nod'><span class='ln'>809</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>810</span>    Offset offset, {</div>
+<div class='row nod'><span class='ln'>811</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>812</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>813</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>814</span>    required Offset startThumbCenter,</div>
+<div class='row nod'><span class='ln'>815</span>    required Offset endThumbCenter,</div>
+<div class='row nod'><span class='ln'>816</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>817</span>    bool isDiscrete = false,</div>
+<div class='row nod'><span class='ln'>818</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>819</span>    double additionalActiveTrackHeight = 0,</div>
+<div class='row nod'><span class='ln'>820</span>  }) {</div>
+<div class='row cov'><span class='ln'>821</span>    assert(sliderTheme.disabledActiveTrackColor != null);</div>
+<div class='row cov'><span class='ln'>822</span>    assert(sliderTheme.disabledInactiveTrackColor != null);</div>
+<div class='row cov'><span class='ln'>823</span>    assert(sliderTheme.activeTrackColor != null);</div>
+<div class='row cov'><span class='ln'>824</span>    assert(sliderTheme.inactiveTrackColor != null);</div>
+<div class='row cov'><span class='ln'>825</span>    assert(sliderTheme.rangeThumbShape != null);</div>
+<div class='row nod'><span class='ln'>826</span></div>
+<div class='row cov'><span class='ln'>827</span>    if (sliderTheme.trackHeight == null || sliderTheme.trackHeight! &lt;= 0) {</div>
+<div class='row nod'><span class='ln'>828</span>      return;</div>
+<div class='row nod'><span class='ln'>829</span>    }</div>
+<div class='row nod'><span class='ln'>830</span></div>
+<div class='row nod'><span class='ln'>831</span>    // Assign the track segment paints, which are left: active, right: inactive,</div>
+<div class='row nod'><span class='ln'>832</span>    // but reversed for right to left text.</div>
+<div class='row cov'><span class='ln'>833</span>    final activeTrackColorTween = ColorTween(</div>
+<div class='row cov'><span class='ln'>834</span>      begin: sliderTheme.disabledActiveTrackColor,</div>
+<div class='row cov'><span class='ln'>835</span>      end: sliderTheme.activeTrackColor,</div>
+<div class='row nod'><span class='ln'>836</span>    );</div>
+<div class='row cov'><span class='ln'>837</span>    final inactiveTrackColorTween = ColorTween(</div>
+<div class='row cov'><span class='ln'>838</span>      begin: sliderTheme.disabledInactiveTrackColor,</div>
+<div class='row cov'><span class='ln'>839</span>      end: sliderTheme.inactiveTrackColor,</div>
+<div class='row nod'><span class='ln'>840</span>    );</div>
+<div class='row cov'><span class='ln'>841</span>    final activePaint = Paint()</div>
+<div class='row cov'><span class='ln'>842</span>      ..color = activeTrackColorTween.evaluate(enableAnimation)!;</div>
+<div class='row cov'><span class='ln'>843</span>    final inactivePaint = Paint()</div>
+<div class='row cov'><span class='ln'>844</span>      ..color = inactiveTrackColorTween.evaluate(enableAnimation)!;</div>
+<div class='row nod'><span class='ln'>845</span></div>
+<div class='row nod'><span class='ln'>846</span>    final Offset leftThumbOffset;</div>
+<div class='row nod'><span class='ln'>847</span>    final Offset rightThumbOffset;</div>
+<div class='row nod'><span class='ln'>848</span>    switch (textDirection) {</div>
+<div class='row cov'><span class='ln'>849</span>      case TextDirection.ltr:</div>
+<div class='row nod'><span class='ln'>850</span>        leftThumbOffset = startThumbCenter;</div>
+<div class='row nod'><span class='ln'>851</span>        rightThumbOffset = endThumbCenter;</div>
+<div class='row nod'><span class='ln'>852</span>        break;</div>
+<div class='row unc'><span class='ln'>853</span>▶       case TextDirection.rtl:</div>
+<div class='row nod'><span class='ln'>854</span>        leftThumbOffset = endThumbCenter;</div>
+<div class='row nod'><span class='ln'>855</span>        rightThumbOffset = startThumbCenter;</div>
+<div class='row nod'><span class='ln'>856</span>        break;</div>
+<div class='row nod'><span class='ln'>857</span>    }</div>
+<div class='row nod'><span class='ln'>858</span>    final thumbSize =</div>
+<div class='row cov'><span class='ln'>859</span>        sliderTheme.rangeThumbShape!.getPreferredSize(isEnabled, isDiscrete);</div>
+<div class='row cov'><span class='ln'>860</span>    final thumbRadius = thumbSize.width / 2;</div>
+<div class='row cov'><span class='ln'>861</span>    assert(thumbRadius &gt; 0);</div>
+<div class='row nod'><span class='ln'>862</span></div>
+<div class='row cov'><span class='ln'>863</span>    final trackRect = getPreferredRect(</div>
+<div class='row nod'><span class='ln'>864</span>      parentBox: parentBox,</div>
+<div class='row nod'><span class='ln'>865</span>      offset: offset,</div>
+<div class='row nod'><span class='ln'>866</span>      sliderTheme: sliderTheme,</div>
+<div class='row nod'><span class='ln'>867</span>      isEnabled: isEnabled,</div>
+<div class='row nod'><span class='ln'>868</span>      isDiscrete: isDiscrete,</div>
+<div class='row nod'><span class='ln'>869</span>    );</div>
+<div class='row cov'><span class='ln'>870</span>    themeData.sliderMeasureData.trackerRect = trackRect;</div>
+<div class='row nod'><span class='ln'>871</span></div>
+<div class='row cov'><span class='ln'>872</span>    final trackRadius = Radius.circular(trackRect.height / 2);</div>
+<div class='row nod'><span class='ln'>873</span></div>
+<div class='row cov'><span class='ln'>874</span>    context.canvas.drawRRect(</div>
+<div class='row cov'><span class='ln'>875</span>      RRect.fromLTRBAndCorners(</div>
+<div class='row cov'><span class='ln'>876</span>        trackRect.left,</div>
+<div class='row cov'><span class='ln'>877</span>        trackRect.top,</div>
+<div class='row cov'><span class='ln'>878</span>        leftThumbOffset.dx,</div>
+<div class='row cov'><span class='ln'>879</span>        trackRect.bottom,</div>
+<div class='row nod'><span class='ln'>880</span>        topLeft: trackRadius,</div>
+<div class='row nod'><span class='ln'>881</span>        bottomLeft: trackRadius,</div>
+<div class='row nod'><span class='ln'>882</span>      ),</div>
+<div class='row nod'><span class='ln'>883</span>      inactivePaint,</div>
+<div class='row nod'><span class='ln'>884</span>    );</div>
+<div class='row cov'><span class='ln'>885</span>    context.canvas.drawRect(</div>
+<div class='row cov'><span class='ln'>886</span>      Rect.fromLTRB(</div>
+<div class='row cov'><span class='ln'>887</span>        leftThumbOffset.dx,</div>
+<div class='row cov'><span class='ln'>888</span>        trackRect.top - (additionalActiveTrackHeight / 2),</div>
+<div class='row cov'><span class='ln'>889</span>        rightThumbOffset.dx,</div>
+<div class='row cov'><span class='ln'>890</span>        trackRect.bottom + (additionalActiveTrackHeight / 2),</div>
+<div class='row nod'><span class='ln'>891</span>      ),</div>
+<div class='row nod'><span class='ln'>892</span>      activePaint,</div>
+<div class='row nod'><span class='ln'>893</span>    );</div>
+<div class='row cov'><span class='ln'>894</span>    context.canvas.drawRRect(</div>
+<div class='row cov'><span class='ln'>895</span>      RRect.fromLTRBAndCorners(</div>
+<div class='row cov'><span class='ln'>896</span>        rightThumbOffset.dx,</div>
+<div class='row cov'><span class='ln'>897</span>        trackRect.top,</div>
+<div class='row cov'><span class='ln'>898</span>        trackRect.right,</div>
+<div class='row cov'><span class='ln'>899</span>        trackRect.bottom,</div>
+<div class='row nod'><span class='ln'>900</span>        topRight: trackRadius,</div>
+<div class='row nod'><span class='ln'>901</span>        bottomRight: trackRadius,</div>
+<div class='row nod'><span class='ln'>902</span>      ),</div>
+<div class='row nod'><span class='ln'>903</span>      inactivePaint,</div>
+<div class='row nod'><span class='ln'>904</span>    );</div>
+<div class='row nod'><span class='ln'>905</span>  }</div>
+<div class='row nod'><span class='ln'>906</span>}</div>
+<div class='row nod'><span class='ln'>907</span></div>
+<div class='row nod'><span class='ln'>908</span>/// The default shape of a [RangeSlider]&#x27;s thumbs.</div>
+<div class='row nod'><span class='ln'>909</span>///</div>
+<div class='row nod'><span class='ln'>910</span>/// There is a shadow for the resting and pressed state.</div>
+<div class='row nod'><span class='ln'>911</span>///</div>
+<div class='row nod'><span class='ln'>912</span>/// ![A slider widget, consisting of 5 divisions and showing the round range slider thumb shape.]</div>
+<div class='row nod'><span class='ln'>913</span>/// (https://flutter.github.io/assets-for-api-docs/assets/material/round_range_slider_thumb_shape.png)</div>
+<div class='row nod'><span class='ln'>914</span>///</div>
+<div class='row nod'><span class='ln'>915</span>/// See also:</div>
+<div class='row nod'><span class='ln'>916</span>///</div>
+<div class='row nod'><span class='ln'>917</span>///  * [RangeSlider], which includes thumbs defined by this shape.</div>
+<div class='row nod'><span class='ln'>918</span>///  * [SliderTheme], which can be used to configure the thumb shapes of all</div>
+<div class='row nod'><span class='ln'>919</span>///    range sliders in a widget subtree.</div>
+<div class='row nod'><span class='ln'>920</span>class TRoundRangeSliderThumbShape extends RangeSliderThumbShape {</div>
+<div class='row nod'><span class='ln'>921</span>  /// Create a slider thumb that draws a circle.</div>
+<div class='row cov'><span class='ln'>922</span>  const TRoundRangeSliderThumbShape({</div>
+<div class='row nod'><span class='ln'>923</span>    this.enabledThumbRadius = 10.0,</div>
+<div class='row nod'><span class='ln'>924</span>    this.disabledThumbRadius,</div>
+<div class='row nod'><span class='ln'>925</span>    this.elevation = 3.0,</div>
+<div class='row nod'><span class='ln'>926</span>    this.pressedElevation = 3.0,</div>
+<div class='row nod'><span class='ln'>927</span>    required this.themeData,</div>
+<div class='row nod'><span class='ln'>928</span>    required this.strokeColor,</div>
+<div class='row nod'><span class='ln'>929</span>  });</div>
+<div class='row nod'><span class='ln'>930</span></div>
+<div class='row nod'><span class='ln'>931</span>  /// The preferred radius of the round thumb shape when the slider is enabled.</div>
+<div class='row nod'><span class='ln'>932</span>  ///</div>
+<div class='row nod'><span class='ln'>933</span>  /// If it is not provided, then the Material Design default of 10 is used.</div>
+<div class='row nod'><span class='ln'>934</span>  final double enabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>935</span></div>
+<div class='row nod'><span class='ln'>936</span>  /// The preferred radius of the round thumb shape when the slider is disabled.</div>
+<div class='row nod'><span class='ln'>937</span>  ///</div>
+<div class='row nod'><span class='ln'>938</span>  /// If no disabledRadius is provided, then it is equal to the</div>
+<div class='row nod'><span class='ln'>939</span>  /// [enabledThumbRadius].</div>
+<div class='row nod'><span class='ln'>940</span>  final double? disabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>941</span></div>
+<div class='row cov'><span class='ln'>942</span>  double get _disabledThumbRadius =&gt; disabledThumbRadius ?? enabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>943</span></div>
+<div class='row nod'><span class='ln'>944</span>  /// The resting elevation adds shadow to the unpressed thumb.</div>
+<div class='row nod'><span class='ln'>945</span>  ///</div>
+<div class='row nod'><span class='ln'>946</span>  /// The default is 1.</div>
+<div class='row nod'><span class='ln'>947</span>  final double elevation;</div>
+<div class='row nod'><span class='ln'>948</span></div>
+<div class='row nod'><span class='ln'>949</span>  /// The pressed elevation adds shadow to the pressed thumb.</div>
+<div class='row nod'><span class='ln'>950</span>  ///</div>
+<div class='row nod'><span class='ln'>951</span>  /// The default is 6.</div>
+<div class='row nod'><span class='ln'>952</span>  final double pressedElevation;</div>
+<div class='row nod'><span class='ln'>953</span></div>
+<div class='row nod'><span class='ln'>954</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>955</span></div>
+<div class='row nod'><span class='ln'>956</span>  /// 游标描边颜色（v1.0：从 buildContext.tTheme 改为直接传入 Color）</div>
+<div class='row nod'><span class='ln'>957</span>  final Color strokeColor;</div>
+<div class='row nod'><span class='ln'>958</span></div>
+<div class='row cov'><span class='ln'>959</span>  @override</div>
+<div class='row nod'><span class='ln'>960</span>  Size getPreferredSize(bool isEnabled, bool isDiscrete) {</div>
+<div class='row cov'><span class='ln'>961</span>    return Size.fromRadius(</div>
+<div class='row cov'><span class='ln'>962</span>        isEnabled == true ? enabledThumbRadius : _disabledThumbRadius);</div>
+<div class='row nod'><span class='ln'>963</span>  }</div>
+<div class='row nod'><span class='ln'>964</span></div>
+<div class='row cov'><span class='ln'>965</span>  @override</div>
+<div class='row nod'><span class='ln'>966</span>  void paint(</div>
+<div class='row nod'><span class='ln'>967</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>968</span>    Offset center, {</div>
+<div class='row nod'><span class='ln'>969</span>    required Animation&lt;double&gt; activationAnimation,</div>
+<div class='row nod'><span class='ln'>970</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>971</span>    bool isDiscrete = false,</div>
+<div class='row nod'><span class='ln'>972</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>973</span>    bool? isOnTop,</div>
+<div class='row nod'><span class='ln'>974</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>975</span>    TextDirection? textDirection,</div>
+<div class='row nod'><span class='ln'>976</span>    Thumb? thumb,</div>
+<div class='row nod'><span class='ln'>977</span>    bool? isPressed,</div>
+<div class='row nod'><span class='ln'>978</span>  }) {</div>
+<div class='row cov'><span class='ln'>979</span>    assert(sliderTheme.showValueIndicator != null);</div>
+<div class='row cov'><span class='ln'>980</span>    assert(sliderTheme.overlappingShapeStrokeColor != null);</div>
+<div class='row cov'><span class='ln'>981</span>    final canvas = context.canvas;</div>
+<div class='row cov'><span class='ln'>982</span>    final radiusTween = Tween&lt;double&gt;(</div>
+<div class='row cov'><span class='ln'>983</span>      begin: _disabledThumbRadius,</div>
+<div class='row cov'><span class='ln'>984</span>      end: enabledThumbRadius,</div>
+<div class='row nod'><span class='ln'>985</span>    );</div>
+<div class='row cov'><span class='ln'>986</span>    final colorTween = ColorTween(</div>
+<div class='row cov'><span class='ln'>987</span>      begin: sliderTheme.disabledThumbColor,</div>
+<div class='row cov'><span class='ln'>988</span>      end: sliderTheme.thumbColor,</div>
+<div class='row nod'><span class='ln'>989</span>    );</div>
+<div class='row cov'><span class='ln'>990</span>    final radius = radiusTween.evaluate(enableAnimation);</div>
+<div class='row cov'><span class='ln'>991</span>    final elevationTween = Tween&lt;double&gt;(</div>
+<div class='row cov'><span class='ln'>992</span>      begin: elevation,</div>
+<div class='row cov'><span class='ln'>993</span>      end: pressedElevation,</div>
+<div class='row nod'><span class='ln'>994</span>    );</div>
+<div class='row nod'><span class='ln'>995</span></div>
+<div class='row nod'><span class='ln'>996</span>    // Add a stroke of 1dp around the circle if this thumb would overlap</div>
+<div class='row nod'><span class='ln'>997</span>    // the other thumb.</div>
+<div class='row nod'><span class='ln'>998</span>    if (isOnTop ?? false) {</div>
+<div class='row unc'><span class='ln'>999</span>▶       final strokePaint = Paint()</div>
+<div class='row unc'><span class='ln'>1000</span>▶         ..color = sliderTheme.overlappingShapeStrokeColor!</div>
+<div class='row unc'><span class='ln'>1001</span>▶         ..strokeWidth = 1.0</div>
+<div class='row unc'><span class='ln'>1002</span>▶         ..style = PaintingStyle.stroke;</div>
+<div class='row unc'><span class='ln'>1003</span>▶       canvas.drawCircle(center, radius, strokePaint);</div>
+<div class='row nod'><span class='ln'>1004</span>    }</div>
+<div class='row nod'><span class='ln'>1005</span></div>
+<div class='row cov'><span class='ln'>1006</span>    final color = colorTween.evaluate(enableAnimation)!;</div>
+<div class='row nod'><span class='ln'>1007</span></div>
+<div class='row nod'><span class='ln'>1008</span>    final evaluatedElevation =</div>
+<div class='row cov'><span class='ln'>1009</span>        isPressed! ? elevationTween.evaluate(activationAnimation) : elevation;</div>
+<div class='row cov'><span class='ln'>1010</span>    final shadowPath = Path()</div>
+<div class='row cov'><span class='ln'>1011</span>      ..addArc(</div>
+<div class='row cov'><span class='ln'>1012</span>          Rect.fromCenter(</div>
+<div class='row cov'><span class='ln'>1013</span>              center: center, width: 2 * radius, height: 2 * radius),</div>
+<div class='row nod'><span class='ln'>1014</span>          0,</div>
+<div class='row cov'><span class='ln'>1015</span>          math.pi * 2);</div>
+<div class='row nod'><span class='ln'>1016</span></div>
+<div class='row nod'><span class='ln'>1017</span>    var paintShadows = true;</div>
+<div class='row nod'><span class='ln'>1018</span>    if (paintShadows) {</div>
+<div class='row cov'><span class='ln'>1019</span>      canvas.drawShadow(shadowPath, const Color.fromRGBO(0, 0, 0, 0.5),</div>
+<div class='row nod'><span class='ln'>1020</span>          evaluatedElevation, true);</div>
+<div class='row nod'><span class='ln'>1021</span>    }</div>
+<div class='row cov'><span class='ln'>1022</span>    if (themeData.showThumbValue &amp;&amp;</div>
+<div class='row cov'><span class='ln'>1023</span>        themeData.sliderMeasureData.trackerRect != null) {</div>
+<div class='row cov'><span class='ln'>1024</span>      var trackerRect = themeData.sliderMeasureData.trackerRect!;</div>
+<div class='row cov'><span class='ln'>1025</span>      var ratio = (center.dx - trackerRect.left) /</div>
+<div class='row cov'><span class='ln'>1026</span>          (trackerRect.right - trackerRect.left);</div>
+<div class='row nod'><span class='ln'>1027</span>      //计算滑块的值</div>
+<div class='row cov'><span class='ln'>1028</span>      var value = (themeData.max - themeData.min) * ratio + themeData.min;</div>
+<div class='row nod'><span class='ln'>1029</span>      //格式化显示</div>
+<div class='row cov'><span class='ln'>1030</span>      var formatterValue = themeData.scaleFormatter == null</div>
+<div class='row cov'><span class='ln'>1031</span>          ? value.toStringAsFixed(2)</div>
+<div class='row unc'><span class='ln'>1032</span>▶           : themeData.scaleFormatter!(value);</div>
+<div class='row nod'><span class='ln'>1033</span>      //绘制数值</div>
+<div class='row cov'><span class='ln'>1034</span>      var painter = TextPainter(</div>
+<div class='row cov'><span class='ln'>1035</span>          text: TextSpan(</div>
+<div class='row cov'><span class='ln'>1036</span>              text: &#x27;$formatterValue&#x27;,</div>
+<div class='row cov'><span class='ln'>1037</span>              style: enableAnimation.value &gt; 0</div>
+<div class='row cov'><span class='ln'>1038</span>                  ? themeData.effectiveThumbTextStyle</div>
+<div class='row unc'><span class='ln'>1039</span>▶                   : themeData.effectiveDisabledThumbTextStyle),</div>
+<div class='row nod'><span class='ln'>1040</span>          textDirection: TextDirection.ltr,</div>
+<div class='row nod'><span class='ln'>1041</span>          textAlign: TextAlign.center)</div>
+<div class='row cov'><span class='ln'>1042</span>        ..layout(maxWidth: 100);</div>
+<div class='row cov'><span class='ln'>1043</span>      var textPosition = Offset(</div>
+<div class='row cov'><span class='ln'>1044</span>          center.dx - painter.width / 2, center.dy - painter.height - 14);</div>
+<div class='row cov'><span class='ln'>1045</span>      painter.paint(context.canvas, textPosition);</div>
+<div class='row cov'><span class='ln'>1046</span>      if (thumb == Thumb.start) {</div>
+<div class='row cov'><span class='ln'>1047</span>        themeData.sliderMeasureData.startRangeThumbTextRect = Rect.fromLTWH(</div>
+<div class='row cov'><span class='ln'>1048</span>            center.dx - painter.width / 2,</div>
+<div class='row cov'><span class='ln'>1049</span>            center.dy - painter.height - 14,</div>
+<div class='row cov'><span class='ln'>1050</span>            painter.width,</div>
+<div class='row cov'><span class='ln'>1051</span>            painter.height);</div>
+<div class='row nod'><span class='ln'>1052</span>      } else {</div>
+<div class='row cov'><span class='ln'>1053</span>        themeData.sliderMeasureData.endRangeThumbTextRect = Rect.fromLTWH(</div>
+<div class='row cov'><span class='ln'>1054</span>            center.dx - painter.width / 2,</div>
+<div class='row cov'><span class='ln'>1055</span>            center.dy - painter.height - 14,</div>
+<div class='row cov'><span class='ln'>1056</span>            painter.width,</div>
+<div class='row cov'><span class='ln'>1057</span>            painter.height);</div>
+<div class='row nod'><span class='ln'>1058</span>      }</div>
+<div class='row nod'><span class='ln'>1059</span>    }</div>
+<div class='row nod'><span class='ln'>1060</span>    //绘制游标</div>
+<div class='row cov'><span class='ln'>1061</span>    canvas.drawCircle(</div>
+<div class='row nod'><span class='ln'>1062</span>      center,</div>
+<div class='row nod'><span class='ln'>1063</span>      radius,</div>
+<div class='row cov'><span class='ln'>1064</span>      Paint()..color = color,</div>
+<div class='row nod'><span class='ln'>1065</span>    );</div>
+<div class='row cov'><span class='ln'>1066</span>    canvas.drawArc(</div>
+<div class='row cov'><span class='ln'>1067</span>        Rect.fromCircle(center: center, radius: radius),</div>
+<div class='row nod'><span class='ln'>1068</span>        0,</div>
+<div class='row cov'><span class='ln'>1069</span>        2 * math.pi,</div>
+<div class='row nod'><span class='ln'>1070</span>        false,</div>
+<div class='row cov'><span class='ln'>1071</span>        Paint()</div>
+<div class='row cov'><span class='ln'>1072</span>          ..style = PaintingStyle.stroke</div>
+<div class='row cov'><span class='ln'>1073</span>          ..strokeWidth = 1</div>
+<div class='row cov'><span class='ln'>1074</span>          ..color = strokeColor);</div>
+<div class='row nod'><span class='ln'>1075</span>  }</div>
+<div class='row nod'><span class='ln'>1076</span>}</div>
+<div class='row nod'><span class='ln'>1077</span></div>
+<div class='row nod'><span class='ln'>1078</span>/// The default shape of each [RangeSlider] tick mark.</div>
+<div class='row nod'><span class='ln'>1079</span>///</div>
+<div class='row nod'><span class='ln'>1080</span>/// Tick marks are only displayed if the slider is discrete, which can be done</div>
+<div class='row nod'><span class='ln'>1081</span>/// by setting the [RangeSlider.divisions] to an integer value.</div>
+<div class='row nod'><span class='ln'>1082</span>///</div>
+<div class='row nod'><span class='ln'>1083</span>/// It paints a solid circle, centered on the track.</div>
+<div class='row nod'><span class='ln'>1084</span>/// The color is determined by the [Slider]&#x27;s enabled state and track&#x27;s active</div>
+<div class='row nod'><span class='ln'>1085</span>/// states. These colors are defined in:</div>
+<div class='row nod'><span class='ln'>1086</span>///   [SliderThemeData.activeTrackColor],</div>
+<div class='row nod'><span class='ln'>1087</span>///   [SliderThemeData.inactiveTrackColor],</div>
+<div class='row nod'><span class='ln'>1088</span>///   [SliderThemeData.disabledActiveTrackColor],</div>
+<div class='row nod'><span class='ln'>1089</span>///   [SliderThemeData.disabledInactiveTrackColor].</div>
+<div class='row nod'><span class='ln'>1090</span>///</div>
+<div class='row nod'><span class='ln'>1091</span>/// ![A slider widget, consisting of 5 divisions and showing the round range slider tick mark shape.]</div>
+<div class='row nod'><span class='ln'>1092</span>/// (https://flutter.github.io/assets-for-api-docs/assets/material/round_range_slider_tick_mark_shape.png )</div>
+<div class='row nod'><span class='ln'>1093</span>///</div>
+<div class='row nod'><span class='ln'>1094</span>/// See also:</div>
+<div class='row nod'><span class='ln'>1095</span>///</div>
+<div class='row nod'><span class='ln'>1096</span>///  * [RangeSlider], which includes tick marks defined by this shape.</div>
+<div class='row nod'><span class='ln'>1097</span>///  * [SliderTheme], which can be used to configure the tick mark shape of all</div>
+<div class='row nod'><span class='ln'>1098</span>///    sliders in a widget subtree.</div>
+<div class='row nod'><span class='ln'>1099</span>class TRoundRangeSliderTickMarkShape extends RangeSliderTickMarkShape {</div>
+<div class='row nod'><span class='ln'>1100</span>  /// Create a range slider tick mark that draws a circle.</div>
+<div class='row cov'><span class='ln'>1101</span>  const TRoundRangeSliderTickMarkShape({</div>
+<div class='row nod'><span class='ln'>1102</span>    this.tickMarkRadius,</div>
+<div class='row nod'><span class='ln'>1103</span>    required this.themeData,</div>
+<div class='row nod'><span class='ln'>1104</span>  });</div>
+<div class='row nod'><span class='ln'>1105</span></div>
+<div class='row nod'><span class='ln'>1106</span>  /// The preferred radius of the round tick mark.</div>
+<div class='row nod'><span class='ln'>1107</span>  ///</div>
+<div class='row nod'><span class='ln'>1108</span>  /// If it is not provided, then 1/4 of the [SliderThemeData.trackHeight] is used.</div>
+<div class='row nod'><span class='ln'>1109</span>  final double? tickMarkRadius;</div>
+<div class='row nod'><span class='ln'>1110</span></div>
+<div class='row nod'><span class='ln'>1111</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>1112</span></div>
+<div class='row unc'><span class='ln'>1113</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1114</span>  Size getPreferredSize({</div>
+<div class='row nod'><span class='ln'>1115</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>1116</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>1117</span>  }) {</div>
+<div class='row unc'><span class='ln'>1118</span>▶     return Size.fromRadius(tickMarkRadius ?? 4);</div>
+<div class='row nod'><span class='ln'>1119</span>  }</div>
+<div class='row nod'><span class='ln'>1120</span></div>
+<div class='row unc'><span class='ln'>1121</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1122</span>  void paint(</div>
+<div class='row nod'><span class='ln'>1123</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>1124</span>    Offset center, {</div>
+<div class='row nod'><span class='ln'>1125</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>1126</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>1127</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>1128</span>    required Offset startThumbCenter,</div>
+<div class='row nod'><span class='ln'>1129</span>    required Offset endThumbCenter,</div>
+<div class='row nod'><span class='ln'>1130</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>1131</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>1132</span>  }) {</div>
+<div class='row unc'><span class='ln'>1133</span>▶     assert(sliderTheme.disabledActiveTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>1134</span>▶     assert(sliderTheme.disabledInactiveTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>1135</span>▶     assert(sliderTheme.activeTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>1136</span>▶     assert(sliderTheme.inactiveTickMarkColor != null);</div>
+<div class='row nod'><span class='ln'>1137</span></div>
+<div class='row nod'><span class='ln'>1138</span>    final bool isBetweenThumbs;</div>
+<div class='row nod'><span class='ln'>1139</span>    switch (textDirection) {</div>
+<div class='row unc'><span class='ln'>1140</span>▶       case TextDirection.ltr:</div>
+<div class='row nod'><span class='ln'>1141</span>        isBetweenThumbs =</div>
+<div class='row unc'><span class='ln'>1142</span>▶             startThumbCenter.dx &lt; center.dx &amp;&amp; center.dx &lt; endThumbCenter.dx;</div>
+<div class='row nod'><span class='ln'>1143</span>        break;</div>
+<div class='row unc'><span class='ln'>1144</span>▶       case TextDirection.rtl:</div>
+<div class='row nod'><span class='ln'>1145</span>        isBetweenThumbs =</div>
+<div class='row unc'><span class='ln'>1146</span>▶             endThumbCenter.dx &lt; center.dx &amp;&amp; center.dx &lt; startThumbCenter.dx;</div>
+<div class='row nod'><span class='ln'>1147</span>        break;</div>
+<div class='row nod'><span class='ln'>1148</span>    }</div>
+<div class='row nod'><span class='ln'>1149</span>    final begin = isBetweenThumbs</div>
+<div class='row unc'><span class='ln'>1150</span>▶         ? sliderTheme.disabledActiveTickMarkColor</div>
+<div class='row unc'><span class='ln'>1151</span>▶         : sliderTheme.disabledInactiveTickMarkColor;</div>
+<div class='row nod'><span class='ln'>1152</span>    final end = isBetweenThumbs</div>
+<div class='row unc'><span class='ln'>1153</span>▶         ? sliderTheme.activeTickMarkColor</div>
+<div class='row unc'><span class='ln'>1154</span>▶         : sliderTheme.inactiveTickMarkColor;</div>
+<div class='row unc'><span class='ln'>1155</span>▶     final paint = Paint()</div>
+<div class='row unc'><span class='ln'>1156</span>▶       ..color = ColorTween(begin: begin, end: end).evaluate(enableAnimation)!;</div>
+<div class='row nod'><span class='ln'>1157</span></div>
+<div class='row nod'><span class='ln'>1158</span>    // The tick marks are tiny circles that are the same height as the track.</div>
+<div class='row unc'><span class='ln'>1159</span>▶     final tickMarkRadius = getPreferredSize(</div>
+<div class='row nod'><span class='ln'>1160</span>          isEnabled: isEnabled,</div>
+<div class='row nod'><span class='ln'>1161</span>          sliderTheme: sliderTheme,</div>
+<div class='row unc'><span class='ln'>1162</span>▶         ).width /</div>
+<div class='row nod'><span class='ln'>1163</span>        2;</div>
+<div class='row unc'><span class='ln'>1164</span>▶     if (tickMarkRadius &gt; 0 &amp;&amp; themeData.showScaleValue) {</div>
+<div class='row unc'><span class='ln'>1165</span>▶       assert(themeData.divisions != null);</div>
+<div class='row unc'><span class='ln'>1166</span>▶       var rect = sliderTheme.rangeTrackShape</div>
+<div class='row unc'><span class='ln'>1167</span>▶           ?.getPreferredRect(parentBox: parentBox, sliderTheme: sliderTheme);</div>
+<div class='row unc'><span class='ln'>1168</span>▶       if (rect != null &amp;&amp; themeData.divisions! &gt; 0) {</div>
+<div class='row nod'><span class='ln'>1169</span>        //轨道的高度</div>
+<div class='row unc'><span class='ln'>1170</span>▶         var trackHeight = rect.bottom - rect.top;</div>
+<div class='row nod'><span class='ln'>1171</span>        //最左边的刻度中心到最右边刻度中心的长度</div>
+<div class='row unc'><span class='ln'>1172</span>▶         var markWidth = (rect.right - rect.left) - trackHeight;</div>
+<div class='row nod'><span class='ln'>1173</span>        //最左边刻度的起点</div>
+<div class='row unc'><span class='ln'>1174</span>▶         var markStart = rect.left + trackHeight / 2;</div>
+<div class='row nod'><span class='ln'>1175</span>        //每个刻度的宽度</div>
+<div class='row unc'><span class='ln'>1176</span>▶         var perWidth = markWidth / themeData.divisions!;</div>
+<div class='row unc'><span class='ln'>1177</span>▶         assert(perWidth &gt; 0);</div>
+<div class='row nod'><span class='ln'>1178</span>        //计算当前是第几个刻度</div>
+<div class='row unc'><span class='ln'>1179</span>▶         var index = ((center.dx - markStart) / perWidth).round();</div>
+<div class='row nod'><span class='ln'>1180</span>        //获取当前刻度的值</div>
+<div class='row unc'><span class='ln'>1181</span>▶         var value = themeData.min +</div>
+<div class='row unc'><span class='ln'>1182</span>▶             index * ((themeData.max - themeData.min) / themeData.divisions!);</div>
+<div class='row nod'><span class='ln'>1183</span>        //格式化数值</div>
+<div class='row unc'><span class='ln'>1184</span>▶         var valueFormatter = themeData.scaleFormatter != null</div>
+<div class='row unc'><span class='ln'>1185</span>▶             ? themeData.scaleFormatter!(value)</div>
+<div class='row unc'><span class='ln'>1186</span>▶             : value.toString();</div>
+<div class='row nod'><span class='ln'>1187</span>        //绘制刻度的值</div>
+<div class='row unc'><span class='ln'>1188</span>▶         var painter = TextPainter(</div>
+<div class='row unc'><span class='ln'>1189</span>▶             text: TextSpan(</div>
+<div class='row nod'><span class='ln'>1190</span>                text: valueFormatter,</div>
+<div class='row unc'><span class='ln'>1191</span>▶                 style: enableAnimation.value &gt; 0</div>
+<div class='row unc'><span class='ln'>1192</span>▶                     ? themeData.effectiveScaleTextStyle</div>
+<div class='row unc'><span class='ln'>1193</span>▶                     : themeData.effectiveDisabledScaleTextStyle),</div>
+<div class='row nod'><span class='ln'>1194</span>            textDirection: TextDirection.ltr,</div>
+<div class='row nod'><span class='ln'>1195</span>            textAlign: TextAlign.center)</div>
+<div class='row unc'><span class='ln'>1196</span>▶           ..layout(maxWidth: 100);</div>
+<div class='row nod'><span class='ln'>1197</span>        //绘制的x</div>
+<div class='row unc'><span class='ln'>1198</span>▶         var x = center.dx - painter.size.width / 2;</div>
+<div class='row unc'><span class='ln'>1199</span>▶         if (index == 0) {</div>
+<div class='row unc'><span class='ln'>1200</span>▶           x = center.dx - trackHeight;</div>
+<div class='row unc'><span class='ln'>1201</span>▶         } else if (index == themeData.divisions) {</div>
+<div class='row unc'><span class='ln'>1202</span>▶           x = center.dx - painter.size.width + trackHeight;</div>
+<div class='row nod'><span class='ln'>1203</span>        }</div>
+<div class='row unc'><span class='ln'>1204</span>▶         painter.paint(</div>
+<div class='row unc'><span class='ln'>1205</span>▶             context.canvas, Offset(x, center.dy - painter.height - 14));</div>
+<div class='row nod'><span class='ln'>1206</span>      }</div>
+<div class='row unc'><span class='ln'>1207</span>▶       context.canvas.drawCircle(center, tickMarkRadius, paint);</div>
+<div class='row nod'><span class='ln'>1208</span>    }</div>
+<div class='row nod'><span class='ln'>1209</span>  }</div>
+<div class='row nod'><span class='ln'>1210</span>}</div>
+<div class='row nod'><span class='ln'>1211</span></div>
+<div class='row nod'><span class='ln'>1212</span>mixin TCapsuleTrackShape {</div>
+<div class='row unc'><span class='ln'>1213</span>▶   Offset adjustThumbCenter(Offset thumbCenter, Rect trackRect) {</div>
+<div class='row unc'><span class='ln'>1214</span>▶     final value = (thumbCenter.dx - trackRect.left) / trackRect.width;</div>
+<div class='row unc'><span class='ln'>1215</span>▶     final x = value * (trackRect.width - 24) + trackRect.left + 12;</div>
+<div class='row unc'><span class='ln'>1216</span>▶     return Offset(x, thumbCenter.dy);</div>
+<div class='row nod'><span class='ln'>1217</span>  }</div>
+<div class='row nod'><span class='ln'>1218</span>}</div>
+<div class='row nod'><span class='ln'>1219</span></div>
+<div class='row nod'><span class='ln'>1220</span>abstract interface class TCapsuleRectThemeData {</div>
+<div class='row nod'><span class='ln'>1221</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>1222</span></div>
+<div class='row unc'><span class='ln'>1223</span>▶   TCapsuleRectThemeData({required this.themeData});</div>
+<div class='row nod'><span class='ln'>1224</span>}</div>
+<div class='row nod'><span class='ln'>1225</span></div>
+<div class='row nod'><span class='ln'>1226</span>mixin TCapsuleRectAdjustment implements TCapsuleRectThemeData {</div>
+<div class='row nod'><span class='ln'>1227</span>  // 是否有分区</div>
+<div class='row unc'><span class='ln'>1228</span>▶   hasDivisions() {</div>
+<div class='row unc'><span class='ln'>1229</span>▶     return themeData.divisions != null &amp;&amp; themeData.divisions! &gt; 0;</div>
+<div class='row nod'><span class='ln'>1230</span>  }</div>
+<div class='row nod'><span class='ln'>1231</span></div>
+<div class='row nod'><span class='ln'>1232</span>  // 胶囊类型适配样式边距 trackHeight / 2，默认是 12</div>
+<div class='row nod'><span class='ln'>1233</span>  // 统一使用固定边距，让 adjustThumbCenter 来处理滑块位置限制</div>
+<div class='row cov'><span class='ln'>1234</span>  extraPadding({trackHeight = 24}) {</div>
+<div class='row cov'><span class='ln'>1235</span>    return trackHeight / 2;</div>
+<div class='row nod'><span class='ln'>1236</span>  }</div>
+<div class='row nod'><span class='ln'>1237</span></div>
+<div class='row nod'><span class='ln'>1238</span>  // 胶囊类型数值计算修正边距 trackHeight / 2，默认是 12</div>
+<div class='row nod'><span class='ln'>1239</span>  // 统一不使用额外 padding，位置计算由 adjustThumbCenter 处理</div>
+<div class='row unc'><span class='ln'>1240</span>▶   trackPadding({trackHeight = 24}) {</div>
+<div class='row nod'><span class='ln'>1241</span>    return 0;</div>
+<div class='row nod'><span class='ln'>1242</span>  }</div>
+<div class='row nod'><span class='ln'>1243</span>}</div>
+<div class='row nod'><span class='ln'>1244</span></div>
+<div class='row nod'><span class='ln'>1245</span>///</div>
+<div class='row nod'><span class='ln'>1246</span>///Slider轨道绘制</div>
+<div class='row nod'><span class='ln'>1247</span>///</div>
+<div class='row nod'><span class='ln'>1248</span>class TCapsuleRectSliderTrackShape extends SliderTrackShape</div>
+<div class='row nod'><span class='ln'>1249</span>    with BaseSliderTrackShape, TCapsuleTrackShape, TCapsuleRectAdjustment {</div>
+<div class='row nod'><span class='ln'>1250</span>  /// Create a slider track that draws two rectangles with rounded outer edges.</div>
+<div class='row cov'><span class='ln'>1251</span>  const TCapsuleRectSliderTrackShape({</div>
+<div class='row nod'><span class='ln'>1252</span>    required this.trackColorWhenShowScale,</div>
+<div class='row nod'><span class='ln'>1253</span>    required this.themeData,</div>
+<div class='row nod'><span class='ln'>1254</span>  });</div>
+<div class='row nod'><span class='ln'>1255</span></div>
+<div class='row nod'><span class='ln'>1256</span>  final Color trackColorWhenShowScale;</div>
+<div class='row nod'><span class='ln'>1257</span></div>
+<div class='row nod'><span class='ln'>1258</span>  @override</div>
+<div class='row nod'><span class='ln'>1259</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>1260</span></div>
+<div class='row cov'><span class='ln'>1261</span>  @override</div>
+<div class='row nod'><span class='ln'>1262</span>  Rect getPreferredRect(</div>
+<div class='row nod'><span class='ln'>1263</span>      {required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>1264</span>      Offset offset = Offset.zero,</div>
+<div class='row nod'><span class='ln'>1265</span>      required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>1266</span>      bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>1267</span>      bool isDiscrete = false}) {</div>
+<div class='row cov'><span class='ln'>1268</span>    var rect = super.getPreferredRect(</div>
+<div class='row nod'><span class='ln'>1269</span>      parentBox: parentBox,</div>
+<div class='row nod'><span class='ln'>1270</span>      offset: offset,</div>
+<div class='row nod'><span class='ln'>1271</span>      sliderTheme: sliderTheme,</div>
+<div class='row nod'><span class='ln'>1272</span>      isEnabled: isEnabled,</div>
+<div class='row nod'><span class='ln'>1273</span>      isDiscrete: isDiscrete,</div>
+<div class='row nod'><span class='ln'>1274</span>    );</div>
+<div class='row cov'><span class='ln'>1275</span>    final padding = extraPadding();</div>
+<div class='row cov'><span class='ln'>1276</span>    var realRect = Rect.fromLTRB(</div>
+<div class='row cov'><span class='ln'>1277</span>        rect.left + padding, rect.top, rect.right - padding, rect.bottom);</div>
+<div class='row cov'><span class='ln'>1278</span>    themeData.sliderMeasureData.trackerRect = realRect;</div>
+<div class='row nod'><span class='ln'>1279</span>    return realRect;</div>
+<div class='row nod'><span class='ln'>1280</span>  }</div>
+<div class='row nod'><span class='ln'>1281</span></div>
+<div class='row cov'><span class='ln'>1282</span>  @override</div>
+<div class='row nod'><span class='ln'>1283</span>  void paint(</div>
+<div class='row nod'><span class='ln'>1284</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>1285</span>    Offset offset, {</div>
+<div class='row nod'><span class='ln'>1286</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>1287</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>1288</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>1289</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>1290</span>    required Offset thumbCenter,</div>
+<div class='row nod'><span class='ln'>1291</span>    Offset? secondaryOffset,</div>
+<div class='row nod'><span class='ln'>1292</span>    bool isDiscrete = false,</div>
+<div class='row nod'><span class='ln'>1293</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>1294</span>    double additionalActiveTrackHeight = 3,</div>
+<div class='row nod'><span class='ln'>1295</span>  }) {</div>
+<div class='row cov'><span class='ln'>1296</span>    assert(sliderTheme.disabledActiveTrackColor != null);</div>
+<div class='row cov'><span class='ln'>1297</span>    assert(sliderTheme.disabledInactiveTrackColor != null);</div>
+<div class='row cov'><span class='ln'>1298</span>    assert(sliderTheme.activeTrackColor != null);</div>
+<div class='row cov'><span class='ln'>1299</span>    assert(sliderTheme.inactiveTrackColor != null);</div>
+<div class='row cov'><span class='ln'>1300</span>    assert(sliderTheme.thumbShape != null);</div>
+<div class='row nod'><span class='ln'>1301</span>    // If the slider [SliderThemeData.trackHeight] is less than or equal to 0,</div>
+<div class='row nod'><span class='ln'>1302</span>    // then it makes no difference whether the track is painted or not,</div>
+<div class='row nod'><span class='ln'>1303</span>    // therefore the painting can be a no-op.</div>
+<div class='row cov'><span class='ln'>1304</span>    if (sliderTheme.trackHeight == null || sliderTheme.trackHeight! &lt;= 0) {</div>
+<div class='row nod'><span class='ln'>1305</span>      return;</div>
+<div class='row nod'><span class='ln'>1306</span>    }</div>
+<div class='row nod'><span class='ln'>1307</span>    // Assign the track segment paints, which are leading: active and</div>
+<div class='row nod'><span class='ln'>1308</span>    // trailing: inactive.</div>
+<div class='row cov'><span class='ln'>1309</span>    var showScale = themeData.showScaleValue;</div>
+<div class='row cov'><span class='ln'>1310</span>    final activeTrackColorTween = ColorTween(</div>
+<div class='row cov'><span class='ln'>1311</span>        begin: sliderTheme.disabledActiveTrackColor,</div>
+<div class='row cov'><span class='ln'>1312</span>        end: sliderTheme.activeTrackColor);</div>
+<div class='row cov'><span class='ln'>1313</span>    final inactiveTrackColorTween = ColorTween(</div>
+<div class='row cov'><span class='ln'>1314</span>        begin: sliderTheme.disabledInactiveTrackColor,</div>
+<div class='row nod'><span class='ln'>1315</span>        end: showScale</div>
+<div class='row unc'><span class='ln'>1316</span>▶             ? trackColorWhenShowScale</div>
+<div class='row cov'><span class='ln'>1317</span>            : sliderTheme.inactiveTrackColor);</div>
+<div class='row cov'><span class='ln'>1318</span>    final activePaint = Paint()</div>
+<div class='row cov'><span class='ln'>1319</span>      ..color = activeTrackColorTween.evaluate(enableAnimation)!;</div>
+<div class='row cov'><span class='ln'>1320</span>    final inactivePaint = Paint()</div>
+<div class='row cov'><span class='ln'>1321</span>      ..color = inactiveTrackColorTween.evaluate(enableAnimation)!;</div>
+<div class='row nod'><span class='ln'>1322</span>    final Paint activeTrackPaint;</div>
+<div class='row nod'><span class='ln'>1323</span>    final Paint inactiveTrackPaint;</div>
+<div class='row nod'><span class='ln'>1324</span>    switch (textDirection) {</div>
+<div class='row cov'><span class='ln'>1325</span>      case TextDirection.ltr:</div>
+<div class='row nod'><span class='ln'>1326</span>        activeTrackPaint = activePaint;</div>
+<div class='row nod'><span class='ln'>1327</span>        inactiveTrackPaint = inactivePaint;</div>
+<div class='row nod'><span class='ln'>1328</span>        break;</div>
+<div class='row unc'><span class='ln'>1329</span>▶       case TextDirection.rtl:</div>
+<div class='row nod'><span class='ln'>1330</span>        activeTrackPaint = inactivePaint;</div>
+<div class='row nod'><span class='ln'>1331</span>        inactiveTrackPaint = activePaint;</div>
+<div class='row nod'><span class='ln'>1332</span>        break;</div>
+<div class='row nod'><span class='ln'>1333</span>    }</div>
+<div class='row nod'><span class='ln'>1334</span></div>
+<div class='row cov'><span class='ln'>1335</span>    final trackRect = getPreferredRect(</div>
+<div class='row nod'><span class='ln'>1336</span>      parentBox: parentBox,</div>
+<div class='row nod'><span class='ln'>1337</span>      offset: offset,</div>
+<div class='row nod'><span class='ln'>1338</span>      sliderTheme: sliderTheme,</div>
+<div class='row nod'><span class='ln'>1339</span>      isEnabled: isEnabled,</div>
+<div class='row nod'><span class='ln'>1340</span>      isDiscrete: isDiscrete,</div>
+<div class='row nod'><span class='ln'>1341</span>    );</div>
+<div class='row cov'><span class='ln'>1342</span>    themeData.sliderMeasureData.trackerRect = trackRect;</div>
+<div class='row cov'><span class='ln'>1343</span>    final trackRadius = Radius.circular(trackRect.height / 2);</div>
+<div class='row nod'><span class='ln'>1344</span>    final activeTrackRadius =</div>
+<div class='row cov'><span class='ln'>1345</span>        Radius.circular((trackRect.height - additionalActiveTrackHeight) / 2);</div>
+<div class='row nod'><span class='ln'>1346</span></div>
+<div class='row cov'><span class='ln'>1347</span>    final padding = extraPadding();</div>
+<div class='row cov'><span class='ln'>1348</span>    context.canvas.drawRRect(</div>
+<div class='row cov'><span class='ln'>1349</span>      RRect.fromLTRBAndCorners(trackRect.left - padding, trackRect.top,</div>
+<div class='row cov'><span class='ln'>1350</span>          trackRect.right + padding, trackRect.bottom,</div>
+<div class='row nod'><span class='ln'>1351</span>          topLeft: trackRadius,</div>
+<div class='row nod'><span class='ln'>1352</span>          bottomLeft: trackRadius,</div>
+<div class='row nod'><span class='ln'>1353</span>          topRight: trackRadius,</div>
+<div class='row nod'><span class='ln'>1354</span>          bottomRight: trackRadius),</div>
+<div class='row nod'><span class='ln'>1355</span>      inactiveTrackPaint,</div>
+<div class='row nod'><span class='ln'>1356</span>    );</div>
+<div class='row cov'><span class='ln'>1357</span>    context.canvas.drawRRect(</div>
+<div class='row cov'><span class='ln'>1358</span>      RRect.fromLTRBAndCorners(</div>
+<div class='row cov'><span class='ln'>1359</span>        trackRect.left - padding + additionalActiveTrackHeight,</div>
+<div class='row cov'><span class='ln'>1360</span>        trackRect.top + additionalActiveTrackHeight,</div>
+<div class='row cov'><span class='ln'>1361</span>        thumbCenter.dx,</div>
+<div class='row cov'><span class='ln'>1362</span>        trackRect.bottom - additionalActiveTrackHeight,</div>
+<div class='row nod'><span class='ln'>1363</span>        topLeft: activeTrackRadius,</div>
+<div class='row nod'><span class='ln'>1364</span>        bottomLeft: activeTrackRadius,</div>
+<div class='row nod'><span class='ln'>1365</span>      ),</div>
+<div class='row nod'><span class='ln'>1366</span>      activeTrackPaint,</div>
+<div class='row nod'><span class='ln'>1367</span>    );</div>
+<div class='row cov'><span class='ln'>1368</span>    if (themeData.showScaleValue) {</div>
+<div class='row unc'><span class='ln'>1369</span>▶       final inactiveSecondPaint = Paint()</div>
+<div class='row unc'><span class='ln'>1370</span>▶         ..color = sliderTheme.inactiveTrackColor!;</div>
+<div class='row unc'><span class='ln'>1371</span>▶       context.canvas.drawRRect(</div>
+<div class='row unc'><span class='ln'>1372</span>▶         RRect.fromLTRBAndCorners(</div>
+<div class='row unc'><span class='ln'>1373</span>▶           thumbCenter.dx,</div>
+<div class='row unc'><span class='ln'>1374</span>▶           trackRect.top + additionalActiveTrackHeight,</div>
+<div class='row unc'><span class='ln'>1375</span>▶           trackRect.right + padding - additionalActiveTrackHeight,</div>
+<div class='row unc'><span class='ln'>1376</span>▶           trackRect.bottom - additionalActiveTrackHeight,</div>
+<div class='row nod'><span class='ln'>1377</span>          topRight: activeTrackRadius,</div>
+<div class='row nod'><span class='ln'>1378</span>          bottomRight: activeTrackRadius,</div>
+<div class='row nod'><span class='ln'>1379</span>        ),</div>
+<div class='row nod'><span class='ln'>1380</span>        inactiveSecondPaint,</div>
+<div class='row nod'><span class='ln'>1381</span>      );</div>
+<div class='row nod'><span class='ln'>1382</span>    }</div>
+<div class='row nod'><span class='ln'>1383</span>  }</div>
+<div class='row nod'><span class='ln'>1384</span>}</div>
+<div class='row nod'><span class='ln'>1385</span></div>
+<div class='row nod'><span class='ln'>1386</span>/// 胶囊型游标绘制</div>
+<div class='row nod'><span class='ln'>1387</span>class TCapsuleSliderThumbShape extends SliderComponentShape</div>
+<div class='row nod'><span class='ln'>1388</span>    with TCapsuleRectAdjustment {</div>
+<div class='row nod'><span class='ln'>1389</span>  /// Create a slider thumb that draws a circle.</div>
+<div class='row cov'><span class='ln'>1390</span>  const TCapsuleSliderThumbShape({</div>
+<div class='row nod'><span class='ln'>1391</span>    this.enabledThumbRadius = 9.0,</div>
+<div class='row nod'><span class='ln'>1392</span>    this.disabledThumbRadius,</div>
+<div class='row nod'><span class='ln'>1393</span>    this.elevation = 4.0,</div>
+<div class='row nod'><span class='ln'>1394</span>    this.pressedElevation = 4.0,</div>
+<div class='row nod'><span class='ln'>1395</span>    required this.themeData,</div>
+<div class='row nod'><span class='ln'>1396</span>    required this.strokeColor,</div>
+<div class='row nod'><span class='ln'>1397</span>  });</div>
+<div class='row nod'><span class='ln'>1398</span></div>
+<div class='row nod'><span class='ln'>1399</span>  /// The preferred radius of the round thumb shape when the slider is enabled.</div>
+<div class='row nod'><span class='ln'>1400</span>  ///</div>
+<div class='row nod'><span class='ln'>1401</span>  /// If it is not provided, then the Material Design default of 10 is used.</div>
+<div class='row nod'><span class='ln'>1402</span>  final double enabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>1403</span></div>
+<div class='row nod'><span class='ln'>1404</span>  /// The preferred radius of the round thumb shape when the slider is disabled.</div>
+<div class='row nod'><span class='ln'>1405</span>  ///</div>
+<div class='row nod'><span class='ln'>1406</span>  /// If no disabledRadius is provided, then it is equal to the</div>
+<div class='row nod'><span class='ln'>1407</span>  /// [enabledThumbRadius]</div>
+<div class='row nod'><span class='ln'>1408</span>  final double? disabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>1409</span></div>
+<div class='row cov'><span class='ln'>1410</span>  double get _disabledThumbRadius =&gt; disabledThumbRadius ?? enabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>1411</span></div>
+<div class='row nod'><span class='ln'>1412</span>  /// The resting elevation adds shadow to the unpressed thumb.</div>
+<div class='row nod'><span class='ln'>1413</span>  ///</div>
+<div class='row nod'><span class='ln'>1414</span>  /// The default is 1.</div>
+<div class='row nod'><span class='ln'>1415</span>  ///</div>
+<div class='row nod'><span class='ln'>1416</span>  /// Use 0 for no shadow. The higher the value, the larger the shadow. For</div>
+<div class='row nod'><span class='ln'>1417</span>  /// example, a value of 12 will create a very large shadow.</div>
+<div class='row nod'><span class='ln'>1418</span>  ///</div>
+<div class='row nod'><span class='ln'>1419</span>  final double elevation;</div>
+<div class='row nod'><span class='ln'>1420</span></div>
+<div class='row nod'><span class='ln'>1421</span>  /// The pressed elevation adds shadow to the pressed thumb.</div>
+<div class='row nod'><span class='ln'>1422</span>  ///</div>
+<div class='row nod'><span class='ln'>1423</span>  /// The default is 6.</div>
+<div class='row nod'><span class='ln'>1424</span>  ///</div>
+<div class='row nod'><span class='ln'>1425</span>  /// Use 0 for no shadow. The higher the value, the larger the shadow. For</div>
+<div class='row nod'><span class='ln'>1426</span>  /// example, a value of 12 will create a very large shadow.</div>
+<div class='row nod'><span class='ln'>1427</span>  final double pressedElevation;</div>
+<div class='row nod'><span class='ln'>1428</span></div>
+<div class='row nod'><span class='ln'>1429</span>  @override</div>
+<div class='row nod'><span class='ln'>1430</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>1431</span></div>
+<div class='row nod'><span class='ln'>1432</span>  /// 游标描边颜色（v1.0：从 buildContext.tTheme 改为直接传入 Color）</div>
+<div class='row nod'><span class='ln'>1433</span>  final Color strokeColor;</div>
+<div class='row nod'><span class='ln'>1434</span></div>
+<div class='row cov'><span class='ln'>1435</span>  @override</div>
+<div class='row nod'><span class='ln'>1436</span>  Size getPreferredSize(bool isEnabled, bool isDiscrete) {</div>
+<div class='row cov'><span class='ln'>1437</span>    return Size.fromRadius(</div>
+<div class='row cov'><span class='ln'>1438</span>        isEnabled == true ? enabledThumbRadius : _disabledThumbRadius);</div>
+<div class='row nod'><span class='ln'>1439</span>  }</div>
+<div class='row nod'><span class='ln'>1440</span></div>
+<div class='row cov'><span class='ln'>1441</span>  @override</div>
+<div class='row nod'><span class='ln'>1442</span>  void paint(</div>
+<div class='row nod'><span class='ln'>1443</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>1444</span>    Offset center, {</div>
+<div class='row nod'><span class='ln'>1445</span>    required Animation&lt;double&gt; activationAnimation,</div>
+<div class='row nod'><span class='ln'>1446</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>1447</span>    required bool isDiscrete,</div>
+<div class='row nod'><span class='ln'>1448</span>    required TextPainter labelPainter,</div>
+<div class='row nod'><span class='ln'>1449</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>1450</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>1451</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>1452</span>    required double value,</div>
+<div class='row nod'><span class='ln'>1453</span>    required double textScaleFactor,</div>
+<div class='row nod'><span class='ln'>1454</span>    required Size sizeWithOverflow,</div>
+<div class='row nod'><span class='ln'>1455</span>  }) {</div>
+<div class='row cov'><span class='ln'>1456</span>    assert(sliderTheme.disabledThumbColor != null);</div>
+<div class='row cov'><span class='ln'>1457</span>    assert(sliderTheme.thumbColor != null);</div>
+<div class='row nod'><span class='ln'>1458</span></div>
+<div class='row cov'><span class='ln'>1459</span>    final canvas = context.canvas;</div>
+<div class='row cov'><span class='ln'>1460</span>    final radiusTween = Tween&lt;double&gt;(</div>
+<div class='row cov'><span class='ln'>1461</span>      begin: _disabledThumbRadius,</div>
+<div class='row cov'><span class='ln'>1462</span>      end: enabledThumbRadius,</div>
+<div class='row nod'><span class='ln'>1463</span>    );</div>
+<div class='row cov'><span class='ln'>1464</span>    final colorTween = ColorTween(</div>
+<div class='row cov'><span class='ln'>1465</span>      begin: sliderTheme.disabledThumbColor,</div>
+<div class='row cov'><span class='ln'>1466</span>      end: sliderTheme.thumbColor,</div>
+<div class='row nod'><span class='ln'>1467</span>    );</div>
+<div class='row nod'><span class='ln'>1468</span></div>
+<div class='row cov'><span class='ln'>1469</span>    final color = colorTween.evaluate(enableAnimation)!;</div>
+<div class='row cov'><span class='ln'>1470</span>    final radius = radiusTween.evaluate(enableAnimation);</div>
+<div class='row nod'><span class='ln'>1471</span></div>
+<div class='row cov'><span class='ln'>1472</span>    final elevationTween = Tween&lt;double&gt;(</div>
+<div class='row cov'><span class='ln'>1473</span>      begin: elevation,</div>
+<div class='row cov'><span class='ln'>1474</span>      end: pressedElevation,</div>
+<div class='row nod'><span class='ln'>1475</span>    );</div>
+<div class='row cov'><span class='ln'>1476</span>    final evaluatedElevation = elevationTween.evaluate(activationAnimation);</div>
+<div class='row cov'><span class='ln'>1477</span>    final path = Path()</div>
+<div class='row cov'><span class='ln'>1478</span>      ..addArc(</div>
+<div class='row cov'><span class='ln'>1479</span>          Rect.fromCenter(</div>
+<div class='row cov'><span class='ln'>1480</span>              center: center, width: 2 * radius, height: 2 * radius),</div>
+<div class='row nod'><span class='ln'>1481</span>          0,</div>
+<div class='row cov'><span class='ln'>1482</span>          math.pi * 2);</div>
+<div class='row nod'><span class='ln'>1483</span></div>
+<div class='row nod'><span class='ln'>1484</span>    var paintShadows = true;</div>
+<div class='row nod'><span class='ln'>1485</span></div>
+<div class='row nod'><span class='ln'>1486</span>    if (paintShadows) {</div>
+<div class='row cov'><span class='ln'>1487</span>      canvas.drawShadow(</div>
+<div class='row nod'><span class='ln'>1488</span>          path, const Color.fromRGBO(0, 0, 0, 0.5), evaluatedElevation, true);</div>
+<div class='row nod'><span class='ln'>1489</span>    }</div>
+<div class='row nod'><span class='ln'>1490</span>    // draw thumb text</div>
+<div class='row cov'><span class='ln'>1491</span>    if (themeData.showThumbValue &amp;&amp;</div>
+<div class='row unc'><span class='ln'>1492</span>▶         themeData.sliderMeasureData.trackerRect != null) {</div>
+<div class='row unc'><span class='ln'>1493</span>▶       var trackerRect = themeData.sliderMeasureData.trackerRect!;</div>
+<div class='row unc'><span class='ln'>1494</span>▶       final padding = trackPadding();</div>
+<div class='row unc'><span class='ln'>1495</span>▶       var ratio = (center.dx - trackerRect.left - padding) /</div>
+<div class='row unc'><span class='ln'>1496</span>▶           (trackerRect.right - trackerRect.left - padding * 2);</div>
+<div class='row nod'><span class='ln'>1497</span>      //计算滑块的值</div>
+<div class='row unc'><span class='ln'>1498</span>▶       var value = (themeData.max - themeData.min) * ratio + themeData.min;</div>
+<div class='row nod'><span class='ln'>1499</span>      //格式化显示</div>
+<div class='row unc'><span class='ln'>1500</span>▶       var formatterValue = themeData.scaleFormatter == null</div>
+<div class='row unc'><span class='ln'>1501</span>▶           ? value.toStringAsFixed(2)</div>
+<div class='row unc'><span class='ln'>1502</span>▶           : themeData.scaleFormatter!(value);</div>
+<div class='row nod'><span class='ln'>1503</span>      //绘制数值</div>
+<div class='row unc'><span class='ln'>1504</span>▶       var painter = TextPainter(</div>
+<div class='row unc'><span class='ln'>1505</span>▶           text: TextSpan(</div>
+<div class='row unc'><span class='ln'>1506</span>▶               text: &#x27;$formatterValue&#x27;,</div>
+<div class='row unc'><span class='ln'>1507</span>▶               style: enableAnimation.value &gt; 0</div>
+<div class='row unc'><span class='ln'>1508</span>▶                   ? themeData.effectiveThumbTextStyle</div>
+<div class='row unc'><span class='ln'>1509</span>▶                   : themeData.effectiveDisabledThumbTextStyle),</div>
+<div class='row nod'><span class='ln'>1510</span>          textDirection: TextDirection.ltr,</div>
+<div class='row nod'><span class='ln'>1511</span>          textAlign: TextAlign.center)</div>
+<div class='row unc'><span class='ln'>1512</span>▶         ..layout(maxWidth: 100);</div>
+<div class='row unc'><span class='ln'>1513</span>▶       painter.paint(</div>
+<div class='row unc'><span class='ln'>1514</span>▶           context.canvas,</div>
+<div class='row unc'><span class='ln'>1515</span>▶           Offset(center.dx - painter.size.width / 2,</div>
+<div class='row unc'><span class='ln'>1516</span>▶               center.dy - painter.height - 14));</div>
+<div class='row nod'><span class='ln'>1517</span>    }</div>
+<div class='row cov'><span class='ln'>1518</span>    var paint = Paint();</div>
+<div class='row cov'><span class='ln'>1519</span>    paint.color = color;</div>
+<div class='row cov'><span class='ln'>1520</span>    canvas.drawCircle(</div>
+<div class='row nod'><span class='ln'>1521</span>      center,</div>
+<div class='row nod'><span class='ln'>1522</span>      radius,</div>
+<div class='row nod'><span class='ln'>1523</span>      paint,</div>
+<div class='row nod'><span class='ln'>1524</span>    );</div>
+<div class='row cov'><span class='ln'>1525</span>    canvas.drawArc(</div>
+<div class='row cov'><span class='ln'>1526</span>        Rect.fromCircle(center: center, radius: radius),</div>
+<div class='row nod'><span class='ln'>1527</span>        0,</div>
+<div class='row cov'><span class='ln'>1528</span>        2 * math.pi,</div>
+<div class='row nod'><span class='ln'>1529</span>        false,</div>
+<div class='row cov'><span class='ln'>1530</span>        Paint()</div>
+<div class='row cov'><span class='ln'>1531</span>          ..style = PaintingStyle.stroke</div>
+<div class='row cov'><span class='ln'>1532</span>          ..strokeWidth = 1</div>
+<div class='row cov'><span class='ln'>1533</span>          ..color = strokeColor);</div>
+<div class='row nod'><span class='ln'>1534</span>  }</div>
+<div class='row nod'><span class='ln'>1535</span>}</div>
+<div class='row nod'><span class='ln'>1536</span></div>
+<div class='row nod'><span class='ln'>1537</span>///</div>
+<div class='row nod'><span class='ln'>1538</span>/// 刻度绘制</div>
+<div class='row nod'><span class='ln'>1539</span>///</div>
+<div class='row nod'><span class='ln'>1540</span>class TCapsuleSliderTickMarkShape extends SliderTickMarkShape {</div>
+<div class='row nod'><span class='ln'>1541</span>  /// Create a slider tick mark that draws a circle.</div>
+<div class='row cov'><span class='ln'>1542</span>  const TCapsuleSliderTickMarkShape({</div>
+<div class='row nod'><span class='ln'>1543</span>    this.tickMarkRadius,</div>
+<div class='row nod'><span class='ln'>1544</span>    required this.themeData,</div>
+<div class='row nod'><span class='ln'>1545</span>  });</div>
+<div class='row nod'><span class='ln'>1546</span></div>
+<div class='row nod'><span class='ln'>1547</span>  /// The preferred radius of the round tick mark.</div>
+<div class='row nod'><span class='ln'>1548</span>  ///</div>
+<div class='row nod'><span class='ln'>1549</span>  /// If it is not provided, then 1/4 of the [SliderThemeData.trackHeight] is used.</div>
+<div class='row nod'><span class='ln'>1550</span>  final double? tickMarkRadius;</div>
+<div class='row nod'><span class='ln'>1551</span></div>
+<div class='row nod'><span class='ln'>1552</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>1553</span></div>
+<div class='row unc'><span class='ln'>1554</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1555</span>  Size getPreferredSize({</div>
+<div class='row nod'><span class='ln'>1556</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>1557</span>    required bool isEnabled,</div>
+<div class='row nod'><span class='ln'>1558</span>  }) {</div>
+<div class='row unc'><span class='ln'>1559</span>▶     assert(sliderTheme.trackHeight != null);</div>
+<div class='row nod'><span class='ln'>1560</span>    // The tick marks are tiny circles. If no radius is provided, then the</div>
+<div class='row nod'><span class='ln'>1561</span>    // radius is defaulted to be a fraction of the</div>
+<div class='row nod'><span class='ln'>1562</span>    // [SliderThemeData.trackHeight]. The fraction is 1/4.</div>
+<div class='row unc'><span class='ln'>1563</span>▶     return Size.fromRadius(tickMarkRadius ?? 4);</div>
+<div class='row nod'><span class='ln'>1564</span>  }</div>
+<div class='row nod'><span class='ln'>1565</span></div>
+<div class='row unc'><span class='ln'>1566</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1567</span>  void paint(</div>
+<div class='row nod'><span class='ln'>1568</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>1569</span>    Offset center, {</div>
+<div class='row nod'><span class='ln'>1570</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>1571</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>1572</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>1573</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>1574</span>    required Offset thumbCenter,</div>
+<div class='row nod'><span class='ln'>1575</span>    required bool isEnabled,</div>
+<div class='row nod'><span class='ln'>1576</span>  }) {</div>
+<div class='row unc'><span class='ln'>1577</span>▶     assert(sliderTheme.disabledActiveTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>1578</span>▶     assert(sliderTheme.disabledInactiveTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>1579</span>▶     assert(sliderTheme.activeTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>1580</span>▶     assert(sliderTheme.inactiveTickMarkColor != null);</div>
+<div class='row nod'><span class='ln'>1581</span>    // The paint color of the tick mark depends on its position relative</div>
+<div class='row nod'><span class='ln'>1582</span>    // to the thumb and the text direction.</div>
+<div class='row nod'><span class='ln'>1583</span>    // Color? begin;</div>
+<div class='row nod'><span class='ln'>1584</span>    // Color? end;</div>
+<div class='row nod'><span class='ln'>1585</span>    // // final paint = Paint()..color = ColorTween(begin: begin, end: end).evaluate(enableAnimation)!;</div>
+<div class='row nod'><span class='ln'>1586</span>    // final paint = Paint()</div>
+<div class='row nod'><span class='ln'>1587</span>    //   ..strokeWidth = 2</div>
+<div class='row nod'><span class='ln'>1588</span>    //   ..color = ColorTween(begin: begin, end: end).evaluate(enableAnimation)!;</div>
+<div class='row nod'><span class='ln'>1589</span>    // The tick marks are tiny circles that are the same height as the track.</div>
+<div class='row unc'><span class='ln'>1590</span>▶     final tickMarkRadius = getPreferredSize(</div>
+<div class='row nod'><span class='ln'>1591</span>          isEnabled: isEnabled,</div>
+<div class='row nod'><span class='ln'>1592</span>          sliderTheme: sliderTheme,</div>
+<div class='row unc'><span class='ln'>1593</span>▶         ).width /</div>
+<div class='row nod'><span class='ln'>1594</span>        2;</div>
+<div class='row unc'><span class='ln'>1595</span>▶     var dx = center.dx;</div>
+<div class='row unc'><span class='ln'>1596</span>▶     if (tickMarkRadius &gt; 0 &amp;&amp; themeData.showScaleValue) {</div>
+<div class='row unc'><span class='ln'>1597</span>▶       assert(themeData.divisions != null);</div>
+<div class='row unc'><span class='ln'>1598</span>▶       var rect = sliderTheme.trackShape</div>
+<div class='row unc'><span class='ln'>1599</span>▶           ?.getPreferredRect(parentBox: parentBox, sliderTheme: sliderTheme);</div>
+<div class='row unc'><span class='ln'>1600</span>▶       if (rect != null &amp;&amp; themeData.divisions! &gt; 0) {</div>
+<div class='row nod'><span class='ln'>1601</span>        //轨道的高度</div>
+<div class='row unc'><span class='ln'>1602</span>▶         var trackHeight = rect.bottom - rect.top;</div>
+<div class='row nod'><span class='ln'>1603</span>        //最左边的刻度中心到最右边刻度中心的长度</div>
+<div class='row unc'><span class='ln'>1604</span>▶         var markWidth = (rect.right - rect.left) - trackHeight;</div>
+<div class='row nod'><span class='ln'>1605</span>        //最左边刻度的起点</div>
+<div class='row unc'><span class='ln'>1606</span>▶         var markStart = rect.left + trackHeight / 2;</div>
+<div class='row nod'><span class='ln'>1607</span>        //每个刻度的宽度</div>
+<div class='row unc'><span class='ln'>1608</span>▶         var perWidth = markWidth / themeData.divisions!;</div>
+<div class='row unc'><span class='ln'>1609</span>▶         assert(perWidth &gt; 0);</div>
+<div class='row nod'><span class='ln'>1610</span>        //计算当前是第几个刻度</div>
+<div class='row unc'><span class='ln'>1611</span>▶         var index = ((center.dx - markStart) / perWidth).round();</div>
+<div class='row nod'><span class='ln'>1612</span>        //获取当前刻度的值</div>
+<div class='row unc'><span class='ln'>1613</span>▶         var value = themeData.min +</div>
+<div class='row unc'><span class='ln'>1614</span>▶             index * ((themeData.max - themeData.min) / themeData.divisions!);</div>
+<div class='row nod'><span class='ln'>1615</span>        //修正x坐标</div>
+<div class='row unc'><span class='ln'>1616</span>▶         dx = rect.left +</div>
+<div class='row unc'><span class='ln'>1617</span>▶             index * (((rect.right - rect.left) / themeData.divisions!));</div>
+<div class='row nod'><span class='ln'>1618</span>        //格式化数值</div>
+<div class='row unc'><span class='ln'>1619</span>▶         var valueFormatter = themeData.scaleFormatter != null</div>
+<div class='row unc'><span class='ln'>1620</span>▶             ? themeData.scaleFormatter!(value)</div>
+<div class='row unc'><span class='ln'>1621</span>▶             : value.toString();</div>
+<div class='row nod'><span class='ln'>1622</span>        //绘制刻度的值</div>
+<div class='row unc'><span class='ln'>1623</span>▶         var painter = TextPainter(</div>
+<div class='row unc'><span class='ln'>1624</span>▶             text: TextSpan(</div>
+<div class='row nod'><span class='ln'>1625</span>                text: valueFormatter,</div>
+<div class='row unc'><span class='ln'>1626</span>▶                 style: enableAnimation.value &gt; 0</div>
+<div class='row unc'><span class='ln'>1627</span>▶                     ? themeData.effectiveScaleTextStyle</div>
+<div class='row unc'><span class='ln'>1628</span>▶                     : themeData.effectiveDisabledScaleTextStyle),</div>
+<div class='row nod'><span class='ln'>1629</span>            textDirection: TextDirection.ltr,</div>
+<div class='row nod'><span class='ln'>1630</span>            textAlign: TextAlign.center)</div>
+<div class='row unc'><span class='ln'>1631</span>▶           ..layout(maxWidth: 100);</div>
+<div class='row unc'><span class='ln'>1632</span>▶         var x = dx - painter.size.width / 2;</div>
+<div class='row unc'><span class='ln'>1633</span>▶         painter.paint(</div>
+<div class='row unc'><span class='ln'>1634</span>▶             context.canvas, Offset(x, center.dy - painter.height - 16));</div>
+<div class='row nod'><span class='ln'>1635</span></div>
+<div class='row nod'><span class='ln'>1636</span>        // 第一个和最后一个不展示</div>
+<div class='row unc'><span class='ln'>1637</span>▶         if (index &gt; 0 &amp;&amp; index &lt; themeData.divisions!) {</div>
+<div class='row unc'><span class='ln'>1638</span>▶           final isBetweenThumbs = thumbCenter.dx &gt; center.dx;</div>
+<div class='row nod'><span class='ln'>1639</span>          final begin = isBetweenThumbs</div>
+<div class='row unc'><span class='ln'>1640</span>▶               ? sliderTheme.disabledActiveTickMarkColor</div>
+<div class='row unc'><span class='ln'>1641</span>▶               : sliderTheme.disabledInactiveTickMarkColor;</div>
+<div class='row nod'><span class='ln'>1642</span>          final end = isBetweenThumbs</div>
+<div class='row unc'><span class='ln'>1643</span>▶               ? sliderTheme.activeTickMarkColor</div>
+<div class='row unc'><span class='ln'>1644</span>▶               : sliderTheme.inactiveTickMarkColor;</div>
+<div class='row unc'><span class='ln'>1645</span>▶           final paint = Paint()</div>
+<div class='row unc'><span class='ln'>1646</span>▶             ..strokeWidth = 2</div>
+<div class='row unc'><span class='ln'>1647</span>▶             ..color =</div>
+<div class='row unc'><span class='ln'>1648</span>▶                 ColorTween(begin: begin, end: end).evaluate(enableAnimation)!;</div>
+<div class='row unc'><span class='ln'>1649</span>▶           context.canvas.drawLine(</div>
+<div class='row unc'><span class='ln'>1650</span>▶               Offset(dx, themeData.sliderMeasureData.trackerRect!.top + 3),</div>
+<div class='row unc'><span class='ln'>1651</span>▶               Offset(dx, themeData.sliderMeasureData.trackerRect!.bottom - 3),</div>
+<div class='row nod'><span class='ln'>1652</span>              paint);</div>
+<div class='row nod'><span class='ln'>1653</span>        }</div>
+<div class='row nod'><span class='ln'>1654</span>      }</div>
+<div class='row nod'><span class='ln'>1655</span>    }</div>
+<div class='row nod'><span class='ln'>1656</span>  }</div>
+<div class='row nod'><span class='ln'>1657</span>}</div>
+<div class='row nod'><span class='ln'>1658</span></div>
+<div class='row nod'><span class='ln'>1659</span>/// The default shape of a [TRangeSlider]&#x27;s track.</div>
+<div class='row nod'><span class='ln'>1660</span>///</div>
+<div class='row nod'><span class='ln'>1661</span>/// It paints a solid colored rectangle with rounded edges, vertically centered</div>
+<div class='row nod'><span class='ln'>1662</span>/// in the `parentBox`. The track rectangle extends to the bounds of the</div>
+<div class='row nod'><span class='ln'>1663</span>/// `parentBox`, but is padded by the larger of [RoundSliderOverlayShape]&#x27;s</div>
+<div class='row nod'><span class='ln'>1664</span>/// radius and [RoundRangeSliderThumbShape]&#x27;s radius. The height is defined by</div>
+<div class='row nod'><span class='ln'>1665</span>/// the [SliderThemeData.trackHeight]. The color is determined by the</div>
+<div class='row nod'><span class='ln'>1666</span>/// [RangeSlider]&#x27;s enabled state and the track segment&#x27;s active state which are</div>
+<div class='row nod'><span class='ln'>1667</span>/// defined by:</div>
+<div class='row nod'><span class='ln'>1668</span>///   [SliderThemeData.activeTrackColor],</div>
+<div class='row nod'><span class='ln'>1669</span>///   [SliderThemeData.inactiveTrackColor],</div>
+<div class='row nod'><span class='ln'>1670</span>///   [SliderThemeData.disabledActiveTrackColor],</div>
+<div class='row nod'><span class='ln'>1671</span>///   [SliderThemeData.disabledInactiveTrackColor].</div>
+<div class='row nod'><span class='ln'>1672</span>///</div>
+<div class='row nod'><span class='ln'>1673</span>/// {@macro flutter.material.RangeSliderTickMarkShape.paint.trackSegment}</div>
+<div class='row nod'><span class='ln'>1674</span>///</div>
+<div class='row nod'><span class='ln'>1675</span>/// ![A range slider widget, consisting of 5 divisions and showing the rounded rect range slider track shape.]</div>
+<div class='row nod'><span class='ln'>1676</span>/// (https://flutter.github.io/assets-for-api-docs/assets/material/rounded_rect_range_slider_track_shape.png)</div>
+<div class='row nod'><span class='ln'>1677</span>///</div>
+<div class='row nod'><span class='ln'>1678</span>/// See also:</div>
+<div class='row nod'><span class='ln'>1679</span>///</div>
+<div class='row nod'><span class='ln'>1680</span>///  * [RangeSlider], for the component that is meant to display this shape.</div>
+<div class='row nod'><span class='ln'>1681</span>///  * [SliderThemeData], where an instance of this class is set to inform the</div>
+<div class='row nod'><span class='ln'>1682</span>///    slider of the visual details of the its track.</div>
+<div class='row nod'><span class='ln'>1683</span>///  * [RangeSliderTrackShape], which can be used to create custom shapes for</div>
+<div class='row nod'><span class='ln'>1684</span>///    the [RangeSlider]&#x27;s track.</div>
+<div class='row nod'><span class='ln'>1685</span>///  * [RectangularRangeSliderTrackShape], for a similar track with sharp edges.</div>
+<div class='row nod'><span class='ln'>1686</span>class TCapsuleRectRangeSliderTrackShape extends RangeSliderTrackShape</div>
+<div class='row nod'><span class='ln'>1687</span>    with TBaseRangeSliderTrackShape, TCapsuleRectAdjustment {</div>
+<div class='row nod'><span class='ln'>1688</span>  final Color trackColorWhenShowScale;</div>
+<div class='row nod'><span class='ln'>1689</span></div>
+<div class='row nod'><span class='ln'>1690</span>  /// Create a slider track with rounded outer edges.</div>
+<div class='row nod'><span class='ln'>1691</span>  ///</div>
+<div class='row nod'><span class='ln'>1692</span>  /// The middle track segment is the selected range and is active, and the two</div>
+<div class='row nod'><span class='ln'>1693</span>  /// outer track segments are inactive.</div>
+<div class='row cov'><span class='ln'>1694</span>  const TCapsuleRectRangeSliderTrackShape({</div>
+<div class='row nod'><span class='ln'>1695</span>    required this.trackColorWhenShowScale,</div>
+<div class='row nod'><span class='ln'>1696</span>    required this.themeData,</div>
+<div class='row nod'><span class='ln'>1697</span>  });</div>
+<div class='row nod'><span class='ln'>1698</span></div>
+<div class='row nod'><span class='ln'>1699</span>  @override</div>
+<div class='row nod'><span class='ln'>1700</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>1701</span></div>
+<div class='row unc'><span class='ln'>1702</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1703</span>  Rect getPreferredRect(</div>
+<div class='row nod'><span class='ln'>1704</span>      {required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>1705</span>      Offset offset = Offset.zero,</div>
+<div class='row nod'><span class='ln'>1706</span>      required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>1707</span>      bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>1708</span>      bool isDiscrete = false}) {</div>
+<div class='row unc'><span class='ln'>1709</span>▶     var rect = super.getPreferredRect(</div>
+<div class='row nod'><span class='ln'>1710</span>      parentBox: parentBox,</div>
+<div class='row nod'><span class='ln'>1711</span>      offset: offset,</div>
+<div class='row nod'><span class='ln'>1712</span>      sliderTheme: sliderTheme,</div>
+<div class='row nod'><span class='ln'>1713</span>      isEnabled: isEnabled,</div>
+<div class='row nod'><span class='ln'>1714</span>      isDiscrete: isDiscrete,</div>
+<div class='row nod'><span class='ln'>1715</span>    );</div>
+<div class='row unc'><span class='ln'>1716</span>▶     final padding = extraPadding();</div>
+<div class='row unc'><span class='ln'>1717</span>▶     return Rect.fromLTRB(</div>
+<div class='row unc'><span class='ln'>1718</span>▶         rect.left + padding, rect.top, rect.right - padding, rect.bottom);</div>
+<div class='row nod'><span class='ln'>1719</span>  }</div>
+<div class='row nod'><span class='ln'>1720</span></div>
+<div class='row unc'><span class='ln'>1721</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1722</span>  void paint(</div>
+<div class='row nod'><span class='ln'>1723</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>1724</span>    Offset offset, {</div>
+<div class='row nod'><span class='ln'>1725</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>1726</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>1727</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>1728</span>    required Offset startThumbCenter,</div>
+<div class='row nod'><span class='ln'>1729</span>    required Offset endThumbCenter,</div>
+<div class='row nod'><span class='ln'>1730</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>1731</span>    bool isDiscrete = false,</div>
+<div class='row nod'><span class='ln'>1732</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>1733</span>    double additionalActiveTrackHeight = 3,</div>
+<div class='row nod'><span class='ln'>1734</span>  }) {</div>
+<div class='row unc'><span class='ln'>1735</span>▶     assert(sliderTheme.disabledActiveTrackColor != null);</div>
+<div class='row unc'><span class='ln'>1736</span>▶     assert(sliderTheme.disabledInactiveTrackColor != null);</div>
+<div class='row unc'><span class='ln'>1737</span>▶     assert(sliderTheme.activeTrackColor != null);</div>
+<div class='row unc'><span class='ln'>1738</span>▶     assert(sliderTheme.inactiveTrackColor != null);</div>
+<div class='row unc'><span class='ln'>1739</span>▶     assert(sliderTheme.rangeThumbShape != null);</div>
+<div class='row nod'><span class='ln'>1740</span></div>
+<div class='row unc'><span class='ln'>1741</span>▶     if (sliderTheme.trackHeight == null || sliderTheme.trackHeight! &lt;= 0) {</div>
+<div class='row nod'><span class='ln'>1742</span>      return;</div>
+<div class='row nod'><span class='ln'>1743</span>    }</div>
+<div class='row unc'><span class='ln'>1744</span>▶     var showScale = themeData.showScaleValue;</div>
+<div class='row nod'><span class='ln'>1745</span>    // Assign the track segment paints, which are left: active, right: inactive,</div>
+<div class='row nod'><span class='ln'>1746</span>    // but reversed for right to left text.</div>
+<div class='row unc'><span class='ln'>1747</span>▶     final activeTrackColorTween = ColorTween(</div>
+<div class='row unc'><span class='ln'>1748</span>▶       begin: sliderTheme.disabledActiveTrackColor,</div>
+<div class='row unc'><span class='ln'>1749</span>▶       end: sliderTheme.activeTrackColor,</div>
+<div class='row nod'><span class='ln'>1750</span>    );</div>
+<div class='row unc'><span class='ln'>1751</span>▶     final inactiveTrackColorTween = ColorTween(</div>
+<div class='row unc'><span class='ln'>1752</span>▶       begin: sliderTheme.disabledInactiveTrackColor,</div>
+<div class='row unc'><span class='ln'>1753</span>▶       end: showScale ? trackColorWhenShowScale : sliderTheme.inactiveTrackColor,</div>
+<div class='row nod'><span class='ln'>1754</span>    );</div>
+<div class='row unc'><span class='ln'>1755</span>▶     final activePaint = Paint()</div>
+<div class='row unc'><span class='ln'>1756</span>▶       ..color = activeTrackColorTween.evaluate(enableAnimation)!;</div>
+<div class='row unc'><span class='ln'>1757</span>▶     final inactivePaint = Paint()</div>
+<div class='row unc'><span class='ln'>1758</span>▶       ..color = inactiveTrackColorTween.evaluate(enableAnimation)!;</div>
+<div class='row nod'><span class='ln'>1759</span></div>
+<div class='row nod'><span class='ln'>1760</span>    final Offset leftThumbOffset;</div>
+<div class='row nod'><span class='ln'>1761</span>    final Offset rightThumbOffset;</div>
+<div class='row nod'><span class='ln'>1762</span>    switch (textDirection) {</div>
+<div class='row unc'><span class='ln'>1763</span>▶       case TextDirection.ltr:</div>
+<div class='row nod'><span class='ln'>1764</span>        leftThumbOffset = startThumbCenter;</div>
+<div class='row nod'><span class='ln'>1765</span>        rightThumbOffset = endThumbCenter;</div>
+<div class='row nod'><span class='ln'>1766</span>        break;</div>
+<div class='row unc'><span class='ln'>1767</span>▶       case TextDirection.rtl:</div>
+<div class='row nod'><span class='ln'>1768</span>        leftThumbOffset = endThumbCenter;</div>
+<div class='row nod'><span class='ln'>1769</span>        rightThumbOffset = startThumbCenter;</div>
+<div class='row nod'><span class='ln'>1770</span>        break;</div>
+<div class='row nod'><span class='ln'>1771</span>    }</div>
+<div class='row nod'><span class='ln'>1772</span>    final thumbSize =</div>
+<div class='row unc'><span class='ln'>1773</span>▶         sliderTheme.rangeThumbShape!.getPreferredSize(isEnabled, isDiscrete);</div>
+<div class='row unc'><span class='ln'>1774</span>▶     final thumbRadius = thumbSize.width / 2;</div>
+<div class='row unc'><span class='ln'>1775</span>▶     assert(thumbRadius &gt; 0);</div>
+<div class='row nod'><span class='ln'>1776</span></div>
+<div class='row unc'><span class='ln'>1777</span>▶     final trackRect = getPreferredRect(</div>
+<div class='row nod'><span class='ln'>1778</span>      parentBox: parentBox,</div>
+<div class='row nod'><span class='ln'>1779</span>      offset: offset,</div>
+<div class='row nod'><span class='ln'>1780</span>      sliderTheme: sliderTheme,</div>
+<div class='row nod'><span class='ln'>1781</span>      isEnabled: isEnabled,</div>
+<div class='row nod'><span class='ln'>1782</span>      isDiscrete: isDiscrete,</div>
+<div class='row nod'><span class='ln'>1783</span>    );</div>
+<div class='row unc'><span class='ln'>1784</span>▶     themeData.sliderMeasureData.trackerRect = trackRect;</div>
+<div class='row nod'><span class='ln'>1785</span></div>
+<div class='row unc'><span class='ln'>1786</span>▶     final trackRadius = Radius.circular(trackRect.height / 2);</div>
+<div class='row unc'><span class='ln'>1787</span>▶     final padding = extraPadding();</div>
+<div class='row nod'><span class='ln'>1788</span></div>
+<div class='row unc'><span class='ln'>1789</span>▶     context.canvas.drawRRect(</div>
+<div class='row unc'><span class='ln'>1790</span>▶       RRect.fromLTRBAndCorners(</div>
+<div class='row unc'><span class='ln'>1791</span>▶         trackRect.left - padding,</div>
+<div class='row unc'><span class='ln'>1792</span>▶         trackRect.top,</div>
+<div class='row unc'><span class='ln'>1793</span>▶         trackRect.right + padding,</div>
+<div class='row unc'><span class='ln'>1794</span>▶         trackRect.bottom,</div>
+<div class='row nod'><span class='ln'>1795</span>        topLeft: trackRadius,</div>
+<div class='row nod'><span class='ln'>1796</span>        bottomLeft: trackRadius,</div>
+<div class='row nod'><span class='ln'>1797</span>        topRight: trackRadius,</div>
+<div class='row nod'><span class='ln'>1798</span>        bottomRight: trackRadius,</div>
+<div class='row nod'><span class='ln'>1799</span>      ),</div>
+<div class='row nod'><span class='ln'>1800</span>      inactivePaint,</div>
+<div class='row nod'><span class='ln'>1801</span>    );</div>
+<div class='row nod'><span class='ln'>1802</span>    var activeTrackRadius =</div>
+<div class='row unc'><span class='ln'>1803</span>▶         Radius.circular(trackRect.height / 2 - additionalActiveTrackHeight);</div>
+<div class='row unc'><span class='ln'>1804</span>▶     final inactiveSecondPaint = Paint()</div>
+<div class='row unc'><span class='ln'>1805</span>▶       ..color = sliderTheme.inactiveTrackColor!;</div>
+<div class='row nod'><span class='ln'>1806</span>    if (showScale) {</div>
+<div class='row unc'><span class='ln'>1807</span>▶       context.canvas.drawRRect(</div>
+<div class='row unc'><span class='ln'>1808</span>▶         RRect.fromLTRBAndCorners(</div>
+<div class='row unc'><span class='ln'>1809</span>▶           trackRect.left + additionalActiveTrackHeight,</div>
+<div class='row unc'><span class='ln'>1810</span>▶           trackRect.top + additionalActiveTrackHeight,</div>
+<div class='row unc'><span class='ln'>1811</span>▶           rightThumbOffset.dx,</div>
+<div class='row unc'><span class='ln'>1812</span>▶           trackRect.bottom - additionalActiveTrackHeight,</div>
+<div class='row nod'><span class='ln'>1813</span>          topLeft: activeTrackRadius,</div>
+<div class='row nod'><span class='ln'>1814</span>          bottomLeft: activeTrackRadius,</div>
+<div class='row nod'><span class='ln'>1815</span>        ),</div>
+<div class='row nod'><span class='ln'>1816</span>        inactiveSecondPaint,</div>
+<div class='row nod'><span class='ln'>1817</span>      );</div>
+<div class='row nod'><span class='ln'>1818</span>    }</div>
+<div class='row unc'><span class='ln'>1819</span>▶     context.canvas.drawRect(</div>
+<div class='row unc'><span class='ln'>1820</span>▶       Rect.fromLTRB(</div>
+<div class='row unc'><span class='ln'>1821</span>▶         leftThumbOffset.dx,</div>
+<div class='row unc'><span class='ln'>1822</span>▶         trackRect.top + additionalActiveTrackHeight,</div>
+<div class='row unc'><span class='ln'>1823</span>▶         rightThumbOffset.dx,</div>
+<div class='row unc'><span class='ln'>1824</span>▶         trackRect.bottom - additionalActiveTrackHeight,</div>
+<div class='row nod'><span class='ln'>1825</span>      ),</div>
+<div class='row nod'><span class='ln'>1826</span>      activePaint,</div>
+<div class='row nod'><span class='ln'>1827</span>    );</div>
+<div class='row unc'><span class='ln'>1828</span>▶     if (themeData.showScaleValue) {</div>
+<div class='row unc'><span class='ln'>1829</span>▶       context.canvas.drawRRect(</div>
+<div class='row unc'><span class='ln'>1830</span>▶         RRect.fromLTRBAndCorners(</div>
+<div class='row unc'><span class='ln'>1831</span>▶           rightThumbOffset.dx,</div>
+<div class='row unc'><span class='ln'>1832</span>▶           trackRect.top + additionalActiveTrackHeight,</div>
+<div class='row unc'><span class='ln'>1833</span>▶           trackRect.right - additionalActiveTrackHeight,</div>
+<div class='row unc'><span class='ln'>1834</span>▶           trackRect.bottom - additionalActiveTrackHeight,</div>
+<div class='row nod'><span class='ln'>1835</span>          topRight: activeTrackRadius,</div>
+<div class='row nod'><span class='ln'>1836</span>          bottomRight: activeTrackRadius,</div>
+<div class='row nod'><span class='ln'>1837</span>        ),</div>
+<div class='row nod'><span class='ln'>1838</span>        inactiveSecondPaint,</div>
+<div class='row nod'><span class='ln'>1839</span>      );</div>
+<div class='row nod'><span class='ln'>1840</span>    }</div>
+<div class='row nod'><span class='ln'>1841</span>  }</div>
+<div class='row nod'><span class='ln'>1842</span>}</div>
+<div class='row nod'><span class='ln'>1843</span></div>
+<div class='row nod'><span class='ln'>1844</span>/// The default shape of a [RangeSlider]&#x27;s thumbs.</div>
+<div class='row nod'><span class='ln'>1845</span>///</div>
+<div class='row nod'><span class='ln'>1846</span>/// There is a shadow for the resting and pressed state.</div>
+<div class='row nod'><span class='ln'>1847</span>///</div>
+<div class='row nod'><span class='ln'>1848</span>/// ![A slider widget, consisting of 5 divisions and showing the round range slider thumb shape.]</div>
+<div class='row nod'><span class='ln'>1849</span>/// (https://flutter.github.io/assets-for-api-docs/assets/material/round_range_slider_thumb_shape.png)</div>
+<div class='row nod'><span class='ln'>1850</span>///</div>
+<div class='row nod'><span class='ln'>1851</span>/// See also:</div>
+<div class='row nod'><span class='ln'>1852</span>///</div>
+<div class='row nod'><span class='ln'>1853</span>///  * [RangeSlider], which includes thumbs defined by this shape.</div>
+<div class='row nod'><span class='ln'>1854</span>///  * [SliderTheme], which can be used to configure the thumb shapes of all</div>
+<div class='row nod'><span class='ln'>1855</span>///    range sliders in a widget subtree.</div>
+<div class='row nod'><span class='ln'>1856</span>class TCapsuleRangeSliderThumbShape extends RangeSliderThumbShape</div>
+<div class='row nod'><span class='ln'>1857</span>    with TCapsuleRectAdjustment {</div>
+<div class='row nod'><span class='ln'>1858</span>  /// Create a slider thumb that draws a circle.</div>
+<div class='row cov'><span class='ln'>1859</span>  const TCapsuleRangeSliderThumbShape({</div>
+<div class='row nod'><span class='ln'>1860</span>    this.enabledThumbRadius = 9.0,</div>
+<div class='row nod'><span class='ln'>1861</span>    this.disabledThumbRadius,</div>
+<div class='row nod'><span class='ln'>1862</span>    this.elevation = 3.0,</div>
+<div class='row nod'><span class='ln'>1863</span>    this.pressedElevation = 3.0,</div>
+<div class='row nod'><span class='ln'>1864</span>    required this.themeData,</div>
+<div class='row nod'><span class='ln'>1865</span>    required this.strokeColor,</div>
+<div class='row nod'><span class='ln'>1866</span>  });</div>
+<div class='row nod'><span class='ln'>1867</span></div>
+<div class='row nod'><span class='ln'>1868</span>  /// The preferred radius of the round thumb shape when the slider is enabled.</div>
+<div class='row nod'><span class='ln'>1869</span>  ///</div>
+<div class='row nod'><span class='ln'>1870</span>  /// If it is not provided, then the Material Design default of 10 is used.</div>
+<div class='row nod'><span class='ln'>1871</span>  final double enabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>1872</span></div>
+<div class='row nod'><span class='ln'>1873</span>  /// The preferred radius of the round thumb shape when the slider is disabled.</div>
+<div class='row nod'><span class='ln'>1874</span>  ///</div>
+<div class='row nod'><span class='ln'>1875</span>  /// If no disabledRadius is provided, then it is equal to the</div>
+<div class='row nod'><span class='ln'>1876</span>  /// [enabledThumbRadius].</div>
+<div class='row nod'><span class='ln'>1877</span>  final double? disabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>1878</span></div>
+<div class='row unc'><span class='ln'>1879</span>▶   double get _disabledThumbRadius =&gt; disabledThumbRadius ?? enabledThumbRadius;</div>
+<div class='row nod'><span class='ln'>1880</span></div>
+<div class='row nod'><span class='ln'>1881</span>  /// The resting elevation adds shadow to the unpressed thumb.</div>
+<div class='row nod'><span class='ln'>1882</span>  ///</div>
+<div class='row nod'><span class='ln'>1883</span>  /// The default is 1.</div>
+<div class='row nod'><span class='ln'>1884</span>  final double elevation;</div>
+<div class='row nod'><span class='ln'>1885</span></div>
+<div class='row nod'><span class='ln'>1886</span>  /// The pressed elevation adds shadow to the pressed thumb.</div>
+<div class='row nod'><span class='ln'>1887</span>  ///</div>
+<div class='row nod'><span class='ln'>1888</span>  /// The default is 6.</div>
+<div class='row nod'><span class='ln'>1889</span>  final double pressedElevation;</div>
+<div class='row nod'><span class='ln'>1890</span></div>
+<div class='row nod'><span class='ln'>1891</span>  @override</div>
+<div class='row nod'><span class='ln'>1892</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>1893</span></div>
+<div class='row nod'><span class='ln'>1894</span>  /// 游标描边颜色（v1.0：从 buildContext.tTheme 改为直接传入 Color）</div>
+<div class='row nod'><span class='ln'>1895</span>  final Color strokeColor;</div>
+<div class='row nod'><span class='ln'>1896</span></div>
+<div class='row unc'><span class='ln'>1897</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1898</span>  Size getPreferredSize(bool isEnabled, bool isDiscrete) {</div>
+<div class='row unc'><span class='ln'>1899</span>▶     return Size.fromRadius(</div>
+<div class='row unc'><span class='ln'>1900</span>▶         isEnabled == true ? enabledThumbRadius : _disabledThumbRadius);</div>
+<div class='row nod'><span class='ln'>1901</span>  }</div>
+<div class='row nod'><span class='ln'>1902</span></div>
+<div class='row unc'><span class='ln'>1903</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1904</span>  void paint(</div>
+<div class='row nod'><span class='ln'>1905</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>1906</span>    Offset center, {</div>
+<div class='row nod'><span class='ln'>1907</span>    required Animation&lt;double&gt; activationAnimation,</div>
+<div class='row nod'><span class='ln'>1908</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>1909</span>    bool isDiscrete = false,</div>
+<div class='row nod'><span class='ln'>1910</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>1911</span>    bool? isOnTop,</div>
+<div class='row nod'><span class='ln'>1912</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>1913</span>    TextDirection? textDirection,</div>
+<div class='row nod'><span class='ln'>1914</span>    Thumb? thumb,</div>
+<div class='row nod'><span class='ln'>1915</span>    bool? isPressed,</div>
+<div class='row nod'><span class='ln'>1916</span>  }) {</div>
+<div class='row unc'><span class='ln'>1917</span>▶     assert(sliderTheme.showValueIndicator != null);</div>
+<div class='row unc'><span class='ln'>1918</span>▶     assert(sliderTheme.overlappingShapeStrokeColor != null);</div>
+<div class='row unc'><span class='ln'>1919</span>▶     final canvas = context.canvas;</div>
+<div class='row unc'><span class='ln'>1920</span>▶     final radiusTween = Tween&lt;double&gt;(</div>
+<div class='row unc'><span class='ln'>1921</span>▶       begin: _disabledThumbRadius,</div>
+<div class='row unc'><span class='ln'>1922</span>▶       end: enabledThumbRadius,</div>
+<div class='row nod'><span class='ln'>1923</span>    );</div>
+<div class='row unc'><span class='ln'>1924</span>▶     final colorTween = ColorTween(</div>
+<div class='row unc'><span class='ln'>1925</span>▶       begin: sliderTheme.disabledThumbColor,</div>
+<div class='row unc'><span class='ln'>1926</span>▶       end: sliderTheme.thumbColor,</div>
+<div class='row nod'><span class='ln'>1927</span>    );</div>
+<div class='row unc'><span class='ln'>1928</span>▶     final radius = radiusTween.evaluate(enableAnimation);</div>
+<div class='row unc'><span class='ln'>1929</span>▶     final elevationTween = Tween&lt;double&gt;(</div>
+<div class='row unc'><span class='ln'>1930</span>▶       begin: elevation,</div>
+<div class='row unc'><span class='ln'>1931</span>▶       end: pressedElevation,</div>
+<div class='row nod'><span class='ln'>1932</span>    );</div>
+<div class='row nod'><span class='ln'>1933</span></div>
+<div class='row nod'><span class='ln'>1934</span>    // Add a stroke of 1dp around the circle if this thumb would overlap</div>
+<div class='row nod'><span class='ln'>1935</span>    // the other thumb.</div>
+<div class='row nod'><span class='ln'>1936</span>    if (isOnTop ?? false) {</div>
+<div class='row unc'><span class='ln'>1937</span>▶       final strokePaint = Paint()</div>
+<div class='row unc'><span class='ln'>1938</span>▶         ..color = sliderTheme.overlappingShapeStrokeColor!</div>
+<div class='row unc'><span class='ln'>1939</span>▶         ..strokeWidth = 1.0</div>
+<div class='row unc'><span class='ln'>1940</span>▶         ..style = PaintingStyle.stroke;</div>
+<div class='row unc'><span class='ln'>1941</span>▶       canvas.drawCircle(center, radius, strokePaint);</div>
+<div class='row nod'><span class='ln'>1942</span>    }</div>
+<div class='row nod'><span class='ln'>1943</span></div>
+<div class='row unc'><span class='ln'>1944</span>▶     final color = colorTween.evaluate(enableAnimation)!;</div>
+<div class='row nod'><span class='ln'>1945</span></div>
+<div class='row nod'><span class='ln'>1946</span>    final evaluatedElevation =</div>
+<div class='row unc'><span class='ln'>1947</span>▶         isPressed! ? elevationTween.evaluate(activationAnimation) : elevation;</div>
+<div class='row unc'><span class='ln'>1948</span>▶     final shadowPath = Path()</div>
+<div class='row unc'><span class='ln'>1949</span>▶       ..addArc(</div>
+<div class='row unc'><span class='ln'>1950</span>▶           Rect.fromCenter(</div>
+<div class='row unc'><span class='ln'>1951</span>▶               center: center, width: 2 * radius, height: 2 * radius),</div>
+<div class='row nod'><span class='ln'>1952</span>          0,</div>
+<div class='row unc'><span class='ln'>1953</span>▶           math.pi * 2);</div>
+<div class='row nod'><span class='ln'>1954</span></div>
+<div class='row nod'><span class='ln'>1955</span>    var paintShadows = true;</div>
+<div class='row nod'><span class='ln'>1956</span>    if (paintShadows) {</div>
+<div class='row unc'><span class='ln'>1957</span>▶       canvas.drawShadow(shadowPath, const Color.fromRGBO(0, 0, 0, 0.5),</div>
+<div class='row nod'><span class='ln'>1958</span>          evaluatedElevation, true);</div>
+<div class='row nod'><span class='ln'>1959</span>    }</div>
+<div class='row unc'><span class='ln'>1960</span>▶     if (themeData.showThumbValue &amp;&amp;</div>
+<div class='row unc'><span class='ln'>1961</span>▶         themeData.sliderMeasureData.trackerRect != null) {</div>
+<div class='row unc'><span class='ln'>1962</span>▶       var trackerRect = themeData.sliderMeasureData.trackerRect!;</div>
+<div class='row unc'><span class='ln'>1963</span>▶       final padding = trackPadding();</div>
+<div class='row unc'><span class='ln'>1964</span>▶       var ratio = (center.dx - trackerRect.left - padding) /</div>
+<div class='row unc'><span class='ln'>1965</span>▶           (trackerRect.right - trackerRect.left - padding * 2);</div>
+<div class='row nod'><span class='ln'>1966</span>      //计算滑块的值</div>
+<div class='row unc'><span class='ln'>1967</span>▶       var value = (themeData.max - themeData.min) * ratio + themeData.min;</div>
+<div class='row nod'><span class='ln'>1968</span>      //格式化显示</div>
+<div class='row unc'><span class='ln'>1969</span>▶       var formatterValue = themeData.scaleFormatter == null</div>
+<div class='row unc'><span class='ln'>1970</span>▶           ? value.toStringAsFixed(2)</div>
+<div class='row unc'><span class='ln'>1971</span>▶           : themeData.scaleFormatter!(value);</div>
+<div class='row nod'><span class='ln'>1972</span>      //绘制数值</div>
+<div class='row unc'><span class='ln'>1973</span>▶       var painter = TextPainter(</div>
+<div class='row unc'><span class='ln'>1974</span>▶           text: TextSpan(</div>
+<div class='row unc'><span class='ln'>1975</span>▶               text: &#x27;$formatterValue&#x27;,</div>
+<div class='row unc'><span class='ln'>1976</span>▶               style: enableAnimation.value &gt; 0</div>
+<div class='row unc'><span class='ln'>1977</span>▶                   ? themeData.effectiveThumbTextStyle</div>
+<div class='row unc'><span class='ln'>1978</span>▶                   : themeData.effectiveDisabledThumbTextStyle),</div>
+<div class='row nod'><span class='ln'>1979</span>          textDirection: TextDirection.ltr,</div>
+<div class='row nod'><span class='ln'>1980</span>          textAlign: TextAlign.center)</div>
+<div class='row unc'><span class='ln'>1981</span>▶         ..layout(maxWidth: 100);</div>
+<div class='row unc'><span class='ln'>1982</span>▶       painter.paint(</div>
+<div class='row unc'><span class='ln'>1983</span>▶           context.canvas,</div>
+<div class='row unc'><span class='ln'>1984</span>▶           Offset(center.dx - painter.size.width / 2,</div>
+<div class='row unc'><span class='ln'>1985</span>▶               center.dy - painter.height - 16));</div>
+<div class='row nod'><span class='ln'>1986</span>    }</div>
+<div class='row nod'><span class='ln'>1987</span></div>
+<div class='row nod'><span class='ln'>1988</span>    //绘制游标</div>
+<div class='row unc'><span class='ln'>1989</span>▶     canvas.drawCircle(</div>
+<div class='row nod'><span class='ln'>1990</span>      center,</div>
+<div class='row nod'><span class='ln'>1991</span>      radius,</div>
+<div class='row unc'><span class='ln'>1992</span>▶       Paint()..color = color,</div>
+<div class='row nod'><span class='ln'>1993</span>    );</div>
+<div class='row nod'><span class='ln'>1994</span></div>
+<div class='row unc'><span class='ln'>1995</span>▶     canvas.drawArc(</div>
+<div class='row unc'><span class='ln'>1996</span>▶         Rect.fromCircle(center: center, radius: radius),</div>
+<div class='row nod'><span class='ln'>1997</span>        0,</div>
+<div class='row unc'><span class='ln'>1998</span>▶         2 * math.pi,</div>
+<div class='row nod'><span class='ln'>1999</span>        false,</div>
+<div class='row unc'><span class='ln'>2000</span>▶         Paint()</div>
+<div class='row unc'><span class='ln'>2001</span>▶           ..style = PaintingStyle.stroke</div>
+<div class='row unc'><span class='ln'>2002</span>▶           ..strokeWidth = 1</div>
+<div class='row unc'><span class='ln'>2003</span>▶           ..color = strokeColor);</div>
+<div class='row nod'><span class='ln'>2004</span>  }</div>
+<div class='row nod'><span class='ln'>2005</span>}</div>
+<div class='row nod'><span class='ln'>2006</span></div>
+<div class='row nod'><span class='ln'>2007</span>/// The default shape of each [RangeSlider] tick mark.</div>
+<div class='row nod'><span class='ln'>2008</span>///</div>
+<div class='row nod'><span class='ln'>2009</span>/// Tick marks are only displayed if the slider is discrete, which can be done</div>
+<div class='row nod'><span class='ln'>2010</span>/// by setting the [RangeSlider.divisions] to an integer value.</div>
+<div class='row nod'><span class='ln'>2011</span>///</div>
+<div class='row nod'><span class='ln'>2012</span>/// It paints a solid circle, centered on the track.</div>
+<div class='row nod'><span class='ln'>2013</span>/// The color is determined by the [Slider]&#x27;s enabled state and track&#x27;s active</div>
+<div class='row nod'><span class='ln'>2014</span>/// states. These colors are defined in:</div>
+<div class='row nod'><span class='ln'>2015</span>///   [SliderThemeData.activeTrackColor],</div>
+<div class='row nod'><span class='ln'>2016</span>///   [SliderThemeData.inactiveTrackColor],</div>
+<div class='row nod'><span class='ln'>2017</span>///   [SliderThemeData.disabledActiveTrackColor],</div>
+<div class='row nod'><span class='ln'>2018</span>///   [SliderThemeData.disabledInactiveTrackColor].</div>
+<div class='row nod'><span class='ln'>2019</span>///</div>
+<div class='row nod'><span class='ln'>2020</span>/// ![A slider widget, consisting of 5 divisions and showing the round range slider tick mark shape.]</div>
+<div class='row nod'><span class='ln'>2021</span>/// (https://flutter.github.io/assets-for-api-docs/assets/material/round_range_slider_tick_mark_shape.png )</div>
+<div class='row nod'><span class='ln'>2022</span>///</div>
+<div class='row nod'><span class='ln'>2023</span>/// See also:</div>
+<div class='row nod'><span class='ln'>2024</span>///</div>
+<div class='row nod'><span class='ln'>2025</span>///  * [RangeSlider], which includes tick marks defined by this shape.</div>
+<div class='row nod'><span class='ln'>2026</span>///  * [SliderTheme], which can be used to configure the tick mark shape of all</div>
+<div class='row nod'><span class='ln'>2027</span>///    sliders in a widget subtree.</div>
+<div class='row nod'><span class='ln'>2028</span>class TCapsuleRangeSliderTickMarkShape extends RangeSliderTickMarkShape {</div>
+<div class='row nod'><span class='ln'>2029</span>  /// Create a range slider tick mark that draws a circle.</div>
+<div class='row cov'><span class='ln'>2030</span>  const TCapsuleRangeSliderTickMarkShape({</div>
+<div class='row nod'><span class='ln'>2031</span>    this.tickMarkRadius,</div>
+<div class='row nod'><span class='ln'>2032</span>    required this.themeData,</div>
+<div class='row nod'><span class='ln'>2033</span>  });</div>
+<div class='row nod'><span class='ln'>2034</span></div>
+<div class='row nod'><span class='ln'>2035</span>  /// The preferred radius of the round tick mark.</div>
+<div class='row nod'><span class='ln'>2036</span>  ///</div>
+<div class='row nod'><span class='ln'>2037</span>  /// If it is not provided, then 1/4 of the [SliderThemeData.trackHeight] is used.</div>
+<div class='row nod'><span class='ln'>2038</span>  final double? tickMarkRadius;</div>
+<div class='row nod'><span class='ln'>2039</span></div>
+<div class='row nod'><span class='ln'>2040</span>  final TSliderThemeData themeData;</div>
+<div class='row nod'><span class='ln'>2041</span></div>
+<div class='row unc'><span class='ln'>2042</span>▶   @override</div>
+<div class='row nod'><span class='ln'>2043</span>  Size getPreferredSize({</div>
+<div class='row nod'><span class='ln'>2044</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>2045</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>2046</span>  }) {</div>
+<div class='row unc'><span class='ln'>2047</span>▶     return Size.fromRadius(tickMarkRadius ?? 4);</div>
+<div class='row nod'><span class='ln'>2048</span>  }</div>
+<div class='row nod'><span class='ln'>2049</span></div>
+<div class='row unc'><span class='ln'>2050</span>▶   @override</div>
+<div class='row nod'><span class='ln'>2051</span>  void paint(</div>
+<div class='row nod'><span class='ln'>2052</span>    PaintingContext context,</div>
+<div class='row nod'><span class='ln'>2053</span>    Offset center, {</div>
+<div class='row nod'><span class='ln'>2054</span>    required RenderBox parentBox,</div>
+<div class='row nod'><span class='ln'>2055</span>    required SliderThemeData sliderTheme,</div>
+<div class='row nod'><span class='ln'>2056</span>    required Animation&lt;double&gt; enableAnimation,</div>
+<div class='row nod'><span class='ln'>2057</span>    required Offset startThumbCenter,</div>
+<div class='row nod'><span class='ln'>2058</span>    required Offset endThumbCenter,</div>
+<div class='row nod'><span class='ln'>2059</span>    bool isEnabled = false,</div>
+<div class='row nod'><span class='ln'>2060</span>    required TextDirection textDirection,</div>
+<div class='row nod'><span class='ln'>2061</span>  }) {</div>
+<div class='row unc'><span class='ln'>2062</span>▶     assert(sliderTheme.disabledActiveTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>2063</span>▶     assert(sliderTheme.disabledInactiveTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>2064</span>▶     assert(sliderTheme.activeTickMarkColor != null);</div>
+<div class='row unc'><span class='ln'>2065</span>▶     assert(sliderTheme.inactiveTickMarkColor != null);</div>
+<div class='row nod'><span class='ln'>2066</span></div>
+<div class='row nod'><span class='ln'>2067</span>    // The tick marks are tiny circles that are the same height as the track.</div>
+<div class='row unc'><span class='ln'>2068</span>▶     final tickMarkRadius = getPreferredSize(</div>
+<div class='row nod'><span class='ln'>2069</span>          isEnabled: isEnabled,</div>
+<div class='row nod'><span class='ln'>2070</span>          sliderTheme: sliderTheme,</div>
+<div class='row unc'><span class='ln'>2071</span>▶         ).width /</div>
+<div class='row nod'><span class='ln'>2072</span>        2;</div>
+<div class='row unc'><span class='ln'>2073</span>▶     var dx = center.dx;</div>
+<div class='row unc'><span class='ln'>2074</span>▶     if (tickMarkRadius &gt; 0 &amp;&amp; themeData.showScaleValue) {</div>
+<div class='row unc'><span class='ln'>2075</span>▶       assert(themeData.divisions != null);</div>
+<div class='row unc'><span class='ln'>2076</span>▶       var rect = sliderTheme.rangeTrackShape</div>
+<div class='row unc'><span class='ln'>2077</span>▶           ?.getPreferredRect(parentBox: parentBox, sliderTheme: sliderTheme);</div>
+<div class='row unc'><span class='ln'>2078</span>▶       if (rect != null &amp;&amp; themeData.divisions! &gt; 0) {</div>
+<div class='row nod'><span class='ln'>2079</span>        //轨道的高度</div>
+<div class='row unc'><span class='ln'>2080</span>▶         var trackHeight = rect.bottom - rect.top;</div>
+<div class='row nod'><span class='ln'>2081</span>        //最左边的刻度中心到最右边刻度中心的长度</div>
+<div class='row unc'><span class='ln'>2082</span>▶         var markWidth = (rect.right - rect.left) - trackHeight;</div>
+<div class='row nod'><span class='ln'>2083</span>        //最左边刻度的起点</div>
+<div class='row unc'><span class='ln'>2084</span>▶         var markStart = rect.left + trackHeight / 2;</div>
+<div class='row nod'><span class='ln'>2085</span>        //每个刻度的宽度</div>
+<div class='row unc'><span class='ln'>2086</span>▶         var perWidth = markWidth / themeData.divisions!;</div>
+<div class='row unc'><span class='ln'>2087</span>▶         assert(perWidth &gt; 0);</div>
+<div class='row nod'><span class='ln'>2088</span>        //计算当前是第几个刻度</div>
+<div class='row unc'><span class='ln'>2089</span>▶         var index = ((center.dx - markStart) / perWidth).round();</div>
+<div class='row nod'><span class='ln'>2090</span>        //获取当前刻度的值</div>
+<div class='row unc'><span class='ln'>2091</span>▶         var value = themeData.min +</div>
+<div class='row unc'><span class='ln'>2092</span>▶             index * ((themeData.max - themeData.min) / themeData.divisions!);</div>
+<div class='row nod'><span class='ln'>2093</span>        //格式化数值</div>
+<div class='row unc'><span class='ln'>2094</span>▶         var valueFormatter = themeData.scaleFormatter != null</div>
+<div class='row unc'><span class='ln'>2095</span>▶             ? themeData.scaleFormatter!(value)</div>
+<div class='row unc'><span class='ln'>2096</span>▶             : value.toString();</div>
+<div class='row nod'><span class='ln'>2097</span>        //修正x坐标</div>
+<div class='row unc'><span class='ln'>2098</span>▶         dx = rect.left +</div>
+<div class='row unc'><span class='ln'>2099</span>▶             index * (((rect.right - rect.left) / themeData.divisions!));</div>
+<div class='row nod'><span class='ln'>2100</span>        //绘制刻度的值</div>
+<div class='row unc'><span class='ln'>2101</span>▶         var painter = TextPainter(</div>
+<div class='row unc'><span class='ln'>2102</span>▶             text: TextSpan(</div>
+<div class='row nod'><span class='ln'>2103</span>                text: valueFormatter,</div>
+<div class='row unc'><span class='ln'>2104</span>▶                 style: enableAnimation.value &gt; 0</div>
+<div class='row unc'><span class='ln'>2105</span>▶                     ? themeData.effectiveScaleTextStyle</div>
+<div class='row unc'><span class='ln'>2106</span>▶                     : themeData.effectiveDisabledScaleTextStyle),</div>
+<div class='row nod'><span class='ln'>2107</span>            textDirection: TextDirection.ltr,</div>
+<div class='row nod'><span class='ln'>2108</span>            textAlign: TextAlign.center)</div>
+<div class='row unc'><span class='ln'>2109</span>▶           ..layout(maxWidth: 100);</div>
+<div class='row unc'><span class='ln'>2110</span>▶         var x = dx - painter.size.width / 2;</div>
+<div class='row unc'><span class='ln'>2111</span>▶         painter.paint(</div>
+<div class='row unc'><span class='ln'>2112</span>▶             context.canvas, Offset(x, center.dy - painter.height - 16));</div>
+<div class='row nod'><span class='ln'>2113</span></div>
+<div class='row nod'><span class='ln'>2114</span>        // 第一个和最后一个不展示</div>
+<div class='row unc'><span class='ln'>2115</span>▶         if (index &gt; 0 &amp;&amp; index &lt; themeData.divisions!) {</div>
+<div class='row nod'><span class='ln'>2116</span>          final bool isBetweenThumbs;</div>
+<div class='row nod'><span class='ln'>2117</span>          switch (textDirection) {</div>
+<div class='row unc'><span class='ln'>2118</span>▶             case TextDirection.ltr:</div>
+<div class='row unc'><span class='ln'>2119</span>▶               isBetweenThumbs = startThumbCenter.dx &lt; center.dx &amp;&amp;</div>
+<div class='row unc'><span class='ln'>2120</span>▶                   center.dx &lt; endThumbCenter.dx;</div>
+<div class='row nod'><span class='ln'>2121</span>              break;</div>
+<div class='row unc'><span class='ln'>2122</span>▶             case TextDirection.rtl:</div>
+<div class='row unc'><span class='ln'>2123</span>▶               isBetweenThumbs = endThumbCenter.dx &lt; center.dx &amp;&amp;</div>
+<div class='row unc'><span class='ln'>2124</span>▶                   center.dx &lt; startThumbCenter.dx;</div>
+<div class='row nod'><span class='ln'>2125</span>              break;</div>
+<div class='row nod'><span class='ln'>2126</span>          }</div>
+<div class='row nod'><span class='ln'>2127</span>          final begin = isBetweenThumbs</div>
+<div class='row unc'><span class='ln'>2128</span>▶               ? sliderTheme.disabledActiveTickMarkColor</div>
+<div class='row unc'><span class='ln'>2129</span>▶               : sliderTheme.disabledInactiveTickMarkColor;</div>
+<div class='row nod'><span class='ln'>2130</span>          final end = isBetweenThumbs</div>
+<div class='row unc'><span class='ln'>2131</span>▶               ? sliderTheme.activeTickMarkColor</div>
+<div class='row unc'><span class='ln'>2132</span>▶               : sliderTheme.inactiveTickMarkColor;</div>
+<div class='row unc'><span class='ln'>2133</span>▶           final paint = Paint()</div>
+<div class='row unc'><span class='ln'>2134</span>▶             ..strokeWidth = 2</div>
+<div class='row unc'><span class='ln'>2135</span>▶             ..color =</div>
+<div class='row unc'><span class='ln'>2136</span>▶                 ColorTween(begin: begin, end: end).evaluate(enableAnimation)!;</div>
+<div class='row unc'><span class='ln'>2137</span>▶           context.canvas.drawLine(</div>
+<div class='row unc'><span class='ln'>2138</span>▶               Offset(dx, themeData.sliderMeasureData.trackerRect!.top + 3),</div>
+<div class='row unc'><span class='ln'>2139</span>▶               Offset(dx, themeData.sliderMeasureData.trackerRect!.bottom - 3),</div>
+<div class='row nod'><span class='ln'>2140</span>              paint);</div>
+<div class='row nod'><span class='ln'>2141</span>        }</div>
+<div class='row nod'><span class='ln'>2142</span>      }</div>
+<div class='row nod'><span class='ln'>2143</span>    }</div>
+<div class='row nod'><span class='ln'>2144</span>  }</div>
+<div class='row nod'><span class='ln'>2145</span>}</div>
+<div class='row nod'><span class='ln'>2146</span></div>
+</pre></body></html>

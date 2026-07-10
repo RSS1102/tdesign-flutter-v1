@@ -235,7 +235,7 @@ TTimeCounter _buildUpSimple(BuildContext context) {
 TTimeCounter _buildSquareSimple(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
-    theme: TTimeCounterTheme.square,
+    theme: TTimeCounterVariant.square,
   );
 }
 
@@ -243,7 +243,7 @@ TTimeCounter _buildSquareSimple(BuildContext context) {
 TTimeCounter _buildRoundSimple(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
-    theme: TTimeCounterTheme.round,
+    theme: TTimeCounterVariant.round,
   );
 }
 
@@ -251,14 +251,14 @@ TTimeCounter _buildRoundSimple(BuildContext context) {
 TTimeCounter _buildUnitSimple(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
-    theme: TTimeCounterTheme.square,
+    theme: TTimeCounterVariant.square,
     splitWithUnit: true,
   );
 }
 
 @Demo(group: 'timeCounter')
 TTimeCounter _buildCustomUnitSimple(BuildContext context) {
-  return TTimeCounter(
+  return const TTimeCounter(
     time: 60 * 60 * 1000,
     splitWithUnit: true,
   );
@@ -293,7 +293,7 @@ TTimeCounter _buildSquareSmallSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.small,
-    theme: TTimeCounterTheme.square,
+    theme: TTimeCounterVariant.square,
   );
 }
 
@@ -302,7 +302,7 @@ TTimeCounter _buildSquareMediumSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.medium,
-    theme: TTimeCounterTheme.square,
+    theme: TTimeCounterVariant.square,
   );
 }
 
@@ -311,7 +311,7 @@ TTimeCounter _buildSquareLargeSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.large,
-    theme: TTimeCounterTheme.square,
+    theme: TTimeCounterVariant.square,
   );
 }
 
@@ -320,7 +320,7 @@ TTimeCounter _buildRoundSmallSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.small,
-    theme: TTimeCounterTheme.round,
+    theme: TTimeCounterVariant.round,
   );
 }
 
@@ -329,7 +329,7 @@ TTimeCounter _buildRoundMediumSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.medium,
-    theme: TTimeCounterTheme.round,
+    theme: TTimeCounterVariant.round,
   );
 }
 
@@ -338,7 +338,7 @@ TTimeCounter _buildRoundLargeSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.large,
-    theme: TTimeCounterTheme.round,
+    theme: TTimeCounterVariant.round,
   );
 }
 
@@ -347,7 +347,7 @@ TTimeCounter _buildUnitSmallSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.small,
-    theme: TTimeCounterTheme.square,
+    theme: TTimeCounterVariant.square,
     splitWithUnit: true,
   );
 }
@@ -357,7 +357,7 @@ TTimeCounter _buildUnitMediumSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.medium,
-    theme: TTimeCounterTheme.square,
+    theme: TTimeCounterVariant.square,
     splitWithUnit: true,
   );
 }
@@ -367,14 +367,14 @@ TTimeCounter _buildUnitLargeSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.large,
-    theme: TTimeCounterTheme.square,
+    theme: TTimeCounterVariant.square,
     splitWithUnit: true,
   );
 }
 
 @Demo(group: 'timeCounter')
 TTimeCounter _buildCustomUnitSmallSize(BuildContext context) {
-  return TTimeCounter(
+  return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.small,
     splitWithUnit: true,
@@ -383,7 +383,7 @@ TTimeCounter _buildCustomUnitSmallSize(BuildContext context) {
 
 @Demo(group: 'timeCounter')
 TTimeCounter _buildCustomUnitMediumSize(BuildContext context) {
-  return TTimeCounter(
+  return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.medium,
     splitWithUnit: true,
@@ -392,7 +392,7 @@ TTimeCounter _buildCustomUnitMediumSize(BuildContext context) {
 
 @Demo(group: 'timeCounter')
 TTimeCounter _buildCustomUnitLargeSize(BuildContext context) {
-  return TTimeCounter(
+  return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.large,
     splitWithUnit: true,
@@ -416,27 +416,27 @@ Widget _buildControl(BuildContext context) {
         spacing: 8,
         children: [
           TButton(
-            child: Text('开始'),
+            child: const Text('开始'),
             colorScheme: TButtonColorScheme.primary,
             onPressed: () => controller.start(),
           ),
           TButton(
-            child: Text('结束'),
+            child: const Text('结束'),
             colorScheme: TButtonColorScheme.primary,
             onPressed: () => controller.reset(0),
           ),
           TButton(
-            child: Text('重置'),
+            child: const Text('重置'),
             colorScheme: TButtonColorScheme.primary,
             onPressed: () => controller.reset(),
           ),
           TButton(
-            child: Text('暂停'),
+            child: const Text('暂停'),
             colorScheme: TButtonColorScheme.primary,
             onPressed: () => controller.pause(),
           ),
           TButton(
-            child: Text('继续'),
+            child: const Text('继续'),
             colorScheme: TButtonColorScheme.primary,
             onPressed: () => controller.resume(),
           ),

@@ -28,14 +28,14 @@ class TestPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 创建水平步骤条的数据
-    List<TStepsItemData> horizontalSteps = [
+    var horizontalSteps = <TStepsItemData>[
       TStepsItemData(title: 'Step 1', content: 'Horizontal Step 1'),
       TStepsItemData(title: 'Step 2', content: 'Horizontal Step 2'),
       TStepsItemData(title: 'Step 3', content: 'Horizontal Step 3'),
     ];
 
     // 创建垂直步骤条的数据
-    List<TStepsItemData> verticalSteps = [
+    var verticalSteps = <TStepsItemData>[
       TStepsItemData(
         title: '2025-01-11',
         content: '今天是星期六',

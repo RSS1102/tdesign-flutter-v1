@@ -14,10 +14,10 @@ class TResultPage extends StatelessWidget {
       exampleCodeGroup: 'result',
       children: [
         ExampleModule(title: '基础用法', children: [
-          ExampleItem(desc: '默认', builder: (ctx) => TResult(title: '默认结果', subtitle: '描述信息')),
-          ExampleItem(desc: '成功', builder: (ctx) => TResult(variant: TResultVariant.success, title: '操作成功', subtitle: '描述信息')),
-          ExampleItem(desc: '警告', builder: (ctx) => TResult(variant: TResultVariant.warning, title: '请注意', subtitle: '描述信息')),
-          ExampleItem(desc: '错误', builder: (ctx) => TResult(variant: TResultVariant.error, title: '操作失败', subtitle: '描述信息')),
+          ExampleItem(desc: '默认', builder: (ctx) => const TResult(title: '默认结果', subtitle: '描述信息')),
+          ExampleItem(desc: '成功', builder: (ctx) => const TResult(variant: TResultVariant.success, title: '操作成功', subtitle: '描述信息')),
+          ExampleItem(desc: '警告', builder: (ctx) => const TResult(variant: TResultVariant.warning, title: '请注意', subtitle: '描述信息')),
+          ExampleItem(desc: '错误', builder: (ctx) => const TResult(variant: TResultVariant.error, title: '操作失败', subtitle: '描述信息')),
         ]),
       ],
     );

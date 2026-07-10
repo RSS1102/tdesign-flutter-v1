@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import '../../../tdesign_flutter.dart';
 import 't_text_resolve.dart';
-import 't_text_theme_data.dart';
 
 /// 文本控件
 /// 设计原则：
@@ -168,7 +167,7 @@ class TText extends StatelessWidget {
     }
 
     // v1.0 变更：TTextThemeData.forceVerticalCenter 作为子树级默认，实例参数可覆盖
-    final effectiveVC = this.forceVerticalCenter || (themeExtension?.forceVerticalCenter ?? false);
+    final effectiveVC = forceVerticalCenter || (themeExtension?.forceVerticalCenter ?? false);
     if (effectiveVC) {
       var config = getConfiguration(context);
       var paddingConfig = config?.paddingConfig;
@@ -262,7 +261,7 @@ class TText extends StatelessWidget {
       locale: locale,
       softWrap: softWrap,
       overflow: overflow,
-      textScaleFactor: textScaleFactor,
+      textScaler: TextScaler.linear(textScaleFactor ?? 1.0),
       maxLines: maxLines,
       semanticsLabel: semanticsLabel,
       textWidthBasis: textWidthBasis,
@@ -278,7 +277,7 @@ class TText extends StatelessWidget {
       locale: locale,
       softWrap: softWrap,
       overflow: overflow,
-      textScaleFactor: textScaleFactor,
+      textScaler: TextScaler.linear(textScaleFactor ?? 1.0),
       maxLines: maxLines,
       semanticsLabel: semanticsLabel,
       textWidthBasis: textWidthBasis,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_bottom_tab_bar_theme_data.dart';
 
 /// 展开项 向下箭头宽
 const double _kArrowWidth = 13.5;
@@ -580,14 +579,20 @@ class _TBottomTabBarState extends State<TBottomTabBar>
 
   Widget _item(int index, double itemWidth) {
     var tabItemConfig = widget.navigationTabs[index];
+    // iconText 且存在 centerDistance 间距时，压缩上下内边距为图标+文本+间距腾出空间，
+    // 避免 Column 内容溢出（centerDistance 默认为 0，不影响常规渲染与 Golden 基线）。
+    final isIconTextWithGap = widget.basicType ==
+            TBottomTabBarBasicType.iconText &&
+        _effectiveCenterDistance > 0;
     return Container(
         height: _effectiveBarHeight,
         width: itemWidth,
         alignment: Alignment.center,
         padding: EdgeInsets.only(
-            top: 7,
-            bottom:
-                widget.basicType == TBottomTabBarBasicType.iconText ? 5 : 7),
+            top: isIconTextWithGap ? 4 : 7,
+            bottom: isIconTextWithGap
+                ? 1
+                : (widget.basicType == TBottomTabBarBasicType.iconText ? 5 : 7)),
         child: TBottomTabBarItemWithBadge(
           basicType: widget.basicType,
           componentType:
@@ -858,10 +863,13 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
     var isInOrOutCapsule = componentType == TBottomTabBarComponentType.label ||
         outlineType == TBottomTabBarOutlineType.capsule;
 
+    // centerDistance > 0 时进一步压缩顶部内边距，为图标与文本的间距腾出空间
+    final reduceTopPad =
+        basicType == TBottomTabBarBasicType.iconText && centerDistance > 0;
     var child = Container(
       alignment: Alignment.center,
       padding: EdgeInsets.only(
-        top: isInOrOutCapsule ? 3.0 : 2.0,
+        top: (isInOrOutCapsule ? 3.0 : 2.0) - (reduceTopPad ? 1.0 : 0.0),
         bottom: isInOrOutCapsule
             ? (basicType == TBottomTabBarBasicType.iconText ? 0.0 : 1.0)
             : 0.0,
@@ -1069,7 +1077,7 @@ class PopupDialogState extends State<PopupDialog> {
     button = widget.btnContext.findRenderObject() as RenderBox;
     size = button!.size;
     overlay =
-        Overlay.of(widget.btnContext)?.context.findRenderObject() as RenderBox;
+        Overlay.of(widget.btnContext).context.findRenderObject() as RenderBox;
     position = RelativeRect.fromRect(
       Rect.fromPoints(
         button!.localToGlobal(Offset.zero, ancestor: overlay),
@@ -1097,6 +1105,17 @@ class PopupDialogState extends State<PopupDialog> {
             )))
         .toList();
 
+    // 计算弹窗整体高度（含箭头），用于将其约束在视口内避免被裁切到屏幕外
+    final popUpPanelHeight = popUpItemHeight * widget.items.length +
+        (widget.config?.arrowHeight ?? _kArrowHeight);
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    // 这里 -8 是因为widget.btnContext是TBottomTabBarItemWithBadge的，它在父widget内有8dp的padding
+    // -4 是设计稿上箭头和tab有4dp的距离
+    final rawTop = position!.top - popUpPanelHeight - 8 - 4;
+    // 若按钮靠近顶部导致弹窗上移越界，则将其夹紧到视口内（至少 8dp 边距）
+    final safeTop = rawTop.clamp(8.0, screenHeight - popUpPanelHeight - 8.0);
+
     return Material(
       type: MaterialType.transparency,
       child: GestureDetector(
@@ -1104,19 +1123,12 @@ class PopupDialogState extends State<PopupDialog> {
         child: Stack(
           children: <Widget>[
             Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              width: screenWidth,
+              height: screenHeight,
               color: Colors.transparent,
             ),
             Positioned(
-
-                /// 这里 -8 是因为widget.btnContext是TBottomTabBarItemWithBadge的，它在父widget内有8dp的padding
-                /// -4 是设计稿上箭头和tab有4dp的距离
-                top: position!.top -
-                    (popUpItemHeight * widget.items.length +
-                        (widget.config?.arrowHeight ?? _kArrowHeight)) -
-                    8 -
-                    4,
+                top: safeTop,
                 right: position!.right - (popUpItemWidth + size!.width) / 2,
                 child: Container(
                   width: popUpItemWidth,

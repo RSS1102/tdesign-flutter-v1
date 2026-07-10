@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
-import 't_footer_theme_data.dart';
 
 /// 页脚形态
 enum TFooterVariant {
@@ -45,10 +44,6 @@ class TFooter extends StatefulWidget {
 }
 
 class _TFooterState extends State<TFooter> {
-  /// 从 Theme 子树读取 L4 默认值
-  TFooterThemeData? _theme(BuildContext context) =>
-      Theme.of(context).extension<TFooterThemeData>();
-
   @override
   Widget build(BuildContext context) {
     var children = <Widget>[];
@@ -77,7 +72,6 @@ class _TFooterState extends State<TFooter> {
   }
 
   Widget _renderLogo() {
-    final height = _theme(context)?.height;
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Padding(
         padding: const EdgeInsets.only(top: 4, bottom: 4),

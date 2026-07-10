@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
-import 'package:tdesign_flutter/src/components/button/t_button_theme_data.dart';
 
 /// TButton P0 Golden 测试
 ///
@@ -83,8 +82,8 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
 
       await tester.pumpWidget(wrapWithTheme(
-        TButton(
-          icon: const Icon(Icons.add),
+        const TButton(
+          icon: Icon(Icons.add),
           variant: TButtonVariant.fill,
           colorScheme: TButtonColorScheme.primary,
         ),

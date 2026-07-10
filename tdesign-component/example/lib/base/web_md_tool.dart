@@ -51,7 +51,7 @@ class WebMdTool {
           model.spline ?? 'other', exampleCodeSb.toString(), api.toString(), pageName);
       print('生成演示代码成功：\n${mdContent.substring(0,50)}...');
 
-      var path = "";
+      var path = '';
       if(Platform.environment['FLUTTER_TEST'] == 'true'){
 
         var baseDir = Platform.script.toFilePath().split('/tdesign-component')[0];

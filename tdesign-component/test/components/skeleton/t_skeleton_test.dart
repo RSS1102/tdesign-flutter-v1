@@ -1,26 +1,351 @@
-﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-/// skeleton 组件 API 验证测试
-/// 验证类、枚举、构造器的存在性。
+/// TSkeleton V1.0 Widget 测试
+///
+/// 覆盖 variant 四档（avatar/image/text/paragraph）、
+/// animation 两档（gradient/flashed）、delay 延迟、
+/// fromRowCol 自定义行列、Theme 注入、边界情况。
 void main() {
-  test('TSkeleton - 类存在', () { expect(TSkeleton, isNotNull); });
-  test('TSkeletonVariant - 类存在', () { expect(TSkeletonVariant, isNotNull); });
-  test('TSkeletonAnimation - 类存在', () { expect(TSkeletonAnimation, isNotNull); });
-  test('组件导入验证', () { expect(true, isTrue); });
-  test('skeleton_api_test_0 - 验证 #0', () { expect(0, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_1 - 验证 #1', () { expect(1, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_2 - 验证 #2', () { expect(2, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_3 - 验证 #3', () { expect(3, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_4 - 验证 #4', () { expect(4, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_5 - 验证 #5', () { expect(5, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_6 - 验证 #6', () { expect(6, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_7 - 验证 #7', () { expect(7, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_8 - 验证 #8', () { expect(8, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_9 - 验证 #9', () { expect(9, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_10 - 验证 #10', () { expect(10, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_11 - 验证 #11', () { expect(11, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_12 - 验证 #12', () { expect(12, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_13 - 验证 #13', () { expect(13, greaterThanOrEqualTo(0)); });
-  test('skeleton_api_test_14 - 验证 #14', () { expect(14, greaterThanOrEqualTo(0)); });
+  /// 用 TTheme 包裹以提供基础 Token
+  Widget wrapWithTheme(Widget child, {TSkeletonThemeData? skeletonTheme}) {
+    final themeExtensions = <ThemeExtension>[
+      if (skeletonTheme != null) skeletonTheme,
+    ];
+    // 注意：必须通过 MaterialApp.theme 传递 extensions
+    return MaterialApp(
+      theme: ThemeData(
+        extensions: [TThemeData.defaultData(), ...themeExtensions],
+      ),
+      home: Scaffold(body: Column(children: [child])),
+    );
+  }
+
+  group('TSkeleton 基础渲染', () {
+    testWidgets('默认 variant=text 渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(TSkeleton()));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('variant: avatar 渲染圆形', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(variant: TSkeletonVariant.avatar),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('variant: image 渲染矩形', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(variant: TSkeletonVariant.image),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('variant: text 渲染文本骨架', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(variant: TSkeletonVariant.text),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('variant: paragraph 渲染段落骨架', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(variant: TSkeletonVariant.paragraph),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('variant 全量验证均可渲染', (tester) async {
+      for (final variant in TSkeletonVariant.values) {
+        await tester.pumpWidget(wrapWithTheme(
+          TSkeleton(variant: variant),
+        ));
+        await tester.pumpAndSettle();
+        expect(find.byType(TSkeleton), findsOneWidget);
+      }
+    });
+  });
+
+  group('TSkeleton animation 两档', () {
+    testWidgets('animation: gradient 渲染渐变动画', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(
+          variant: TSkeletonVariant.text,
+          animation: TSkeletonAnimation.gradient,
+        ),
+      ));
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(find.byType(TSkeleton), findsOneWidget);
+      // gradient 动画使用 ShaderMask
+      expect(find.byType(ShaderMask), findsWidgets);
+    });
+
+    testWidgets('animation: flashed 渲染闪烁动画', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(
+          variant: TSkeletonVariant.text,
+          animation: TSkeletonAnimation.flashed,
+        ),
+      ));
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(find.byType(TSkeleton), findsOneWidget);
+      // flashed 动画使用 Opacity
+      expect(find.byType(Opacity), findsWidgets);
+    });
+
+    testWidgets('animation: null（默认）无动画控件', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(variant: TSkeletonVariant.text),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(ShaderMask), findsNothing);
+      expect(find.byType(Opacity), findsNothing);
+    });
+
+    testWidgets('animation 全量验证均可渲染', (tester) async {
+      for (final animation in TSkeletonAnimation.values) {
+        await tester.pumpWidget(wrapWithTheme(
+          TSkeleton(
+            key: UniqueKey(),
+            variant: TSkeletonVariant.text,
+            animation: animation,
+          ),
+        ));
+        await tester.pump(const Duration(milliseconds: 50));
+        expect(find.byType(TSkeleton), findsOneWidget);
+      }
+    });
+  });
+
+  group('TSkeleton delay 延迟', () {
+    testWidgets('delay=0 立即显示骨架', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(delay: 0),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('delay>0 在延迟期间显示空容器', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(delay: 500),
+      ));
+      // 立即 pump，仍在延迟期内
+      await tester.pump(const Duration(milliseconds: 100));
+      // 延迟期内 _isLoading=true，build 返回空 Container
+      // TSkeleton 节点存在但其子树为空
+      expect(find.byType(TSkeleton), findsOneWidget);
+      // 冲刷延迟计时器，避免测试结束时仍有 pending timer
+      await tester.pump(const Duration(milliseconds: 500));
+    });
+
+    testWidgets('delay>0 延迟结束后显示骨架', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(delay: 100),
+      ));
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+  });
+
+  group('TSkeleton.fromRowCol 自定义行列', () {
+    testWidgets('单行单列渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton.fromRowCol(
+          rowCol: TSkeletonRowCol(objects: [
+            [const TSkeletonRowColObj.text()],
+          ]),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('单行多列渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton.fromRowCol(
+          rowCol: TSkeletonRowCol(objects: [
+            [
+              const TSkeletonRowColObj.text(flex: 1),
+              const TSkeletonRowColObj.spacer(width: 8),
+              const TSkeletonRowColObj.text(flex: 1),
+            ],
+          ]),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+      expect(find.byType(Row), findsWidgets);
+    });
+
+    testWidgets('多行多列渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton.fromRowCol(
+          rowCol: TSkeletonRowCol(objects: [
+            [const TSkeletonRowColObj.text()],
+            [const TSkeletonRowColObj.text()],
+            [const TSkeletonRowColObj.text()],
+          ]),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+      expect(find.byType(Column), findsWidgets);
+    });
+
+    testWidgets('circle 对象渲染圆形骨架', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton.fromRowCol(
+          rowCol: TSkeletonRowCol(objects: [
+            [const TSkeletonRowColObj.circle()],
+          ]),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('rect 对象渲染矩形骨架', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton.fromRowCol(
+          rowCol: TSkeletonRowCol(objects: [
+            [const TSkeletonRowColObj.rect(width: 100, height: 50)],
+          ]),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('spacer 占位符渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton.fromRowCol(
+          rowCol: TSkeletonRowCol(objects: [
+            [
+              const TSkeletonRowColObj.text(flex: 1),
+              const TSkeletonRowColObj.spacer(width: 16),
+              const TSkeletonRowColObj.text(flex: 1),
+            ],
+          ]),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('带 animation 的自定义行列渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton.fromRowCol(
+          animation: TSkeletonAnimation.gradient,
+          rowCol: TSkeletonRowCol(objects: [
+            [const TSkeletonRowColObj.text()],
+            [const TSkeletonRowColObj.text()],
+          ]),
+        ),
+      ));
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(find.byType(TSkeleton), findsOneWidget);
+      expect(find.byType(ShaderMask), findsWidgets);
+    });
+  });
+
+  group('TSkeleton Theme 注入', () {
+    test('TSkeletonThemeData.copyWith 正确合并', () {
+      const base = TSkeletonThemeData(
+        variant: TSkeletonVariant.text,
+        delay: 100,
+      );
+      final merged = base.copyWith(animation: TSkeletonAnimation.flashed);
+      expect(merged.variant, TSkeletonVariant.text);
+      expect(merged.delay, 100);
+      expect(merged.animation, TSkeletonAnimation.flashed);
+    });
+
+    test('TSkeletonThemeData.lerp 插值正确', () {
+      const a = TSkeletonThemeData(delay: 100, variant: TSkeletonVariant.text);
+      const b = TSkeletonThemeData(delay: 200, variant: TSkeletonVariant.paragraph);
+      final mid = a.lerp(b, 0.5);
+      expect(mid.delay, 200); // t>=0.5 取 b
+      expect(mid.variant, TSkeletonVariant.paragraph);
+    });
+
+    test('TSkeletonThemeData 默认构造所有字段为 null', () {
+      const theme = TSkeletonThemeData();
+      expect(theme.variant, isNull);
+      expect(theme.animation, isNull);
+      expect(theme.delay, isNull);
+    });
+  });
+
+  group('TSkeleton 边界情况', () {
+    testWidgets('delay=0 且无 animation 正常渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(delay: 0, variant: TSkeletonVariant.avatar),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('paragraph variant 渲染多行', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(variant: TSkeletonVariant.paragraph),
+      ));
+      await tester.pumpAndSettle();
+      // paragraph 生成 4 行（3 全宽 + 1 半宽）
+      expect(find.byType(Column), findsWidgets);
+    });
+
+    testWidgets('text variant 渲染 2 行', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(variant: TSkeletonVariant.text),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('TSkeletonRowCol.visualHeight 计算正确', (tester) async {
+      final rowCol = TSkeletonRowCol(objects: const [
+        [TSkeletonRowColObj.text(height: 16)],
+        [TSkeletonRowColObj.text(height: 16)],
+      ]);
+      late BuildContext context;
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(
+          builder: (ctx) {
+            context = ctx;
+            return const SizedBox.shrink();
+          },
+        ),
+      ));
+      final height = rowCol.visualHeight(context);
+      // 2 行 height=16 + 行间距 spacer16
+      expect(height, greaterThan(16));
+    });
+
+    test('TSkeletonRowColObj 默认 height=16', () {
+      const obj = TSkeletonRowColObj();
+      expect(obj.height, 16);
+    });
+
+    test('TSkeletonRowColObj.circle 默认 48x48', () {
+      const obj = TSkeletonRowColObj.circle();
+      expect(obj.width, 48);
+      expect(obj.height, 48);
+    });
+
+    test('TSkeletonRowColObj.visualHeight 包含 margin', () {
+      const obj = TSkeletonRowColObj(
+        height: 16,
+        margin: EdgeInsets.only(top: 4, bottom: 4),
+      );
+      expect(obj.visualHeight, 24);
+    });
+  });
 }

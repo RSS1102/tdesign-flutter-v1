@@ -116,7 +116,7 @@ void main() {
 
     // TC-03: 点击切换后图标颜色同步更新
     testWidgets('TC-03: 点击切换 tab 后图标颜色应同步更新', (tester) async {
-      int selectedIndex = 0;
+      var selectedIndex = 0;
       late StateSetter outerSetState;
 
       await tester.pumpWidget(

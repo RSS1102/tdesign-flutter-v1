@@ -1,0 +1,42 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/dropdown_menu/t_dropdown_inherited.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/dropdown_menu/t_dropdown_inherited.dart</h1></header><div class='meta'>行覆盖 <b>100.0%</b> (5/5) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/cupertino.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;t_dropdown_item.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span>import &#x27;t_dropdown_menu.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;t_dropdown_popup.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>/// 下拉菜单的 InheritedWidget，用于向子树传递弹出状态和方向</div>
+<div class='row nod'><span class='ln'>8</span>class TDropdownInherited extends InheritedWidget {</div>
+<div class='row cov'><span class='ln'>9</span>  const TDropdownInherited({required Widget child, required this.popupState, required this.directionListenable, Key? key})</div>
+<div class='row cov'><span class='ln'>10</span>      : super(child: child, key: key);</div>
+<div class='row nod'><span class='ln'>11</span></div>
+<div class='row nod'><span class='ln'>12</span>  /// 下拉弹出状态</div>
+<div class='row nod'><span class='ln'>13</span>  final TDropdownPopup popupState;</div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>  /// 方向监听器</div>
+<div class='row nod'><span class='ln'>16</span>  final ValueNotifier&lt;TDropdownMenuDirection&gt; directionListenable;</div>
+<div class='row nod'><span class='ln'>17</span></div>
+<div class='row cov'><span class='ln'>18</span>  @override</div>
+<div class='row nod'><span class='ln'>19</span>  bool updateShouldNotify(covariant TDropdownInherited oldWidget) {</div>
+<div class='row nod'><span class='ln'>20</span>    return true;</div>
+<div class='row nod'><span class='ln'>21</span>  }</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>  /// 获取最近的 [TDropdownInherited] 实例</div>
+<div class='row cov'><span class='ln'>24</span>  static TDropdownInherited? of(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>25</span>    return context.dependOnInheritedWidgetOfExactType&lt;TDropdownInherited&gt;();</div>
+<div class='row nod'><span class='ln'>26</span>  }</div>
+<div class='row nod'><span class='ln'>27</span>}</div>
+<div class='row nod'><span class='ln'>28</span></div>
+</pre></body></html>

@@ -28,7 +28,7 @@ void main() {
       SizedBox(
         height: 600,
         child: TForm(
-          items: [
+          items: const [
             TFormItem(
               type: TFormItemType.input,
               label: '用户名',
@@ -60,7 +60,7 @@ void main() {
   group('TForm submit 提交', () {
     testWidgets('controller.submit() 触发 onSubmit 回调', (tester) async {
       final controller = FormController();
-      bool submitted = false;
+      var submitted = false;
       Map<String, dynamic>? submittedData;
 
       await tester.pumpWidget(buildForm(
@@ -276,7 +276,7 @@ void main() {
         SizedBox(
           height: 600,
           child: TForm(
-            items: [
+            items: const [
               TFormItem(
                 type: TFormItemType.input,
                 label: '必填',
@@ -284,8 +284,8 @@ void main() {
                 requiredMark: true,
               ),
             ],
-            rules: {},
-            data: {'field': ''},
+            rules: const {},
+            data: const {'field': ''},
             onSubmit: (data, valid) {},
             requiredMark: true,
             labelWidth: 80,
@@ -300,21 +300,144 @@ void main() {
         SizedBox(
           height: 600,
           child: TForm(
-            items: [
+            items: const [
               TFormItem(
                 type: TFormItemType.input,
                 label: '标签',
                 name: 'field',
               ),
             ],
-            rules: {},
-            data: {'field': ''},
+            rules: const {},
+            data: const {'field': ''},
             onSubmit: (data, valid) {},
             labelWidth: 100,
           ),
         ),
       ));
       expect(find.byType(TForm), findsOneWidget);
+    });
+  });
+
+  group('TFormItem 多类型渲染', () {
+    Widget buildSingle(TFormItem item,
+        {Map<String, dynamic> data = const {}}) {
+      return wrapWithTheme(
+        SizedBox(
+          height: 600,
+          child: TForm(
+            items: [item],
+            rules: const {},
+            data: data,
+            onSubmit: (d, v) {},
+            labelWidth: 80,
+          ),
+        ),
+      );
+    }
+
+    testWidgets('textarea 类型渲染', (tester) async {
+      await tester.pumpWidget(buildSingle(const TFormItem(
+        type: TFormItemType.textarea,
+        label: '备注',
+        name: 'remark',
+        child: TText('文本域内容'),
+      )));
+      expect(find.text('备注'), findsOneWidget);
+      expect(find.text('文本域内容'), findsOneWidget);
+    });
+
+    testWidgets('radios 类型渲染', (tester) async {
+      await tester.pumpWidget(buildSingle(TFormItem(
+        type: TFormItemType.radios,
+        label: '性别',
+        name: 'gender',
+        child: TRadioGroup(
+          selectId: 'm',
+          direction: Axis.horizontal,
+          directionalTdRadios: const [
+            TRadio(id: 'm', title: '男'),
+            TRadio(id: 'f', title: '女'),
+          ],
+          onRadioGroupChange: (id) {},
+        ),
+      )));
+      expect(find.text('性别'), findsOneWidget);
+      expect(find.text('男'), findsOneWidget);
+      expect(find.text('女'), findsOneWidget);
+    });
+
+    testWidgets('stepper 类型渲染', (tester) async {
+      await tester.pumpWidget(buildSingle(const TFormItem(
+        type: TFormItemType.stepper,
+        label: '数量',
+        name: 'count',
+        child: TText('步进器'),
+      )));
+      expect(find.text('数量'), findsOneWidget);
+      expect(find.text('步进器'), findsOneWidget);
+    });
+
+    testWidgets('upLoadImg 类型渲染', (tester) async {
+      await tester.pumpWidget(buildSingle(const TFormItem(
+        type: TFormItemType.upLoadImg,
+        label: '图片',
+        name: 'img',
+        child: TText('上传图片'),
+      )));
+      expect(find.text('图片'), findsOneWidget);
+      expect(find.text('上传图片'), findsOneWidget);
+    });
+
+    testWidgets('dateTimePicker 类型渲染并触发 selectFn', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(buildSingle(TFormItem(
+        type: TFormItemType.dateTimePicker,
+        label: '时间',
+        name: 'time',
+        hintText: '请选择时间',
+        selectFn: (context) => tapped = true,
+      )));
+      expect(find.text('时间'), findsOneWidget);
+      expect(find.text('请选择时间'), findsOneWidget);
+      await tester.tap(find.text('请选择时间'));
+      await tester.pump();
+      expect(tapped, isTrue);
+    });
+
+    testWidgets('cascader 类型渲染并触发 selectFn', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(buildSingle(TFormItem(
+        type: TFormItemType.cascader,
+        label: '地区',
+        name: 'area',
+        hintText: '请选择地区',
+        selectFn: (context) => tapped = true,
+      )));
+      expect(find.text('地区'), findsOneWidget);
+      expect(find.text('请选择地区'), findsOneWidget);
+      await tester.tap(find.text('请选择地区'));
+      await tester.pump();
+      expect(tapped, isTrue);
+    });
+
+    testWidgets('help 帮助信息渲染', (tester) async {
+      await tester.pumpWidget(buildSingle(const TFormItem(
+        type: TFormItemType.input,
+        label: '账号',
+        name: 'account',
+        help: '请输入登录账号',
+      )));
+      expect(find.text('请输入登录账号'), findsOneWidget);
+    });
+
+    testWidgets('labelWidget 自定义标签渲染', (tester) async {
+      await tester.pumpWidget(buildSingle(const TFormItem(
+        type: TFormItemType.input,
+        label: 'x',
+        labelWidget: Text('自定义标签'),
+        name: 'x',
+      )));
+      expect(find.text('自定义标签'), findsOneWidget);
     });
   });
 }

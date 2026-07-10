@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import 't_cell_inherited.dart';
-import 't_cell_theme_data.dart';
 
 typedef CellBuilder = Widget Function(
   BuildContext context,

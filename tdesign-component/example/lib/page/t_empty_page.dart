@@ -80,7 +80,7 @@ class _TEmptyPageState extends State<TEmptyPage> {
       customOperationWidget: Padding(
         padding: const EdgeInsets.only(top: 32),
         child: TButton(
-          child: Text('自定义操作按钮'),
+          child: const Text('自定义操作按钮'),
           size: TButtonSize.medium,
           colorScheme: TButtonColorScheme.danger,
           onPressed: () {},

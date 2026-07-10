@@ -16,8 +16,8 @@ class TFabResolve {
   static TFabLayout resolveLayout({
     required double? right,
     required double? bottom,
-    required dynamic draggable,
-    required dynamic magnet,
+    required Object? draggable,
+    required Object? magnet,
     required TFabBounds? xBounds,
     required TFabBounds? yBounds,
     required double? themeDefaultRight,
@@ -71,29 +71,17 @@ class TFabResolve {
     final effectiveIcon = icon ?? const Icon(TFabDefaults.defaultIconData);
 
     // shape 推导：纯图标=圆形，有文字=胶囊形；buttonProps.shape 覆盖
-    final TButtonShape effectiveShape;
-    if (buttonProps?.shape is TButtonShape) {
-      effectiveShape = buttonProps!.shape as TButtonShape;
-    } else {
-      effectiveShape = hasText ? TButtonShape.round : TButtonShape.circle;
-    }
+    final effectiveShape =
+        buttonProps?.shape ?? (hasText ? TButtonShape.round : TButtonShape.circle);
 
     final tButton = TButton(
       child: hasText ? Text(text) : null,
       icon: effectiveIcon,
       onPressed: onPressed,
-      size: buttonProps?.size is TButtonSize
-          ? buttonProps!.size as TButtonSize
-          : TButtonSize.large,
-      variant: buttonProps?.variant is TButtonVariant
-          ? buttonProps!.variant as TButtonVariant
-          : TButtonVariant.fill,
-      colorScheme: buttonProps?.colorScheme is TButtonColorScheme
-          ? buttonProps!.colorScheme as TButtonColorScheme
-          : TButtonColorScheme.primary,
-      style: buttonProps?.style is ButtonStyle
-          ? buttonProps!.style as ButtonStyle
-          : null,
+      size: buttonProps?.size ?? TButtonSize.large,
+      variant: buttonProps?.variant ?? TButtonVariant.fill,
+      colorScheme: buttonProps?.colorScheme ?? TButtonColorScheme.primary,
+      style: buttonProps?.style,
     );
 
     // TButton 的 shape 由 TButtonThemeData.shape 控制

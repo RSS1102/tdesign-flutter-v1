@@ -137,7 +137,7 @@ class _TStepperPageState extends State<TStepperPage> {
             controller: controller,
           ),
           TButton(
-            child: Text('value * 2'),
+            child: const Text('value * 2'),
             onPressed: () {
               controller.value *= 2;
             },

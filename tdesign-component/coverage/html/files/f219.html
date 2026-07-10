@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/time_counter/t_time_counter_theme_data.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/time_counter/t_time_counter_theme_data.dart</h1></header><div class='meta'>行覆盖 <b>0.0%</b> (0/14) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span></div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;../../../tdesign_flutter.dart&#x27; show TTimeCounter;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>import &#x27;t_time_counter.dart&#x27; show TTimeCounter;</div>
+<div class='row nod'><span class='ln'>8</span></div>
+<div class='row nod'><span class='ln'>9</span>import &#x27;t_time_counter_style.dart&#x27; show TTimeCounterVariant, TTimeCounterSize;</div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span></div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>/// 计时组件级 ThemeExtension</div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>class TTimeCounterThemeData extends ThemeExtension&lt;TTimeCounterThemeData&gt; {</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>  /// 未传 [TTimeCounter.theme] 时的默认风格</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>  final TTimeCounterVariant? theme;</div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row unc'><span class='ln'>21</span>▶ </div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>  /// 尺寸</div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>  final TTimeCounterSize? size;</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row unc'><span class='ln'>28</span>▶ </div>
+<div class='row nod'><span class='ln'>29</span>  /// 是否开启毫秒级渲染</div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row nod'><span class='ln'>31</span>  final bool? millisecond;</div>
+<div class='row nod'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span></div>
+<div class='row unc'><span class='ln'>35</span>▶   /// 使用时间单位分割</div>
+<div class='row unc'><span class='ln'>36</span>▶ </div>
+<div class='row unc'><span class='ln'>37</span>▶   final bool? splitWithUnit;</div>
+<div class='row unc'><span class='ln'>38</span>▶ </div>
+<div class='row unc'><span class='ln'>39</span>▶ </div>
+<div class='row nod'><span class='ln'>40</span></div>
+<div class='row nod'><span class='ln'>41</span>  const TTimeCounterThemeData({</div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row unc'><span class='ln'>43</span>▶     this.theme,</div>
+<div class='row nod'><span class='ln'>44</span></div>
+<div class='row unc'><span class='ln'>45</span>▶     this.size,</div>
+<div class='row nod'><span class='ln'>46</span></div>
+<div class='row nod'><span class='ln'>47</span>    this.millisecond,</div>
+<div class='row unc'><span class='ln'>48</span>▶ </div>
+<div class='row unc'><span class='ln'>49</span>▶     this.splitWithUnit,</div>
+<div class='row unc'><span class='ln'>50</span>▶ </div>
+<div class='row unc'><span class='ln'>51</span>▶   });</div>
+<div class='row unc'><span class='ln'>52</span>▶ </div>
+<div class='row nod'><span class='ln'>53</span></div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row nod'><span class='ln'>55</span>  @override</div>
+<div class='row nod'><span class='ln'>56</span></div>
+<div class='row nod'><span class='ln'>57</span>  TTimeCounterThemeData copyWith({</div>
+<div class='row nod'><span class='ln'>58</span></div>
+<div class='row nod'><span class='ln'>59</span>    TTimeCounterVariant? theme,</div>
+<div class='row nod'><span class='ln'>60</span></div>
+<div class='row nod'><span class='ln'>61</span>    TTimeCounterSize? size,</div>
+<div class='row nod'><span class='ln'>62</span></div>
+<div class='row nod'><span class='ln'>63</span>    bool? millisecond,</div>
+<div class='row nod'><span class='ln'>64</span></div>
+<div class='row nod'><span class='ln'>65</span>    bool? splitWithUnit,</div>
+<div class='row nod'><span class='ln'>66</span></div>
+<div class='row nod'><span class='ln'>67</span>  }) {</div>
+<div class='row nod'><span class='ln'>68</span></div>
+<div class='row nod'><span class='ln'>69</span>    return TTimeCounterThemeData(</div>
+<div class='row nod'><span class='ln'>70</span></div>
+<div class='row nod'><span class='ln'>71</span>      theme: theme ?? this.theme,</div>
+<div class='row nod'><span class='ln'>72</span></div>
+<div class='row nod'><span class='ln'>73</span>      size: size ?? this.size,</div>
+<div class='row nod'><span class='ln'>74</span></div>
+<div class='row nod'><span class='ln'>75</span>      millisecond: millisecond ?? this.millisecond,</div>
+<div class='row nod'><span class='ln'>76</span></div>
+<div class='row nod'><span class='ln'>77</span>      splitWithUnit: splitWithUnit ?? this.splitWithUnit,</div>
+<div class='row nod'><span class='ln'>78</span></div>
+<div class='row nod'><span class='ln'>79</span>    );</div>
+<div class='row nod'><span class='ln'>80</span></div>
+<div class='row nod'><span class='ln'>81</span>  }</div>
+<div class='row nod'><span class='ln'>82</span></div>
+<div class='row nod'><span class='ln'>83</span></div>
+<div class='row nod'><span class='ln'>84</span></div>
+<div class='row nod'><span class='ln'>85</span>  @override</div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row nod'><span class='ln'>87</span>  TTimeCounterThemeData lerp(ThemeExtension&lt;TTimeCounterThemeData&gt;? other, double t) {</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row nod'><span class='ln'>89</span>    if (other is! TTimeCounterThemeData) {</div>
+<div class='row nod'><span class='ln'>90</span>      return this;</div>
+<div class='row nod'><span class='ln'>91</span>    }</div>
+<div class='row nod'><span class='ln'>92</span>    return TTimeCounterThemeData(</div>
+<div class='row nod'><span class='ln'>93</span></div>
+<div class='row nod'><span class='ln'>94</span>      theme: t &lt; 0.5 ? theme : other.theme,</div>
+<div class='row nod'><span class='ln'>95</span></div>
+<div class='row nod'><span class='ln'>96</span>      size: t &lt; 0.5 ? size : other.size,</div>
+<div class='row nod'><span class='ln'>97</span></div>
+<div class='row nod'><span class='ln'>98</span>      millisecond: t &lt; 0.5 ? millisecond : other.millisecond,</div>
+<div class='row nod'><span class='ln'>99</span></div>
+<div class='row nod'><span class='ln'>100</span>      splitWithUnit: t &lt; 0.5 ? splitWithUnit : other.splitWithUnit,</div>
+<div class='row nod'><span class='ln'>101</span></div>
+<div class='row nod'><span class='ln'>102</span>    );</div>
+<div class='row nod'><span class='ln'>103</span></div>
+<div class='row nod'><span class='ln'>104</span>  }</div>
+<div class='row nod'><span class='ln'>105</span></div>
+<div class='row nod'><span class='ln'>106</span>}</div>
+<div class='row nod'><span class='ln'>107</span></div>
+<div class='row nod'><span class='ln'>108</span></div>
+</pre></body></html>

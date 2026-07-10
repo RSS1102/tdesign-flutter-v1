@@ -94,7 +94,7 @@ class TNavBarPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
         hintText: '搜索预设文案',
         mediumStyle: true,
-        style: TSearchBarStyle.round,
+        style: TSearchBarVariant.round,
         onChanged: (String text) {
           print('input：$text');
         },

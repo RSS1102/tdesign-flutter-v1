@@ -57,7 +57,7 @@ class TTimeCounter extends StatefulWidget {
   final bool? splitWithUnit;
 
   /// 风格
-  final TTimeCounterTheme? theme;
+  final TTimeCounterVariant? theme;
 
   /// 必需；计时时长，单位毫秒
   final int time;
@@ -106,7 +106,7 @@ class _TTimeCounterState extends State<TTimeCounter>
     // P1: 组件级 ThemeExtension
     final tTheme = Theme.of(context).extension<TTimeCounterThemeData>();
     final effectiveSize = widget.size ?? tTheme?.size ?? TTimeCounterSize.medium;
-    final effectiveTheme = widget.theme ?? tTheme?.theme ?? TTimeCounterTheme.defaultTheme;
+    final effectiveTheme = widget.theme ?? tTheme?.theme ?? TTimeCounterVariant.defaultTheme;
     _effectiveMillisecond = widget.millisecond ?? tTheme?.millisecond ?? false;
     _effectiveSplitWithUnit = widget.splitWithUnit ?? tTheme?.splitWithUnit ?? false;
     _style = widget.style ??

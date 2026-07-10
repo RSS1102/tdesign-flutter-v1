@@ -237,5 +237,163 @@ void main() {
       await tester.pumpAndSettle();
     });
   });
+
+  // ============================================================
+  // showSuccess / showWarning / showFail
+  // ============================================================
+  group('TToast 状态图标', () {
+    testWidgets('showSuccess 显示成功图标与文案', (tester) async {
+      await tester.pumpWidget(wrapWithTheme());
+      await showToastAndPump(tester, (context) {
+        TToast.showSuccess('成功',
+            context: context, duration: const Duration(milliseconds: 100));
+      });
+      expect(find.text('成功'), findsOneWidget);
+      expect(find.byIcon(TIcons.check_circle), findsOneWidget);
+      await waitForDismiss(tester);
+    });
+
+    testWidgets('showWarning 显示警告图标与文案', (tester) async {
+      await tester.pumpWidget(wrapWithTheme());
+      await showToastAndPump(tester, (context) {
+        TToast.showWarning('警告',
+            context: context, duration: const Duration(milliseconds: 100));
+      });
+      expect(find.text('警告'), findsOneWidget);
+      expect(find.byIcon(TIcons.error_circle), findsOneWidget);
+      await waitForDismiss(tester);
+    });
+
+    testWidgets('showFail 显示失败图标与文案', (tester) async {
+      await tester.pumpWidget(wrapWithTheme());
+      await showToastAndPump(tester, (context) {
+        TToast.showFail('失败',
+            context: context, duration: const Duration(milliseconds: 100));
+      });
+      expect(find.text('失败'), findsOneWidget);
+      expect(find.byIcon(TIcons.close_circle), findsOneWidget);
+      await waitForDismiss(tester);
+    });
+  });
+
+  // ============================================================
+  // 加载 Toast
+  // ============================================================
+  group('TToast 加载', () {
+    testWidgets('showLoading 显示加载文案', (tester) async {
+      await tester.pumpWidget(wrapWithTheme());
+      final context = tester.element(find.byKey(const Key('toast_host')));
+      await tester.runAsync(() async {
+        TToast.showLoading(context: context, text: '加载中');
+        await Future.delayed(const Duration(milliseconds: 50));
+      });
+      // 仅 pump 单帧：TCircleIndicator 有无限旋转动画，pumpAndSettle 会超时
+      await tester.pump();
+      expect(find.text('加载中'), findsOneWidget);
+      TToast.dismissLoading();
+      await tester.pump();
+      expect(find.text('加载中'), findsNothing);
+    });
+
+    testWidgets('showLoadingWithoutText 仅渲染指示器无文案', (tester) async {
+      await tester.pumpWidget(wrapWithTheme());
+      final context = tester.element(find.byKey(const Key('toast_host')));
+      await tester.runAsync(() async {
+        TToast.showLoadingWithoutText(context: context);
+        await Future.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pump();
+      // 不带文案，不应出现加载文案
+      expect(find.text('加载中'), findsNothing);
+      TToast.dismissLoading();
+      await tester.pump();
+    });
+  });
+
+  // ============================================================
+  // dismiss 关闭
+  // ============================================================
+  group('TToast dismiss 关闭', () {
+    testWidgets('dismissToast 关闭指定 Toast', (tester) async {
+      await tester.pumpWidget(wrapWithTheme());
+      final context = tester.element(find.byKey(const Key('toast_host')));
+      late String id;
+      await tester.runAsync(() async {
+        id = TToast.showText('可关闭',
+            context: context, duration: const Duration(seconds: 10));
+        await Future.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pumpAndSettle();
+      expect(find.text('可关闭'), findsOneWidget);
+      TToast.dismissToast(id);
+      await tester.pumpAndSettle();
+      expect(find.text('可关闭'), findsNothing);
+    });
+
+    testWidgets('dismissAll 关闭所有 Toast', (tester) async {
+      await tester.pumpWidget(wrapWithTheme());
+      final context = tester.element(find.byKey(const Key('toast_host')));
+      await tester.runAsync(() async {
+        TToast.showText('A',
+            context: context, duration: const Duration(seconds: 10));
+        TToast.showText('B',
+            context: context, duration: const Duration(seconds: 10));
+        await Future.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pumpAndSettle();
+      expect(find.text('A'), findsOneWidget);
+      expect(find.text('B'), findsOneWidget);
+      TToast.dismissAll();
+      await tester.pumpAndSettle();
+      expect(find.text('A'), findsNothing);
+      expect(find.text('B'), findsNothing);
+    });
+
+    testWidgets('dismissLoading 关闭加载 Toast', (tester) async {
+      await tester.pumpWidget(wrapWithTheme());
+      final context = tester.element(find.byKey(const Key('toast_host')));
+      await tester.runAsync(() async {
+        TToast.showLoading(context: context, text: '加载中');
+        await Future.delayed(const Duration(milliseconds: 50));
+      });
+      // 仅 pump 单帧，避免 TCircleIndicator 无限动画导致 pumpAndSettle 超时
+      await tester.pump();
+      expect(find.text('加载中'), findsOneWidget);
+      TToast.dismissLoading();
+      await tester.pump();
+      expect(find.text('加载中'), findsNothing);
+    });
+  });
+
+  // ============================================================
+  // preventTap / customWidget
+  // ============================================================
+  group('TToast 遮罩与自定义', () {
+    testWidgets('preventTap 渲染全屏遮罩', (tester) async {
+      await tester.pumpWidget(wrapWithTheme());
+      await showToastAndPump(tester, (context) {
+        TToast.showText('防触',
+            context: context,
+            preventTap: true,
+            duration: const Duration(milliseconds: 100));
+      });
+      expect(find.text('防触'), findsOneWidget);
+      // preventTap 时使用 Positioned 全屏透明遮罩
+      expect(find.byType(Positioned), findsWidgets);
+      await waitForDismiss(tester);
+    });
+
+    testWidgets('customWidget 渲染自定义内容', (tester) async {
+      await tester.pumpWidget(wrapWithTheme());
+      await showToastAndPump(tester, (context) {
+        TToast.showText('忽略',
+            context: context,
+            customWidget: const Text('自定义内容'),
+            duration: const Duration(milliseconds: 100));
+      });
+      expect(find.text('自定义内容'), findsOneWidget);
+      await waitForDismiss(tester);
+    });
+  });
 }
 

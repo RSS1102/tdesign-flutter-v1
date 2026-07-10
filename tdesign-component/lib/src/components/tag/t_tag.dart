@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
-import 't_tag_theme_data.dart';
 
 /// 标签尺寸
 enum TTagSize { extraLarge, large, medium, small, custom }
@@ -68,7 +67,7 @@ class TTag extends StatelessWidget {
       forceVerticalCenter: forceVerticalCenter,
       textColor: textColor ?? colors.textColor,
       font: font ?? _getFont(context),
-      fontWeight: fontWeight ?? colors.fontWeight,
+      fontWeight: fontWeight,
     );
 
     var innerIcon = _getIcon(iconWidget, colors.textColor);
@@ -186,7 +185,6 @@ class TTag extends StatelessWidget {
         }
         break;
       case TTagColorScheme.defaultTheme:
-      default:
         if (isOutline) {
           borderColor = context.tTheme.componentBorderColor;
           textColor = context.tTheme.textColorPrimary;
@@ -225,19 +223,11 @@ class TTag extends StatelessWidget {
       return iconWidget;
     }
     if (icon != null) {
-      return RichText(
-        overflow: TextOverflow.visible,
-        text: TextSpan(
-          text: String.fromCharCode(icon!.codePoint),
-          style: TextStyle(
-            inherit: false,
-            color: textColor,
-            height: 1,
-            fontSize: _getIconSize(),
-            fontFamily: icon!.fontFamily,
-            package: icon!.fontPackage,
-          ),
-        ),
+      // 使用 Icon 组件渲染，保证可被 find.byIcon 命中且视觉一致
+      return Icon(
+        icon,
+        color: textColor,
+        size: _getIconSize(),
       );
     }
     return null;
@@ -320,13 +310,11 @@ class _TagColors {
   final Color backgroundColor;
   final Color borderColor;
   final Color? closeIconColor;
-  final FontWeight? fontWeight;
 
   _TagColors({
     required this.textColor,
     required this.backgroundColor,
     required this.borderColor,
     this.closeIconColor,
-    this.fontWeight,
   });
 }

@@ -137,7 +137,7 @@ class _TLoadingPageState extends State<TLoadingPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TButton(
-                    child: Text('展示Loading'),
+                    child: const Text('展示Loading'),
                     colorScheme: TButtonColorScheme.primary,
                     onPressed: () {
                       TLoadingController.show(context);

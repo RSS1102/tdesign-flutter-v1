@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/util/throttle.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/util/throttle.dart</h1></header><div class='meta'>行覆盖 <b>100.0%</b> (6/6) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:async&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;package:flutter/widgets.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>class Throttle {</div>
+<div class='row nod'><span class='ln'>6</span>  Duration delay;</div>
+<div class='row nod'><span class='ln'>7</span>  Timer? _timer;</div>
+<div class='row nod'><span class='ln'>8</span></div>
+<div class='row cov'><span class='ln'>9</span>  Throttle({required this.delay});</div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row cov'><span class='ln'>11</span>  void call(VoidCallback callback) {</div>
+<div class='row cov'><span class='ln'>12</span>    if (_timer?.isActive ?? false) {</div>
+<div class='row nod'><span class='ln'>13</span>      // 如果 _timer 正在运行，则不执行任何操作</div>
+<div class='row nod'><span class='ln'>14</span>      return;</div>
+<div class='row nod'><span class='ln'>15</span>    }</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>    // 创建一个新的计时器</div>
+<div class='row cov'><span class='ln'>18</span>    _timer = Timer(delay, () {</div>
+<div class='row cov'><span class='ln'>19</span>      callback();</div>
+<div class='row cov'><span class='ln'>20</span>      _timer = null; // 计时器执行完毕后，将其置为 null</div>
+<div class='row nod'><span class='ln'>21</span>    });</div>
+<div class='row nod'><span class='ln'>22</span>  }</div>
+<div class='row nod'><span class='ln'>23</span>}</div>
+</pre></body></html>

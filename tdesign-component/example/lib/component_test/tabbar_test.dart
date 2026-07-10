@@ -77,8 +77,8 @@ class _StudyDetailState extends State with SingleTickerProviderStateMixin {
                 ))
                     .toList()),
             Expanded(
-                child: TTabBarView(
-                    isSlideSwitch: true,
+                child:             TTabBarView(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     controller: _tabController,
                     children: _tabs
                         .map((e) => Center(
@@ -148,7 +148,7 @@ class _CourseItemDetail extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(28.w),
-                child: Container(
+                child: SizedBox(
                   width: 28.w,
                   height: 28.w,
                 ),

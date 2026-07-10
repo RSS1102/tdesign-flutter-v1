@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../util/auto_size.dart';
 import '../../util/map_ext.dart';
 import 't_check_box.dart';
-import 't_checkbox_theme_data.dart' show TCheckboxStyle;
+import 't_checkbox_theme_data.dart' show TCheckboxVariant;
 
 ///
 /// 控制CheckBoxGroup
@@ -128,7 +128,7 @@ class TCheckboxGroup extends StatefulWidget {
   final double? spacing;
 
   /// CheckBox复选框样式：圆形或方形
-  final TCheckboxStyle? style;
+  final TCheckboxVariant? style;
 
   /// 文字相对icon的方位
   final TContentDirection? contentDirection;
@@ -289,7 +289,7 @@ class TCheckboxGroupContainer extends TCheckboxGroup {
     bool cardMode = false,
     int? titleMaxLine, // item的行数
     int? maxSelected, // 最大勾选数
-    TCheckboxStyle? style,// 勾选样式
+    TCheckboxVariant? style,// 勾选样式
     TCheckboxGroupController? controller,
     IconBuilder? customIconBuilder,
     ContentBuilder? customContentBuilder,

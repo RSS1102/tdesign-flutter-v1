@@ -354,17 +354,28 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
 
     Widget getLink(BuildContext context) {
       if (widget.link is TMessageLink) {
-        return Align(
-            alignment: Alignment.center,
-            child: TLink(
+        final linkColor = widget.link.color;
+        final linkWidget = TLink(
               child: Text(widget.link.name),
               colorScheme: TLinkColorScheme.primary,
-              variant: TLinkType.basic,
+              variant: TLinkVariant.basic,
               uri: widget.link.uri,
               size: TLinkSize.medium,
-              color: widget.link.color ?? context.tTheme.brandNormalColor,
               onPressed: clickLink,
-            ));
+            );
+        // 自定义链接颜色通过 TLinkThemeData 注入
+        if (linkColor != null) {
+          return Align(
+            alignment: Alignment.center,
+            child: Theme(
+              data: Theme.of(context).mergeExtension(
+                TLinkThemeData(color: linkColor),
+              ),
+              child: linkWidget,
+            ),
+          );
+        }
+        return Align(alignment: Alignment.center, child: linkWidget);
       } else if (widget.link is String) {
         return Align(
             alignment: Alignment.center,

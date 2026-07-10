@@ -1,0 +1,187 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/rate/t_rate_tips.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/rate/t_rate_tips.dart</h1></header><div class='meta'>行覆盖 <b>60.0%</b> (48/80) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>/// 评分提示组件</div>
+<div class='row nod'><span class='ln'>6</span>class TRateTips extends StatelessWidget {</div>
+<div class='row cov'><span class='ln'>7</span>  const TRateTips({</div>
+<div class='row nod'><span class='ln'>8</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>9</span>    this.allowHalf = false,</div>
+<div class='row nod'><span class='ln'>10</span>    required this.activeValue,</div>
+<div class='row nod'><span class='ln'>11</span>    required this.icon,</div>
+<div class='row nod'><span class='ln'>12</span>    this.size,</div>
+<div class='row nod'><span class='ln'>13</span>    required this.getIconColor,</div>
+<div class='row nod'><span class='ln'>14</span>    required this.sizeCall,</div>
+<div class='row nod'><span class='ln'>15</span>    required this.isClick,</div>
+<div class='row nod'><span class='ln'>16</span>    required this.tipClick,</div>
+<div class='row cov'><span class='ln'>17</span>  }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>  final bool? allowHalf;</div>
+<div class='row nod'><span class='ln'>20</span>  final double activeValue;</div>
+<div class='row nod'><span class='ln'>21</span>  final IconData icon;</div>
+<div class='row nod'><span class='ln'>22</span>  final double? size;</div>
+<div class='row nod'><span class='ln'>23</span>  final Color Function({double? value, bool? isActive}) getIconColor;</div>
+<div class='row nod'><span class='ln'>24</span>  final void Function(Size size) sizeCall;</div>
+<div class='row nod'><span class='ln'>25</span>  final bool isClick;</div>
+<div class='row nod'><span class='ln'>26</span>  final void Function(double value) tipClick;</div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row cov'><span class='ln'>28</span>  int get index =&gt; (activeValue - 0.5).floor();</div>
+<div class='row nod'><span class='ln'>29</span></div>
+<div class='row cov'><span class='ln'>30</span>  @override</div>
+<div class='row nod'><span class='ln'>31</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>32</span>    final _tipKey = GlobalKey();</div>
+<div class='row cov'><span class='ln'>33</span>    WidgetsBinding.instance.addPostFrameCallback((_) {</div>
+<div class='row nod'><span class='ln'>34</span>      final renderBox =</div>
+<div class='row cov'><span class='ln'>35</span>          _tipKey.currentContext?.findRenderObject() as RenderBox?;</div>
+<div class='row cov'><span class='ln'>36</span>      sizeCall(renderBox?.size ?? Size.zero);</div>
+<div class='row nod'><span class='ln'>37</span>    });</div>
+<div class='row cov'><span class='ln'>38</span>    return Container(</div>
+<div class='row nod'><span class='ln'>39</span>      key: _tipKey,</div>
+<div class='row cov'><span class='ln'>40</span>      decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>41</span>        color: context.tTheme.bgColorContainer,</div>
+<div class='row nod'><span class='ln'>42</span>        boxShadow: const [</div>
+<div class='row nod'><span class='ln'>43</span>          BoxShadow(</div>
+<div class='row nod'><span class='ln'>44</span>            color: Color.fromRGBO(0, 0, 0, 0.12),</div>
+<div class='row nod'><span class='ln'>45</span>            offset: Offset(0, 2),</div>
+<div class='row nod'><span class='ln'>46</span>            blurRadius: 4,</div>
+<div class='row nod'><span class='ln'>47</span>            spreadRadius: -1,</div>
+<div class='row nod'><span class='ln'>48</span>          ),</div>
+<div class='row nod'><span class='ln'>49</span>          BoxShadow(</div>
+<div class='row nod'><span class='ln'>50</span>            color: Color.fromRGBO(0, 0, 0, 0.08),</div>
+<div class='row nod'><span class='ln'>51</span>            offset: Offset(0, 4),</div>
+<div class='row nod'><span class='ln'>52</span>            blurRadius: 5,</div>
+<div class='row nod'><span class='ln'>53</span>            spreadRadius: 0,</div>
+<div class='row nod'><span class='ln'>54</span>          ),</div>
+<div class='row nod'><span class='ln'>55</span>          BoxShadow(</div>
+<div class='row nod'><span class='ln'>56</span>            color: Color.fromRGBO(0, 0, 0, 0.05),</div>
+<div class='row nod'><span class='ln'>57</span>            offset: Offset(0, 1),</div>
+<div class='row nod'><span class='ln'>58</span>            blurRadius: 10,</div>
+<div class='row nod'><span class='ln'>59</span>            spreadRadius: 0,</div>
+<div class='row nod'><span class='ln'>60</span>          ),</div>
+<div class='row nod'><span class='ln'>61</span>        ],</div>
+<div class='row cov'><span class='ln'>62</span>        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),</div>
+<div class='row nod'><span class='ln'>63</span>      ),</div>
+<div class='row cov'><span class='ln'>64</span>      padding: EdgeInsets.all(context.tTheme.spacer4),</div>
+<div class='row cov'><span class='ln'>65</span>      child: Row(</div>
+<div class='row cov'><span class='ln'>66</span>        children: [</div>
+<div class='row cov'><span class='ln'>67</span>          GestureDetector(</div>
+<div class='row unc'><span class='ln'>68</span>▶             onTap: () {</div>
+<div class='row unc'><span class='ln'>69</span>▶               if (allowHalf == true &amp;&amp; isClick) {</div>
+<div class='row unc'><span class='ln'>70</span>▶                 tipClick(index + 0.5);</div>
+<div class='row nod'><span class='ln'>71</span>              }</div>
+<div class='row nod'><span class='ln'>72</span>            },</div>
+<div class='row cov'><span class='ln'>73</span>            child: Container(</div>
+<div class='row cov'><span class='ln'>74</span>              decoration: BoxDecoration(</div>
+<div class='row nod'><span class='ln'>75</span>                color:</div>
+<div class='row cov'><span class='ln'>76</span>                    allowHalf == true &amp;&amp; index + 0.5 == activeValue &amp;&amp; isClick</div>
+<div class='row unc'><span class='ln'>77</span>▶                         ? context.tTheme.bgColorComponent</div>
+<div class='row nod'><span class='ln'>78</span>                        : Colors.transparent,</div>
+<div class='row nod'><span class='ln'>79</span>                borderRadius:</div>
+<div class='row cov'><span class='ln'>80</span>                    BorderRadius.circular(context.tTheme.radiusSmall),</div>
+<div class='row nod'><span class='ln'>81</span>              ),</div>
+<div class='row cov'><span class='ln'>82</span>              padding: EdgeInsets.only(</div>
+<div class='row cov'><span class='ln'>83</span>                  left: context.tTheme.spacer4,</div>
+<div class='row cov'><span class='ln'>84</span>                  right: context.tTheme.spacer4),</div>
+<div class='row cov'><span class='ln'>85</span>              child: Column(</div>
+<div class='row cov'><span class='ln'>86</span>                children: [</div>
+<div class='row cov'><span class='ln'>87</span>                  Row(</div>
+<div class='row cov'><span class='ln'>88</span>                    children: [</div>
+<div class='row cov'><span class='ln'>89</span>                      ClipRect(</div>
+<div class='row cov'><span class='ln'>90</span>                        child: Align(</div>
+<div class='row nod'><span class='ln'>91</span>                          alignment: Alignment.centerLeft,</div>
+<div class='row nod'><span class='ln'>92</span>                          widthFactor: 0.5,</div>
+<div class='row cov'><span class='ln'>93</span>                          child: Icon(</div>
+<div class='row cov'><span class='ln'>94</span>                            icon,</div>
+<div class='row cov'><span class='ln'>95</span>                            size: size ?? 24,</div>
+<div class='row cov'><span class='ln'>96</span>                            color: getIconColor(isActive: true),</div>
+<div class='row nod'><span class='ln'>97</span>                          ),</div>
+<div class='row nod'><span class='ln'>98</span>                        ),</div>
+<div class='row nod'><span class='ln'>99</span>                      ),</div>
+<div class='row cov'><span class='ln'>100</span>                      ClipRect(</div>
+<div class='row cov'><span class='ln'>101</span>                        child: Align(</div>
+<div class='row nod'><span class='ln'>102</span>                          alignment: Alignment.centerRight,</div>
+<div class='row nod'><span class='ln'>103</span>                          widthFactor: 0.5,</div>
+<div class='row cov'><span class='ln'>104</span>                          child: Icon(</div>
+<div class='row cov'><span class='ln'>105</span>                            icon,</div>
+<div class='row cov'><span class='ln'>106</span>                            size: size ?? 24,</div>
+<div class='row cov'><span class='ln'>107</span>                            color: allowHalf == true</div>
+<div class='row unc'><span class='ln'>108</span>▶                                 ? (isClick</div>
+<div class='row unc'><span class='ln'>109</span>▶                                     ? getIconColor(isActive: false)</div>
+<div class='row unc'><span class='ln'>110</span>▶                                     : getIconColor(value: index + 1))</div>
+<div class='row cov'><span class='ln'>111</span>                                : getIconColor(isActive: true),</div>
+<div class='row nod'><span class='ln'>112</span>                          ),</div>
+<div class='row nod'><span class='ln'>113</span>                        ),</div>
+<div class='row nod'><span class='ln'>114</span>                      ),</div>
+<div class='row nod'><span class='ln'>115</span>                    ],</div>
+<div class='row nod'><span class='ln'>116</span>                  ),</div>
+<div class='row cov'><span class='ln'>117</span>                  Center(</div>
+<div class='row cov'><span class='ln'>118</span>                    child: TText(</div>
+<div class='row cov'><span class='ln'>119</span>                      allowHalf == true</div>
+<div class='row unc'><span class='ln'>120</span>▶                           ? (isClick ? &#x27;${index + 0.5}&#x27; : &#x27;${activeValue}&#x27;)</div>
+<div class='row cov'><span class='ln'>121</span>                          : &#x27;${index + 1}&#x27;,</div>
+<div class='row cov'><span class='ln'>122</span>                      font: context.tTheme.fontBodySmall,</div>
+<div class='row cov'><span class='ln'>123</span>                      textColor: context.tTheme.textColorPrimary,</div>
+<div class='row nod'><span class='ln'>124</span>                    ),</div>
+<div class='row nod'><span class='ln'>125</span>                  ),</div>
+<div class='row nod'><span class='ln'>126</span>                ],</div>
+<div class='row nod'><span class='ln'>127</span>              ),</div>
+<div class='row nod'><span class='ln'>128</span>            ),</div>
+<div class='row nod'><span class='ln'>129</span>          ),</div>
+<div class='row cov'><span class='ln'>130</span>          if (allowHalf == true &amp;&amp; isClick)</div>
+<div class='row unc'><span class='ln'>131</span>▶             SizedBox(width: context.tTheme.spacer4),</div>
+<div class='row cov'><span class='ln'>132</span>          if (allowHalf == true &amp;&amp; isClick)</div>
+<div class='row unc'><span class='ln'>133</span>▶             GestureDetector(</div>
+<div class='row unc'><span class='ln'>134</span>▶               onTap: () {</div>
+<div class='row unc'><span class='ln'>135</span>▶                 if (allowHalf == true &amp;&amp; isClick) {</div>
+<div class='row unc'><span class='ln'>136</span>▶                   tipClick(index + 1.0);</div>
+<div class='row nod'><span class='ln'>137</span>                }</div>
+<div class='row nod'><span class='ln'>138</span>              },</div>
+<div class='row unc'><span class='ln'>139</span>▶               child: Container(</div>
+<div class='row unc'><span class='ln'>140</span>▶                 decoration: BoxDecoration(</div>
+<div class='row unc'><span class='ln'>141</span>▶                   color: index + 1 != activeValue</div>
+<div class='row nod'><span class='ln'>142</span>                      ? Colors.transparent</div>
+<div class='row unc'><span class='ln'>143</span>▶                       : context.tTheme.bgColorComponent,</div>
+<div class='row nod'><span class='ln'>144</span>                  borderRadius:</div>
+<div class='row unc'><span class='ln'>145</span>▶                       BorderRadius.circular(context.tTheme.radiusSmall),</div>
+<div class='row nod'><span class='ln'>146</span>                ),</div>
+<div class='row unc'><span class='ln'>147</span>▶                 padding: EdgeInsets.only(</div>
+<div class='row unc'><span class='ln'>148</span>▶                     left: context.tTheme.spacer4,</div>
+<div class='row unc'><span class='ln'>149</span>▶                     right: context.tTheme.spacer4),</div>
+<div class='row unc'><span class='ln'>150</span>▶                 child: Column(</div>
+<div class='row unc'><span class='ln'>151</span>▶                   children: [</div>
+<div class='row unc'><span class='ln'>152</span>▶                     Icon(</div>
+<div class='row unc'><span class='ln'>153</span>▶                       icon,</div>
+<div class='row unc'><span class='ln'>154</span>▶                       size: size ?? 24,</div>
+<div class='row unc'><span class='ln'>155</span>▶                       color: getIconColor(isActive: true),</div>
+<div class='row nod'><span class='ln'>156</span>                    ),</div>
+<div class='row unc'><span class='ln'>157</span>▶                     Center(</div>
+<div class='row unc'><span class='ln'>158</span>▶                       child: TText(</div>
+<div class='row unc'><span class='ln'>159</span>▶                         &#x27;${index + 1}&#x27;,</div>
+<div class='row unc'><span class='ln'>160</span>▶                         font: context.tTheme.fontBodySmall,</div>
+<div class='row unc'><span class='ln'>161</span>▶                         textColor: context.tTheme.textColorPrimary,</div>
+<div class='row nod'><span class='ln'>162</span>                      ),</div>
+<div class='row nod'><span class='ln'>163</span>                    ),</div>
+<div class='row nod'><span class='ln'>164</span>                  ],</div>
+<div class='row nod'><span class='ln'>165</span>                ),</div>
+<div class='row nod'><span class='ln'>166</span>              ),</div>
+<div class='row nod'><span class='ln'>167</span>            ),</div>
+<div class='row nod'><span class='ln'>168</span>        ],</div>
+<div class='row nod'><span class='ln'>169</span>      ),</div>
+<div class='row nod'><span class='ln'>170</span>    );</div>
+<div class='row nod'><span class='ln'>171</span>  }</div>
+<div class='row nod'><span class='ln'>172</span>}</div>
+<div class='row nod'><span class='ln'>173</span></div>
+</pre></body></html>

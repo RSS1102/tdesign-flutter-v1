@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_collapse_theme_data.dart';
 import 't_collapse_salted_key.dart';
 import 't_inset_divider.dart';
 import 't_nonanimated_expand_icon.dart';

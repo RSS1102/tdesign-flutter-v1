@@ -40,11 +40,11 @@ void main() {
     });
   });
 
-  group('TSideBarStyle', () {
+  group('TSideBarVariant', () {
     test('枚举值', () {
-      expect(TSideBarStyle.values.length, 2);
-      expect(TSideBarStyle.values, contains(TSideBarStyle.normal));
-      expect(TSideBarStyle.values, contains(TSideBarStyle.outline));
+      expect(TSideBarVariant.values.length, 2);
+      expect(TSideBarVariant.values, contains(TSideBarVariant.normal));
+      expect(TSideBarVariant.values, contains(TSideBarVariant.outline));
     });
   });
 
@@ -107,7 +107,7 @@ void main() {
     testWidgets('normal 样式', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSideBar(
-          style: TSideBarStyle.normal,
+          style: TSideBarVariant.normal,
           children: buildItems(),
         ),
       ));
@@ -117,7 +117,7 @@ void main() {
     testWidgets('outline 样式', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSideBar(
-          style: TSideBarStyle.outline,
+          style: TSideBarVariant.outline,
           children: buildItems(),
         ),
       ));
@@ -127,7 +127,7 @@ void main() {
     testWidgets('使用 ThemeData 设置默认 style', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSideBar(children: buildItems()),
-        sideBarTheme: const TSideBarThemeData(style: TSideBarStyle.outline),
+        sideBarTheme: const TSideBarThemeData(style: TSideBarVariant.outline),
       ));
       expect(find.byType(TSideBar), findsOneWidget);
     });
@@ -153,9 +153,9 @@ void main() {
       int? selectedValue;
       await tester.pumpWidget(wrapWithTheme(
         TSideBar(
-          children: [
-            const TSideBarItem(value: 0, label: '可用'),
-            const TSideBarItem(value: 1, label: '禁用', disabled: true),
+          children: const [
+            TSideBarItem(value: 0, label: '可用'),
+            TSideBarItem(value: 1, label: '禁用', disabled: true),
           ],
           onSelected: (value) {
             selectedValue = value;
@@ -168,7 +168,7 @@ void main() {
     });
 
     testWidgets('重复点击同一项不触发 onSelected', (tester) async {
-      int callCount = 0;
+      var callCount = 0;
       await tester.pumpWidget(wrapWithTheme(
         TSideBar(
           children: buildItems(),

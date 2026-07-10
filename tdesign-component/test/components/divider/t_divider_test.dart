@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tdesign_flutter/src/components/divider/t_divider_painter.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TDivider V1.0 Widget 测试
@@ -18,7 +19,7 @@ void main() {
       theme: ThemeData(
         extensions: [TThemeData.defaultData(), ...themeExtensions],
       ),
-      home: Scaffold(body: Center(child: child)),
+      home: Scaffold(body: child),
     );
   }
 
@@ -256,6 +257,77 @@ void main() {
     testWidgets('dashed 为 null 时默认 false（实线）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(const TDivider()));
       expect(find.byType(TDivider), findsOneWidget);
+    });
+  });
+
+  // 补充覆盖：dashed + align 组合、indent/endIndent 实际渲染
+  group('TDivider 补充覆盖', () {
+    testWidgets('dashed + child + align left 渲染短虚线', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TDivider(dashed: true, align: TDividerAlign.left, child: Text('左虚线')),
+      ));
+      expect(find.byType(CustomPaint), findsWidgets);
+      expect(find.text('左虚线'), findsOneWidget);
+    });
+
+    testWidgets('dashed + child + align right 渲染短虚线', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TDivider(dashed: true, align: TDividerAlign.right, child: Text('右虚线')),
+      ));
+      expect(find.byType(CustomPaint), findsWidgets);
+      expect(find.text('右虚线'), findsOneWidget);
+    });
+
+    testWidgets('Theme.indent + endIndent 实际渲染 Padding', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        dividerTheme: const TDividerThemeData(indent: 16, endIndent: 24),
+        const TDivider(),
+      ));
+      // 纯横线 + indent/endIndent 会包裹 Padding
+      expect(find.byType(Padding), findsWidgets);
+    });
+
+    testWidgets('Theme.textStyle 应用到 child', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        dividerTheme: const TDividerThemeData(
+          textStyle: TextStyle(fontSize: 20, color: Colors.red),
+        ),
+        const TDivider(child: Text('样式文字')),
+      ));
+      expect(find.text('样式文字'), findsOneWidget);
+    });
+
+    testWidgets('Theme.thickness 应用到横线', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        dividerTheme: const TDividerThemeData(thickness: 3),
+        const TDivider(),
+      ));
+      expect(find.byType(TDivider), findsOneWidget);
+    });
+
+    testWidgets('竖线 + Theme.margin 应用', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        dividerTheme: const TDividerThemeData(margin: EdgeInsets.all(8)),
+        const SizedBox(
+          height: 56,
+          child: TDivider(layout: TDividerLayout.vertical),
+        ),
+      ));
+      expect(find.byType(Padding), findsWidgets);
+    });
+
+    test('DashedPainter.shouldRepaint 比较全部字段', () {
+      final p1 = DashedPainter(color: Colors.red);
+      final p2 = DashedPainter(color: Colors.red);
+      // 相同参数：四个 != 均被求值，返回 false
+      expect(p1.shouldRepaint(p2), isFalse);
+      final p3 = DashedPainter(
+        color: Colors.blue,
+        strokeWidth: 2,
+        gap: 3,
+        solidLength: 4,
+      );
+      expect(p1.shouldRepaint(p3), isTrue);
     });
   });
 }

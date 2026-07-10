@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import 't_cell_inherited.dart';
-import 't_cell_theme_data.dart';
 
 /// 单元格内容对齐方式
 enum TCellAlign { top, middle, bottom }

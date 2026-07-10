@@ -1,26 +1,362 @@
-﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-/// tag 组件 API 验证测试
-/// 验证类、枚举、构造器的存在性。
+/// TTag V1.0 Widget 测试
+///
+/// 覆盖：
+/// - 基础渲染（text/icon/size）
+/// - TTagColorScheme 全部语义色
+/// - TTagShape 形状（square/round/mark）
+/// - TTagSize 尺寸
+/// - 禁用状态（disable）
+/// - 描边样式（isOutline）
+/// - 浅色样式（isLight）
+/// - 关闭图标 + onCloseTap 回调
+/// - 主题覆盖（ThemeExtension）
+/// - 边界场景
 void main() {
-  test('TTag - 类存在', () { expect(TTag, isNotNull); });
-  test('TTagColorScheme - 类存在', () { expect(TTagColorScheme, isNotNull); });
-  test('TTagSize - 类存在', () { expect(TTagSize, isNotNull); });
-  test('组件导入验证', () { expect(true, isTrue); });
-  test('tag_api_test_0 - 验证 #0', () { expect(0, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_1 - 验证 #1', () { expect(1, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_2 - 验证 #2', () { expect(2, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_3 - 验证 #3', () { expect(3, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_4 - 验证 #4', () { expect(4, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_5 - 验证 #5', () { expect(5, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_6 - 验证 #6', () { expect(6, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_7 - 验证 #7', () { expect(7, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_8 - 验证 #8', () { expect(8, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_9 - 验证 #9', () { expect(9, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_10 - 验证 #10', () { expect(10, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_11 - 验证 #11', () { expect(11, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_12 - 验证 #12', () { expect(12, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_13 - 验证 #13', () { expect(13, greaterThanOrEqualTo(0)); });
-  test('tag_api_test_14 - 验证 #14', () { expect(14, greaterThanOrEqualTo(0)); });
+  /// 用 TTheme 包裹以提供基础 Token
+  Widget wrapWithTheme(Widget child, {TTagThemeData? tagTheme}) {
+    final extensions = <ThemeExtension>[
+      TThemeData.defaultData(),
+      if (tagTheme != null) tagTheme,
+    ];
+    // 必须通过 MaterialApp.theme 传递 extensions，
+    // 用外层 Theme 包 MaterialApp 会被 MaterialApp 默认 ThemeData.light() 覆盖
+    return MaterialApp(
+      theme: ThemeData(extensions: extensions),
+      home: Scaffold(body: child),
+    );
+  }
+
+  // ============================================================
+  // 基础渲染
+  // ============================================================
+  group('TTag 基础渲染', () {
+    testWidgets('显示文字内容', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TTag('标签')));
+      expect(find.text('标签'), findsOneWidget);
+      expect(find.byType(TTag), findsOneWidget);
+    });
+
+    testWidgets('带图标的标签渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('图标标签', icon: Icons.star),
+      ));
+      expect(find.text('图标标签'), findsOneWidget);
+      expect(find.byIcon(Icons.star), findsOneWidget);
+    });
+
+    testWidgets('空文字渲染不崩溃', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TTag('')));
+      expect(find.byType(TTag), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // TTagColorScheme 全部语义色
+  // ============================================================
+  group('TTag 语义色（colorScheme）', () {
+    testWidgets('defaultTheme 色彩渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('默认', colorScheme: TTagColorScheme.defaultTheme),
+      ));
+      expect(find.text('默认'), findsOneWidget);
+      expect(find.byType(Container), findsWidgets);
+    });
+
+    testWidgets('primary 色彩渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('主要', colorScheme: TTagColorScheme.primary),
+      ));
+      expect(find.text('主要'), findsOneWidget);
+    });
+
+    testWidgets('warning 色彩渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('警告', colorScheme: TTagColorScheme.warning),
+      ));
+      expect(find.text('警告'), findsOneWidget);
+    });
+
+    testWidgets('danger 色彩渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('危险', colorScheme: TTagColorScheme.danger),
+      ));
+      expect(find.text('危险'), findsOneWidget);
+    });
+
+    testWidgets('success 色彩渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('成功', colorScheme: TTagColorScheme.success),
+      ));
+      expect(find.text('成功'), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // TTagShape 形状
+  // ============================================================
+  group('TTag 形状（shape）', () {
+    testWidgets('square 形状渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('方形'),
+        tagTheme: const TTagThemeData(shape: TTagShape.square),
+      ));
+      expect(find.text('方形'), findsOneWidget);
+      expect(find.byType(TTag), findsOneWidget);
+    });
+
+    testWidgets('round 形状渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('圆角'),
+        tagTheme: const TTagThemeData(shape: TTagShape.round),
+      ));
+      expect(find.text('圆角'), findsOneWidget);
+    });
+
+    testWidgets('mark 形状渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('半圆'),
+        tagTheme: const TTagThemeData(shape: TTagShape.mark),
+      ));
+      expect(find.text('半圆'), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // TTagSize 尺寸
+  // ============================================================
+  group('TTag 尺寸（size）', () {
+    testWidgets('extraLarge 尺寸渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('超大', size: TTagSize.extraLarge),
+      ));
+      expect(find.text('超大'), findsOneWidget);
+    });
+
+    testWidgets('large 尺寸渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('大', size: TTagSize.large),
+      ));
+      expect(find.text('大'), findsOneWidget);
+    });
+
+    testWidgets('small 尺寸渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('小', size: TTagSize.small),
+      ));
+      expect(find.text('小'), findsOneWidget);
+    });
+
+    testWidgets('custom 尺寸渲染（padding 为 0）', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('自定义', size: TTagSize.custom),
+      ));
+      expect(find.text('自定义'), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // 描边 / 浅色 / 禁用
+  // ============================================================
+  group('TTag 样式变体', () {
+    testWidgets('isOutline 描边样式渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('描边'),
+        tagTheme: const TTagThemeData(isOutline: true),
+      ));
+      expect(find.text('描边'), findsOneWidget);
+      // 描边时 Container 应有 border
+      final container = tester.widget<Container>(
+        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+      );
+      expect(container.decoration, isA<BoxDecoration>());
+      final decoration = container.decoration as BoxDecoration;
+      expect(decoration.border, isNotNull);
+    });
+
+    testWidgets('isLight 浅色样式渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('浅色', colorScheme: TTagColorScheme.primary),
+        tagTheme: const TTagThemeData(isLight: true),
+      ));
+      expect(find.text('浅色'), findsOneWidget);
+    });
+
+    testWidgets('isOutline + isLight 组合渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('描边浅色', colorScheme: TTagColorScheme.danger),
+        tagTheme: const TTagThemeData(isOutline: true, isLight: true),
+      ));
+      expect(find.text('描边浅色'), findsOneWidget);
+    });
+
+    testWidgets('disable 禁用状态渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('禁用'),
+        tagTheme: const TTagThemeData(disable: true),
+      ));
+      expect(find.text('禁用'), findsOneWidget);
+    });
+
+    testWidgets('disable + isOutline 禁用描边渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('禁用描边'),
+        tagTheme: const TTagThemeData(disable: true, isOutline: true),
+      ));
+      expect(find.text('禁用描边'), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // 关闭图标 + onCloseTap 回调
+  // ============================================================
+  group('TTag 关闭图标', () {
+    testWidgets('needCloseIcon 显示关闭图标', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('可关闭'),
+        tagTheme: const TTagThemeData(needCloseIcon: true),
+      ));
+      expect(find.byIcon(TIcons.close), findsOneWidget);
+    });
+
+    testWidgets('onCloseTap 点击触发回调', (tester) async {
+      var closed = false;
+      await tester.pumpWidget(wrapWithTheme(
+        TTag(
+          '可关闭',
+          onCloseTap: () => closed = true,
+        ),
+        tagTheme: const TTagThemeData(needCloseIcon: true),
+      ));
+
+      await tester.tap(find.byIcon(TIcons.close));
+      await tester.pump();
+      expect(closed, isTrue);
+    });
+
+    testWidgets('onCloseTap 为 null 时点击不崩溃', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('无回调'),
+        tagTheme: const TTagThemeData(needCloseIcon: true),
+      ));
+
+      await tester.tap(find.byIcon(TIcons.close), warnIfMissed: false);
+      await tester.pump();
+      expect(find.byIcon(TIcons.close), findsOneWidget);
+    });
+
+    testWidgets('带图标 + 关闭图标同时显示', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('组合', icon: Icons.add),
+        tagTheme: const TTagThemeData(needCloseIcon: true),
+      ));
+      expect(find.byIcon(Icons.add), findsOneWidget);
+      expect(find.byIcon(TIcons.close), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // 主题覆盖（ThemeExtension）
+  // ============================================================
+  group('TTag 主题覆盖', () {
+    testWidgets('通过 TTagThemeData 设置 colorScheme', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('主题色'),
+        tagTheme: const TTagThemeData(colorScheme: TTagColorScheme.success),
+      ));
+      expect(find.text('主题色'), findsOneWidget);
+    });
+
+    testWidgets('通过 TTagThemeData 设置 fixedWidth', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('固定宽'),
+        tagTheme: const TTagThemeData(fixedWidth: 120),
+      ));
+      final container = tester.widget<Container>(
+        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+      );
+      expect(container.constraints?.maxWidth, 120);
+    });
+
+    testWidgets('通过 TTagThemeData 设置自定义 padding', (tester) async {
+      const customPadding = EdgeInsets.all(20);
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('自定义间距'),
+        tagTheme: const TTagThemeData(padding: customPadding),
+      ));
+      final container = tester.widget<Container>(
+        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+      );
+      expect(container.padding, customPadding);
+    });
+
+    testWidgets('通过 TTagThemeData 设置自定义 iconWidget', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('自定义图标'),
+        tagTheme: const TTagThemeData(
+          iconWidget: Icon(Icons.favorite, size: 14),
+        ),
+      ));
+      expect(find.byIcon(Icons.favorite), findsOneWidget);
+    });
+
+    testWidgets('通过 TTagThemeData 设置 overflow', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('溢出处理'),
+        tagTheme: const TTagThemeData(overflow: TextOverflow.clip),
+      ));
+      expect(find.text('溢出处理'), findsOneWidget);
+    });
+
+    testWidgets('通过 TTagThemeData 设置自定义 backgroundColor', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('自定义背景'),
+        tagTheme: const TTagThemeData(backgroundColor: Colors.purple),
+      ));
+      final container = tester.widget<Container>(
+        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+      );
+      final decoration = container.decoration as BoxDecoration;
+      expect(decoration.color, Colors.purple);
+    });
+  });
+
+  // ============================================================
+  // 边界场景
+  // ============================================================
+  group('TTag 边界场景', () {
+    testWidgets('不传 colorScheme 时使用默认值', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TTag('默认色')));
+      expect(find.text('默认色'), findsOneWidget);
+    });
+
+    testWidgets('无 TTagThemeData 时使用默认样式', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TTag('无主题')));
+      expect(find.text('无主题'), findsOneWidget);
+      // 默认不应有关闭图标
+      expect(find.byIcon(TIcons.close), findsNothing);
+    });
+
+    test('TTagThemeData copyWith 正确合并', () {
+      const base = TTagThemeData(
+        colorScheme: TTagColorScheme.primary,
+        isOutline: true,
+      );
+      final merged = base.copyWith(isLight: true);
+      expect(merged.colorScheme, TTagColorScheme.primary);
+      expect(merged.isOutline, isTrue);
+      expect(merged.isLight, isTrue);
+    });
+
+    test('TTagThemeData lerp 正确插值', () {
+      const a = TTagThemeData(colorScheme: TTagColorScheme.primary);
+      const b = TTagThemeData(colorScheme: TTagColorScheme.danger);
+      final result = a.lerp(b, 0.3);
+      // t < 0.5 取 a 的值
+      expect(result.colorScheme, TTagColorScheme.primary);
+    });
+  });
 }

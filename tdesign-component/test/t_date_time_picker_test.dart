@@ -184,7 +184,7 @@ void main() {
 
     test('combined：dateMode 与 timeMode 同时为 null 触发 assert', () {
       expect(
-        () => DateTimePickerMode(),
+        DateTimePickerMode.new,
         throwsAssertionError,
       );
     });
@@ -346,9 +346,9 @@ void main() {
     });
 
     test('相等性比较包含全部字段', () {
-      final a = TDateTimePickerValue(year: 2026, month: 5, day: 15);
-      final b = TDateTimePickerValue(year: 2026, month: 5, day: 15);
-      final c = TDateTimePickerValue(year: 2026, month: 5, day: 16);
+      const a = TDateTimePickerValue(year: 2026, month: 5, day: 15);
+      const b = TDateTimePickerValue(year: 2026, month: 5, day: 15);
+      const c = TDateTimePickerValue(year: 2026, month: 5, day: 16);
       expect(a, equals(b));
       expect(a, isNot(equals(c)));
       expect(a.hashCode, equals(b.hashCode));

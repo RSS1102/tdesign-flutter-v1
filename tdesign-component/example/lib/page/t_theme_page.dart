@@ -127,7 +127,6 @@ class _TThemeColorsPageState extends State<TThemeColorsPage> {
   }
 
   Widget _buildFunctionColor(BuildContext context) {
-    var spList = ['Light', 'Focus', 'Disabled', 'Hover', 'Normal', 'Click'];
     var functionList = [
       'brand',
       'error',

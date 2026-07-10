@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_text_theme_data.dart';
 
 /// Text 样式解析器
 ///
@@ -56,20 +55,22 @@ class TTextResolve {
     // 3. height：overrideHeight（forceVerticalCenter 分支传入）> P0 style.height > 构造器糖（font.height）> Token
     final resolvedHeight = overrideHeight ?? style?.height ?? textFont.height;
 
-    // 4. fontWeight：P0 style > 构造器糖 > Token
+    // 4. fontWeight：P0 style > 构造器糖 > Theme > Token
     final resolvedFontWeight =
-        style?.fontWeight ?? fontWeight ?? textFont.fontWeight;
+        style?.fontWeight ?? fontWeight ?? themeExtension?.defaultFontWeight ?? textFont.fontWeight;
 
-    // 5. 字体族解析（含 globalFontFamily 注入 + iOS PingFang 回退）
+    // 5. 字体族解析（含 globalFontFamily 注入 + iOS PingFang 回退 + Theme 回退）
     final resolvedFontFamily = _resolveFontFamily(
       style: style,
       fontFamily: fontFamily,
+      themeFontFamily: themeExtension?.defaultFontFamily,
       configuration: configuration,
       resolvedFontWeight: resolvedFontWeight,
     );
     final resolvedPackage = _resolvePackage(
       package: package,
       fontFamily: fontFamily,
+      themePackage: themeExtension?.defaultPackage,
       configuration: configuration,
       isInFontLoader: isInFontLoader,
     );
@@ -151,7 +152,7 @@ class TTextResolve {
 
     final fontSize = style?.fontSize ?? textFont.size;
     final resolvedFontWeight =
-        style?.fontWeight ?? fontWeight ?? textFont.fontWeight;
+        style?.fontWeight ?? fontWeight ?? themeExtension?.defaultFontWeight ?? textFont.fontWeight;
 
     // Span 不注入 globalFontFamily（无 TTextConfiguration 上下文）
     final resolvedFontFamily = _resolveSpanFontFamily(
@@ -204,14 +205,15 @@ class TTextResolve {
 
   // ---- 内部辅助 ----
 
-  /// 解析 TText 的 fontFamily（含 globalFontFamily 注入 + iOS PingFang 回退）
+  /// 解析 TText 的 fontFamily（含 globalFontFamily 注入 + iOS PingFang 回退 + Theme 回退）
   static String? _resolveFontFamily({
     required TextStyle? style,
     required FontFamily? fontFamily,
+    FontFamily? themeFontFamily,
     TTextConfiguration? configuration,
     required FontWeight? resolvedFontWeight,
   }) {
-    var styleFontFamily = style?.fontFamily ?? fontFamily?.fontFamily;
+    var styleFontFamily = style?.fontFamily ?? fontFamily?.fontFamily ?? themeFontFamily?.fontFamily;
 
     // globalFontFamily 注入（替代 v0.2.x 的 kTextNeedGlobalFontFamily 全局变量）
     final globalFontFamily = configuration?.globalFontFamily;
@@ -247,14 +249,15 @@ class TTextResolve {
     return styleFontFamily;
   }
 
-  /// 解析 package（全局字体 package 回退 + isInFontLoader 时清空）
+  /// 解析 package（全局字体 package 回退 + Theme 回退 + isInFontLoader 时清空）
   static String? _resolvePackage({
     String? package,
     FontFamily? fontFamily,
+    String? themePackage,
     TTextConfiguration? configuration,
     required bool isInFontLoader,
   }) {
-    var stylePackage = package ?? fontFamily?.package;
+    var stylePackage = package ?? fontFamily?.package ?? themePackage;
 
     // 全局字体 package 回退
     final globalFontFamily = configuration?.globalFontFamily;

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 import '../../annotation/demo.dart';
@@ -116,13 +115,13 @@ class _TFormPageState extends State<TFormPage> {
   bool horizontalButton = false;
   bool verticalButton = true;
 
-  Color defaultButtonColor = Color(0xFFE5E5E5);
-  Color activeButtonColor = Color(0xFFF0F1FD);
+  Color defaultButtonColor = const Color(0xFFE5E5E5);
+  Color activeButtonColor = const Color(0xFFF0F1FD);
 
-  Color verticalTextColor = Color(0xFF1A1A1A);
-  Color horizontalTextColor = Color(0xFF0A58D9);
-  Color verticalButtonColor = Color(0xFFE5E5E5);
-  Color horizontalButtonColor = Color(0xFFF0F1FD);
+  Color verticalTextColor = const Color(0xFF1A1A1A);
+  Color horizontalTextColor = const Color(0xFF0A58D9);
+  Color verticalButtonColor = const Color(0xFFE5E5E5);
+  Color horizontalButtonColor = const Color(0xFFF0F1FD);
 
   /// radios 传入参数
   final Map<String, String> _radios = {'0': '男', '1': '女', '3': '保密'};
@@ -443,7 +442,7 @@ class _TFormPageState extends State<TFormPage> {
                 return TRadio(
                   id: entry.key,
                   title: entry.value,
-                  radioStyle: TRadioStyle.circle,
+                  radioStyle: TRadioVariant.circle,
                   showDivider: false,
                   spacing: 4,
                   checkBoxLeftSpace: 0,
@@ -528,7 +527,7 @@ class _TFormPageState extends State<TFormPage> {
                 padding: const EdgeInsets.only(right: 18),
                 child: TStepper(
                   theme: TStepperColorScheme.filled,
-                  eventController: _stepController!,
+                  eventController: _stepController,
                   value: int.parse(_formData['age']),
                   onChanged: _formDisableState ? null : (value) {
                     _itemNotifier['age']?.upDataForm('$value');
@@ -702,7 +701,7 @@ class _TFormPageState extends State<TFormPage> {
                     contentPadding: const EdgeInsets.all(0),
                     hintStyle: TextStyle(
                         color:
-                            context.tTheme.fontGyColor3.withOpacity(0.4))),
+                            context.tTheme.fontGyColor3.withValues(alpha: 0.4))),
                 controller: _textControllers[0],
                 backgroundColor: context.tTheme.brandNormalColor,
                 additionInfoColor: context.tTheme.errorColor6,
@@ -730,7 +729,7 @@ class _TFormPageState extends State<TFormPage> {
                     border: InputBorder.none,
                     hintStyle: TextStyle(
                         color:
-                            context.tTheme.fontGyColor3.withOpacity(0.4))),
+                            context.tTheme.fontGyColor3.withValues(alpha: 0.4))),
                 layout: TInputLayout.normal,
                 controller: _textControllers[1],
                 obscureText: !browseOn,
@@ -764,7 +763,7 @@ class _TFormPageState extends State<TFormPage> {
                   title: entry.value,
                   backgroundColor: context.tTheme.brandNormalColor,
                   selectColor: context.tTheme.brandFocusColor,
-                  radioStyle: TRadioStyle.circle,
+                  radioStyle: TRadioVariant.circle,
                   showDivider: false,
                   spacing: 4,
                   checkBoxLeftSpace: 0,
@@ -816,7 +815,7 @@ class _TFormPageState extends State<TFormPage> {
                 padding: const EdgeInsets.only(right: 18),
                 child: TStepper(
                   theme: TStepperColorScheme.filled,
-                  eventController: _stepController!,
+                  eventController: _stepController,
                   value: int.parse(_formData['age']),
                   onChanged: _formDisableState ? null : (value) {
                     _itemNotifier['age']?.upDataForm('$value');

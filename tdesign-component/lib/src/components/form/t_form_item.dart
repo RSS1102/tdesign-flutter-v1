@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import 't_form_inherited.dart';
+﻿import 'package:flutter/material.dart';
+
 import '../../../tdesign_flutter.dart';
+import 't_form_inherited.dart';
 
 /// 表格单元选用组件类型的枚举
 enum TFormItemType {
@@ -117,7 +118,7 @@ class _TFormItemState extends State<TFormItem> {
     super.initState();
     if (!(widget.itemNotifier?.isDisposed ?? true)) {
       widget.itemNotifier?.addListener(() {
-        updateFormData(widget.itemNotifier?.formVal);
+        updateformData(widget.itemNotifier?.formVal);
       });
     }
   }
@@ -133,20 +134,20 @@ class _TFormItemState extends State<TFormItem> {
 
   @override
   void didChangeDependencies() {
-    if (FormValidate) {
+    if (formValidate) {
       startValidation();
     }
-    if (FormIsReset) {
+    if (formIsReset) {
       errorMessage = '';
     }
     super.didChangeDependencies();
   }
 
   /// 从 TForm 继承获取整个表单的参数
-  /// 获取真正的 LabelWidth
-  double get LabelWidth {
+  /// 获取真正的 labelWidth
+  double get labelWidth {
     final inherited = TFormInherited.of(context);
-    final defaultLabelWidth = 8.0;
+    const defaultlabelWidth = 8.0;
 
     /// 如果 item 传入定制的 labelWidth 则使用
     if (widget.labelWidth != null) {
@@ -158,15 +159,15 @@ class _TFormItemState extends State<TFormItem> {
       return inherited!.labelWidth as double;
     }
 
-    return defaultLabelWidth;
+    return defaultlabelWidth;
   }
 
-  Map<String, dynamic> get FormData {
+  Map<String, dynamic> get formData {
     return TFormInherited.of(context)!.formData;
   }
 
   /// 获取 form 以及 formItem 的内容排列方式
-  TextAlign get FormContentAlign {
+  TextAlign get formContentAlign {
     final inherited = TFormInherited.of(context);
     if (widget.contentAlign != null) {
       /// 断言 widget.contentAlign 不会为空
@@ -178,7 +179,7 @@ class _TFormItemState extends State<TFormItem> {
   }
 
   /// 获取 form 是否为水平排列的状态
-  bool get FormIsLayout {
+  bool get formIsLayout {
     final inherited = TFormInherited.of(context);
     if (inherited?.layout != null) {
       return inherited!.layout;
@@ -186,7 +187,7 @@ class _TFormItemState extends State<TFormItem> {
     return false;
   }
 
-  bool get FormIsReset {
+  bool get formIsReset {
     final inherited = TFormInherited.of(context);
     if (inherited?.isReset != null) {
       return inherited!.isReset;
@@ -195,27 +196,22 @@ class _TFormItemState extends State<TFormItem> {
   }
 
   /// 获取 form 整体是否校验的信号状态
-  bool get FormValidate {
+  bool get formValidate {
     final inherited = TFormInherited.of(context);
     return inherited!.isValidate;
   }
 
-  bool get FormRequiredMark {
+  bool get formRequiredMark {
     return TFormInherited.of(context)!.requiredMark ?? false;
   }
 
   /// 获取整个表格是否需要展示错误提示
-  bool? get ShowErrorMessage {
-    final inherited = TFormInherited.of(context);
-    if (widget.showErrorMessage != null) {
-      return widget.showErrorMessage;
-    } else {
-      return inherited!.showErrorMessage;
+  bool? get showErrorMessage {
+    return widget.showErrorMessage;
     }
-  }
 
   /// 获取整个表单的校验规则
-  Map<String, TFormValidation> get FormRules {
+  Map<String, TFormValidation> get formRules {
     final inherited = TFormInherited.of(context);
     return inherited!.rules;
   }
@@ -235,12 +231,9 @@ class _TFormItemState extends State<TFormItem> {
   /// 遍历校验规则并执行
   String? validate() {
     dynamic value = widget.itemNotifier?.formVal;
-    String name = widget.name!;
-    if (name == null) {
-      return null;
-    }
-    if (FormRules[name] != null) {
-      TFormValidation rule = FormRules[name]!;
+    var name = widget.name!;
+    if (formRules[name] != null) {
+      var rule = formRules[name]!;
 
       /// 只对类型匹配的项进行校验
       if (rule.type == widget.type) {
@@ -255,10 +248,10 @@ class _TFormItemState extends State<TFormItem> {
     return null;
   }
 
-  void updateFormData(value) {
+  void updateformData(value) {
     if (widget.name != null) {
-      String name = widget.name!;
-      Map<String, dynamic> _formData = FormData;
+      var name = widget.name!;
+      var _formData = formData;
       _formData[name] = value;
       TFormInherited.of(context)!.onFormDataChange(_formData);
       startValidation();
@@ -267,18 +260,17 @@ class _TFormItemState extends State<TFormItem> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.tTheme;
     Widget labelContent = Visibility(
         visible: widget.label != null ? true : false,
         child: SizedBox(
-            width: LabelWidth,
+            width: labelWidth,
             child: widget.labelWidget ??
                 Row(
                   children: [
                     TText(widget.label,
                         font: context.tTheme.fontBodyMedium,
                         textAlign: widget.labelAlign),
-                    if (FormRequiredMark &&
+                    if (formRequiredMark &&
                         (widget.requiredMark != null &&
                             widget.requiredMark == true))
                       Padding(
@@ -290,29 +282,29 @@ class _TFormItemState extends State<TFormItem> {
                       ),
                   ],
                 )));
-    List<Widget> itemRowContent = [
+    var itemRowContent = <Widget>[
       labelContent,
       Visibility(
-        visible: FormIsLayout,
+        visible: formIsLayout,
         child: Expanded(
             child: Align(
           alignment: Alignment.centerRight,
-          child: widget.child ?? SizedBox(),
+          child: widget.child ?? const SizedBox(),
         )),
-        replacement: widget.child ?? SizedBox(),
+        replacement: widget.child ?? const SizedBox(),
       )
     ];
-    List<Widget> itemColumnContent = [
+    var itemColumnContent = <Widget>[
       labelContent,
-      SizedBox(height: 8),
+      const SizedBox(height: 8),
       Visibility(
-        visible: FormIsLayout,
+        visible: formIsLayout,
         child: Expanded(
             child: Align(
           alignment: Alignment.centerRight,
-          child: widget.child ?? SizedBox(),
+          child: widget.child ?? const SizedBox(),
         )),
-        replacement: widget.child ?? SizedBox(),
+        replacement: widget.child ?? const SizedBox(),
       ),
     ];
     switch (widget.type) {
@@ -327,7 +319,7 @@ class _TFormItemState extends State<TFormItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                      visible: FormIsLayout,
+                      visible: formIsLayout,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: itemRowContent,
@@ -352,7 +344,7 @@ class _TFormItemState extends State<TFormItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                      visible: FormIsLayout,
+                      visible: formIsLayout,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: itemRowContent,
@@ -376,11 +368,11 @@ class _TFormItemState extends State<TFormItem> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Visibility(
-                visible: FormIsLayout,
+                visible: formIsLayout,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [labelContent, widget.child ?? SizedBox()]),
+                    children: [labelContent, widget.child ?? const SizedBox()]),
                 replacement: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: itemColumnContent,
@@ -400,14 +392,14 @@ class _TFormItemState extends State<TFormItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                      visible: FormIsLayout,
+                      visible: formIsLayout,
                       child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Visibility(
                                 visible: widget.label != null ? true : false,
                                 child: labelContent),
-                            Expanded(child: widget.child ?? SizedBox()),
+                            Expanded(child: widget.child ?? const SizedBox()),
                           ]),
                       replacement: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -415,14 +407,14 @@ class _TFormItemState extends State<TFormItem> {
                           Visibility(
                             visible: widget.label != null ? true : false,
                             child: SizedBox(
-                              width: LabelWidth,
+                              width: labelWidth,
                               child: widget.labelWidget ??
                                   TText(widget.label,
                                       font: context.tTheme.fontBodyMedium,
                                       textAlign: widget.labelAlign),
                             ),
                           ),
-                          widget.child ?? SizedBox()
+                          widget.child ?? const SizedBox()
                         ],
                       ),
                     ),
@@ -437,7 +429,7 @@ class _TFormItemState extends State<TFormItem> {
               child: Column(
                 children: [
                   Visibility(
-                    visible: FormIsLayout,
+                    visible: formIsLayout,
                     child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: itemRowContent),
@@ -447,13 +439,13 @@ class _TFormItemState extends State<TFormItem> {
                         Visibility(
                             visible: widget.label != null ? true : false,
                             child: SizedBox(
-                              width: LabelWidth,
+                              width: labelWidth,
                               child: widget.labelWidget ??
                                   TText(widget.label,
                                       font: context.tTheme.fontBodyMedium,
                                       textAlign: widget.labelAlign),
                             )),
-                        widget.child ?? SizedBox()
+                        widget.child ?? const SizedBox()
                       ],
                     ),
                   ),
@@ -466,7 +458,7 @@ class _TFormItemState extends State<TFormItem> {
 
   Widget _buildSelectRow(BuildContext context) {
     Widget labelContent = SizedBox(
-      width: LabelWidth,
+      width: labelWidth,
       child: widget.labelWidget ??
           Padding(
             padding: const EdgeInsets.only(left: 2),
@@ -476,7 +468,7 @@ class _TFormItemState extends State<TFormItem> {
                 TText(widget.label ?? '',
                     font: context.tTheme.fontBodyMedium,
                     textAlign: widget.labelAlign),
-                if (FormRequiredMark &&
+                if (formRequiredMark &&
                     (widget.requiredMark != null &&
                         widget.requiredMark == true))
                   Padding(
@@ -492,7 +484,7 @@ class _TFormItemState extends State<TFormItem> {
     );
     Widget selectText = TText(
       widget.select != '' ? widget.select : widget.hintText,
-      textAlign: FormContentAlign,
+      textAlign: formContentAlign,
       font: context.tTheme.fontBodyLarge,
       textColor: widget.select != ''
           ? context.tTheme.textColorPrimary
@@ -530,7 +522,7 @@ class _TFormItemState extends State<TFormItem> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Visibility(
-              visible: FormIsLayout,
+              visible: formIsLayout,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -580,8 +572,8 @@ class _TFormItemState extends State<TFormItem> {
         if (widget.help != null && (errorMessage == null || errorMessage == ''))
           Row(
             children: [
-              if (widget.label != null && FormIsLayout)
-                SizedBox(width: LabelWidth),
+              if (widget.label != null && formIsLayout)
+                SizedBox(width: labelWidth),
               Expanded(
                 child: Padding(
                     padding:
@@ -595,14 +587,14 @@ class _TFormItemState extends State<TFormItem> {
               )
             ],
           ),
-        if (ShowErrorMessage != null &&
-            ShowErrorMessage! &&
+        if (showErrorMessage != null &&
+            showErrorMessage! &&
             errorMessage != null &&
             errorMessage != '')
           Row(
             children: [
-              if (widget.label != null && FormIsLayout)
-                SizedBox(width: LabelWidth),
+              if (widget.label != null && formIsLayout)
+                SizedBox(width: labelWidth),
               Expanded(
                   child: Padding(
                       padding:

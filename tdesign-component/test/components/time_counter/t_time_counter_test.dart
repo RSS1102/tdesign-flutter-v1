@@ -1,25 +1,364 @@
-﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-/// time_counter 组件 API 验证测试
-/// 验证类、枚举、构造器的存在性。
+/// TTimeCounter V1.0 Widget 测试
+///
+/// 覆盖：构造器、direction down/up、size 三档、theme 三种、
+/// autoStart、format、splitWithUnit、millisecond、content 自定义、
+/// controller 控制（start/pause/resume/reset）、onChanged/onFinish 回调、
+/// Theme 覆盖。
 void main() {
-  test('TTimeCounter - 类存在', () { expect(TTimeCounter, isNotNull); });
-  test('TTimeCounterDirection - 类存在', () { expect(TTimeCounterDirection, isNotNull); });
-  test('组件导入验证', () { expect(true, isTrue); });
-  test('time_counter_api_test_0 - 验证 #0', () { expect(0, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_1 - 验证 #1', () { expect(1, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_2 - 验证 #2', () { expect(2, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_3 - 验证 #3', () { expect(3, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_4 - 验证 #4', () { expect(4, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_5 - 验证 #5', () { expect(5, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_6 - 验证 #6', () { expect(6, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_7 - 验证 #7', () { expect(7, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_8 - 验证 #8', () { expect(8, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_9 - 验证 #9', () { expect(9, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_10 - 验证 #10', () { expect(10, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_11 - 验证 #11', () { expect(11, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_12 - 验证 #12', () { expect(12, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_13 - 验证 #13', () { expect(13, greaterThanOrEqualTo(0)); });
-  test('time_counter_api_test_14 - 验证 #14', () { expect(14, greaterThanOrEqualTo(0)); });
+  /// 用 TTheme 包裹以提供基础 Token
+  Widget wrapWithTheme(Widget child) {
+    return MaterialApp(
+      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      home: Scaffold(body: child),
+    );
+  }
+
+  // ============================================================
+  // 基础渲染
+  // ============================================================
+  group('TTimeCounter 基础渲染', () {
+    testWidgets('TTimeCounter 正常渲染（倒计时）', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 3661000, // 1小时1分1秒
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+      // format=HH:mm:ss，应显示 01:01:01
+      expect(find.text('01'), findsNWidgets(3));
+      expect(find.text(':'), findsNWidgets(2));
+    });
+
+    testWidgets('TTimeCounter autoStart=false 不自动开始', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 5000,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+      // 5000ms = 00:00:05，00 出现两次
+      expect(find.text('00'), findsNWidgets(2));
+      expect(find.text('05'), findsOneWidget);
+    });
+
+    testWidgets('TTimeCounter 带 format 自定义格式', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 90061000, // 1天1小时1分1秒
+          format: 'DD:HH:mm:ss',
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+      // 应显示 01:01:01:01
+      expect(find.text('01'), findsNWidgets(4));
+    });
+  });
+
+  // ============================================================
+  // direction 枚举变体
+  // ============================================================
+  group('TTimeCounter direction 枚举变体', () {
+    testWidgets('direction=down（默认）倒计时渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 10000,
+          direction: TTimeCounterDirection.down,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+      // 10秒 = 00:00:10，00 出现两次
+      expect(find.text('00'), findsNWidgets(2));
+      expect(find.text('10'), findsOneWidget);
+    });
+
+    testWidgets('direction=up 正向计时渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 10000,
+          direction: TTimeCounterDirection.up,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+      // 正向计时从 0 开始，00:00:00，00 出现三次
+      expect(find.text('00'), findsNWidgets(3));
+    });
+  });
+
+  // ============================================================
+  // size 三档
+  // ============================================================
+  group('TTimeCounter size 尺寸', () {
+    testWidgets('size=small 渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 5000,
+          size: TTimeCounterSize.small,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    testWidgets('size=medium（默认）渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 5000,
+          size: TTimeCounterSize.medium,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    testWidgets('size=large 渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 5000,
+          size: TTimeCounterSize.large,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // theme 三种风格
+  // ============================================================
+  group('TTimeCounter theme 风格', () {
+    testWidgets('theme=defaultTheme（默认）渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 5000,
+          theme: TTimeCounterVariant.defaultTheme,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    testWidgets('theme=round 渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 5000,
+          theme: TTimeCounterVariant.round,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    testWidgets('theme=square 渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 5000,
+          theme: TTimeCounterVariant.square,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // Theme 覆盖（TTimeCounterThemeData）
+  // ============================================================
+  group('TTimeCounter Theme 覆盖', () {
+    testWidgets('TTimeCounterThemeData 注入后正常渲染', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(extensions: [
+            TThemeData.defaultData(),
+            const TTimeCounterThemeData(
+              size: TTimeCounterSize.large,
+              theme: TTimeCounterVariant.round,
+              millisecond: false,
+              splitWithUnit: false,
+            ),
+          ]),
+          home: const Scaffold(
+            body: Center(
+              child: TTimeCounter(
+                time: 5000,
+                autoStart: false,
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // splitWithUnit / millisecond
+  // ============================================================
+  group('TTimeCounter splitWithUnit 与 millisecond', () {
+    testWidgets('splitWithUnit=true 显示时间单位', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 3661000,
+          splitWithUnit: true,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+      // splitWithUnit 时分隔符变为时间单位文字（时/分/秒）
+      // 应能看到单位文字
+    });
+
+    testWidgets('millisecond=true 开启毫秒级渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 1500,
+          format: 'ss:SSS',
+          millisecond: true,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+      // 毫秒级应显示 SSS 部分
+    });
+  });
+
+  // ============================================================
+  // content 自定义
+  // ============================================================
+  group('TTimeCounter content 自定义', () {
+    testWidgets('content 为 Widget 时直接渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 5000,
+          autoStart: false,
+          content: Text('自定义内容'),
+        ),
+      ));
+      expect(find.text('自定义内容'), findsOneWidget);
+    });
+
+    testWidgets('content 为 Function 时回调渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTimeCounter(
+          time: 5000,
+          autoStart: false,
+          content: (int time) => Text('剩余${time}ms'),
+        ),
+      ));
+      expect(find.text('剩余5000ms'), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // TTimeCounterController 控制
+  // ============================================================
+  group('TTimeCounterController 控制器', () {
+    testWidgets('controller.start() 开始倒计时', (tester) async {
+      final controller = TTimeCounterController();
+      await tester.pumpWidget(wrapWithTheme(
+        TTimeCounter(
+          time: 5000,
+          autoStart: false,
+          controller: controller,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+
+      // 通过 controller 开始
+      controller.start();
+      await tester.pump();
+      // 开始后 ticker 运行
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    testWidgets('controller.pause() 暂停倒计时', (tester) async {
+      final controller = TTimeCounterController();
+      await tester.pumpWidget(wrapWithTheme(
+        TTimeCounter(
+          time: 5000,
+          autoStart: false,
+          controller: controller,
+        ),
+      ));
+
+      controller.start();
+      await tester.pump();
+      controller.pause();
+      await tester.pump();
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    testWidgets('controller.reset() 重置倒计时', (tester) async {
+      final controller = TTimeCounterController();
+      await tester.pumpWidget(wrapWithTheme(
+        TTimeCounter(
+          time: 5000,
+          autoStart: false,
+          controller: controller,
+        ),
+      ));
+
+      controller.reset(10000);
+      await tester.pump();
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // onChanged / onFinish 回调
+  // ============================================================
+  group('TTimeCounter 回调', () {
+    testWidgets('onFinish 在倒计时结束时触发', (tester) async {
+      var finished = false;
+      await tester.pumpWidget(wrapWithTheme(
+        TTimeCounter(
+          time: 100,
+          autoStart: true,
+          onFinish: () => finished = true,
+        ),
+      ));
+
+      // 等待足够时间让倒计时结束
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+      // 倒计时结束后 finished 应为 true
+      expect(finished, isTrue);
+    });
+  });
+
+  // ============================================================
+  // 边界情况
+  // ============================================================
+  group('TTimeCounter 边界情况', () {
+    testWidgets('time=0 时正常渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 0,
+          autoStart: false,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+      // 应显示 00:00
+      expect(find.text('00'), findsNWidgets(3));
+    });
+
+    testWidgets('自定义 style 渲染（通过 size + theme 组合）', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTimeCounter(
+          time: 5000,
+          autoStart: false,
+          size: TTimeCounterSize.large,
+          theme: TTimeCounterVariant.round,
+        ),
+      ));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+  });
 }

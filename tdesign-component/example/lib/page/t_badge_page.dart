@@ -372,7 +372,7 @@ class _TBadgePageState extends State<TBadgePage> {
 
   @Demo(group: 'badge')
   Widget _buildSubscriptBadge(BuildContext context) {
-    return Stack(
+    return const Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.topRight,
       children: [
@@ -421,7 +421,7 @@ class _TBadgePageState extends State<TBadgePage> {
 
   @Demo(group: 'badge')
   Widget _buildLessThanMaxCountBadge(BuildContext context) {
-    return SizedBox(
+    return const SizedBox(
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -447,7 +447,7 @@ class _TBadgePageState extends State<TBadgePage> {
 
   @Demo(group: 'badge')
   Widget _buildMoreThanMaxCountBadge(BuildContext context) {
-    return SizedBox(
+    return const SizedBox(
       child: Stack(
         clipBehavior: Clip.none,
         children: [

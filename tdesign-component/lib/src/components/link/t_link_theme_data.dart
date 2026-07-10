@@ -10,7 +10,7 @@ import 't_link.dart';
 /// 构造器参数优先于 Theme。
 class TLinkThemeData extends ThemeExtension<TLinkThemeData> {
   /// 未传 [TLink.variant] 时的默认链接形态
-  final TLinkType? defaultVariant;
+  final TLinkVariant? defaultVariant;
 
   /// 未传 [TLink.size] 时的默认尺寸
   final TLinkSize? defaultSize;
@@ -46,7 +46,7 @@ class TLinkThemeData extends ThemeExtension<TLinkThemeData> {
 
   @override
   TLinkThemeData copyWith({
-    TLinkType? defaultVariant,
+    TLinkVariant? defaultVariant,
     TLinkSize? defaultSize,
     TLinkColorScheme? defaultColorScheme,
     Color? color,

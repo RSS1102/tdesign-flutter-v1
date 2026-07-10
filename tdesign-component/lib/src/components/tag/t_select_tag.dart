@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_tag_theme_data.dart';
-import 't_tag.dart';
 
 /// 点击型标签组件，点击时内部更改自身状态
 /// 支持样式：方形/圆角/半圆/带关闭图标
@@ -43,7 +41,6 @@ class _TSelectTagState extends State<TSelectTag> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<TTagThemeData>();
-    final isOutline = theme?.isOutline ?? false;
     final effectiveColorScheme = widget.value
         ? (widget.colorScheme ?? theme?.colorScheme ?? TTagColorScheme.primary)
         : TTagColorScheme.defaultTheme;

@@ -3,7 +3,6 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_tag.dart' show TTagSize, TTagShape;
 
 /// 标签语义色
 enum TTagColorScheme {

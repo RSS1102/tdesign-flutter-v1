@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../../tdesign_flutter.dart';
 import '../loading/t_circle_indicator.dart';
@@ -197,7 +195,6 @@ class _TSwitchState extends State<TSwitch> {
           ),
         );
       case TSwitchVariant.fill:
-      default:
         return null;
     }
   }

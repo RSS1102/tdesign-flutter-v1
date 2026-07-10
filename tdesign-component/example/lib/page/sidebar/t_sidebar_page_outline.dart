@@ -110,7 +110,7 @@ class TSideBarOutlinePageState extends State<TSideBarOutlinePage> {
       children: [
         SizedBox(
           child: TSideBar(
-            style: TSideBarStyle.outline,
+            style: TSideBarVariant.outline,
             value: currentValue,
             controller: _sideBarController,
             children: list

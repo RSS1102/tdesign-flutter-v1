@@ -3,7 +3,6 @@
 ///
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
-import 't_slider_theme.dart';
 
 enum Position {
   start,

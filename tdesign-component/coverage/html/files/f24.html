@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/util/list_ext.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/util/list_ext.dart</h1></header><div class='meta'>行覆盖 <b>100.0%</b> (14/14) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>/// 扩展 [List] 类</div>
+<div class='row nod'><span class='ln'>2</span>extension ListExt&lt;T&gt; on List&lt;T&gt; {</div>
+<div class='row nod'><span class='ln'>3</span>  /// 将当前列表分割成大小为 [size] 的子列表。</div>
+<div class='row nod'><span class='ln'>4</span>  ///</div>
+<div class='row nod'><span class='ln'>5</span>  /// 如果原始列表的长度不能被 [size] 整除，则最后一个子列表可能会包含少于 [size] 个元素。</div>
+<div class='row nod'><span class='ln'>6</span>  ///</div>
+<div class='row nod'><span class='ln'>7</span>  /// 示例：</div>
+<div class='row nod'><span class='ln'>8</span>  ///</div>
+<div class='row nod'><span class='ln'>9</span>  /// ```dart</div>
+<div class='row nod'><span class='ln'>10</span>  /// List&lt;int&gt; numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];</div>
+<div class='row nod'><span class='ln'>11</span>  /// List&lt;List&lt;int&gt;&gt; chunks = numbers.chunk(3);</div>
+<div class='row nod'><span class='ln'>12</span>  /// print(chunks); // 输出：[[1, 2, 3], [4, 5, 6], [7, 8, 9]]</div>
+<div class='row nod'><span class='ln'>13</span>  /// ```</div>
+<div class='row cov'><span class='ln'>14</span>  List&lt;List&lt;T&gt;&gt; chunk(int size) {</div>
+<div class='row cov'><span class='ln'>15</span>    return [for (int i = 0; i &lt; length; i += size) sublist(i, i + size &gt; length ? length : i + size)];</div>
+<div class='row nod'><span class='ln'>16</span>  }</div>
+<div class='row nod'><span class='ln'>17</span></div>
+<div class='row nod'><span class='ln'>18</span>  /// 根据 [keySelector] 函数从列表中的每个元素中提取键，并将元素按键分组。</div>
+<div class='row nod'><span class='ln'>19</span>  ///</div>
+<div class='row nod'><span class='ln'>20</span>  /// 返回一个 [Map]，其中键是 [keySelector] 函数返回的键，值是包含具有相同键的所有元素的列表。</div>
+<div class='row nod'><span class='ln'>21</span>  ///</div>
+<div class='row nod'><span class='ln'>22</span>  /// 示例：</div>
+<div class='row nod'><span class='ln'>23</span>  ///</div>
+<div class='row nod'><span class='ln'>24</span>  /// ```dart</div>
+<div class='row nod'><span class='ln'>25</span>  /// List&lt;int&gt; numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];</div>
+<div class='row nod'><span class='ln'>26</span>  /// Map&lt;int, List&lt;int&gt;&gt; evenOdd = numbers.groupBy&lt;int&gt;((number) =&gt; number % 2);</div>
+<div class='row nod'><span class='ln'>27</span>  /// print(evenOdd); // 输出：{0: [2, 4, 6, 8], 1: [1, 3, 5, 7, 9]}</div>
+<div class='row nod'><span class='ln'>28</span>  /// ```</div>
+<div class='row cov'><span class='ln'>29</span>  Map&lt;E, List&lt;T&gt;&gt; groupBy&lt;E&gt;(E Function(T) keySelector) {</div>
+<div class='row cov'><span class='ln'>30</span>    var groupedItems = &lt;E, List&lt;T&gt;&gt;{};</div>
+<div class='row nod'><span class='ln'>31</span></div>
+<div class='row cov'><span class='ln'>32</span>    for (var item in this) {</div>
+<div class='row cov'><span class='ln'>33</span>      var key = keySelector(item);</div>
+<div class='row cov'><span class='ln'>34</span>      if (groupedItems[key] == null) {</div>
+<div class='row cov'><span class='ln'>35</span>        groupedItems[key] = [];</div>
+<div class='row nod'><span class='ln'>36</span>      }</div>
+<div class='row cov'><span class='ln'>37</span>      groupedItems[key]!.add(item);</div>
+<div class='row nod'><span class='ln'>38</span>    }</div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row nod'><span class='ln'>40</span>    return groupedItems;</div>
+<div class='row nod'><span class='ln'>41</span>  }</div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row nod'><span class='ln'>43</span>  /// 在列表中查找满足指定条件的第一个元素，可选地限制在指定的索引范围内。</div>
+<div class='row nod'><span class='ln'>44</span>  ///</div>
+<div class='row nod'><span class='ln'>45</span>  /// 此方法遍历列表，从索引`startIndex`开始至`endIndex`（包含）结束，</div>
+<div class='row nod'><span class='ln'>46</span>  /// 应用`test`函数于每个元素。当`test`函数对某个元素返回`true`时，该元素被返回。</div>
+<div class='row nod'><span class='ln'>47</span>  /// 如果没有元素满足条件，则返回`null`。</div>
+<div class='row nod'><span class='ln'>48</span>  ///</div>
+<div class='row nod'><span class='ln'>49</span>  /// 参数:</div>
+<div class='row nod'><span class='ln'>50</span>  /// - [test]: 用于测试列表元素是否满足条件的函数。</div>
+<div class='row nod'><span class='ln'>51</span>  /// - [startIndex]: 查找的起始索引，默认为0。</div>
+<div class='row nod'><span class='ln'>52</span>  /// - [endIndex]: 查找的结束索引，默认为列表的长度减一，意味着默认遍历整个列表。</div>
+<div class='row nod'><span class='ln'>53</span>  ///</div>
+<div class='row nod'><span class='ln'>54</span>  /// 示例：</div>
+<div class='row nod'><span class='ln'>55</span>  ///</div>
+<div class='row nod'><span class='ln'>56</span>  /// ```dart</div>
+<div class='row nod'><span class='ln'>57</span>  /// List&lt;int&gt; numbers = [1, 2, 3, 4, 5];</div>
+<div class='row nod'><span class='ln'>58</span>  /// int? firstEven = numbers.find((element) =&gt; element % 2 == 0);</div>
+<div class='row nod'><span class='ln'>59</span>  /// print(firstEven); // 输出：2</div>
+<div class='row nod'><span class='ln'>60</span>  ///</div>
+<div class='row nod'><span class='ln'>61</span>  /// int? inRangeEven = numbers.find((element) =&gt; element % 2 == 0, startIndex: 1, endIndex: 4);</div>
+<div class='row nod'><span class='ln'>62</span>  /// print(inRangeEven); // 输出：2，因为在1到4的范围内2是第一个偶数</div>
+<div class='row nod'><span class='ln'>63</span>  /// ```</div>
+<div class='row cov'><span class='ln'>64</span>  T? find(bool Function(T) test, {int startIndex = 0, int? endIndex}) {</div>
+<div class='row cov'><span class='ln'>65</span>    endIndex ??= length; // 如果endIndex没有提供，默认为列表长度</div>
+<div class='row cov'><span class='ln'>66</span>    for (var i = startIndex; i &lt; endIndex &amp;&amp; i &lt; length; i++) {</div>
+<div class='row cov'><span class='ln'>67</span>      if (test(this[i])) {</div>
+<div class='row cov'><span class='ln'>68</span>        return this[i];</div>
+<div class='row nod'><span class='ln'>69</span>      }</div>
+<div class='row nod'><span class='ln'>70</span>    }</div>
+<div class='row nod'><span class='ln'>71</span>    return null;</div>
+<div class='row nod'><span class='ln'>72</span>  }</div>
+<div class='row nod'><span class='ln'>73</span>}</div>
+<div class='row nod'><span class='ln'>74</span></div>
+</pre></body></html>

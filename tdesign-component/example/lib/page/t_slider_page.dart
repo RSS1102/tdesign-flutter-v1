@@ -206,7 +206,7 @@ class _TSliderPageState extends State<TSliderPage> {
           max: 100,
         ),
       ),
-      child: TSlider(
+      child: const TSlider(
         label: '0',
         rightLabel: '100',
         value: 40,
@@ -225,10 +225,10 @@ class _TSliderPageState extends State<TSliderPage> {
           scaleFormatter: (value) => value.toInt().toString(),
         ),
       ),
-      child: TRangeSlider(
+      child: const TRangeSlider(
         label: '0',
         rightLabel: '100',
-        value: const RangeValues(20, 60),
+        value: RangeValues(20, 60),
       ),
     );
   }
@@ -245,8 +245,8 @@ class _TSliderPageState extends State<TSliderPage> {
           scaleFormatter: (value) => value.toInt().toString(),
         ),
       ),
-      child: TRangeSlider(
-        value: const RangeValues(20, 60),
+      child: const TRangeSlider(
+        value: RangeValues(20, 60),
       ),
     );
   }
@@ -570,7 +570,7 @@ class _TSliderPageState extends State<TSliderPage> {
               scaleFormatter: (value) => value.toInt().toString(),
             ),
           ),
-          child: TSlider(
+          child: const TSlider(
             value: 40,
           ),
         ),
@@ -583,8 +583,8 @@ class _TSliderPageState extends State<TSliderPage> {
               scaleFormatter: (value) => value.toInt().toString(),
             ),
           ),
-          child: TRangeSlider(
-            value: const RangeValues(20, 60),
+          child: const TRangeSlider(
+            value: RangeValues(20, 60),
           ),
         ),
         const SizedBox(height: 16),
@@ -596,7 +596,7 @@ class _TSliderPageState extends State<TSliderPage> {
               scaleFormatter: (value) => value.toInt().toString(),
             ),
           ),
-          child: TSlider(
+          child: const TSlider(
             label: '0',
             rightLabel: '100',
             value: 40,
@@ -612,8 +612,8 @@ class _TSliderPageState extends State<TSliderPage> {
               scaleFormatter: (value) => value.toInt().toString(),
             ),
           ),
-          child: TRangeSlider(
-            value: const RangeValues(20, 60),
+          child: const TRangeSlider(
+            value: RangeValues(20, 60),
             label: '0',
             rightLabel: '100',
           ),
@@ -632,7 +632,7 @@ class _TSliderPageState extends State<TSliderPage> {
               inactiveTrackColor: context.tTheme.componentStrokeColor,
             ),
           ),
-          child: TSlider(
+          child: const TSlider(
             value: 60,
           ),
         ),
@@ -650,8 +650,8 @@ class _TSliderPageState extends State<TSliderPage> {
               inactiveTrackColor: context.tTheme.bgColorComponent,
             ),
           ),
-          child: TRangeSlider(
-            value: const RangeValues(20, 60),
+          child: const TRangeSlider(
+            value: RangeValues(20, 60),
           ),
         )
       ],

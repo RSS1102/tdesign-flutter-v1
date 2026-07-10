@@ -115,16 +115,16 @@ class TBottomTabBarThemeData extends ThemeExtension<TBottomTabBarThemeData> {
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
       centerDistance: lerpDouble(centerDistance, other.centerDistance, t),
       useVerticalDivider:
-          t < 0.5 ? useVerticalDivider : other.useVerticalDivider,
+          t <= 0.5 ? useVerticalDivider : other.useVerticalDivider,
       dividerHeight: lerpDouble(dividerHeight, other.dividerHeight, t),
       dividerThickness: lerpDouble(dividerThickness, other.dividerThickness, t),
       dividerColor: Color.lerp(dividerColor, other.dividerColor, t),
-      showTopBorder: t < 0.5 ? showTopBorder : other.showTopBorder,
+      showTopBorder: t <= 0.5 ? showTopBorder : other.showTopBorder,
       topBorder: BorderSide.lerp(
           topBorder ?? BorderSide.none, other.topBorder ?? BorderSide.none, t),
-      needInkWell: t < 0.5 ? needInkWell : other.needInkWell,
-      animationDuration: t < 0.5 ? animationDuration : other.animationDuration,
-      animationCurve: t < 0.5 ? animationCurve : other.animationCurve,
+      needInkWell: t <= 0.5 ? needInkWell : other.needInkWell,
+      animationDuration: t <= 0.5 ? animationDuration : other.animationDuration,
+      animationCurve: t <= 0.5 ? animationCurve : other.animationCurve,
     );
   }
 }

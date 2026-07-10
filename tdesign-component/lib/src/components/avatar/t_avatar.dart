@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
-import 't_avatar_theme_data.dart';
 
 /// 头像尺寸
 enum TAvatarSize { large, medium, small }
@@ -183,7 +182,8 @@ class TAvatar extends StatelessWidget {
             ),
             child: Center(
               child: TText(
-                text,
+                // text 为 null 时用空字符串兜底，避免 TText 非空断言崩溃
+                text ?? '',
                 forceVerticalCenter: true,
                 textAlign: TextAlign.center,
                 font: _getTextFont(context),

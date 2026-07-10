@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../tdesign_flutter.dart' show TFab;
+import '../button/t_button.dart';
+import '../button/t_button_theme_data.dart';
+import 't_fab.dart' show TFab;
+
 /// 拖拽轴向
 enum TFabDragAxis { all, vertical, horizontal }
 
@@ -21,11 +26,11 @@ class TFabBounds {
 ///
 /// 字段与 [TButton] 构造参数对齐，不含 onPressed / child / icon。
 class TButtonProps {
-  final dynamic size; // TButtonSize?
-  final dynamic variant; // TButtonVariant?
-  final dynamic colorScheme; // TButtonColorScheme?
-  final dynamic shape; // 预留
-  final dynamic style; // ButtonStyle?
+  final TButtonSize? size;
+  final TButtonVariant? variant;
+  final TButtonColorScheme? colorScheme;
+  final TButtonShape? shape;
+  final ButtonStyle? style;
 
   const TButtonProps({
     this.size,

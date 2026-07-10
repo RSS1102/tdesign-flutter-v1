@@ -133,7 +133,7 @@ class _TFormState extends State<TForm> {
   onSubmit() {
     _updateCount += 1;
     _isReset = false;
-    bool isValidateSuc = true;
+    var isValidateSuc = true;
     _formData.forEach((key, value) {
       if (isValidateSuc) {
         isValidateSuc = validate(key, '${value}');

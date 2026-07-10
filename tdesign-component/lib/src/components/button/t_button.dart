@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import 't_button_resolve.dart';
-import 't_button_theme_data.dart';
 
 // ============ 枚举定义 ============
 
@@ -170,14 +169,14 @@ class _TButtonState extends State<TButton> {
       final borderRadius = BorderRadius.all(Radius.circular(_borderRadiusForShape(shape)));
 
       // 从 resolvedStyle 获取前景色（用于文本/图标）
-      final bool isDisabled = widget.onPressed == null;
-      final Set<WidgetState> states = {if (isDisabled) WidgetState.disabled};
-      final Color? fgColor = resolvedStyle.foregroundColor?.resolve(states);
+      final isDisabled = widget.onPressed == null;
+      final states = <WidgetState>{if (isDisabled) WidgetState.disabled};
+      final fgColor = resolvedStyle.foregroundColor?.resolve(states);
 
       // 根据 size 计算 padding
-      final EdgeInsets padding = _gradientPadding(effectiveSize, widget.icon != null, widget.child != null, shape);
+      final padding = _gradientPadding(effectiveSize, widget.icon != null, widget.child != null, shape);
 
-      Widget? styledContent = content;
+      var styledContent = content;
       if (styledContent != null && fgColor != null) {
         styledContent = IconTheme(
           data: IconThemeData(color: fgColor),
@@ -189,10 +188,10 @@ class _TButtonState extends State<TButton> {
       }
 
       // 最小高度约束（对齐 ElevatedButton minimumSize）
-      final double minHeight = _sideLengthForSize(effectiveSize);
-      final bool isSquareOrCircle = shape == TButtonShape.square || shape == TButtonShape.circle;
-      final bool onlyIcon = widget.icon != null && widget.child == null;
-      final double? minWidth = (isSquareOrCircle && onlyIcon) ? minHeight : null;
+      final minHeight = _sideLengthForSize(effectiveSize);
+      final isSquareOrCircle = shape == TButtonShape.square || shape == TButtonShape.circle;
+      final onlyIcon = widget.icon != null && widget.child == null;
+      final minWidth = (isSquareOrCircle && onlyIcon) ? minHeight : null;
 
       button = IntrinsicWidth(
         child: ConstrainedBox(

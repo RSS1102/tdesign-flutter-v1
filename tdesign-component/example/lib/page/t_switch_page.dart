@@ -55,7 +55,7 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithBase(BuildContext context) {
-    return TCell(
+    return const TCell(
       title: '基础开关',
       noteWidget: _StatefulSwitch(),
     );
@@ -63,7 +63,7 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithText(BuildContext context) {
-    return TCell(
+    return const TCell(
       title: '带文字开关',
       noteWidget: _StatefulSwitch(
         initialValue: true,
@@ -74,7 +74,7 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithIcon(BuildContext context) {
-    return TCell(
+    return const TCell(
       title: '带图标开关',
       noteWidget: _StatefulSwitch(
         initialValue: true,
@@ -85,7 +85,7 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithColor(BuildContext context) {
-    return TCell(
+    return const TCell(
       title: '自定义颜色开关',
       noteWidget: _StatefulSwitch(
         initialValue: true,
@@ -140,7 +140,7 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithSizeLarge(BuildContext context) {
-    return TCell(
+    return const TCell(
       title: '大尺寸32',
       noteWidget: _StatefulSwitch(
         size: TSwitchSize.large,
@@ -151,7 +151,7 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithSizeMed(BuildContext context) {
-    return TCell(
+    return const TCell(
       title: '中尺寸28',
       noteWidget: _StatefulSwitch(
         size: TSwitchSize.medium,
@@ -162,7 +162,7 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _buildSwitchWithSizeSmall(BuildContext context) {
-    return TCell(
+    return const TCell(
       title: '小尺寸24',
       noteWidget: _StatefulSwitch(
         size: TSwitchSize.small,
@@ -173,7 +173,7 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _customText(BuildContext context) {
-    return TCell(
+    return const TCell(
       title: '基础开关',
       noteWidget: _StatefulSwitch(
         variant: TSwitchVariant.text,
@@ -185,7 +185,7 @@ class TSwitchPageState extends State<TSwitchPage> {
 
   @Demo(group: 'switch')
   Widget _customTextFont(BuildContext context) {
-    return TCell(
+    return const TCell(
       title: '基础开关',
       noteWidget: _StatefulSwitch(
         variant: TSwitchVariant.text,
@@ -193,8 +193,8 @@ class TSwitchPageState extends State<TSwitchPage> {
         closeText: '关',
         thumbContentOffColor: Colors.red,
         thumbContentOnColor: Colors.green,
-        thumbContentOnFont: const TextStyle(fontSize: 18),
-        thumbContentOffFont: const TextStyle(fontSize: 12),
+        thumbContentOnFont: TextStyle(fontSize: 18),
+        thumbContentOffFont: TextStyle(fontSize: 12),
       ),
     );
   }

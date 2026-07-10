@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_cell.dart' show TCellAlign;
 
 /// 单元格组风格
 enum TCellGroupVariant { defaultTheme, cardTheme }

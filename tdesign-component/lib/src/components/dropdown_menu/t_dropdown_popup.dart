@@ -243,6 +243,7 @@ class _PopupOverlayRoute<T> extends OverlayRoute<T> {
   @override
   Future<RoutePopDisposition> willPop() async {
     await handleClose();
+    // ignore: deprecated_member_use
     return super.willPop();
   }
 }

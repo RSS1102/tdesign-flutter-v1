@@ -1,11 +1,9 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import 'image_widget.dart';
-import 't_image_theme_data.dart';
 
 /// 图片形态
 enum TImageVariant {

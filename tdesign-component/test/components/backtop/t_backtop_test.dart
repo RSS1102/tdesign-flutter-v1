@@ -12,17 +12,14 @@ void main() {
     final themeExtensions = <ThemeExtension>[
       if (backTopTheme != null) backTopTheme,
     ];
-    return Theme(
-      data: ThemeData(extensions: [TThemeData.defaultData()]),
-      child: MaterialApp(
-        theme: ThemeData(
-          extensions: themeExtensions,
-        ),
-        home: Scaffold(
-          body: Stack(
-            fit: StackFit.expand,
-            children: [child],
-          ),
+    return MaterialApp(
+      theme: ThemeData(
+        extensions: [TThemeData.defaultData(), ...themeExtensions],
+      ),
+      home: Scaffold(
+        body: Stack(
+          fit: StackFit.expand,
+          children: [child],
         ),
       ),
     );
@@ -151,7 +148,7 @@ void main() {
   group('TBackTop 回顶防抖', () {
     testWidgets('动画进行中重复点击不额外触发 onPressed', (tester) async {
       final controller = ScrollController(initialScrollOffset: 3000);
-      int callCount = 0;
+      var callCount = 0;
 
       await tester.pumpWidget(wrapScrollable(
         TBackTop(
@@ -407,6 +404,53 @@ void main() {
     test('枚举值', () {
       expect(TBackTopColorScheme.light.index, 0);
       expect(TBackTopColorScheme.dark.index, 1);
+    });
+  });
+
+  // 补充覆盖：Theme 定位字段
+  group('TBackTop Theme 定位字段', () {
+    testWidgets('Theme.defaultRight 生效', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TBackTop(),
+        backTopTheme: const TBackTopThemeData(defaultRight: 24),
+      ));
+      expect(find.byType(TBackTop), findsOneWidget);
+    });
+
+    testWidgets('Theme.defaultBottom 生效', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TBackTop(),
+        backTopTheme: const TBackTopThemeData(defaultBottom: 48),
+      ));
+      expect(find.byType(TBackTop), findsOneWidget);
+    });
+
+    testWidgets('Theme.halfCircleRightInset 生效', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TBackTop(shape: TBackTopShape.halfCircle),
+        backTopTheme: const TBackTopThemeData(halfCircleRightInset: 0),
+      ));
+      expect(find.byType(TBackTop), findsOneWidget);
+    });
+
+    testWidgets('Theme.colorScheme 注入生效', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TBackTop(),
+        backTopTheme: const TBackTopThemeData(colorScheme: TBackTopColorScheme.dark),
+      ));
+      expect(find.byType(TBackTop), findsOneWidget);
+    });
+
+    testWidgets('半圆形 + showText + Theme 注入', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TBackTop(shape: TBackTopShape.halfCircle, showText: true),
+        backTopTheme: const TBackTopThemeData(
+          shape: TBackTopShape.halfCircle,
+          halfCircleRightInset: 8,
+        ),
+      ));
+      expect(find.text('返回'), findsOneWidget);
+      expect(find.text('顶部'), findsOneWidget);
     });
   });
 }

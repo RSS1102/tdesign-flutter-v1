@@ -118,7 +118,7 @@ void main() {
       const footerKey = Key('footer');
       await tester.pumpWidget(wrapWithTheme(
         TDrawerWidget(
-          footer: Text('底部', key: footerKey),
+          footer: const Text('底部', key: footerKey),
           items: [TDrawerItem(title: '菜单1')],
         ),
       ));
@@ -130,7 +130,7 @@ void main() {
       const childKey = Key('child');
       await tester.pumpWidget(wrapWithTheme(
         TDrawerWidget(
-          child: Text('自定义', key: childKey),
+          child: const Text('自定义', key: childKey),
           items: [TDrawerItem(title: '菜单1')],
         ),
       ));
@@ -374,7 +374,7 @@ void main() {
     });
 
     testWidgets('onClose 回调触发', (tester) async {
-      bool closed = false;
+      var closed = false;
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(

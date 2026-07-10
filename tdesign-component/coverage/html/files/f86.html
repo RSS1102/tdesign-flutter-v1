@@ -1,0 +1,503 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/dropdown_menu/t_dropdown_item.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/dropdown_menu/t_dropdown_item.dart</h1></header><div class='meta'>行覆盖 <b>79.9%</b> (163/204) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:async&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span>import &#x27;dart:collection&#x27;;</div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;dart:math&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>8</span>import &#x27;../../util/context_extension.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>9</span>import &#x27;../../util/list_ext.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>10</span>import &#x27;../tag/t_select_tag.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>11</span>import &#x27;../tag/t_tag_theme_data.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>12</span>import &#x27;t_dropdown_inherited.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>13</span>import &#x27;t_dropdown_popup.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>/// 下拉菜单内容构建器</div>
+<div class='row nod'><span class='ln'>16</span>typedef TDropdownItemContentBuilder = Widget Function(BuildContext context,</div>
+<div class='row nod'><span class='ln'>17</span>    _TDropdownItemState itemState, TDropdownPopup? popupState);</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>/// 下拉菜单选项变更回调</div>
+<div class='row nod'><span class='ln'>20</span>typedef TDropdownItemOptionsCallback = void Function(</div>
+<div class='row nod'><span class='ln'>21</span>    List&lt;TDropdownItemOption&gt;? options);</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row cov'><span class='ln'>23</span>List&lt;TDropdownItemOption?&gt; _getSelected(List&lt;TDropdownItemOption&gt;? options) {</div>
+<div class='row cov'><span class='ln'>24</span>  return options?.where((element) =&gt; element.selected == true).toList() ?? [];</div>
+<div class='row nod'><span class='ln'>25</span>}</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row nod'><span class='ln'>27</span>/// 补充列数，使最后一行的选项宽度一样</div>
+<div class='row cov'><span class='ln'>28</span>int _num(List list, int? n) {</div>
+<div class='row nod'><span class='ln'>29</span>  var val = n ?? 1;</div>
+<div class='row cov'><span class='ln'>30</span>  if (list.length &lt; val) {</div>
+<div class='row nod'><span class='ln'>31</span>    return val;</div>
+<div class='row nod'><span class='ln'>32</span>  }</div>
+<div class='row cov'><span class='ln'>33</span>  return list.length + list.length % val;</div>
+<div class='row nod'><span class='ln'>34</span>}</div>
+<div class='row nod'><span class='ln'>35</span></div>
+<div class='row nod'><span class='ln'>36</span>/// 下拉菜单控制器</div>
+<div class='row nod'><span class='ln'>37</span>class TDropdownItemController {</div>
+<div class='row nod'><span class='ln'>38</span>  _TDropdownItemState? _state;</div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row unc'><span class='ln'>40</span>▶   void _bindState(_TDropdownItemState _tdDropdownMenuState) {</div>
+<div class='row unc'><span class='ln'>41</span>▶     _state = _tdDropdownMenuState;</div>
+<div class='row nod'><span class='ln'>42</span>  }</div>
+<div class='row nod'><span class='ln'>43</span></div>
+<div class='row nod'><span class='ln'>44</span>  /// 将所有选项重置为未选中状态</div>
+<div class='row cov'><span class='ln'>45</span>  void reset() {</div>
+<div class='row cov'><span class='ln'>46</span>    _state?.reset();</div>
+<div class='row nod'><span class='ln'>47</span>  }</div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row nod'><span class='ln'>49</span>  /// 更新选项内容。注意：增删内容可能导致高度展示异常，请谨慎操作</div>
+<div class='row unc'><span class='ln'>50</span>▶   void updateOptions(TDropdownItemOptionsCallback callback) {</div>
+<div class='row unc'><span class='ln'>51</span>▶     _state?.updateOptions(callback);</div>
+<div class='row nod'><span class='ln'>52</span>  }</div>
+<div class='row nod'><span class='ln'>53</span>}</div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row nod'><span class='ln'>55</span>/// 下拉菜单内容</div>
+<div class='row nod'><span class='ln'>56</span>class TDropdownItem&lt;T&gt; extends StatefulWidget {</div>
+<div class='row cov'><span class='ln'>57</span>  const TDropdownItem({</div>
+<div class='row nod'><span class='ln'>58</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>59</span>    this.disabled = false,</div>
+<div class='row nod'><span class='ln'>60</span>    this.label,</div>
+<div class='row nod'><span class='ln'>61</span>    this.arrowIcon,</div>
+<div class='row nod'><span class='ln'>62</span>    this.arrowColor,</div>
+<div class='row nod'><span class='ln'>63</span>    this.multiple = false,</div>
+<div class='row nod'><span class='ln'>64</span>    this.options = const [],</div>
+<div class='row nod'><span class='ln'>65</span>    this.builder,</div>
+<div class='row nod'><span class='ln'>66</span>    this.optionsColumns = 1,</div>
+<div class='row nod'><span class='ln'>67</span>    this.onChanged,</div>
+<div class='row nod'><span class='ln'>68</span>    this.onConfirm,</div>
+<div class='row nod'><span class='ln'>69</span>    this.onReset,</div>
+<div class='row nod'><span class='ln'>70</span>    this.minHeight,</div>
+<div class='row nod'><span class='ln'>71</span>    this.maxHeight,</div>
+<div class='row nod'><span class='ln'>72</span>    this.tabBarWidth,</div>
+<div class='row nod'><span class='ln'>73</span>    this.tabBarAlign,</div>
+<div class='row nod'><span class='ln'>74</span>    this.tabBarFlex = 1,</div>
+<div class='row nod'><span class='ln'>75</span>    this.controller,</div>
+<div class='row cov'><span class='ln'>76</span>  }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>77</span></div>
+<div class='row nod'><span class='ln'>78</span>  /// 是否禁用</div>
+<div class='row nod'><span class='ln'>79</span>  final bool? disabled;</div>
+<div class='row nod'><span class='ln'>80</span></div>
+<div class='row nod'><span class='ln'>81</span>  /// 标题</div>
+<div class='row nod'><span class='ln'>82</span>  final String? label;</div>
+<div class='row nod'><span class='ln'>83</span></div>
+<div class='row nod'><span class='ln'>84</span>  /// 自定义箭头图标</div>
+<div class='row nod'><span class='ln'>85</span>  final IconData? arrowIcon;</div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row nod'><span class='ln'>87</span>  /// 自定义箭头颜色</div>
+<div class='row nod'><span class='ln'>88</span>  final Color? arrowColor;</div>
+<div class='row nod'><span class='ln'>89</span></div>
+<div class='row nod'><span class='ln'>90</span>  /// 是否多选</div>
+<div class='row nod'><span class='ln'>91</span>  final bool? multiple;</div>
+<div class='row nod'><span class='ln'>92</span></div>
+<div class='row nod'><span class='ln'>93</span>  /// 选项数据</div>
+<div class='row nod'><span class='ln'>94</span>  final List&lt;TDropdownItemOption&gt;? options;</div>
+<div class='row nod'><span class='ln'>95</span></div>
+<div class='row nod'><span class='ln'>96</span>  /// 完全自定义展示内容</div>
+<div class='row nod'><span class='ln'>97</span>  final TDropdownItemContentBuilder? builder;</div>
+<div class='row nod'><span class='ln'>98</span></div>
+<div class='row nod'><span class='ln'>99</span>  /// 选项分栏（1-3）</div>
+<div class='row nod'><span class='ln'>100</span>  final int? optionsColumns;</div>
+<div class='row nod'><span class='ln'>101</span></div>
+<div class='row nod'><span class='ln'>102</span>  /// 值改变时触发</div>
+<div class='row nod'><span class='ln'>103</span>  final ValueChanged&lt;T?&gt;? onChanged;</div>
+<div class='row nod'><span class='ln'>104</span></div>
+<div class='row nod'><span class='ln'>105</span>  /// 点击确认时触发</div>
+<div class='row nod'><span class='ln'>106</span>  final ValueChanged&lt;T?&gt;? onConfirm;</div>
+<div class='row nod'><span class='ln'>107</span></div>
+<div class='row nod'><span class='ln'>108</span>  /// 点击重置时触发</div>
+<div class='row nod'><span class='ln'>109</span>  final VoidCallback? onReset;</div>
+<div class='row nod'><span class='ln'>110</span></div>
+<div class='row nod'><span class='ln'>111</span>  /// 内容最小高度</div>
+<div class='row nod'><span class='ln'>112</span>  final double? minHeight;</div>
+<div class='row nod'><span class='ln'>113</span></div>
+<div class='row nod'><span class='ln'>114</span>  /// 内容最大高度</div>
+<div class='row nod'><span class='ln'>115</span>  final double? maxHeight;</div>
+<div class='row nod'><span class='ln'>116</span></div>
+<div class='row nod'><span class='ln'>117</span>  /// 该item在menu上的宽度，仅在[TDropdownMenu.isScrollable]为true时有效</div>
+<div class='row nod'><span class='ln'>118</span>  final double? tabBarWidth;</div>
+<div class='row nod'><span class='ln'>119</span></div>
+<div class='row nod'><span class='ln'>120</span>  /// [label]和[arrowIcon]/[TDropdownMenu.arrowIcon]的对齐方式</div>
+<div class='row nod'><span class='ln'>121</span>  final MainAxisAlignment? tabBarAlign;</div>
+<div class='row nod'><span class='ln'>122</span></div>
+<div class='row nod'><span class='ln'>123</span>  /// 该item在menu上的宽度占比，仅在[TDropdownMenu.isScrollable]为false时有效</div>
+<div class='row nod'><span class='ln'>124</span>  final int? tabBarFlex;</div>
+<div class='row nod'><span class='ln'>125</span></div>
+<div class='row nod'><span class='ln'>126</span>  /// 下拉菜单控制器</div>
+<div class='row nod'><span class='ln'>127</span>  final TDropdownItemController? controller;</div>
+<div class='row nod'><span class='ln'>128</span></div>
+<div class='row nod'><span class='ln'>129</span>  static const double operateHeight = 73;</div>
+<div class='row nod'><span class='ln'>130</span></div>
+<div class='row cov'><span class='ln'>131</span>  double? get minContentHeight =&gt; multiple == true</div>
+<div class='row cov'><span class='ln'>132</span>      ? (minHeight != null ? minHeight! + TDropdownItem.operateHeight : null)</div>
+<div class='row cov'><span class='ln'>133</span>      : minHeight;</div>
+<div class='row nod'><span class='ln'>134</span></div>
+<div class='row cov'><span class='ln'>135</span>  double? get maxContentHeight =&gt; multiple == true</div>
+<div class='row cov'><span class='ln'>136</span>      ? (maxHeight != null ? maxHeight! + TDropdownItem.operateHeight : null)</div>
+<div class='row cov'><span class='ln'>137</span>      : maxHeight;</div>
+<div class='row nod'><span class='ln'>138</span></div>
+<div class='row cov'><span class='ln'>139</span>  @override</div>
+<div class='row cov'><span class='ln'>140</span>  _TDropdownItemState createState() =&gt; _TDropdownItemState();</div>
+<div class='row nod'><span class='ln'>141</span></div>
+<div class='row cov'><span class='ln'>142</span>  String getLabel() {</div>
+<div class='row cov'><span class='ln'>143</span>    if (multiple == true) {</div>
+<div class='row cov'><span class='ln'>144</span>      return label ?? &#x27;&#x27;;</div>
+<div class='row nod'><span class='ln'>145</span>    }</div>
+<div class='row cov'><span class='ln'>146</span>    var list = _getSelected(options);</div>
+<div class='row cov'><span class='ln'>147</span>    if (list.isEmpty) {</div>
+<div class='row cov'><span class='ln'>148</span>      return label ?? &#x27;&#x27;;</div>
+<div class='row nod'><span class='ln'>149</span>    }</div>
+<div class='row cov'><span class='ln'>150</span>    return list[0]?.label ?? label ?? &#x27;&#x27;;</div>
+<div class='row nod'><span class='ln'>151</span>  }</div>
+<div class='row nod'><span class='ln'>152</span>}</div>
+<div class='row nod'><span class='ln'>153</span></div>
+<div class='row nod'><span class='ln'>154</span>class _TDropdownItemState extends State&lt;TDropdownItem&gt; {</div>
+<div class='row nod'><span class='ln'>155</span>  late TDropdownPopup popupState;</div>
+<div class='row nod'><span class='ln'>156</span>  late ValueNotifier&lt;TDropdownMenuDirection&gt; directionListenable;</div>
+<div class='row nod'><span class='ln'>157</span></div>
+<div class='row cov'><span class='ln'>158</span>  @override</div>
+<div class='row nod'><span class='ln'>159</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>160</span>    super.initState();</div>
+<div class='row cov'><span class='ln'>161</span>    widget.controller?._bindState(this);</div>
+<div class='row nod'><span class='ln'>162</span>  }</div>
+<div class='row nod'><span class='ln'>163</span></div>
+<div class='row cov'><span class='ln'>164</span>  @override</div>
+<div class='row nod'><span class='ln'>165</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>166</span>    popupState = TDropdownInherited.of(context)!.popupState;</div>
+<div class='row cov'><span class='ln'>167</span>    directionListenable = TDropdownInherited.of(context)!.directionListenable;</div>
+<div class='row cov'><span class='ln'>168</span>    if (widget.builder != null) {</div>
+<div class='row unc'><span class='ln'>169</span>▶       return widget.builder!(context, this, popupState);</div>
+<div class='row nod'><span class='ln'>170</span>    }</div>
+<div class='row cov'><span class='ln'>171</span>    return widget.multiple == true || (widget.optionsColumns ?? 1) &gt; 1</div>
+<div class='row cov'><span class='ln'>172</span>        ? _getCheckboxList()</div>
+<div class='row cov'><span class='ln'>173</span>        : _getRadioList();</div>
+<div class='row nod'><span class='ln'>174</span>  }</div>
+<div class='row nod'><span class='ln'>175</span></div>
+<div class='row cov'><span class='ln'>176</span>  Widget _getCheckboxList() {</div>
+<div class='row cov'><span class='ln'>177</span>    var isMultiple = widget.multiple == true;</div>
+<div class='row cov'><span class='ln'>178</span>    var paddingNum = context.tTheme.spacer16;</div>
+<div class='row cov'><span class='ln'>179</span>    var groupChunk = _groupChunkOptions();</div>
+<div class='row cov'><span class='ln'>180</span>    var maxContentHeight = widget.maxContentHeight != null</div>
+<div class='row unc'><span class='ln'>181</span>▶         ? widget.maxContentHeight!</div>
+<div class='row cov'><span class='ln'>182</span>        : directionListenable.value == TDropdownMenuDirection.auto</div>
+<div class='row nod'><span class='ln'>183</span>            ? double.infinity</div>
+<div class='row cov'><span class='ln'>184</span>            : max&lt;double&gt;(</div>
+<div class='row cov'><span class='ln'>185</span>                popupState.maxContentHeight - TDropdownItem.operateHeight, 0);</div>
+<div class='row cov'><span class='ln'>186</span>    var selectIds = _getSelected(widget.options)</div>
+<div class='row cov'><span class='ln'>187</span>        .map((e) =&gt; e!.value)</div>
+<div class='row cov'><span class='ln'>188</span>        .toList();</div>
+<div class='row cov'><span class='ln'>189</span>    return Column(</div>
+<div class='row cov'><span class='ln'>190</span>      children: [</div>
+<div class='row cov'><span class='ln'>191</span>        Container(</div>
+<div class='row cov'><span class='ln'>192</span>          color: context.tTheme.bgColorContainer,</div>
+<div class='row cov'><span class='ln'>193</span>          child: ConstrainedBox(</div>
+<div class='row cov'><span class='ln'>194</span>            constraints: BoxConstraints(</div>
+<div class='row cov'><span class='ln'>195</span>                minHeight: widget.minContentHeight ?? 0.0,</div>
+<div class='row nod'><span class='ln'>196</span>                maxHeight: maxContentHeight),</div>
+<div class='row cov'><span class='ln'>197</span>            child: SingleChildScrollView(</div>
+<div class='row cov'><span class='ln'>198</span>              child: TCheckboxGroupContainer(</div>
+<div class='row nod'><span class='ln'>199</span>                selectIds: isMultiple</div>
+<div class='row nod'><span class='ln'>200</span>                    ? selectIds</div>
+<div class='row cov'><span class='ln'>201</span>                    : selectIds.isEmpty</div>
+<div class='row cov'><span class='ln'>202</span>                        ? []</div>
+<div class='row unc'><span class='ln'>203</span>▶                         : [selectIds[0]],</div>
+<div class='row cov'><span class='ln'>204</span>                onCheckBoxGroupChange: _handleSelectChange,</div>
+<div class='row cov'><span class='ln'>205</span>                child: Column(</div>
+<div class='row cov'><span class='ln'>206</span>                  children: List.generate(groupChunk.length, (index) {</div>
+<div class='row cov'><span class='ln'>207</span>                    var entry = groupChunk.entries.elementAt(index);</div>
+<div class='row cov'><span class='ln'>208</span>                    var chunks = entry.value;</div>
+<div class='row cov'><span class='ln'>209</span>                    return Column(</div>
+<div class='row cov'><span class='ln'>210</span>                      children: [</div>
+<div class='row cov'><span class='ln'>211</span>                        groupChunk.length == 1 &amp;&amp; entry.key == &#x27;__default__&#x27;</div>
+<div class='row nod'><span class='ln'>212</span>                            ? const SizedBox.shrink()</div>
+<div class='row unc'><span class='ln'>213</span>▶                             : Container(</div>
+<div class='row nod'><span class='ln'>214</span>                                width: double.infinity,</div>
+<div class='row unc'><span class='ln'>215</span>▶                                 padding: EdgeInsets.only(</div>
+<div class='row nod'><span class='ln'>216</span>                                    left: paddingNum,</div>
+<div class='row nod'><span class='ln'>217</span>                                    top: paddingNum,</div>
+<div class='row nod'><span class='ln'>218</span>                                    right: paddingNum),</div>
+<div class='row unc'><span class='ln'>219</span>▶                                 color: context.tTheme.bgColorContainer,</div>
+<div class='row unc'><span class='ln'>220</span>▶                                 child: TText(entry.key == &#x27;__default__&#x27;</div>
+<div class='row unc'><span class='ln'>221</span>▶                                     ? context.resource.other</div>
+<div class='row unc'><span class='ln'>222</span>▶                                     : entry.key),</div>
+<div class='row nod'><span class='ln'>223</span>                              ),</div>
+<div class='row cov'><span class='ln'>224</span>                        Container(</div>
+<div class='row cov'><span class='ln'>225</span>                          padding: EdgeInsets.all(paddingNum),</div>
+<div class='row cov'><span class='ln'>226</span>                          color: context.tTheme.bgColorContainer,</div>
+<div class='row cov'><span class='ln'>227</span>                          child: Column(</div>
+<div class='row cov'><span class='ln'>228</span>                            children: List.generate(chunks.length, (ri) {</div>
+<div class='row cov'><span class='ln'>229</span>                              var num = _num(chunks[ri], widget.optionsColumns);</div>
+<div class='row cov'><span class='ln'>230</span>                              return Padding(</div>
+<div class='row nod'><span class='ln'>231</span>                                padding:</div>
+<div class='row cov'><span class='ln'>232</span>                                    _getPadding(chunks.length, ri, &#x27;bottom&#x27;),</div>
+<div class='row cov'><span class='ln'>233</span>                                child: Row(</div>
+<div class='row cov'><span class='ln'>234</span>                                  children: List.generate(num, (ci) {</div>
+<div class='row cov'><span class='ln'>235</span>                                    return Expanded(</div>
+<div class='row cov'><span class='ln'>236</span>                                      child: Padding(</div>
+<div class='row cov'><span class='ln'>237</span>                                        padding: _getPadding(num, ci, &#x27;right&#x27;),</div>
+<div class='row cov'><span class='ln'>238</span>                                        child: _getCheckboxItem(chunks[ri], ci),</div>
+<div class='row nod'><span class='ln'>239</span>                                      ),</div>
+<div class='row nod'><span class='ln'>240</span>                                    );</div>
+<div class='row nod'><span class='ln'>241</span>                                  }),</div>
+<div class='row nod'><span class='ln'>242</span>                                ),</div>
+<div class='row nod'><span class='ln'>243</span>                              );</div>
+<div class='row nod'><span class='ln'>244</span>                            }),</div>
+<div class='row nod'><span class='ln'>245</span>                          ),</div>
+<div class='row nod'><span class='ln'>246</span>                        ),</div>
+<div class='row nod'><span class='ln'>247</span>                      ],</div>
+<div class='row nod'><span class='ln'>248</span>                    );</div>
+<div class='row nod'><span class='ln'>249</span>                  }),</div>
+<div class='row nod'><span class='ln'>250</span>                ),</div>
+<div class='row nod'><span class='ln'>251</span>              ),</div>
+<div class='row nod'><span class='ln'>252</span>            ),</div>
+<div class='row nod'><span class='ln'>253</span>          ),</div>
+<div class='row nod'><span class='ln'>254</span>        ),</div>
+<div class='row cov'><span class='ln'>255</span>        if (isMultiple) _getCheckboxOperate(),</div>
+<div class='row nod'><span class='ln'>256</span>      ],</div>
+<div class='row nod'><span class='ln'>257</span>    );</div>
+<div class='row nod'><span class='ln'>258</span>  }</div>
+<div class='row nod'><span class='ln'>259</span></div>
+<div class='row cov'><span class='ln'>260</span>  Widget _getRadioList() {</div>
+<div class='row cov'><span class='ln'>261</span>    var selected = _getSelected(widget.options);</div>
+<div class='row cov'><span class='ln'>262</span>    var radios = TRadioGroup(</div>
+<div class='row cov'><span class='ln'>263</span>      onRadioGroupChange: _handleSelectChange,</div>
+<div class='row nod'><span class='ln'>264</span>      radioCheckStyle: TRadioVariant.check,</div>
+<div class='row cov'><span class='ln'>265</span>      selectId: selected.isEmpty ? null : selected[0]?.value,</div>
+<div class='row cov'><span class='ln'>266</span>      child: Column(</div>
+<div class='row cov'><span class='ln'>267</span>        children: List.generate(</div>
+<div class='row cov'><span class='ln'>268</span>          widget.options?.length ?? 0,</div>
+<div class='row cov'><span class='ln'>269</span>          (index) =&gt; TRadio(</div>
+<div class='row cov'><span class='ln'>270</span>            id: widget.options![index].value,</div>
+<div class='row cov'><span class='ln'>271</span>            title: widget.options![index].label,</div>
+<div class='row cov'><span class='ln'>272</span>            selectColor: widget.options![index].selectedColor,</div>
+<div class='row cov'><span class='ln'>273</span>            enabled: !(widget.options![index].disabled ?? false),</div>
+<div class='row nod'><span class='ln'>274</span>            contentDirection: TContentDirection.left,</div>
+<div class='row nod'><span class='ln'>275</span>          ),</div>
+<div class='row nod'><span class='ln'>276</span>        ),</div>
+<div class='row nod'><span class='ln'>277</span>      ),</div>
+<div class='row nod'><span class='ln'>278</span>    );</div>
+<div class='row cov'><span class='ln'>279</span>    return widget.minContentHeight != null || widget.maxContentHeight != null</div>
+<div class='row unc'><span class='ln'>280</span>▶         ? Container(</div>
+<div class='row unc'><span class='ln'>281</span>▶             color: context.tTheme.bgColorContainer,</div>
+<div class='row unc'><span class='ln'>282</span>▶             child: ConstrainedBox(</div>
+<div class='row unc'><span class='ln'>283</span>▶               constraints: BoxConstraints(</div>
+<div class='row unc'><span class='ln'>284</span>▶                   minHeight: widget.minContentHeight ?? 0.0,</div>
+<div class='row unc'><span class='ln'>285</span>▶                   maxHeight: widget.maxContentHeight ?? double.infinity),</div>
+<div class='row unc'><span class='ln'>286</span>▶               child: widget.maxContentHeight != null</div>
+<div class='row unc'><span class='ln'>287</span>▶                   ? SingleChildScrollView(child: radios)</div>
+<div class='row nod'><span class='ln'>288</span>                  : radios,</div>
+<div class='row nod'><span class='ln'>289</span>            ),</div>
+<div class='row nod'><span class='ln'>290</span>          )</div>
+<div class='row nod'><span class='ln'>291</span>        : radios;</div>
+<div class='row nod'><span class='ln'>292</span>  }</div>
+<div class='row nod'><span class='ln'>293</span></div>
+<div class='row cov'><span class='ln'>294</span>  Widget? _getCheckboxItem(List&lt;TDropdownItemOption&gt; cols, int index) {</div>
+<div class='row cov'><span class='ln'>295</span>    var col = index &gt;= cols.length ? null : cols[index];</div>
+<div class='row nod'><span class='ln'>296</span>    if (col == null) {</div>
+<div class='row nod'><span class='ln'>297</span>      return null;</div>
+<div class='row nod'><span class='ln'>298</span>    }</div>
+<div class='row cov'><span class='ln'>299</span>    var enable = !(col.disabled ?? false);</div>
+<div class='row cov'><span class='ln'>300</span>    return TCheckbox(</div>
+<div class='row cov'><span class='ln'>301</span>      id: col.value,</div>
+<div class='row cov'><span class='ln'>302</span>      title: col.label,</div>
+<div class='row cov'><span class='ln'>303</span>      enabled: !(col.disabled ?? false),</div>
+<div class='row cov'><span class='ln'>304</span>      selectColor: col.selectedColor,</div>
+<div class='row cov'><span class='ln'>305</span>      disableColor: col.disabledColor,</div>
+<div class='row cov'><span class='ln'>306</span>      customIconBuilder: (context, checked) =&gt; null,</div>
+<div class='row cov'><span class='ln'>307</span>      customContentBuilder: (context, checked, content) =&gt; Container(</div>
+<div class='row nod'><span class='ln'>308</span>        height: 40,</div>
+<div class='row cov'><span class='ln'>309</span>        decoration: BoxDecoration(</div>
+<div class='row nod'><span class='ln'>310</span>          color: enable</div>
+<div class='row nod'><span class='ln'>311</span>              ? checked</div>
+<div class='row unc'><span class='ln'>312</span>▶                   ? context.tTheme.brandLightColor</div>
+<div class='row cov'><span class='ln'>313</span>                  : context.tTheme.bgColorSecondaryContainer</div>
+<div class='row unc'><span class='ln'>314</span>▶               : context.tTheme.bgColorSecondaryContainerHover,</div>
+<div class='row cov'><span class='ln'>315</span>          borderRadius: BorderRadius.all(</div>
+<div class='row cov'><span class='ln'>316</span>            Radius.circular(context.tTheme.radiusDefault),</div>
+<div class='row nod'><span class='ln'>317</span>          ),</div>
+<div class='row nod'><span class='ln'>318</span>        ),</div>
+<div class='row cov'><span class='ln'>319</span>        child: Center(</div>
+<div class='row cov'><span class='ln'>320</span>          child: TText(</div>
+<div class='row nod'><span class='ln'>321</span>            content,</div>
+<div class='row nod'><span class='ln'>322</span>            textColor: enable</div>
+<div class='row nod'><span class='ln'>323</span>                ? checked</div>
+<div class='row unc'><span class='ln'>324</span>▶                     ? context.tTheme.brandColor7</div>
+<div class='row cov'><span class='ln'>325</span>                    : context.tTheme.textColorPrimary</div>
+<div class='row unc'><span class='ln'>326</span>▶                 : context.tTheme.textDisabledColor,</div>
+<div class='row nod'><span class='ln'>327</span>            maxLines: 1,</div>
+<div class='row nod'><span class='ln'>328</span>            overflow: TextOverflow.ellipsis,</div>
+<div class='row nod'><span class='ln'>329</span>          ),</div>
+<div class='row nod'><span class='ln'>330</span>        ),</div>
+<div class='row nod'><span class='ln'>331</span>      ),</div>
+<div class='row nod'><span class='ln'>332</span>    );</div>
+<div class='row nod'><span class='ln'>333</span>  }</div>
+<div class='row nod'><span class='ln'>334</span></div>
+<div class='row cov'><span class='ln'>335</span>  Widget _getCheckboxOperate() {</div>
+<div class='row cov'><span class='ln'>336</span>    return Container(</div>
+<div class='row nod'><span class='ln'>337</span>      height: TDropdownItem.operateHeight,</div>
+<div class='row cov'><span class='ln'>338</span>      padding: EdgeInsets.all(context.tTheme.spacer16),</div>
+<div class='row cov'><span class='ln'>339</span>      decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>340</span>        color: context.tTheme.bgColorContainer,</div>
+<div class='row cov'><span class='ln'>341</span>        border: Border(</div>
+<div class='row cov'><span class='ln'>342</span>          top: BorderSide(</div>
+<div class='row cov'><span class='ln'>343</span>            color: context.tTheme.componentStrokeColor,</div>
+<div class='row nod'><span class='ln'>344</span>            width: 0.5,</div>
+<div class='row nod'><span class='ln'>345</span>          ),</div>
+<div class='row cov'><span class='ln'>346</span>          bottom: directionListenable.value == TDropdownMenuDirection.up</div>
+<div class='row unc'><span class='ln'>347</span>▶               ? BorderSide(</div>
+<div class='row unc'><span class='ln'>348</span>▶                   color: context.tTheme.componentStrokeColor,</div>
+<div class='row nod'><span class='ln'>349</span>                  width: 0.5,</div>
+<div class='row nod'><span class='ln'>350</span>                )</div>
+<div class='row nod'><span class='ln'>351</span>              : BorderSide.none,</div>
+<div class='row nod'><span class='ln'>352</span>        ),</div>
+<div class='row nod'><span class='ln'>353</span>      ),</div>
+<div class='row cov'><span class='ln'>354</span>      child: Row(</div>
+<div class='row nod'><span class='ln'>355</span>        // spacing: context.tTheme.spacer16,</div>
+<div class='row nod'><span class='ln'>356</span>        mainAxisAlignment: MainAxisAlignment.spaceBetween,</div>
+<div class='row cov'><span class='ln'>357</span>        children: [</div>
+<div class='row cov'><span class='ln'>358</span>          Expanded(</div>
+<div class='row cov'><span class='ln'>359</span>            child: TButton(</div>
+<div class='row cov'><span class='ln'>360</span>              child: Text(context.resource.reset),</div>
+<div class='row nod'><span class='ln'>361</span>              colorScheme: TButtonColorScheme.light,</div>
+<div class='row unc'><span class='ln'>362</span>▶               onPressed: () {</div>
+<div class='row unc'><span class='ln'>363</span>▶                 reset();</div>
+<div class='row unc'><span class='ln'>364</span>▶                 widget.onReset?.call();</div>
+<div class='row nod'><span class='ln'>365</span>              },</div>
+<div class='row nod'><span class='ln'>366</span>            ),</div>
+<div class='row nod'><span class='ln'>367</span>          ),</div>
+<div class='row cov'><span class='ln'>368</span>          SizedBox(width: context.tTheme.spacer16),</div>
+<div class='row cov'><span class='ln'>369</span>          Expanded(</div>
+<div class='row cov'><span class='ln'>370</span>            child: TButton(</div>
+<div class='row cov'><span class='ln'>371</span>              child: Text(context.resource.confirm),</div>
+<div class='row nod'><span class='ln'>372</span>              colorScheme: TButtonColorScheme.primary,</div>
+<div class='row cov'><span class='ln'>373</span>              onPressed: () {</div>
+<div class='row cov'><span class='ln'>374</span>                _handleClose();</div>
+<div class='row cov'><span class='ln'>375</span>                widget.onConfirm?.call(</div>
+<div class='row cov'><span class='ln'>376</span>                    _getSelected(widget.options).map((e) =&gt; e!.value).toList());</div>
+<div class='row nod'><span class='ln'>377</span>              },</div>
+<div class='row nod'><span class='ln'>378</span>            ),</div>
+<div class='row nod'><span class='ln'>379</span>          ),</div>
+<div class='row nod'><span class='ln'>380</span>        ],</div>
+<div class='row nod'><span class='ln'>381</span>      ),</div>
+<div class='row nod'><span class='ln'>382</span>    );</div>
+<div class='row nod'><span class='ln'>383</span>  }</div>
+<div class='row nod'><span class='ln'>384</span></div>
+<div class='row cov'><span class='ln'>385</span>  EdgeInsets _getPadding(int length, int index, String direction) {</div>
+<div class='row cov'><span class='ln'>386</span>    var value = length - 1 == index ? 0.0 : context.tTheme.spacer12;</div>
+<div class='row cov'><span class='ln'>387</span>    if (direction == &#x27;bottom&#x27;) {</div>
+<div class='row cov'><span class='ln'>388</span>      return EdgeInsets.only(bottom: value);</div>
+<div class='row nod'><span class='ln'>389</span>    }</div>
+<div class='row cov'><span class='ln'>390</span>    if (direction == &#x27;right&#x27;) {</div>
+<div class='row cov'><span class='ln'>391</span>      return EdgeInsets.only(right: value);</div>
+<div class='row nod'><span class='ln'>392</span>    }</div>
+<div class='row unc'><span class='ln'>393</span>▶     return EdgeInsets.all(value);</div>
+<div class='row nod'><span class='ln'>394</span>  }</div>
+<div class='row nod'><span class='ln'>395</span></div>
+<div class='row cov'><span class='ln'>396</span>  Map&lt;String, List&lt;List&lt;TDropdownItemOption&gt;&gt;&gt; _groupChunkOptions() {</div>
+<div class='row cov'><span class='ln'>397</span>    var groupedOptions = widget.options</div>
+<div class='row cov'><span class='ln'>398</span>            ?.groupBy&lt;String&gt;((option) =&gt; option.group ?? &#x27;__default__&#x27;) ??</div>
+<div class='row unc'><span class='ln'>399</span>▶         {};</div>
+<div class='row cov'><span class='ln'>400</span>    var groupedChunkOptions = &lt;String, List&lt;List&lt;TDropdownItemOption&gt;&gt;&gt;{};</div>
+<div class='row cov'><span class='ln'>401</span>    var def = groupedOptions.remove(&#x27;__default__&#x27;);</div>
+<div class='row nod'><span class='ln'>402</span>    if (def != null) {</div>
+<div class='row cov'><span class='ln'>403</span>      groupedOptions[&#x27;__default__&#x27;] = def;</div>
+<div class='row nod'><span class='ln'>404</span>    }</div>
+<div class='row cov'><span class='ln'>405</span>    groupedOptions.forEach((key, value) {</div>
+<div class='row cov'><span class='ln'>406</span>      groupedChunkOptions[key] = value.chunk(widget.optionsColumns ?? 1);</div>
+<div class='row nod'><span class='ln'>407</span>    });</div>
+<div class='row nod'><span class='ln'>408</span>    return groupedChunkOptions;</div>
+<div class='row nod'><span class='ln'>409</span>  }</div>
+<div class='row nod'><span class='ln'>410</span></div>
+<div class='row cov'><span class='ln'>411</span>  void _handleSelectChange(dynamic selected) {</div>
+<div class='row nod'><span class='ln'>412</span>    List&lt;String&gt; selectedIds;</div>
+<div class='row cov'><span class='ln'>413</span>    if (selected is List&lt;String&gt;) {</div>
+<div class='row nod'><span class='ln'>414</span>      selectedIds = selected;</div>
+<div class='row cov'><span class='ln'>415</span>    } else if (selected is String?) {</div>
+<div class='row cov'><span class='ln'>416</span>      selectedIds = selected == null ? [] : [selected];</div>
+<div class='row nod'><span class='ln'>417</span>    } else {</div>
+<div class='row unc'><span class='ln'>418</span>▶       selectedIds = [];</div>
+<div class='row nod'><span class='ln'>419</span>    }</div>
+<div class='row cov'><span class='ln'>420</span>    final isRadio = widget.multiple != true;</div>
+<div class='row cov'><span class='ln'>421</span>    widget.options?.forEach((element) {</div>
+<div class='row cov'><span class='ln'>422</span>      element.selected = selectedIds.contains(element.value);</div>
+<div class='row nod'><span class='ln'>423</span>    });</div>
+<div class='row nod'><span class='ln'>424</span>    if (isRadio) {</div>
+<div class='row cov'><span class='ln'>425</span>      setState(() {});</div>
+<div class='row nod'><span class='ln'>426</span>      // 单选回传单个选中值（与 ValueChanged&lt;T?&gt; 类型匹配）</div>
+<div class='row cov'><span class='ln'>427</span>      widget.onChanged?.call(selectedIds.isEmpty ? null : selectedIds.first as dynamic);</div>
+<div class='row cov'><span class='ln'>428</span>      if (selectedIds.isNotEmpty) {</div>
+<div class='row cov'><span class='ln'>429</span>        _handleClose();</div>
+<div class='row nod'><span class='ln'>430</span>      }</div>
+<div class='row nod'><span class='ln'>431</span>    } else {</div>
+<div class='row unc'><span class='ln'>432</span>▶       widget.onChanged?.call(selectedIds);</div>
+<div class='row nod'><span class='ln'>433</span>    }</div>
+<div class='row nod'><span class='ln'>434</span>  }</div>
+<div class='row nod'><span class='ln'>435</span></div>
+<div class='row cov'><span class='ln'>436</span>  void _handleClose() async {</div>
+<div class='row cov'><span class='ln'>437</span>    if (widget.multiple != true || (widget.optionsColumns ?? 1) &gt; 1) {</div>
+<div class='row cov'><span class='ln'>438</span>      await Future.delayed(const Duration(milliseconds: 100));</div>
+<div class='row nod'><span class='ln'>439</span>    }</div>
+<div class='row cov'><span class='ln'>440</span>    await Navigator.maybePop(context);</div>
+<div class='row nod'><span class='ln'>441</span>  }</div>
+<div class='row nod'><span class='ln'>442</span></div>
+<div class='row unc'><span class='ln'>443</span>▶   void reset() {</div>
+<div class='row unc'><span class='ln'>444</span>▶     widget.options?.forEach((element) {</div>
+<div class='row unc'><span class='ln'>445</span>▶       element.selected = false;</div>
+<div class='row nod'><span class='ln'>446</span>    });</div>
+<div class='row unc'><span class='ln'>447</span>▶     setState(() {});</div>
+<div class='row nod'><span class='ln'>448</span>  }</div>
+<div class='row nod'><span class='ln'>449</span></div>
+<div class='row unc'><span class='ln'>450</span>▶   void updateOptions(TDropdownItemOptionsCallback callback) {</div>
+<div class='row unc'><span class='ln'>451</span>▶     callback(widget.options);</div>
+<div class='row unc'><span class='ln'>452</span>▶     setState(() {});</div>
+<div class='row nod'><span class='ln'>453</span>  }</div>
+<div class='row nod'><span class='ln'>454</span>}</div>
+<div class='row nod'><span class='ln'>455</span></div>
+<div class='row nod'><span class='ln'>456</span>/// 选项数据</div>
+<div class='row nod'><span class='ln'>457</span>class TDropdownItemOption {</div>
+<div class='row cov'><span class='ln'>458</span>  TDropdownItemOption({</div>
+<div class='row nod'><span class='ln'>459</span>    required this.value,</div>
+<div class='row nod'><span class='ln'>460</span>    required this.label,</div>
+<div class='row nod'><span class='ln'>461</span>    this.disabled = false,</div>
+<div class='row nod'><span class='ln'>462</span>    this.group,</div>
+<div class='row nod'><span class='ln'>463</span>    this.selected = false,</div>
+<div class='row nod'><span class='ln'>464</span>    this.selectedColor,</div>
+<div class='row nod'><span class='ln'>465</span>    this.disabledColor,</div>
+<div class='row nod'><span class='ln'>466</span>  });</div>
+<div class='row nod'><span class='ln'>467</span></div>
+<div class='row nod'><span class='ln'>468</span>  /// 选项值</div>
+<div class='row nod'><span class='ln'>469</span>  String value;</div>
+<div class='row nod'><span class='ln'>470</span></div>
+<div class='row nod'><span class='ln'>471</span>  /// 选项标题</div>
+<div class='row nod'><span class='ln'>472</span>  final String label;</div>
+<div class='row nod'><span class='ln'>473</span></div>
+<div class='row nod'><span class='ln'>474</span>  /// 是否禁用</div>
+<div class='row nod'><span class='ln'>475</span>  bool? disabled;</div>
+<div class='row nod'><span class='ln'>476</span></div>
+<div class='row nod'><span class='ln'>477</span>  /// 分组，相同的为一组</div>
+<div class='row nod'><span class='ln'>478</span>  final String? group;</div>
+<div class='row nod'><span class='ln'>479</span></div>
+<div class='row nod'><span class='ln'>480</span>  /// 是否选中</div>
+<div class='row nod'><span class='ln'>481</span>  bool selected;</div>
+<div class='row nod'><span class='ln'>482</span></div>
+<div class='row nod'><span class='ln'>483</span>  /// 选中颜色</div>
+<div class='row nod'><span class='ln'>484</span>  final Color? selectedColor;</div>
+<div class='row nod'><span class='ln'>485</span></div>
+<div class='row nod'><span class='ln'>486</span>  /// 禁用颜色</div>
+<div class='row nod'><span class='ln'>487</span>  final Color? disabledColor;</div>
+<div class='row nod'><span class='ln'>488</span>}</div>
+<div class='row nod'><span class='ln'>489</span></div>
+</pre></body></html>

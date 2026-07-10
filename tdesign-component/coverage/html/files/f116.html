@@ -1,0 +1,392 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/navbar/t_nav_bar.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/navbar/t_nav_bar.dart</h1></header><div class='meta'>行覆盖 <b>94.9%</b> (129/136) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>3</span></div>
+<div class='row nod'><span class='ln'>4</span>/// NavBar 操作项回调类型</div>
+<div class='row nod'><span class='ln'>5</span>typedef TBarItemAction = void Function();</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>/// NavBar 组件 v1.0</div>
+<div class='row nod'><span class='ln'>8</span>///</div>
+<div class='row nod'><span class='ln'>9</span>/// Material AppBar 薄包装（NavigationToolbar 实现）。</div>
+<div class='row nod'><span class='ln'>10</span>/// - A 类禁用：操作项 `action: null`；返回 `onBack: null`。</div>
+<div class='row nod'><span class='ln'>11</span>/// - L4 样式（标题颜色/字体、背景、高度、内边距等）→ [TNavBarThemeData]。</div>
+<div class='row nod'><span class='ln'>12</span>class TNavBar extends StatefulWidget implements PreferredSizeWidget {</div>
+<div class='row cov'><span class='ln'>13</span>  const TNavBar({</div>
+<div class='row nod'><span class='ln'>14</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>15</span>    this.title,</div>
+<div class='row nod'><span class='ln'>16</span>    this.titleWidget,</div>
+<div class='row nod'><span class='ln'>17</span>    this.leading,</div>
+<div class='row nod'><span class='ln'>18</span>    this.actions,</div>
+<div class='row nod'><span class='ln'>19</span>    this.centerTitle = true,</div>
+<div class='row nod'><span class='ln'>20</span>    this.useDefaultBack = true,</div>
+<div class='row nod'><span class='ln'>21</span>    this.onBack,</div>
+<div class='row nod'><span class='ln'>22</span>    this.belowTitleWidget,</div>
+<div class='row nod'><span class='ln'>23</span>    this.flexibleSpace,</div>
+<div class='row nod'><span class='ln'>24</span>    // L4 样式参数（可覆盖 Theme）</div>
+<div class='row nod'><span class='ln'>25</span>    this.titleColor,</div>
+<div class='row nod'><span class='ln'>26</span>    this.backIconColor,</div>
+<div class='row nod'><span class='ln'>27</span>    this.titleFont,</div>
+<div class='row nod'><span class='ln'>28</span>    this.titleFontWeight,</div>
+<div class='row nod'><span class='ln'>29</span>    this.titleFontFamily,</div>
+<div class='row nod'><span class='ln'>30</span>    this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>31</span>    this.height,</div>
+<div class='row nod'><span class='ln'>32</span>    this.padding,</div>
+<div class='row nod'><span class='ln'>33</span>    this.titleMargin,</div>
+<div class='row nod'><span class='ln'>34</span>    this.opacity,</div>
+<div class='row nod'><span class='ln'>35</span>    this.useBorderStyle,</div>
+<div class='row nod'><span class='ln'>36</span>    this.border,</div>
+<div class='row nod'><span class='ln'>37</span>    this.boxShadow,</div>
+<div class='row cov'><span class='ln'>38</span>  }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row nod'><span class='ln'>40</span>  /// 标题文案</div>
+<div class='row nod'><span class='ln'>41</span>  final String? title;</div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row nod'><span class='ln'>43</span>  /// 标题控件，优先级高于 [title] 文案</div>
+<div class='row nod'><span class='ln'>44</span>  final Widget? titleWidget;</div>
+<div class='row nod'><span class='ln'>45</span></div>
+<div class='row nod'><span class='ln'>46</span>  /// 左侧操作项（对齐 AppBar.leading）</div>
+<div class='row nod'><span class='ln'>47</span>  final List&lt;TNavBarItem&gt;? leading;</div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row nod'><span class='ln'>49</span>  /// 右侧操作项（对齐 AppBar.actions）</div>
+<div class='row nod'><span class='ln'>50</span>  final List&lt;TNavBarItem&gt;? actions;</div>
+<div class='row nod'><span class='ln'>51</span></div>
+<div class='row nod'><span class='ln'>52</span>  /// 标题是否居中</div>
+<div class='row nod'><span class='ln'>53</span>  final bool centerTitle;</div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row nod'><span class='ln'>55</span>  /// 是否使用默认的返回按钮</div>
+<div class='row nod'><span class='ln'>56</span>  final bool useDefaultBack;</div>
+<div class='row nod'><span class='ln'>57</span></div>
+<div class='row nod'><span class='ln'>58</span>  /// 返回事件</div>
+<div class='row nod'><span class='ln'>59</span>  final VoidCallback? onBack;</div>
+<div class='row nod'><span class='ln'>60</span></div>
+<div class='row nod'><span class='ln'>61</span>  /// NavBar 下方的 Widget</div>
+<div class='row nod'><span class='ln'>62</span>  final Widget? belowTitleWidget;</div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row nod'><span class='ln'>64</span>  /// 固定背景 Widget</div>
+<div class='row nod'><span class='ln'>65</span>  final Widget? flexibleSpace;</div>
+<div class='row nod'><span class='ln'>66</span></div>
+<div class='row nod'><span class='ln'>67</span>  // ---- L4 样式（可覆盖 ThemeData 默认值） ----</div>
+<div class='row nod'><span class='ln'>68</span></div>
+<div class='row nod'><span class='ln'>69</span>  /// 标题颜色</div>
+<div class='row nod'><span class='ln'>70</span>  final Color? titleColor;</div>
+<div class='row nod'><span class='ln'>71</span></div>
+<div class='row nod'><span class='ln'>72</span>  /// 左边返回图标颜色</div>
+<div class='row nod'><span class='ln'>73</span>  final Color? backIconColor;</div>
+<div class='row nod'><span class='ln'>74</span></div>
+<div class='row nod'><span class='ln'>75</span>  /// 标题字体尺寸</div>
+<div class='row nod'><span class='ln'>76</span>  final Font? titleFont;</div>
+<div class='row nod'><span class='ln'>77</span></div>
+<div class='row nod'><span class='ln'>78</span>  /// 标题字体粗细</div>
+<div class='row nod'><span class='ln'>79</span>  final FontWeight? titleFontWeight;</div>
+<div class='row nod'><span class='ln'>80</span></div>
+<div class='row nod'><span class='ln'>81</span>  /// 标题字体样式</div>
+<div class='row nod'><span class='ln'>82</span>  final FontFamily? titleFontFamily;</div>
+<div class='row nod'><span class='ln'>83</span></div>
+<div class='row nod'><span class='ln'>84</span>  /// 背景颜色</div>
+<div class='row nod'><span class='ln'>85</span>  final Color? backgroundColor;</div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row nod'><span class='ln'>87</span>  /// 高度</div>
+<div class='row nod'><span class='ln'>88</span>  final double? height;</div>
+<div class='row nod'><span class='ln'>89</span></div>
+<div class='row nod'><span class='ln'>90</span>  /// 内部填充</div>
+<div class='row nod'><span class='ln'>91</span>  final EdgeInsetsGeometry? padding;</div>
+<div class='row nod'><span class='ln'>92</span></div>
+<div class='row nod'><span class='ln'>93</span>  /// 中间文案左右两边间距</div>
+<div class='row nod'><span class='ln'>94</span>  final double? titleMargin;</div>
+<div class='row nod'><span class='ln'>95</span></div>
+<div class='row nod'><span class='ln'>96</span>  /// 透明度</div>
+<div class='row nod'><span class='ln'>97</span>  final double? opacity;</div>
+<div class='row nod'><span class='ln'>98</span></div>
+<div class='row nod'><span class='ln'>99</span>  /// 是否使用边框模式</div>
+<div class='row nod'><span class='ln'>100</span>  final bool? useBorderStyle;</div>
+<div class='row nod'><span class='ln'>101</span></div>
+<div class='row nod'><span class='ln'>102</span>  /// 操作项边框配置</div>
+<div class='row nod'><span class='ln'>103</span>  final TNavBarBorder? border;</div>
+<div class='row nod'><span class='ln'>104</span></div>
+<div class='row nod'><span class='ln'>105</span>  /// 底部阴影</div>
+<div class='row nod'><span class='ln'>106</span>  final List&lt;BoxShadow&gt;? boxShadow;</div>
+<div class='row nod'><span class='ln'>107</span></div>
+<div class='row cov'><span class='ln'>108</span>  @override</div>
+<div class='row cov'><span class='ln'>109</span>  State&lt;StatefulWidget&gt; createState() =&gt; _TNavBarState();</div>
+<div class='row nod'><span class='ln'>110</span></div>
+<div class='row cov'><span class='ln'>111</span>  @override</div>
+<div class='row cov'><span class='ln'>112</span>  Size get preferredSize =&gt; Size.fromHeight(height ?? 48);</div>
+<div class='row nod'><span class='ln'>113</span>}</div>
+<div class='row nod'><span class='ln'>114</span></div>
+<div class='row nod'><span class='ln'>115</span>class _TNavBarState extends State&lt;TNavBar&gt; {</div>
+<div class='row cov'><span class='ln'>116</span>  TNavBarThemeData get _themeData =&gt;</div>
+<div class='row cov'><span class='ln'>117</span>      Theme.of(context).extension&lt;TNavBarThemeData&gt;() ??</div>
+<div class='row nod'><span class='ln'>118</span>      const TNavBarThemeData();</div>
+<div class='row nod'><span class='ln'>119</span></div>
+<div class='row nod'><span class='ln'>120</span>  // ---- ThemeData 取值辅助（构造器优先 &gt; Theme &gt; 默认） ----</div>
+<div class='row nod'><span class='ln'>121</span></div>
+<div class='row cov'><span class='ln'>122</span>  Color _effectiveTitleColor(BuildContext context) =&gt;</div>
+<div class='row cov'><span class='ln'>123</span>      widget.titleColor ??</div>
+<div class='row cov'><span class='ln'>124</span>      _themeData.titleColor ??</div>
+<div class='row cov'><span class='ln'>125</span>      context.tTheme.textColorPrimary;</div>
+<div class='row nod'><span class='ln'>126</span></div>
+<div class='row cov'><span class='ln'>127</span>  Color _effectiveBackIconColor(BuildContext context) =&gt;</div>
+<div class='row cov'><span class='ln'>128</span>      widget.backIconColor ??</div>
+<div class='row cov'><span class='ln'>129</span>      _themeData.backIconColor ??</div>
+<div class='row cov'><span class='ln'>130</span>      context.tTheme.textColorPrimary;</div>
+<div class='row nod'><span class='ln'>131</span></div>
+<div class='row cov'><span class='ln'>132</span>  Font? get _effectiveTitleFont =&gt;</div>
+<div class='row cov'><span class='ln'>133</span>      widget.titleFont ?? _themeData.titleFont;</div>
+<div class='row nod'><span class='ln'>134</span></div>
+<div class='row cov'><span class='ln'>135</span>  FontWeight? get _effectiveTitleFontWeight =&gt;</div>
+<div class='row cov'><span class='ln'>136</span>      widget.titleFontWeight ?? _themeData.titleFontWeight;</div>
+<div class='row nod'><span class='ln'>137</span></div>
+<div class='row cov'><span class='ln'>138</span>  FontFamily? get _effectiveTitleFontFamily =&gt;</div>
+<div class='row cov'><span class='ln'>139</span>      widget.titleFontFamily ?? _themeData.titleFontFamily;</div>
+<div class='row nod'><span class='ln'>140</span></div>
+<div class='row cov'><span class='ln'>141</span>  Color get _effectiveBackgroundColor =&gt;</div>
+<div class='row cov'><span class='ln'>142</span>      widget.backgroundColor ??</div>
+<div class='row cov'><span class='ln'>143</span>      _themeData.backgroundColor ??</div>
+<div class='row cov'><span class='ln'>144</span>      context.tTheme.bgColorContainer;</div>
+<div class='row nod'><span class='ln'>145</span></div>
+<div class='row cov'><span class='ln'>146</span>  double get _effectiveHeight =&gt; widget.height ?? _themeData.height ?? 48;</div>
+<div class='row nod'><span class='ln'>147</span></div>
+<div class='row cov'><span class='ln'>148</span>  EdgeInsetsGeometry get _effectivePadding =&gt;</div>
+<div class='row cov'><span class='ln'>149</span>      widget.padding ??</div>
+<div class='row cov'><span class='ln'>150</span>      _themeData.padding ??</div>
+<div class='row cov'><span class='ln'>151</span>      EdgeInsets.symmetric(</div>
+<div class='row cov'><span class='ln'>152</span>        horizontal: context.tTheme.spacer16,</div>
+<div class='row cov'><span class='ln'>153</span>        vertical: context.tTheme.spacer4,</div>
+<div class='row nod'><span class='ln'>154</span>      );</div>
+<div class='row nod'><span class='ln'>155</span></div>
+<div class='row cov'><span class='ln'>156</span>  double get _effectiveTitleMargin =&gt;</div>
+<div class='row cov'><span class='ln'>157</span>      widget.titleMargin ?? _themeData.titleMargin ?? 16;</div>
+<div class='row nod'><span class='ln'>158</span></div>
+<div class='row cov'><span class='ln'>159</span>  double get _effectiveOpacity =&gt;</div>
+<div class='row cov'><span class='ln'>160</span>      widget.opacity ?? _themeData.opacity ?? 1.0;</div>
+<div class='row nod'><span class='ln'>161</span></div>
+<div class='row cov'><span class='ln'>162</span>  bool get _effectiveUseBorderStyle =&gt;</div>
+<div class='row cov'><span class='ln'>163</span>      widget.useBorderStyle ?? _themeData.useBorderStyle ?? false;</div>
+<div class='row nod'><span class='ln'>164</span></div>
+<div class='row cov'><span class='ln'>165</span>  TNavBarBorder get _effectiveBorder =&gt;</div>
+<div class='row cov'><span class='ln'>166</span>      widget.border ?? _themeData.border ?? const TNavBarBorder();</div>
+<div class='row nod'><span class='ln'>167</span></div>
+<div class='row cov'><span class='ln'>168</span>  List&lt;BoxShadow&gt;? get _effectiveBoxShadow =&gt;</div>
+<div class='row cov'><span class='ln'>169</span>      widget.boxShadow ?? _themeData.boxShadow;</div>
+<div class='row nod'><span class='ln'>170</span></div>
+<div class='row cov'><span class='ln'>171</span>  Widget _addBorder(List&lt;Widget&gt; items) {</div>
+<div class='row cov'><span class='ln'>172</span>    var border = _effectiveBorder;</div>
+<div class='row cov'><span class='ln'>173</span>    var borderColor = border.color ?? context.tTheme.componentStrokeColor;</div>
+<div class='row cov'><span class='ln'>174</span>    var children = &lt;Widget&gt;[];</div>
+<div class='row cov'><span class='ln'>175</span>    for (var i = 0; i &lt; items.length; i++) {</div>
+<div class='row cov'><span class='ln'>176</span>      children.add(items[i]);</div>
+<div class='row cov'><span class='ln'>177</span>      if (_effectiveUseBorderStyle &amp;&amp; i != items.length - 1) {</div>
+<div class='row cov'><span class='ln'>178</span>        children.add(</div>
+<div class='row cov'><span class='ln'>179</span>          Container(</div>
+<div class='row cov'><span class='ln'>180</span>            width: border.width,</div>
+<div class='row nod'><span class='ln'>181</span>            height: 16.0,</div>
+<div class='row nod'><span class='ln'>182</span>            color: borderColor,</div>
+<div class='row nod'><span class='ln'>183</span>          ),</div>
+<div class='row nod'><span class='ln'>184</span>        );</div>
+<div class='row nod'><span class='ln'>185</span>      }</div>
+<div class='row nod'><span class='ln'>186</span>    }</div>
+<div class='row cov'><span class='ln'>187</span>    var child = Row(</div>
+<div class='row nod'><span class='ln'>188</span>      children: children,</div>
+<div class='row nod'><span class='ln'>189</span>      mainAxisSize: MainAxisSize.min,</div>
+<div class='row nod'><span class='ln'>190</span>    );</div>
+<div class='row cov'><span class='ln'>191</span>    return Container(</div>
+<div class='row cov'><span class='ln'>192</span>      decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>193</span>        borderRadius: BorderRadius.circular(border.radius),</div>
+<div class='row cov'><span class='ln'>194</span>        border: Border.all(</div>
+<div class='row nod'><span class='ln'>195</span>          color: borderColor,</div>
+<div class='row cov'><span class='ln'>196</span>          width: border.width,</div>
+<div class='row nod'><span class='ln'>197</span>        ),</div>
+<div class='row nod'><span class='ln'>198</span>      ),</div>
+<div class='row cov'><span class='ln'>199</span>      padding: border.padding ??</div>
+<div class='row cov'><span class='ln'>200</span>          EdgeInsets.symmetric(horizontal: context.tTheme.spacer4),</div>
+<div class='row nod'><span class='ln'>201</span>      child: child,</div>
+<div class='row nod'><span class='ln'>202</span>    );</div>
+<div class='row nod'><span class='ln'>203</span>  }</div>
+<div class='row nod'><span class='ln'>204</span></div>
+<div class='row cov'><span class='ln'>205</span>  Widget get backButton {</div>
+<div class='row cov'><span class='ln'>206</span>    var iconColor = _effectiveBackIconColor(context);</div>
+<div class='row cov'><span class='ln'>207</span>    return TNavBarItem(</div>
+<div class='row nod'><span class='ln'>208</span>      icon: TIcons.chevron_left,</div>
+<div class='row nod'><span class='ln'>209</span>      iconSize: 28.0,</div>
+<div class='row nod'><span class='ln'>210</span>      iconColor: iconColor,</div>
+<div class='row cov'><span class='ln'>211</span>      action: () {</div>
+<div class='row cov'><span class='ln'>212</span>        widget.onBack?.call();</div>
+<div class='row cov'><span class='ln'>213</span>        Navigator.maybePop(context);</div>
+<div class='row nod'><span class='ln'>214</span>      },</div>
+<div class='row cov'><span class='ln'>215</span>    ).toWidget(context);</div>
+<div class='row nod'><span class='ln'>216</span>  }</div>
+<div class='row nod'><span class='ln'>217</span></div>
+<div class='row cov'><span class='ln'>218</span>  Widget _buildTitleBarItems(bool isLeading) {</div>
+<div class='row cov'><span class='ln'>219</span>    var barItems = (isLeading ? widget.leading : widget.actions) ?? [];</div>
+<div class='row nod'><span class='ln'>220</span>    var children = barItems</div>
+<div class='row cov'><span class='ln'>221</span>        .map(</div>
+<div class='row cov'><span class='ln'>222</span>          (e) =&gt; e.toWidget(context, isLeading: isLeading),</div>
+<div class='row nod'><span class='ln'>223</span>        )</div>
+<div class='row cov'><span class='ln'>224</span>        .toList();</div>
+<div class='row nod'><span class='ln'>225</span></div>
+<div class='row cov'><span class='ln'>226</span>    return Row(</div>
+<div class='row cov'><span class='ln'>227</span>      children: [</div>
+<div class='row cov'><span class='ln'>228</span>        if (isLeading &amp;&amp; widget.useDefaultBack) backButton,</div>
+<div class='row cov'><span class='ln'>229</span>        if (children.isNotEmpty)</div>
+<div class='row cov'><span class='ln'>230</span>          _effectiveUseBorderStyle</div>
+<div class='row cov'><span class='ln'>231</span>              ? _addBorder(children)</div>
+<div class='row cov'><span class='ln'>232</span>              : Row(</div>
+<div class='row nod'><span class='ln'>233</span>                  children: children,</div>
+<div class='row nod'><span class='ln'>234</span>                  mainAxisSize: MainAxisSize.min,</div>
+<div class='row nod'><span class='ln'>235</span>                ),</div>
+<div class='row nod'><span class='ln'>236</span>      ],</div>
+<div class='row nod'><span class='ln'>237</span>      mainAxisSize: MainAxisSize.min,</div>
+<div class='row nod'><span class='ln'>238</span>    );</div>
+<div class='row nod'><span class='ln'>239</span>  }</div>
+<div class='row nod'><span class='ln'>240</span></div>
+<div class='row cov'><span class='ln'>241</span>  TextStyle _getTitleStyle(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>242</span>    var titleColor = _effectiveTitleColor(context);</div>
+<div class='row nod'><span class='ln'>243</span></div>
+<div class='row cov'><span class='ln'>244</span>    var titleFont = _effectiveTitleFont ?? context.tTheme.fontBodyLarge;</div>
+<div class='row nod'><span class='ln'>245</span></div>
+<div class='row cov'><span class='ln'>246</span>    return _effectiveTitleFontFamily == null</div>
+<div class='row cov'><span class='ln'>247</span>        ? TextStyle(</div>
+<div class='row cov'><span class='ln'>248</span>            fontSize: titleFont?.size,</div>
+<div class='row nod'><span class='ln'>249</span>            color: titleColor,</div>
+<div class='row cov'><span class='ln'>250</span>            fontWeight: _effectiveTitleFontWeight ?? FontWeight.w500,</div>
+<div class='row nod'><span class='ln'>251</span>            decoration: TextDecoration.none,</div>
+<div class='row nod'><span class='ln'>252</span>          )</div>
+<div class='row unc'><span class='ln'>253</span>▶         : TextStyle(</div>
+<div class='row unc'><span class='ln'>254</span>▶             fontSize: titleFont?.size,</div>
+<div class='row nod'><span class='ln'>255</span>            color: titleColor,</div>
+<div class='row unc'><span class='ln'>256</span>▶             fontWeight: _effectiveTitleFontWeight ?? FontWeight.w500,</div>
+<div class='row nod'><span class='ln'>257</span>            decoration: TextDecoration.none,</div>
+<div class='row unc'><span class='ln'>258</span>▶             fontFamily: _effectiveTitleFontFamily!.fontFamily,</div>
+<div class='row nod'><span class='ln'>259</span>            package: &#x27;tdesign_flutter&#x27;,</div>
+<div class='row nod'><span class='ln'>260</span>          );</div>
+<div class='row nod'><span class='ln'>261</span>  }</div>
+<div class='row nod'><span class='ln'>262</span></div>
+<div class='row cov'><span class='ln'>263</span>  Widget _getTitleWidget(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>264</span>    return widget.titleWidget ??</div>
+<div class='row cov'><span class='ln'>265</span>        Text(</div>
+<div class='row cov'><span class='ln'>266</span>          widget.title ?? &#x27;&#x27;,</div>
+<div class='row nod'><span class='ln'>267</span>          maxLines: 1,</div>
+<div class='row nod'><span class='ln'>268</span>          overflow: TextOverflow.ellipsis,</div>
+<div class='row cov'><span class='ln'>269</span>          style: _getTitleStyle(context),</div>
+<div class='row nod'><span class='ln'>270</span>        );</div>
+<div class='row nod'><span class='ln'>271</span>  }</div>
+<div class='row nod'><span class='ln'>272</span></div>
+<div class='row cov'><span class='ln'>273</span>  Widget _getNavbarChild() {</div>
+<div class='row cov'><span class='ln'>274</span>    final Widget toolbar = NavigationToolbar(</div>
+<div class='row cov'><span class='ln'>275</span>      leading: _buildTitleBarItems(true),</div>
+<div class='row cov'><span class='ln'>276</span>      middle: _getTitleWidget(context),</div>
+<div class='row cov'><span class='ln'>277</span>      trailing: _buildTitleBarItems(false),</div>
+<div class='row cov'><span class='ln'>278</span>      middleSpacing: _effectiveTitleMargin,</div>
+<div class='row cov'><span class='ln'>279</span>      centerMiddle: widget.centerTitle,</div>
+<div class='row nod'><span class='ln'>280</span>    );</div>
+<div class='row cov'><span class='ln'>281</span>    if (widget.belowTitleWidget == null) {</div>
+<div class='row nod'><span class='ln'>282</span>      return toolbar;</div>
+<div class='row nod'><span class='ln'>283</span>    }</div>
+<div class='row cov'><span class='ln'>284</span>    var children = &lt;Widget&gt;[Expanded(child: toolbar)];</div>
+<div class='row cov'><span class='ln'>285</span>    children.add(widget.belowTitleWidget as Widget);</div>
+<div class='row cov'><span class='ln'>286</span>    return Column(</div>
+<div class='row nod'><span class='ln'>287</span>      crossAxisAlignment: CrossAxisAlignment.start,</div>
+<div class='row nod'><span class='ln'>288</span>      children: children,</div>
+<div class='row nod'><span class='ln'>289</span>    );</div>
+<div class='row nod'><span class='ln'>290</span>  }</div>
+<div class='row nod'><span class='ln'>291</span></div>
+<div class='row cov'><span class='ln'>292</span>  @override</div>
+<div class='row nod'><span class='ln'>293</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>294</span>    var _backgroundColor = _effectiveBackgroundColor;</div>
+<div class='row cov'><span class='ln'>295</span>    if (_backgroundColor != Colors.transparent) {</div>
+<div class='row cov'><span class='ln'>296</span>      _backgroundColor = _backgroundColor.withValues(alpha: _effectiveOpacity);</div>
+<div class='row nod'><span class='ln'>297</span>    }</div>
+<div class='row nod'><span class='ln'>298</span></div>
+<div class='row nod'><span class='ln'>299</span>    // screenAdaptation 由外层处理，组件不做自动适配</div>
+<div class='row nod'><span class='ln'>300</span>    var paddingTop = 0.0;</div>
+<div class='row cov'><span class='ln'>301</span>    var padding = _effectivePadding;</div>
+<div class='row cov'><span class='ln'>302</span>    Widget appBar = Container(</div>
+<div class='row cov'><span class='ln'>303</span>      height: _effectiveHeight + paddingTop,</div>
+<div class='row cov'><span class='ln'>304</span>      padding: padding.add(EdgeInsets.only(top: paddingTop)),</div>
+<div class='row cov'><span class='ln'>305</span>      decoration: BoxDecoration(</div>
+<div class='row nod'><span class='ln'>306</span>        color: _backgroundColor,</div>
+<div class='row cov'><span class='ln'>307</span>        boxShadow: _effectiveBoxShadow,</div>
+<div class='row nod'><span class='ln'>308</span>      ),</div>
+<div class='row cov'><span class='ln'>309</span>      child: _getNavbarChild(),</div>
+<div class='row nod'><span class='ln'>310</span>    );</div>
+<div class='row cov'><span class='ln'>311</span>    if (widget.flexibleSpace != null) {</div>
+<div class='row unc'><span class='ln'>312</span>▶       appBar = Stack(</div>
+<div class='row nod'><span class='ln'>313</span>        fit: StackFit.passthrough,</div>
+<div class='row unc'><span class='ln'>314</span>▶         children: &lt;Widget&gt;[</div>
+<div class='row unc'><span class='ln'>315</span>▶           widget.flexibleSpace!,</div>
+<div class='row nod'><span class='ln'>316</span>          appBar,</div>
+<div class='row nod'><span class='ln'>317</span>        ],</div>
+<div class='row nod'><span class='ln'>318</span>      );</div>
+<div class='row nod'><span class='ln'>319</span>    }</div>
+<div class='row nod'><span class='ln'>320</span></div>
+<div class='row nod'><span class='ln'>321</span>    return appBar;</div>
+<div class='row nod'><span class='ln'>322</span>  }</div>
+<div class='row nod'><span class='ln'>323</span>}</div>
+<div class='row nod'><span class='ln'>324</span></div>
+<div class='row nod'><span class='ln'>325</span>/// NavBar 操作项</div>
+<div class='row nod'><span class='ln'>326</span>class TNavBarItem {</div>
+<div class='row nod'><span class='ln'>327</span>  /// 图标</div>
+<div class='row nod'><span class='ln'>328</span>  IconData? icon;</div>
+<div class='row nod'><span class='ln'>329</span></div>
+<div class='row nod'><span class='ln'>330</span>  /// 图标颜色</div>
+<div class='row nod'><span class='ln'>331</span>  Color? iconColor;</div>
+<div class='row nod'><span class='ln'>332</span></div>
+<div class='row nod'><span class='ln'>333</span>  /// 操作回调；`null` 表示禁用</div>
+<div class='row nod'><span class='ln'>334</span>  TBarItemAction? action;</div>
+<div class='row nod'><span class='ln'>335</span></div>
+<div class='row nod'><span class='ln'>336</span>  /// 图标尺寸</div>
+<div class='row nod'><span class='ln'>337</span>  double? iconSize;</div>
+<div class='row nod'><span class='ln'>338</span></div>
+<div class='row nod'><span class='ln'>339</span>  /// 内部填充</div>
+<div class='row nod'><span class='ln'>340</span>  EdgeInsetsGeometry? padding;</div>
+<div class='row nod'><span class='ln'>341</span></div>
+<div class='row nod'><span class='ln'>342</span>  /// 自定义组件，优先级高于 icon，可以是任意 Widget</div>
+<div class='row nod'><span class='ln'>343</span>  Widget? customWidget;</div>
+<div class='row nod'><span class='ln'>344</span></div>
+<div class='row nod'><span class='ln'>345</span>  /// 图标组件，优先级高于 icon</div>
+<div class='row nod'><span class='ln'>346</span>  @Deprecated(&#x27;Use customWidget instead&#x27;)</div>
+<div class='row nod'><span class='ln'>347</span>  Widget? iconWidget;</div>
+<div class='row nod'><span class='ln'>348</span></div>
+<div class='row cov'><span class='ln'>349</span>  TNavBarItem({</div>
+<div class='row nod'><span class='ln'>350</span>    this.icon,</div>
+<div class='row nod'><span class='ln'>351</span>    this.iconColor,</div>
+<div class='row nod'><span class='ln'>352</span>    this.action,</div>
+<div class='row nod'><span class='ln'>353</span>    this.iconSize = 24.0,</div>
+<div class='row nod'><span class='ln'>354</span>    this.padding,</div>
+<div class='row nod'><span class='ln'>355</span>    this.customWidget,</div>
+<div class='row nod'><span class='ln'>356</span>    @Deprecated(&#x27;Use customWidget instead&#x27;) this.iconWidget,</div>
+<div class='row nod'><span class='ln'>357</span>  });</div>
+<div class='row nod'><span class='ln'>358</span></div>
+<div class='row cov'><span class='ln'>359</span>  Widget toWidget(BuildContext context, {bool isLeading = true}) =&gt;</div>
+<div class='row cov'><span class='ln'>360</span>      GestureDetector(</div>
+<div class='row nod'><span class='ln'>361</span>        behavior: HitTestBehavior.opaque,</div>
+<div class='row cov'><span class='ln'>362</span>        onTap: action,</div>
+<div class='row cov'><span class='ln'>363</span>        child: Padding(</div>
+<div class='row cov'><span class='ln'>364</span>          padding: padding ??</div>
+<div class='row nod'><span class='ln'>365</span>              (isLeading</div>
+<div class='row cov'><span class='ln'>366</span>                  ? EdgeInsets.only(right: context.tTheme.spacer8)</div>
+<div class='row cov'><span class='ln'>367</span>                  : EdgeInsets.only(left: context.tTheme.spacer8)),</div>
+<div class='row cov'><span class='ln'>368</span>          child: customWidget ??</div>
+<div class='row cov'><span class='ln'>369</span>              iconWidget ??</div>
+<div class='row cov'><span class='ln'>370</span>              Icon(</div>
+<div class='row cov'><span class='ln'>371</span>                icon,</div>
+<div class='row cov'><span class='ln'>372</span>                size: iconSize,</div>
+<div class='row cov'><span class='ln'>373</span>                color: iconColor,</div>
+<div class='row nod'><span class='ln'>374</span>              ),</div>
+<div class='row nod'><span class='ln'>375</span>        ),</div>
+<div class='row nod'><span class='ln'>376</span>      );</div>
+<div class='row nod'><span class='ln'>377</span>}</div>
+<div class='row nod'><span class='ln'>378</span></div>
+</pre></body></html>

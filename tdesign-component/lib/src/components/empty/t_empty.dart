@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
-import 't_empty_theme_data.dart';
 
 /// 空态形态
 enum TEmptyVariant { plain, operation }

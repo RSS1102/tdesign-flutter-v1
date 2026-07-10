@@ -457,10 +457,10 @@ void main() {
           onPressed: () {
             TPopup.show(
               tester.element(find.text('open')),
-              options: TPopupOptions(
+              options: const TPopupOptions(
                 placement: TPopupPlacement.top,
                 height: 90,
-                child: const SizedBox(height: 50),
+                child: SizedBox(height: 50),
               ),
             );
           },

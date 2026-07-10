@@ -112,7 +112,6 @@ MainAxisAlignment getMainAxisAlignment(TActionSheetAlign align) {
     case TActionSheetAlign.right:
       return MainAxisAlignment.end;
     case TActionSheetAlign.center:
-    default:
       return MainAxisAlignment.center;
   }
 }

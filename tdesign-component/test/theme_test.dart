@@ -38,7 +38,7 @@ void main() {
     test('ThemeData.mergeExtension 保留现有 Extension', () {
       final token = TThemeData.defaultData();
       final baseTheme = TThemeBuilder.light(token);
-      final buttonTheme = TButtonThemeData(
+      const buttonTheme = TButtonThemeData(
         defaultVariant: TButtonVariant.outline,
       );
 

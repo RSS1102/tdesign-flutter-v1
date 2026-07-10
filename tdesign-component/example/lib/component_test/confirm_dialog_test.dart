@@ -58,7 +58,7 @@ class _TestPageState extends State<TestPage> {
       body: Center(
         child: TButton(
           child: const Text('显示问题弹窗'),
-          onTap: _showProblemDialog,
+          onPressed: _showProblemDialog,
         ),
       ),
     );

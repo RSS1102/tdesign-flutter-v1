@@ -1,0 +1,324 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/swiper/t_swiper.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/swiper/t_swiper.dart</h1></header><div class='meta'>行覆盖 <b>87.4%</b> (76/87) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span>import &#x27;package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>3</span></div>
+<div class='row nod'><span class='ln'>4</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>5</span></div>
+<div class='row nod'><span class='ln'>6</span>const _kAminatedDuration = 100;</div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span>/// TDesign风格的Swiper指示器样式，与flutter_swiper的Swiper结合使用</div>
+<div class='row nod'><span class='ln'>9</span>class TSwiperPagination extends SwiperPlugin {</div>
+<div class='row unc'><span class='ln'>10</span>▶   const TSwiperPagination({</div>
+<div class='row nod'><span class='ln'>11</span>    this.alignment,</div>
+<div class='row nod'><span class='ln'>12</span>    this.key,</div>
+<div class='row nod'><span class='ln'>13</span>    this.margin = const EdgeInsets.all(10.0),</div>
+<div class='row nod'><span class='ln'>14</span>    this.builder = TSwiperPagination.dots,</div>
+<div class='row nod'><span class='ln'>15</span>  });</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>  /// 圆点样式</div>
+<div class='row nod'><span class='ln'>18</span>  static const SwiperPlugin dots = TSwiperDotsPagination();</div>
+<div class='row nod'><span class='ln'>19</span></div>
+<div class='row nod'><span class='ln'>20</span>  /// 圆角矩形 + 圆点样式 默认宽度20，高度6</div>
+<div class='row nod'><span class='ln'>21</span>  static const SwiperPlugin dotsBar =</div>
+<div class='row nod'><span class='ln'>22</span>      TSwiperDotsPagination(roundedRectangleWidth: 20);</div>
+<div class='row nod'><span class='ln'>23</span></div>
+<div class='row nod'><span class='ln'>24</span>  /// 数字样式</div>
+<div class='row nod'><span class='ln'>25</span>  static const SwiperPlugin fraction = TFractionPagination();</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row nod'><span class='ln'>27</span>  /// 箭头样式</div>
+<div class='row nod'><span class='ln'>28</span>  static const SwiperPlugin controls = TSwiperArrowPagination();</div>
+<div class='row nod'><span class='ln'>29</span></div>
+<div class='row nod'><span class='ln'>30</span>  /// 当 scrollDirection== Axis.horizontal 时，默认Alignment.bottomCenter</div>
+<div class='row nod'><span class='ln'>31</span>  /// 当 scrollDirection== Axis.vertical 时，默认Alignment.centerRight</div>
+<div class='row nod'><span class='ln'>32</span>  final Alignment? alignment;</div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span>  /// 指示器和container之间的距离</div>
+<div class='row nod'><span class='ln'>35</span>  final EdgeInsetsGeometry margin;</div>
+<div class='row nod'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>  /// 具体样式</div>
+<div class='row nod'><span class='ln'>38</span>  final SwiperPlugin builder;</div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row nod'><span class='ln'>40</span>  /// 自定义 Key</div>
+<div class='row nod'><span class='ln'>41</span>  final Key? key;</div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row cov'><span class='ln'>43</span>  @override</div>
+<div class='row nod'><span class='ln'>44</span>  Widget build(BuildContext context, SwiperPluginConfig config) {</div>
+<div class='row cov'><span class='ln'>45</span>    var alignment = this.alignment ??</div>
+<div class='row cov'><span class='ln'>46</span>        (config.scrollDirection == Axis.horizontal</div>
+<div class='row nod'><span class='ln'>47</span>            ? Alignment.bottomCenter</div>
+<div class='row nod'><span class='ln'>48</span>            : Alignment.centerRight);</div>
+<div class='row cov'><span class='ln'>49</span>    Widget child = Container(</div>
+<div class='row cov'><span class='ln'>50</span>      margin: margin,</div>
+<div class='row cov'><span class='ln'>51</span>      child: builder.build(context, config),</div>
+<div class='row nod'><span class='ln'>52</span>    );</div>
+<div class='row cov'><span class='ln'>53</span>    if (!config.outer) {</div>
+<div class='row cov'><span class='ln'>54</span>      child = Align(</div>
+<div class='row cov'><span class='ln'>55</span>        key: key,</div>
+<div class='row nod'><span class='ln'>56</span>        alignment: alignment,</div>
+<div class='row nod'><span class='ln'>57</span>        child: child,</div>
+<div class='row nod'><span class='ln'>58</span>      );</div>
+<div class='row nod'><span class='ln'>59</span>    }</div>
+<div class='row nod'><span class='ln'>60</span>    return child;</div>
+<div class='row nod'><span class='ln'>61</span>  }</div>
+<div class='row nod'><span class='ln'>62</span>}</div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row nod'><span class='ln'>64</span>/// 圆点指示器</div>
+<div class='row nod'><span class='ln'>65</span>class TSwiperDotsPagination extends SwiperPlugin {</div>
+<div class='row nod'><span class='ln'>66</span>  /// 当前展示的索引，如果未设置，则为Theme.of(context).primaryColor</div>
+<div class='row nod'><span class='ln'>67</span>  final Color? activeColor;</div>
+<div class='row nod'><span class='ln'>68</span></div>
+<div class='row nod'><span class='ln'>69</span>  /// 如果未设置，则为 Theme.of(context).scaffoldBackgroundColor</div>
+<div class='row nod'><span class='ln'>70</span>  final Color? color;</div>
+<div class='row nod'><span class='ln'>71</span></div>
+<div class='row nod'><span class='ln'>72</span>  /// 选中状态圆点尺寸</div>
+<div class='row nod'><span class='ln'>73</span>  final double activeSize;</div>
+<div class='row nod'><span class='ln'>74</span></div>
+<div class='row nod'><span class='ln'>75</span>  /// 圆点尺寸</div>
+<div class='row nod'><span class='ln'>76</span>  final double size;</div>
+<div class='row nod'><span class='ln'>77</span></div>
+<div class='row nod'><span class='ln'>78</span>  /// 圆点间距</div>
+<div class='row nod'><span class='ln'>79</span>  final double space;</div>
+<div class='row nod'><span class='ln'>80</span></div>
+<div class='row nod'><span class='ln'>81</span>  /// 圆角矩形宽度（高度仍为activeSize）</div>
+<div class='row nod'><span class='ln'>82</span>  final double? roundedRectangleWidth;</div>
+<div class='row nod'><span class='ln'>83</span></div>
+<div class='row nod'><span class='ln'>84</span>  /// 动画效果 默认100ms，设置为 0 则无动画</div>
+<div class='row nod'><span class='ln'>85</span>  final int? animationDuration;</div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row nod'><span class='ln'>87</span>  final Key? key;</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row cov'><span class='ln'>89</span>  const TSwiperDotsPagination({</div>
+<div class='row nod'><span class='ln'>90</span>    this.activeColor,</div>
+<div class='row nod'><span class='ln'>91</span>    this.color,</div>
+<div class='row nod'><span class='ln'>92</span>    this.key,</div>
+<div class='row nod'><span class='ln'>93</span>    this.size = 6.0,</div>
+<div class='row nod'><span class='ln'>94</span>    this.activeSize = 6.0,</div>
+<div class='row nod'><span class='ln'>95</span>    this.space = 8.0,</div>
+<div class='row nod'><span class='ln'>96</span>    this.roundedRectangleWidth,</div>
+<div class='row nod'><span class='ln'>97</span>    this.animationDuration,</div>
+<div class='row nod'><span class='ln'>98</span>  });</div>
+<div class='row nod'><span class='ln'>99</span></div>
+<div class='row cov'><span class='ln'>100</span>  @override</div>
+<div class='row nod'><span class='ln'>101</span>  Widget build(BuildContext context, SwiperPluginConfig config) {</div>
+<div class='row cov'><span class='ln'>102</span>    if (config.itemCount &gt; 20) {</div>
+<div class='row unc'><span class='ln'>103</span>▶       print(&#x27;warning: The itemCount is too big, &#x27;</div>
+<div class='row nod'><span class='ln'>104</span>          &#x27;we suggest use TFractionPaginationBuilder&#x27;);</div>
+<div class='row nod'><span class='ln'>105</span>    }</div>
+<div class='row cov'><span class='ln'>106</span>    var activeColor = this.activeColor ??</div>
+<div class='row cov'><span class='ln'>107</span>        (config.outer</div>
+<div class='row unc'><span class='ln'>108</span>▶             ? context.tTheme.brandNormalColor</div>
+<div class='row cov'><span class='ln'>109</span>            : context.tTheme.whiteColor1);</div>
+<div class='row cov'><span class='ln'>110</span>    var color = this.color ??</div>
+<div class='row cov'><span class='ln'>111</span>        (config.outer</div>
+<div class='row unc'><span class='ln'>112</span>▶             ? context.tTheme.bgColorComponentHover</div>
+<div class='row cov'><span class='ln'>113</span>            : context.tTheme.fontWhColor2);</div>
+<div class='row nod'><span class='ln'>114</span></div>
+<div class='row cov'><span class='ln'>115</span>    if (config.indicatorLayout != PageIndicatorLayout.NONE &amp;&amp;</div>
+<div class='row unc'><span class='ln'>116</span>▶         config.layout == SwiperLayout.DEFAULT) {</div>
+<div class='row unc'><span class='ln'>117</span>▶       return PageIndicator(</div>
+<div class='row unc'><span class='ln'>118</span>▶         count: config.itemCount,</div>
+<div class='row unc'><span class='ln'>119</span>▶         controller: config.pageController,</div>
+<div class='row unc'><span class='ln'>120</span>▶         layout: config.indicatorLayout,</div>
+<div class='row unc'><span class='ln'>121</span>▶         size: size,</div>
+<div class='row nod'><span class='ln'>122</span>        activeColor: activeColor,</div>
+<div class='row nod'><span class='ln'>123</span>        color: color,</div>
+<div class='row unc'><span class='ln'>124</span>▶         space: space,</div>
+<div class='row nod'><span class='ln'>125</span>      );</div>
+<div class='row nod'><span class='ln'>126</span>    }</div>
+<div class='row nod'><span class='ln'>127</span></div>
+<div class='row cov'><span class='ln'>128</span>    var list = &lt;Widget&gt;[];</div>
+<div class='row nod'><span class='ln'>129</span></div>
+<div class='row cov'><span class='ln'>130</span>    var itemCount = config.itemCount;</div>
+<div class='row cov'><span class='ln'>131</span>    var activeIndex = config.activeIndex;</div>
+<div class='row nod'><span class='ln'>132</span></div>
+<div class='row cov'><span class='ln'>133</span>    for (var i = 0; i &lt; itemCount; ++i) {</div>
+<div class='row cov'><span class='ln'>134</span>      var active = i == activeIndex;</div>
+<div class='row nod'><span class='ln'>135</span>      var isActivityRectangle =</div>
+<div class='row cov'><span class='ln'>136</span>          roundedRectangleWidth != null &amp;&amp; roundedRectangleWidth! &gt; 0 &amp;&amp; active;</div>
+<div class='row nod'><span class='ln'>137</span>      double? scalableLen;</div>
+<div class='row nod'><span class='ln'>138</span>      double? fixedLen;</div>
+<div class='row nod'><span class='ln'>139</span></div>
+<div class='row nod'><span class='ln'>140</span>      scalableLen = isActivityRectangle</div>
+<div class='row cov'><span class='ln'>141</span>          ? roundedRectangleWidth</div>
+<div class='row cov'><span class='ln'>142</span>          : (active ? activeSize : size);</div>
+<div class='row cov'><span class='ln'>143</span>      fixedLen = active ? activeSize : size;</div>
+<div class='row nod'><span class='ln'>144</span></div>
+<div class='row cov'><span class='ln'>145</span>      list.add(Container(</div>
+<div class='row cov'><span class='ln'>146</span>        key: Key(&#x27;pagination_$i&#x27;),</div>
+<div class='row cov'><span class='ln'>147</span>        margin: EdgeInsets.all(space),</div>
+<div class='row cov'><span class='ln'>148</span>        child: AnimatedContainer(</div>
+<div class='row nod'><span class='ln'>149</span>          duration:</div>
+<div class='row cov'><span class='ln'>150</span>              Duration(milliseconds: animationDuration ?? _kAminatedDuration),</div>
+<div class='row cov'><span class='ln'>151</span>          width: config.scrollDirection == Axis.horizontal</div>
+<div class='row nod'><span class='ln'>152</span>              ? scalableLen</div>
+<div class='row nod'><span class='ln'>153</span>              : fixedLen,</div>
+<div class='row cov'><span class='ln'>154</span>          height: config.scrollDirection == Axis.horizontal</div>
+<div class='row nod'><span class='ln'>155</span>              ? fixedLen</div>
+<div class='row nod'><span class='ln'>156</span>              : scalableLen,</div>
+<div class='row cov'><span class='ln'>157</span>          decoration: BoxDecoration(</div>
+<div class='row nod'><span class='ln'>158</span>              color: active ? activeColor : color,</div>
+<div class='row cov'><span class='ln'>159</span>              borderRadius: BorderRadius.circular(activeSize / 2)),</div>
+<div class='row nod'><span class='ln'>160</span>        ),</div>
+<div class='row nod'><span class='ln'>161</span>      ));</div>
+<div class='row nod'><span class='ln'>162</span>    }</div>
+<div class='row nod'><span class='ln'>163</span></div>
+<div class='row cov'><span class='ln'>164</span>    return Flex(</div>
+<div class='row cov'><span class='ln'>165</span>      direction: config.scrollDirection,</div>
+<div class='row nod'><span class='ln'>166</span>      // spacing: space,</div>
+<div class='row cov'><span class='ln'>167</span>      key: key,</div>
+<div class='row nod'><span class='ln'>168</span>      mainAxisSize: MainAxisSize.min,</div>
+<div class='row nod'><span class='ln'>169</span>      children: list,</div>
+<div class='row nod'><span class='ln'>170</span>    );</div>
+<div class='row nod'><span class='ln'>171</span>  }</div>
+<div class='row nod'><span class='ln'>172</span>}</div>
+<div class='row nod'><span class='ln'>173</span></div>
+<div class='row nod'><span class='ln'>174</span>/// 数字指示器</div>
+<div class='row nod'><span class='ln'>175</span>class TFractionPagination extends SwiperPlugin {</div>
+<div class='row nod'><span class='ln'>176</span>  /// container宽度</div>
+<div class='row nod'><span class='ln'>177</span>  final double? width;</div>
+<div class='row nod'><span class='ln'>178</span></div>
+<div class='row nod'><span class='ln'>179</span>  /// container高度</div>
+<div class='row nod'><span class='ln'>180</span>  final double? height;</div>
+<div class='row nod'><span class='ln'>181</span></div>
+<div class='row nod'><span class='ln'>182</span>  /// 圆角角度</div>
+<div class='row nod'><span class='ln'>183</span>  final double? borderRadius;</div>
+<div class='row nod'><span class='ln'>184</span></div>
+<div class='row nod'><span class='ln'>185</span>  /// 背景色</div>
+<div class='row nod'><span class='ln'>186</span>  final Color? backgroundColor;</div>
+<div class='row nod'><span class='ln'>187</span></div>
+<div class='row nod'><span class='ln'>188</span>  /// 如果未设置，则为 Theme.of(context).scaffoldBackgroundColor</div>
+<div class='row nod'><span class='ln'>189</span>  final Color? color;</div>
+<div class='row nod'><span class='ln'>190</span></div>
+<div class='row nod'><span class='ln'>191</span>  /// 当前展示的索引，如果未设置，则为Theme.of(context).primaryColor</div>
+<div class='row nod'><span class='ln'>192</span>  final Color? activeColor;</div>
+<div class='row nod'><span class='ln'>193</span></div>
+<div class='row nod'><span class='ln'>194</span>  /// 未选中文字样式</div>
+<div class='row nod'><span class='ln'>195</span>  final TextStyle? textStyle;</div>
+<div class='row nod'><span class='ln'>196</span></div>
+<div class='row nod'><span class='ln'>197</span>  /// 选中文字样式</div>
+<div class='row nod'><span class='ln'>198</span>  final TextStyle? activeTextStyle;</div>
+<div class='row nod'><span class='ln'>199</span></div>
+<div class='row nod'><span class='ln'>200</span>  /// 自定义 Key</div>
+<div class='row nod'><span class='ln'>201</span>  final Key? key;</div>
+<div class='row nod'><span class='ln'>202</span></div>
+<div class='row cov'><span class='ln'>203</span>  const TFractionPagination({</div>
+<div class='row nod'><span class='ln'>204</span>    this.width,</div>
+<div class='row nod'><span class='ln'>205</span>    this.height,</div>
+<div class='row nod'><span class='ln'>206</span>    this.borderRadius,</div>
+<div class='row nod'><span class='ln'>207</span>    this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>208</span>    this.color = Colors.white,</div>
+<div class='row nod'><span class='ln'>209</span>    this.textStyle = const TextStyle(fontSize: 12.0, color: Colors.white),</div>
+<div class='row nod'><span class='ln'>210</span>    this.activeTextStyle = const TextStyle(fontSize: 12.0, color: Colors.white),</div>
+<div class='row nod'><span class='ln'>211</span>    this.key,</div>
+<div class='row nod'><span class='ln'>212</span>    this.activeColor = Colors.white,</div>
+<div class='row nod'><span class='ln'>213</span>  });</div>
+<div class='row nod'><span class='ln'>214</span></div>
+<div class='row cov'><span class='ln'>215</span>  @override</div>
+<div class='row nod'><span class='ln'>216</span>  Widget build(BuildContext context, SwiperPluginConfig config) {</div>
+<div class='row cov'><span class='ln'>217</span>    return Container(</div>
+<div class='row cov'><span class='ln'>218</span>      width: width ?? 37,</div>
+<div class='row cov'><span class='ln'>219</span>      height: height ?? 24,</div>
+<div class='row nod'><span class='ln'>220</span>      alignment: Alignment.center,</div>
+<div class='row cov'><span class='ln'>221</span>      decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>222</span>        color: backgroundColor ?? context.tTheme.textColorPlaceholder,</div>
+<div class='row cov'><span class='ln'>223</span>        borderRadius: BorderRadius.circular(</div>
+<div class='row cov'><span class='ln'>224</span>            borderRadius ?? context.tTheme.radiusRound),</div>
+<div class='row nod'><span class='ln'>225</span>      ),</div>
+<div class='row cov'><span class='ln'>226</span>      child: Row(</div>
+<div class='row cov'><span class='ln'>227</span>        key: key,</div>
+<div class='row nod'><span class='ln'>228</span>        mainAxisSize: MainAxisSize.min,</div>
+<div class='row cov'><span class='ln'>229</span>        children: &lt;Widget&gt;[</div>
+<div class='row cov'><span class='ln'>230</span>          Text(&#x27;${config.activeIndex + 1}&#x27;, style: activeTextStyle),</div>
+<div class='row cov'><span class='ln'>231</span>          Text(&#x27;/${config.itemCount}&#x27;, style: textStyle)</div>
+<div class='row nod'><span class='ln'>232</span>        ],</div>
+<div class='row nod'><span class='ln'>233</span>      ),</div>
+<div class='row nod'><span class='ln'>234</span>    );</div>
+<div class='row nod'><span class='ln'>235</span>  }</div>
+<div class='row nod'><span class='ln'>236</span>}</div>
+<div class='row nod'><span class='ln'>237</span></div>
+<div class='row nod'><span class='ln'>238</span>/// 箭头指示器</div>
+<div class='row nod'><span class='ln'>239</span>class TSwiperArrowPagination extends SwiperPlugin {</div>
+<div class='row nod'><span class='ln'>240</span>  /// 当设置 loop = false 时，滑动到边界是否自动隐藏边界箭头</div>
+<div class='row nod'><span class='ln'>241</span>  final bool? autoHideWhenAtBoundary;</div>
+<div class='row nod'><span class='ln'>242</span></div>
+<div class='row nod'><span class='ln'>243</span>  /// 左箭头widget</div>
+<div class='row nod'><span class='ln'>244</span>  final Widget? backArrow;</div>
+<div class='row nod'><span class='ln'>245</span></div>
+<div class='row nod'><span class='ln'>246</span>  /// 右箭头widget</div>
+<div class='row nod'><span class='ln'>247</span>  final Widget? forwardArrow;</div>
+<div class='row nod'><span class='ln'>248</span></div>
+<div class='row nod'><span class='ln'>249</span>  /// 背景圆形半径</div>
+<div class='row nod'><span class='ln'>250</span>  final double? radius;</div>
+<div class='row nod'><span class='ln'>251</span></div>
+<div class='row nod'><span class='ln'>252</span>  /// 背景圆形颜色</div>
+<div class='row nod'><span class='ln'>253</span>  final Color? backgroundColor;</div>
+<div class='row nod'><span class='ln'>254</span></div>
+<div class='row cov'><span class='ln'>255</span>  const TSwiperArrowPagination({</div>
+<div class='row nod'><span class='ln'>256</span>    this.radius,</div>
+<div class='row nod'><span class='ln'>257</span>    this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>258</span>    this.backArrow,</div>
+<div class='row nod'><span class='ln'>259</span>    this.forwardArrow,</div>
+<div class='row nod'><span class='ln'>260</span>    this.autoHideWhenAtBoundary = true,</div>
+<div class='row nod'><span class='ln'>261</span>  });</div>
+<div class='row nod'><span class='ln'>262</span></div>
+<div class='row cov'><span class='ln'>263</span>  @override</div>
+<div class='row nod'><span class='ln'>264</span>  Widget build(BuildContext context, SwiperPluginConfig config) {</div>
+<div class='row cov'><span class='ln'>265</span>    var itemCount = config.itemCount;</div>
+<div class='row cov'><span class='ln'>266</span>    var activeIndex = config.activeIndex;</div>
+<div class='row nod'><span class='ln'>267</span></div>
+<div class='row cov'><span class='ln'>268</span>    return Row(children: [</div>
+<div class='row cov'><span class='ln'>269</span>      _buildIcon(</div>
+<div class='row nod'><span class='ln'>270</span>        context,</div>
+<div class='row cov'><span class='ln'>271</span>        visible: config.loop ||</div>
+<div class='row cov'><span class='ln'>272</span>            ((autoHideWhenAtBoundary ?? false) &amp;&amp; activeIndex != 0),</div>
+<div class='row cov'><span class='ln'>273</span>        arrowWidget: backArrow,</div>
+<div class='row nod'><span class='ln'>274</span>        icon: Icons.arrow_back_ios_outlined,</div>
+<div class='row cov'><span class='ln'>275</span>        onTap: config.controller.previous,</div>
+<div class='row nod'><span class='ln'>276</span>      ),</div>
+<div class='row nod'><span class='ln'>277</span>      const Spacer(),</div>
+<div class='row cov'><span class='ln'>278</span>      _buildIcon(</div>
+<div class='row nod'><span class='ln'>279</span>        context,</div>
+<div class='row cov'><span class='ln'>280</span>        visible: config.loop ||</div>
+<div class='row cov'><span class='ln'>281</span>            ((autoHideWhenAtBoundary ?? false) &amp;&amp; activeIndex != itemCount - 1),</div>
+<div class='row cov'><span class='ln'>282</span>        arrowWidget: forwardArrow,</div>
+<div class='row nod'><span class='ln'>283</span>        icon: Icons.arrow_forward_ios_outlined,</div>
+<div class='row cov'><span class='ln'>284</span>        onTap: config.controller.next,</div>
+<div class='row nod'><span class='ln'>285</span>      ),</div>
+<div class='row nod'><span class='ln'>286</span>    ]);</div>
+<div class='row nod'><span class='ln'>287</span>  }</div>
+<div class='row nod'><span class='ln'>288</span></div>
+<div class='row cov'><span class='ln'>289</span>  Widget _buildIcon(</div>
+<div class='row nod'><span class='ln'>290</span>    BuildContext context, {</div>
+<div class='row nod'><span class='ln'>291</span>    Widget? arrowWidget,</div>
+<div class='row nod'><span class='ln'>292</span>    required IconData icon,</div>
+<div class='row nod'><span class='ln'>293</span>    required bool visible,</div>
+<div class='row nod'><span class='ln'>294</span>    required Function() onTap,</div>
+<div class='row nod'><span class='ln'>295</span>  }) {</div>
+<div class='row cov'><span class='ln'>296</span>    return Visibility(</div>
+<div class='row nod'><span class='ln'>297</span>      visible: visible,</div>
+<div class='row cov'><span class='ln'>298</span>      child: GestureDetector(</div>
+<div class='row cov'><span class='ln'>299</span>        child: CircleAvatar(</div>
+<div class='row cov'><span class='ln'>300</span>          radius: radius ?? 10.0,</div>
+<div class='row nod'><span class='ln'>301</span>          backgroundColor:</div>
+<div class='row cov'><span class='ln'>302</span>              backgroundColor ?? context.tTheme.textColorPlaceholder,</div>
+<div class='row cov'><span class='ln'>303</span>          child: arrowWidget ?? Icon(icon, color: Colors.white, size: 10.0),</div>
+<div class='row nod'><span class='ln'>304</span>        ),</div>
+<div class='row nod'><span class='ln'>305</span>        onTap: onTap,</div>
+<div class='row nod'><span class='ln'>306</span>      ),</div>
+<div class='row nod'><span class='ln'>307</span>    );</div>
+<div class='row nod'><span class='ln'>308</span>  }</div>
+<div class='row nod'><span class='ln'>309</span>}</div>
+<div class='row nod'><span class='ln'>310</span></div>
+</pre></body></html>

@@ -1,10 +1,4 @@
-/// @Type Flutter
-/// @Author lwb
-/// @Date 2024/5/28
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 import '../annotation/demo.dart';
@@ -19,18 +13,18 @@ class TNoticeBarPage extends StatelessWidget {
       title: tTitle(context),
       exampleCodeGroup: 'noticeBar',
       desc: '在导航栏下方，用于给用户显示提示消息。',
-      children: [
+      children: const [
         ExampleModule(title: '组件类型', children: [
           ExampleItem(desc: '纯文字的公告栏', builder: _textNoticeBar),
           ExampleItem(desc: '可滚动的公告栏', builder: _scrollNoticeBar),
           ExampleItem(
-              padding: const EdgeInsets.only(top: 16),
+              padding: EdgeInsets.only(top: 16),
               builder: _scrollIconNoticeBar),
           ExampleItem(desc: '带图标的公告栏', builder: _iconNoticeBar),
           ExampleItem(desc: '带关闭的公告栏', builder: _closeNoticeBar),
           ExampleItem(desc: '带入口的公告栏', builder: _entranceNoticeBar1),
           ExampleItem(
-              padding: const EdgeInsets.only(top: 16),
+              padding: EdgeInsets.only(top: 16),
               builder: _entranceNoticeBar2),
           ExampleItem(desc: '自定义样式的公告栏', builder: _customNoticeBar),
         ]),

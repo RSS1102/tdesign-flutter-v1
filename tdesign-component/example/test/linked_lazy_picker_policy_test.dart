@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter_example/page/linked_lazy_picker_policy.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:tdesign_flutter_example/page/linked_lazy_picker_policy.dart';
 
 void main() {
   group('LazyLoadPolicy', () {

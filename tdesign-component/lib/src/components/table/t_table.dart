@@ -538,19 +538,6 @@ class TTableState extends State<TTable> {
     return headers;
   }
 
-  /// 生成固定列的单行数据单元格（按列返回一行中各列的Widget）
-  List<Widget> _getFixedRowCells(
-      List<TTableCol> cols, double cellWidth, int rowIndex) {
-    var cells = <Widget>[];
-    for (var i = 0; i < cols.length; i++) {
-      var col = cols[i];
-      var cell = _getCell(
-          col, false, widget.data?[rowIndex], rowIndex, i == cols.length - 1);
-      cells.add(SizedBox(width: col.width ?? cellWidth, child: cell));
-    }
-    return cells;
-  }
-
   /// 生成固定列的数据单元格（按列组织，每列一个Column，无height时使用）
   List<Widget> _getFixedDataCols(
       List<TTableCol> cols, double cellWidth) {

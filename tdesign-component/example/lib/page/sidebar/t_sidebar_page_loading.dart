@@ -127,7 +127,7 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
         SizedBox(
           width: list.isEmpty ? size.width : 110,
           child: TSideBar(
-            style: TSideBarStyle.normal,
+            style: TSideBarVariant.normal,
             value: currentValue,
             controller: _sideBarController,
             loading: true,

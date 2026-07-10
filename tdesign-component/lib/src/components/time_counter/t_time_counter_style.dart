@@ -23,7 +23,7 @@ enum TTimeCounterSize {
 }
 
 /// 计时组件风格
-enum TTimeCounterTheme {
+enum TTimeCounterVariant {
   /// 默认
   defaultTheme,
 
@@ -103,14 +103,14 @@ class TTimeCounterStyle {
   TTimeCounterStyle.generateStyle(
     BuildContext context, {
     TTimeCounterSize? size,
-    TTimeCounterTheme? theme,
+    TTimeCounterVariant? theme,
     bool? splitWithUnit,
   }) {
     timeFontFamily = context.tTheme.numberFontFamily;
     late Font? font;
     switch (size ?? TTimeCounterSize.medium) {
       case TTimeCounterSize.small:
-        if (theme == TTimeCounterTheme.defaultTheme) {
+        if (theme == TTimeCounterVariant.defaultTheme) {
           timeWidth = timeHeight = null;
           font = context.tTheme.fontBodyMedium;
           timeFontSize = splitFontSize = font?.size ?? 14;
@@ -125,7 +125,7 @@ class TTimeCounterStyle {
         space = context.tTheme.spacer4 / 2;
         break;
       case TTimeCounterSize.medium:
-        if (theme == TTimeCounterTheme.defaultTheme) {
+        if (theme == TTimeCounterVariant.defaultTheme) {
           timeWidth = timeHeight = null;
           font = context.tTheme.fontBodyLarge;
           timeFontSize = splitFontSize = font?.size ?? 16;
@@ -140,7 +140,7 @@ class TTimeCounterStyle {
         space = context.tTheme.spacer8 / 2;
         break;
       case TTimeCounterSize.large:
-        if (theme == TTimeCounterTheme.defaultTheme) {
+        if (theme == TTimeCounterVariant.defaultTheme) {
           timeWidth = timeHeight = null;
           font = context.tTheme.fontBodyExtraLarge;
           timeFontSize = splitFontSize = font?.size ?? 18;
@@ -155,8 +155,8 @@ class TTimeCounterStyle {
         space = context.tTheme.spacer12 / 2;
     }
 
-    switch (theme ?? TTimeCounterTheme.defaultTheme) {
-      case TTimeCounterTheme.round:
+    switch (theme ?? TTimeCounterVariant.defaultTheme) {
+      case TTimeCounterVariant.round:
         timeBox = BoxDecoration(
           shape: BoxShape.circle,
           color: context.tTheme.errorNormalColor,
@@ -164,7 +164,7 @@ class TTimeCounterStyle {
         timeColor = context.tTheme.textColorAnti;
         splitColor = context.tTheme.errorNormalColor;
         break;
-      case TTimeCounterTheme.square:
+      case TTimeCounterVariant.square:
         timeBox = BoxDecoration(
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(context.tTheme.radiusSmall),
@@ -173,7 +173,7 @@ class TTimeCounterStyle {
         timeColor = context.tTheme.textColorAnti;
         splitColor = context.tTheme.errorNormalColor;
         break;
-      case TTimeCounterTheme.defaultTheme:
+      case TTimeCounterVariant.defaultTheme:
         timeBox = null;
         timeColor = splitColor = context.tTheme.textColorPrimary;
         timeWidth = null;

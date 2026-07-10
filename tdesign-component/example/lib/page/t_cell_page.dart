@@ -31,12 +31,10 @@ class TCellPage extends StatelessWidget {
 
 @Demo(group: 'cell')
 Widget _buildSimple(BuildContext context) {
-  // 可统一修改样式
-  var style = TCellThemeData.cellStyle(context);
   return TCellGroup(
     cells: [
       // 可单独修改样式
-      TCell(
+      const TCell(
         arrow: true,
         title: '单行标题',
       ),

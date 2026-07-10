@@ -41,10 +41,10 @@ class TFooterPage extends StatelessWidget {
       TFooterVariant.link,
       links: [
         TLink(
-          child: Text('底部链接'),
+          child: const Text('底部链接'),
           colorScheme: TLinkColorScheme.primary,
-          variant: TLinkType.icon,
-          suffixIcon: Icon(TIcons.jump),
+          variant: TLinkVariant.icon,
+          suffixIcon: const Icon(TIcons.jump),
           uri: Uri.parse('https://example.com'),
           onPressed: () {
             print('点击了链接');
@@ -61,18 +61,18 @@ class TFooterPage extends StatelessWidget {
       TFooterVariant.link,
       links: [
         TLink(
-          child: Text('底部链接1'),
+          child: const Text('底部链接1'),
           colorScheme: TLinkColorScheme.primary,
-          variant: TLinkType.basic,
+          variant: TLinkVariant.basic,
           uri: Uri.parse('https://example.com'),
           onPressed: () {
             print('点击了链接1');
           },
         ),
         TLink(
-          child: Text('底部链接2'),
+          child: const Text('底部链接2'),
           colorScheme: TLinkColorScheme.primary,
-          variant: TLinkType.basic,
+          variant: TLinkVariant.basic,
           uri: Uri.parse('https://example.com'),
           onPressed: () {
             print('点击了链接2');

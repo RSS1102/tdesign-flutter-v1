@@ -2,7 +2,7 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import 't_image.dart' show TImageVariant;
+import 't_image.dart' show TImageVariant, TImage;
 
 /// 图片组件级 ThemeExtension
 ///

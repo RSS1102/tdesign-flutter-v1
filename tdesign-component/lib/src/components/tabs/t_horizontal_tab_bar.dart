@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_tab_bar_theme_data.dart';
 
 const double _kTabHeight = 46.0;
 const double _kTextAndIconTabHeight = 72.0;
@@ -38,7 +37,6 @@ class _TabStyle extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     final tabBarTheme = TabBarTheme.of(context);
     final animation = listenable as Animation<double>;
 
@@ -265,10 +263,10 @@ class THorizontalTabBar extends StatefulWidget implements PreferredSizeWidget {
 
   /// Defines the ink response focus, hover, and splash colors.
   ///
-  /// If non-null, it is resolved against one of [MaterialState.focused],
-  /// [MaterialState.hovered], and [MaterialState.pressed].
+  /// If non-null, it is resolved against one of [WidgetState.focused],
+  /// [WidgetState.hovered], and [WidgetState.pressed].
   ///
-  /// [MaterialState.pressed] triggers a ripple (an ink splash), per
+  /// [WidgetState.pressed] triggers a ripple (an ink splash), per
   /// the current Material Design spec. The [overlayColor] doesn't map
   /// a state to [InkResponse.highlightColor] because a separate highlight
   /// is not used by the current design guidelines. See
@@ -277,7 +275,7 @@ class THorizontalTabBar extends StatefulWidget implements PreferredSizeWidget {
   /// If the overlay color is null or resolves to null, then the default values
   /// for [InkResponse.focusColor], [InkResponse.hoverColor], [InkResponse.splashColor]
   /// will be used instead.
-  final MaterialStateProperty<Color?>? overlayColor;
+  final WidgetStateProperty<Color?>? overlayColor;
 
   /// {@macro flutter.widgets.scrollable.dragStartBehavior}
   final DragStartBehavior dragStartBehavior;
@@ -560,6 +558,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
       return tabBarTheme.indicator!;
     }
 
+    // ignore: deprecated_member_use
     var color = widget.indicatorColor ?? Theme.of(context).indicatorColor;
     // ThemeData tries to avoid this by having indicatorColor avoid being the
     // primaryColor. However, it's possible that the tab bar is on a
@@ -576,7 +575,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
     // with a better long-term solution.
     // https://github.com/flutter/flutter/pull/68171#pullrequestreview-517753917
     if (widget.automaticIndicatorColorAdjustment &&
-        color.value == Material.of(context)?.color?.value) {
+        color.toARGB32() == Material.of(context).color?.toARGB32()) {
       color = Colors.white;
     }
 
@@ -864,7 +863,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   @override
   Widget build(BuildContext context) {
     final tabBarTheme = TabBarTheme.of(context);
-    final TabAlignment effectiveTabAlignment =
+    final effectiveTabAlignment =
         widget.tabAlignment ?? tabBarTheme.tabAlignment ?? _defaults;
     assert(_debugTabAlignmentIsValid(effectiveTabAlignment));
     assert(debugCheckHasMaterialLocalizations(context));
@@ -1025,7 +1024,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
     );
 
     if (widget.isScrollable) {
-      final EdgeInsetsGeometry? effectivePadding =
+      final effectivePadding =
           effectiveTabAlignment == TabAlignment.startOffset
               ? const EdgeInsetsDirectional.only(start: _kStartOffset)
                   .add(widget.padding ?? EdgeInsets.zero)
@@ -1623,7 +1622,7 @@ class TabPageSelector extends StatelessWidget {
       return true;
     }());
     final Animation<double> animation = CurvedAnimation(
-      parent: tabController!.animation!,
+      parent: tabController.animation!,
       curve: Curves.fastOutSlowIn,
     );
     return AnimatedBuilder(

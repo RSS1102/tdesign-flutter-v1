@@ -11,7 +11,7 @@ void main() {
   Widget wrapWithTheme(Widget child) {
     return MaterialApp(
       theme: ThemeData(extensions: [TThemeData.defaultData()]),
-      home: Scaffold(body: Center(child: child)),
+      home: Scaffold(body: child),
     );
   }
 

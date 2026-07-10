@@ -261,7 +261,7 @@ class _TDropdownItemState extends State<TDropdownItem> {
     var selected = _getSelected(widget.options);
     var radios = TRadioGroup(
       onRadioGroupChange: _handleSelectChange,
-      radioCheckStyle: TRadioStyle.check,
+      radioCheckStyle: TRadioVariant.check,
       selectId: selected.isEmpty ? null : selected[0]?.value,
       child: Column(
         children: List.generate(
@@ -408,23 +408,28 @@ class _TDropdownItemState extends State<TDropdownItem> {
     return groupedChunkOptions;
   }
 
-  void _handleSelectChange(selected) {
-    var isRadio = widget.multiple != true && selected is List<String>;
-    if (isRadio && selected.isNotEmpty) {
-      selected = [selected.last];
+  void _handleSelectChange(dynamic selected) {
+    List<String> selectedIds;
+    if (selected is List<String>) {
+      selectedIds = selected;
+    } else if (selected is String?) {
+      selectedIds = selected == null ? [] : [selected];
+    } else {
+      selectedIds = [];
     }
+    final isRadio = widget.multiple != true;
     widget.options?.forEach((element) {
-      element.selected = selected is List<String>
-          ? selected.contains(element.value)
-          : element.value == selected;
+      element.selected = selectedIds.contains(element.value);
     });
     if (isRadio) {
       setState(() {});
-    }
-    widget.onChanged
-        ?.call(_getSelected(widget.options).map((e) => e!.value).toList());
-    if (widget.multiple != true && selected.isNotEmpty) {
-      _handleClose();
+      // 单选回传单个选中值（与 ValueChanged<T?> 类型匹配）
+      widget.onChanged?.call(selectedIds.isEmpty ? null : selectedIds.first as dynamic);
+      if (selectedIds.isNotEmpty) {
+        _handleClose();
+      }
+    } else {
+      widget.onChanged?.call(selectedIds);
     }
   }
 

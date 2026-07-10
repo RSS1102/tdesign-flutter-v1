@@ -53,7 +53,7 @@ class App extends StatelessWidget {
             theme: TThemeBuilder.light(themeData).copyWith(
               /// 根据自己的需求用 TD 颜色覆盖 Material/Cupertino 的颜色
               cupertinoOverrideTheme: const CupertinoThemeData().copyWith(
-                barBackgroundColor: themeData.bgColorContainer.withOpacity(0.5),
+                barBackgroundColor: themeData.bgColorContainer.withValues(alpha: 0.5),
               ),
               /// ... 更多重载主题
             ),
@@ -61,7 +61,7 @@ class App extends StatelessWidget {
             /// 深色模式
             darkTheme: TThemeBuilder.dark(themeData).copyWith(
               cupertinoOverrideTheme: const CupertinoThemeData().copyWith(
-                barBackgroundColor: themeData.dark?.grayColor13.withOpacity(0.5),
+                barBackgroundColor: themeData.dark?.grayColor13.withValues(alpha: 0.5),
               ),
 
               /// ... 更多重载主题
@@ -94,7 +94,7 @@ class _ThemeModeSettingsPageState extends State<ThemeModeSettingsPage> {
     var themeModeProvider = Provider.of<ThemeModeProvider>(context);
 
     /// 获取系统主题
-    Brightness systemBrightness = MediaQuery.platformBrightnessOf(context);
+    var systemBrightness = MediaQuery.platformBrightnessOf(context);
 
     enabledModeCheckIcon(ThemeMode mode) {
       return themeModeProvider.themeMode == mode ||
@@ -128,11 +128,10 @@ class _ThemeModeSettingsPageState extends State<ThemeModeSettingsPage> {
                         themeModeProvider.themeMode = ThemeMode.system;
                       } else if (systemBrightness == Brightness.dark) {
                         themeModeProvider.themeMode = ThemeMode.dark;
-                      } else {
-                        themeModeProvider.themeMode = ThemeMode.light;
-                      }
-                      return isOn;
-                    },
+                  } else {
+                    themeModeProvider.themeMode = ThemeMode.light;
+                  }
+                },
                   ),
                 ),
               ],

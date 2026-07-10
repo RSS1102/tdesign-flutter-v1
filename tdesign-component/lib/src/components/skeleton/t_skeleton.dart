@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_skeleton_rowcol.dart';
 
 /// 骨架图动画
 enum TSkeletonAnimation {

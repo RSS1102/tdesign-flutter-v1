@@ -3,10 +3,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_notice_bar_theme_data.dart';
 
 /// 公告栏
 class TNoticeBar extends StatefulWidget {

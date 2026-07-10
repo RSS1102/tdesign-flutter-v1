@@ -41,6 +41,15 @@ class TTextThemeData extends ThemeExtension<TTextThemeData> {
   /// 删除线默认颜色（为 null 时使用前景色）
   final Color? lineThroughColor;
 
+  /// 默认字体粗细
+  final FontWeight? defaultFontWeight;
+
+  /// 默认字体族
+  final FontFamily? defaultFontFamily;
+
+  /// 默认字体包名
+  final String? defaultPackage;
+
   /// 是否处于字体加载器中
   final bool isInFontLoader;
 
@@ -68,6 +77,9 @@ class TTextThemeData extends ThemeExtension<TTextThemeData> {
     this.forceVerticalCenter = false,
     this.isTextThrough = false,
     this.lineThroughColor,
+    this.defaultFontWeight,
+    this.defaultFontFamily,
+    this.defaultPackage,
     this.isInFontLoader = false,
     this.strutStyle,
     this.textWidthBasis,
@@ -83,6 +95,9 @@ class TTextThemeData extends ThemeExtension<TTextThemeData> {
     bool? forceVerticalCenter,
     bool? isTextThrough,
     Color? lineThroughColor,
+    FontWeight? defaultFontWeight,
+    FontFamily? defaultFontFamily,
+    String? defaultPackage,
     bool? isInFontLoader,
     StrutStyle? strutStyle,
     TextWidthBasis? textWidthBasis,
@@ -97,6 +112,9 @@ class TTextThemeData extends ThemeExtension<TTextThemeData> {
       forceVerticalCenter: forceVerticalCenter ?? this.forceVerticalCenter,
       isTextThrough: isTextThrough ?? this.isTextThrough,
       lineThroughColor: lineThroughColor ?? this.lineThroughColor,
+      defaultFontWeight: defaultFontWeight ?? this.defaultFontWeight,
+      defaultFontFamily: defaultFontFamily ?? this.defaultFontFamily,
+      defaultPackage: defaultPackage ?? this.defaultPackage,
       isInFontLoader: isInFontLoader ?? this.isInFontLoader,
       strutStyle: strutStyle ?? this.strutStyle,
       textWidthBasis: textWidthBasis ?? this.textWidthBasis,
@@ -120,6 +138,9 @@ class TTextThemeData extends ThemeExtension<TTextThemeData> {
       isTextThrough: t < 0.5 ? isTextThrough : other.isTextThrough,
       lineThroughColor:
           Color.lerp(lineThroughColor, other.lineThroughColor, t),
+      defaultFontWeight: t < 0.5 ? defaultFontWeight : other.defaultFontWeight,
+      defaultFontFamily: t < 0.5 ? defaultFontFamily : other.defaultFontFamily,
+      defaultPackage: t < 0.5 ? defaultPackage : other.defaultPackage,
       isInFontLoader:
           t < 0.5 ? isInFontLoader : other.isInFontLoader,
       strutStyle: t < 0.5 ? strutStyle : other.strutStyle,

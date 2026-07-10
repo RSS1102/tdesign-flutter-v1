@@ -453,7 +453,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           label: '密码复制粘贴',
           hintText: '此密码框允许长按复制粘贴',
           contextMenuBuilder: (context, editableTextState) {
-            final List<ContextMenuButtonItem> buttonItems =
+            final buttonItems =
                 editableTextState.contextMenuButtonItems;
             if (!buttonItems.any((item) => item.type == ContextMenuButtonType.copy)) {
               buttonItems.insert(0, ContextMenuButtonItem(
@@ -623,7 +623,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
 
   @Demo(group: 'input')
   Widget _inputStatusReadOnly(BuildContext context) {
-    return TInput(
+    return const TInput(
       label: '标签文字',
       readOnly: true,
       // 不可编辑文字 则不必带入controller
@@ -637,7 +637,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
       children: [
         TInput(
           leftInfoWidth: 80,
-          spacer: TInputSpacer(iconLabelSpace: 4),
+          spacer: const TInputSpacer(iconLabelSpace: 4),
           label: '标签超长时最多十个字',
           controller: controller[18],
           hintText: '请输入文字',
@@ -672,7 +672,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
   @Demo(group: 'input')
   Widget _verticalStyle(BuildContext context) {
     return TInput(
-      spacer: TInputSpacer(iconLabelSpace: 0),
+      spacer: const TInputSpacer(iconLabelSpace: 0),
       layout: TInputLayout.twoLine,
       label: '标签文字',
       controller: controller[20],

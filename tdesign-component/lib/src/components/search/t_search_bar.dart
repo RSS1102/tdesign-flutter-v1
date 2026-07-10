@@ -9,7 +9,7 @@ class TSearchBar extends StatefulWidget {
   const TSearchBar({
     Key? key,
     this.hintText,
-    this.style = TSearchBarStyle.square,
+    this.style = TSearchBarVariant.square,
     this.alignment = TSearchBarAlignment.left,
     this.onChanged,
     this.onSubmitted,
@@ -36,7 +36,7 @@ class TSearchBar extends StatefulWidget {
   final String? hintText;
 
   /// 样式
-  final TSearchBarStyle? style;
+  final TSearchBarVariant? style;
 
   /// 对齐方式，居中或这头部对齐
   final TSearchBarAlignment? alignment;
@@ -187,7 +187,7 @@ class _TSearchBarState extends State<TSearchBar>
   Widget build(BuildContext context) {
     // P1: 组件级 ThemeExtension
     final theme = Theme.of(context).extension<TSearchBarThemeData>();
-    final effectiveStyle = widget.style ?? theme?.defaultStyle ?? TSearchBarStyle.square;
+    final effectiveStyle = widget.style ?? theme?.defaultStyle ?? TSearchBarVariant.square;
     final effectiveAlignment = widget.alignment ?? theme?.defaultAlignment ?? TSearchBarAlignment.left;
     final effectiveBgColor = widget.backgroundColor ?? theme?.backgroundColor ?? context.tTheme.bgColorContainer;
     final effectiveCursorHeight = widget.cursorHeight ?? theme?.cursorHeight;
@@ -206,7 +206,7 @@ class _TSearchBarState extends State<TSearchBar>
                 decoration: BoxDecoration(
                     color: context.tTheme.bgColorSecondaryContainer,
                     borderRadius: BorderRadius.circular(
-                        effectiveStyle == TSearchBarStyle.square ? 4 : 28)),
+                        effectiveStyle == TSearchBarVariant.square ? 4 : 28)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

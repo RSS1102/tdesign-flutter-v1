@@ -250,15 +250,6 @@ class _TProgressPageState extends State<TProgressPage> {
     }
   }
 
-  void _resetProgress() {
-    _timer?.cancel();
-    setState(() {
-      progressValue = 0.0;
-      buttonLabel = const TTextLabel('开始');
-      isProgressing = false;
-    });
-  }
-
   void _toggleMicroProgress() {
     setState(() {
       isPlaying = !isPlaying;

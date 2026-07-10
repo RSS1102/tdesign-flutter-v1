@@ -27,7 +27,7 @@ class _TCellGroupPageState extends State<TCellGroupPage> {
   }
 
   Widget _buildDefault(BuildContext context) {
-    return TCellGroup(
+    return const TCellGroup(
       title: '标题',
       bordered: true,
       cells: [
@@ -39,7 +39,7 @@ class _TCellGroupPageState extends State<TCellGroupPage> {
   }
 
   Widget _buildCard(BuildContext context) {
-    return TCellGroup(
+    return const TCellGroup(
       title: '卡片风格',
       groupVariant: TCellGroupVariant.cardTheme,
       bordered: true,

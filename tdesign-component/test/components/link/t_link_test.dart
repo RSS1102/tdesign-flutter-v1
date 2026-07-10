@@ -8,9 +8,9 @@ void main() {
   // ============================================================
   testWidgets('T01 - 基础渲染：纯文本链接', (tester) async {
     await tester.pumpWidget(_wrap(
-      TLink(
-        child: const Text('跳转链接'),
-        variant: TLinkType.basic,
+      const TLink(
+        child: Text('跳转链接'),
+        variant: TLinkVariant.basic,
       ),
     ));
 
@@ -26,9 +26,9 @@ void main() {
   // ============================================================
   testWidgets('T02 - 下划线链接', (tester) async {
     await tester.pumpWidget(_wrap(
-      TLink(
-        child: const Text('带下划线'),
-        variant: TLinkType.underline,
+      const TLink(
+        child: Text('带下划线'),
+        variant: TLinkVariant.underline,
       ),
     ));
 
@@ -42,9 +42,9 @@ void main() {
   // ============================================================
   testWidgets('T03 - 带图标链接（默认图标）', (tester) async {
     await tester.pumpWidget(_wrap(
-      TLink(
-        child: const Text('图标链接'),
-        variant: TLinkType.icon,
+      const TLink(
+        child: Text('图标链接'),
+        variant: TLinkVariant.icon,
       ),
     ));
 
@@ -58,10 +58,10 @@ void main() {
   // ============================================================
   testWidgets('T04 - 带前缀图标链接', (tester) async {
     await tester.pumpWidget(_wrap(
-      TLink(
-        child: const Text('前置图标'),
-        variant: TLinkType.icon,
-        prefixIcon: const Icon(Icons.home),
+      const TLink(
+        child: Text('前置图标'),
+        variant: TLinkVariant.icon,
+        prefixIcon: Icon(Icons.home),
       ),
     ));
 
@@ -74,10 +74,10 @@ void main() {
   // ============================================================
   testWidgets('T05 - 带后缀图标链接', (tester) async {
     await tester.pumpWidget(_wrap(
-      TLink(
-        child: const Text('后置图标'),
-        variant: TLinkType.icon,
-        suffixIcon: const Icon(Icons.arrow_forward),
+      const TLink(
+        child: Text('后置图标'),
+        variant: TLinkVariant.icon,
+        suffixIcon: Icon(Icons.arrow_forward),
       ),
     ));
 
@@ -91,8 +91,8 @@ void main() {
   testWidgets('T06 - 禁用态（onPressed: null）', (tester) async {
     var tapped = false;
     await tester.pumpWidget(_wrap(
-      TLink(
-        child: const Text('禁用链接'),
+      const TLink(
+        child: Text('禁用链接'),
         onPressed: null,
       ),
     ));
@@ -122,10 +122,10 @@ void main() {
   // ============================================================
   testWidgets('T08 - colorScheme 颜色映射', (tester) async {
     await tester.pumpWidget(_wrap(
-      TLink(
-        child: const Text('主题色'),
+      const TLink(
+        child: Text('主题色'),
         colorScheme: TLinkColorScheme.danger,
-        variant: TLinkType.basic,
+        variant: TLinkVariant.basic,
       ),
     ));
 
@@ -139,21 +139,21 @@ void main() {
   testWidgets('T09 - size 三档字号', (tester) async {
     // Small
     await tester.pumpWidget(_wrap(
-      TLink(child: const Text('S'), size: TLinkSize.small),
+      const TLink(child: Text('S'), size: TLinkSize.small),
     ));
     final textS = tester.widget<Text>(find.text('S'));
     expect(textS.style?.fontSize, 12);
 
     // Medium
     await tester.pumpWidget(_wrap(
-      TLink(child: const Text('M'), size: TLinkSize.medium),
+      const TLink(child: Text('M'), size: TLinkSize.medium),
     ));
     final textM = tester.widget<Text>(find.text('M'));
     expect(textM.style?.fontSize, 14);
 
     // Large
     await tester.pumpWidget(_wrap(
-      TLink(child: const Text('L'), size: TLinkSize.large),
+      const TLink(child: Text('L'), size: TLinkSize.large),
     ));
     final textL = tester.widget<Text>(find.text('L'));
     expect(textL.style?.fontSize, 16);
@@ -163,13 +163,23 @@ void main() {
   // T10 – 自定义颜色覆盖 colorScheme
   // ============================================================
   testWidgets('T10 - 自定义颜色覆盖 colorScheme', (tester) async {
-    await tester.pumpWidget(_wrap(
-      TLink(
-        child: const Text('自定义色'),
-        color: Colors.purple,
-        colorScheme: TLinkColorScheme.primary,
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Theme(
+              data: ThemeData().copyWith(extensions: [
+                const TLinkThemeData(color: Colors.purple),
+              ]),
+              child: const TLink(
+                child: Text('自定义色'),
+                colorScheme: TLinkColorScheme.primary,
+              ),
+            ),
+          ),
+        ),
       ),
-    ));
+    );
 
     final text = tester.widget<Text>(find.text('自定义色'));
     expect(text.style?.color, Colors.purple);
@@ -179,13 +189,23 @@ void main() {
   // T11 – 自定义字号覆盖 size 默认
   // ============================================================
   testWidgets('T11 - 自定义字号覆盖', (tester) async {
-    await tester.pumpWidget(_wrap(
-      TLink(
-        child: const Text('自定义字号'),
-        fontSize: 20,
-        size: TLinkSize.medium,
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Theme(
+              data: ThemeData().copyWith(extensions: [
+                const TLinkThemeData(fontSize: 20),
+              ]),
+              child: const TLink(
+                child: Text('自定义字号'),
+                size: TLinkSize.medium,
+              ),
+            ),
+          ),
+        ),
       ),
-    ));
+    );
 
     final text = tester.widget<Text>(find.text('自定义字号'));
     expect(text.style?.fontSize, 20);
@@ -202,15 +222,15 @@ void main() {
             data: ThemeData().copyWith(
               extensions: [
                 const TLinkThemeData(
-                  defaultVariant: TLinkType.underline,
+                  defaultVariant: TLinkVariant.underline,
                   fontSize: 18,
                 ),
               ],
             ),
             child: Builder(
               builder: (context) {
-                return TLink(
-                  child: const Text('Theme注入'),
+                return const TLink(
+                  child: Text('Theme注入'),
                   size: TLinkSize.medium,
                 );
               },
@@ -229,7 +249,7 @@ void main() {
   // T13 – TLinkThemeData copyWith
   // ============================================================
   test('T13 - TLinkThemeData copyWith', () {
-    final original = const TLinkThemeData(fontSize: 14, iconSize: 16);
+    const original = TLinkThemeData(fontSize: 14, iconSize: 16);
     final copied = original.copyWith(fontSize: 20);
 
     expect(copied.fontSize, 20);
@@ -240,8 +260,8 @@ void main() {
   // T14 – TLinkThemeData lerp
   // ============================================================
   test('T14 - TLinkThemeData lerp', () {
-    final a = const TLinkThemeData(fontSize: 12, iconSize: 14);
-    final b = const TLinkThemeData(fontSize: 20, iconSize: 24);
+    const a = TLinkThemeData(fontSize: 12, iconSize: 14);
+    const b = TLinkThemeData(fontSize: 20, iconSize: 24);
 
     // t=0 时取 a
     final lerpA = a.lerp(b, 0.0);
@@ -255,7 +275,7 @@ void main() {
   });
 
   // ============================================================
-  // T15 – Resolve 优先级：构造器 > Theme > 默认
+  // T15 – Resolve 优先级：Theme > size 默认
   // ============================================================
   testWidgets('T15 - Resolve 优先级', (tester) async {
     await tester.pumpWidget(
@@ -269,10 +289,9 @@ void main() {
             ),
             child: Builder(
               builder: (context) {
-                return TLink(
-                  child: const Text('优先级'),
-                  fontSize: 30, // 构造器参数应覆盖 Theme
-                  size: TLinkSize.medium,
+                return const TLink(
+                  child: Text('优先级'),
+                  size: TLinkSize.medium, // 默认 14
                 );
               },
             ),
@@ -282,20 +301,30 @@ void main() {
     );
 
     final text = tester.widget<Text>(find.text('优先级'));
-    expect(text.style?.fontSize, 30); // 构造器优先于 Theme(22)
+    expect(text.style?.fontSize, 22); // Theme(22) 覆盖 size 默认(14)
   });
 
   // ============================================================
-  // T16 – 构造器 fontSize 覆盖 Theme 和 size 默认
+  // T16 – Theme fontSize 覆盖 size 默认
   // ============================================================
-  testWidgets('T16 - 构造器 fontSize 覆盖', (tester) async {
-    await tester.pumpWidget(_wrap(
-      TLink(
-        child: const Text('覆盖测试'),
-        fontSize: 24,
-        size: TLinkSize.small, // 默认 12
+  testWidgets('T16 - Theme fontSize 覆盖', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Theme(
+              data: ThemeData().copyWith(extensions: [
+                const TLinkThemeData(fontSize: 24),
+              ]),
+              child: const TLink(
+                child: Text('覆盖测试'),
+                size: TLinkSize.small, // 默认 12
+              ),
+            ),
+          ),
+        ),
       ),
-    ));
+    );
 
     final text = tester.widget<Text>(find.text('覆盖测试'));
     expect(text.style?.fontSize, 24);
@@ -306,14 +335,14 @@ void main() {
   // ============================================================
   testWidgets('T17 - 非 Text child', (tester) async {
     await tester.pumpWidget(_wrap(
-      TLink(
+      const TLink(
         child: Text.rich(
           TextSpan(
             text: '富文本',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        variant: TLinkType.underline,
+        variant: TLinkVariant.underline,
       ),
     ));
 
@@ -324,12 +353,11 @@ void main() {
   // T18 – TLinkConfiguration 存在性
   // ============================================================
   testWidgets('T18 - TLinkConfiguration 存在性', (tester) async {
-    var called = false;
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           body: TLinkConfiguration(
-            onTapAll: (uri) => called = true,
+            onTapAll: (_) {},
             child: TLink(
               child: const Text('配置链接'),
               onPressed: () {},

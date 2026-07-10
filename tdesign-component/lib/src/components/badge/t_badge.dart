@@ -1,11 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import '../../util/context_extension.dart';
-import 't_badge_theme_data.dart';
 
 /// 徽标形态
 enum TBadgeVariant {
@@ -112,7 +110,6 @@ class _TBadgeState extends State<TBadge> {
   bool get visible {
     final theme = _theme(context);
     final showZero = theme?.showZero ?? true;
-    final message = theme?.message;
     final parsedValue = double.tryParse(value);
     return showZero ||
         (parsedValue != null && parsedValue != 0) ||

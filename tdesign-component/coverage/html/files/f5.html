@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/popup/t_popup.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/popup/t_popup.dart</h1></header><div class='meta'>行覆盖 <b>75.0%</b> (3/4) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>/// TDesign 弹出层（Popup）组件库。</div>
+<div class='row nod'><span class='ln'>2</span>///</div>
+<div class='row nod'><span class='ln'>3</span>/// 对外 API：</div>
+<div class='row nod'><span class='ln'>4</span>/// * [TPopup] — 命令式打开浮层</div>
+<div class='row nod'><span class='ln'>5</span>/// * [TPopupOptions] — 配置（推荐命名工厂）</div>
+<div class='row nod'><span class='ln'>6</span>/// * [TPopupHandle] — 显隐控制</div>
+<div class='row nod'><span class='ln'>7</span>/// * [TPopupPlacement]、[TPopupTrigger] — 方向与关闭来源</div>
+<div class='row nod'><span class='ln'>8</span>/// * [TPopupHeaderBuilder]、[TPopupSlotBuilder]、[TPopupVisibleChangeCallback] — 构建器类型</div>
+<div class='row nod'><span class='ln'>9</span>library;</div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>12</span>import &#x27;package:tdesign_icons/tdesign_icons.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>13</span></div>
+<div class='row nod'><span class='ln'>14</span>import &#x27;../../theme/t_colors.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>15</span>import &#x27;../../theme/t_fonts.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>16</span>import &#x27;../../theme/t_radius.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>17</span>import &#x27;../../theme/t_spacers.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>18</span>import &#x27;../../theme/t_theme.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>19</span>import &#x27;../../util/context_extension.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>20</span>import &#x27;../../util/t_toolbar_pressable.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>21</span>import &#x27;../text/t_text.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>part &#x27;_popup_center_close.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>24</span>part &#x27;_popup_header.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>25</span>part &#x27;_popup_layout.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>26</span>part &#x27;_popup_route.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>27</span>part &#x27;_popup_shell.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>28</span>part &#x27;_popup_tracker.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>29</span>part &#x27;t_popup_handle.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>30</span>part &#x27;t_popup_inset.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>31</span>part &#x27;t_popup_options.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>32</span>part &#x27;t_popup_types.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span>/// 弹出层入口：五向滑入 / 居中弹出，支持蒙层、bottom 操作区、center 面板外下方关闭区。</div>
+<div class='row nod'><span class='ln'>35</span>///</div>
+<div class='row nod'><span class='ln'>36</span>/// 通过 [show] 命令式打开；返回 [TPopupHandle] 用于关闭与再次打开。</div>
+<div class='row nod'><span class='ln'>37</span>/// 多次调用 [show] 会继续压入新的浮层路由，可用于叠加展示。</div>
+<div class='row nod'><span class='ln'>38</span>///</div>
+<div class='row nod'><span class='ln'>39</span>/// **示例**</div>
+<div class='row nod'><span class='ln'>40</span>///</div>
+<div class='row nod'><span class='ln'>41</span>/// ```dart</div>
+<div class='row nod'><span class='ln'>42</span>/// final handle = TPopup.show(</div>
+<div class='row nod'><span class='ln'>43</span>///   context,</div>
+<div class='row nod'><span class='ln'>44</span>///   options: TPopupOptions.bottom(</div>
+<div class='row nod'><span class='ln'>45</span>///     titleWidget: const Text(&#x27;标题&#x27;),</div>
+<div class='row nod'><span class='ln'>46</span>///     child: MyPanel(),</div>
+<div class='row nod'><span class='ln'>47</span>///   ),</div>
+<div class='row nod'><span class='ln'>48</span>/// );</div>
+<div class='row nod'><span class='ln'>49</span>/// handle.close();</div>
+<div class='row nod'><span class='ln'>50</span>/// handle.open();</div>
+<div class='row nod'><span class='ln'>51</span>/// ```</div>
+<div class='row nod'><span class='ln'>52</span>///</div>
+<div class='row nod'><span class='ln'>53</span>/// 配置项见 [TPopupOptions]；方向见 [TPopupPlacement]。</div>
+<div class='row nod'><span class='ln'>54</span>final class TPopup {</div>
+<div class='row unc'><span class='ln'>55</span>▶   const TPopup._();</div>
+<div class='row nod'><span class='ln'>56</span></div>
+<div class='row nod'><span class='ln'>57</span>  /// 打开浮层并压入独立 [PopupRoute]。</div>
+<div class='row nod'><span class='ln'>58</span>  ///</div>
+<div class='row nod'><span class='ln'>59</span>  /// [context] 用于查找 [Navigator] 并展示浮层。</div>
+<div class='row nod'><span class='ln'>60</span>  ///</div>
+<div class='row nod'><span class='ln'>61</span>  /// [options] 浮层配置；方向固定时推荐 [TPopupOptions.bottom] 等命名工厂。</div>
+<div class='row nod'><span class='ln'>62</span>  ///</div>
+<div class='row nod'><span class='ln'>63</span>  /// 返回 [TPopupHandle]，可用 [TPopupHandle.close]、[TPopupHandle.open]、</div>
+<div class='row nod'><span class='ln'>64</span>  /// [TPopupHandle.isShowing] 控制与查询。</div>
+<div class='row nod'><span class='ln'>65</span>  /// 重复调用会继续 push 新的浮层；若需互斥请在业务层管理。</div>
+<div class='row nod'><span class='ln'>66</span>  ///</div>
+<div class='row nod'><span class='ln'>67</span>  /// [navigatorContext] 可选，指定承载浮层的 [Navigator] 的 context，默认 [context]。</div>
+<div class='row nod'><span class='ln'>68</span>  ///</div>
+<div class='row nod'><span class='ln'>69</span>  /// [useRootNavigator] 为 true 时使用根 [Navigator]（嵌套导航场景）。</div>
+<div class='row cov'><span class='ln'>70</span>  static TPopupHandle show(</div>
+<div class='row nod'><span class='ln'>71</span>    BuildContext context, {</div>
+<div class='row nod'><span class='ln'>72</span>    required TPopupOptions options,</div>
+<div class='row nod'><span class='ln'>73</span>    BuildContext? navigatorContext,</div>
+<div class='row nod'><span class='ln'>74</span>    bool useRootNavigator = false,</div>
+<div class='row nod'><span class='ln'>75</span>  }) {</div>
+<div class='row nod'><span class='ln'>76</span>    final navContext = navigatorContext ?? context;</div>
+<div class='row cov'><span class='ln'>77</span>    final handle = TPopupHandle._(</div>
+<div class='row nod'><span class='ln'>78</span>      options: options,</div>
+<div class='row nod'><span class='ln'>79</span>      navigatorContext: navigatorContext,</div>
+<div class='row nod'><span class='ln'>80</span>      useRootNavigator: useRootNavigator,</div>
+<div class='row nod'><span class='ln'>81</span>    );</div>
+<div class='row cov'><span class='ln'>82</span>    handle.open(navContext);</div>
+<div class='row nod'><span class='ln'>83</span>    return handle;</div>
+<div class='row nod'><span class='ln'>84</span>  }</div>
+<div class='row nod'><span class='ln'>85</span>}</div>
+<div class='row nod'><span class='ln'>86</span></div>
+</pre></body></html>

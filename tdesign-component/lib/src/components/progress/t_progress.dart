@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 import './t_progress_circular.dart';
-import 't_progress_theme_data.dart';
 
 /// 进度条形态
 enum TProgressVariant { linear, circular, micro, button }
@@ -241,9 +240,6 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
 
   Widget _getDefaultLabel() {
     final showAutoText = widget.value != null;
-    final showInsideLabel =
-        widget.progressLabelPosition == TProgressLabelPosition.inside &&
-            widget.type != TProgressVariant.circular;
 
     Widget getAutoText() => showAutoText && widget.type != TProgressVariant.micro
         ? Text('${(widget.value! * 100).round()}%')
@@ -573,7 +569,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
         gradient: LinearGradient(
           colors: [
             _effectiveColor,
-            widget.context!.tTheme.brandDisabledColor.withOpacity(.5)
+            widget.context!.tTheme.brandDisabledColor.withValues(alpha: .5)
           ],
         ),
       ),

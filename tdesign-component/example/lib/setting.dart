@@ -63,9 +63,7 @@ class _SettingPageState extends State<SettingPage> {
                   title: '当前语言（点击切换）',
                   // 获取系统locale
                   note: localeProvider.currentLanguageName,
-                  onTap: () {
-                    localeProvider.toggleLocale();
-                  }),
+                  onTap: localeProvider.toggleLocale),
             ],
           ),
         TCellGroup(

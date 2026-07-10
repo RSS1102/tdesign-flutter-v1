@@ -3,7 +3,7 @@ import 'dart:ui' show lerpDouble;
 import 'package:flutter/material.dart';
 
 /// 侧边栏样式
-enum TSideBarStyle {
+enum TSideBarVariant {
   /// 普通样式
   normal,
 
@@ -17,7 +17,7 @@ enum TSideBarStyle {
 /// 构造器参数优先级高于 ThemeData。
 class TSideBarThemeData extends ThemeExtension<TSideBarThemeData> {
   /// 默认样式（normal / outline）
-  final TSideBarStyle? style;
+  final TSideBarVariant? style;
 
   /// 默认高度
   final double? height;
@@ -53,7 +53,7 @@ class TSideBarThemeData extends ThemeExtension<TSideBarThemeData> {
 
   @override
   TSideBarThemeData copyWith({
-    TSideBarStyle? style,
+    TSideBarVariant? style,
     double? height,
     EdgeInsetsGeometry? contentPadding,
     Color? selectedColor,

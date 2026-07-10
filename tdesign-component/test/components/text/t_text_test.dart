@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
-import 'package:tdesign_flutter/src/components/text/t_text_theme_data.dart';
 
 /// TText V1.0 Widget 测试
 ///
@@ -17,7 +16,7 @@ void main() {
       data: ThemeData(extensions: [TThemeData.defaultData()]),
       child: MaterialApp(
         theme: ThemeData(extensions: extensions),
-        home: Scaffold(body: Center(child: child)),
+        home: Scaffold(body: child),
       ),
     );
   }
@@ -37,9 +36,9 @@ void main() {
   // T02 – 构造器糖参数
   // ============================================================
   testWidgets('T02 - 构造器糖：textColor 生效', (tester) async {
-    final color = Colors.red;
+    const color = Colors.red;
     await tester.pumpWidget(wrapWithTheme(
-      TText('红色文本', textColor: color),
+      const TText('红色文本', textColor: color),
     ));
 
     final text = tester.widget<Text>(find.text('红色文本'));
@@ -58,7 +57,7 @@ void main() {
 
   testWidgets('T02c - 构造器糖：isTextThrough 删除线', (tester) async {
     await tester.pumpWidget(wrapWithTheme(
-      TText('删除线文本', isTextThrough: true),
+      const TText('删除线文本', isTextThrough: true),
     ));
 
     final text = tester.widget<Text>(find.text('删除线文本'));
@@ -67,7 +66,7 @@ void main() {
 
   testWidgets('T02d - 构造器糖：forceVerticalCenter 触发 Container 包装', (tester) async {
     await tester.pumpWidget(wrapWithTheme(
-      TText('居中文本', forceVerticalCenter: true),
+      const TText('居中文本', forceVerticalCenter: true),
     ));
 
     // forceVerticalCenter 应该用 Container 包裹
@@ -80,7 +79,7 @@ void main() {
   // ============================================================
   testWidgets('T03 - P0 style.color 覆盖 textColor', (tester) async {
     await tester.pumpWidget(wrapWithTheme(
-      TText(
+      const TText(
         '样式覆盖',
         textColor: Colors.blue,
         style: TextStyle(color: Colors.red),
@@ -96,7 +95,7 @@ void main() {
       TText(
         '字体覆盖',
         font: Font(size: 14, lineHeight: 20),
-        style: TextStyle(fontSize: 24),
+        style: const TextStyle(fontSize: 24),
       ),
     ));
 
@@ -111,8 +110,8 @@ void main() {
   // ============================================================
   testWidgets('T04 - TTextThemeData.context 提供默认颜色', (tester) async {
     await tester.pumpWidget(wrapWithTheme(
-      TText('主题文本'),
-      textTheme: TTextThemeData(defaultTextColor: Colors.orange),
+      const TText('主题文本'),
+      textTheme: const TTextThemeData(defaultTextColor: Colors.orange),
     ));
 
     final text = tester.widget<Text>(find.text('主题文本'));
@@ -121,8 +120,8 @@ void main() {
 
   testWidgets('T04b - 构造器 textColor 覆盖 TTextThemeData', (tester) async {
     await tester.pumpWidget(wrapWithTheme(
-      TText('覆盖主题', textColor: Colors.green),
-      textTheme: TTextThemeData(defaultTextColor: Colors.orange),
+      const TText('覆盖主题', textColor: Colors.green),
+      textTheme: const TTextThemeData(defaultTextColor: Colors.orange),
     ));
 
     final text = tester.widget<Text>(find.text('覆盖主题'));
@@ -131,8 +130,8 @@ void main() {
 
   testWidgets('T04c - TTextThemeData.forceVerticalCenter 默认启用', (tester) async {
     await tester.pumpWidget(wrapWithTheme(
-      TText('居中主题'),
-      textTheme: TTextThemeData(forceVerticalCenter: true),
+      const TText('居中主题'),
+      textTheme: const TTextThemeData(forceVerticalCenter: true),
     ));
 
     // 应该触发 Container 包装
@@ -142,7 +141,7 @@ void main() {
 
   testWidgets('T04d - TTextThemeData.defaultFont 覆盖 Token', (tester) async {
     await tester.pumpWidget(wrapWithTheme(
-      TText('字体主题'),
+      const TText('字体主题'),
       textTheme: TTextThemeData(
         defaultFont: Font(size: 22, lineHeight: 30),
       ),
@@ -191,7 +190,7 @@ void main() {
     await tester.pumpWidget(wrapWithTheme(
       TTextConfiguration(
         globalFontFamily: FontFamily(fontFamily: 'FontA'),
-        child: Container(key: childKey, child: TText('文本')),
+        child: Container(key: childKey, child: const TText('文本')),
       ),
     ));
 
@@ -202,7 +201,7 @@ void main() {
     await tester.pumpWidget(wrapWithTheme(
       TTextConfiguration(
         globalFontFamily: FontFamily(fontFamily: 'FontB'),
-        child: Container(key: childKey, child: TText('文本')),
+        child: Container(key: childKey, child: const TText('文本')),
       ),
     ));
 
@@ -230,7 +229,7 @@ void main() {
     final span = TTextSpan(
       text: '覆盖测试',
       textColor: Colors.blue,
-      style: TextStyle(color: Colors.red),
+      style: const TextStyle(color: Colors.red),
     );
 
     // P0 style 应覆盖 textColor
@@ -261,7 +260,7 @@ void main() {
   // T08 – TTextThemeData copyWith / lerp
   // ============================================================
   test('T08 - copyWith 部分覆写', () {
-    final original = TTextThemeData(
+    const original = TTextThemeData(
       defaultTextColor: Colors.red,
       forceVerticalCenter: true,
     );
@@ -273,10 +272,10 @@ void main() {
   });
 
   test('T08b - lerp 过渡计算', () {
-    final red = Color(0xFFF44336);
-    final blue = Color(0xFF2196F3);
-    final a = TTextThemeData(defaultTextColor: red, forceVerticalCenter: false);
-    final b = TTextThemeData(defaultTextColor: blue, forceVerticalCenter: true);
+    const red = Color(0xFFF44336);
+    const blue = Color(0xFF2196F3);
+    const a = TTextThemeData(defaultTextColor: red, forceVerticalCenter: false);
+    const b = TTextThemeData(defaultTextColor: blue, forceVerticalCenter: true);
 
     final lerped = a.lerp(b, 0.0);
     expect(lerped.defaultTextColor, red);
@@ -317,7 +316,7 @@ void main() {
   testWidgets('T10 - fontFamily 变更导致不同 padding', (tester) async {
     // 默认字体
     await tester.pumpWidget(wrapWithTheme(
-      TText(
+      const TText(
         'padding测试A',
         forceVerticalCenter: true,
       ),
@@ -353,7 +352,7 @@ void main() {
   testWidgets('T11 - getRawText 返回系统 Text', (tester) async {
     await tester.pumpWidget(wrapWithTheme(
       Builder(builder: (context) {
-        final rawText = TText(
+        final rawText = const TText(
           '原始文本',
           backgroundColor: Colors.yellow,
         ).getRawText(context: context);
@@ -373,7 +372,7 @@ void main() {
   testWidgets('T12 - 无 kTextForceVerticalCenterEnable 仍正常工作', (tester) async {
     // v1.0 删除全局变量后，实例 forceVerticalCenter 仍应生效
     await tester.pumpWidget(wrapWithTheme(
-      TText('强制居中', forceVerticalCenter: true),
+      const TText('强制居中', forceVerticalCenter: true),
     ));
 
     expect(find.text('强制居中'), findsOneWidget);
@@ -384,7 +383,7 @@ void main() {
   testWidgets('T12b - 无 kTextForceVerticalCenterEnable 默认不居中', (tester) async {
     // 默认 forceVerticalCenter=false，TTextThemeData 也默认 false
     await tester.pumpWidget(wrapWithTheme(
-      TText('默认不居中'),
+      const TText('默认不居中'),
     ));
 
     // 不应该有 Container 包裹（除非 forceVerticalCenter=true）
@@ -402,7 +401,7 @@ void main() {
   // ============================================================
   testWidgets('T13 - backgroundColor 通过 Container 渲染', (tester) async {
     await tester.pumpWidget(wrapWithTheme(
-      TText('背景色', backgroundColor: Colors.amber),
+      const TText('背景色', backgroundColor: Colors.amber),
     ));
 
     final container = tester.widget<Container>(find.byType(Container).first);
