@@ -308,4 +308,71 @@ void main() {
       expect(props.label, '标签');
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TSideBar 覆盖率补充', () {
+    testWidgets('controller with children 触发 getDisplayChildren', (tester) async {
+      // 覆盖 195-203（controller.children 非空 → map SideItemProps）
+      final controller = TSideBarController();
+      controller.init([
+        SideItemProps(index: 0, value: 0, label: '选项1'),
+        SideItemProps(index: 1, value: 1, label: '选项2'),
+      ]);
+      await tester.pumpWidget(wrapWithTheme(
+        TSideBar(
+          controller: controller,
+          value: 0,
+        ),
+      ));
+      expect(find.byType(TSideBar), findsOneWidget);
+    });
+
+    testWidgets('空 children', (tester) async {
+      // 覆盖 221（displayChildren = []）
+      await tester.pumpWidget(wrapWithTheme(
+        const TSideBar(
+          children: [],
+          value: 0,
+        ),
+      ));
+      expect(find.byType(TSideBar), findsOneWidget);
+    });
+
+    testWidgets('didUpdateWidget children 变化', (tester) async {
+      // 覆盖 312-315（didUpdateWidget → getDisplayChildren）
+      var count = 3;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TSideBar(
+              children: buildItems(count: count),
+              value: 0,
+            );
+          },
+        ),
+      ));
+      setState(() => count = 5);
+      await tester.pumpAndSettle();
+      expect(find.byType(TSideBar), findsOneWidget);
+    });
+
+    testWidgets('选中超出视口的项触发滚动', (tester) async {
+      // 覆盖 132-136（滚动逻辑）
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 200,
+          child: TSideBar(
+            children: buildItems(count: 20),
+            value: 15,
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSideBar), findsOneWidget);
+    });
+  });
 }

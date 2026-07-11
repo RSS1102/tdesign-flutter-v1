@@ -685,4 +685,121 @@ void main() {
       expect(side == null || side == BorderSide.none, isTrue);
     });
   });
+
+  // ============================================================
+  // TButtonResolve 覆盖率补充
+  // ============================================================
+  group('TButtonResolve 覆盖率补充', () {
+    testWidgets('theme padding 注入', (tester) async {
+      // 覆盖 62（paddingStyle 非 null）+ 76（merge paddingStyle）
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(child: const Text('pad'), onPressed: () {}),
+        buttonTheme: const TButtonThemeData(padding: EdgeInsets.all(20)),
+      ));
+      expect(find.byType(TButton), findsOneWidget);
+    });
+
+    Future<void> pressAndRelease(WidgetTester tester) async {
+      final gesture = await tester.startGesture(
+          tester.getCenter(find.byType(TButton)));
+      await tester.pump();
+      await gesture.up();
+      await tester.pump();
+    }
+
+    testWidgets('primary colorScheme pressed', (tester) async {
+      // 覆盖 pressed 分支 + _pressedBackgroundColor primary
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(
+          child: const Text('p'),
+          colorScheme: TButtonColorScheme.primary,
+          onPressed: () {},
+        ),
+      ));
+      await pressAndRelease(tester);
+      expect(find.byType(TButton), findsOneWidget);
+    });
+
+    testWidgets('danger colorScheme pressed', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(
+          child: const Text('d'),
+          colorScheme: TButtonColorScheme.danger,
+          onPressed: () {},
+        ),
+      ));
+      await pressAndRelease(tester);
+      expect(find.byType(TButton), findsOneWidget);
+    });
+
+    testWidgets('light colorScheme pressed', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(
+          child: const Text('l'),
+          colorScheme: TButtonColorScheme.light,
+          onPressed: () {},
+        ),
+      ));
+      await pressAndRelease(tester);
+      expect(find.byType(TButton), findsOneWidget);
+    });
+
+    testWidgets('defaultTheme colorScheme pressed', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(
+          child: const Text('def'),
+          colorScheme: TButtonColorScheme.defaultTheme,
+          onPressed: () {},
+        ),
+      ));
+      await pressAndRelease(tester);
+      expect(find.byType(TButton), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // TButton size/shape/margin 覆盖率补充
+  // ============================================================
+  group('TButton size/shape 覆盖率补充', () {
+    testWidgets('large size', (tester) async {
+      // 覆盖 317（fontSize large）+ 327（height large）
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(child: const Text('lg'), size: TButtonSize.large, onPressed: () {}),
+      ));
+      expect(find.byType(TButton), findsOneWidget);
+    });
+
+    testWidgets('small size', (tester) async {
+      // 覆盖 268（iconSize small）+ 278-279（padding small）+ 318（fontSize medium→small）
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(child: const Text('sm'), size: TButtonSize.small, onPressed: () {}),
+      ));
+      expect(find.byType(TButton), findsOneWidget);
+    });
+
+    testWidgets('extraSmall size', (tester) async {
+      // 覆盖 298（padding extraSmall）
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(child: const Text('xs'), size: TButtonSize.extraSmall, onPressed: () {}),
+      ));
+      expect(find.byType(TButton), findsOneWidget);
+    });
+
+    testWidgets('theme margin 注入', (tester) async {
+      // 覆盖 233（theme.margin != null → Container margin）
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(child: const Text('m'), onPressed: () {}),
+        buttonTheme: const TButtonThemeData(margin: EdgeInsets.all(10)),
+      ));
+      expect(find.byType(TButton), findsOneWidget);
+    });
+
+    testWidgets('icon onlyIcon 渲染', (tester) async {
+      // 覆盖 251-252（_wrapIcon → Icon 渲染）
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(child: const Icon(Icons.add), onPressed: () {}),
+      ));
+      expect(find.byType(TButton), findsOneWidget);
+    });
+  });
 }

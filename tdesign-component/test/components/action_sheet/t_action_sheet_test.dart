@@ -423,4 +423,26 @@ void main() {
       expect(copied.cancelText, '关闭');
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TActionSheet 覆盖率补充', () {
+    testWidgets('TActionSheet open/close', (tester) async {
+      // 覆盖 258-259（open → show）+ 263-265（close → handle.close）
+      late BuildContext ctx;
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          ctx = context;
+          return const SizedBox();
+        }),
+      ));
+      final sheet = TActionSheet(ctx, items: [TActionSheetItem(label: 'test')]);
+      sheet.open();
+      await tester.pumpAndSettle();
+      sheet.close();
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    });
+  });
 }

@@ -361,4 +361,92 @@ void main() {
       expect(find.byType(TTimeCounter), findsOneWidget);
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TTimeCounter 覆盖率补充', () {
+    testWidgets('didUpdateWidget controller 变化', (tester) async {
+      // 覆盖 128-133（controller 变化 → removeListener/addListener）
+      final c1 = TTimeCounterController();
+      final c2 = TTimeCounterController();
+      var useC1 = true;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TTimeCounter(
+              time: 5000,
+              autoStart: false,
+              controller: useC1 ? c1 : c2,
+            );
+          },
+        ),
+      ));
+      setState(() => useC1 = false);
+      await tester.pumpAndSettle();
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    testWidgets('didUpdateWidget time 变化', (tester) async {
+      // 覆盖 135-136（time 变化 → resetTimer）
+      var time = 5000;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TTimeCounter(
+              time: time,
+              autoStart: false,
+            );
+          },
+        ),
+      ));
+      setState(() => time = 3000);
+      await tester.pumpAndSettle();
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    testWidgets('direction=up 正向计时 + resume', (tester) async {
+      // 覆盖 161-162（direction=up 时 _time 累加）+ 182-183（resumeTimer）+ 214（resume 分支）
+      final controller = TTimeCounterController();
+      await tester.pumpWidget(wrapWithTheme(
+        TTimeCounter(
+          time: 0,
+          direction: TTimeCounterDirection.up,
+          autoStart: true,
+          controller: controller,
+        ),
+      ));
+      // 等待计时器执行（direction=up 时 _time 累加）
+      await tester.pump(const Duration(seconds: 1));
+      // pause → resume（覆盖 resumeTimer + resume 分支）
+      controller.pause();
+      await tester.pump();
+      controller.resume();
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    testWidgets('连续 reset 覆盖 if 分支（value==reset 时 _time+notifyListeners）', (tester) async {
+      // 覆盖 t_time_counter_controller.dart 第 47-48 行
+      final controller = TTimeCounterController();
+      await tester.pumpWidget(wrapWithTheme(
+        TTimeCounter(
+          time: 5000,
+          autoStart: false,
+          controller: controller,
+        ),
+      ));
+      // 第一次 reset（走 else 分支：value = TTimeCounterStatus.reset）
+      controller.reset(10000);
+      await tester.pump();
+      // 第二次 reset（走 if 分支：value 已是 reset → _time = time + notifyListeners）
+      controller.reset(20000);
+      await tester.pump();
+      expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+  });
 }

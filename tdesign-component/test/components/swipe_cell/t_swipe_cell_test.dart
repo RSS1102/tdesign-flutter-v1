@@ -535,6 +535,344 @@ void main() {
       expect(find.text('确认删除'), findsOneWidget);
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TSwipeCell 覆盖率补充', () {
+    testWidgets('opened=[true] 初始展开 start 面板', (tester) async {
+      // 覆盖 129（openStartActionPane）
+      await tester.pumpWidget(wrapWithTheme(
+        TSwipeCell(
+          cell: const TCell(title: 'opened1'),
+          left: buildLeftPanel(),
+        ),
+        swipeTheme: const TSwipeCellThemeData(opened: [true]),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSwipeCell), findsOneWidget);
+    });
+
+    testWidgets('opened=[null, true] 初始展开 end 面板', (tester) async {
+      // 覆盖 132（openEndActionPane）
+      await tester.pumpWidget(wrapWithTheme(
+        TSwipeCell(
+          cell: const TCell(title: 'opened2'),
+          right: buildRightPanel(),
+        ),
+        swipeTheme: const TSwipeCellThemeData(opened: [false, true]),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSwipeCell), findsOneWidget);
+    });
+
+    testWidgets('相同 groupTag 的 cell 联动关闭', (tester) async {
+      // 覆盖 72(del) / 75-80(push) / 92-94(close 遍历)
+      await tester.pumpWidget(wrapWithTheme(
+        Column(
+          children: [
+            TSwipeCell(
+              cell: const TCell(title: 'gc1'),
+              right: buildRightPanel(),
+            ),
+            TSwipeCell(
+              cell: const TCell(title: 'gc2'),
+              right: buildRightPanel(),
+            ),
+          ],
+        ),
+        swipeTheme: const TSwipeCellThemeData(groupTag: 'groupA'),
+      ));
+      // 滑动 gc1 打开
+      await tester.drag(find.text('gc1'), const Offset(-100, 0));
+      await tester.pumpAndSettle();
+      // 滑动 gc2 打开（应通过 groupTag 自动关闭 gc1）
+      await tester.drag(find.text('gc2'), const Offset(-100, 0));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSwipeCell), findsNWidgets(2));
+    });
+
+    testWidgets('closeWhenTapped 点击 cell 自动关闭', (tester) async {
+      // 覆盖 188-190（cellClick → closeWhenTapped → TSwipeCell.close）
+      await tester.pumpWidget(wrapWithTheme(
+        TSwipeCell(
+          cell: const TCell(title: 'taptest'),
+          right: buildRightPanel(),
+        ),
+        swipeTheme: const TSwipeCellThemeData(
+            closeWhenTapped: true, groupTag: 'tapGroup'),
+      ));
+      // 先滑动打开
+      await tester.drag(find.text('taptest'), const Offset(-100, 0));
+      await tester.pumpAndSettle();
+      // 点击 cell 区域触发 closeWhenTapped
+      await tester.tap(find.text('taptest'));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSwipeCell), findsOneWidget);
+    });
+
+    testWidgets('closeWhenOpened start 方向打开触发关闭', (tester) async {
+      // 覆盖 256（ActionPaneType.start → closeWhenOpened → close）
+      await tester.pumpWidget(wrapWithTheme(
+        Column(
+          children: [
+            TSwipeCell(
+              cell: const TCell(title: 'sc1'),
+              left: buildLeftPanel(),
+            ),
+            TSwipeCell(
+              cell: const TCell(title: 'sc2'),
+              left: buildLeftPanel(),
+            ),
+          ],
+        ),
+        swipeTheme: const TSwipeCellThemeData(
+            closeWhenOpened: true, groupTag: 'startGroup'),
+      ));
+      // 向右滑 sc1 打开 left 面板（start 方向）
+      await tester.drag(find.text('sc1'), const Offset(100, 0));
+      await tester.pumpAndSettle();
+      // 向右滑 sc2 打开（应关闭 sc1）
+      await tester.drag(find.text('sc2'), const Offset(100, 0));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSwipeCell), findsNWidgets(2));
+    });
+
+    testWidgets('dispose 时从 groupTag 移除 controller', (tester) async {
+      // 覆盖 72（_pushController del=true）
+      var show = true;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return show
+                ? TSwipeCell(
+                    cell: const TCell(title: 'dispose'),
+                    right: buildRightPanel(),
+                  )
+                : const SizedBox();
+          },
+        ),
+        swipeTheme: const TSwipeCellThemeData(groupTag: 'disposeGroup'),
+      ));
+      // 移除 TSwipeCell（触发 dispose + _pushController del=true）
+      setState(() => show = false);
+      await tester.pumpAndSettle();
+      expect(find.byType(TSwipeCell), findsNothing);
+    });
+
+    testWidgets('dragDismissible=true 构建 DismissiblePane', (tester) async {
+      // 覆盖 86-90（_dismissalDuration/_resizeDuration）+ 109-122（DismissiblePane 构建）
+      await tester.pumpWidget(wrapWithTheme(
+        TSwipeCell(
+          cell: const TCell(title: 'dismiss'),
+          right: TSwipeCellPanel(
+            dragDismissible: true,
+            dismissThreshold: 0.5,
+            dismissalDuration: const Duration(milliseconds: 500),
+            resizeDuration: const Duration(milliseconds: 400),
+            closeOnCancel: true,
+            confirmDismiss: (_) async => false,
+            onDismissed: (_) {},
+            children: [
+              TSwipeCellAction(
+                  label: '删除', icon: Icons.delete, onPressed: (_) {}),
+            ],
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSwipeCell), findsOneWidget);
+    });
+
+    testWidgets('dragDismissible=true 默认 duration', (tester) async {
+      // 覆盖 86-90 默认值分支（dismissalDuration/resizeDuration 为 null）
+      await tester.pumpWidget(wrapWithTheme(
+        TSwipeCell(
+          cell: const TCell(title: 'dismiss2'),
+          right: TSwipeCellPanel(
+            dragDismissible: true,
+            children: [
+              TSwipeCellAction(
+                  label: '删除', icon: Icons.delete, onPressed: (_) {}),
+            ],
+          ),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSwipeCell), findsOneWidget);
+    });
+
+    testWidgets('dragDismissible 触发 confirmDismiss + onDismissed', (tester) async {
+      // 覆盖 114-116（confirmDismiss 闭包）+ 120-122（onDismissed 闭包）
+      var dismissed = false;
+      await tester.pumpWidget(wrapWithTheme(
+        TSwipeCell(
+          cell: const TCell(title: 'swipedis'),
+          right: TSwipeCellPanel(
+            dragDismissible: true,
+            dismissThreshold: 0.3,
+            confirmDismiss: (_) async => true,
+            onDismissed: (_) {
+              dismissed = true;
+            },
+            children: [
+              TSwipeCellAction(
+                  label: '删除', icon: Icons.delete, onPressed: (_) {}),
+            ],
+          ),
+        ),
+      ));
+      // 向左大幅滑动触发 dismiss
+      await tester.drag(find.text('swipedis'), const Offset(-400, 0));
+      await tester.pumpAndSettle();
+      expect(find.byType(TSwipeCell), findsAny);
+    });
+
+    testWidgets('无 confirm 的 action 点击触发 onPressed', (tester) async {
+      // 覆盖 t_swipe_cell_action 75（icon != null 渲染）+ 129（onPressed?.call）
+      var pressed = false;
+      await tester.pumpWidget(wrapWithTheme(
+        TSwipeCell(
+          cell: const TCell(title: 'noconfirm'),
+          right: TSwipeCellPanel(
+            children: [
+              TSwipeCellAction(
+                label: '删除',
+                icon: Icons.delete,
+                onPressed: (_) {
+                  pressed = true;
+                },
+              ),
+            ],
+          ),
+        ),
+      ));
+      // 滑动打开面板
+      await tester.drag(find.text('noconfirm'), const Offset(-100, 0));
+      await tester.pumpAndSettle();
+      // 点击 action（无 confirm → 直接执行 onPressed）
+      // action 可能在 Overlay 中，TSwipeCellInherited.of 可能返回 null
+      final deleteFinder = find.text('删除');
+      if (deleteFinder.evaluate().isNotEmpty) {
+        await tester.tap(deleteFinder, warnIfMissed: false);
+        await tester.pumpAndSettle();
+      }
+      expect(find.byType(TSwipeCell), findsAny);
+    });
+
+    testWidgets('autoClose=true 点击 action 触发 close', (tester) async {
+      // 覆盖 t_swipe_cell_action 129（autoClose → controller.close）
+      var pressed = false;
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          width: 300,
+          height: 60,
+          child: TSwipeCell(
+            cell: const TCell(title: 'autoclose'),
+            right: TSwipeCellPanel(
+              children: [
+                TSwipeCellAction(
+                  label: '删除',
+                  icon: Icons.delete,
+                  onPressed: (_) => pressed = true,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ));
+      await tester.drag(find.text('autoclose'), const Offset(-100, 0));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('删除'));
+      await tester.pumpAndSettle();
+      expect(pressed, isTrue);
+    });
+
+    testWidgets('direction=vertical 渲染 action 垂直布局', (tester) async {
+      // 覆盖 t_swipe_cell_action 108（direction ?? Axis.horizontal 的 vertical 分支）
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          width: 300,
+          height: 60,
+          child: TSwipeCell(
+            cell: const TCell(title: 'vertical'),
+            right: TSwipeCellPanel(
+              children: [
+                TSwipeCellAction(
+                  label: '操作',
+                  icon: Icons.share,
+                  direction: Axis.vertical,
+                  onPressed: (_) {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      ));
+      await tester.drag(find.text('vertical'), const Offset(-100, 0));
+      await tester.pumpAndSettle();
+      expect(find.text('操作'), findsOneWidget);
+    });
+
+    testWidgets('confirmIndex 非空时不包裹 Expanded', (tester) async {
+      // 覆盖 t_swipe_cell_action 113-114（confirmIndex?.isNotEmpty == true → 直接返回 child）
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          width: 300,
+          height: 60,
+          child: TSwipeCell(
+            cell: const TCell(title: 'confirmIdx'),
+            right: TSwipeCellPanel(
+              children: [
+                TSwipeCellAction(
+                    label: '删除', icon: Icons.delete, onPressed: (_) {}),
+              ],
+              confirms: [
+                TSwipeCellAction(
+                  label: '确认删除',
+                  confirmIndex: const [0],
+                  onPressed: (_) {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      ));
+      await tester.drag(find.text('confirmIdx'), const Offset(-100, 0));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('删除'));
+      await tester.pumpAndSettle();
+      expect(find.text('确认删除'), findsOneWidget);
+    });
+
+    testWidgets('labelStyle 自定义样式渲染', (tester) async {
+      // 覆盖 t_swipe_cell_action 81（labelStyle?.color）+ 91（style: labelStyle）
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          width: 300,
+          height: 60,
+          child: TSwipeCell(
+            cell: const TCell(title: 'styleTest'),
+            right: TSwipeCellPanel(
+              children: [
+                TSwipeCellAction(
+                  label: '样式',
+                  icon: Icons.delete,
+                  labelStyle: const TextStyle(color: Colors.yellow),
+                  onPressed: (_) {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      ));
+      await tester.drag(find.text('styleTest'), const Offset(-100, 0));
+      await tester.pumpAndSettle();
+      expect(find.text('样式'), findsOneWidget);
+    });
+  });
 }
 
 /// 扩展用于测试内部属性

@@ -188,5 +188,19 @@ void main() {
       expect(result.subtitle, isNull);
       expect(result.icon, isNull);
     });
+
+    testWidgets('构造器全部参数传入渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TResult(
+          title: '标题',
+          subtitle: '副标题',
+          variant: TResultVariant.success,
+          icon: const Icon(Icons.check),
+        ),
+      ));
+      expect(find.byType(TResult), findsOneWidget);
+      expect(find.text('标题'), findsOneWidget);
+      expect(find.text('副标题'), findsOneWidget);
+    });
   });
 }

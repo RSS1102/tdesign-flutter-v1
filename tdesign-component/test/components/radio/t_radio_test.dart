@@ -518,4 +518,114 @@ void main() {
       );
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TRadioGroup 覆盖率补充', () {
+    testWidgets('cardMode 水平 + showDivider 渲染分割线', (tester) async {
+      // 覆盖 374（if (showDivider) 分支）
+      await tester.pumpWidget(wrapWithTheme(
+        TRadioGroup(
+          selectId: 'r1',
+          cardMode: true,
+          showDivider: true,
+          direction: Axis.horizontal,
+          directionalTdRadios: const [
+            TRadio(id: 'r1', title: '水平分割一', cardMode: true),
+            TRadio(id: 'r2', title: '水平分割二', cardMode: true),
+          ],
+          onRadioGroupChange: (id) {},
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRadioGroup), findsOneWidget);
+    });
+
+    testWidgets('cardMode 水平 + 自定义 divider', (tester) async {
+      // 覆盖 375（divider ?? 默认 Padding 分支）
+      await tester.pumpWidget(wrapWithTheme(
+        TRadioGroup(
+          selectId: 'r1',
+          cardMode: true,
+          showDivider: true,
+          divider: const Divider(height: 1),
+          direction: Axis.horizontal,
+          directionalTdRadios: const [
+            TRadio(id: 'r1', title: '自定义分割', cardMode: true),
+            TRadio(id: 'r2', title: '自定义分割2', cardMode: true),
+          ],
+          onRadioGroupChange: (id) {},
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRadioGroup), findsOneWidget);
+    });
+
+    test('horizontalChild 生成 Expanded+SizedBox', () {
+      // 覆盖 422-426（horizontalChild sync* 函数）
+      final result = horizontalChild(const Text('test')).toList();
+      expect(result.length, 2);
+      expect(result[0], isA<Expanded>());
+      expect(result[1], isA<SizedBox>());
+    });
+
+    testWidgets('hollowCircle + disabled + selected 渲染 CustomPaint',
+        (tester) async {
+      // 覆盖 86（!enabled && isSelected → brandDisabledColor 分支）
+      await tester.pumpWidget(wrapWithTheme(
+        TRadioGroup(
+          selectId: 'r1',
+          direction: Axis.vertical,
+          directionalTdRadios: const [
+            TRadio(
+              id: 'r1',
+              title: '禁用选中',
+              enabled: false,
+              radioStyle: TRadioVariant.hollowCircle,
+            ),
+            TRadio(id: 'r2', title: '正常'),
+          ],
+          onRadioGroupChange: (id) {},
+        ),
+      ));
+      expect(find.byType(CustomPaint), findsWidgets);
+    });
+
+    testWidgets('cardMode=true 时 buildDefaultIcon 返回 Container',
+        (tester) async {
+      // 覆盖 67（cardMode == true → return Container()）
+      await tester.pumpWidget(wrapWithTheme(
+        const TRadio(
+          id: 'r1',
+          title: '卡片模式',
+          cardMode: true,
+        ),
+      ));
+      expect(find.byType(TRadio), findsOneWidget);
+    });
+
+    test('HollowCircle shouldRepaint 返回 false', () {
+      // 覆盖 165（shouldRepaint → false）
+      final painter = HollowCircle(Colors.red);
+      expect(painter.shouldRepaint(painter), isFalse);
+    });
+
+    testWidgets('radioCheckStyle=hollowCircle 通过 Group 注入', (tester) async {
+      // 覆盖 71-74（groupState is TRadioGroupState → radioCheckStyle）
+      await tester.pumpWidget(wrapWithTheme(
+        TRadioGroup(
+          selectId: 'r1',
+          radioCheckStyle: TRadioVariant.hollowCircle,
+          direction: Axis.vertical,
+          directionalTdRadios: const [
+            TRadio(id: 'r1', title: '镂空一'),
+            TRadio(id: 'r2', title: '镂空二'),
+          ],
+          onRadioGroupChange: (id) {},
+        ),
+      ));
+      expect(find.byType(CustomPaint), findsWidgets);
+    });
+  });
 }

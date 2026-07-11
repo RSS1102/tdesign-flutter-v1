@@ -359,4 +359,112 @@ void main() {
       expect(result.colorScheme, TTagColorScheme.primary);
     });
   });
+
+  // ============================================================
+  // TTag widget 渲染
+  // ============================================================
+  group('TTag widget 渲染', () {
+    testWidgets('基础渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(TTag('标签')));
+      expect(find.text('标签'), findsOneWidget);
+    });
+
+    testWidgets('icon 渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(TTag('带图标', icon: Icons.star)));
+      expect(find.byIcon(Icons.star), findsOneWidget);
+    });
+
+    testWidgets('size extraLarge', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(TTag('大', size: TTagSize.extraLarge)));
+      expect(find.text('大'), findsOneWidget);
+    });
+
+    testWidgets('size large', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(TTag('中', size: TTagSize.large)));
+      expect(find.text('中'), findsOneWidget);
+    });
+
+    testWidgets('size small', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(TTag('小', size: TTagSize.small)));
+      expect(find.text('小'), findsOneWidget);
+    });
+
+    testWidgets('shape round', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTag('圆角'),
+        tagTheme: const TTagThemeData(shape: TTagShape.round),
+      ));
+      expect(find.text('圆角'), findsOneWidget);
+    });
+
+    testWidgets('shape mark', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTag('半圆'),
+        tagTheme: const TTagThemeData(shape: TTagShape.mark),
+      ));
+      expect(find.text('半圆'), findsOneWidget);
+    });
+
+    testWidgets('needCloseIcon', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTag('可关闭', onCloseTap: () {}),
+        tagTheme: const TTagThemeData(needCloseIcon: true),
+      ));
+      expect(find.text('可关闭'), findsOneWidget);
+    });
+
+    testWidgets('isOutline + isLight', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTag('描边'),
+        tagTheme: const TTagThemeData(isOutline: true, isLight: true),
+      ));
+      expect(find.text('描边'), findsOneWidget);
+    });
+
+    testWidgets('disable', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTag('禁用'),
+        tagTheme: const TTagThemeData(disable: true),
+      ));
+      expect(find.text('禁用'), findsOneWidget);
+    });
+
+    testWidgets('colorScheme danger', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTag('危险', colorScheme: TTagColorScheme.danger),
+      ));
+      expect(find.text('危险'), findsOneWidget);
+    });
+
+    testWidgets('iconWidget 自定义', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTag('自定义图标'),
+        tagTheme: TTagThemeData(iconWidget: const Icon(Icons.favorite)),
+      ));
+      expect(find.byIcon(Icons.favorite), findsOneWidget);
+    });
+
+    testWidgets('primary + isOutline', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTag('primary', colorScheme: TTagColorScheme.primary),
+        tagTheme: const TTagThemeData(isOutline: true),
+      ));
+      expect(find.text('primary'), findsOneWidget);
+    });
+
+    testWidgets('warning + isOutline', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTag('warning', colorScheme: TTagColorScheme.warning),
+        tagTheme: const TTagThemeData(isOutline: true),
+      ));
+      expect(find.text('warning'), findsOneWidget);
+    });
+
+    testWidgets('medium size + icon', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTag('med', icon: Icons.star, size: TTagSize.medium),
+      ));
+      expect(find.byIcon(Icons.star), findsOneWidget);
+    });
+  });
 }

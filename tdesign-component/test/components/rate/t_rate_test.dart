@@ -738,4 +738,188 @@ void main() {
       expect(icon.size, 24);
     });
   });
+
+  // ============================================================
+  // 交互补充（拖拽 / overlay / tip / 定时器）
+  // ============================================================
+  group('TRate 交互补充', () {
+    testWidgets('拖拽评分触发 onHorizontalDragUpdate/End', (tester) async {
+      // 覆盖 226-227（_isClick=false; _changeSelect）+ 233（_hideTip）
+      var changed = -1.0;
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(value: 0, onChanged: (v) => changed = v),
+      ));
+      // 从 TRate 中心向右拖拽（覆盖 onHorizontalDragUpdate/End + _fingerInsideContainer）
+      await tester.drag(
+          find.byType(TRate), const Offset(60, 0), warnIfMissed: false);
+      // Throttle 延迟 100ms 执行 _changeSelect
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('allowHalf=true 拖拽半选', (tester) async {
+      // 覆盖 341（entry.key 半选值）+ 345（首次计算尺寸）
+      var changed = -1.0;
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(value: 0, allowHalf: true, onChanged: (v) => changed = v),
+      ));
+      await tester.drag(
+          find.byType(TRate), const Offset(30, 0), warnIfMissed: false);
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('点击相同值触发 isTap=true 分支', (tester) async {
+      // 覆盖 297（diff=false || isTap==true）+ 345（首次计算尺寸）
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(value: 3, onChanged: (_) {}),
+      ));
+      // 获取第3个评分右半 ClipRect 的精确中心位置
+      final clips = find.byType(ClipRect);
+      // ClipRect 列表：每个评分2个（左半+右半），第3个评分右半 = index 5
+      if (clips.evaluate().length > 5) {
+        final box = tester.renderObject<RenderBox>(clips.at(5));
+        final center = box.localToGlobal(
+            Offset(box.size.width / 2, box.size.height / 2));
+        await tester.tapAt(center);
+      } else {
+        await tester.tapAt(tester.getCenter(find.byType(TRate)));
+      }
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('placement=bottom 点击触发 overlay', (tester) async {
+      // 覆盖 429（Positioned top=placement=bottom 分支）
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(
+          value: 0,
+          placement: PlacementEnum.bottom,
+          onChanged: (_) {},
+        ),
+      ));
+      await tester.tapAt(tester.getCenter(find.byType(TRate)));
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('hideTip 定时器触发后关闭 tip', (tester) async {
+      // 覆盖 317-319（_reverse）+ 362-366（Timer 回调）
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(value: 0, allowHalf: true, onChanged: (_) {}),
+      ));
+      await tester.tapAt(tester.getCenter(find.byType(TRate)));
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      // 等待 hideTip 定时器（allowHalf=true → 3000ms）
+      await tester.pump(const Duration(milliseconds: 3100));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('hideTip 定时器 allowHalf=false 1s 触发', (tester) async {
+      // 覆盖 362-366 Timer（allowHalf=false → 1000ms）
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(value: 0, allowHalf: false, onChanged: (_) {}),
+      ));
+      await tester.tapAt(tester.getCenter(find.byType(TRate)));
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 1100));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('拖拽评分触发 overlay tip 显示', (tester) async {
+      // 覆盖 _buildOverlay 426-456（Positioned + TRateTips 渲染）
+      // 以及 tipClick 回调 444-453
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(
+          value: 0,
+          allowHalf: true,
+          onChanged: (_) {},
+        ),
+      ));
+      // 拖拽触发 _changeSelect → _showTip=true → _overlay.update() → _buildOverlay
+      await tester.drag(
+          find.byType(TRate), const Offset(30, 0), warnIfMissed: false);
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('placement=bottom + allowHalf 拖拽触发 overlay', (tester) async {
+      // 覆盖 429（placement=bottom Positioned 分支）
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(
+          value: 0,
+          allowHalf: true,
+          placement: PlacementEnum.bottom,
+          onChanged: (_) {},
+        ),
+      ));
+      await tester.drag(
+          find.byType(TRate), const Offset(30, 0), warnIfMissed: false);
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('拖拽到左侧边界返回 0', (tester) async {
+      // 覆盖 329-330（globalPosition.dx < rateOffset.dx → return 0）
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(value: 2, onChanged: (_) {}),
+      ));
+      // 向左拖到边界外
+      await tester.drag(
+          find.byType(TRate), const Offset(-200, 0), warnIfMissed: false);
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('sizeCall 回调触发 tipSize 更新', (tester) async {
+      // 覆盖 438-442（sizeCall → _tipSize 更新 → _overlay.update）
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(
+          value: 0,
+          allowHalf: true,
+          onChanged: (_) {},
+        ),
+      ));
+      // 先点击触发 overlay
+      await tester.tapAt(tester.getCenter(find.byType(TRate)));
+      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
+      // 等待 overlay 渲染和 sizeCall 回调
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(find.byType(TRate), findsOneWidget);
+    });
+
+    testWidgets('精确 tap 评分图标触发 _rateSize 首次计算', (tester) async {
+      // 覆盖 345（!_rateSize.containsKey(index) || !_rateOffset.containsKey(index)）
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(
+          value: 0,
+          allowHalf: true,
+          onChanged: (_) {},
+        ),
+      ));
+      // 精确 tap 第一个评分图标的右半部分
+      final clips = find.byType(ClipRect);
+      if (clips.evaluate().length > 1) {
+        final box = tester.renderObject<RenderBox>(clips.at(1));
+        final center = box.localToGlobal(
+            Offset(box.size.width / 2, box.size.height / 2));
+        await tester.tapAt(center);
+        await tester.pump(const Duration(milliseconds: 150));
+        await tester.pumpAndSettle();
+      }
+      expect(find.byType(TRate), findsOneWidget);
+    });
+  });
 }

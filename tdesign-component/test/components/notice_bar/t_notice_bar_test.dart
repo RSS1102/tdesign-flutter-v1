@@ -348,4 +348,96 @@ void main() {
       expect(find.byType(TNoticeBar), findsOneWidget);
     });
   });
+
+  // ============================================================
+  // 滚动定时器补充
+  // ============================================================
+  group('TNoticeBar 滚动定时器', () {
+    testWidgets('marquee 水平滚动 Timer.periodic 触发', (tester) async {
+      // 覆盖 _scroll 的 Timer.periodic 回调（115-128，含 else 分支）
+      await tester.pumpWidget(wrapWithTheme(
+        const TNoticeBar(
+          content: '这是一条很长的通知栏消息用于测试水平滚动定时器周期触发',
+        ),
+        noticeBarTheme: TNoticeBarThemeData(marquee: true),
+      ));
+      // _scroll 用 Timer.periodic(1秒) 无限循环，pump 5 秒让回调触发多次
+      // （覆盖 if 分支 + else 分支 offset >= scrollDistance - remainder）
+      await tester.pump(const Duration(seconds: 5));
+      // 替换为空 widget 以 dispose TNoticeBar（cancel Timer.periodic）
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: Container())));
+      expect(find.byType(TNoticeBar), findsNothing);
+    });
+
+    testWidgets('marquee 垂直滚动 Timer.periodic 触发', (tester) async {
+      // 覆盖 _step 的 Timer.periodic 回调（137-147）
+      await tester.pumpWidget(wrapWithTheme(
+        const TNoticeBar(
+          content: ['消息一', '消息二', '消息三'],
+          direction: Axis.vertical,
+        ),
+        noticeBarTheme: TNoticeBarThemeData(marquee: true),
+      ));
+      // _step 用 Timer.periodic，pump 5 秒让回调触发多次（覆盖 step >= content.length 重置）
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: Container())));
+      expect(find.byType(TNoticeBar), findsNothing);
+    });
+
+    testWidgets('marquee 短文本不触发滚动 _getEmptyWidth', (tester) async {
+      // 覆盖 _getEmptyWidth（文本宽度 < 容器宽度时不滚动）
+      await tester.pumpWidget(wrapWithTheme(
+        const TNoticeBar(
+          content: '短',
+        ),
+        noticeBarTheme: TNoticeBarThemeData(marquee: true),
+      ));
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: Container())));
+      expect(find.byType(TNoticeBar), findsNothing);
+    });
+
+    testWidgets('marquee + left 自定义 widget 渲染', (tester) async {
+      // 覆盖 left widget 分支
+      await tester.pumpWidget(wrapWithTheme(
+        TNoticeBar(
+          content: '带自定义widget的长文本消息内容用于测试滚动',
+          left: const Icon(Icons.info),
+        ),
+        noticeBarTheme: TNoticeBarThemeData(marquee: true),
+      ));
+      await tester.pump(const Duration(seconds: 2));
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: Container())));
+      expect(find.byType(TNoticeBar), findsNothing);
+    });
+
+    testWidgets('marquee 长文本滚动到尽头触发 else 分支', (tester) async {
+      // 覆盖 120-127（_scroll else 分支：offset >= scrollDistance - remainder）
+      await tester.pumpWidget(wrapWithTheme(
+        const TNoticeBar(
+          content: '这是一条非常非常长的通知栏消息用于测试水平滚动到尽头后的重置逻辑需要足够长的文本才能触发else分支',
+        ),
+        noticeBarTheme: TNoticeBarThemeData(marquee: true),
+      ));
+      // pump 12 秒让 Timer.periodic 多次触发到 else 分支
+      await tester.pump(const Duration(seconds: 12));
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: Container())));
+      expect(find.byType(TNoticeBar), findsNothing);
+    });
+
+    testWidgets('marquee 垂直滚动 step 超过 content.length 触发重置', (tester) async {
+      // 覆盖 141（_step 中 step >= content.length → _scrollController!.jumpTo(0)）
+      await tester.pumpWidget(wrapWithTheme(
+        const TNoticeBar(
+          content: ['消息一', '消息二'],
+          direction: Axis.vertical,
+        ),
+        noticeBarTheme: TNoticeBarThemeData(marquee: true),
+      ));
+      // pump 10 秒让 Timer.periodic 多次触发到 step >= content.length
+      await tester.pump(const Duration(seconds: 10));
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: Container())));
+      expect(find.byType(TNoticeBar), findsNothing);
+    });
+  });
 }

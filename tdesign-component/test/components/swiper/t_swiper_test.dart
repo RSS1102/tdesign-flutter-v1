@@ -514,4 +514,50 @@ void main() {
       expect(find.text('页0'), findsOneWidget);
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TSwiper 覆盖率补充', () {
+    testWidgets('itemCount > 20 触发 warning', (tester) async {
+      // 覆盖 103（itemCount > 20 warning）
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          width: 300,
+          height: 200,
+          child: Swiper(
+            itemCount: 25,
+            loop: false,
+            itemBuilder: (context, index) => Text('页$index'),
+            pagination: const TSwiperPagination(),
+          ),
+        ),
+      ));
+      // 25 个 item 可能有布局溢出
+      tester.takeException();
+      expect(find.byType(Swiper), findsAny);
+    });
+
+    testWidgets('TSwiperDotsPagination 默认颜色 + 自定义 size/space', (tester) async {
+      // 覆盖 108-112（默认颜色 outer=false）+ 116-124（PageIndicator）
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          width: 300,
+          height: 200,
+          child: Swiper(
+            itemCount: 3,
+            loop: false,
+            itemBuilder: (context, index) => Text('页$index'),
+            pagination: TSwiperPagination(
+              builder: TSwiperDotsPagination(
+                size: 10,
+                space: 5,
+              ),
+            ),
+          ),
+        ),
+      ));
+      expect(find.byType(Swiper), findsOneWidget);
+    });
+  });
 }

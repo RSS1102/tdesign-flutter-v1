@@ -1,0 +1,67 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:tdesign_flutter/src/components/action_sheet/t_action_sheet_grid.dart';
+
+/// TActionSheetGrid 宫格动作面板测试
+///
+/// 覆盖描述文本、分页（PageView + 圆点 + 翻页回调）、横向滚动（scrollable）分支。
+void main() {
+  Widget wrap(Widget child) {
+    return MaterialApp(
+      theme: ThemeData(extensions: [
+        TThemeData.defaultData(),
+        const TActionSheetThemeData(),
+      ]),
+      home: Scaffold(body: child),
+    );
+  }
+
+  List<TActionSheetItem> items(int n) =>
+      List.generate(n, (i) => TActionSheetItem(label: '项$i'));
+
+  testWidgets('默认宫格渲染', (tester) async {
+    await tester.pumpWidget(wrap(TActionSheetGrid(items: items(6))));
+    expect(find.byType(TActionSheetGrid), findsOneWidget);
+  });
+
+  testWidgets('带 subtitle 渲染描述分支', (tester) async {
+    await tester.pumpWidget(wrap(TActionSheetGrid(
+      items: items(6),
+      subtitle: '请选择',
+    )));
+    expect(find.text('请选择'), findsOneWidget);
+  });
+
+  testWidgets('scrollable=true 横向滚动分支', (tester) async {
+    await tester.pumpWidget(wrap(TActionSheetGrid(
+      items: items(10),
+      scrollable: true,
+      rows: 2,
+    )));
+    expect(find.byType(TActionSheetGrid), findsOneWidget);
+  });
+
+  testWidgets('showPagination 分页 + 翻页触发回调', (tester) async {
+    await tester.pumpWidget(wrap(TActionSheetGrid(
+      items: items(12),
+      showPagination: true,
+      count: 8,
+      rows: 2,
+    )));
+    expect(find.byType(TActionSheetGrid), findsOneWidget);
+    // 翻页（左滑）触发 onPageChanged
+    await tester.drag(find.byType(PageView), const Offset(-400, 0));
+    await tester.pumpAndSettle();
+    expect(find.byType(TActionSheetGrid), findsOneWidget);
+  });
+
+  testWidgets('showPagination + scrollable 均 false 走默认 grid', (tester) async {
+    await tester.pumpWidget(wrap(TActionSheetGrid(
+      items: items(4),
+      showPagination: false,
+      scrollable: false,
+    )));
+    expect(find.byType(TActionSheetGrid), findsOneWidget);
+  });
+}

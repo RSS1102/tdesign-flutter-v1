@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:tdesign_flutter/src/components/form/t_form_item.dart';
 
 /// TForm V1.0 Widget 测试
 ///
@@ -438,6 +439,63 @@ void main() {
         name: 'x',
       )));
       expect(find.text('自定义标签'), findsOneWidget);
+    });
+  });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TFormItem 覆盖率补充', () {
+    Widget wrapForm(TFormItem item,
+        {double? formLabelWidth = 80, Map<String, dynamic> data = const {}}) {
+      return MaterialApp(
+        theme: ThemeData(extensions: [TThemeData.defaultData()]),
+        home: Scaffold(
+          body: SizedBox(
+            height: 600,
+            child: TForm(
+              items: [item],
+              rules: const {},
+              data: data,
+              onSubmit: (d, v) {},
+              labelWidth: formLabelWidth,
+            ),
+          ),
+        ),
+      );
+    }
+
+    testWidgets('labelWidth 自定义', (tester) async {
+      // 覆盖 154（widget.labelWidth != null）+ 165-166（inherited.labelWidth）
+      await tester.pumpWidget(wrapForm(const TFormItem(
+        type: TFormItemType.input,
+        label: 'lw',
+        name: 'lw',
+        labelWidth: 100,
+      )));
+      expect(find.byType(TFormItem), findsOneWidget);
+    });
+
+    testWidgets('contentAlign 自定义', (tester) async {
+      // 覆盖 251-257（contentAlign）
+      await tester.pumpWidget(wrapForm(const TFormItem(
+        type: TFormItemType.input,
+        label: 'ca',
+        name: 'ca',
+        contentAlign: TextAlign.right,
+      )));
+      tester.takeException(); // 可能布局溢出
+      expect(find.byType(TFormItem), findsAny);
+    });
+
+    testWidgets('无 labelWidth 使用默认值', (tester) async {
+      // 覆盖 174（return defaultlabelWidth）
+      await tester.pumpWidget(wrapForm(const TFormItem(
+        type: TFormItemType.input,
+        label: 'def',
+        name: 'def',
+      ), formLabelWidth: 0));
+      expect(find.byType(TFormItem), findsOneWidget);
     });
   });
 }

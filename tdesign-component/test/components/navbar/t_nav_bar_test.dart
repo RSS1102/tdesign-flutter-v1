@@ -248,4 +248,37 @@ void main() {
       expect(border.color, Colors.red);
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TNavBar 覆盖率补充', () {
+    test('preferredSize 自定义 height', () {
+      // 覆盖 111-112（preferredSize getter）
+      const navBar = TNavBar(title: 'test', height: 60);
+      expect(navBar.preferredSize.height, 60);
+    });
+
+    testWidgets('belowTitleWidget 渲染', (tester) async {
+      // 覆盖 284-286（belowTitleWidget 非空 → Column 渲染）
+      await tester.pumpWidget(wrapWithTheme(
+        TNavBar(
+          title: 'below',
+          belowTitleWidget: const Text('下方内容'),
+        ),
+      ));
+      expect(find.text('下方内容'), findsOneWidget);
+    });
+
+    testWidgets('flexibleSpace 渲染', (tester) async {
+      // 覆盖 312-315（flexibleSpace 非空 → Stack 渲染）
+      await tester.pumpWidget(wrapWithTheme(
+        TNavBar(
+          title: 'flex',
+          flexibleSpace: Container(color: Colors.blue),
+        ),
+      ));
+      expect(find.byType(TNavBar), findsOneWidget);
+    });
+  });
 }

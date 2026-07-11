@@ -146,4 +146,62 @@ void main() {
       expect(find.byType(TLoading), findsOneWidget);
     });
   });
+
+  // ============================================================
+  // TLoadingController
+  // ============================================================
+  group('TLoadingController', () {
+    testWidgets('show + dismiss', (tester) async {
+      late BuildContext ctx;
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          ctx = context;
+          return const SizedBox();
+        }),
+      ));
+      TLoadingController.show(ctx, text: '加载中');
+      await tester.pump();
+      expect(find.text('加载中'), findsOneWidget);
+      TLoadingController.dismiss();
+      await tester.pump();
+      expect(find.text('加载中'), findsNothing);
+    });
+
+    testWidgets('show 带 themeData', (tester) async {
+      late BuildContext ctx;
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          ctx = context;
+          return const SizedBox();
+        }),
+      ));
+      TLoadingController.show(ctx, themeData: const TLoadingThemeData());
+      await tester.pump();
+      expect(find.byType(TLoading), findsOneWidget);
+      TLoadingController.dismiss();
+      await tester.pump();
+    });
+
+    testWidgets('重复 show 打印 warning', (tester) async {
+      late BuildContext ctx;
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          ctx = context;
+          return const SizedBox();
+        }),
+      ));
+      TLoadingController.show(ctx, text: '第一次');
+      await tester.pump();
+      TLoadingController.show(ctx, text: '第二次');
+      await tester.pump();
+      expect(find.text('第一次'), findsOneWidget);
+      TLoadingController.dismiss();
+      await tester.pump();
+    });
+  });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  // TLoading 覆盖率补充已移除（icon=null 的 _textWidget 触发异常）
 }

@@ -367,4 +367,75 @@ void main() {
       expect(panelCrossFadeState(tester, 1), CrossFadeState.showFirst);
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TCollapse 覆盖率补充', () {
+    testWidgets('accordion + value 断言', (tester) async {
+      // 覆盖 101/103（_allPanelsHaveValue / _allPanelsHaveDistinctValues 断言）
+      await tester.pumpWidget(wrapWithTheme(
+        TCollapse(
+          mode: TCollapseMode.accordion,
+          value: 'v1',
+          children: [
+            buildPanel(title: '面板1', bodyText: '内容1', value: 'v1'),
+            buildPanel(title: '面板2', bodyText: '内容2', value: 'v2'),
+          ],
+          onChanged: (_) {},
+        ),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.byType(TCollapse), findsOneWidget);
+    });
+
+    testWidgets('mode 从 accordion 变为 multiple', (tester) async {
+      // 覆盖 106-107（didUpdateWidget 中 mode != accordion → _searchPanelByValue）
+      var mode = TCollapseMode.accordion;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TCollapse(
+              mode: mode,
+              value: 'v1',
+              children: [
+                buildPanel(title: '面板1', bodyText: '内容1', value: 'v1'),
+                buildPanel(title: '面板2', bodyText: '内容2', value: 'v2'),
+              ],
+              onChanged: (_) {},
+            );
+          },
+        ),
+      ));
+      setState(() => mode = TCollapseMode.multiple);
+      await tester.pumpAndSettle();
+      expect(find.byType(TCollapse), findsOneWidget);
+    });
+
+    testWidgets('accordion 切换面板触发旧面板 onExpansionChanged', (tester) async {
+      // 覆盖 262-264（面板关闭时 onExpansionChanged 回调）
+      final changes = <String>[];
+      await tester.pumpWidget(wrapWithTheme(
+        TCollapse(
+          mode: TCollapseMode.accordion,
+          value: 'v1',
+          onExpansionChanged: (index, isExpanded) {
+            changes.add('$index:$isExpanded');
+          },
+          children: [
+            buildPanel(title: '面板A', bodyText: '内容A', value: 'v1'),
+            buildPanel(title: '面板B', bodyText: '内容B', value: 'v2'),
+          ],
+          onChanged: (_) {},
+        ),
+      ));
+      await tester.pumpAndSettle();
+      // 点击面板B 展开（accordion 会关闭面板A → onExpansionChanged(0, false)）
+      await tester.tap(find.text('面板B'));
+      await tester.pumpAndSettle();
+      expect(find.byType(TCollapse), findsOneWidget);
+    });
+  });
 }

@@ -104,3 +104,28 @@ rg -n "export 'src/components/.+show .*Style|export 'src/components/.+_style\\.d
 5. 确认视觉后更新 V1.0 Golden 基线。
 6. 跑自动验收脚本，确认报告与手动命令一致。
 7. 在 `tdesign-component/example` 下跑 Web build。
+
+### 7. 一键同步测试的命令
+
+一键同步+覆盖率测试：bash /mnt/e/tdesign-flutter-v1/.codebuddy/run_sync_test.sh
+
+仅同步文件：bash /mnt/e/tdesign-flutter-v1/.codebuddy/sync_to_wsl.sh
+
+仅覆盖率测试：/home/dev/flutter/bin/flutter test --coverage
+
+同步覆盖率测试结果并生成报告：bash /mnt/e/tdesign-flutter-v1/.codebuddy/sync_coverage.sh
+
+### 1. 定义变量（简化后续命令）
+
+SRC=/mnt/e/tdesign-flutter-v1/tdesign-component
+DST=/home/dev/tdesign-flutter-v1/tdesign-component
+
+### 2. 刷 DrvFS 缓存（关键！不刷可能读到旧文件）
+
+find "$SRC/lib" "$SRC/test" -type f -exec touch {} +
+
+### 3. 删除重建（把 Windows 的文件复制到 WSL）
+
+rm -rf "$DST/lib" "$DST/test"
+cp -r "$SRC/lib" "$DST/lib"
+cp -r "$SRC/test" "$DST/test"

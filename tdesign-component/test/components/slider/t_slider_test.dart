@@ -358,4 +358,54 @@ void main() {
       expect(find.text('最小'), findsOneWidget);
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TSlider 覆盖率补充', () {
+    Widget wrapThumbValue(Widget child) {
+      return MaterialApp(
+        theme: ThemeData(extensions: [
+          TThemeData.defaultData(),
+          TSliderThemeData(min: 0, max: 100, showThumbValue: true),
+        ]),
+        home: Scaffold(body: child),
+      );
+    }
+
+    testWidgets('Slider showThumbValue + onThumbTextTap', (tester) async {
+      // 覆盖 121（textRect.contains → onThumbTextTap 回调）
+      await tester.pumpWidget(wrapThumbValue(
+        TSlider(
+          value: 50,
+          onThumbTextTap: (_, __) {},
+          onChanged: (_) {},
+        ),
+      ));
+      // tap thumb 区域（value=50 在中心附近）
+      await tester.tap(find.byType(Slider));
+      await tester.pump();
+      expect(find.byType(TSlider), findsOneWidget);
+    });
+
+    testWidgets('RangeSlider showThumbValue + onThumbTextTap', (tester) async {
+      // 覆盖 304-309（startTextRect/endTextRect contains）+ 344-379（thumb size/tap 判断）
+      await tester.pumpWidget(wrapThumbValue(
+        TRangeSlider(
+          value: const RangeValues(20, 80),
+          onThumbTextTap: (_, __, ___) {},
+          onChanged: (_) {},
+        ),
+      ));
+      // tap start thumb 区域
+      await tester.tapAt(tester.getTopLeft(find.byType(RangeSlider)) +
+          const Offset(80, 20));
+      await tester.pump();
+      // tap end thumb 区域
+      await tester.tapAt(tester.getTopLeft(find.byType(RangeSlider)) +
+          const Offset(300, 20));
+      await tester.pump();
+      expect(find.byType(TRangeSlider), findsOneWidget);
+    });
+  });
 }

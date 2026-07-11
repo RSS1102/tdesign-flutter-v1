@@ -477,4 +477,304 @@ void main() {
       expect(col.widthPx, 120);
     });
   });
+  // ============================================================
+  // 覆盖补充
+  // ============================================================
+  group('TTable 覆盖补充', () {
+    List<Map<String, dynamic>> selData() => [
+          {'name': '张三'},
+          {'name': '李四'},
+          {'name': '王五'},
+        ];
+
+    testWidgets('表头全选复选框点击触发 onSelect（含 selectable 过滤）', (tester) async {
+      List<dynamic>? selected;
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          columns: [
+            TTableCol(
+              title: '选择',
+              colKey: 'name',
+              selection: true,
+              width: 80,
+              selectable: (index, row) => index != 1,
+            ),
+            TTableCol(title: '姓名', colKey: 'name'),
+          ],
+          data: selData(),
+          onSelect: (data) => selected = data,
+        ),
+      ));
+      final checkboxes = find.byType(TCheckbox);
+      await tester.tap(checkboxes.first);
+      await tester.pumpAndSettle();
+      expect(selected, isNotNull);
+    });
+
+    testWidgets('行复选框选中再取消（_hasChecked 递减）', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          columns: [
+            TTableCol(title: '选择', colKey: 'name', selection: true, width: 80),
+            TTableCol(title: '姓名', colKey: 'name'),
+          ],
+          data: selData(),
+        ),
+      ));
+      final checkboxes = find.byType(TCheckbox);
+      await tester.tap(checkboxes.at(1));
+      await tester.pumpAndSettle();
+      await tester.tap(checkboxes.at(1));
+      await tester.pumpAndSettle();
+      expect(find.byType(TTable), findsOneWidget);
+    });
+
+    testWidgets('selectable=false 行显示占位色复选框', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          columns: [
+            TTableCol(
+              title: '选择',
+              colKey: 'name',
+              selection: true,
+              width: 80,
+              selectable: (index, row) => false,
+            ),
+            TTableCol(title: '姓名', colKey: 'name'),
+          ],
+          data: selData(),
+        ),
+      ));
+      expect(find.byType(TCheckbox), findsWidgets);
+    });
+
+    testWidgets('点击排序图标循环切换（升序/降序/取消）', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          columns: [
+            TTableCol(title: '年龄', colKey: 'age', sortable: true, width: 200),
+          ],
+          data: [
+            {'age': '30'},
+            {'age': '10'},
+            {'age': '20'},
+          ],
+        ),
+      ));
+      final chevron = find.byWidgetPredicate(
+        (w) => w is CustomPaint && w.size == const Size(16, 16),
+      );
+      expect(chevron, findsOneWidget);
+      await tester.tap(chevron);
+      await tester.pumpAndSettle();
+      await tester.tap(chevron);
+      await tester.pumpAndSettle();
+      await tester.tap(chevron);
+      await tester.pumpAndSettle();
+      expect(find.byType(TTable), findsOneWidget);
+    });
+
+    testWidgets('多个 selection 列抛出 FlutterError', (tester) async {
+      // 源码在 initState -> _initCols 中 throw FlutterError，框架会捕获并记录；
+      // 该异常可能伴随后续渲染异常（Multiple exceptions），因此逐一取出所有异常，
+      // 确认其中包含 FlutterError。
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          columns: [
+            TTableCol(title: 'A', colKey: 'name', selection: true),
+            TTableCol(title: 'B', colKey: 'name', selection: true),
+          ],
+          data: selData(),
+        ),
+      ));
+      var foundFlutterError = false;
+      dynamic ex;
+      while ((ex = tester.takeException()) != null) {
+        if (ex is FlutterError) {
+          foundFlutterError = true;
+        }
+      }
+      expect(foundFlutterError, isTrue);
+    });
+
+    testWidgets('didUpdateWidget 数据变化重建', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(columns: baseColumns(), data: baseData()),
+      ));
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(columns: baseColumns(), data: const [
+          {'name': '新', 'age': '1'},
+        ]),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.text('新'), findsOneWidget);
+    });
+
+    testWidgets('空状态 http 图片', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          columns: baseColumns(),
+          data: const [],
+          empty: TTableEmpty(assetUrl: 'http://example.com/empty.png'),
+        ),
+      ));
+      expect(find.byType(TEmpty), findsOneWidget);
+    });
+
+    testWidgets('固定列 + height 纵向滚动', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 300,
+          child: TTable(
+            width: 300,
+            height: 120,
+            columns: [
+              TTableCol(title: '固定', colKey: 'a', fixed: TTableColFixed.left, width: 80),
+              TTableCol(title: '普通', colKey: 'b', width: 100),
+            ],
+            data: const [
+              {'a': 'A1', 'b': 'B1'},
+              {'a': 'A2', 'b': 'B2'},
+              {'a': 'A3', 'b': 'B3'},
+            ],
+          ),
+        ),
+      ));
+      expect(find.byType(TTable), findsOneWidget);
+    });
+
+    testWidgets('固定列 + 需要横向滚动', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          width: 200,
+          columns: [
+            TTableCol(title: '固定', colKey: 'a', fixed: TTableColFixed.left, width: 80),
+            TTableCol(title: '普通1', colKey: 'b', width: 300),
+            TTableCol(title: '普通2', colKey: 'c', width: 300),
+          ],
+          data: const [
+            {'a': 'A1', 'b': 'B1', 'c': 'C1'},
+          ],
+        ),
+      ));
+      expect(find.byType(TTable), findsOneWidget);
+    });
+
+    testWidgets('固定列 + loading', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          width: 300,
+          loading: true,
+          columns: [
+            TTableCol(title: '固定', colKey: 'a', fixed: TTableColFixed.left, width: 80),
+            TTableCol(title: '普通', colKey: 'b'),
+          ],
+          data: baseData(),
+        ),
+      ));
+      expect(find.byType(TLoading), findsOneWidget);
+    });
+
+    testWidgets('固定列 + 空数据', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          width: 300,
+          columns: [
+            TTableCol(title: '固定', colKey: 'a', fixed: TTableColFixed.left, width: 80),
+            TTableCol(title: '普通', colKey: 'b'),
+          ],
+          data: const [],
+        ),
+      ));
+      expect(find.byType(TEmpty), findsOneWidget);
+    });
+
+    testWidgets('表格超宽触发横向滚动分支', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          width: 100,
+          columns: [
+            TTableCol(title: '列1', colKey: 'a', width: 200),
+            TTableCol(title: '列2', colKey: 'b', width: 200),
+          ],
+          data: const [
+            {'a': 'A1', 'b': 'B1'},
+          ],
+        ),
+      ));
+      expect(find.byType(TTable), findsOneWidget);
+    });
+
+    test('ChevronPainter.shouldRepaint 返回 true', () {
+      final painter = ChevronPainter(upColor: Colors.red, downColor: Colors.blue);
+      expect(painter.shouldRepaint(painter), isTrue);
+    });
+
+    testWidgets('空数据点击表头全选（_hasChecked=totalSelectable=1 分支）',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          columns: [
+            TTableCol(title: '选择', colKey: 'name', selection: true, width: 80),
+            TTableCol(title: '姓名', colKey: 'name'),
+          ],
+          data: const [],
+        ),
+      ));
+      // 空数据时表头全选框仍渲染，点击进入 !_notEmptyData() && checked 分支
+      final header = find.byType(TCheckbox);
+      expect(header, findsWidgets);
+      await tester.tap(header.first);
+      await tester.pumpAndSettle();
+      expect(find.byType(TTable), findsOneWidget);
+    });
+
+    testWidgets('onScroll 回调（纵向滚动）', (tester) async {
+      ScrollController? scrolled;
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          width: 300,
+          height: 100,
+          onScroll: (c) => scrolled = c,
+          columns: baseColumns(),
+          data: List.generate(
+              30, (i) => {'name': 'n$i', 'age': '$i'}),
+        ),
+      ));
+      await tester.drag(
+          find.byType(SingleChildScrollView).last, const Offset(0, -200));
+      await tester.pump();
+      expect(scrolled, isNotNull);
+    });
+
+    testWidgets('固定列横向滚动同步 header/data 控制器', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TTable(
+          width: 200,
+          columns: [
+            TTableCol(
+                title: '固定', colKey: 'a', fixed: TTableColFixed.left, width: 80),
+            TTableCol(title: '普通1', colKey: 'b', width: 300),
+            TTableCol(title: '普通2', colKey: 'c', width: 300),
+          ],
+          data: const [
+            {'a': 'A1', 'b': 'B1', 'c': 'C1'},
+          ],
+        ),
+      ));
+      final hScrolls = find.byWidgetPredicate((w) =>
+          w is SingleChildScrollView && w.scrollDirection == Axis.horizontal);
+      expect(hScrolls, findsWidgets);
+      // 拖动数据区非固定列 -> _dataHScrollController 监听同步 header
+      await tester.drag(hScrolls.last, const Offset(-80, 0),
+          warnIfMissed: false);
+      await tester.pumpAndSettle();
+      // 拖动表头非固定列 -> _headerHScrollController 监听同步 data
+      await tester.drag(hScrolls.first, const Offset(-40, 0),
+          warnIfMissed: false);
+      await tester.pumpAndSettle();
+      expect(find.byType(TTable), findsOneWidget);
+    });
+  });
+
 }

@@ -383,6 +383,91 @@ void main() {
       expect(find.text('+3'), findsOneWidget);
     });
   });
+
+  group('TAvatar 覆盖补充', () {
+    testWidgets('customText large 使用 fontTitleExtraLarge', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TAvatar(
+          variant: TAvatarVariant.customText,
+          size: TAvatarSize.large,
+          text: 'L',
+        ),
+      ));
+      expect(find.text('L'), findsOneWidget);
+    });
+
+    testWidgets('customText small 使用 fontTitleSmall', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TAvatar(
+          variant: TAvatarVariant.customText,
+          size: TAvatarSize.small,
+          text: 'S',
+        ),
+      ));
+      expect(find.text('S'), findsOneWidget);
+    });
+
+    testWidgets('customText 自定义背景色走 else 分支', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TAvatar(variant: TAvatarVariant.customText, text: 'C'),
+        avatarTheme: const TAvatarThemeData(backgroundColor: Colors.orange),
+      ));
+      expect(find.text('C'), findsOneWidget);
+    });
+
+    testWidgets('display small 尺寸内边距', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TAvatar(
+        variant: TAvatarVariant.display,
+        size: TAvatarSize.small,
+        avatarDisplayList: ['https://example.com/1.png'],
+        displayText: '+1',
+      )));
+      await tester.pumpAndSettle();
+      expect(find.text('+1'), findsOneWidget);
+    });
+
+    testWidgets('operation 使用 avatarDisplayListAsset 渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TAvatar(
+        variant: TAvatarVariant.operation,
+        avatarDisplayListAsset: ['assets/a.png', 'assets/b.png'],
+      )));
+      await tester.pumpAndSettle();
+      expect(find.byIcon(TIcons.user_add), findsOneWidget);
+      expect(find.byType(Positioned), findsNWidgets(3));
+    });
+
+    testWidgets('operation avatarDisplayListAsset + 自定义 widget', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TAvatar(
+        variant: TAvatarVariant.operation,
+        avatarDisplayListAsset: ['assets/a.png'],
+        avatarDisplayWidget: Icon(Icons.add_circle),
+      )));
+      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.add_circle), findsOneWidget);
+    });
+
+    testWidgets('display 使用 avatarDisplayListAsset 渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TAvatar(
+        variant: TAvatarVariant.display,
+        avatarDisplayListAsset: ['assets/a.png', 'assets/b.png'],
+        displayText: '+2',
+      )));
+      await tester.pumpAndSettle();
+      expect(find.text('+2'), findsOneWidget);
+      expect(find.byType(Positioned), findsNWidgets(3));
+    });
+
+    testWidgets('display avatarDisplayListAsset small 尺寸', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TAvatar(
+        variant: TAvatarVariant.display,
+        size: TAvatarSize.small,
+        avatarDisplayListAsset: ['assets/a.png'],
+        displayText: '+1',
+      )));
+      await tester.pumpAndSettle();
+      expect(find.text('+1'), findsOneWidget);
+    });
+  });
 }
 
 /// 1x1 透明 PNG 的 base64 编码
