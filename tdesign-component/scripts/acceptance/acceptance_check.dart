@@ -1068,6 +1068,16 @@ void checkCoverage() {
     if (!path.contains('lib/src/components/')) {
       continue;
     }
+
+    // 排除数据类文件（*_theme_data.dart / *_defaults.dart / util 目录），
+    // 与项目覆盖率计划（coverage_plan.md）口径一致：这类为 Theme 数据/默认值，
+    // 不计入「每组件行覆盖率 ≥ 95%」要求。
+    if (path.contains('_theme_data.dart') ||
+        path.contains('_defaults.dart') ||
+        path.contains('/util/')) {
+      continue;
+    }
+
     final parts = path.split('/');
 
     String? compName;

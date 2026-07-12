@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
+import 'package:flutter_swiper_null_safety/src/transformer_page_view/transformer_page_view.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
@@ -299,6 +300,19 @@ void main() {
       expect(transformer.margin, 4.0);
     });
 
+    test('transform 覆盖 scale/fade/margin 三分支', () {
+      final item = Container(width: 10, height: 10);
+      // scaleAndFade：scale!=null + fade!=null + margin=0.0(非 null) → 三分支全走
+      final r1 = TPageTransformer.scaleAndFade().transform(item, TransformInfo(position: 0.5));
+      expect(r1, isA<Widget>());
+      // margin 构造：仅 margin 分支
+      final r2 = TPageTransformer.margin(margin: 12.0).transform(item, TransformInfo(position: 0.3));
+      expect(r2, isA<Widget>());
+      // 默认构造（全 null）：无变换路径
+      final r3 = TPageTransformer().transform(item, TransformInfo(position: 0.0));
+      expect(r3, isA<Widget>());
+    });
+
     testWidgets('Swiper 使用 TPageTransformer.margin 渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         SizedBox(
@@ -558,6 +572,52 @@ void main() {
         ),
       ));
       expect(find.byType(Swiper), findsOneWidget);
+    });
+
+    testWidgets('TSwiperDotsPagination.build outer=true 覆盖品牌色/悬浮色 fallback（108/112）',
+        (tester) async {
+      // 直接调用 build，构造 outer=true 的 config，覆盖 outer 分支的 activeColor/color fallback
+      final controller = SwiperController();
+      late BuildContext ctx;
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          ctx = context;
+          return const SizedBox();
+        }),
+      ));
+      final config = SwiperPluginConfig(
+        outer: true,
+        scrollDirection: Axis.horizontal,
+        controller: controller,
+        pageController: PageController(),
+        itemCount: 3,
+      );
+      final widget = const TSwiperDotsPagination().build(ctx, config);
+      expect(widget, isA<Widget>());
+    });
+
+    testWidgets('TSwiperDotsPagination.build PageIndicator 分支覆盖（116-124）',
+        (tester) async {
+      // 构造 indicatorLayout != NONE 且 layout == DEFAULT 的 config，触发 PageIndicator 分支
+      final controller = SwiperController();
+      late BuildContext ctx;
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          ctx = context;
+          return const SizedBox();
+        }),
+      ));
+      final config = SwiperPluginConfig(
+        outer: false,
+        scrollDirection: Axis.horizontal,
+        controller: controller,
+        pageController: PageController(),
+        itemCount: 3,
+        indicatorLayout: PageIndicatorLayout.SCALE,
+        layout: SwiperLayout.DEFAULT,
+      );
+      final widget = const TSwiperDotsPagination().build(ctx, config);
+      expect(widget, isA<Widget>());
     });
   });
 }

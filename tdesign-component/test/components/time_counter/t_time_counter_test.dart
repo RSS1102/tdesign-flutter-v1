@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:tdesign_flutter/src/components/time_counter/t_time_counter_style.dart';
 
 /// TTimeCounter V1.0 Widget 测试
 ///
@@ -447,6 +448,39 @@ void main() {
       controller.reset(20000);
       await tester.pump();
       expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    testWidgets('generateStyle small+round 覆盖非 defaultTheme 分支', (tester) async {
+      // 覆盖 t_time_counter_style.dart 第 120-123 行
+      late BuildContext ctx;
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          ctx = context;
+          return const SizedBox();
+        }),
+      ));
+      final style = TTimeCounterStyle.generateStyle(
+        ctx,
+        size: TTimeCounterSize.small,
+        theme: TTimeCounterVariant.round,
+      );
+      expect(style, isNotNull);
+    });
+
+    testWidgets('generateStyle small+square 覆盖非 defaultTheme 分支', (tester) async {
+      late BuildContext ctx;
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          ctx = context;
+          return const SizedBox();
+        }),
+      ));
+      final style = TTimeCounterStyle.generateStyle(
+        ctx,
+        size: TTimeCounterSize.small,
+        theme: TTimeCounterVariant.square,
+      );
+      expect(style, isNotNull);
     });
   });
 }

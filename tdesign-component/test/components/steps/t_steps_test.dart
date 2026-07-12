@@ -194,4 +194,86 @@ void main() {
       expect(find.byType(TSteps), findsOneWidget);
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TSteps 覆盖率补充', () {
+    // 覆盖 successIcon 分支（107, 108 行）
+    testWidgets('successIcon 渲染成功图标', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSteps(
+          steps: [
+            TStepsItemData(title: '步骤1', successIcon: TIcons.check_circle),
+            TStepsItemData(title: '步骤2'),
+          ],
+          activeIndex: 1,
+        ),
+      ));
+      expect(find.byType(TSteps), findsOneWidget);
+    });
+
+    // 覆盖 errorIcon + error status 分支（126-129 行）
+    testWidgets('error 状态渲染错误图标', (tester) async {
+      // TStepsStatus 只有 success/error，通过 TStepsItemData 触发
+      await tester.pumpWidget(wrapWithTheme(
+        TSteps(
+          steps: [
+            TStepsItemData(title: '步骤1', errorIcon: TIcons.close_circle),
+            TStepsItemData(title: '步骤2'),
+          ],
+          activeIndex: 0,
+          direction: TStepsDirection.vertical,
+        ),
+      ));
+      expect(find.byType(TSteps), findsOneWidget);
+    });
+
+    // 覆盖 simple + active + !readOnly 分支（167 行）
+    testWidgets('simple 模式激活索引渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSteps(
+          steps: buildSteps(3),
+          activeIndex: 1,
+          direction: TStepsDirection.vertical,
+        ),
+        stepsTheme: const TStepsThemeData(simple: true),
+      ));
+      expect(find.byType(TSteps), findsOneWidget);
+    });
+
+    // 覆盖 customTitle 分支（212 行）
+    testWidgets('customTitle 渲染自定义标题', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSteps(
+          steps: [
+            TStepsItemData(
+              title: '步骤1',
+              customTitle: const Text('自定义标题'),
+            ),
+          ],
+          direction: TStepsDirection.vertical,
+        ),
+      ));
+      expect(find.byType(TSteps), findsOneWidget);
+      expect(find.text('自定义标题'), findsOneWidget);
+    });
+
+    // 覆盖 customContent 分支（276 行）
+    testWidgets('customContent 渲染自定义内容', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSteps(
+          steps: [
+            TStepsItemData(
+              title: '步骤1',
+              customContent: const Text('自定义内容'),
+            ),
+          ],
+          direction: TStepsDirection.vertical,
+        ),
+      ));
+      expect(find.byType(TSteps), findsOneWidget);
+      expect(find.text('自定义内容'), findsOneWidget);
+    });
+  });
 }

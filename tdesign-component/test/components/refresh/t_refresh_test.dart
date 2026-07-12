@@ -350,4 +350,36 @@ void main() {
       expect(TGIconHeaderWidgetState, isNotNull);
     });
   });
+
+  // ============================================================
+  // 覆盖率补充：真正构建 TGIconHeaderWidget 并触发 build 分支
+  // ============================================================
+  group('TRefreshHeader 覆盖率补充', () {
+    testWidgets('拖拽下拉经过触发距离构建 header 覆盖 build 分支',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 300,
+          child: EasyRefresh(
+            header: TRefreshHeader(),
+            onRefresh: () async {},
+            child: ListView.builder(
+              itemCount: 5,
+              itemBuilder: (context, index) => ListTile(
+                title: Text('下拉$index'),
+              ),
+            ),
+          ),
+        ),
+      ));
+      // 手动手势：按住并下移到超过触发距离，期间 header 被构建
+      // 不使用 pumpAndSettle（TLoading 为无限动画），仅推进固定时间
+      final gesture = await tester.startGesture(const Offset(200, 150));
+      await gesture.moveBy(const Offset(0, 120));
+      await tester.pump(const Duration(milliseconds: 300));
+      await gesture.up();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(EasyRefresh), findsOneWidget);
+    });
+  });
 }

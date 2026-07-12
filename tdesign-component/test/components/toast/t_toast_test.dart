@@ -7,9 +7,9 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// E 类控制：`showText()` / `showIconText()` 调用即显；不调即不显。
 /// 覆盖文本 Toast、图标 Toast、自定义样式、duration。
 ///
-/// 注意：TToast 使用 `Timer` 自动消失，在 Flutter 测试的假异步环境中
-/// 会触发 `!timersPending` 断言。通过 `runAsync` 在真实异步环境中
-/// 直接调用 show 方法，使 Timer 在真实时间轴上触发。
+/// 注意：Widget 测试中 Timer 由 FakeAsync 接管，直接调用 show 方法后
+/// 用 `tester.pump(Duration)` 推进假时钟即可触发 Toast 显示/自动消失，
+/// 避免 `runAsync` + `pumpAndSettle` 在 Windows/WSL 跨平台时序不一致导致失败。
 void main() {
   /// 用 TTheme 包裹以提供基础 Token，含可定位的 Key 节点
   Widget wrapWithTheme() {
@@ -26,26 +26,24 @@ void main() {
     );
   }
 
-  /// 辅助：在真实异步环境中显示 Toast 并等待渲染
+  /// 辅助：显示 Toast 并推进一帧渲染。
+  /// 注意：Widget 测试中 Timer 由 FakeAsync 接管，无需 runAsync，
+  /// 用 pump(Duration) 即可推进定时器，避免 pumpAndSettle 因
+  /// hasTimersPending 在跨平台（Windows/WSL）上表现不一致而失败。
   Future<void> showToastAndPump(
     WidgetTester tester,
     void Function(BuildContext) show, {
     Duration wait = const Duration(milliseconds: 50),
   }) async {
     final context = tester.element(find.byKey(const Key('toast_host')));
-    await tester.runAsync(() async {
-      show(context);
-      await Future.delayed(wait);
-    });
-    await tester.pumpAndSettle();
+    show(context);
+    await tester.pump(wait);
   }
 
-  /// 辅助：在真实异步环境中等待 Toast 自动消失
+  /// 辅助：推进足够时间让 Toast 自动消失（duration + dispose 延迟）。
   Future<void> waitForDismiss(WidgetTester tester) async {
-    await tester.runAsync(() async {
-      await Future.delayed(const Duration(milliseconds: 500));
-    });
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump();
   }
 
   // ============================================================
@@ -194,47 +192,33 @@ void main() {
       await tester.pumpWidget(wrapWithTheme());
 
       // 显示 Toast（短 duration）
-      await tester.runAsync(() async {
-        final context = tester.element(find.byKey(const Key('toast_host')));
-        TToast.showText('短暂提示',
-            context: context, duration: const Duration(milliseconds: 100));
-        await Future.delayed(const Duration(milliseconds: 50));
-      });
-      await tester.pumpAndSettle();
+      final context = tester.element(find.byKey(const Key('toast_host')));
+      TToast.showText('短暂提示',
+          context: context, duration: const Duration(milliseconds: 100));
+      await tester.pump(const Duration(milliseconds: 50));
       expect(find.text('短暂提示'), findsOneWidget);
 
       // 等待 duration + dispose 延迟后消失
-      await tester.runAsync(() async {
-        await Future.delayed(const Duration(milliseconds: 500));
-      });
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('短暂提示'), findsNothing);
     });
 
     testWidgets('长 duration Toast 保持显示', (tester) async {
       await tester.pumpWidget(wrapWithTheme());
 
-      await tester.runAsync(() async {
-        final context = tester.element(find.byKey(const Key('toast_host')));
-        TToast.showText('长期提示',
-            context: context, duration: const Duration(seconds: 2));
-        await Future.delayed(const Duration(milliseconds: 50));
-      });
-      await tester.pumpAndSettle();
+      final context = tester.element(find.byKey(const Key('toast_host')));
+      TToast.showText('长期提示',
+          context: context, duration: const Duration(seconds: 2));
+      await tester.pump(const Duration(milliseconds: 50));
       expect(find.text('长期提示'), findsOneWidget);
 
       // 短暂等待后仍应显示
-      await tester.runAsync(() async {
-        await Future.delayed(const Duration(milliseconds: 500));
-      });
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('长期提示'), findsOneWidget);
 
-      // 清理：等待长 duration 过期
-      await tester.runAsync(() async {
-        await Future.delayed(const Duration(seconds: 3));
-      });
-      await tester.pumpAndSettle();
+      // 清理：等待长 duration 过期后消失
+      await tester.pump(const Duration(seconds: 3));
+      expect(find.text('长期提示'), findsNothing);
     });
   });
 
@@ -283,10 +267,7 @@ void main() {
     testWidgets('showLoading 显示加载文案', (tester) async {
       await tester.pumpWidget(wrapWithTheme());
       final context = tester.element(find.byKey(const Key('toast_host')));
-      await tester.runAsync(() async {
-        TToast.showLoading(context: context, text: '加载中');
-        await Future.delayed(const Duration(milliseconds: 50));
-      });
+      TToast.showLoading(context: context, text: '加载中');
       // 仅 pump 单帧：TCircleIndicator 有无限旋转动画，pumpAndSettle 会超时
       await tester.pump();
       expect(find.text('加载中'), findsOneWidget);
@@ -298,10 +279,7 @@ void main() {
     testWidgets('showLoadingWithoutText 仅渲染指示器无文案', (tester) async {
       await tester.pumpWidget(wrapWithTheme());
       final context = tester.element(find.byKey(const Key('toast_host')));
-      await tester.runAsync(() async {
-        TToast.showLoadingWithoutText(context: context);
-        await Future.delayed(const Duration(milliseconds: 50));
-      });
+      TToast.showLoadingWithoutText(context: context);
       await tester.pump();
       // 不带文案，不应出现加载文案
       expect(find.text('加载中'), findsNothing);
@@ -317,34 +295,27 @@ void main() {
     testWidgets('dismissToast 关闭指定 Toast', (tester) async {
       await tester.pumpWidget(wrapWithTheme());
       final context = tester.element(find.byKey(const Key('toast_host')));
-      late String id;
-      await tester.runAsync(() async {
-        id = TToast.showText('可关闭',
-            context: context, duration: const Duration(seconds: 10));
-        await Future.delayed(const Duration(milliseconds: 50));
-      });
-      await tester.pumpAndSettle();
+      final id = TToast.showText('可关闭',
+          context: context, duration: const Duration(seconds: 10));
+      await tester.pump();
       expect(find.text('可关闭'), findsOneWidget);
       TToast.dismissToast(id);
-      await tester.pumpAndSettle();
+      await tester.pump();
       expect(find.text('可关闭'), findsNothing);
     });
 
     testWidgets('dismissAll 关闭所有 Toast', (tester) async {
       await tester.pumpWidget(wrapWithTheme());
       final context = tester.element(find.byKey(const Key('toast_host')));
-      await tester.runAsync(() async {
-        TToast.showText('A',
-            context: context, duration: const Duration(seconds: 10));
-        TToast.showText('B',
-            context: context, duration: const Duration(seconds: 10));
-        await Future.delayed(const Duration(milliseconds: 50));
-      });
-      await tester.pumpAndSettle();
+      TToast.showText('A',
+          context: context, duration: const Duration(seconds: 10));
+      TToast.showText('B',
+          context: context, duration: const Duration(seconds: 10));
+      await tester.pump();
       expect(find.text('A'), findsOneWidget);
       expect(find.text('B'), findsOneWidget);
       TToast.dismissAll();
-      await tester.pumpAndSettle();
+      await tester.pump();
       expect(find.text('A'), findsNothing);
       expect(find.text('B'), findsNothing);
     });
@@ -352,10 +323,7 @@ void main() {
     testWidgets('dismissLoading 关闭加载 Toast', (tester) async {
       await tester.pumpWidget(wrapWithTheme());
       final context = tester.element(find.byKey(const Key('toast_host')));
-      await tester.runAsync(() async {
-        TToast.showLoading(context: context, text: '加载中');
-        await Future.delayed(const Duration(milliseconds: 50));
-      });
+      TToast.showLoading(context: context, text: '加载中');
       // 仅 pump 单帧，避免 TCircleIndicator 无限动画导致 pumpAndSettle 超时
       await tester.pump();
       expect(find.text('加载中'), findsOneWidget);

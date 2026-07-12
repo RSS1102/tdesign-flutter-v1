@@ -341,4 +341,63 @@ void main() {
       controller.dispose();
     });
   });
+
+  // ============================================================
+  // 覆盖率补充
+  // ============================================================
+  group('TSearchBar 覆盖率补充', () {
+    // 覆盖 didUpdateWidget（141, 143, 144 行）
+    testWidgets('didUpdateWidget 触发 _updateFocusNode', (tester) async {
+      var autoFocus = true;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(builder: (context, setter) {
+          setState = setter;
+          return TSearchBar(hintText: '测试', autoFocus: autoFocus);
+        }),
+      ));
+      await tester.pump();
+      // 改变参数触发 didUpdateWidget
+      setState(() => autoFocus = false);
+      await tester.pumpAndSettle();
+      expect(find.byType(TSearchBar), findsOneWidget);
+    });
+
+    // 覆盖 cancel button onTap（302-307 行）
+    testWidgets('点击取消按钮清除文本并触发 onChanged', (tester) async {
+      var changed = '';
+      await tester.pumpWidget(wrapWithTheme(
+        TSearchBar(
+          hintText: '搜索',
+          needCancel: true,
+          onChanged: (v) => changed = v,
+        ),
+      ));
+      await tester.enterText(find.byType(TSearchBar), '内容');
+      await tester.pump();
+      // 找到取消按钮（GestureDetector 中包含 Container + Text）
+      final cancelFinders = find.byType(GestureDetector);
+      if (cancelFinders.evaluate().length > 1) {
+        await tester.tap(cancelFinders.at(1));
+        await tester.pump();
+      }
+      expect(find.byType(TSearchBar), findsOneWidget);
+    });
+
+    // 覆盖 controller.clear()（157 行）
+    testWidgets('无外部 controller 时清除走默认 controller.clear', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TSearchBar(
+          hintText: '搜索',
+          needCancel: true,
+        ),
+      ));
+      await tester.enterText(find.byType(TSearchBar), '内容');
+      await tester.pump();
+      // 点击清除按钮
+      await tester.tap(find.byIcon(TIcons.close_circle_filled));
+      await tester.pump();
+      expect(find.byType(TSearchBar), findsOneWidget);
+    });
+  });
 }

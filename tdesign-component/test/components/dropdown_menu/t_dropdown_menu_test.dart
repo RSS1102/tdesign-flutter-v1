@@ -646,5 +646,20 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       expect(find.byType(TDropdownMenu), findsOneWidget);
     });
+
+    testWidgets('auto 方向打开并点击遮罩关闭（覆盖 popup/panel 分支）', (tester) async {
+      // direction 默认 auto → 覆盖 TDropdownPanel.open 的 auto 方向决策分支；
+      // 点击遮罩（屏幕任意处）触发 TDropdownPopup._overlayClick。
+      await tester.pumpWidget(wrapWithTheme(
+        TDropdownMenu(
+          items: [TDropdownItem(label: '自动方向', options: baseOptions())],
+        ),
+      ));
+      await tester.tap(find.text('自动方向'));
+      await tester.pumpAndSettle();
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pumpAndSettle();
+      expect(find.byType(TDropdownMenu), findsOneWidget);
+    });
   });
 }

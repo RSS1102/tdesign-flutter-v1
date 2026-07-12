@@ -107,13 +107,13 @@ rg -n "export 'src/components/.+show .*Style|export 'src/components/.+_style\\.d
 
 ### 7. 一键同步测试的命令
 
-一键同步+覆盖率测试：bash /mnt/e/tdesign-flutter-v1/.codebuddy/run_sync_test.sh
+一键同步+覆盖率测试+报告生成：bash /mnt/e/tdesign-flutter-v1/.codebuddy/sync_coverage.sh
 
 仅同步文件：bash /mnt/e/tdesign-flutter-v1/.codebuddy/sync_to_wsl.sh
 
 仅覆盖率测试：/home/dev/flutter/bin/flutter test --coverage
 
-同步覆盖率测试结果并生成报告：bash /mnt/e/tdesign-flutter-v1/.codebuddy/sync_coverage.sh
+后续注意（已写入项目记忆）：不要在 WSL 跑 --update-goldens 覆盖 Windows 基线，否则 Windows 侧会反失败。golden 验证只能在生成基线的同一 OS 内闭环。
 
 ### 1. 定义变量（简化后续命令）
 

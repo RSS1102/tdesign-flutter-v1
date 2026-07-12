@@ -42,10 +42,14 @@ class TLoadingController {
     });
 
     _context = context;
+    // coverage:ignore-start
+    // 以下分支为不可达死代码：_context 来自非可空参数、_overlayEntry 已在上方赋值，
+    // 二者均不可能为 null，运行期恒定进入 else，标记覆盖率例外。
     if (_context == null || _overlayEntry == null) {
       print('error: TLoading is not init!:${_context} ${_overlayEntry}');
       return;
     }
+    // coverage:ignore-end
     _isShowing = true;
     Overlay.of(_context!).insert(_overlayEntry!);
   }

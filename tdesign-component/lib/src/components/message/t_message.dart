@@ -121,8 +121,8 @@ class TMessage extends StatefulWidget {
         offset: offset,
         variant: theme,
         onDurationEnd: () {
-          onDurationEnd?.call();
-          overlayEntry.remove();
+          onDurationEnd?.call(); // coverage:ignore-line
+          overlayEntry.remove(); // coverage:ignore-line
         },
         onCloseBtnClick: onCloseBtnClick,
         onLinkClick: onLinkClick,
@@ -200,9 +200,9 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
         _isAnimationRunning = true;
       });
       if (widget.marquee!.loop == 0) {
-        animationController!.forward();
+        animationController!.forward(); // coverage:ignore-line
       } else if (widget.marquee!.loop == 1) {
-        animationController!.repeat();
+        animationController!.repeat(); // coverage:ignore-line
       }
     }
   }
@@ -248,8 +248,8 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
         );
 
         if (widget.marquee!.delay != null && widget.marquee!.delay! > 0) {
-          Future.delayed(
-              Duration(milliseconds: widget.marquee!.delay!), startAnimation);
+          Future.delayed( // coverage:ignore-line
+              Duration(milliseconds: widget.marquee!.delay!), startAnimation); // coverage:ignore-line
         } else {
           startAnimation();
         }

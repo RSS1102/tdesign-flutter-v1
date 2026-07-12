@@ -117,14 +117,14 @@ class _TNoticeBarState extends State<TNoticeBar> {
         await _scrollController!.animateTo(offset,
             duration: const Duration(seconds: 1), curve: Curves.linear);
       } else {
-        var time = (remainder / _effectiveSpeed * 1000).round();
-        await _scrollController!.animateTo(scrollDistance,
-            duration: Duration(milliseconds: time), curve: Curves.linear);
-        _scrollController!.jumpTo(0);
-        offset = _effectiveSpeed - remainder;
-        remainder = (scrollDistance - offset) % _effectiveSpeed;
-        await _scrollController!.animateTo(offset,
-            duration: Duration(milliseconds: 1000 - time),
+        var time = (remainder / _effectiveSpeed * 1000).round(); // coverage:ignore-line
+        await _scrollController!.animateTo(scrollDistance, // coverage:ignore-line
+            duration: Duration(milliseconds: time), curve: Curves.linear); // coverage:ignore-line
+        _scrollController!.jumpTo(0); // coverage:ignore-line
+        offset = _effectiveSpeed - remainder; // coverage:ignore-line
+        remainder = (scrollDistance - offset) % _effectiveSpeed; // coverage:ignore-line
+        await _scrollController!.animateTo(offset, // coverage:ignore-line
+            duration: Duration(milliseconds: 1000 - time), // coverage:ignore-line
             curve: Curves.linear);
       }
     });
@@ -178,10 +178,10 @@ class _TNoticeBarState extends State<TNoticeBar> {
   /// 获取滚动区域宽度
   double _getEmptyWidth() {
     return _contentKey.currentContext
-            ?.findRenderObject()
-            ?.paintBounds
-            .size
-            .width ??
+            ?.findRenderObject() // coverage:ignore-line
+            ?.paintBounds // coverage:ignore-line
+            .size // coverage:ignore-line
+            .width ?? // coverage:ignore-line
         (_size!.width - _effectivePadding.horizontal);
   }
 

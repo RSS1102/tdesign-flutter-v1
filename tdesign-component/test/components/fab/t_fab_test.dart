@@ -154,6 +154,14 @@ void main() {
       expect(bounds.end, 32);
     });
 
+    test('TFabBounds 非 const 构造覆盖构造器运行期执行', () {
+      // 非 const 调用会真正执行构造器函数体，覆盖 t_fab_layout.dart 构造器行
+      // ignore: prefer_const_constructors
+      final bounds = TFabBounds(start: 8, end: 8);
+      expect(bounds.start, 8);
+      expect(bounds.end, 8);
+    });
+
     test('TFabDragAxis 枚举值', () {
       expect(TFabDragAxis.all.index, 0);
       expect(TFabDragAxis.vertical.index, 1);

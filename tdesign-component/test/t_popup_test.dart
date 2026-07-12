@@ -1504,4 +1504,48 @@ void main() {
       }
     });
   });
+
+  // 覆盖率补充：不传任何 builder 使用默认哨兵函数
+  group('TPopup 默认哨兵 builder 覆盖', () {
+    testWidgets('bottom 不传任何 builder 渲染默认头部', (tester) async {
+      TPopupHandle? handle;
+      await openPopup(
+        tester,
+        onPressed: () {
+          handle = TPopup.show(
+            tester.element(find.text('open')),
+            options: const TPopupOptions(
+                placement: TPopupPlacement.bottom,
+                height: 120,
+                child: SizedBox(height: 40)),
+          );
+        },
+      );
+      await tester.pumpAndSettle();
+      expect(handle!.isShowing, isTrue);
+      handle!.close();
+      await tester.pumpAndSettle();
+    });
+
+    testWidgets('center 不传 closeBuilder 使用默认关闭区', (tester) async {
+      TPopupHandle? handle;
+      await openPopup(
+        tester,
+        onPressed: () {
+          handle = TPopup.show(
+            tester.element(find.text('open')),
+            options: const TPopupOptions(
+                placement: TPopupPlacement.center,
+                width: 120,
+                height: 80,
+                child: SizedBox(height: 60)),
+          );
+        },
+      );
+      await tester.pumpAndSettle();
+      expect(handle!.isShowing, isTrue);
+      handle!.close();
+      await tester.pumpAndSettle();
+    });
+  });
 }

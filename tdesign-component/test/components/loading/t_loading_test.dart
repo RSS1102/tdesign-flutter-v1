@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:tdesign_flutter/src/components/loading/t_point_indicator.dart';
+import 'package:tdesign_flutter/src/components/loading/t_circle_indicator.dart';
 
 /// TLoading V1.0 Widget 测试
 ///
@@ -203,5 +205,82 @@ void main() {
   // ============================================================
   // 覆盖率补充
   // ============================================================
-  // TLoading 覆盖率补充已移除（icon=null 的 _textWidget 触发异常）
+
+  // TLoading icon=null 覆盖 _textWidget 分支
+  group('TLoading 覆盖率补充', () {
+    testWidgets('icon=null + size=small 走 _textWidget', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TLoading(size: TLoadingSize.small, icon: null, text: '加载中'),
+      ));
+      expect(find.text('加载中'), findsOneWidget);
+    });
+
+    testWidgets('icon=null + size=large 走 _textWidget', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TLoading(size: TLoadingSize.large, icon: null, text: '加载中'),
+      ));
+      expect(find.text('加载中'), findsOneWidget);
+    });
+
+    testWidgets('icon=null + refreshWidget 走 Row', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(
+          extensions: [
+            TThemeData.defaultData(),
+            const TLoadingThemeData(refreshWidget: Text('刷新')),
+          ],
+        ),
+        home: const Scaffold(
+          body: TLoading(size: TLoadingSize.medium, icon: null, text: '加载中'),
+        ),
+      ));
+      expect(find.text('加载中'), findsOneWidget);
+      expect(find.text('刷新'), findsOneWidget);
+    });
+
+    testWidgets('icon=point + size=small 覆盖 _getPaddingSize', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TLoading(size: TLoadingSize.small, icon: TLoadingIcon.point, text: '加载中'),
+      ));
+      // point indicator 有无限动画，用 pump 而非 pumpAndSettle
+      await tester.pump();
+      expect(find.text('加载中'), findsOneWidget);
+    });
+  });
+
+  // TPointBounceIndicator didUpdateWidget 覆盖
+  group('TPointBounceIndicator 覆盖率补充', () {
+    testWidgets('didUpdateWidget duration 变化触发更新', (tester) async {
+      var duration = 1000;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TPointBounceIndicator(duration: duration);
+          },
+        ),
+      ));
+      await tester.pump();
+      // 改变 duration 触发 didUpdateWidget
+      setState(() => duration = 2000);
+      await tester.pump();
+      expect(find.byType(TPointBounceIndicator), findsOneWidget);
+    });
+  });
+
+  // TCircleIndicator 非正方形尺寸覆盖 paint else 分支
+  group('TCircleIndicator 覆盖率补充', () {
+    testWidgets('非正方形尺寸渲染覆盖 else 分支', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const SizedBox(
+          width: 100,
+          height: 50,
+          child: TCircleIndicator(),
+        ),
+      ));
+      await tester.pump();
+      expect(find.byType(TCircleIndicator), findsOneWidget);
+    });
+  });
 }

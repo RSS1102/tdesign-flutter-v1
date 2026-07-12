@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
@@ -178,5 +180,5 @@ void main() {
         matchesGoldenFile('goldens/t_bottom_tab_bar_normal_style.png'),
       );
     });
-  });
+  }, skip: !Platform.isWindows);
 }

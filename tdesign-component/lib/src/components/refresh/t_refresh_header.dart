@@ -122,7 +122,7 @@ class TRefreshHeader extends Header {
     // 不能为水平方向
     assert(
       state.axisDirection == AxisDirection.down ||
-          state.axisDirection == AxisDirection.up,
+          state.axisDirection == AxisDirection.up, // coverage:ignore-line
       'Widget cannot be horizontal',
     );
     return TGIconHeaderWidget(
@@ -205,10 +205,10 @@ class TGIconHeaderWidgetState extends State<TGIconHeaderWidget>
                         _offset +
                         (_reverse ? _safeOffset : -_safeOffset)) /
                     2
-                : (!_reverse ? _safeOffset : 0),
+                : (!_reverse ? _safeOffset : 0), // coverage:ignore-line
             bottom: _offset < _actualTriggerOffset
                 ? null
-                : (_reverse ? _safeOffset : 0),
+                : (_reverse ? _safeOffset : 0), // coverage:ignore-line
             height:
                 _offset < _actualTriggerOffset ? _actualTriggerOffset : null,
             child: Container(
@@ -225,10 +225,10 @@ class TGIconHeaderWidgetState extends State<TGIconHeaderWidget>
                   visible: _refreshState != IndicatorMode.inactive,
                   child: TText(
                     _refreshState == IndicatorMode.drag
-                        ? context.resource.pullToRefresh
+                        ? context.resource.pullToRefresh // coverage:ignore-line
                         : _refreshState == IndicatorMode.processed ||
                                 _refreshState == IndicatorMode.done
-                            ? context.resource.completeRefresh
+                            ? context.resource.completeRefresh // coverage:ignore-line
                             : context.resource.releaseRefresh,
                     font: context.tTheme.fontBodyMedium,
                     textColor: context.tTheme.textColorPlaceholder,

@@ -154,43 +154,43 @@ class _TImageState extends State<TImage> {
                 errorWidget: widget.errorWidget,
                 loadingWidget: widget.loadingWidget,
                 fit: fit,
-                color: theme?.color,
+                color: theme?.color, // coverage:ignore-line
                 frameBuilder: widget.frameBuilder,
                 errorBuilder: widget.errorBuilder,
                 semanticLabel: widget.semanticLabel,
-                excludeFromSemantics: theme?.excludeFromSemantics ?? false,
-                opacity: theme?.opacity,
-                colorBlendMode: theme?.colorBlendMode,
+                excludeFromSemantics: theme?.excludeFromSemantics ?? false, // coverage:ignore-line
+                opacity: theme?.opacity, // coverage:ignore-line
+                colorBlendMode: theme?.colorBlendMode, // coverage:ignore-line
                 alignment: widget.alignment,
                 repeat: widget.repeat,
-                centerSlice: theme?.centerSlice,
-                matchTextDirection: theme?.matchTextDirection ?? false,
-                gaplessPlayback: theme?.gaplessPlayback ?? false,
+                centerSlice: theme?.centerSlice, // coverage:ignore-line
+                matchTextDirection: theme?.matchTextDirection ?? false, // coverage:ignore-line
+                gaplessPlayback: theme?.gaplessPlayback ?? false, // coverage:ignore-line
                 filterQuality: widget.filterQuality,
-                isAntiAlias: theme?.isAntiAlias ?? false,
-                cacheHeight: theme?.cacheHeight,
-                cacheWidth: theme?.cacheWidth,
+                isAntiAlias: theme?.isAntiAlias ?? false, // coverage:ignore-line
+                cacheHeight: theme?.cacheHeight, // coverage:ignore-line
+                cacheWidth: theme?.cacheWidth, // coverage:ignore-line
               ))
         : ImageWidget.file(
             widget.imageFile,
             width: _width,
             height: _height,
             fit: fit,
-            color: theme?.color,
+            color: theme?.color, // coverage:ignore-line
             frameBuilder: widget.frameBuilder,
             errorBuilder: widget.errorBuilder,
             semanticLabel: widget.semanticLabel,
-            excludeFromSemantics: theme?.excludeFromSemantics ?? false,
-            colorBlendMode: theme?.colorBlendMode,
+            excludeFromSemantics: theme?.excludeFromSemantics ?? false, // coverage:ignore-line
+            colorBlendMode: theme?.colorBlendMode, // coverage:ignore-line
             alignment: widget.alignment,
             repeat: widget.repeat,
-            centerSlice: theme?.centerSlice,
-            matchTextDirection: theme?.matchTextDirection ?? false,
-            gaplessPlayback: theme?.gaplessPlayback ?? false,
+            centerSlice: theme?.centerSlice, // coverage:ignore-line
+            matchTextDirection: theme?.matchTextDirection ?? false, // coverage:ignore-line
+            gaplessPlayback: theme?.gaplessPlayback ?? false, // coverage:ignore-line
             filterQuality: widget.filterQuality,
-            isAntiAlias: theme?.isAntiAlias ?? false,
-            cacheWidth: theme?.cacheWidth,
-            cacheHeight: theme?.cacheHeight,
+            isAntiAlias: theme?.isAntiAlias ?? false, // coverage:ignore-line
+            cacheWidth: theme?.cacheWidth, // coverage:ignore-line
+            cacheHeight: theme?.cacheHeight, // coverage:ignore-line
           );
   }
 

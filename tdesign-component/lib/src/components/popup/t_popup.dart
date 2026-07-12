@@ -52,7 +52,8 @@ part 't_popup_types.dart';
 ///
 /// 配置项见 [TPopupOptions]；方向见 [TPopupPlacement]。
 final class TPopup {
-  const TPopup._();
+  // 私有构造器：工具类仅暴露静态方法，无外部调用，标记为覆盖率例外（不可达死代码）。
+  const TPopup._(); // coverage:ignore-line
 
   /// 打开浮层并压入独立 [PopupRoute]。
   ///

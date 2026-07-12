@@ -337,6 +337,46 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('确认关闭'), findsNothing);
     });
+
+    testWidgets('buttonStyle=text + onPressed 触发回调', (tester) async {
+      var pressed = false;
+      await tester.pumpWidget(wrapWithButton(() {
+        showDialog(
+          context: tester.element(find.byType(TButton)),
+          builder: (context) => TConfirmDialog(
+            title: '标题',
+            content: '内容',
+            buttonStyle: TDialogButtonStyle.text,
+            onPressed: () => pressed = true,
+          ),
+        );
+      }));
+      await tester.tap(find.byType(TButton));
+      await tester.pumpAndSettle();
+      // 点击按钮触发 onPressed
+      await tester.tap(find.text('知道了'));
+      await tester.pumpAndSettle();
+      expect(pressed, isTrue);
+    });
+
+    testWidgets('buttonStyle=text 无 onPressed 走 Navigator.pop', (tester) async {
+      await tester.pumpWidget(wrapWithButton(() {
+        showDialog(
+          context: tester.element(find.byType(TButton)),
+          builder: (context) => const TConfirmDialog(
+            title: '标题',
+            content: '内容',
+            buttonStyle: TDialogButtonStyle.text,
+          ),
+        );
+      }));
+      await tester.tap(find.byType(TButton));
+      await tester.pumpAndSettle();
+      // 点击按钮触发 Navigator.pop
+      await tester.tap(find.text('知道了'));
+      await tester.pumpAndSettle();
+      expect(find.text('标题'), findsNothing);
+    });
   });
 
   group('TDialog 多按钮', () {

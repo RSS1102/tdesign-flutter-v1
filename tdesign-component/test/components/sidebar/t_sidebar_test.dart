@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
+import 'package:tdesign_flutter/src/components/sidebar/t_wrap_sidebar_item.dart';
 
 void main() {
   Widget wrapWithTheme(Widget child, {TSideBarThemeData? sideBarTheme}) {
@@ -264,6 +265,66 @@ void main() {
         sideBarTheme: const TSideBarThemeData(height: 500),
       ));
       expect(find.byType(TSideBar), findsOneWidget);
+    });
+  });
+
+  group('TWrapSideBarItem 覆盖率补充', () {
+    // 直接渲染 TWrapSideBarItem，覆盖分支行（70/140/158/203/215/216/219/221/222）
+    testWidgets('normal 样式未选中且未指定 unSelectedBgColor（覆盖 70 行）',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TWrapSideBarItem(
+          style: TSideBarVariant.normal,
+          label: '短',
+          value: 1,
+          disabled: false,
+        ),
+      ));
+      expect(find.byType(TWrapSideBarItem), findsOneWidget);
+    });
+
+    testWidgets('选中且设置 selectedTextStyle 颜色（覆盖 140/158 行）',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TWrapSideBarItem(
+          style: TSideBarVariant.normal,
+          label: '选',
+          value: 2,
+          selected: true,
+          disabled: false,
+          icon: Icons.star,
+          selectedTextStyle: const TextStyle(color: Colors.red),
+        ),
+      ));
+      expect(find.byType(TWrapSideBarItem), findsOneWidget);
+    });
+
+    testWidgets('短标签带 badge 渲染 label 内 badge（覆盖 203 行）',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TWrapSideBarItem(
+          style: TSideBarVariant.normal,
+          label: '短',
+          value: 3,
+          disabled: false,
+          badge: TBadge(TBadgeVariant.message, count: '1'),
+        ),
+      ));
+      expect(find.byType(TWrapSideBarItem), findsOneWidget);
+    });
+
+    testWidgets('长标签带 badge 渲染 renderBadge（覆盖 215/216/219/221/222 行）',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TWrapSideBarItem(
+          style: TSideBarVariant.normal,
+          label: '很长很长的标签内容xxx',
+          value: 4,
+          disabled: false,
+          badge: TBadge(TBadgeVariant.message, count: '9'),
+        ),
+      ));
+      expect(find.byType(TWrapSideBarItem), findsOneWidget);
     });
   });
 

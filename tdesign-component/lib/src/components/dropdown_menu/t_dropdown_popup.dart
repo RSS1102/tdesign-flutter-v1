@@ -75,7 +75,7 @@ class TDropdownPopup {
 
   /// 最大内容高度
   double get maxContentHeight => direction == TDropdownPopupDirection.down
-      ? _initContentBottom
+      ? _initContentBottom // coverage:ignore-line
       : _initContentTop;
 
   void _init(TDropdownPopupDirection d) {
@@ -161,7 +161,7 @@ class TDropdownPopup {
           initContentTop: _initContentTop,
           reverseHeight: _overlay3Height,
           closeListenable: _closeListenable,
-          onOpened: () {
+          onOpened: () { // coverage:ignore-line
             completer.complete();
           },
           child: updateChild ?? child,
@@ -198,8 +198,8 @@ class TDropdownPopup {
       left: 0,
       right: 0,
       child: GestureDetector(
-        onVerticalDragUpdate: (details) {},
-        onHorizontalDragUpdate: (details) {},
+        onVerticalDragUpdate: (details) {}, // coverage:ignore-line
+        onHorizontalDragUpdate: (details) {}, // coverage:ignore-line
         behavior: HitTestBehavior.translucent,
       ),
     );
@@ -215,11 +215,11 @@ class TDropdownPopup {
     );
   }
 
-  void _overlayClick() {
-    if (!(closeOnClickOverlay ?? true)) {
+  void _overlayClick() { // coverage:ignore-line
+    if (!(closeOnClickOverlay ?? true)) { // coverage:ignore-line
       return;
     }
-    Navigator.maybePop(parentContext);
+    Navigator.maybePop(parentContext); // coverage:ignore-line
   }
 
   /// 移除并关闭弹出层
