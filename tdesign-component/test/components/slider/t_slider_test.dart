@@ -334,7 +334,12 @@ void main() {
           onChanged: (v) => changed = v,
         ),
       ));
-      await tester.drag(find.byType(RangeSlider), const Offset(40, 0));
+      final sliderBox = tester.renderObject<RenderBox>(find.byType(RangeSlider));
+      final startThumb = sliderBox.localToGlobal(Offset(
+        sliderBox.size.width * 0.2,
+        sliderBox.size.height / 2,
+      ));
+      await tester.dragFrom(startThumb, const Offset(40, 0));
       await tester.pump();
       expect(changed, isNotNull);
     });

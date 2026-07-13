@@ -90,18 +90,16 @@ void main() {
     });
 
     testWidgets('contentWidget 未指定 width/height 抛出断言', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        Builder(builder: (context) {
-          return Center(
-            child: TPopoverWidget(
-              context: context,
-              contentWidget: const Text('无尺寸'),
-            ),
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(extensions: <ThemeExtension>[TThemeData.defaultData()]),
+        home: Builder(builder: (context) {
+          return TPopoverWidget(
+            context: context,
+            contentWidget: const Text('无尺寸'),
           );
         }),
       ));
 
-      // 应抛出 FlutterError
       expect(tester.takeException(), isA<FlutterError>());
     });
   });
