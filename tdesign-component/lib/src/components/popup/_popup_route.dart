@@ -81,7 +81,7 @@ class _PopupNavigatorRoute<T> extends PopupRoute<T> {
         barrierSemanticsDismissible: true,
       );
     }
-    return ModalBarrier(
+    return const ModalBarrier(
       color: Colors.transparent,
       dismissible: false,
       barrierSemanticsDismissible: false,

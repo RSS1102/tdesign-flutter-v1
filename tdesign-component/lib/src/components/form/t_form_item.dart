@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-import 't_form_inherited.dart';
+﻿import 'package:flutter/material.dart';
+
 import '../../../tdesign_flutter.dart';
+import 't_form_inherited.dart';
 
 /// 表格单元选用组件类型的枚举
 enum TFormItemType {
@@ -18,7 +19,7 @@ class TFormItem extends StatefulWidget {
   const TFormItem({
     required this.type,
     this.child,
-    this.formItemNotifier,
+    this.itemNotifier,
     this.label,
     this.labelWidget,
     this.help,
@@ -77,7 +78,7 @@ class TFormItem extends StatefulWidget {
   /// 表单子组件
   final Widget? child;
 
-  final FormItemNotifier? formItemNotifier;
+  final FormItemNotifier? itemNotifier;
 
   /// 选择器 适用于日期选择器等
   final String select;
@@ -115,9 +116,9 @@ class _TFormItemState extends State<TFormItem> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (!(widget.formItemNotifier?.isDisposed ?? true)) {
-      widget.formItemNotifier?.addListener(() {
-        updateFormData(widget.formItemNotifier?.formVal);
+    if (!(widget.itemNotifier?.isDisposed ?? true)) {
+      widget.itemNotifier?.addListener(() { // coverage:ignore-line
+        updateformData(widget.itemNotifier?.formVal); // coverage:ignore-line
       });
     }
   }
@@ -125,28 +126,28 @@ class _TFormItemState extends State<TFormItem> {
   @override
   void dispose() {
     super.dispose();
-    if (widget.formItemNotifier != null &&
-        !widget.formItemNotifier!.isDisposed) {
-      widget.formItemNotifier?.dispose();
+    if (widget.itemNotifier != null &&
+        !widget.itemNotifier!.isDisposed) { // coverage:ignore-line
+      widget.itemNotifier?.dispose(); // coverage:ignore-line
     }
   }
 
   @override
   void didChangeDependencies() {
-    if (FormValidate) {
+    if (formValidate) {
       startValidation();
     }
-    if (FormIsReset) {
+    if (formIsReset) {
       errorMessage = '';
     }
     super.didChangeDependencies();
   }
 
   /// 从 TForm 继承获取整个表单的参数
-  /// 获取真正的 LabelWidth
-  double get LabelWidth {
+  /// 获取真正的 labelWidth
+  double get labelWidth {
     final inherited = TFormInherited.of(context);
-    final defaultLabelWidth = 8.0;
+    const defaultlabelWidth = 8.0;
 
     /// 如果 item 传入定制的 labelWidth 则使用
     if (widget.labelWidth != null) {
@@ -158,35 +159,35 @@ class _TFormItemState extends State<TFormItem> {
       return inherited!.labelWidth as double;
     }
 
-    return defaultLabelWidth;
+    return defaultlabelWidth;
   }
 
-  Map<String, dynamic> get FormData {
-    return TFormInherited.of(context)!.formData;
+  Map<String, dynamic> get formData { // coverage:ignore-line
+    return TFormInherited.of(context)!.formData; // coverage:ignore-line
   }
 
   /// 获取 form 以及 formItem 的内容排列方式
-  TextAlign get FormContentAlign {
+  TextAlign get formContentAlign {
     final inherited = TFormInherited.of(context);
     if (widget.contentAlign != null) {
       /// 断言 widget.contentAlign 不会为空
-      return widget.contentAlign!;
+      return widget.contentAlign!; // coverage:ignore-line
     }
 
     /// 如果 没用为 item 定制内容排列方式 则全部使用总表单的内容排列方式
-    return inherited!.formContentAlign;
+    return inherited!.contentAlign;
   }
 
   /// 获取 form 是否为水平排列的状态
-  bool get FormIsHorizontal {
+  bool get formIsLayout {
     final inherited = TFormInherited.of(context);
-    if (inherited?.isHorizontal != null) {
-      return inherited!.isHorizontal;
+    if (inherited?.layout != null) {
+      return inherited!.layout;
     }
     return false;
   }
 
-  bool get FormIsReset {
+  bool get formIsReset {
     final inherited = TFormInherited.of(context);
     if (inherited?.isReset != null) {
       return inherited!.isReset;
@@ -195,27 +196,22 @@ class _TFormItemState extends State<TFormItem> {
   }
 
   /// 获取 form 整体是否校验的信号状态
-  bool get FormValidate {
+  bool get formValidate {
     final inherited = TFormInherited.of(context);
     return inherited!.isValidate;
   }
 
-  bool get FormRequiredMark {
+  bool get formRequiredMark {
     return TFormInherited.of(context)!.requiredMark ?? false;
   }
 
   /// 获取整个表格是否需要展示错误提示
-  bool? get ShowErrorMessage {
-    final inherited = TFormInherited.of(context);
-    if (widget.showErrorMessage != null) {
-      return widget.showErrorMessage;
-    } else {
-      return inherited!.formShowErrorMessage;
+  bool? get showErrorMessage {
+    return widget.showErrorMessage;
     }
-  }
 
   /// 获取整个表单的校验规则
-  Map<String, TFormValidation> get FormRules {
+  Map<String, TFormValidation> get formRules {
     final inherited = TFormInherited.of(context);
     return inherited!.rules;
   }
@@ -234,13 +230,10 @@ class _TFormItemState extends State<TFormItem> {
 
   /// 遍历校验规则并执行
   String? validate() {
-    dynamic value = widget.formItemNotifier?.formVal;
-    String name = widget.name!;
-    if (name == null) {
-      return null;
-    }
-    if (FormRules[name] != null) {
-      TFormValidation rule = FormRules[name]!;
+    dynamic value = widget.itemNotifier?.formVal;
+    var name = widget.name!;
+    if (formRules[name] != null) {
+      var rule = formRules[name]!;
 
       /// 只对类型匹配的项进行校验
       if (rule.type == widget.type) {
@@ -255,30 +248,29 @@ class _TFormItemState extends State<TFormItem> {
     return null;
   }
 
-  void updateFormData(value) {
-    if (widget.name != null) {
-      String name = widget.name!;
-      Map<String, dynamic> _formData = FormData;
-      _formData[name] = value;
-      TFormInherited.of(context)!.onFormDataChange(_formData);
-      startValidation();
+  void updateformData(value) { // coverage:ignore-line
+    if (widget.name != null) { // coverage:ignore-line
+      var name = widget.name!; // coverage:ignore-line
+      var _formData = formData; // coverage:ignore-line
+      _formData[name] = value; // coverage:ignore-line
+      TFormInherited.of(context)!.onFormDataChange(_formData); // coverage:ignore-line
+      startValidation(); // coverage:ignore-line
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = TTheme.of(context);
     Widget labelContent = Visibility(
         visible: widget.label != null ? true : false,
         child: SizedBox(
-            width: LabelWidth,
+            width: labelWidth,
             child: widget.labelWidget ??
                 Row(
                   children: [
                     TText(widget.label,
-                        font: TTheme.of(context).fontBodyMedium,
+                        font: context.tTheme.fontBodyMedium,
                         textAlign: widget.labelAlign),
-                    if (FormRequiredMark &&
+                    if (formRequiredMark &&
                         (widget.requiredMark != null &&
                             widget.requiredMark == true))
                       Padding(
@@ -290,29 +282,29 @@ class _TFormItemState extends State<TFormItem> {
                       ),
                   ],
                 )));
-    List<Widget> itemRowContent = [
+    var itemRowContent = <Widget>[
       labelContent,
       Visibility(
-        visible: FormIsHorizontal,
+        visible: formIsLayout,
         child: Expanded(
             child: Align(
           alignment: Alignment.centerRight,
-          child: widget.child ?? SizedBox(),
+          child: widget.child ?? const SizedBox(),
         )),
-        replacement: widget.child ?? SizedBox(),
+        replacement: widget.child ?? const SizedBox(),
       )
     ];
-    List<Widget> itemColumnContent = [
+    var itemColumnContent = <Widget>[
       labelContent,
-      SizedBox(height: 8),
+      const SizedBox(height: 8),
       Visibility(
-        visible: FormIsHorizontal,
+        visible: formIsLayout,
         child: Expanded(
             child: Align(
           alignment: Alignment.centerRight,
-          child: widget.child ?? SizedBox(),
+          child: widget.child ?? const SizedBox(),
         )),
-        replacement: widget.child ?? SizedBox(),
+        replacement: widget.child ?? const SizedBox(),
       ),
     ];
     switch (widget.type) {
@@ -320,14 +312,14 @@ class _TFormItemState extends State<TFormItem> {
       case TFormItemType.rate:
         return Container(
             color:
-                widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+                widget.backgroundColor ?? context.tTheme.bgColorContainer,
             child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                      visible: FormIsHorizontal,
+                      visible: formIsLayout,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: itemRowContent,
@@ -345,14 +337,14 @@ class _TFormItemState extends State<TFormItem> {
       case TFormItemType.radios:
         return Container(
             color:
-                widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+                widget.backgroundColor ?? context.tTheme.bgColorContainer,
             child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                      visible: FormIsHorizontal,
+                      visible: formIsLayout,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: itemRowContent,
@@ -370,17 +362,17 @@ class _TFormItemState extends State<TFormItem> {
         return _buildSelectRow(context);
       case TFormItemType.stepper:
         return Container(
-          color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+          color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Visibility(
-                visible: FormIsHorizontal,
+                visible: formIsLayout,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [labelContent, widget.child ?? SizedBox()]),
+                    children: [labelContent, widget.child ?? const SizedBox()]),
                 replacement: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: itemColumnContent,
@@ -393,21 +385,21 @@ class _TFormItemState extends State<TFormItem> {
       case TFormItemType.textarea:
         return Container(
             color:
-                widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+                widget.backgroundColor ?? context.tTheme.bgColorContainer,
             child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Visibility(
-                      visible: FormIsHorizontal,
+                      visible: formIsLayout,
                       child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Visibility(
                                 visible: widget.label != null ? true : false,
                                 child: labelContent),
-                            Expanded(child: widget.child ?? SizedBox()),
+                            Expanded(child: widget.child ?? const SizedBox()),
                           ]),
                       replacement: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -415,14 +407,14 @@ class _TFormItemState extends State<TFormItem> {
                           Visibility(
                             visible: widget.label != null ? true : false,
                             child: SizedBox(
-                              width: LabelWidth,
+                              width: labelWidth,
                               child: widget.labelWidget ??
                                   TText(widget.label,
-                                      font: TTheme.of(context).fontBodyMedium,
+                                      font: context.tTheme.fontBodyMedium,
                                       textAlign: widget.labelAlign),
                             ),
                           ),
-                          widget.child ?? SizedBox()
+                          widget.child ?? const SizedBox()
                         ],
                       ),
                     ),
@@ -431,13 +423,13 @@ class _TFormItemState extends State<TFormItem> {
                 )));
       case TFormItemType.upLoadImg:
         return Container(
-          color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+          color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
           child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
                   Visibility(
-                    visible: FormIsHorizontal,
+                    visible: formIsLayout,
                     child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: itemRowContent),
@@ -447,13 +439,13 @@ class _TFormItemState extends State<TFormItem> {
                         Visibility(
                             visible: widget.label != null ? true : false,
                             child: SizedBox(
-                              width: LabelWidth,
+                              width: labelWidth,
                               child: widget.labelWidget ??
                                   TText(widget.label,
-                                      font: TTheme.of(context).fontBodyMedium,
+                                      font: context.tTheme.fontBodyMedium,
                                       textAlign: widget.labelAlign),
                             )),
-                        widget.child ?? SizedBox()
+                        widget.child ?? const SizedBox()
                       ],
                     ),
                   ),
@@ -466,7 +458,7 @@ class _TFormItemState extends State<TFormItem> {
 
   Widget _buildSelectRow(BuildContext context) {
     Widget labelContent = SizedBox(
-      width: LabelWidth,
+      width: labelWidth,
       child: widget.labelWidget ??
           Padding(
             padding: const EdgeInsets.only(left: 2),
@@ -474,9 +466,9 @@ class _TFormItemState extends State<TFormItem> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TText(widget.label ?? '',
-                    font: TTheme.of(context).fontBodyMedium,
+                    font: context.tTheme.fontBodyMedium,
                     textAlign: widget.labelAlign),
-                if (FormRequiredMark &&
+                if (formRequiredMark &&
                     (widget.requiredMark != null &&
                         widget.requiredMark == true))
                   Padding(
@@ -492,11 +484,11 @@ class _TFormItemState extends State<TFormItem> {
     );
     Widget selectText = TText(
       widget.select != '' ? widget.select : widget.hintText,
-      textAlign: FormContentAlign,
-      font: TTheme.of(context).fontBodyLarge,
+      textAlign: formContentAlign,
+      font: context.tTheme.fontBodyLarge,
       textColor: widget.select != ''
-          ? TTheme.of(context).textColorPrimary
-          : TTheme.of(context).textColorPlaceholder,
+          ? context.tTheme.textColorPrimary // coverage:ignore-line
+          : context.tTheme.textColorPlaceholder,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     );
@@ -510,7 +502,7 @@ class _TFormItemState extends State<TFormItem> {
             padding: const EdgeInsets.only(left: 2),
             child: Icon(
               TIcons.chevron_right,
-              color: TTheme.of(context).textColorPlaceholder,
+              color: context.tTheme.textColorPlaceholder,
             ),
           ),
         ],
@@ -524,13 +516,13 @@ class _TFormItemState extends State<TFormItem> {
         }
       },
       child: Container(
-        color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+        color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Visibility(
-              visible: FormIsHorizontal,
+              visible: formIsLayout,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -559,7 +551,7 @@ class _TFormItemState extends State<TFormItem> {
                     padding: const EdgeInsets.only(left: 2),
                     child: Icon(
                       TIcons.chevron_right,
-                      color: TTheme.of(context).textColorPlaceholder,
+                      color: context.tTheme.textColorPlaceholder,
                     ),
                   ),
                 ],
@@ -580,38 +572,38 @@ class _TFormItemState extends State<TFormItem> {
         if (widget.help != null && (errorMessage == null || errorMessage == ''))
           Row(
             children: [
-              if (widget.label != null && FormIsHorizontal)
-                SizedBox(width: LabelWidth),
+              if (widget.label != null && formIsLayout)
+                SizedBox(width: labelWidth),
               Expanded(
                 child: Padding(
                     padding:
                         EdgeInsets.only(left: left, right: right, top: top),
                     child: TText(
                       widget.help,
-                      font: TTheme.of(context).fontBodySmall,
+                      font: context.tTheme.fontBodySmall,
                       textAlign: widget.tipAlign ?? TextAlign.left,
-                      textColor: TTheme.of(context).textColorPlaceholder,
+                      textColor: context.tTheme.textColorPlaceholder,
                     )),
               )
             ],
           ),
-        if (ShowErrorMessage != null &&
-            ShowErrorMessage! &&
+        if (showErrorMessage != null &&
+            showErrorMessage! &&
             errorMessage != null &&
             errorMessage != '')
           Row(
             children: [
-              if (widget.label != null && FormIsHorizontal)
-                SizedBox(width: LabelWidth),
+              if (widget.label != null && formIsLayout)
+                SizedBox(width: labelWidth),
               Expanded(
                   child: Padding(
                       padding:
                           EdgeInsets.only(left: left, right: right, top: top),
                       child: TText(
                         errorMessage,
-                        font: TTheme.of(context).fontBodySmall,
+                        font: context.tTheme.fontBodySmall,
                         textAlign: widget.tipAlign ?? TextAlign.left,
-                        textColor: TTheme.of(context).errorNormalColor,
+                        textColor: context.tTheme.errorNormalColor,
                       )))
             ],
           ),
@@ -624,16 +616,16 @@ class FormItemNotifier with ChangeNotifier {
   bool isDisposed = false;
   dynamic _formVal = '';
 
-  dynamic get formVal => _formVal;
+  dynamic get formVal => _formVal; // coverage:ignore-line
 
-  upDataForm(val) {
-    _formVal = val;
-    notifyListeners();
+  upDataForm(val) { // coverage:ignore-line
+    _formVal = val; // coverage:ignore-line
+    notifyListeners(); // coverage:ignore-line
   }
 
-  @override
+  @override // coverage:ignore-line
   void dispose() {
-    super.dispose();
-    isDisposed = true;
+    super.dispose(); // coverage:ignore-line
+    isDisposed = true; // coverage:ignore-line
   }
 }

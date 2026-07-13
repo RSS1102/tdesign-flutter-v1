@@ -102,21 +102,21 @@ class TCheckboxPageState extends State<TCheckboxPage> {
         TCheckbox(
           id: '0',
           title: '多选标题',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
         TCheckbox(
           id: '1',
           title: '多选标题',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
         TCheckbox(
           id: '2',
           title: '上限四字',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
@@ -134,28 +134,28 @@ class TCheckboxPageState extends State<TCheckboxPage> {
         TCheckbox(
           id: '0',
           title: '多选标题0',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
         TCheckbox(
           id: '1',
           title: '多选标题1',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
         TCheckbox(
           id: '2',
           title: '多选标题2',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
         TCheckbox(
           id: '3',
           title: '多选标题3',
-          style: TCheckboxStyle.circle,
+          style: TCheckboxVariant.circle,
           insetSpacing: 12,
           showDivider: false,
         ),
@@ -179,7 +179,6 @@ class TCheckboxPageState extends State<TCheckboxPage> {
           if (index == 0) {
             title = '全选';
             return SizedBox(
-              height: 56,
               child: TCheckbox(
                 id: 'index:$index',
                 title: title,
@@ -191,7 +190,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
                       controller != null && !allCheck && length > 0;
                   return getAllIcon(allCheck, halfSelected);
                 },
-                onCheckBoxChanged: (checked) {
+                onChanged: (checked) {
                   if (checked) {
                     controller?.toggleAll(true);
                   } else {
@@ -210,7 +209,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
                     ? '描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息'
                     : null,
                 subTitleMaxLine: 2,
-                onCheckBoxChanged: (checked) {
+                onChanged: (checked) {
                   var length = controller!.allChecked().length -
                       (controller!.checked('index:0') ? 1 : 0);
                   var allCheck = itemCount - 1 == length;
@@ -238,14 +237,14 @@ class TCheckboxPageState extends State<TCheckboxPage> {
           TCheckbox(
             id: '0',
             title: '选项禁用-已选',
-            style: TCheckboxStyle.circle,
-            enable: false,
+            style: TCheckboxVariant.circle,
+            enabled: false,
           ),
           TCheckbox(
             id: '1',
             title: '选项禁用-默认',
-            style: TCheckboxStyle.circle,
-            enable: false,
+            style: TCheckboxVariant.circle,
+            enabled: false,
           ),
         ],
       ),
@@ -257,7 +256,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
     return Column(
       children: [
         TCheckboxGroupContainer(
-          style: TCheckboxStyle.check,
+          style: TCheckboxVariant.check,
           selectIds: const ['index:0'],
           child: const TCheckbox(
             id: 'index:0',
@@ -265,10 +264,9 @@ class TCheckboxPageState extends State<TCheckboxPage> {
           ),
         ),
         const SizedBox(
-          height: 17,
         ),
         TCheckboxGroupContainer(
-          style: TCheckboxStyle.square,
+          style: TCheckboxVariant.square,
           selectIds: const ['index:0'],
           child: const TCheckbox(
             id: 'index:0',
@@ -427,23 +425,23 @@ class TCheckboxPageState extends State<TCheckboxPage> {
       child: Column(
         children: [
           TCheckbox(
-            selectColor: TTheme.of(context).errorColor3,
-            disableColor: TTheme.of(context).errorColor1,
+            selectColor: context.tTheme.errorColor3,
+            disableColor: context.tTheme.errorColor1,
             id: '0',
             title: '选项禁用-已选',
-            style: TCheckboxStyle.circle,
-            enable: false,
+            style: TCheckboxVariant.circle,
+            enabled: false,
           ),
           TCheckbox(
-            selectColor: TTheme.of(context).errorColor3,
-            disableColor: TTheme.of(context).errorColor1,
+            selectColor: context.tTheme.errorColor3,
+            disableColor: context.tTheme.errorColor1,
             id: '1',
             title: '选项禁用-默认',
-            style: TCheckboxStyle.circle,
+            style: TCheckboxVariant.circle,
           ),
           TCheckbox(
-            selectColor: TTheme.of(context).errorColor3,
-            disableColor: TTheme.of(context).errorColor1,
+            selectColor: context.tTheme.errorColor3,
+            disableColor: context.tTheme.errorColor1,
             id: 'index:0',
             title: '多选',
             subTitle: '描述信息',
@@ -452,7 +450,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
             cardMode: true,
           ),
           TCheckbox(
-            selectColor: TTheme.of(context).errorColor3,
+            selectColor: context.tTheme.errorColor3,
             id: 'index:1',
             title: '多选',
             titleColor: Colors.green,
@@ -478,18 +476,18 @@ class TCheckboxPageState extends State<TCheckboxPage> {
             id: '0',
             title: '选项禁用-已选',
             subTitle: '描述文本',
-            style: TCheckboxStyle.circle,
-            enable: false,
-            titleFont: TTheme.of(context).fontBodySmall,
-            subTitleFont: TTheme.of(context).fontBodyExtraSmall,
+            style: TCheckboxVariant.circle,
+            enabled: false,
+            titleFont: context.tTheme.fontBodySmall,
+            subTitleFont: context.tTheme.fontBodyExtraSmall,
           ),
           TCheckbox(
             id: '1',
             title: '选项禁用-默认',
             subTitle: '描述文本',
-            style: TCheckboxStyle.circle,
-            titleFont: TTheme.of(context).fontBodySmall,
-            subTitleFont: TTheme.of(context).fontBodyExtraSmall,
+            style: TCheckboxVariant.circle,
+            titleFont: context.tTheme.fontBodySmall,
+            subTitleFont: context.tTheme.fontBodyExtraSmall,
           ),
           TCheckbox(
             id: 'index:0',
@@ -498,8 +496,8 @@ class TCheckboxPageState extends State<TCheckboxPage> {
             titleMaxLine: 2,
             subTitleMaxLine: 2,
             cardMode: true,
-            titleFont: TTheme.of(context).fontBodySmall,
-            subTitleFont: TTheme.of(context).fontBodyExtraSmall,
+            titleFont: context.tTheme.fontBodySmall,
+            subTitleFont: context.tTheme.fontBodyExtraSmall,
           ),
         ],
       ),
@@ -515,7 +513,7 @@ class TCheckboxPageState extends State<TCheckboxPage> {
                 : TIcons.circle,
         size: 24,
         color: (checked || halfSelected)
-            ? TTheme.of(context).brandNormalColor
-            : TTheme.of(context).grayColor4);
+            ? context.tTheme.brandNormalColor
+            : context.tTheme.grayColor4);
   }
 }

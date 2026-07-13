@@ -1,0 +1,350 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/theme/t_colors.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/theme/t_colors.dart</h1></header><div class='meta'>行覆盖 <b>42.7%</b> (47/110) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:ui&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span>import &#x27;t_theme.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>5</span></div>
+<div class='row nod'><span class='ln'>6</span>///</div>
+<div class='row nod'><span class='ln'>7</span>/// 业务使用时有两种方法替换主题：</div>
+<div class='row nod'><span class='ln'>8</span>/// 第一种：有独立设计风格的app，明确知道哪些色值用到，哪些设置没用到，有自己设计规范，则可单独配置色值。</div>
+<div class='row nod'><span class='ln'>9</span>/// 第二中：直接接入TDesign，配置所有色值组，此时不需再自定义key-value，可以直接使用。</div>
+<div class='row nod'><span class='ln'>10</span>///</div>
+<div class='row nod'><span class='ln'>11</span>/// 如果业务需要扩展，可以按一下方式定义自己的ColorData，只要key在主题中能找到对应颜色即可</div>
+<div class='row nod'><span class='ln'>12</span>/// TDesign主题包含的颜色，这是一个大而全的色值。业务可以选择自己自己需要的色值进行二次封装，方便使用。</div>
+<div class='row nod'><span class='ln'>13</span>/// 不过有的色值是内部使用的，必传，否则可能显示异常。</div>
+<div class='row nod'><span class='ln'>14</span>extension TColors on TThemeData {</div>
+<div class='row nod'><span class='ln'>15</span>  /// 功能色组----------------------------------------------------</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>  ///#F2F3FF</div>
+<div class='row cov'><span class='ln'>18</span>  Color get brandColor1 =&gt; colorMap[&#x27;brandColor1&#x27;] ?? const Color(0xFFF2F3FF);</div>
+<div class='row nod'><span class='ln'>19</span></div>
+<div class='row nod'><span class='ln'>20</span>  ///#D9E1FF</div>
+<div class='row unc'><span class='ln'>21</span>▶   Color get brandColor2 =&gt; colorMap[&#x27;brandColor2&#x27;] ?? const Color(0xFFD9E1FF);</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>  ///#B5C7FF</div>
+<div class='row cov'><span class='ln'>24</span>  Color get brandColor3 =&gt; colorMap[&#x27;brandColor3&#x27;] ?? const Color(0xFFB5C7FF);</div>
+<div class='row nod'><span class='ln'>25</span></div>
+<div class='row nod'><span class='ln'>26</span>  ///#8EABFF</div>
+<div class='row unc'><span class='ln'>27</span>▶   Color get brandColor4 =&gt; colorMap[&#x27;brandColor4&#x27;] ?? const Color(0xFF8EABFF);</div>
+<div class='row nod'><span class='ln'>28</span></div>
+<div class='row nod'><span class='ln'>29</span>  ///#618DFF</div>
+<div class='row unc'><span class='ln'>30</span>▶   Color get brandColor5 =&gt; colorMap[&#x27;brandColor5&#x27;] ?? const Color(0xFF618DFF);</div>
+<div class='row nod'><span class='ln'>31</span></div>
+<div class='row nod'><span class='ln'>32</span>  ///#366EF4</div>
+<div class='row unc'><span class='ln'>33</span>▶   Color get brandColor6 =&gt; colorMap[&#x27;brandColor6&#x27;] ?? const Color(0xFF366EF4);</div>
+<div class='row nod'><span class='ln'>34</span></div>
+<div class='row nod'><span class='ln'>35</span>  ///#0052D9</div>
+<div class='row unc'><span class='ln'>36</span>▶   Color get brandColor7 =&gt; colorMap[&#x27;brandColor7&#x27;] ?? const Color(0xFF0052D9);</div>
+<div class='row nod'><span class='ln'>37</span></div>
+<div class='row nod'><span class='ln'>38</span>  ///#003CAB</div>
+<div class='row cov'><span class='ln'>39</span>  Color get brandColor8 =&gt; colorMap[&#x27;brandColor8&#x27;] ?? const Color(0xFF003CAB);</div>
+<div class='row nod'><span class='ln'>40</span></div>
+<div class='row nod'><span class='ln'>41</span>  ///#002A7C</div>
+<div class='row unc'><span class='ln'>42</span>▶   Color get brandColor9 =&gt; colorMap[&#x27;brandColor9&#x27;] ?? const Color(0xFF002A7C);</div>
+<div class='row nod'><span class='ln'>43</span></div>
+<div class='row nod'><span class='ln'>44</span>  ///#001A57</div>
+<div class='row unc'><span class='ln'>45</span>▶   Color get brandColor10 =&gt; colorMap[&#x27;brandColor10&#x27;] ?? const Color(0xFF001A57);</div>
+<div class='row nod'><span class='ln'>46</span></div>
+<div class='row nod'><span class='ln'>47</span>  ///#F2F3FF</div>
+<div class='row cov'><span class='ln'>48</span>  Color get brandLightColor =&gt; colorMap[&#x27;brandLightColor&#x27;] ?? brandColor1;</div>
+<div class='row nod'><span class='ln'>49</span></div>
+<div class='row nod'><span class='ln'>50</span>  ///#D9E1FF</div>
+<div class='row cov'><span class='ln'>51</span>  Color get brandFocusColor =&gt; colorMap[&#x27;brandFocusColor&#x27;] ?? brandColor2;</div>
+<div class='row nod'><span class='ln'>52</span></div>
+<div class='row nod'><span class='ln'>53</span>  ///#B5C7FF</div>
+<div class='row cov'><span class='ln'>54</span>  Color get brandDisabledColor =&gt; colorMap[&#x27;brandDisabledColor&#x27;] ?? brandColor3;</div>
+<div class='row nod'><span class='ln'>55</span></div>
+<div class='row nod'><span class='ln'>56</span>  ///#366EF4</div>
+<div class='row cov'><span class='ln'>57</span>  Color get brandHoverColor =&gt; colorMap[&#x27;brandHoverColor&#x27;] ?? brandColor6;</div>
+<div class='row nod'><span class='ln'>58</span></div>
+<div class='row nod'><span class='ln'>59</span>  ///#0052D9</div>
+<div class='row cov'><span class='ln'>60</span>  Color get brandNormalColor =&gt; colorMap[&#x27;brandNormalColor&#x27;] ?? brandColor7;</div>
+<div class='row nod'><span class='ln'>61</span></div>
+<div class='row nod'><span class='ln'>62</span>  ///#003CAB</div>
+<div class='row cov'><span class='ln'>63</span>  Color get brandClickColor =&gt; colorMap[&#x27;brandClickColor&#x27;] ?? brandColor8;</div>
+<div class='row nod'><span class='ln'>64</span></div>
+<div class='row nod'><span class='ln'>65</span>  /// 错误色组----------------------------------------------------</div>
+<div class='row nod'><span class='ln'>66</span></div>
+<div class='row nod'><span class='ln'>67</span>  ///#FFF0ED</div>
+<div class='row unc'><span class='ln'>68</span>▶   Color get errorColor1 =&gt; colorMap[&#x27;errorColor1&#x27;] ?? const Color(0xFFFFF0ED);</div>
+<div class='row nod'><span class='ln'>69</span></div>
+<div class='row nod'><span class='ln'>70</span>  ///#FFD8D2</div>
+<div class='row unc'><span class='ln'>71</span>▶   Color get errorColor2 =&gt; colorMap[&#x27;errorColor2&#x27;] ?? const Color(0xFFFFD8D2);</div>
+<div class='row nod'><span class='ln'>72</span></div>
+<div class='row nod'><span class='ln'>73</span>  ///#FFB9B0</div>
+<div class='row unc'><span class='ln'>74</span>▶   Color get errorColor3 =&gt; colorMap[&#x27;errorColor3&#x27;] ?? const Color(0xFFFFB9B0);</div>
+<div class='row nod'><span class='ln'>75</span></div>
+<div class='row nod'><span class='ln'>76</span>  ///#FF9285</div>
+<div class='row unc'><span class='ln'>77</span>▶   Color get errorColor4 =&gt; colorMap[&#x27;errorColor4&#x27;] ?? const Color(0xFFFF9285);</div>
+<div class='row nod'><span class='ln'>78</span></div>
+<div class='row nod'><span class='ln'>79</span>  ///#F6685D</div>
+<div class='row unc'><span class='ln'>80</span>▶   Color get errorColor5 =&gt; colorMap[&#x27;errorColor5&#x27;] ?? const Color(0xFFF6685D);</div>
+<div class='row nod'><span class='ln'>81</span></div>
+<div class='row nod'><span class='ln'>82</span>  ///#D54941</div>
+<div class='row cov'><span class='ln'>83</span>  Color get errorColor6 =&gt; colorMap[&#x27;errorColor6&#x27;] ?? const Color(0xFFD54941);</div>
+<div class='row nod'><span class='ln'>84</span></div>
+<div class='row nod'><span class='ln'>85</span>  ///#AD352F</div>
+<div class='row unc'><span class='ln'>86</span>▶   Color get errorColor7 =&gt; colorMap[&#x27;errorColor7&#x27;] ?? const Color(0xFFAD352F);</div>
+<div class='row nod'><span class='ln'>87</span></div>
+<div class='row nod'><span class='ln'>88</span>  ///#881F1C</div>
+<div class='row unc'><span class='ln'>89</span>▶   Color get errorColor8 =&gt; colorMap[&#x27;errorColor8&#x27;] ?? const Color(0xFF881F1C);</div>
+<div class='row nod'><span class='ln'>90</span></div>
+<div class='row nod'><span class='ln'>91</span>  ///#68070A</div>
+<div class='row unc'><span class='ln'>92</span>▶   Color get errorColor9 =&gt; colorMap[&#x27;errorColor9&#x27;] ?? const Color(0xFF68070A);</div>
+<div class='row nod'><span class='ln'>93</span></div>
+<div class='row nod'><span class='ln'>94</span>  ///#490002</div>
+<div class='row unc'><span class='ln'>95</span>▶   Color get errorColor10 =&gt; colorMap[&#x27;errorColor10&#x27;] ?? const Color(0xFF490002);</div>
+<div class='row nod'><span class='ln'>96</span></div>
+<div class='row nod'><span class='ln'>97</span>  ///#FFF0ED</div>
+<div class='row cov'><span class='ln'>98</span>  Color get errorLightColor =&gt; colorMap[&#x27;errorLightColor&#x27;] ?? errorColor1;</div>
+<div class='row nod'><span class='ln'>99</span></div>
+<div class='row nod'><span class='ln'>100</span>  ///#FFD8D2</div>
+<div class='row unc'><span class='ln'>101</span>▶   Color get errorFocusColor =&gt; colorMap[&#x27;errorFocusColor&#x27;] ?? errorColor2;</div>
+<div class='row nod'><span class='ln'>102</span></div>
+<div class='row nod'><span class='ln'>103</span>  ///#FFB9B0</div>
+<div class='row cov'><span class='ln'>104</span>  Color get errorDisabledColor =&gt; colorMap[&#x27;errorDisabledColor&#x27;] ?? errorColor3;</div>
+<div class='row nod'><span class='ln'>105</span></div>
+<div class='row nod'><span class='ln'>106</span>  ///#F6685D</div>
+<div class='row unc'><span class='ln'>107</span>▶   Color get errorHoverColor =&gt; colorMap[&#x27;errorHoverColor&#x27;] ?? errorColor5;</div>
+<div class='row nod'><span class='ln'>108</span></div>
+<div class='row nod'><span class='ln'>109</span>  ///#D54941</div>
+<div class='row cov'><span class='ln'>110</span>  Color get errorNormalColor =&gt; colorMap[&#x27;errorNormalColor&#x27;] ?? errorColor6;</div>
+<div class='row nod'><span class='ln'>111</span></div>
+<div class='row nod'><span class='ln'>112</span>  ///#AD352F</div>
+<div class='row unc'><span class='ln'>113</span>▶   Color get errorClickColor =&gt; colorMap[&#x27;errorClickColor&#x27;] ?? errorColor7;</div>
+<div class='row nod'><span class='ln'>114</span></div>
+<div class='row nod'><span class='ln'>115</span>  /// 警告色组----------------------------------------------------</div>
+<div class='row nod'><span class='ln'>116</span></div>
+<div class='row nod'><span class='ln'>117</span>  ///#FFF1E9</div>
+<div class='row unc'><span class='ln'>118</span>▶   Color get warningColor1 =&gt; colorMap[&#x27;warningColor1&#x27;] ?? const Color(0xFFFFF1E9);</div>
+<div class='row nod'><span class='ln'>119</span></div>
+<div class='row nod'><span class='ln'>120</span>  ///#FFD9C2</div>
+<div class='row unc'><span class='ln'>121</span>▶   Color get warningColor2 =&gt; colorMap[&#x27;warningColor2&#x27;] ?? const Color(0xFFFFD9C2);</div>
+<div class='row nod'><span class='ln'>122</span></div>
+<div class='row nod'><span class='ln'>123</span>  ///#FFB98C</div>
+<div class='row unc'><span class='ln'>124</span>▶   Color get warningColor3 =&gt; colorMap[&#x27;warningColor3&#x27;] ?? const Color(0xFFFFB98C);</div>
+<div class='row nod'><span class='ln'>125</span></div>
+<div class='row nod'><span class='ln'>126</span>  ///#FA9550</div>
+<div class='row unc'><span class='ln'>127</span>▶   Color get warningColor4 =&gt; colorMap[&#x27;warningColor4&#x27;] ?? const Color(0xFFFA9550);</div>
+<div class='row nod'><span class='ln'>128</span></div>
+<div class='row nod'><span class='ln'>129</span>  ///#E37318</div>
+<div class='row cov'><span class='ln'>130</span>  Color get warningColor5 =&gt; colorMap[&#x27;warningColor5&#x27;] ?? const Color(0xFFE37318);</div>
+<div class='row nod'><span class='ln'>131</span></div>
+<div class='row nod'><span class='ln'>132</span>  ///#BE5A00</div>
+<div class='row unc'><span class='ln'>133</span>▶   Color get warningColor6 =&gt; colorMap[&#x27;warningColor6&#x27;] ?? const Color(0xFFBE5A00);</div>
+<div class='row nod'><span class='ln'>134</span></div>
+<div class='row nod'><span class='ln'>135</span>  ///#954500</div>
+<div class='row unc'><span class='ln'>136</span>▶   Color get warningColor7 =&gt; colorMap[&#x27;warningColor7&#x27;] ?? const Color(0xFF954500);</div>
+<div class='row nod'><span class='ln'>137</span></div>
+<div class='row nod'><span class='ln'>138</span>  ///#713300</div>
+<div class='row unc'><span class='ln'>139</span>▶   Color get warningColor8 =&gt; colorMap[&#x27;warningColor8&#x27;] ?? const Color(0xFF713300);</div>
+<div class='row nod'><span class='ln'>140</span></div>
+<div class='row nod'><span class='ln'>141</span>  ///#532300</div>
+<div class='row unc'><span class='ln'>142</span>▶   Color get warningColor9 =&gt; colorMap[&#x27;warningColor9&#x27;] ?? const Color(0xFF532300);</div>
+<div class='row nod'><span class='ln'>143</span></div>
+<div class='row nod'><span class='ln'>144</span>  ///#3B1700</div>
+<div class='row unc'><span class='ln'>145</span>▶   Color get warningColor10 =&gt; colorMap[&#x27;warningColor10&#x27;] ?? const Color(0xFF3B1700);</div>
+<div class='row nod'><span class='ln'>146</span></div>
+<div class='row nod'><span class='ln'>147</span>  ///#FFF1E9</div>
+<div class='row cov'><span class='ln'>148</span>  Color get warningLightColor =&gt; colorMap[&#x27;warningLightColor&#x27;] ?? warningColor1;</div>
+<div class='row nod'><span class='ln'>149</span></div>
+<div class='row nod'><span class='ln'>150</span>  ///#FFD9C2</div>
+<div class='row unc'><span class='ln'>151</span>▶   Color get warningFocusColor =&gt; colorMap[&#x27;warningFocusColor&#x27;] ?? warningColor2;</div>
+<div class='row nod'><span class='ln'>152</span></div>
+<div class='row nod'><span class='ln'>153</span>  ///#FFB98C</div>
+<div class='row unc'><span class='ln'>154</span>▶   Color get warningDisabledColor =&gt; colorMap[&#x27;warningDisabledColor&#x27;] ?? warningColor3;</div>
+<div class='row nod'><span class='ln'>155</span></div>
+<div class='row nod'><span class='ln'>156</span>  ///#FA9550</div>
+<div class='row unc'><span class='ln'>157</span>▶   Color get warningHoverColor =&gt; colorMap[&#x27;warningHoverColor&#x27;] ?? warningColor4;</div>
+<div class='row nod'><span class='ln'>158</span></div>
+<div class='row nod'><span class='ln'>159</span>  ///#E37318</div>
+<div class='row cov'><span class='ln'>160</span>  Color get warningNormalColor =&gt; colorMap[&#x27;warningNormalColor&#x27;] ?? warningColor5;</div>
+<div class='row nod'><span class='ln'>161</span></div>
+<div class='row nod'><span class='ln'>162</span>  ///#BE5A00</div>
+<div class='row unc'><span class='ln'>163</span>▶   Color get warningClickColor =&gt; colorMap[&#x27;warningClickColor&#x27;] ?? warningColor6;</div>
+<div class='row nod'><span class='ln'>164</span></div>
+<div class='row nod'><span class='ln'>165</span>  /// 成功色组----------------------------------------------------</div>
+<div class='row nod'><span class='ln'>166</span></div>
+<div class='row nod'><span class='ln'>167</span>  ///#E3F9E9</div>
+<div class='row unc'><span class='ln'>168</span>▶   Color get successColor1 =&gt; colorMap[&#x27;successColor1&#x27;] ?? const Color(0xFFE3F9E9);</div>
+<div class='row nod'><span class='ln'>169</span></div>
+<div class='row nod'><span class='ln'>170</span>  ///#C6F3D7</div>
+<div class='row unc'><span class='ln'>171</span>▶   Color get successColor2 =&gt; colorMap[&#x27;successColor2&#x27;] ?? const Color(0xFFC6F3D7);</div>
+<div class='row nod'><span class='ln'>172</span></div>
+<div class='row nod'><span class='ln'>173</span>  ///#92DAB2</div>
+<div class='row unc'><span class='ln'>174</span>▶   Color get successColor3 =&gt; colorMap[&#x27;successColor3&#x27;] ?? const Color(0xFF92DAB2);</div>
+<div class='row nod'><span class='ln'>175</span></div>
+<div class='row nod'><span class='ln'>176</span>  ///#56C08D</div>
+<div class='row unc'><span class='ln'>177</span>▶   Color get successColor4 =&gt; colorMap[&#x27;successColor4&#x27;] ?? const Color(0xFF56C08D);</div>
+<div class='row nod'><span class='ln'>178</span></div>
+<div class='row nod'><span class='ln'>179</span>  ///#2BA471</div>
+<div class='row unc'><span class='ln'>180</span>▶   Color get successColor5 =&gt; colorMap[&#x27;successColor5&#x27;] ?? const Color(0xFF2BA471);</div>
+<div class='row nod'><span class='ln'>181</span></div>
+<div class='row nod'><span class='ln'>182</span>  ///#008858</div>
+<div class='row unc'><span class='ln'>183</span>▶   Color get successColor6 =&gt; colorMap[&#x27;successColor6&#x27;] ?? const Color(0xFF008858);</div>
+<div class='row nod'><span class='ln'>184</span></div>
+<div class='row nod'><span class='ln'>185</span>  ///#006C45</div>
+<div class='row unc'><span class='ln'>186</span>▶   Color get successColor7 =&gt; colorMap[&#x27;successColor7&#x27;] ?? const Color(0xFF006C45);</div>
+<div class='row nod'><span class='ln'>187</span></div>
+<div class='row nod'><span class='ln'>188</span>  ///#005334</div>
+<div class='row unc'><span class='ln'>189</span>▶   Color get successColor8 =&gt; colorMap[&#x27;successColor8&#x27;] ?? const Color(0xFF005334);</div>
+<div class='row nod'><span class='ln'>190</span></div>
+<div class='row nod'><span class='ln'>191</span>  ///#003B23</div>
+<div class='row unc'><span class='ln'>192</span>▶   Color get successColor9 =&gt; colorMap[&#x27;successColor9&#x27;] ?? const Color(0xFF003B23);</div>
+<div class='row nod'><span class='ln'>193</span></div>
+<div class='row nod'><span class='ln'>194</span>  ///#002515</div>
+<div class='row unc'><span class='ln'>195</span>▶   Color get successColor10 =&gt; colorMap[&#x27;successColor10&#x27;] ?? const Color(0xFF002515);</div>
+<div class='row nod'><span class='ln'>196</span></div>
+<div class='row nod'><span class='ln'>197</span>  ///#E3F9E9</div>
+<div class='row cov'><span class='ln'>198</span>  Color get successLightColor =&gt; colorMap[&#x27;successLightColor&#x27;] ?? successColor1;</div>
+<div class='row nod'><span class='ln'>199</span></div>
+<div class='row nod'><span class='ln'>200</span>  ///#C6F3D7</div>
+<div class='row unc'><span class='ln'>201</span>▶   Color get successFocusColor =&gt; colorMap[&#x27;successFocusColor&#x27;] ?? successColor2;</div>
+<div class='row nod'><span class='ln'>202</span></div>
+<div class='row nod'><span class='ln'>203</span>  ///#92DAB2</div>
+<div class='row unc'><span class='ln'>204</span>▶   Color get successDisabledColor =&gt; colorMap[&#x27;successDisabledColor&#x27;] ?? successColor3;</div>
+<div class='row nod'><span class='ln'>205</span></div>
+<div class='row nod'><span class='ln'>206</span>  ///#56C08D</div>
+<div class='row unc'><span class='ln'>207</span>▶   Color get successHoverColor =&gt; colorMap[&#x27;successHoverColor&#x27;] ?? successColor4;</div>
+<div class='row nod'><span class='ln'>208</span></div>
+<div class='row nod'><span class='ln'>209</span>  ///#2BA471</div>
+<div class='row cov'><span class='ln'>210</span>  Color get successNormalColor =&gt; colorMap[&#x27;successNormalColor&#x27;] ?? successColor5;</div>
+<div class='row nod'><span class='ln'>211</span></div>
+<div class='row nod'><span class='ln'>212</span>  ///#008858</div>
+<div class='row unc'><span class='ln'>213</span>▶   Color get successClickColor =&gt; colorMap[&#x27;successClickColor&#x27;] ?? successColor6;</div>
+<div class='row nod'><span class='ln'>214</span></div>
+<div class='row nod'><span class='ln'>215</span>  /// 文字色组----------------------------------------------------</div>
+<div class='row nod'><span class='ln'>216</span></div>
+<div class='row nod'><span class='ln'>217</span>  ///#e6000000</div>
+<div class='row cov'><span class='ln'>218</span>  Color get fontGyColor1 =&gt; colorMap[&#x27;fontGyColor1&#x27;] ?? const Color(0xE6000000);</div>
+<div class='row nod'><span class='ln'>219</span></div>
+<div class='row nod'><span class='ln'>220</span>  ///#99000000</div>
+<div class='row cov'><span class='ln'>221</span>  Color get fontGyColor2 =&gt; colorMap[&#x27;fontGyColor2&#x27;] ?? const Color(0x99000000);</div>
+<div class='row nod'><span class='ln'>222</span></div>
+<div class='row nod'><span class='ln'>223</span>  ///#66000000</div>
+<div class='row cov'><span class='ln'>224</span>  Color get fontGyColor3 =&gt; colorMap[&#x27;fontGyColor3&#x27;] ?? const Color(0x66000000);</div>
+<div class='row nod'><span class='ln'>225</span></div>
+<div class='row nod'><span class='ln'>226</span>  ///#42000000</div>
+<div class='row cov'><span class='ln'>227</span>  Color get fontGyColor4 =&gt; colorMap[&#x27;fontGyColor4&#x27;] ?? const Color(0x42000000);</div>
+<div class='row nod'><span class='ln'>228</span></div>
+<div class='row nod'><span class='ln'>229</span>  ///#FFFFFFFF</div>
+<div class='row cov'><span class='ln'>230</span>  Color get fontWhColor1 =&gt; colorMap[&#x27;fontWhColor1&#x27;] ?? const Color(0xFFFFFFFF);</div>
+<div class='row nod'><span class='ln'>231</span></div>
+<div class='row nod'><span class='ln'>232</span>  ///#8CFFFFFF</div>
+<div class='row cov'><span class='ln'>233</span>  Color get fontWhColor2 =&gt; colorMap[&#x27;fontWhColor2&#x27;] ?? const Color(0x8CFFFFFF);</div>
+<div class='row nod'><span class='ln'>234</span></div>
+<div class='row nod'><span class='ln'>235</span>  ///#59FFFFFF</div>
+<div class='row unc'><span class='ln'>236</span>▶   Color get fontWhColor3 =&gt; colorMap[&#x27;fontWhColor3&#x27;] ?? const Color(0x59FFFFFF);</div>
+<div class='row nod'><span class='ln'>237</span></div>
+<div class='row nod'><span class='ln'>238</span>  ///#38FFFFFF</div>
+<div class='row cov'><span class='ln'>239</span>  Color get fontWhColor4 =&gt; colorMap[&#x27;fontWhColor4&#x27;] ?? const Color(0x38FFFFFF);</div>
+<div class='row nod'><span class='ln'>240</span></div>
+<div class='row nod'><span class='ln'>241</span>  /// 中性面板色组----------------------------------------------------</div>
+<div class='row nod'><span class='ln'>242</span></div>
+<div class='row nod'><span class='ln'>243</span>  ///#FFFFFF</div>
+<div class='row cov'><span class='ln'>244</span>  Color get whiteColor1 =&gt; colorMap[&#x27;whiteColor1&#x27;] ?? const Color(0xFFFFFFFF);</div>
+<div class='row nod'><span class='ln'>245</span></div>
+<div class='row nod'><span class='ln'>246</span>  ///#F3F3F3</div>
+<div class='row cov'><span class='ln'>247</span>  Color get grayColor1 =&gt; colorMap[&#x27;grayColor1&#x27;] ?? const Color(0xFFF3F3F3);</div>
+<div class='row nod'><span class='ln'>248</span></div>
+<div class='row nod'><span class='ln'>249</span>  ///#EEEEEE</div>
+<div class='row unc'><span class='ln'>250</span>▶   Color get grayColor2 =&gt; colorMap[&#x27;grayColor2&#x27;] ?? const Color(0xFFEEEEEE);</div>
+<div class='row nod'><span class='ln'>251</span></div>
+<div class='row nod'><span class='ln'>252</span>  ///#E7E7E7</div>
+<div class='row unc'><span class='ln'>253</span>▶   Color get grayColor3 =&gt; colorMap[&#x27;grayColor3&#x27;] ?? const Color(0xFFE7E7E7);</div>
+<div class='row nod'><span class='ln'>254</span></div>
+<div class='row nod'><span class='ln'>255</span>  ///#DCDCDC</div>
+<div class='row cov'><span class='ln'>256</span>  Color get grayColor4 =&gt; colorMap[&#x27;grayColor4&#x27;] ?? const Color(0xFFDCDCDC);</div>
+<div class='row nod'><span class='ln'>257</span></div>
+<div class='row nod'><span class='ln'>258</span>  ///#C5C5C5</div>
+<div class='row unc'><span class='ln'>259</span>▶   Color get grayColor5 =&gt; colorMap[&#x27;grayColor5&#x27;] ?? const Color(0xFFC5C5C5);</div>
+<div class='row nod'><span class='ln'>260</span></div>
+<div class='row nod'><span class='ln'>261</span>  ///#A6A6A6</div>
+<div class='row unc'><span class='ln'>262</span>▶   Color get grayColor6 =&gt; colorMap[&#x27;grayColor6&#x27;] ?? const Color(0xFFA6A6A6);</div>
+<div class='row nod'><span class='ln'>263</span></div>
+<div class='row nod'><span class='ln'>264</span>  ///#8B8B8B</div>
+<div class='row unc'><span class='ln'>265</span>▶   Color get grayColor7 =&gt; colorMap[&#x27;grayColor7&#x27;] ?? const Color(0xFF8B8B8B);</div>
+<div class='row nod'><span class='ln'>266</span></div>
+<div class='row nod'><span class='ln'>267</span>  ///#777777</div>
+<div class='row unc'><span class='ln'>268</span>▶   Color get grayColor8 =&gt; colorMap[&#x27;grayColor8&#x27;] ?? const Color(0xFF777777);</div>
+<div class='row nod'><span class='ln'>269</span></div>
+<div class='row nod'><span class='ln'>270</span>  ///#5E5E5E</div>
+<div class='row cov'><span class='ln'>271</span>  Color get grayColor9 =&gt; colorMap[&#x27;grayColor9&#x27;] ?? const Color(0xFF5E5E5E);</div>
+<div class='row nod'><span class='ln'>272</span></div>
+<div class='row nod'><span class='ln'>273</span>  ///#4B4B4B</div>
+<div class='row unc'><span class='ln'>274</span>▶   Color get grayColor10 =&gt; colorMap[&#x27;grayColor10&#x27;] ?? const Color(0xFF4B4B4B);</div>
+<div class='row nod'><span class='ln'>275</span></div>
+<div class='row nod'><span class='ln'>276</span>  ///#383838</div>
+<div class='row unc'><span class='ln'>277</span>▶   Color get grayColor11 =&gt; colorMap[&#x27;grayColor11&#x27;] ?? const Color(0xFF383838);</div>
+<div class='row nod'><span class='ln'>278</span></div>
+<div class='row nod'><span class='ln'>279</span>  ///#2C2C2C</div>
+<div class='row unc'><span class='ln'>280</span>▶   Color get grayColor12 =&gt; colorMap[&#x27;grayColor12&#x27;] ?? const Color(0xFF2C2C2C);</div>
+<div class='row nod'><span class='ln'>281</span></div>
+<div class='row nod'><span class='ln'>282</span>  ///#242424</div>
+<div class='row cov'><span class='ln'>283</span>  Color get grayColor13 =&gt; colorMap[&#x27;grayColor13&#x27;] ?? const Color(0xFF242424);</div>
+<div class='row nod'><span class='ln'>284</span></div>
+<div class='row nod'><span class='ln'>285</span>  ///#181818</div>
+<div class='row cov'><span class='ln'>286</span>  Color get grayColor14 =&gt; colorMap[&#x27;grayColor14&#x27;] ?? const Color(0xFF181818);</div>
+<div class='row nod'><span class='ln'>287</span></div>
+<div class='row nod'><span class='ln'>288</span>  /// 组件颜色配置----------------------------------------------------</div>
+<div class='row nod'><span class='ln'>289</span></div>
+<div class='row cov'><span class='ln'>290</span>  Color get bgColorPage =&gt; colorMap[&#x27;bgColorPage&#x27;] ?? grayColor2;</div>
+<div class='row nod'><span class='ln'>291</span></div>
+<div class='row cov'><span class='ln'>292</span>  Color get bgColorContainer =&gt; colorMap[&#x27;bgColorContainer&#x27;] ?? whiteColor1;</div>
+<div class='row nod'><span class='ln'>293</span></div>
+<div class='row unc'><span class='ln'>294</span>▶   Color get bgColorContainerSelect =&gt; colorMap[&#x27;bgColorContainerSelect&#x27;] ?? whiteColor1;</div>
+<div class='row nod'><span class='ln'>295</span></div>
+<div class='row cov'><span class='ln'>296</span>  Color get bgColorContainerHover =&gt; colorMap[&#x27;bgColorContainerHover&#x27;] ?? grayColor1;</div>
+<div class='row nod'><span class='ln'>297</span></div>
+<div class='row cov'><span class='ln'>298</span>  Color get bgColorContainerActive =&gt; colorMap[&#x27;bgColorContainerActive&#x27;] ?? grayColor3;</div>
+<div class='row nod'><span class='ln'>299</span></div>
+<div class='row cov'><span class='ln'>300</span>  Color get bgColorSecondaryContainer =&gt; colorMap[&#x27;bgColorSecondaryContainer&#x27;] ?? grayColor1;</div>
+<div class='row nod'><span class='ln'>301</span></div>
+<div class='row unc'><span class='ln'>302</span>▶   Color get bgColorSecondaryContainerHover =&gt;</div>
+<div class='row unc'><span class='ln'>303</span>▶       colorMap[&#x27;bgColorSecondaryContainerHover&#x27;] ?? grayColor2;</div>
+<div class='row nod'><span class='ln'>304</span></div>
+<div class='row cov'><span class='ln'>305</span>  Color get bgColorSecondaryContainerActive =&gt;</div>
+<div class='row cov'><span class='ln'>306</span>      colorMap[&#x27;bgColorSecondaryContainerActive&#x27;] ?? grayColor4;</div>
+<div class='row nod'><span class='ln'>307</span></div>
+<div class='row cov'><span class='ln'>308</span>  Color get bgColorComponent =&gt; colorMap[&#x27;bgColorComponent&#x27;] ?? grayColor3;</div>
+<div class='row nod'><span class='ln'>309</span></div>
+<div class='row unc'><span class='ln'>310</span>▶   Color get bgColorComponentHover =&gt; colorMap[&#x27;bgColorComponentHover&#x27;] ?? grayColor4;</div>
+<div class='row nod'><span class='ln'>311</span></div>
+<div class='row unc'><span class='ln'>312</span>▶   Color get bgColorComponentActive =&gt; colorMap[&#x27;bgColorComponentActive&#x27;] ?? grayColor6;</div>
+<div class='row nod'><span class='ln'>313</span></div>
+<div class='row cov'><span class='ln'>314</span>  Color get bgColorComponentDisabled =&gt; colorMap[&#x27;bgColorComponentDisabled&#x27;] ?? grayColor2;</div>
+<div class='row nod'><span class='ln'>315</span></div>
+<div class='row cov'><span class='ln'>316</span>  Color get componentStrokeColor =&gt; colorMap[&#x27;componentStrokeColor&#x27;] ?? grayColor3;</div>
+<div class='row nod'><span class='ln'>317</span></div>
+<div class='row cov'><span class='ln'>318</span>  Color get componentBorderColor =&gt; colorMap[&#x27;componentBorderColor&#x27;] ?? grayColor4;</div>
+<div class='row nod'><span class='ln'>319</span></div>
+<div class='row nod'><span class='ln'>320</span>  /// 文字颜色配置----------------------------------------------------</div>
+<div class='row nod'><span class='ln'>321</span></div>
+<div class='row cov'><span class='ln'>322</span>  Color get textColorPrimary =&gt; colorMap[&#x27;textColorPrimary&#x27;] ?? fontGyColor1;</div>
+<div class='row nod'><span class='ln'>323</span></div>
+<div class='row cov'><span class='ln'>324</span>  Color get textColorSecondary =&gt; colorMap[&#x27;textColorSecondary&#x27;] ?? fontGyColor2;</div>
+<div class='row nod'><span class='ln'>325</span></div>
+<div class='row cov'><span class='ln'>326</span>  Color get textColorPlaceholder =&gt; colorMap[&#x27;textColorPlaceholder&#x27;] ?? fontGyColor3;</div>
+<div class='row nod'><span class='ln'>327</span></div>
+<div class='row cov'><span class='ln'>328</span>  Color get textDisabledColor =&gt; colorMap[&#x27;textDisabledColor&#x27;] ?? fontGyColor4;</div>
+<div class='row nod'><span class='ln'>329</span></div>
+<div class='row cov'><span class='ln'>330</span>  Color get textColorAnti =&gt; colorMap[&#x27;textColorAnti&#x27;] ?? whiteColor1;</div>
+<div class='row nod'><span class='ln'>331</span></div>
+<div class='row unc'><span class='ln'>332</span>▶   Color get textColorBrand =&gt; colorMap[&#x27;textColorBrand&#x27;] ?? brandNormalColor;</div>
+<div class='row nod'><span class='ln'>333</span></div>
+<div class='row unc'><span class='ln'>334</span>▶   Color get textColorLink =&gt; colorMap[&#x27;textColorLink&#x27;] ?? brandNormalColor;</div>
+<div class='row nod'><span class='ln'>335</span>}</div>
+<div class='row nod'><span class='ln'>336</span></div>
+</pre></body></html>

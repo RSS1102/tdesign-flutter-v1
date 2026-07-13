@@ -13,8 +13,8 @@ class TInsetDivider extends StatelessWidget {
     return SizedBox(
         height: 1,
         child: Divider(
-          color: TTheme.of(context).componentStrokeColor,
-          indent: TTheme.of(context).spacer16,
+          color: context.tTheme.componentStrokeColor,
+          indent: context.tTheme.spacer16,
           endIndent: 0.0,
           height: 1,
           thickness: 0.5,

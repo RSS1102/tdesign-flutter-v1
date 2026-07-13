@@ -1,4 +1,24 @@
 ## API
+
+### TIcon（v1.0 新增）
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| icon | `IconData` | — | 图标数据（位置参数） |
+| size | `double?` | — | 图标尺寸（优于 TIconThemeData） |
+| color | `Color?` | — | 图标颜色（优于 TIconThemeData） |
+| semanticLabel | `String?` | — | 无障碍语义标签 |
+| `TIcon.fromName` | 工厂构造 | — | 通过图标名查找（`allIconsMap[name]`） |
+
+### TIconThemeData（v1.0 新增）
+
+| 字段 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| size | `double?` | — | 图标默认尺寸 |
+| color | `Color?` | — | 图标默认颜色 |
+
+**优先级链**：构造器参数 > `TIconThemeData` > `IconTheme`
+
 ### TIcons
 #### 静态成员
 
@@ -28,7 +48,7 @@
 | alarm_off_filled | - | - | - |
 | align_top | - | - | - |
 | align_vertical | - | - | - |
-| all | - | - | - |
+| allIconsMap | `Map<String, IconData>` | — | 所有图标名 → IconData 映射（替代 0.2.x 的 `all`） |
 | alpha | - | - | - |
 | analytics | - | - | - |
 | analytics_filled | - | - | - |

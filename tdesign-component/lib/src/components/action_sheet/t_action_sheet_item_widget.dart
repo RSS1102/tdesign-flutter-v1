@@ -8,17 +8,25 @@ import '../badge/t_badge.dart';
 import '../text/t_text.dart';
 import 't_action_sheet.dart';
 
+/// 动作面板单个项目组件
+///
+/// 在宫格/分组模式下渲染单个可点击项目，含图标、标签和角标。
 class TActionSheetItemWidget extends StatelessWidget {
   const TActionSheetItemWidget({
     super.key,
     this.item,
     required this.index,
-    this.onSelected,
+    this.onChanged,
   });
 
+  /// 项目数据
   final TActionSheetItem? item;
+
+  /// 项目索引
   final int index;
-  final TActionSheetItemCallback? onSelected;
+
+  /// 选择项目时的回调函数
+  final TActionSheetOnChanged? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +43,7 @@ class TActionSheetItemWidget extends StatelessWidget {
       onTap: item!.disabled
           ? null
           : () {
-              onSelected?.call(item!, index);
+              onChanged?.call(item!, index);
               Navigator.maybePop(context);
             },
       child: Column(
@@ -68,12 +76,12 @@ class TActionSheetItemWidget extends StatelessWidget {
                   ),
               ],
             ),
-            SizedBox(height: TTheme.of(context).spacer8),
+            SizedBox(height: context.tTheme.spacer8),
           ],
           TText(
             item!.label,
-            font: TTheme.of(context).fontBodySmall,
-            textColor: TTheme.of(context).textColorPrimary,
+            font: context.tTheme.fontBodySmall,
+            textColor: context.tTheme.textColorPrimary,
             style: item!.textStyle,
           ),
         ],
@@ -104,11 +112,14 @@ MainAxisAlignment getMainAxisAlignment(TActionSheetAlign align) {
     case TActionSheetAlign.right:
       return MainAxisAlignment.end;
     case TActionSheetAlign.center:
-    default:
       return MainAxisAlignment.center;
   }
 }
 
+/// 构建取消按钮
+///
+/// [showPagination] 是否显示分页（影响上方间距），
+/// [cancelText] 取消按钮文本，[onCancel] 点击回调。
 Widget buildCancelButton(
   BuildContext context,
   bool showPagination,
@@ -118,8 +129,8 @@ Widget buildCancelButton(
   return Padding(
     padding: EdgeInsets.only(
         top: showPagination
-            ? TTheme.of(context).spacer16
-            : TTheme.of(context).spacer8),
+            ? context.tTheme.spacer16
+            : context.tTheme.spacer8),
     child: GestureDetector(
       onTap: () {
         onCancel?.call();
@@ -127,10 +138,10 @@ Widget buildCancelButton(
       },
       child: Container(
         decoration: BoxDecoration(
-          color: TTheme.of(context).bgColorContainer,
+          color: context.tTheme.bgColorContainer,
           border: Border(
             top: BorderSide(
-              color: TTheme.of(context).componentStrokeColor,
+              color: context.tTheme.componentStrokeColor,
               width: 0.5,
             ),
           ),
@@ -139,8 +150,8 @@ Widget buildCancelButton(
         child: Center(
           child: TText(
             cancelText ?? context.resource.cancel,
-            font: TTheme.of(context).fontBodyLarge,
-            textColor: TTheme.of(context).textColorPrimary,
+            font: context.tTheme.fontBodyLarge,
+            textColor: context.tTheme.textColorPrimary,
           ),
         ),
       ),

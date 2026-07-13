@@ -3,25 +3,22 @@ import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
 import 't_cell_inherited.dart';
 
-typedef TCellClick = void Function(TCell cell);
-
+/// 单元格内容对齐方式
 enum TCellAlign { top, middle, bottom }
 
 /// 单元格组件
 class TCell extends StatefulWidget {
   const TCell({
     Key? key,
-    this.align = TCellAlign.middle,
     this.arrow = false,
     this.bordered = true,
-    this.description,
-    this.descriptionWidget,
-    this.hover = true,
+    this.subtitle,
+    this.subtitleWidget,
     this.image,
     this.imageSize,
     this.imageWidget,
-    this.leftIcon,
-    this.leftIconWidget,
+    this.prefix,
+    this.prefixWidget,
     this.note,
     this.noteWidget,
     this.noteMaxWidth,
@@ -29,19 +26,12 @@ class TCell extends StatefulWidget {
     this.required = false,
     this.title,
     this.titleWidget,
-    this.onClick,
+    this.onTap,
     this.onLongPress,
-    this.style,
     this.rightIcon,
     this.rightIconWidget,
-    this.disabled = false,
     this.imageCircle = 50,
-    this.showBottomBorder = false,
-    this.height,
   }) : super(key: key);
-
-  /// 内容的对齐方式，默认居中对齐。可选项：top/middle/bottom
-  final TCellAlign? align;
 
   /// 是否显示右侧箭头
   final bool? arrow;
@@ -50,13 +40,10 @@ class TCell extends StatefulWidget {
   final bool? bordered;
 
   /// 下方内容描述文字
-  final String? description;
+  final String? subtitle;
 
   /// 下方内容描述组件
-  final Widget? descriptionWidget;
-
-  /// 是否开启点击反馈
-  final bool? hover;
+  final Widget? subtitleWidget;
 
   /// 主图
   final ImageProvider? image;
@@ -71,10 +58,10 @@ class TCell extends StatefulWidget {
   final Widget? imageWidget;
 
   /// 左侧图标，出现在单元格标题的左侧
-  final IconData? leftIcon;
+  final IconData? prefix;
 
   /// 左侧图标组件
-  final Widget? leftIconWidget;
+  final Widget? prefixWidget;
 
   /// 和标题同行的说明文字
   final String? note;
@@ -103,23 +90,11 @@ class TCell extends StatefulWidget {
   /// 标题组件
   final Widget? titleWidget;
 
-  /// 点击事件
-  final TCellClick? onClick;
+  /// 点击事件（为 null 时禁用交互）
+  final GestureTapCallback? onTap;
 
   /// 长按事件
-  final TCellClick? onLongPress;
-
-  /// 自定义样式
-  final TCellStyle? style;
-
-  /// 禁用
-  final bool? disabled;
-
-  /// 是否显示下边框（建议TCellGroup组件下false，避免与bordered重叠）
-  final bool? showBottomBorder;
-
-  /// 高度
-  final double? height;
+  final GestureLongPressCallback? onLongPress;
 
   @override
   _TCellState createState() => _TCellState();
@@ -128,22 +103,30 @@ class TCell extends StatefulWidget {
 class _TCellState extends State<TCell> {
   var _status = 'default';
 
-  bool get disabled {
-    return widget.disabled ?? false;
+  /// 从 TCellInherited 或 Theme 子树读取 TCellThemeData
+  TCellThemeData _resolveStyle(BuildContext context) {
+    return TCellInherited.of(context)?.style ??
+        Theme.of(context).extension<TCellThemeData>() ??
+        TCellThemeData.cellStyle(context);
   }
 
+  bool get _disabled => widget.onTap == null;
 
   @override
   Widget build(BuildContext context) {
-    final theme = TTheme.of(context);
-    final style = widget.style ??
-        TCellInherited.of(context)?.style ??
-        TCellStyle.cellStyle(context);
-    final crossAxisAlignment = _getAlign();
+    final theme = context.tTheme;
+    final style = _resolveStyle(context);
+    final align = Theme.of(context).extension<TCellThemeData>()?.align ??
+        TCellAlign.middle;
+    final hover = Theme.of(context).extension<TCellThemeData>()?.hover ?? true;
+    final showBottomBorder =
+        Theme.of(context).extension<TCellThemeData>()?.showBottomBorder ?? false;
+    final height = Theme.of(context).extension<TCellThemeData>()?.height;
+    final crossAxisAlignment = _getAlign(align);
     final color = _status == 'default'
         ? style.backgroundColor
         : style.clickBackgroundColor;
-    final border = (widget.showBottomBorder ?? false)
+    final border = showBottomBorder
         ? Border(
       bottom: BorderSide(
         width: 0.5,
@@ -154,20 +137,20 @@ class _TCellState extends State<TCell> {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        if (widget.onClick != null && !disabled) {
-          widget.onClick!(widget);
-        }
-        TSwipeCellInherited.of(context)?.cellClick();
-      },
-      onLongPress: widget.onLongPress != null && !disabled
-          ? () => widget.onLongPress!(widget)
+      onTap: widget.onTap != null && !_disabled
+          ? () {
+              widget.onTap!();
+              TSwipeCellInherited.of(context)?.cellClick();
+            }
           : null,
-      onTapDown: (_) => _setStatus('active', 0),
-      onTapUp: (_) => _setStatus('default', 100),
-      onTapCancel: () => _setStatus('default', 0),
+      onLongPress: widget.onLongPress != null && !_disabled
+          ? widget.onLongPress
+          : null,
+      onTapDown: (_) => _setStatus('active', 0, hover),
+      onTapUp: (_) => _setStatus('default', 100, hover),
+      onTapCancel: () => _setStatus('default', 0, hover),
       child: Container(
-        height: widget.height,
+        height: height,
         padding: style.padding,
         decoration: BoxDecoration(color: color, border: border),
         child: Row(
@@ -178,17 +161,16 @@ class _TCellState extends State<TCell> {
               child: Row(
                 crossAxisAlignment: crossAxisAlignment,
                 children: [
-                  if (widget.leftIcon != null ||
-                      widget.leftIconWidget != null) ...[
-                    widget.leftIconWidget ??
-                        Icon(widget.leftIcon,
+                  if (widget.prefix != null ||
+                      widget.prefixWidget != null) ...[
+                    widget.prefixWidget ??
+                        Icon(widget.prefix,
                             size: 24, color: style.leftIconColor),
                     SizedBox(width: theme.spacer12),
                   ],
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      // spacing: theme.spacer4,
                       children: [
                         Row(
                           children: [
@@ -203,12 +185,12 @@ class _TCellState extends State<TCell> {
                           ],
                         ),
                         if ((widget.titleWidget != null || widget.title != null) &&
-                            (widget.descriptionWidget != null || widget.description?.isNotEmpty == true))
-                          SizedBox(height: TTheme.of(context).spacer4),
-                        if (widget.descriptionWidget != null)
-                          widget.descriptionWidget!
-                        else if (widget.description?.isNotEmpty ?? false)
-                          TText(widget.description!,
+                            (widget.subtitleWidget != null || widget.subtitle?.isNotEmpty == true))
+                          SizedBox(height: context.tTheme.spacer4),
+                        if (widget.subtitleWidget != null)
+                          widget.subtitleWidget!
+                        else if (widget.subtitle?.isNotEmpty ?? false)
+                          TText(widget.subtitle!,
                               style: style.descriptionStyle),
                       ],
                     ),
@@ -248,21 +230,19 @@ class _TCellState extends State<TCell> {
     );
   }
 
-  CrossAxisAlignment _getAlign() {
-    switch (widget.align) {
+  CrossAxisAlignment _getAlign(TCellAlign align) {
+    switch (align) {
       case TCellAlign.top:
         return CrossAxisAlignment.start;
       case TCellAlign.middle:
         return CrossAxisAlignment.center;
       case TCellAlign.bottom:
         return CrossAxisAlignment.end;
-      default:
-        return CrossAxisAlignment.center;
     }
   }
 
-  void _setStatus(String status, int milliseconds) {
-    if (disabled || !(widget.hover ?? true)) {
+  void _setStatus(String status, int milliseconds, bool hover) {
+    if (_disabled || !hover) {
       return;
     }
     if (milliseconds == 0) {
@@ -297,7 +277,7 @@ class _TCellState extends State<TCell> {
     }
 
     if (imageWidgets.isNotEmpty) {
-      imageWidgets.add(SizedBox(width: TTheme.of(context).spacer12));
+      imageWidgets.add(SizedBox(width: context.tTheme.spacer12));
     }
 
     return imageWidgets;

@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/cascader/t_cascader.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/cascader/t_cascader.dart</h1></header><div class='meta'>行覆盖 <b>100.0%</b> (5/5) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>class TCascader {</div>
+<div class='row nod'><span class='ln'>6</span>  /// 显示多级选择器</div>
+<div class='row cov'><span class='ln'>7</span>  static void showMultiCascader(BuildContext context,</div>
+<div class='row nod'><span class='ln'>8</span>      {String? title,</div>
+<div class='row nod'><span class='ln'>9</span>      required List&lt;Map&gt; data,</div>
+<div class='row nod'><span class='ln'>10</span>      List&lt;int&gt;? initialIndexes,</div>
+<div class='row nod'><span class='ln'>11</span>      String? theme,</div>
+<div class='row nod'><span class='ln'>12</span>      required MultiCascaderCallback onChanged,</div>
+<div class='row nod'><span class='ln'>13</span>      Duration duration = const Duration(milliseconds: 100),</div>
+<div class='row nod'><span class='ln'>14</span>      Color? barrierColor,</div>
+<div class='row nod'><span class='ln'>15</span>      double cascaderHeight = 500,</div>
+<div class='row nod'><span class='ln'>16</span>      String? initialData,</div>
+<div class='row nod'><span class='ln'>17</span>      String? closeText,</div>
+<div class='row nod'><span class='ln'>18</span>      bool isLetterSort = false,</div>
+<div class='row nod'><span class='ln'>19</span>      List&lt;String&gt;? subTitles,</div>
+<div class='row nod'><span class='ln'>20</span>      TCascaderAction? action,</div>
+<div class='row nod'><span class='ln'>21</span>      Function? onClose}) {</div>
+<div class='row cov'><span class='ln'>22</span>    showModalBottomSheet(</div>
+<div class='row nod'><span class='ln'>23</span>        context: context,</div>
+<div class='row nod'><span class='ln'>24</span>        backgroundColor: Colors.transparent,</div>
+<div class='row nod'><span class='ln'>25</span>        barrierColor:</div>
+<div class='row cov'><span class='ln'>26</span>            barrierColor ?? context.tTheme.fontGyColor2.withValues(alpha: 0.6),</div>
+<div class='row cov'><span class='ln'>27</span>        builder: (context) {</div>
+<div class='row cov'><span class='ln'>28</span>          return TMultiCascader(</div>
+<div class='row nod'><span class='ln'>29</span>              title: title,</div>
+<div class='row nod'><span class='ln'>30</span>              onClose: onClose,</div>
+<div class='row nod'><span class='ln'>31</span>              data: data,</div>
+<div class='row nod'><span class='ln'>32</span>              initialIndexes: initialIndexes,</div>
+<div class='row nod'><span class='ln'>33</span>              cascaderHeight: cascaderHeight,</div>
+<div class='row nod'><span class='ln'>34</span>              initialData: initialData,</div>
+<div class='row nod'><span class='ln'>35</span>              onChanged: onChanged,</div>
+<div class='row nod'><span class='ln'>36</span>              closeText: closeText,</div>
+<div class='row nod'><span class='ln'>37</span>              action: action,</div>
+<div class='row nod'><span class='ln'>38</span>              theme: theme,</div>
+<div class='row nod'><span class='ln'>39</span>              isLetterSort: isLetterSort,</div>
+<div class='row nod'><span class='ln'>40</span>              subTitles: subTitles);</div>
+<div class='row nod'><span class='ln'>41</span>        });</div>
+<div class='row nod'><span class='ln'>42</span>  }</div>
+<div class='row nod'><span class='ln'>43</span>}</div>
+<div class='row nod'><span class='ln'>44</span></div>
+</pre></body></html>

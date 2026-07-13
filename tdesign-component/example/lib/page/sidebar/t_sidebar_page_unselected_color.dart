@@ -60,9 +60,9 @@ class TSideBarUnSelectedColorPageState
       pages.add(getAnchorDemo(i));
     }
 
-    list[1].badge = const TBadge(TBadgeType.redPoint);
+    list[1].badge = const TBadge(TBadgeVariant.redPoint);
     list[2].badge = const TBadge(
-      TBadgeType.message,
+      TBadgeVariant.message,
       count: '8',
     );
 
@@ -119,32 +119,34 @@ class TSideBarUnSelectedColorPageState
         Container(
           height: testButtonHeight,
           padding: const EdgeInsets.all(16),
-          child: TButton(
-            text: '更新children',
-            onTap: () {
-              setState(() {
-                var children = list
-                    .map((e) => SideItemProps(
-                        index: e.index,
-                        label: '变更${e.index}',
-                        badge: e.badge,
-                        value: e.value,
-                        icon: e.icon))
-                    .toList();
-                _sideBarController.children = children;
-                setState(() {});
-              });
-            },
+          child: SizedBox(
+            width: double.infinity,
+            child: TButton(
+              child: const Text('更新children'),
+              onPressed: () {
+                setState(() {
+                  var children = list
+                      .map((e) => SideItemProps(
+                          index: e.index,
+                          label: '变更${e.index}',
+                          badge: e.badge,
+                          value: e.value,
+                          icon: e.icon))
+                      .toList();
+                  _sideBarController.children = children;
+                  setState(() {});
+                });
+              },
+            ),
           ),
         ),
         Expanded(
             child: Row(
           children: [
             SizedBox(
-              width: 110,
               child: TSideBar(
                 unSelectedColor: Colors.red,
-                style: TSideBarStyle.normal,
+                style: TSideBarVariant.normal,
                 value: currentValue,
                 controller: _sideBarController,
                 onChanged: onChanged,
@@ -155,7 +157,7 @@ class TSideBarUnSelectedColorPageState
               child: SingleChildScrollView(
                   controller: _demoScroller,
                   child: Container(
-                    color: TTheme.of(context).bgColorContainer,
+                    color: context.tTheme.bgColorContainer,
                     child: Column(
                       children: [
                         ...pages,
@@ -210,10 +212,8 @@ class TSideBarUnSelectedColorPageState
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TImage(
-            assetUrl: 'assets/img/empty.png',
-            type: TImageType.roundedSquare,
-            width: 48,
-            height: 48,
+            src: 'assets/img/empty.png',
+            variant: TImageVariant.roundedSquare,
           ),
           SizedBox(width: 16),
           TText('标题', style: TextStyle(fontSize: 16))

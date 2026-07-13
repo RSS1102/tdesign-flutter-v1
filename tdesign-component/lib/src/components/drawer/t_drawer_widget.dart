@@ -5,7 +5,7 @@ import '../../theme/t_spacers.dart';
 import '../../theme/t_theme.dart';
 import '../cell/t_cell.dart';
 import '../cell/t_cell_group.dart';
-import '../cell/t_cell_style.dart';
+import '../cell/t_cell_theme_data.dart';
 import 't_drawer.dart';
 
 typedef TDrawerItemClickCallback = void Function(int index, TDrawerItem item);
@@ -17,7 +17,7 @@ class TDrawerWidget extends StatelessWidget {
     super.key,
     this.footer,
     this.items,
-    this.contentWidget,
+    this.child,
     this.title,
     this.titleWidget,
     this.onItemClick,
@@ -36,7 +36,7 @@ class TDrawerWidget extends StatelessWidget {
   final List<TDrawerItem>? items;
 
   /// 自定义内容，优先级高于[items]/[footer]/[title]
-  final Widget? contentWidget;
+  final Widget? child;
 
   /// 抽屉的标题
   final String? title;
@@ -51,7 +51,7 @@ class TDrawerWidget extends StatelessWidget {
   final double? width;
 
   /// 列表自定义样式
-  final TCellStyle? style;
+  final TCellThemeData? style;
 
   /// 是否开启点击反馈
   final bool? hover;
@@ -67,12 +67,12 @@ class TDrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var content = contentWidget;
+    var content = child;
     if (content == null) {
       var cellStyle = style;
       if (cellStyle == null) {
-        cellStyle = TCellStyle.cellStyle(context);
-        cellStyle.leftIconColor = TTheme.of(context).brandNormalColor;
+        cellStyle = TCellThemeData.cellStyle(context);
+        cellStyle.leftIconColor = context.tTheme.brandNormalColor;
       }
       var cells = items
           ?.asMap()
@@ -82,10 +82,9 @@ class TDrawerWidget extends StatelessWidget {
               TCell(
                 titleWidget: item.content,
                 title: item.title,
-                leftIconWidget: item.icon,
-                hover: hover,
+                prefixWidget: item.icon,
                 bordered: bordered,
-                onClick: (cell) {
+                onTap: () {
                   if (onItemClick == null) {
                     return;
                   }
@@ -110,7 +109,7 @@ class TDrawerWidget extends StatelessWidget {
           ),
           if (footer != null)
             Container(
-              padding: EdgeInsets.all(TTheme.of(context).spacer16),
+              padding: EdgeInsets.all(context.tTheme.spacer16),
               child: footer,
             ),
         ],
@@ -118,7 +117,7 @@ class TDrawerWidget extends StatelessWidget {
     }
 
     return Container(
-      color: backgroundColor ?? TTheme.of(context).bgColorContainer,
+      color: backgroundColor ?? context.tTheme.bgColorContainer,
       width: width ?? 280,
       height: double.infinity,
       child: content,

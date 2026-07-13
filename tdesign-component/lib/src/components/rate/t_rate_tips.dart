@@ -38,7 +38,7 @@ class TRateTips extends StatelessWidget {
     return Container(
       key: _tipKey,
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorContainer,
+        color: context.tTheme.bgColorContainer,
         boxShadow: const [
           BoxShadow(
             color: Color.fromRGBO(0, 0, 0, 0.12),
@@ -59,9 +59,9 @@ class TRateTips extends StatelessWidget {
             spreadRadius: 0,
           ),
         ],
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusDefault),
+        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),
       ),
-      padding: EdgeInsets.all(TTheme.of(context).spacer4),
+      padding: EdgeInsets.all(context.tTheme.spacer4),
       child: Row(
         children: [
           GestureDetector(
@@ -74,14 +74,14 @@ class TRateTips extends StatelessWidget {
               decoration: BoxDecoration(
                 color:
                     allowHalf == true && index + 0.5 == activeValue && isClick
-                        ? TTheme.of(context).bgColorComponent
+                        ? context.tTheme.bgColorComponent
                         : Colors.transparent,
                 borderRadius:
-                    BorderRadius.circular(TTheme.of(context).radiusSmall),
+                    BorderRadius.circular(context.tTheme.radiusSmall),
               ),
               padding: EdgeInsets.only(
-                  left: TTheme.of(context).spacer4,
-                  right: TTheme.of(context).spacer4),
+                  left: context.tTheme.spacer4,
+                  right: context.tTheme.spacer4),
               child: Column(
                 children: [
                   Row(
@@ -119,8 +119,8 @@ class TRateTips extends StatelessWidget {
                       allowHalf == true
                           ? (isClick ? '${index + 0.5}' : '${activeValue}')
                           : '${index + 1}',
-                      font: TTheme.of(context).fontBodySmall,
-                      textColor: TTheme.of(context).textColorPrimary,
+                      font: context.tTheme.fontBodySmall,
+                      textColor: context.tTheme.textColorPrimary,
                     ),
                   ),
                 ],
@@ -128,7 +128,7 @@ class TRateTips extends StatelessWidget {
             ),
           ),
           if (allowHalf == true && isClick)
-            SizedBox(width: TTheme.of(context).spacer4),
+            SizedBox(width: context.tTheme.spacer4),
           if (allowHalf == true && isClick)
             GestureDetector(
               onTap: () {
@@ -140,13 +140,13 @@ class TRateTips extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: index + 1 != activeValue
                       ? Colors.transparent
-                      : TTheme.of(context).bgColorComponent,
+                      : context.tTheme.bgColorComponent,
                   borderRadius:
-                      BorderRadius.circular(TTheme.of(context).radiusSmall),
+                      BorderRadius.circular(context.tTheme.radiusSmall),
                 ),
                 padding: EdgeInsets.only(
-                    left: TTheme.of(context).spacer4,
-                    right: TTheme.of(context).spacer4),
+                    left: context.tTheme.spacer4,
+                    right: context.tTheme.spacer4),
                 child: Column(
                   children: [
                     Icon(
@@ -157,8 +157,8 @@ class TRateTips extends StatelessWidget {
                     Center(
                       child: TText(
                         '${index + 1}',
-                        font: TTheme.of(context).fontBodySmall,
-                        textColor: TTheme.of(context).textColorPrimary,
+                        font: context.tTheme.fontBodySmall,
+                        textColor: context.tTheme.textColorPrimary,
                       ),
                     ),
                   ],

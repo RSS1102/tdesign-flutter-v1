@@ -230,3 +230,22 @@
 | api | 外部 API 主动触发的显隐变化，如 `TPopupHandle.close` 或打开事件。 |
 | systemBack | 系统返回键或系统路由返回触发的关闭。 |
 | custom | 无框架预设动作语义的自定义关闭，如 `headerBuilder` 内调用 `close`。 |
+
+
+### TPopupThemeData
+
+#### 简介
+TPopup 组件级 ThemeExtension，控制子树的默认浮层样式。Material 对照：[PopupRoute] + [Navigator]。通过 Theme 子树注入，实例 [TPopupOptions] 的对应字段优先于 Theme Extension。
+
+#### 默认构造方法
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| barrierColor | Color? | - | 蒙层颜色（对应 TPopupOptions.overlayColor 的默认值） |
+| barrierOpacity | double? | - | 蒙层透明度系数（对应 TPopupOptions.overlayOpacity 的默认值） |
+| transitionDuration | Duration? | - | 打开/关闭动画时长（对应 TPopupOptions.animationDuration 的默认值；对应 Material ModalRoute.transitionDuration） |
+| panelRadius | double? | - | 内容区圆角（对应 TPopupOptions.radius 的默认值） |
+| panelBackgroundColor | Color? | - | 内容区背景色（对应 TPopupOptions.backgroundColor 的默认值） |
+| useSafeArea | bool? | - | 是否避让系统安全区（对应 TPopupOptions.useSafeArea 的默认值） |
+| cancelText | String? | - | bottom 头部取消文案（TDesign 扩展） |
+| confirmText | String? | - | bottom 头部确认文案（TDesign 扩展） |

@@ -4,7 +4,7 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| defaultValue | List<dynamic> | const [] | 初始值，对应options中的value值 |
+| value | List<dynamic> | const [] | 初始值，对应options中的value值 |
 | height | double | 336 | 高度 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | multiple | bool | false | 支持多选 |

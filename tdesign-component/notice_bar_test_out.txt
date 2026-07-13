@@ -1,0 +1,102 @@
+﻿
+00:00 +0: loading E:/tdesign-flutter-v1/tdesign-component/test/components/notice_bar/t_notice_bar_test.dart                                                                                            
+00:01 +0: loading E:/tdesign-flutter-v1/tdesign-component/test/components/notice_bar/t_notice_bar_test.dart                                                                                            
+00:02 +0: loading E:/tdesign-flutter-v1/tdesign-component/test/components/notice_bar/t_notice_bar_test.dart                                                                                            
+00:02 +0: TNoticeBar 基础渲染 字符串内容渲染                                                                                                                                                                      
+00:03 +0: TNoticeBar 基础渲染 字符串内容渲染                                                                                                                                                                      
+00:03 +1: TNoticeBar 基础渲染 字符串内容渲染                                                                                                                                                                      
+00:03 +1: TNoticeBar 基础渲染 List<String> 内容渲染第一条                                                                                                                                                         
+00:03 +2: TNoticeBar 基础渲染 List<String> 内容渲染第一条                                                                                                                                                         
+00:03 +2: TNoticeBar 基础渲染 null 内容渲染空容器                                                                                                                                                                 
+00:03 +3: TNoticeBar 基础渲染 null 内容渲染空容器                                                                                                                                                                 
+00:03 +3: TNoticeBar variant 四档 variant: info（默认）                                                                                                                                                      
+00:03 +4: TNoticeBar variant 四档 variant: info（默认）                                                                                                                                                      
+00:03 +4: TNoticeBar variant 四档 variant: success                                                                                                                                                       
+00:03 +5: TNoticeBar variant 四档 variant: success                                                                                                                                                       
+00:03 +5: TNoticeBar variant 四档 variant: warning                                                                                                                                                       
+00:04 +5: TNoticeBar variant 四档 variant: warning                                                                                                                                                       
+00:04 +6: TNoticeBar variant 四档 variant: warning                                                                                                                                                       
+00:04 +6: TNoticeBar variant 四档 variant: error                                                                                                                                                         
+00:04 +7: TNoticeBar variant 四档 variant: error                                                                                                                                                         
+00:04 +7: TNoticeBar variant 四档 variant 全量验证均可渲染                                                                                                                                                       
+00:04 +8: TNoticeBar variant 四档 variant 全量验证均可渲染                                                                                                                                                       
+00:04 +8: TNoticeBar 图标与自定义内容 prefixIcon 渲染左侧图标                                                                                                                                                        
+00:04 +9: TNoticeBar 图标与自定义内容 prefixIcon 渲染左侧图标                                                                                                                                                        
+00:04 +9: TNoticeBar 图标与自定义内容 suffixIcon 渲染右侧图标                                                                                                                                                        
+00:04 +10: TNoticeBar 图标与自定义内容 suffixIcon 渲染右侧图标                                                                                                                                                       
+00:04 +10: TNoticeBar 图标与自定义内容 left 自定义 widget 优先于 prefixIcon                                                                                                                                          
+00:04 +11: TNoticeBar 图标与自定义内容 left 自定义 widget 优先于 prefixIcon                                                                                                                                          
+00:04 +11: TNoticeBar 图标与自定义内容 right 自定义 widget 优先于 suffixIcon                                                                                                                                         
+00:04 +12: TNoticeBar 图标与自定义内容 right 自定义 widget 优先于 suffixIcon                                                                                                                                         
+00:04 +12: TNoticeBar 图标与自定义内容 同时设置 left 和 right 自定义 widget                                                                                                                                            
+00:04 +13: TNoticeBar 图标与自定义内容 同时设置 left 和 right 自定义 widget                                                                                                                                            
+00:04 +13: TNoticeBar marquee 滚动 marquee=true 水平方向启用 SingleChildScrollView                                                                                                                             
+00:04 +14: TNoticeBar marquee 滚动 marquee=true 水平方向启用 SingleChildScrollView                                                                                                                             
+00:04 +14: TNoticeBar marquee 滚动 marquee=false（默认）不创建滚动视图                                                                                                                                              
+00:04 +15: TNoticeBar marquee 滚动 marquee=false（默认）不创建滚动视图                                                                                                                                              
+00:04 +15: TNoticeBar marquee 滚动 marquee=true 垂直方向渲染多条内容                                                                                                                                               
+00:04 +16: TNoticeBar marquee 滚动 marquee=true 垂直方向渲染多条内容                                                                                                                                               
+00:04 +16: TNoticeBar marquee 滚动 marquee=true 且 content 为 List 时垂直滚动渲染全部行                                                                                                                              
+00:04 +17: TNoticeBar marquee 滚动 marquee=true 且 content 为 List 时垂直滚动渲染全部行                                                                                                                              
+00:04 +17: TNoticeBar onPressed 回调 点击内容区域触发 onPressed                                                                                                                                                  
+00:04 +18: TNoticeBar onPressed 回调 点击内容区域触发 onPressed                                                                                                                                                  
+00:04 +18: TNoticeBar onPressed 回调 点击 prefixIcon 触发 onPressed                                                                                                                                          
+00:04 +19: TNoticeBar onPressed 回调 点击 prefixIcon 触发 onPressed                                                                                                                                          
+00:04 +19: TNoticeBar onPressed 回调 点击 suffixIcon 触发 onPressed                                                                                                                                          
+00:04 +20: TNoticeBar onPressed 回调 点击 suffixIcon 触发 onPressed                                                                                                                                          
+00:04 +20: TNoticeBar Theme 注入 TNoticeBarThemeData.backgroundColor 覆盖背景色                                                                                                                               
+00:04 +20: TNoticeBar Theme 注入 TNoticeBarThemeData.backgroundColor 覆盖背景色                                                                                                                               
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: MaterialColor:<MaterialColor(primary value: Color(alpha: 1.0000, red: 1.0000, green:
+0.5961, blue: 0.0000, colorSpace: ColorSpace.sRGB))>
+  Actual: Color:<Color(alpha: 1.0000, red: 0.9490, green: 0.9529, blue: 1.0000, colorSpace:
+ColorSpace.sRGB)>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure>.<anonymous closure> (file:///E:/tdesign-flutter-v1/tdesign-component/test/components/notice_bar/t_notice_bar_test.dart:246:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///E:/tdesign-flutter-v1/tdesign-component/test/components/notice_bar/t_notice_bar_test.dart line 246
+The test description was:
+  TNoticeBarThemeData.backgroundColor 覆盖背景色
+════════════════════════════════════════════════════════════════════════════════════════════════════
+
+00:04 +20 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.backgroundColor 覆盖背景色 [E]                                                                                                                        
+  Test failed. See exception logs above.
+  The test description was: TNoticeBarThemeData.backgroundColor 覆盖背景色
+  
+
+To run this test again: C:\tools\flutter\bin\cache\dart-sdk\bin\dart.exe test E:/tdesign-flutter-v1/tdesign-component/test/components/notice_bar/t_notice_bar_test.dart -p vm --plain-name "TNoticeBar Theme 注入 TNoticeBarThemeData.backgroundColor 覆盖背景色"
+
+00:04 +20 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.textStyle 覆盖文字样式                                                                                                                                 
+00:05 +20 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.textStyle 覆盖文字样式                                                                                                                                 
+00:05 +21 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.textStyle 覆盖文字样式                                                                                                                                 
+00:05 +21 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.padding 覆盖内边距                                                                                                                                    
+00:05 +22 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.padding 覆盖内边距                                                                                                                                    
+00:05 +22 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.height 覆盖文字高度                                                                                                                                    
+00:05 +23 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.height 覆盖文字高度                                                                                                                                    
+00:05 +23 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.merge 正确合并                                                                                                                                       
+00:05 +24 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.merge 正确合并                                                                                                                                       
+00:05 +24 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.copyWith 正确合并                                                                                                                                    
+00:05 +25 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.copyWith 正确合并                                                                                                                                    
+00:05 +25 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.lerp 插值正确                                                                                                                                        
+00:05 +26 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.lerp 插值正确                                                                                                                                        
+00:05 +26 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.resolve 根据 variant 解析颜色                                                                                                                          
+00:05 +27 -1: TNoticeBar Theme 注入 TNoticeBarThemeData.resolve 根据 variant 解析颜色                                                                                                                          
+00:05 +27 -1: TNoticeBar 边界情况 maxLines 参数影响静态文本行数                                                                                                                                                      
+00:05 +28 -1: TNoticeBar 边界情况 maxLines 参数影响静态文本行数                                                                                                                                                      
+00:05 +28 -1: TNoticeBar 边界情况 direction 默认为 horizontal                                                                                                                                                 
+00:05 +29 -1: TNoticeBar 边界情况 direction 默认为 horizontal                                                                                                                                                 
+00:05 +29 -1: TNoticeBar 边界情况 空字符串内容渲染                                                                                                                                                                 
+00:05 +30 -1: TNoticeBar 边界情况 空字符串内容渲染                                                                                                                                                                 
+00:05 +30 -1: TNoticeBar 边界情况 空 List 内容不崩溃                                                                                                                                                             
+00:05 +31 -1: TNoticeBar 边界情况 空 List 内容不崩溃                                                                                                                                                             
+00:05 +31 -1: Some tests failed.                                                                                                                                                                       

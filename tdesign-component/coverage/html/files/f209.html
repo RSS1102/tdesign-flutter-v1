@@ -1,0 +1,204 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/tabs/t_tab_bar_theme_data.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/tabs/t_tab_bar_theme_data.dart</h1></header><div class='meta'>行覆盖 <b>96.6%</b> (56/58) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:ui&#x27; show lerpDouble;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;../../theme/basic.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>/// TabBar 形态枚举（替代 0.2.x TTabBarOutlineType / TTabOutlineType）</div>
+<div class='row nod'><span class='ln'>8</span>enum TTabBarVariant {</div>
+<div class='row nod'><span class='ln'>9</span>  /// 填充样式</div>
+<div class='row nod'><span class='ln'>10</span>  filled,</div>
+<div class='row nod'><span class='ln'>11</span></div>
+<div class='row nod'><span class='ln'>12</span>  /// 胶囊样式</div>
+<div class='row nod'><span class='ln'>13</span>  capsule,</div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>  /// 卡片</div>
+<div class='row nod'><span class='ln'>16</span>  card,</div>
+<div class='row nod'><span class='ln'>17</span>}</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>/// Tab 尺寸枚举（保留）</div>
+<div class='row nod'><span class='ln'>20</span>enum TTabSize {</div>
+<div class='row nod'><span class='ln'>21</span>  /// 大尺寸</div>
+<div class='row nod'><span class='ln'>22</span>  large,</div>
+<div class='row nod'><span class='ln'>23</span></div>
+<div class='row nod'><span class='ln'>24</span>  /// 小尺寸</div>
+<div class='row nod'><span class='ln'>25</span>  small,</div>
+<div class='row nod'><span class='ln'>26</span>}</div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row nod'><span class='ln'>28</span>/// TabBar 组件 ThemeExtension</div>
+<div class='row nod'><span class='ln'>29</span>///</div>
+<div class='row nod'><span class='ln'>30</span>/// 管理 TTabBar / TTab / TTabBarView 的子树级默认样式。</div>
+<div class='row nod'><span class='ln'>31</span>class TTabBarThemeData extends ThemeExtension&lt;TTabBarThemeData&gt; {</div>
+<div class='row nod'><span class='ln'>32</span>  // ---- TTabBar 级 ----</div>
+<div class='row nod'><span class='ln'>33</span>  final Decoration? decoration;</div>
+<div class='row nod'><span class='ln'>34</span>  final Color? backgroundColor;</div>
+<div class='row nod'><span class='ln'>35</span>  final Color? indicatorColor;</div>
+<div class='row nod'><span class='ln'>36</span>  final double? indicatorHeight;</div>
+<div class='row nod'><span class='ln'>37</span>  final double? indicatorWidth;</div>
+<div class='row nod'><span class='ln'>38</span>  final Color? labelColor;</div>
+<div class='row nod'><span class='ln'>39</span>  final Color? unselectedLabelColor;</div>
+<div class='row nod'><span class='ln'>40</span>  final bool? isScrollable;</div>
+<div class='row nod'><span class='ln'>41</span>  final TextStyle? labelStyle;</div>
+<div class='row nod'><span class='ln'>42</span>  final TextStyle? unselectedLabelStyle;</div>
+<div class='row nod'><span class='ln'>43</span>  final double? height;</div>
+<div class='row nod'><span class='ln'>44</span>  final EdgeInsets? indicatorPadding;</div>
+<div class='row nod'><span class='ln'>45</span>  final EdgeInsetsGeometry? labelPadding;</div>
+<div class='row nod'><span class='ln'>46</span>  final Decoration? indicator;</div>
+<div class='row nod'><span class='ln'>47</span>  final bool? showIndicator;</div>
+<div class='row nod'><span class='ln'>48</span>  final ScrollPhysics? physics;</div>
+<div class='row nod'><span class='ln'>49</span>  final TTabBarVariant? variant;</div>
+<div class='row nod'><span class='ln'>50</span>  final Color? dividerColor;</div>
+<div class='row nod'><span class='ln'>51</span>  final double? dividerHeight;</div>
+<div class='row nod'><span class='ln'>52</span>  final Color? selectedBgColor;</div>
+<div class='row nod'><span class='ln'>53</span>  final Color? unSelectedBgColor;</div>
+<div class='row nod'><span class='ln'>54</span>  final TabAlignment? tabAlignment;</div>
+<div class='row nod'><span class='ln'>55</span></div>
+<div class='row nod'><span class='ln'>56</span>  // ---- TTab 级 ----</div>
+<div class='row nod'><span class='ln'>57</span>  final EdgeInsetsGeometry? iconMargin;</div>
+<div class='row nod'><span class='ln'>58</span>  final EdgeInsetsGeometry? textMargin;</div>
+<div class='row nod'><span class='ln'>59</span>  final double? contentHeight;</div>
+<div class='row nod'><span class='ln'>60</span></div>
+<div class='row nod'><span class='ln'>61</span>  // ---- TTabBarView 级 ----</div>
+<div class='row nod'><span class='ln'>62</span>  final ScrollPhysics? defaultPhysics;</div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row cov'><span class='ln'>64</span>  const TTabBarThemeData({</div>
+<div class='row nod'><span class='ln'>65</span>    this.decoration,</div>
+<div class='row nod'><span class='ln'>66</span>    this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>67</span>    this.indicatorColor,</div>
+<div class='row nod'><span class='ln'>68</span>    this.indicatorHeight,</div>
+<div class='row nod'><span class='ln'>69</span>    this.indicatorWidth,</div>
+<div class='row nod'><span class='ln'>70</span>    this.labelColor,</div>
+<div class='row nod'><span class='ln'>71</span>    this.unselectedLabelColor,</div>
+<div class='row nod'><span class='ln'>72</span>    this.isScrollable,</div>
+<div class='row nod'><span class='ln'>73</span>    this.labelStyle,</div>
+<div class='row nod'><span class='ln'>74</span>    this.unselectedLabelStyle,</div>
+<div class='row nod'><span class='ln'>75</span>    this.height,</div>
+<div class='row nod'><span class='ln'>76</span>    this.indicatorPadding,</div>
+<div class='row nod'><span class='ln'>77</span>    this.labelPadding,</div>
+<div class='row nod'><span class='ln'>78</span>    this.indicator,</div>
+<div class='row nod'><span class='ln'>79</span>    this.showIndicator,</div>
+<div class='row nod'><span class='ln'>80</span>    this.physics,</div>
+<div class='row nod'><span class='ln'>81</span>    this.variant,</div>
+<div class='row nod'><span class='ln'>82</span>    this.dividerColor,</div>
+<div class='row nod'><span class='ln'>83</span>    this.dividerHeight,</div>
+<div class='row nod'><span class='ln'>84</span>    this.selectedBgColor,</div>
+<div class='row nod'><span class='ln'>85</span>    this.unSelectedBgColor,</div>
+<div class='row nod'><span class='ln'>86</span>    this.tabAlignment,</div>
+<div class='row nod'><span class='ln'>87</span>    this.iconMargin,</div>
+<div class='row nod'><span class='ln'>88</span>    this.textMargin,</div>
+<div class='row nod'><span class='ln'>89</span>    this.contentHeight,</div>
+<div class='row nod'><span class='ln'>90</span>    this.defaultPhysics,</div>
+<div class='row nod'><span class='ln'>91</span>  });</div>
+<div class='row nod'><span class='ln'>92</span></div>
+<div class='row cov'><span class='ln'>93</span>  @override</div>
+<div class='row nod'><span class='ln'>94</span>  TTabBarThemeData copyWith({</div>
+<div class='row nod'><span class='ln'>95</span>    Decoration? decoration,</div>
+<div class='row nod'><span class='ln'>96</span>    Color? backgroundColor,</div>
+<div class='row nod'><span class='ln'>97</span>    Color? indicatorColor,</div>
+<div class='row nod'><span class='ln'>98</span>    double? indicatorHeight,</div>
+<div class='row nod'><span class='ln'>99</span>    double? indicatorWidth,</div>
+<div class='row nod'><span class='ln'>100</span>    Color? labelColor,</div>
+<div class='row nod'><span class='ln'>101</span>    Color? unselectedLabelColor,</div>
+<div class='row nod'><span class='ln'>102</span>    bool? isScrollable,</div>
+<div class='row nod'><span class='ln'>103</span>    TextStyle? labelStyle,</div>
+<div class='row nod'><span class='ln'>104</span>    TextStyle? unselectedLabelStyle,</div>
+<div class='row nod'><span class='ln'>105</span>    double? height,</div>
+<div class='row nod'><span class='ln'>106</span>    EdgeInsets? indicatorPadding,</div>
+<div class='row nod'><span class='ln'>107</span>    EdgeInsetsGeometry? labelPadding,</div>
+<div class='row nod'><span class='ln'>108</span>    Decoration? indicator,</div>
+<div class='row nod'><span class='ln'>109</span>    bool? showIndicator,</div>
+<div class='row nod'><span class='ln'>110</span>    ScrollPhysics? physics,</div>
+<div class='row nod'><span class='ln'>111</span>    TTabBarVariant? variant,</div>
+<div class='row nod'><span class='ln'>112</span>    Color? dividerColor,</div>
+<div class='row nod'><span class='ln'>113</span>    double? dividerHeight,</div>
+<div class='row nod'><span class='ln'>114</span>    Color? selectedBgColor,</div>
+<div class='row nod'><span class='ln'>115</span>    Color? unSelectedBgColor,</div>
+<div class='row nod'><span class='ln'>116</span>    TabAlignment? tabAlignment,</div>
+<div class='row nod'><span class='ln'>117</span>    EdgeInsetsGeometry? iconMargin,</div>
+<div class='row nod'><span class='ln'>118</span>    EdgeInsetsGeometry? textMargin,</div>
+<div class='row nod'><span class='ln'>119</span>    double? contentHeight,</div>
+<div class='row nod'><span class='ln'>120</span>    ScrollPhysics? defaultPhysics,</div>
+<div class='row nod'><span class='ln'>121</span>  }) {</div>
+<div class='row cov'><span class='ln'>122</span>    return TTabBarThemeData(</div>
+<div class='row cov'><span class='ln'>123</span>      decoration: decoration ?? this.decoration,</div>
+<div class='row cov'><span class='ln'>124</span>      backgroundColor: backgroundColor ?? this.backgroundColor,</div>
+<div class='row cov'><span class='ln'>125</span>      indicatorColor: indicatorColor ?? this.indicatorColor,</div>
+<div class='row cov'><span class='ln'>126</span>      indicatorHeight: indicatorHeight ?? this.indicatorHeight,</div>
+<div class='row cov'><span class='ln'>127</span>      indicatorWidth: indicatorWidth ?? this.indicatorWidth,</div>
+<div class='row cov'><span class='ln'>128</span>      labelColor: labelColor ?? this.labelColor,</div>
+<div class='row cov'><span class='ln'>129</span>      unselectedLabelColor: unselectedLabelColor ?? this.unselectedLabelColor,</div>
+<div class='row cov'><span class='ln'>130</span>      isScrollable: isScrollable ?? this.isScrollable,</div>
+<div class='row cov'><span class='ln'>131</span>      labelStyle: labelStyle ?? this.labelStyle,</div>
+<div class='row cov'><span class='ln'>132</span>      unselectedLabelStyle: unselectedLabelStyle ?? this.unselectedLabelStyle,</div>
+<div class='row unc'><span class='ln'>133</span>▶       height: height ?? this.height,</div>
+<div class='row cov'><span class='ln'>134</span>      indicatorPadding: indicatorPadding ?? this.indicatorPadding,</div>
+<div class='row cov'><span class='ln'>135</span>      labelPadding: labelPadding ?? this.labelPadding,</div>
+<div class='row cov'><span class='ln'>136</span>      indicator: indicator ?? this.indicator,</div>
+<div class='row cov'><span class='ln'>137</span>      showIndicator: showIndicator ?? this.showIndicator,</div>
+<div class='row cov'><span class='ln'>138</span>      physics: physics ?? this.physics,</div>
+<div class='row unc'><span class='ln'>139</span>▶       variant: variant ?? this.variant,</div>
+<div class='row cov'><span class='ln'>140</span>      dividerColor: dividerColor ?? this.dividerColor,</div>
+<div class='row cov'><span class='ln'>141</span>      dividerHeight: dividerHeight ?? this.dividerHeight,</div>
+<div class='row cov'><span class='ln'>142</span>      selectedBgColor: selectedBgColor ?? this.selectedBgColor,</div>
+<div class='row cov'><span class='ln'>143</span>      unSelectedBgColor: unSelectedBgColor ?? this.unSelectedBgColor,</div>
+<div class='row cov'><span class='ln'>144</span>      tabAlignment: tabAlignment ?? this.tabAlignment,</div>
+<div class='row cov'><span class='ln'>145</span>      iconMargin: iconMargin ?? this.iconMargin,</div>
+<div class='row cov'><span class='ln'>146</span>      textMargin: textMargin ?? this.textMargin,</div>
+<div class='row cov'><span class='ln'>147</span>      contentHeight: contentHeight ?? this.contentHeight,</div>
+<div class='row cov'><span class='ln'>148</span>      defaultPhysics: defaultPhysics ?? this.defaultPhysics,</div>
+<div class='row nod'><span class='ln'>149</span>    );</div>
+<div class='row nod'><span class='ln'>150</span>  }</div>
+<div class='row nod'><span class='ln'>151</span></div>
+<div class='row cov'><span class='ln'>152</span>  @override</div>
+<div class='row nod'><span class='ln'>153</span>  TTabBarThemeData lerp(ThemeExtension&lt;TTabBarThemeData&gt;? other, double t) {</div>
+<div class='row cov'><span class='ln'>154</span>    if (other is! TTabBarThemeData) {</div>
+<div class='row nod'><span class='ln'>155</span>      return this;</div>
+<div class='row nod'><span class='ln'>156</span>    }</div>
+<div class='row cov'><span class='ln'>157</span>    return TTabBarThemeData(</div>
+<div class='row cov'><span class='ln'>158</span>      decoration: t &lt; 0.5 ? decoration : other.decoration,</div>
+<div class='row cov'><span class='ln'>159</span>      backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),</div>
+<div class='row cov'><span class='ln'>160</span>      indicatorColor: Color.lerp(indicatorColor, other.indicatorColor, t),</div>
+<div class='row cov'><span class='ln'>161</span>      indicatorHeight: lerpDouble(indicatorHeight, other.indicatorHeight, t),</div>
+<div class='row cov'><span class='ln'>162</span>      indicatorWidth: lerpDouble(indicatorWidth, other.indicatorWidth, t),</div>
+<div class='row cov'><span class='ln'>163</span>      labelColor: Color.lerp(labelColor, other.labelColor, t),</div>
+<div class='row nod'><span class='ln'>164</span>      unselectedLabelColor:</div>
+<div class='row cov'><span class='ln'>165</span>          Color.lerp(unselectedLabelColor, other.unselectedLabelColor, t),</div>
+<div class='row cov'><span class='ln'>166</span>      isScrollable: t &lt; 0.5 ? isScrollable : other.isScrollable,</div>
+<div class='row cov'><span class='ln'>167</span>      labelStyle: t &lt; 0.5 ? labelStyle : other.labelStyle,</div>
+<div class='row nod'><span class='ln'>168</span>      unselectedLabelStyle:</div>
+<div class='row cov'><span class='ln'>169</span>          t &lt; 0.5 ? unselectedLabelStyle : other.unselectedLabelStyle,</div>
+<div class='row cov'><span class='ln'>170</span>      height: lerpDouble(height, other.height, t),</div>
+<div class='row cov'><span class='ln'>171</span>      indicatorPadding: t &lt; 0.5 ? indicatorPadding : other.indicatorPadding,</div>
+<div class='row cov'><span class='ln'>172</span>      labelPadding: t &lt; 0.5 ? labelPadding : other.labelPadding,</div>
+<div class='row cov'><span class='ln'>173</span>      indicator: t &lt; 0.5 ? indicator : other.indicator,</div>
+<div class='row cov'><span class='ln'>174</span>      showIndicator: t &lt; 0.5 ? showIndicator : other.showIndicator,</div>
+<div class='row cov'><span class='ln'>175</span>      physics: t &lt; 0.5 ? physics : other.physics,</div>
+<div class='row cov'><span class='ln'>176</span>      variant: t &lt; 0.5 ? variant : other.variant,</div>
+<div class='row cov'><span class='ln'>177</span>      dividerColor: Color.lerp(dividerColor, other.dividerColor, t),</div>
+<div class='row cov'><span class='ln'>178</span>      dividerHeight: lerpDouble(dividerHeight, other.dividerHeight, t),</div>
+<div class='row cov'><span class='ln'>179</span>      selectedBgColor: Color.lerp(selectedBgColor, other.selectedBgColor, t),</div>
+<div class='row nod'><span class='ln'>180</span>      unSelectedBgColor:</div>
+<div class='row cov'><span class='ln'>181</span>          Color.lerp(unSelectedBgColor, other.unSelectedBgColor, t),</div>
+<div class='row cov'><span class='ln'>182</span>      tabAlignment: t &lt; 0.5 ? tabAlignment : other.tabAlignment,</div>
+<div class='row cov'><span class='ln'>183</span>      iconMargin: t &lt; 0.5 ? iconMargin : other.iconMargin,</div>
+<div class='row cov'><span class='ln'>184</span>      textMargin: t &lt; 0.5 ? textMargin : other.textMargin,</div>
+<div class='row cov'><span class='ln'>185</span>      contentHeight: lerpDouble(contentHeight, other.contentHeight, t),</div>
+<div class='row cov'><span class='ln'>186</span>      defaultPhysics: t &lt; 0.5 ? defaultPhysics : other.defaultPhysics,</div>
+<div class='row nod'><span class='ln'>187</span>    );</div>
+<div class='row nod'><span class='ln'>188</span>  }</div>
+<div class='row nod'><span class='ln'>189</span>}</div>
+<div class='row nod'><span class='ln'>190</span></div>
+</pre></body></html>

@@ -6,34 +6,52 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../tdesign_flutter.dart';
 
+/// 上传文件媒体类型
 enum TUploadMediaType {
-  image, // 图片
-  video, // 视频
+  /// 图片
+  image,
+
+  /// 视频
+  video,
 }
 
+/// 上传校验错误类型
 enum TUploadValidatorError {
-  overSize, // 超出文件大小
-  overQuantity, // 超出文件数量限制
+  /// 超出文件大小限制
+  overSize,
+
+  /// 超出文件数量限制
+  overQuantity,
 }
 
+/// 上传文件状态
 enum TUploadFileStatus {
-  success, // 成功
-  loading, // 加载中
-  error, // 失败
-  retry, // 重试
+  /// 成功
+  success,
+
+  /// 加载中
+  loading,
+
+  /// 失败
+  error,
+
+  /// 重试
+  retry,
 }
 
-enum TUploadType {
-  add, // 添加
-  remove, // 删除
-  replace, // 替换
+/// 上传操作类型
+enum TUploadAction {
+  /// 添加
+  add,
+
+  /// 删除
+  remove,
+
+  /// 替换
+  replace,
 }
 
-enum TUploadBoxType {
-  roundedSquare, // 圆角方形
-  circle, // 圆形
-}
-
+/// 上传文件数据模型
 class TUploadFile {
   TUploadFile(
       {required this.key,
@@ -47,24 +65,53 @@ class TUploadFile {
       this.errorText = 'Error',
       this.canDelete = true});
 
+  /// 唯一标识
   final int key;
+
+  /// 远程路径
   final String? remotePath;
+
+  /// 本地资源路径
   final String? assetPath;
+
+  /// 本地文件
   final File? file;
+
+  /// 是否可删除
   final bool canDelete;
+
+  /// 上传进度（0-100）
   final int? progress;
+
+  /// 加载中提示文本
   final String loadingText;
+
+  /// 重试按钮文本
   final String retryText;
+
+  /// 错误提示文本
   final String errorText;
+
+  /// 文件状态
   TUploadFileStatus status;
 }
 
+/// 上传错误事件回调
 typedef TUploadErrorEvent = void Function(Object e);
+
+/// 上传点击事件回调
 typedef TUploadClickEvent = void Function(int value);
+
+/// 上传值变更事件回调
 typedef TUploadValueChangedEvent = void Function(
-    List<TUploadFile> files, TUploadType type);
+    List<TUploadFile> files, TUploadAction type);
+
+/// 上传校验事件回调
 typedef TUploadValidatorEvent = void Function(TUploadValidatorError e);
 
+/// 上传组件
+///
+/// 支持图片/视频上传、多选、数量限制、大小限制、替换和删除。
 class TUpload extends StatefulWidget {
   const TUpload({
     Key? key,
@@ -74,15 +121,14 @@ class TUpload extends StatefulWidget {
     this.onCancel,
     this.onError,
     this.onValidate,
-    this.onClick,
+    this.onPressed,
     this.onMaxLimitReached,
     required this.files,
-    this.onChange,
+    this.onChanged,
     this.multiple = false,
     this.width = 80.0,
     this.height = 80.0,
-    this.type = TUploadBoxType.roundedSquare,
-    this.disabled = false,
+    this.type = TUploadVariant.roundedSquare,
     this.enabledReplaceType = false,
     this.wrapSpacing,
     this.wrapRunSpacing,
@@ -115,13 +161,13 @@ class TUpload extends StatefulWidget {
   final TUploadValidatorEvent? onValidate;
 
   /// 监听点击图片位
-  final TUploadClickEvent? onClick;
+  final TUploadClickEvent? onPressed;
 
   /// 监听文件超过最大数量
   final VoidCallback? onMaxLimitReached;
 
   /// 监听添加, 删除和替换media事件
-  final TUploadValueChangedEvent? onChange;
+  final TUploadValueChangedEvent? onChanged;
 
   /// 图片宽度
   final double? width;
@@ -130,13 +176,10 @@ class TUpload extends StatefulWidget {
   final double? height;
 
   /// Box类型
-  final TUploadBoxType type;
+  final TUploadVariant type;
 
   /// 是否启用replace功能
   final bool? enabledReplaceType;
-
-  ///是否禁用
-  final bool? disabled;
 
   /// 多图布局时的 spacing
   final double? wrapSpacing;
@@ -155,6 +198,9 @@ class TUpload extends StatefulWidget {
 }
 
 class _TUploadState extends State<TUpload> {
+  /// A 类禁用约定：onChanged 为 null 时禁用上传操作
+  bool get _isDisabled => widget.onChanged == null;
+
   List<TUploadFile> fileList = [];
 
   bool get canUpload => widget.multiple
@@ -163,9 +209,9 @@ class _TUploadState extends State<TUpload> {
   final ImagePicker _picker = ImagePicker();
 
   // 类型映射
-  final Map<TUploadBoxType, TImageType> _imageTypeMap = {
-    TUploadBoxType.roundedSquare: TImageType.roundedSquare,
-    TUploadBoxType.circle: TImageType.circle,
+  final Map<TUploadVariant, TImageVariant> _imageTypeMap = {
+    TUploadVariant.roundedSquare: TImageVariant.roundedSquare,
+    TUploadVariant.circle: TImageVariant.circle,
   };
 
   @override
@@ -189,7 +235,7 @@ class _TUploadState extends State<TUpload> {
     }
   }
 
-  // 获取相册照片或视频
+  /// 获取相册照片或视频
   Future<List<XFile>> getMediaFromPicker(bool isMultiple) async {
     if (widget.mediaType.isEmpty) {
       return [];
@@ -234,7 +280,7 @@ class _TUploadState extends State<TUpload> {
     return medias;
   }
 
-  // 处理获取到的资源
+  /// 处理获取到的资源，校验后触发 onChanged 回调
   void extractImageList(List<XFile> files) async {
     if (!canUpload || files.isEmpty) {
       return;
@@ -260,12 +306,12 @@ class _TUploadState extends State<TUpload> {
           assetPath: files[i].path));
     }
 
-    if (widget.onChange != null) {
-      widget.onChange!(newFiles, TUploadType.add);
+    if (widget.onChanged != null) {
+      widget.onChanged!(newFiles, TUploadAction.add);
     }
   }
 
-  // 替换资源
+  /// 替换资源
   void replaceMedia(List<XFile> files, TUploadFile oldFile) async {
     if (files.isEmpty || files.length != 1) {
       return;
@@ -283,12 +329,12 @@ class _TUploadState extends State<TUpload> {
     var newFile = TUploadFile(
         key: oldFile.key, file: File(files[0].path), assetPath: files[0].path);
 
-    if (widget.onChange != null) {
-      widget.onChange!([newFile], TUploadType.replace);
+    if (widget.onChanged != null) {
+      widget.onChanged!([newFile], TUploadAction.replace);
     }
   }
 
-  // 校验资源
+  /// 校验资源，返回错误类型（null 表示通过）
   Future<TUploadValidatorError?> validateResources(List<XFile> files,
       [bool? multiple]) async {
     TUploadValidatorError? error;
@@ -319,10 +365,10 @@ class _TUploadState extends State<TUpload> {
     return error;
   }
 
-  // 删除资源
+  /// 删除资源
   void onDelete(TUploadFile file) {
-    if (widget.onChange != null) {
-      widget.onChange!([file], TUploadType.remove);
+    if (widget.onChanged != null) {
+      widget.onChanged!([file], TUploadAction.remove);
     }
   }
 
@@ -332,7 +378,7 @@ class _TUploadState extends State<TUpload> {
     if (canUpload) {
       children.add(
         _buildUploadBox(context, shouldDisplay: canUpload, onTap: () async {
-          if (widget.disabled!) {
+          if (_isDisabled) {
             return;
           }
           if (widget.onUploadTap != null) {
@@ -364,19 +410,19 @@ class _TUploadState extends State<TUpload> {
             child: Container(
               width: widget.width,
               height: widget.height,
-              decoration: widget.type == TUploadBoxType.circle
+              decoration: widget.type == TUploadVariant.circle
                   ? BoxDecoration(
                       shape: BoxShape.circle,
-                      color: TTheme.of(context).bgColorSecondaryContainer,
+                      color: context.tTheme.bgColorSecondaryContainer,
                     )
                   : BoxDecoration(
-                      color: TTheme.of(context).bgColorSecondaryContainer,
+                      color: context.tTheme.bgColorSecondaryContainer,
                       borderRadius: BorderRadius.circular(
-                          TTheme.of(context).radiusDefault)),
+                          context.tTheme.radiusDefault)),
               child: Center(
                   child: Icon(
                 TIcons.add,
-                color: TTheme.of(context).textColorPlaceholder,
+                color: context.tTheme.textColorPlaceholder,
                 size: 28,
               )),
             )));
@@ -385,8 +431,8 @@ class _TUploadState extends State<TUpload> {
   Widget _buildImageBox(BuildContext context, TUploadFile file) {
     return GestureDetector(
       onTap: () async {
-        if (widget.onClick != null) {
-          widget.onClick!(file.key);
+        if (widget.onPressed != null) {
+          widget.onPressed!(file.key);
         }
         // 替换资源
         if (widget.enabledReplaceType ?? false) {
@@ -399,11 +445,9 @@ class _TUploadState extends State<TUpload> {
           TImage(
             key: Key(file.assetPath ?? ''),
             width: widget.width,
-            height: widget.height,
-            imgUrl: file.remotePath,
             imageFile: file.file,
-            assetUrl: file.file == null ? file.assetPath : null,
-            type: _imageTypeMap[widget.type] ?? TImageType.roundedSquare,
+            src: file.remotePath ?? (file.file == null ? file.assetPath : null),
+            variant: _imageTypeMap[widget.type] ?? TImageVariant.roundedSquare,
           ),
           Visibility(
               visible: file.status != TUploadFileStatus.success,
@@ -420,18 +464,18 @@ class _TUploadState extends State<TUpload> {
                     child: Container(
                       width: 20,
                       height: 20,
-                      decoration: widget.type == TUploadBoxType.circle
+                      decoration: widget.type == TUploadVariant.circle
                           ? BoxDecoration(
                               shape: BoxShape.circle,
-                              color: TTheme.of(context).textDisabledColor,
+                              color: context.tTheme.textDisabledColor,
                             )
                           : BoxDecoration(
-                              color: TTheme.of(context).textDisabledColor,
+                              color: context.tTheme.textDisabledColor,
                               borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(
-                                      TTheme.of(context).radiusDefault),
+                                      context.tTheme.radiusDefault),
                                   topRight: Radius.circular(
-                                      TTheme.of(context).radiusDefault))),
+                                      context.tTheme.radiusDefault))),
                       child: const Center(
                           child: Icon(
                         TIcons.close,
@@ -464,15 +508,15 @@ class _TUploadState extends State<TUpload> {
     return Container(
       width: widget.width,
       height: widget.height,
-      decoration: widget.type == TUploadBoxType.circle
+      decoration: widget.type == TUploadVariant.circle
           ? BoxDecoration(
               shape: BoxShape.circle,
-              color: TTheme.of(context).fontGyColor3,
+              color: context.tTheme.fontGyColor3,
             )
           : BoxDecoration(
-              color: TTheme.of(context).fontGyColor3,
+              color: context.tTheme.fontGyColor3,
               borderRadius:
-                  BorderRadius.circular(TTheme.of(context).radiusDefault)),
+                  BorderRadius.circular(context.tTheme.radiusDefault)),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Center(
@@ -481,10 +525,14 @@ class _TUploadState extends State<TUpload> {
             children: [
               Visibility(
                 visible: file.status == TUploadFileStatus.loading,
-                child: const TLoading(
-                  size: TLoadingSize.large,
-                  icon: TLoadingIcon.circle,
-                  iconColor: Colors.white,
+                child: Theme(
+                  data: Theme.of(context).mergeExtension(
+                    const TLoadingThemeData(iconColor: Colors.white),
+                  ),
+                  child: const TLoading(
+                    size: TLoadingSize.large,
+                    icon: TLoadingIcon.circle,
+                  ),
                 ),
               ),
               Visibility(

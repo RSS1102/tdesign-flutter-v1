@@ -12,7 +12,7 @@ enum TSkeletonAnimation {
 }
 
 /// 骨架图风格
-enum TSkeletonTheme {
+enum TSkeletonVariant {
   /// 头像
   avatar,
 
@@ -31,20 +31,20 @@ class TSkeleton extends StatefulWidget {
     Key? key,
     TSkeletonAnimation? animation,
     int delay = 0,
-    TSkeletonTheme theme = TSkeletonTheme.text,
+    TSkeletonVariant variant = TSkeletonVariant.text,
   }) {
     assert(delay >= 0);
 
     var objects = <List<TSkeletonRowColObj>>[];
 
     // 根据风格创建骨架图
-    switch (theme) {
-      case TSkeletonTheme.avatar:
+    switch (variant) {
+      case TSkeletonVariant.avatar:
         objects = const [
           [TSkeletonRowColObj.circle()]
         ];
         break;
-      case TSkeletonTheme.image:
+      case TSkeletonVariant.image:
         objects = const [
           [
             TSkeletonRowColObj.rect(
@@ -55,7 +55,7 @@ class TSkeleton extends StatefulWidget {
           ]
         ];
         break;
-      case TSkeletonTheme.text:
+      case TSkeletonVariant.text:
         objects = const [
           [
             TSkeletonRowColObj.text(flex: 24),
@@ -65,7 +65,7 @@ class TSkeleton extends StatefulWidget {
           [TSkeletonRowColObj.text()],
         ];
         break;
-      case TSkeletonTheme.paragraph:
+      case TSkeletonVariant.paragraph:
         objects = [
           for (int i = 0; i < 3; i++) [const TSkeletonRowColObj.text()],
           const [
@@ -127,7 +127,7 @@ class _TSkeletonState extends State<TSkeleton>
       LinearGradient(
         colors: [
           Colors.transparent,
-          TTheme.of(context).bgColorSecondaryContainerActive,
+          context.tTheme.bgColorSecondaryContainerActive,
           Colors.transparent,
         ],
         // 15 deg

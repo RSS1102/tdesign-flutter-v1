@@ -7,7 +7,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
-import 't_dialog.dart';
 
 /// TDialog手脚架
 class TDialogScaffold extends StatelessWidget {
@@ -44,7 +43,7 @@ class TDialogScaffold extends StatelessWidget {
           width: width ?? 311,
           decoration: BoxDecoration(
             color:
-                backgroundColor ?? TTheme.of(context).bgColorContainer, // 底色
+                backgroundColor ?? context.tTheme.bgColorContainer, // 底色
             borderRadius: BorderRadius.all(Radius.circular(radius)),
           ),
           child: Stack(
@@ -65,7 +64,7 @@ class TDialogScaffold extends StatelessWidget {
                             child: Icon(
                               TIcons.close,
                               size: 22,
-                              color: TTheme.of(context).textColorPlaceholder,
+                              color: context.tTheme.textColorPlaceholder,
                             ),
                           ),
                         ),
@@ -98,7 +97,7 @@ class TDialogTitle extends StatelessWidget {
     // 标题和内容不能同时为空
     return TText(
       title,
-      textColor: titleColor ?? TTheme.of(context).textColorPrimary,
+      textColor: titleColor ?? context.tTheme.textColorPrimary,
       fontWeight: FontWeight.w600,
       font: Font(size: 18, lineHeight: 26),
       textAlign: TextAlign.center,
@@ -125,7 +124,7 @@ class TDialogContent extends StatelessWidget {
     // 标题和内容不能同时为空
     return TText(
       content,
-      textColor: contentColor ?? TTheme.of(context).textColorSecondary,
+      textColor: contentColor ?? context.tTheme.textColorSecondary,
       font: Font(size: 16, lineHeight: 24),
       textAlign: TextAlign.center,
     );
@@ -203,7 +202,7 @@ class TDialogInfoWidget extends StatelessWidget {
                       child: TDialogContent(
                         content: content!,
                         contentColor: contentColor ??
-                            TTheme.of(context).textColorSecondary,
+                            context.tTheme.textColorSecondary,
                       ),
                     ),
                   ),
@@ -242,37 +241,33 @@ class HorizontalNormalButtons extends StatelessWidget {
               buttonTextColor: leftBtn.titleColor,
               buttonTextSize: leftBtn.titleSize,
               buttonStyle: leftBtn.style,
-              buttonType: leftBtn.type,
-              buttonTheme: leftBtn.theme,
+              buttonVariant: leftBtn.type,
+              buttonColorScheme: leftBtn.colorScheme,
               height: leftBtn.height,
               buttonTextFontWeight: leftBtn.fontWeight ?? FontWeight.w600,
               onPressed: () {
-                if (leftBtn.action != null) {
-                  leftBtn.action!();
+                if (leftBtn.onPressed != null) {
+                  leftBtn.onPressed!();
                 } else {
                   Navigator.pop(context);
                 }
               },
             ),
           ),
-          const TDivider(
-            height: 0.5,
-            width: 12,
-            color: Colors.transparent,
-          ),
+          const SizedBox(width: 12),
           Expanded(
             child: TDialogButton(
               buttonText: rightBtn.title,
               buttonTextColor: rightBtn.titleColor,
               buttonTextSize: rightBtn.titleSize,
               buttonStyle: rightBtn.style,
-              buttonType: rightBtn.type,
-              buttonTheme: rightBtn.theme,
+              buttonVariant: rightBtn.type,
+              buttonColorScheme: rightBtn.colorScheme,
               height: rightBtn.height,
               buttonTextFontWeight: rightBtn.fontWeight ?? FontWeight.w600,
               onPressed: () {
-                if (rightBtn.action != null) {
-                  rightBtn.action!();
+                if (rightBtn.onPressed != null) {
+                  rightBtn.onPressed!();
                 } else {
                   Navigator.pop(context);
                 }
@@ -304,7 +299,7 @@ class HorizontalTextButtons extends StatelessWidget {
     // 标题和内容不能同时为空
     return Column(
       children: [
-        const TDivider(height: 0.5),
+        const TDivider(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -314,23 +309,23 @@ class HorizontalTextButtons extends StatelessWidget {
                 buttonTextColor: leftBtn.titleColor,
                 buttonTextSize: leftBtn.titleSize,
                 buttonStyle: leftBtn.style,
-                buttonType: leftBtn.type ?? TButtonType.text,
-                buttonTheme: leftBtn.theme,
+                buttonVariant: leftBtn.type ?? TButtonVariant.text,
+                buttonColorScheme: leftBtn.colorScheme,
                 // fix： The button height does not fill the container.
                 height: 56,
                 buttonTextFontWeight: leftBtn.fontWeight,
                 onPressed: () {
-                  if (leftBtn.action != null) {
-                    leftBtn.action!();
+                  if (leftBtn.onPressed != null) {
+                    leftBtn.onPressed!();
                   } else {
                     Navigator.pop(context);
                   }
                 },
               ),
             ),
-            const TDivider(
-              width: 0.5,
+            const SizedBox(
               height: 56,
+              child: TDivider(layout: TDividerLayout.vertical),
             ),
             Expanded(
               child: TDialogButton(
@@ -338,13 +333,13 @@ class HorizontalTextButtons extends StatelessWidget {
                 buttonTextColor: rightBtn.titleColor,
                 buttonTextSize: rightBtn.titleSize,
                 buttonStyle: rightBtn.style,
-                buttonType: rightBtn.type ?? TButtonType.text,
-                buttonTheme: rightBtn.theme ?? TButtonTheme.primary,
+                buttonVariant: rightBtn.type ?? TButtonVariant.text,
+                buttonColorScheme: rightBtn.colorScheme ?? TButtonColorScheme.primary,
                 height: 56,
                 buttonTextFontWeight: rightBtn.fontWeight ?? FontWeight.w600,
                 onPressed: () {
-                  if (rightBtn.action != null) {
-                    rightBtn.action!();
+                  if (rightBtn.onPressed != null) {
+                    rightBtn.onPressed!();
                   } else {
                     Navigator.pop(context);
                   }
@@ -367,8 +362,8 @@ class TDialogButton extends StatelessWidget {
     this.buttonTextSize,
     this.buttonTextFontWeight = FontWeight.w600,
     this.buttonStyle,
-    this.buttonType,
-    this.buttonTheme,
+    this.buttonVariant,
+    this.buttonColorScheme,
     required this.onPressed,
     this.height = 40.0,
     this.width,
@@ -387,14 +382,14 @@ class TDialogButton extends StatelessWidget {
   /// 按钮文字粗细
   final FontWeight? buttonTextFontWeight;
 
-  /// 按钮样式
-  final TButtonStyle? buttonStyle;
+  /// 按钮样式（P0 逃逸舱）
+  final ButtonStyle? buttonStyle;
 
-  /// 按钮类型
-  final TButtonType? buttonType;
+  /// 按钮变体类型
+  final TButtonVariant? buttonVariant;
 
-  /// 按钮主题
-  final TButtonTheme? buttonTheme;
+  /// 按钮配色方案
+  final TButtonColorScheme? buttonColorScheme;
 
   /// 按钮宽度
   final double? width;
@@ -402,28 +397,37 @@ class TDialogButton extends StatelessWidget {
   /// 按钮高度
   final double? height;
 
-  /// 按钮高度
+  /// 是否通栏
   final bool isBlock;
 
-  /// 点击
+  /// 点击回调
   final Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return TButton(
-      onTap: onPressed,
+    final button = TButton(
+      onPressed: onPressed,
       style: buttonStyle,
-      type: buttonType ?? TButtonType.fill,
-      theme: buttonTheme,
-      text: buttonText,
-      textStyle: TextStyle(
+      variant: buttonVariant ?? TButtonVariant.fill,
+      colorScheme: buttonColorScheme,
+      child: Text(
+        buttonText ?? '',
+        style: TextStyle(
           fontWeight: buttonTextFontWeight,
           color: buttonTextColor,
-          fontSize: buttonTextSize),
-      width: width,
-      height: height,
-      isBlock: isBlock,
-      margin: EdgeInsets.zero,
+          fontSize: buttonTextSize,
+        ),
+      ),
     );
+
+    // 通栏布局或自定义尺寸
+    if (isBlock || width != null || height != null) {
+      return SizedBox(
+        width: isBlock ? double.infinity : width,
+        height: height,
+        child: button,
+      );
+    }
+    return button;
   }
 }

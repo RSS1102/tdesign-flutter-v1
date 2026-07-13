@@ -3,43 +3,18 @@ import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
 import '../../util/context_extension.dart';
 
-///
-/// 搜索框的样式
-///
-enum TSearchStyle {
-  /// 方形
-  square,
-
-  /// 圆形
-  round,
-}
-
-///
-/// 搜索框对齐方式
-///
-enum TSearchAlignment {
-  /// 默认头部对齐
-  left,
-
-  /// 居中
-  center,
-}
-
-typedef TSearchBarEvent = void Function(String value);
 typedef TSearchBarClearEvent = bool? Function(String value);
-typedef TSearchBarCallBack = void Function();
 
 class TSearchBar extends StatefulWidget {
   const TSearchBar({
     Key? key,
-    this.placeHolder,
-    this.style = TSearchStyle.square,
-    this.alignment = TSearchAlignment.left,
-    this.onTextChanged,
+    this.hintText,
+    this.style = TSearchBarVariant.square,
+    this.alignment = TSearchBarAlignment.left,
+    this.onChanged,
     this.onSubmitted,
     this.onEditComplete,
     this.onTapOutside,
-    this.onInputClick,
     this.autoHeight = false,
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     this.autoFocus = false,
@@ -58,13 +33,13 @@ class TSearchBar extends StatefulWidget {
   }) : super(key: key);
 
   /// 预设文案
-  final String? placeHolder;
+  final String? hintText;
 
   /// 样式
-  final TSearchStyle? style;
+  final TSearchBarVariant? style;
 
   /// 对齐方式，居中或这头部对齐
-  final TSearchAlignment? alignment;
+  final TSearchBarAlignment? alignment;
 
   /// 背景颜色
   final Color? backgroundColor;
@@ -91,13 +66,13 @@ class TSearchBar extends StatefulWidget {
   final TextEditingController? controller;
 
   /// 文字改变回调
-  final TSearchBarEvent? onTextChanged;
+  final ValueChanged<String>? onChanged;
 
   /// 提交回调
-  final TSearchBarEvent? onSubmitted;
+  final ValueChanged<String>? onSubmitted;
 
   /// 编辑完成回调
-  final TSearchBarCallBack? onEditComplete;
+  final VoidCallback? onEditComplete;
 
   /// 点击输入框外部回调
   final TapRegionCallback? onTapOutside;
@@ -105,11 +80,9 @@ class TSearchBar extends StatefulWidget {
   /// 自定义操作文字
   final String action;
 
-  /// 输入框点击事件
-  final GestureTapCallback? onInputClick;
 
   /// 自定义操作回调
-  final TSearchBarEvent? onActionClick;
+  final ValueChanged<String>? onActionClick;
 
   /// 自定义操作回调
   final TSearchBarClearEvent? onClearClick;
@@ -190,12 +163,12 @@ class _TSearchBarState extends State<TSearchBar>
 
   Font? getSize(BuildContext context) {
     return widget.mediumStyle
-        ? TTheme.of(context).fontBodyMedium
-        : TTheme.of(context).fontBodyLarge;
+        ? context.tTheme.fontBodyMedium
+        : context.tTheme.fontBodyLarge;
   }
 
   Widget actionBtn(BuildContext context, String? text,
-      {String? action, TSearchBarEvent? onActionClick}) {
+      {String? action, ValueChanged<String>? onActionClick}) {
     return GestureDetector(
       onTap: () {
         onActionClick!(text ?? '');
@@ -205,17 +178,24 @@ class _TSearchBarState extends State<TSearchBar>
         child: Text(action!,
             style: TextStyle(
                 fontSize: getSize(context)?.size,
-                color: TTheme.of(context).brandNormalColor)),
+                color: context.tTheme.brandNormalColor)),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // P1: 组件级 ThemeExtension
+    final theme = Theme.of(context).extension<TSearchBarThemeData>();
+    final effectiveStyle = widget.style ?? theme?.defaultStyle ?? TSearchBarVariant.square;
+    final effectiveAlignment = widget.alignment ?? theme?.defaultAlignment ?? TSearchBarAlignment.left;
+    final effectiveBgColor = widget.backgroundColor ?? theme?.backgroundColor ?? context.tTheme.bgColorContainer;
+    final effectiveCursorHeight = widget.cursorHeight ?? theme?.cursorHeight;
+
     return Container(
       padding: widget.padding,
       height: widget.autoHeight ? double.infinity : 56,
-      color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+      color: effectiveBgColor,
       child: Stack(alignment: AlignmentDirectional.center, children: [
         Row(
           children: [
@@ -224,9 +204,9 @@ class _TSearchBarState extends State<TSearchBar>
               child: Container(
                 height: double.infinity,
                 decoration: BoxDecoration(
-                    color: TTheme.of(context).bgColorSecondaryContainer,
+                    color: context.tTheme.bgColorSecondaryContainer,
                     borderRadius: BorderRadius.circular(
-                        widget.style == TSearchStyle.square ? 4 : 28)),
+                        effectiveStyle == TSearchBarVariant.square ? 4 : 28)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -236,7 +216,7 @@ class _TSearchBarState extends State<TSearchBar>
                     Icon(
                       TIcons.search,
                       size: widget.mediumStyle ? 20 : 24,
-                      color: TTheme.of(context).textColorPlaceholder,
+                      color: context.tTheme.textColorPlaceholder,
                     ),
                     const Padding(padding: EdgeInsets.only(left: 3)),
                     Expanded(
@@ -248,35 +228,37 @@ class _TSearchBarState extends State<TSearchBar>
                           key: _textFieldKey,
                           controller: widget.controller ?? controller,
                           autofocus: widget.autoFocus,
-                          cursorColor: TTheme.of(context).brandNormalColor,
-                          cursorHeight: widget.cursorHeight,
+                          cursorColor: context.tTheme.brandNormalColor,
+                          cursorHeight: effectiveCursorHeight,
                           textAlign:
-                              widget.alignment == TSearchAlignment.center
+                              effectiveAlignment == TSearchBarAlignment.center
                                   ? TextAlign.center
                                   : TextAlign.left,
                           focusNode: focusNode,
-                          onTap: widget.onInputClick,
-                          onChanged: widget.onTextChanged,
+                          onChanged: widget.onChanged,
                           onSubmitted: widget.onSubmitted,
                           onEditingComplete: widget.onEditComplete,
                           onTapOutside: widget.onTapOutside,
                           style: TextStyle(
                               textBaseline: TextBaseline.ideographic,
                               fontSize: getSize(context)?.size,
-                              color: TTheme.of(context).textColorPrimary),
+                              color: context.tTheme.textColorPrimary),
                           decoration: InputDecoration(
-                            hintText: widget.placeHolder,
+                            hintText: widget.hintText,
                             hintStyle: TextStyle(
                               fontSize: getSize(context)?.size,
-                              color: TTheme.of(context).textColorPlaceholder,
+                              color: context.tTheme.textColorPlaceholder,
                               textBaseline: TextBaseline.ideographic,
                               overflow: TextOverflow.ellipsis,
                             ),
                             hintMaxLines: 1,
                             border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
                             isCollapsed: true,
                             // filled: true,
-                            // fillColor: TTheme.of(context).bgColorSecondaryContainer,
+                            // fillColor: context.tTheme.bgColorSecondaryContainer,
                           ),
                           maxLines: 1,
                           textInputAction: widget.inputAction,
@@ -292,14 +274,14 @@ class _TSearchBarState extends State<TSearchBar>
                       child: GestureDetector(
                           onTap: () {
                             _cleanInputText();
-                            if (widget.onTextChanged != null) {
-                              widget.onTextChanged!('');
+                            if (widget.onChanged != null) {
+                              widget.onChanged!('');
                             }
                           },
                           child: Icon(
                             TIcons.close_circle_filled,
                             size: widget.mediumStyle ? 17 : 21,
-                            color: TTheme.of(context).textColorPlaceholder,
+                            color: context.tTheme.textColorPlaceholder,
                           )),
                     ),
                     const Padding(padding: EdgeInsets.only(right: 9)),
@@ -319,8 +301,8 @@ class _TSearchBarState extends State<TSearchBar>
                     child: GestureDetector(
                       onTap: () {
                         _cleanInputText();
-                        if (widget.onTextChanged != null) {
-                          widget.onTextChanged!('');
+                        if (widget.onChanged != null) {
+                          widget.onChanged!('');
                         }
                         focusNode.unfocus();
                       },
@@ -329,7 +311,7 @@ class _TSearchBarState extends State<TSearchBar>
                         child: Text(context.resource.cancel,
                             style: TextStyle(
                                 fontSize: getSize(context)?.size,
-                                color: TTheme.of(context).brandNormalColor)),
+                                color: context.tTheme.brandNormalColor)),
                       ),
                     ),
                   ),

@@ -21,6 +21,7 @@ class TIndexes extends StatefulWidget {
     this.reverse = false,
     this.scrollController,
     this.onChange,
+    this.onChanged,
     this.onSelect,
     required this.builderContent,
     this.builderAnchor,
@@ -33,23 +34,26 @@ class TIndexes extends StatefulWidget {
   /// 索引列表最大高度（父容器高度的百分比，默认 0.8）
   final double? indexListMaxHeight;
 
-  /// 锚点是否吸顶
+  /// 锚点是否吸顶（优先级高于 ThemeData）
   final bool? sticky;
 
-  /// 锚点吸顶时与顶部的距离
+  /// 锚点吸顶时与顶部的距离（优先级高于 ThemeData）
   final double? stickyOffset;
 
-  /// 锚点是否为胶囊式样式
+  /// 锚点是否为胶囊式样式（优先级高于 ThemeData）
   final bool? capsuleTheme;
 
-  /// 反方向滚动置顶
+  /// 反方向滚动置顶（优先级高于 ThemeData）
   final bool? reverse;
 
   /// 滚动控制器
   final ScrollController? scrollController;
 
-  /// 索引发生变更时触发事件
+  /// 索引发生变更时触发事件（v1.0 推荐使用 [onChanged]）
   final void Function(String index)? onChange;
+
+  /// 索引发生变更时触发事件（v1.0 新增，等价于 [onChange]）
+  final void Function(String index)? onChanged;
 
   /// 点击侧边栏时触发事件
   final void Function(String index)? onSelect;
@@ -64,6 +68,8 @@ class TIndexes extends StatefulWidget {
   /// 索引文本自定义构建，包括索引激活左侧提示
   final Widget Function(BuildContext context, String index, bool isActive)?
       builderIndex;
+
+  /// 子树级主题数据（v1.0 新增）
 
   @override
   _TIndexesState createState() => _TIndexesState();
@@ -82,6 +88,18 @@ class _TIndexesState extends State<TIndexes> {
     26,
         (index) => String.fromCharCode(65 + index),
   );
+
+  /// 从 ThemeData 解析有效值
+  TIndexesThemeData _resolveTheme() {
+    return Theme.of(context).extension<TIndexesThemeData>() ??
+        const TIndexesThemeData();
+  }
+
+  /// 统一的 onChange 回调（同时触发 onChange 和 onChanged）
+  void _notifyChange(String index) {
+    widget.onChange?.call(index);
+    widget.onChanged?.call(index);
+  }
 
   @override
   void initState() {
@@ -112,13 +130,14 @@ class _TIndexesState extends State<TIndexes> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = _resolveTheme();
     return Container(
-      color: TTheme.of(context).bgColorContainer,
+      color: context.tTheme.bgColorContainer,
       child: Stack(
         children: [
           CustomScrollView(
             controller: _scrollController,
-            reverse: widget.reverse ?? false,
+            reverse: widget.reverse ?? theme.reverse ?? false,
             slivers: _slivers(),
           ),
           TIndexesList(
@@ -126,10 +145,10 @@ class _TIndexesState extends State<TIndexes> {
             activeIndex: _activeIndex,
             onSelect: (newIndex, oldIndex) {
               widget.onSelect?.call(newIndex);
-              widget.onChange?.call(newIndex);
+              _notifyChange(newIndex);
               _scrollToTarget(newIndex, oldIndex);
             },
-            indexListMaxHeight: widget.indexListMaxHeight ?? 0.8,
+            indexListMaxHeight: widget.indexListMaxHeight ?? theme.indexListMaxHeight ?? 0.8,
             builderIndex: widget.builderIndex,
           ),
         ],
@@ -138,23 +157,25 @@ class _TIndexesState extends State<TIndexes> {
   }
 
   List<Widget> _slivers() {
-    final capsuleTheme = widget.capsuleTheme ?? false;
-    final stickyOffset = widget.stickyOffset ?? 0;
+    final theme = _resolveTheme();
+    final capsuleTheme = widget.capsuleTheme ?? theme.capsuleTheme ?? false;
+    final stickyOffset = widget.stickyOffset ?? theme.stickyOffset ?? 0;
+    final sticky = widget.sticky ?? theme.sticky ?? true;
     _anchorKeys.clear();
     _contentKeys.clear();
     return _indexList.map((e) {
       final isPinnedOffset = capsuleTheme && _activeIndex.value == e;
       return SliverStickyHeader.builder(
-        sticky: widget.sticky ?? true,
+        sticky: sticky,
         pinnedOffset: isPinnedOffset
-            ? TTheme.of(context).spacer8 + stickyOffset
+            ? context.tTheme.spacer8 + stickyOffset
             : stickyOffset,
         builder: (context, state) {
           _anchorKeys[e] = context;
           if (state.isPinned && _activeIndex.value != e && !_isAnimating) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               _activeIndex.value = e;
-              widget.onChange?.call(e);
+              _notifyChange(e);
             });
           }
           return TIndexesAnchor(
@@ -162,7 +183,7 @@ class _TIndexesState extends State<TIndexes> {
             capsuleTheme: capsuleTheme,
             activeIndex: _activeIndex,
             builderAnchor: widget.builderAnchor,
-            sticky: widget.sticky ?? true,
+            sticky: sticky,
           );
         },
         sliver: SliverToBoxAdapter(
@@ -171,7 +192,7 @@ class _TIndexesState extends State<TIndexes> {
               _contentKeys[e] = context;
               return Padding(
                 padding: isPinnedOffset
-                    ? EdgeInsets.only(top: TTheme.of(context).spacer8)
+                    ? EdgeInsets.only(top: context.tTheme.spacer8)
                     : EdgeInsets.zero,
                 child: widget.builderContent(context, e),
               );

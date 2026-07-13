@@ -1,0 +1,886 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/button/t_button_resolve.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/button/t_button_resolve.dart</h1></header><div class='meta'>行覆盖 <b>91.2%</b> (155/170) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span></div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span></div>
+<div class='row nod'><span class='ln'>9</span>/// 按钮样式解析器</div>
+<div class='row unc'><span class='ln'>10</span>▶ </div>
+<div class='row nod'><span class='ln'>11</span>///</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row cov'><span class='ln'>13</span>/// 优先级链：shape → P2 色板 → colorScheme 覆色 → size 尺寸 → Theme padding → P0 style</div>
+<div class='row nod'><span class='ln'>14</span>/// 这是唯一的 [ButtonStyle] merge 入口，build 内禁止内联 variant/colorScheme/shape merge。</div>
+<div class='row nod'><span class='ln'>15</span></div>
+<div class='row nod'><span class='ln'>16</span>class TButtonResolve {</div>
+<div class='row nod'><span class='ln'>17</span></div>
+<div class='row nod'><span class='ln'>18</span>  TButtonResolve._();</div>
+<div class='row nod'><span class='ln'>19</span></div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row nod'><span class='ln'>21</span></div>
+<div class='row nod'><span class='ln'>22</span>  /// 解析最终的 [ButtonStyle]</div>
+<div class='row nod'><span class='ln'>23</span></div>
+<div class='row cov'><span class='ln'>24</span>  static ButtonStyle resolve({</div>
+<div class='row cov'><span class='ln'>25</span></div>
+<div class='row nod'><span class='ln'>26</span>    required TButtonVariant variant,</div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row cov'><span class='ln'>28</span>    required TButtonColorScheme? colorScheme,</div>
+<div class='row nod'><span class='ln'>29</span></div>
+<div class='row nod'><span class='ln'>30</span>    required TButtonSize size,</div>
+<div class='row cov'><span class='ln'>31</span></div>
+<div class='row nod'><span class='ln'>32</span>    required Widget? icon,</div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span>    required TButtonIconPosition iconPosition,</div>
+<div class='row nod'><span class='ln'>35</span></div>
+<div class='row nod'><span class='ln'>36</span>    required TButtonThemeData? theme,</div>
+<div class='row nod'><span class='ln'>37</span></div>
+<div class='row nod'><span class='ln'>38</span>    required ButtonStyle? instanceStyle,</div>
+<div class='row cov'><span class='ln'>39</span></div>
+<div class='row nod'><span class='ln'>40</span>    required BuildContext context,</div>
+<div class='row nod'><span class='ln'>41</span></div>
+<div class='row nod'><span class='ln'>42</span>    required bool hasGradient,</div>
+<div class='row nod'><span class='ln'>43</span></div>
+<div class='row nod'><span class='ln'>44</span>  }) {</div>
+<div class='row nod'><span class='ln'>45</span></div>
+<div class='row cov'><span class='ln'>46</span>    final tTheme = context.tTheme;</div>
+<div class='row nod'><span class='ln'>47</span></div>
+<div class='row nod'><span class='ln'>48</span>    final effectiveShape = theme?.effectiveShape ?? TButtonShape.rectangle;</div>
+<div class='row nod'><span class='ln'>49</span></div>
+<div class='row nod'><span class='ln'>50</span></div>
+<div class='row nod'><span class='ln'>51</span></div>
+<div class='row nod'><span class='ln'>52</span>    // 1. P2 色板（variant 级）</div>
+<div class='row nod'><span class='ln'>53</span></div>
+<div class='row cov'><span class='ln'>54</span>    final variantPalette = _variantPalette(theme, variant);</div>
+<div class='row cov'><span class='ln'>55</span></div>
+<div class='row cov'><span class='ln'>56</span></div>
+<div class='row nod'><span class='ln'>57</span></div>
+<div class='row nod'><span class='ln'>58</span>    // 2. colorScheme 覆色</div>
+<div class='row nod'><span class='ln'>59</span></div>
+<div class='row nod'><span class='ln'>60</span>    final colorStyle = _resolveColors(</div>
+<div class='row cov'><span class='ln'>61</span></div>
+<div class='row unc'><span class='ln'>62</span>▶       context: context,</div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row nod'><span class='ln'>64</span>      variant: variant,</div>
+<div class='row nod'><span class='ln'>65</span></div>
+<div class='row cov'><span class='ln'>66</span>      colorScheme: colorScheme,</div>
+<div class='row cov'><span class='ln'>67</span></div>
+<div class='row nod'><span class='ln'>68</span>      tTheme: tTheme,</div>
+<div class='row nod'><span class='ln'>69</span></div>
+<div class='row nod'><span class='ln'>70</span>    );</div>
+<div class='row cov'><span class='ln'>71</span></div>
+<div class='row cov'><span class='ln'>72</span></div>
+<div class='row cov'><span class='ln'>73</span></div>
+<div class='row cov'><span class='ln'>74</span>    // 3. shape → ButtonStyle.shape</div>
+<div class='row nod'><span class='ln'>75</span></div>
+<div class='row unc'><span class='ln'>76</span>▶     final shapeStyle = _resolveShape(</div>
+<div class='row nod'><span class='ln'>77</span></div>
+<div class='row cov'><span class='ln'>78</span>      context: context,</div>
+<div class='row nod'><span class='ln'>79</span></div>
+<div class='row nod'><span class='ln'>80</span>      effectiveShape: effectiveShape,</div>
+<div class='row nod'><span class='ln'>81</span></div>
+<div class='row cov'><span class='ln'>82</span>      tTheme: tTheme,</div>
+<div class='row nod'><span class='ln'>83</span></div>
+<div class='row nod'><span class='ln'>84</span>    );</div>
+<div class='row nod'><span class='ln'>85</span></div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row nod'><span class='ln'>87</span></div>
+<div class='row nod'><span class='ln'>88</span>    // 4. size → minimumSize + padding</div>
+<div class='row nod'><span class='ln'>89</span></div>
+<div class='row nod'><span class='ln'>90</span>    final sizeStyle = _resolveSize(</div>
+<div class='row nod'><span class='ln'>91</span></div>
+<div class='row nod'><span class='ln'>92</span>      size: size,</div>
+<div class='row nod'><span class='ln'>93</span></div>
+<div class='row nod'><span class='ln'>94</span>      hasIcon: icon != null,</div>
+<div class='row cov'><span class='ln'>95</span></div>
+<div class='row nod'><span class='ln'>96</span>      hasChild: true, // v1.0 始终有 child</div>
+<div class='row nod'><span class='ln'>97</span></div>
+<div class='row nod'><span class='ln'>98</span>      effectiveShape: effectiveShape,</div>
+<div class='row nod'><span class='ln'>99</span></div>
+<div class='row nod'><span class='ln'>100</span>    );</div>
+<div class='row nod'><span class='ln'>101</span></div>
+<div class='row cov'><span class='ln'>102</span></div>
+<div class='row nod'><span class='ln'>103</span></div>
+<div class='row cov'><span class='ln'>104</span>    // 4.5 textStyle → 覆盖 M3 labelLarge 默认字号</div>
+<div class='row cov'><span class='ln'>105</span></div>
+<div class='row cov'><span class='ln'>106</span>    final textStyleStyle = ButtonStyle(</div>
+<div class='row cov'><span class='ln'>107</span></div>
+<div class='row nod'><span class='ln'>108</span>      textStyle: WidgetStatePropertyAll&lt;TextStyle&gt;(</div>
+<div class='row nod'><span class='ln'>109</span></div>
+<div class='row nod'><span class='ln'>110</span>        TextStyle(fontSize: _fontSizeForSize(size)),</div>
+<div class='row nod'><span class='ln'>111</span></div>
+<div class='row cov'><span class='ln'>112</span>      ),</div>
+<div class='row nod'><span class='ln'>113</span></div>
+<div class='row nod'><span class='ln'>114</span>    );</div>
+<div class='row nod'><span class='ln'>115</span></div>
+<div class='row nod'><span class='ln'>116</span></div>
+<div class='row nod'><span class='ln'>117</span></div>
+<div class='row nod'><span class='ln'>118</span>    // 5. Theme padding 覆盖默认</div>
+<div class='row nod'><span class='ln'>119</span></div>
+<div class='row nod'><span class='ln'>120</span>    final paddingStyle = theme?.padding != null</div>
+<div class='row cov'><span class='ln'>121</span></div>
+<div class='row cov'><span class='ln'>122</span>        ? ButtonStyle(padding: WidgetStatePropertyAll&lt;EdgeInsetsGeometry&gt;(theme!.padding!))</div>
+<div class='row cov'><span class='ln'>123</span></div>
+<div class='row cov'><span class='ln'>124</span>        : null;</div>
+<div class='row cov'><span class='ln'>125</span></div>
+<div class='row cov'><span class='ln'>126</span></div>
+<div class='row cov'><span class='ln'>127</span></div>
+<div class='row cov'><span class='ln'>128</span>    // 6. iconSpacing</div>
+<div class='row nod'><span class='ln'>129</span></div>
+<div class='row nod'><span class='ln'>130</span>    final spacing = theme?.iconSpacing ?? 8.0;</div>
+<div class='row nod'><span class='ln'>131</span></div>
+<div class='row nod'><span class='ln'>132</span>    final iconSpacingStyle = _resolveIconSpacing(spacing, iconPosition);</div>
+<div class='row cov'><span class='ln'>133</span></div>
+<div class='row nod'><span class='ln'>134</span></div>
+<div class='row nod'><span class='ln'>135</span></div>
+<div class='row nod'><span class='ln'>136</span>    // 合并：P2 色板 → colorScheme → shape → size → textStyle → Theme padding → iconSpacing → P0</div>
+<div class='row nod'><span class='ln'>137</span></div>
+<div class='row nod'><span class='ln'>138</span>    var resolved = variantPalette ?? const ButtonStyle();</div>
+<div class='row cov'><span class='ln'>139</span></div>
+<div class='row cov'><span class='ln'>140</span>    resolved = resolved.merge(colorStyle);</div>
+<div class='row cov'><span class='ln'>141</span></div>
+<div class='row cov'><span class='ln'>142</span>    resolved = resolved.merge(shapeStyle);</div>
+<div class='row cov'><span class='ln'>143</span></div>
+<div class='row cov'><span class='ln'>144</span>    resolved = resolved.merge(sizeStyle);</div>
+<div class='row cov'><span class='ln'>145</span></div>
+<div class='row cov'><span class='ln'>146</span>    resolved = resolved.merge(textStyleStyle);</div>
+<div class='row cov'><span class='ln'>147</span></div>
+<div class='row cov'><span class='ln'>148</span>    if (paddingStyle != null) {</div>
+<div class='row cov'><span class='ln'>149</span></div>
+<div class='row cov'><span class='ln'>150</span>      resolved = resolved.merge(paddingStyle);</div>
+<div class='row nod'><span class='ln'>151</span></div>
+<div class='row nod'><span class='ln'>152</span>    }</div>
+<div class='row cov'><span class='ln'>153</span></div>
+<div class='row cov'><span class='ln'>154</span>    resolved = resolved.merge(iconSpacingStyle);</div>
+<div class='row cov'><span class='ln'>155</span></div>
+<div class='row cov'><span class='ln'>156</span></div>
+<div class='row nod'><span class='ln'>157</span></div>
+<div class='row cov'><span class='ln'>158</span>    // 渐变存在时强制背景 null（触发 MaterialType.transparency），阻止 M3 默认样式污染渐变效果（在 P0 之前，允许 P0 覆盖）</div>
+<div class='row unc'><span class='ln'>159</span>▶ </div>
+<div class='row nod'><span class='ln'>160</span>    if (hasGradient) {</div>
+<div class='row nod'><span class='ln'>161</span></div>
+<div class='row nod'><span class='ln'>162</span>      resolved = resolved.merge(</div>
+<div class='row cov'><span class='ln'>163</span></div>
+<div class='row cov'><span class='ln'>164</span>        const ButtonStyle(</div>
+<div class='row cov'><span class='ln'>165</span></div>
+<div class='row nod'><span class='ln'>166</span>          // 设为 null 而非 Colors.transparent，确保 ButtonStyleButton 使用 MaterialType.transparency</div>
+<div class='row nod'><span class='ln'>167</span></div>
+<div class='row nod'><span class='ln'>168</span>          backgroundColor: WidgetStatePropertyAll&lt;Color?&gt;(null),</div>
+<div class='row nod'><span class='ln'>169</span></div>
+<div class='row nod'><span class='ln'>170</span>          overlayColor: WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>171</span></div>
+<div class='row nod'><span class='ln'>172</span>          surfaceTintColor: WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>173</span></div>
+<div class='row nod'><span class='ln'>174</span>          shadowColor: WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>175</span></div>
+<div class='row nod'><span class='ln'>176</span>        ),</div>
+<div class='row cov'><span class='ln'>177</span></div>
+<div class='row nod'><span class='ln'>178</span>      );</div>
+<div class='row nod'><span class='ln'>179</span></div>
+<div class='row nod'><span class='ln'>180</span>    }</div>
+<div class='row nod'><span class='ln'>181</span></div>
+<div class='row nod'><span class='ln'>182</span></div>
+<div class='row cov'><span class='ln'>183</span></div>
+<div class='row cov'><span class='ln'>184</span>    // P0：实例 style 覆盖所有</div>
+<div class='row cov'><span class='ln'>185</span></div>
+<div class='row cov'><span class='ln'>186</span>    if (instanceStyle != null) {</div>
+<div class='row cov'><span class='ln'>187</span></div>
+<div class='row cov'><span class='ln'>188</span>      resolved = resolved.merge(instanceStyle);</div>
+<div class='row cov'><span class='ln'>189</span></div>
+<div class='row cov'><span class='ln'>190</span>    }</div>
+<div class='row cov'><span class='ln'>191</span></div>
+<div class='row cov'><span class='ln'>192</span></div>
+<div class='row cov'><span class='ln'>193</span></div>
+<div class='row cov'><span class='ln'>194</span>    return resolved;</div>
+<div class='row nod'><span class='ln'>195</span></div>
+<div class='row nod'><span class='ln'>196</span>  }</div>
+<div class='row cov'><span class='ln'>197</span></div>
+<div class='row cov'><span class='ln'>198</span></div>
+<div class='row cov'><span class='ln'>199</span></div>
+<div class='row unc'><span class='ln'>200</span>▶   /// 获取 variant 对应的 P2 色板</div>
+<div class='row nod'><span class='ln'>201</span></div>
+<div class='row nod'><span class='ln'>202</span>  static ButtonStyle? _variantPalette(TButtonThemeData? theme, TButtonVariant variant) {</div>
+<div class='row nod'><span class='ln'>203</span></div>
+<div class='row cov'><span class='ln'>204</span>    return switch (variant) {</div>
+<div class='row cov'><span class='ln'>205</span></div>
+<div class='row cov'><span class='ln'>206</span>      TButtonVariant.fill =&gt; theme?.filledStyle,</div>
+<div class='row nod'><span class='ln'>207</span></div>
+<div class='row nod'><span class='ln'>208</span>      TButtonVariant.outline =&gt; theme?.outlinedStyle,</div>
+<div class='row nod'><span class='ln'>209</span></div>
+<div class='row cov'><span class='ln'>210</span>      TButtonVariant.text =&gt; theme?.textButtonStyle,</div>
+<div class='row cov'><span class='ln'>211</span></div>
+<div class='row cov'><span class='ln'>212</span>      TButtonVariant.ghost =&gt; theme?.ghostStyle,</div>
+<div class='row nod'><span class='ln'>213</span></div>
+<div class='row cov'><span class='ln'>214</span>    };</div>
+<div class='row nod'><span class='ln'>215</span></div>
+<div class='row nod'><span class='ln'>216</span>  }</div>
+<div class='row nod'><span class='ln'>217</span></div>
+<div class='row nod'><span class='ln'>218</span></div>
+<div class='row nod'><span class='ln'>219</span></div>
+<div class='row nod'><span class='ln'>220</span>  /// 根据 variant + colorScheme 生成颜色 ButtonStyle</div>
+<div class='row nod'><span class='ln'>221</span></div>
+<div class='row nod'><span class='ln'>222</span>  static ButtonStyle _resolveColors({</div>
+<div class='row nod'><span class='ln'>223</span></div>
+<div class='row cov'><span class='ln'>224</span>    required BuildContext context,</div>
+<div class='row nod'><span class='ln'>225</span></div>
+<div class='row nod'><span class='ln'>226</span>    required TButtonVariant variant,</div>
+<div class='row nod'><span class='ln'>227</span></div>
+<div class='row nod'><span class='ln'>228</span>    required TButtonColorScheme? colorScheme,</div>
+<div class='row cov'><span class='ln'>229</span></div>
+<div class='row cov'><span class='ln'>230</span>    required TThemeData tTheme,</div>
+<div class='row cov'><span class='ln'>231</span></div>
+<div class='row cov'><span class='ln'>232</span>  }) {</div>
+<div class='row cov'><span class='ln'>233</span></div>
+<div class='row cov'><span class='ln'>234</span>    final scheme = colorScheme ?? TButtonColorScheme.defaultTheme;</div>
+<div class='row cov'><span class='ln'>235</span></div>
+<div class='row cov'><span class='ln'>236</span></div>
+<div class='row nod'><span class='ln'>237</span></div>
+<div class='row nod'><span class='ln'>238</span>    switch (variant) {</div>
+<div class='row cov'><span class='ln'>239</span></div>
+<div class='row cov'><span class='ln'>240</span>      case TButtonVariant.fill:</div>
+<div class='row cov'><span class='ln'>241</span></div>
+<div class='row unc'><span class='ln'>242</span>▶         return _resolveFillColors(context, scheme, tTheme);</div>
+<div class='row nod'><span class='ln'>243</span></div>
+<div class='row nod'><span class='ln'>244</span>      case TButtonVariant.outline:</div>
+<div class='row nod'><span class='ln'>245</span></div>
+<div class='row cov'><span class='ln'>246</span>        return _resolveOutlineColors(context, scheme, tTheme);</div>
+<div class='row cov'><span class='ln'>247</span></div>
+<div class='row cov'><span class='ln'>248</span>      case TButtonVariant.text:</div>
+<div class='row nod'><span class='ln'>249</span></div>
+<div class='row nod'><span class='ln'>250</span>        return _resolveTextColors(context, scheme, tTheme);</div>
+<div class='row nod'><span class='ln'>251</span></div>
+<div class='row nod'><span class='ln'>252</span>      case TButtonVariant.ghost:</div>
+<div class='row nod'><span class='ln'>253</span></div>
+<div class='row nod'><span class='ln'>254</span>        return _resolveGhostColors(context, scheme, tTheme);</div>
+<div class='row nod'><span class='ln'>255</span></div>
+<div class='row nod'><span class='ln'>256</span>    }</div>
+<div class='row nod'><span class='ln'>257</span></div>
+<div class='row nod'><span class='ln'>258</span>  }</div>
+<div class='row nod'><span class='ln'>259</span></div>
+<div class='row cov'><span class='ln'>260</span></div>
+<div class='row nod'><span class='ln'>261</span></div>
+<div class='row nod'><span class='ln'>262</span>  /// fill 变体颜色</div>
+<div class='row nod'><span class='ln'>263</span></div>
+<div class='row nod'><span class='ln'>264</span>  static ButtonStyle _resolveFillColors(</div>
+<div class='row cov'><span class='ln'>265</span></div>
+<div class='row cov'><span class='ln'>266</span>      BuildContext context, TButtonColorScheme scheme, TThemeData tTheme) {</div>
+<div class='row cov'><span class='ln'>267</span></div>
+<div class='row cov'><span class='ln'>268</span>    Color bg;</div>
+<div class='row cov'><span class='ln'>269</span></div>
+<div class='row cov'><span class='ln'>270</span>    Color fg;</div>
+<div class='row cov'><span class='ln'>271</span></div>
+<div class='row cov'><span class='ln'>272</span></div>
+<div class='row nod'><span class='ln'>273</span></div>
+<div class='row nod'><span class='ln'>274</span>    switch (scheme) {</div>
+<div class='row cov'><span class='ln'>275</span></div>
+<div class='row nod'><span class='ln'>276</span>      case TButtonColorScheme.primary:</div>
+<div class='row cov'><span class='ln'>277</span></div>
+<div class='row cov'><span class='ln'>278</span>        bg = tTheme.brandNormalColor;</div>
+<div class='row cov'><span class='ln'>279</span></div>
+<div class='row nod'><span class='ln'>280</span>        fg = tTheme.textColorAnti;</div>
+<div class='row nod'><span class='ln'>281</span></div>
+<div class='row nod'><span class='ln'>282</span>      case TButtonColorScheme.danger:</div>
+<div class='row cov'><span class='ln'>283</span></div>
+<div class='row cov'><span class='ln'>284</span>        bg = tTheme.errorNormalColor;</div>
+<div class='row cov'><span class='ln'>285</span></div>
+<div class='row nod'><span class='ln'>286</span>        fg = tTheme.textColorAnti;</div>
+<div class='row cov'><span class='ln'>287</span></div>
+<div class='row nod'><span class='ln'>288</span>      case TButtonColorScheme.light:</div>
+<div class='row nod'><span class='ln'>289</span></div>
+<div class='row nod'><span class='ln'>290</span>        bg = tTheme.brandLightColor;</div>
+<div class='row nod'><span class='ln'>291</span></div>
+<div class='row nod'><span class='ln'>292</span>        fg = tTheme.brandNormalColor;</div>
+<div class='row nod'><span class='ln'>293</span></div>
+<div class='row nod'><span class='ln'>294</span>      case TButtonColorScheme.defaultTheme:</div>
+<div class='row nod'><span class='ln'>295</span></div>
+<div class='row nod'><span class='ln'>296</span>        bg = tTheme.bgColorComponent;</div>
+<div class='row cov'><span class='ln'>297</span></div>
+<div class='row nod'><span class='ln'>298</span>        fg = tTheme.textColorPrimary;</div>
+<div class='row nod'><span class='ln'>299</span></div>
+<div class='row nod'><span class='ln'>300</span>    }</div>
+<div class='row nod'><span class='ln'>301</span></div>
+<div class='row nod'><span class='ln'>302</span></div>
+<div class='row cov'><span class='ln'>303</span></div>
+<div class='row cov'><span class='ln'>304</span>    return ButtonStyle(</div>
+<div class='row cov'><span class='ln'>305</span></div>
+<div class='row nod'><span class='ln'>306</span>      backgroundColor: WidgetStateProperty.resolveWith((states) {</div>
+<div class='row nod'><span class='ln'>307</span></div>
+<div class='row cov'><span class='ln'>308</span>        if (states.contains(WidgetState.disabled)) {</div>
+<div class='row nod'><span class='ln'>309</span></div>
+<div class='row nod'><span class='ln'>310</span>          return _disabledBackgroundColor(scheme, tTheme);</div>
+<div class='row cov'><span class='ln'>311</span></div>
+<div class='row cov'><span class='ln'>312</span>        }</div>
+<div class='row cov'><span class='ln'>313</span></div>
+<div class='row nod'><span class='ln'>314</span>        if (states.contains(WidgetState.pressed)) {</div>
+<div class='row nod'><span class='ln'>315</span></div>
+<div class='row cov'><span class='ln'>316</span>          return _pressedBackgroundColor(scheme, tTheme);</div>
+<div class='row cov'><span class='ln'>317</span></div>
+<div class='row nod'><span class='ln'>318</span>        }</div>
+<div class='row nod'><span class='ln'>319</span></div>
+<div class='row nod'><span class='ln'>320</span>        return bg;</div>
+<div class='row cov'><span class='ln'>321</span></div>
+<div class='row cov'><span class='ln'>322</span>      }),</div>
+<div class='row nod'><span class='ln'>323</span></div>
+<div class='row nod'><span class='ln'>324</span>      foregroundColor: WidgetStateProperty.resolveWith((states) {</div>
+<div class='row nod'><span class='ln'>325</span></div>
+<div class='row nod'><span class='ln'>326</span>        if (states.contains(WidgetState.disabled)) {</div>
+<div class='row cov'><span class='ln'>327</span></div>
+<div class='row nod'><span class='ln'>328</span>          return tTheme.textDisabledColor;</div>
+<div class='row nod'><span class='ln'>329</span></div>
+<div class='row nod'><span class='ln'>330</span>        }</div>
+<div class='row nod'><span class='ln'>331</span></div>
+<div class='row nod'><span class='ln'>332</span>        return fg;</div>
+<div class='row cov'><span class='ln'>333</span></div>
+<div class='row cov'><span class='ln'>334</span>      }),</div>
+<div class='row nod'><span class='ln'>335</span></div>
+<div class='row nod'><span class='ln'>336</span>      overlayColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>337</span></div>
+<div class='row nod'><span class='ln'>338</span>      surfaceTintColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>339</span></div>
+<div class='row nod'><span class='ln'>340</span>      shadowColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>341</span></div>
+<div class='row cov'><span class='ln'>342</span>      elevation: const WidgetStatePropertyAll&lt;double&gt;(0),</div>
+<div class='row nod'><span class='ln'>343</span></div>
+<div class='row nod'><span class='ln'>344</span>    );</div>
+<div class='row cov'><span class='ln'>345</span></div>
+<div class='row nod'><span class='ln'>346</span>  }</div>
+<div class='row nod'><span class='ln'>347</span></div>
+<div class='row cov'><span class='ln'>348</span></div>
+<div class='row nod'><span class='ln'>349</span></div>
+<div class='row nod'><span class='ln'>350</span>  /// outline 变体颜色</div>
+<div class='row cov'><span class='ln'>351</span></div>
+<div class='row nod'><span class='ln'>352</span>  static ButtonStyle _resolveOutlineColors(</div>
+<div class='row nod'><span class='ln'>353</span></div>
+<div class='row nod'><span class='ln'>354</span>      BuildContext context, TButtonColorScheme scheme, TThemeData tTheme) {</div>
+<div class='row nod'><span class='ln'>355</span></div>
+<div class='row nod'><span class='ln'>356</span>    Color? borderColor;</div>
+<div class='row nod'><span class='ln'>357</span></div>
+<div class='row nod'><span class='ln'>358</span>    Color fg;</div>
+<div class='row nod'><span class='ln'>359</span></div>
+<div class='row nod'><span class='ln'>360</span></div>
+<div class='row nod'><span class='ln'>361</span></div>
+<div class='row nod'><span class='ln'>362</span>    switch (scheme) {</div>
+<div class='row nod'><span class='ln'>363</span></div>
+<div class='row nod'><span class='ln'>364</span>      case TButtonColorScheme.primary:</div>
+<div class='row nod'><span class='ln'>365</span></div>
+<div class='row cov'><span class='ln'>366</span>        borderColor = tTheme.brandNormalColor;</div>
+<div class='row nod'><span class='ln'>367</span></div>
+<div class='row cov'><span class='ln'>368</span>        fg = tTheme.brandNormalColor;</div>
+<div class='row cov'><span class='ln'>369</span></div>
+<div class='row cov'><span class='ln'>370</span>      case TButtonColorScheme.danger:</div>
+<div class='row nod'><span class='ln'>371</span></div>
+<div class='row cov'><span class='ln'>372</span>        borderColor = tTheme.errorNormalColor;</div>
+<div class='row cov'><span class='ln'>373</span></div>
+<div class='row nod'><span class='ln'>374</span>        fg = tTheme.errorNormalColor;</div>
+<div class='row nod'><span class='ln'>375</span></div>
+<div class='row nod'><span class='ln'>376</span>      case TButtonColorScheme.light:</div>
+<div class='row nod'><span class='ln'>377</span></div>
+<div class='row nod'><span class='ln'>378</span>        borderColor = tTheme.brandNormalColor;</div>
+<div class='row cov'><span class='ln'>379</span></div>
+<div class='row nod'><span class='ln'>380</span>        fg = tTheme.brandNormalColor;</div>
+<div class='row cov'><span class='ln'>381</span></div>
+<div class='row nod'><span class='ln'>382</span>      case TButtonColorScheme.defaultTheme:</div>
+<div class='row cov'><span class='ln'>383</span></div>
+<div class='row nod'><span class='ln'>384</span>        borderColor = tTheme.componentBorderColor;</div>
+<div class='row cov'><span class='ln'>385</span></div>
+<div class='row nod'><span class='ln'>386</span>        fg = tTheme.textColorPrimary;</div>
+<div class='row cov'><span class='ln'>387</span></div>
+<div class='row nod'><span class='ln'>388</span>    }</div>
+<div class='row nod'><span class='ln'>389</span></div>
+<div class='row nod'><span class='ln'>390</span></div>
+<div class='row nod'><span class='ln'>391</span></div>
+<div class='row nod'><span class='ln'>392</span>    return ButtonStyle(</div>
+<div class='row cov'><span class='ln'>393</span></div>
+<div class='row nod'><span class='ln'>394</span>      backgroundColor: WidgetStateProperty.resolveWith((states) {</div>
+<div class='row cov'><span class='ln'>395</span></div>
+<div class='row cov'><span class='ln'>396</span>        if (states.contains(WidgetState.pressed)) {</div>
+<div class='row cov'><span class='ln'>397</span></div>
+<div class='row cov'><span class='ln'>398</span>          return tTheme.bgColorContainerActive;</div>
+<div class='row nod'><span class='ln'>399</span></div>
+<div class='row nod'><span class='ln'>400</span>        }</div>
+<div class='row nod'><span class='ln'>401</span></div>
+<div class='row nod'><span class='ln'>402</span>        return Colors.transparent;</div>
+<div class='row cov'><span class='ln'>403</span></div>
+<div class='row nod'><span class='ln'>404</span>      }),</div>
+<div class='row nod'><span class='ln'>405</span></div>
+<div class='row nod'><span class='ln'>406</span>      foregroundColor: WidgetStateProperty.resolveWith((states) {</div>
+<div class='row nod'><span class='ln'>407</span></div>
+<div class='row nod'><span class='ln'>408</span>        if (states.contains(WidgetState.disabled)) {</div>
+<div class='row nod'><span class='ln'>409</span></div>
+<div class='row nod'><span class='ln'>410</span>          return tTheme.textDisabledColor;</div>
+<div class='row cov'><span class='ln'>411</span></div>
+<div class='row nod'><span class='ln'>412</span>        }</div>
+<div class='row cov'><span class='ln'>413</span></div>
+<div class='row cov'><span class='ln'>414</span>        return fg;</div>
+<div class='row cov'><span class='ln'>415</span></div>
+<div class='row cov'><span class='ln'>416</span>      }),</div>
+<div class='row cov'><span class='ln'>417</span></div>
+<div class='row cov'><span class='ln'>418</span>      side: WidgetStateProperty.resolveWith((states) {</div>
+<div class='row cov'><span class='ln'>419</span></div>
+<div class='row cov'><span class='ln'>420</span>        if (states.contains(WidgetState.disabled)) {</div>
+<div class='row nod'><span class='ln'>421</span></div>
+<div class='row nod'><span class='ln'>422</span>          return BorderSide(color: tTheme.componentBorderColor.withValues(alpha: 0.4), width: 1);</div>
+<div class='row nod'><span class='ln'>423</span></div>
+<div class='row unc'><span class='ln'>424</span>▶         }</div>
+<div class='row nod'><span class='ln'>425</span></div>
+<div class='row unc'><span class='ln'>426</span>▶         return BorderSide(color: borderColor ?? tTheme.componentBorderColor, width: 1);</div>
+<div class='row unc'><span class='ln'>427</span>▶ </div>
+<div class='row unc'><span class='ln'>428</span>▶       }),</div>
+<div class='row unc'><span class='ln'>429</span>▶ </div>
+<div class='row unc'><span class='ln'>430</span>▶       overlayColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row unc'><span class='ln'>431</span>▶ </div>
+<div class='row unc'><span class='ln'>432</span>▶       surfaceTintColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row unc'><span class='ln'>433</span>▶ </div>
+<div class='row nod'><span class='ln'>434</span>      shadowColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>435</span></div>
+<div class='row nod'><span class='ln'>436</span>      elevation: const WidgetStatePropertyAll&lt;double&gt;(0),</div>
+<div class='row nod'><span class='ln'>437</span></div>
+<div class='row nod'><span class='ln'>438</span>    );</div>
+<div class='row nod'><span class='ln'>439</span></div>
+<div class='row nod'><span class='ln'>440</span>  }</div>
+<div class='row nod'><span class='ln'>441</span></div>
+<div class='row nod'><span class='ln'>442</span></div>
+<div class='row nod'><span class='ln'>443</span></div>
+<div class='row nod'><span class='ln'>444</span>  /// text 变体颜色</div>
+<div class='row nod'><span class='ln'>445</span></div>
+<div class='row nod'><span class='ln'>446</span>  static ButtonStyle _resolveTextColors(</div>
+<div class='row nod'><span class='ln'>447</span></div>
+<div class='row nod'><span class='ln'>448</span>      BuildContext context, TButtonColorScheme scheme, TThemeData tTheme) {</div>
+<div class='row nod'><span class='ln'>449</span></div>
+<div class='row nod'><span class='ln'>450</span>    Color fg;</div>
+<div class='row nod'><span class='ln'>451</span></div>
+<div class='row nod'><span class='ln'>452</span></div>
+<div class='row nod'><span class='ln'>453</span></div>
+<div class='row nod'><span class='ln'>454</span>    switch (scheme) {</div>
+<div class='row nod'><span class='ln'>455</span></div>
+<div class='row nod'><span class='ln'>456</span>      case TButtonColorScheme.primary:</div>
+<div class='row nod'><span class='ln'>457</span></div>
+<div class='row nod'><span class='ln'>458</span>        fg = tTheme.brandNormalColor;</div>
+<div class='row nod'><span class='ln'>459</span></div>
+<div class='row nod'><span class='ln'>460</span>      case TButtonColorScheme.danger:</div>
+<div class='row nod'><span class='ln'>461</span></div>
+<div class='row nod'><span class='ln'>462</span>        fg = tTheme.errorNormalColor;</div>
+<div class='row nod'><span class='ln'>463</span></div>
+<div class='row nod'><span class='ln'>464</span>      case TButtonColorScheme.light:</div>
+<div class='row nod'><span class='ln'>465</span></div>
+<div class='row nod'><span class='ln'>466</span>        fg = tTheme.brandNormalColor;</div>
+<div class='row nod'><span class='ln'>467</span></div>
+<div class='row nod'><span class='ln'>468</span>      case TButtonColorScheme.defaultTheme:</div>
+<div class='row nod'><span class='ln'>469</span></div>
+<div class='row nod'><span class='ln'>470</span>        fg = tTheme.textColorPrimary;</div>
+<div class='row nod'><span class='ln'>471</span></div>
+<div class='row nod'><span class='ln'>472</span>    }</div>
+<div class='row nod'><span class='ln'>473</span></div>
+<div class='row nod'><span class='ln'>474</span></div>
+<div class='row nod'><span class='ln'>475</span></div>
+<div class='row nod'><span class='ln'>476</span>    return ButtonStyle(</div>
+<div class='row nod'><span class='ln'>477</span></div>
+<div class='row nod'><span class='ln'>478</span>      backgroundColor: WidgetStateProperty.resolveWith((states) {</div>
+<div class='row nod'><span class='ln'>479</span></div>
+<div class='row nod'><span class='ln'>480</span>        if (states.contains(WidgetState.pressed)) {</div>
+<div class='row nod'><span class='ln'>481</span></div>
+<div class='row nod'><span class='ln'>482</span>          return tTheme.bgColorContainerActive;</div>
+<div class='row nod'><span class='ln'>483</span></div>
+<div class='row nod'><span class='ln'>484</span>        }</div>
+<div class='row nod'><span class='ln'>485</span></div>
+<div class='row nod'><span class='ln'>486</span>        return Colors.transparent;</div>
+<div class='row nod'><span class='ln'>487</span></div>
+<div class='row nod'><span class='ln'>488</span>      }),</div>
+<div class='row nod'><span class='ln'>489</span></div>
+<div class='row nod'><span class='ln'>490</span>      foregroundColor: WidgetStateProperty.resolveWith((states) {</div>
+<div class='row nod'><span class='ln'>491</span></div>
+<div class='row nod'><span class='ln'>492</span>        if (states.contains(WidgetState.disabled)) {</div>
+<div class='row nod'><span class='ln'>493</span></div>
+<div class='row nod'><span class='ln'>494</span>          return tTheme.textDisabledColor;</div>
+<div class='row nod'><span class='ln'>495</span></div>
+<div class='row nod'><span class='ln'>496</span>        }</div>
+<div class='row nod'><span class='ln'>497</span></div>
+<div class='row nod'><span class='ln'>498</span>        return fg;</div>
+<div class='row nod'><span class='ln'>499</span></div>
+<div class='row nod'><span class='ln'>500</span>      }),</div>
+<div class='row nod'><span class='ln'>501</span></div>
+<div class='row nod'><span class='ln'>502</span>      overlayColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>503</span></div>
+<div class='row nod'><span class='ln'>504</span>      surfaceTintColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>505</span></div>
+<div class='row nod'><span class='ln'>506</span>      shadowColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>507</span></div>
+<div class='row nod'><span class='ln'>508</span>      elevation: const WidgetStatePropertyAll&lt;double&gt;(0),</div>
+<div class='row nod'><span class='ln'>509</span></div>
+<div class='row nod'><span class='ln'>510</span>    );</div>
+<div class='row nod'><span class='ln'>511</span></div>
+<div class='row nod'><span class='ln'>512</span>  }</div>
+<div class='row nod'><span class='ln'>513</span></div>
+<div class='row nod'><span class='ln'>514</span></div>
+<div class='row nod'><span class='ln'>515</span></div>
+<div class='row nod'><span class='ln'>516</span>  /// ghost 变体颜色</div>
+<div class='row nod'><span class='ln'>517</span></div>
+<div class='row nod'><span class='ln'>518</span>  static ButtonStyle _resolveGhostColors(</div>
+<div class='row nod'><span class='ln'>519</span></div>
+<div class='row nod'><span class='ln'>520</span>      BuildContext context, TButtonColorScheme scheme, TThemeData tTheme) {</div>
+<div class='row nod'><span class='ln'>521</span></div>
+<div class='row nod'><span class='ln'>522</span>    Color fg;</div>
+<div class='row nod'><span class='ln'>523</span></div>
+<div class='row nod'><span class='ln'>524</span></div>
+<div class='row nod'><span class='ln'>525</span></div>
+<div class='row nod'><span class='ln'>526</span>    switch (scheme) {</div>
+<div class='row nod'><span class='ln'>527</span></div>
+<div class='row nod'><span class='ln'>528</span>      case TButtonColorScheme.primary:</div>
+<div class='row nod'><span class='ln'>529</span></div>
+<div class='row nod'><span class='ln'>530</span>        fg = tTheme.brandNormalColor;</div>
+<div class='row nod'><span class='ln'>531</span></div>
+<div class='row nod'><span class='ln'>532</span>      case TButtonColorScheme.danger:</div>
+<div class='row nod'><span class='ln'>533</span></div>
+<div class='row nod'><span class='ln'>534</span>        fg = tTheme.errorNormalColor;</div>
+<div class='row nod'><span class='ln'>535</span></div>
+<div class='row nod'><span class='ln'>536</span>      case TButtonColorScheme.light:</div>
+<div class='row nod'><span class='ln'>537</span></div>
+<div class='row nod'><span class='ln'>538</span>        fg = tTheme.brandNormalColor;</div>
+<div class='row nod'><span class='ln'>539</span></div>
+<div class='row nod'><span class='ln'>540</span>      case TButtonColorScheme.defaultTheme:</div>
+<div class='row nod'><span class='ln'>541</span></div>
+<div class='row nod'><span class='ln'>542</span>        fg = tTheme.fontWhColor1;</div>
+<div class='row nod'><span class='ln'>543</span></div>
+<div class='row nod'><span class='ln'>544</span>    }</div>
+<div class='row nod'><span class='ln'>545</span></div>
+<div class='row nod'><span class='ln'>546</span></div>
+<div class='row nod'><span class='ln'>547</span></div>
+<div class='row nod'><span class='ln'>548</span>    return ButtonStyle(</div>
+<div class='row nod'><span class='ln'>549</span></div>
+<div class='row nod'><span class='ln'>550</span>      backgroundColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>551</span></div>
+<div class='row nod'><span class='ln'>552</span>      foregroundColor: WidgetStateProperty.resolveWith((states) {</div>
+<div class='row nod'><span class='ln'>553</span></div>
+<div class='row nod'><span class='ln'>554</span>        if (states.contains(WidgetState.disabled)) {</div>
+<div class='row nod'><span class='ln'>555</span></div>
+<div class='row nod'><span class='ln'>556</span>          return tTheme.fontWhColor4;</div>
+<div class='row nod'><span class='ln'>557</span></div>
+<div class='row nod'><span class='ln'>558</span>        }</div>
+<div class='row nod'><span class='ln'>559</span></div>
+<div class='row nod'><span class='ln'>560</span>        return fg;</div>
+<div class='row nod'><span class='ln'>561</span></div>
+<div class='row nod'><span class='ln'>562</span>      }),</div>
+<div class='row nod'><span class='ln'>563</span></div>
+<div class='row nod'><span class='ln'>564</span>      side: WidgetStateProperty.resolveWith((states) {</div>
+<div class='row nod'><span class='ln'>565</span></div>
+<div class='row nod'><span class='ln'>566</span>        final color = states.contains(WidgetState.disabled)</div>
+<div class='row nod'><span class='ln'>567</span></div>
+<div class='row nod'><span class='ln'>568</span>            ? tTheme.fontWhColor4</div>
+<div class='row nod'><span class='ln'>569</span></div>
+<div class='row nod'><span class='ln'>570</span>            : fg;</div>
+<div class='row nod'><span class='ln'>571</span></div>
+<div class='row nod'><span class='ln'>572</span>        return BorderSide(color: color, width: 1);</div>
+<div class='row nod'><span class='ln'>573</span></div>
+<div class='row nod'><span class='ln'>574</span>      }),</div>
+<div class='row nod'><span class='ln'>575</span></div>
+<div class='row nod'><span class='ln'>576</span>      overlayColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>577</span></div>
+<div class='row nod'><span class='ln'>578</span>      surfaceTintColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>579</span></div>
+<div class='row nod'><span class='ln'>580</span>      shadowColor: const WidgetStatePropertyAll&lt;Color&gt;(Colors.transparent),</div>
+<div class='row nod'><span class='ln'>581</span></div>
+<div class='row nod'><span class='ln'>582</span>      elevation: const WidgetStatePropertyAll&lt;double&gt;(0),</div>
+<div class='row nod'><span class='ln'>583</span></div>
+<div class='row nod'><span class='ln'>584</span>    );</div>
+<div class='row nod'><span class='ln'>585</span></div>
+<div class='row nod'><span class='ln'>586</span>  }</div>
+<div class='row nod'><span class='ln'>587</span></div>
+<div class='row nod'><span class='ln'>588</span></div>
+<div class='row nod'><span class='ln'>589</span></div>
+<div class='row nod'><span class='ln'>590</span>  /// 将内部 shape 枚举展开为 [ButtonStyle.shape]</div>
+<div class='row nod'><span class='ln'>591</span></div>
+<div class='row nod'><span class='ln'>592</span>  static ButtonStyle _resolveShape({</div>
+<div class='row nod'><span class='ln'>593</span></div>
+<div class='row nod'><span class='ln'>594</span>    required BuildContext context,</div>
+<div class='row nod'><span class='ln'>595</span></div>
+<div class='row nod'><span class='ln'>596</span>    required TButtonShape effectiveShape,</div>
+<div class='row nod'><span class='ln'>597</span></div>
+<div class='row nod'><span class='ln'>598</span>    required TThemeData tTheme,</div>
+<div class='row nod'><span class='ln'>599</span></div>
+<div class='row nod'><span class='ln'>600</span>  }) {</div>
+<div class='row nod'><span class='ln'>601</span></div>
+<div class='row nod'><span class='ln'>602</span>    final shape = switch (effectiveShape) {</div>
+<div class='row nod'><span class='ln'>603</span></div>
+<div class='row nod'><span class='ln'>604</span>      TButtonShape.rectangle =&gt; RoundedRectangleBorder(</div>
+<div class='row nod'><span class='ln'>605</span></div>
+<div class='row nod'><span class='ln'>606</span>          borderRadius: BorderRadius.all(</div>
+<div class='row nod'><span class='ln'>607</span></div>
+<div class='row nod'><span class='ln'>608</span>            Radius.circular(tTheme.radiusDefault),</div>
+<div class='row nod'><span class='ln'>609</span></div>
+<div class='row nod'><span class='ln'>610</span>          ),</div>
+<div class='row nod'><span class='ln'>611</span></div>
+<div class='row nod'><span class='ln'>612</span>        ),</div>
+<div class='row nod'><span class='ln'>613</span></div>
+<div class='row nod'><span class='ln'>614</span>      TButtonShape.square =&gt; const RoundedRectangleBorder(</div>
+<div class='row nod'><span class='ln'>615</span></div>
+<div class='row nod'><span class='ln'>616</span>          borderRadius: BorderRadius.zero,</div>
+<div class='row nod'><span class='ln'>617</span></div>
+<div class='row nod'><span class='ln'>618</span>        ),</div>
+<div class='row nod'><span class='ln'>619</span></div>
+<div class='row nod'><span class='ln'>620</span>      TButtonShape.round =&gt; RoundedRectangleBorder(</div>
+<div class='row nod'><span class='ln'>621</span></div>
+<div class='row nod'><span class='ln'>622</span>          borderRadius: BorderRadius.all(</div>
+<div class='row nod'><span class='ln'>623</span></div>
+<div class='row nod'><span class='ln'>624</span>            Radius.circular(tTheme.radiusRound),</div>
+<div class='row nod'><span class='ln'>625</span></div>
+<div class='row nod'><span class='ln'>626</span>          ),</div>
+<div class='row nod'><span class='ln'>627</span></div>
+<div class='row nod'><span class='ln'>628</span>        ),</div>
+<div class='row nod'><span class='ln'>629</span></div>
+<div class='row nod'><span class='ln'>630</span>      TButtonShape.circle =&gt; const CircleBorder(),</div>
+<div class='row nod'><span class='ln'>631</span></div>
+<div class='row nod'><span class='ln'>632</span>      TButtonShape.filled =&gt; const RoundedRectangleBorder(</div>
+<div class='row nod'><span class='ln'>633</span></div>
+<div class='row nod'><span class='ln'>634</span>          borderRadius: BorderRadius.zero,</div>
+<div class='row nod'><span class='ln'>635</span></div>
+<div class='row nod'><span class='ln'>636</span>        ),</div>
+<div class='row nod'><span class='ln'>637</span></div>
+<div class='row nod'><span class='ln'>638</span>    };</div>
+<div class='row nod'><span class='ln'>639</span></div>
+<div class='row nod'><span class='ln'>640</span>    return ButtonStyle(</div>
+<div class='row nod'><span class='ln'>641</span></div>
+<div class='row nod'><span class='ln'>642</span>      shape: WidgetStatePropertyAll&lt;OutlinedBorder&gt;(shape),</div>
+<div class='row nod'><span class='ln'>643</span></div>
+<div class='row nod'><span class='ln'>644</span>    );</div>
+<div class='row nod'><span class='ln'>645</span></div>
+<div class='row nod'><span class='ln'>646</span>  }</div>
+<div class='row nod'><span class='ln'>647</span></div>
+<div class='row nod'><span class='ln'>648</span></div>
+<div class='row nod'><span class='ln'>649</span></div>
+<div class='row nod'><span class='ln'>650</span>  /// 根据 size + shape 推导 minimumSize 和 padding</div>
+<div class='row nod'><span class='ln'>651</span></div>
+<div class='row nod'><span class='ln'>652</span>  static ButtonStyle _resolveSize({</div>
+<div class='row nod'><span class='ln'>653</span></div>
+<div class='row nod'><span class='ln'>654</span>    required TButtonSize size,</div>
+<div class='row nod'><span class='ln'>655</span></div>
+<div class='row nod'><span class='ln'>656</span>    required bool hasIcon,</div>
+<div class='row nod'><span class='ln'>657</span></div>
+<div class='row nod'><span class='ln'>658</span>    required bool hasChild,</div>
+<div class='row nod'><span class='ln'>659</span></div>
+<div class='row nod'><span class='ln'>660</span>    required TButtonShape effectiveShape,</div>
+<div class='row nod'><span class='ln'>661</span></div>
+<div class='row nod'><span class='ln'>662</span>  }) {</div>
+<div class='row nod'><span class='ln'>663</span></div>
+<div class='row nod'><span class='ln'>664</span>    final isSquareOrCircle = effectiveShape == TButtonShape.square ||</div>
+<div class='row nod'><span class='ln'>665</span></div>
+<div class='row nod'><span class='ln'>666</span>        effectiveShape == TButtonShape.circle;</div>
+<div class='row nod'><span class='ln'>667</span></div>
+<div class='row nod'><span class='ln'>668</span>    // square/circle 纯 icon 按钮：等宽高 + 等边 padding</div>
+<div class='row nod'><span class='ln'>669</span></div>
+<div class='row nod'><span class='ln'>670</span>    final onlyIcon = hasIcon &amp;&amp; !hasChild;</div>
+<div class='row nod'><span class='ln'>671</span></div>
+<div class='row nod'><span class='ln'>672</span></div>
+<div class='row nod'><span class='ln'>673</span></div>
+<div class='row nod'><span class='ln'>674</span>    double sideLength;</div>
+<div class='row nod'><span class='ln'>675</span></div>
+<div class='row nod'><span class='ln'>676</span>    double paddingValue;</div>
+<div class='row nod'><span class='ln'>677</span></div>
+<div class='row nod'><span class='ln'>678</span></div>
+<div class='row nod'><span class='ln'>679</span></div>
+<div class='row nod'><span class='ln'>680</span>    switch (size) {</div>
+<div class='row nod'><span class='ln'>681</span></div>
+<div class='row nod'><span class='ln'>682</span>      case TButtonSize.large:</div>
+<div class='row nod'><span class='ln'>683</span></div>
+<div class='row nod'><span class='ln'>684</span>        sideLength = 48;</div>
+<div class='row nod'><span class='ln'>685</span></div>
+<div class='row nod'><span class='ln'>686</span>        paddingValue = onlyIcon ? 12 : 20;</div>
+<div class='row nod'><span class='ln'>687</span></div>
+<div class='row nod'><span class='ln'>688</span>      case TButtonSize.medium:</div>
+<div class='row nod'><span class='ln'>689</span></div>
+<div class='row nod'><span class='ln'>690</span>        sideLength = 40;</div>
+<div class='row nod'><span class='ln'>691</span></div>
+<div class='row nod'><span class='ln'>692</span>        paddingValue = onlyIcon ? 10 : 16;</div>
+<div class='row nod'><span class='ln'>693</span></div>
+<div class='row nod'><span class='ln'>694</span>      case TButtonSize.small:</div>
+<div class='row nod'><span class='ln'>695</span></div>
+<div class='row nod'><span class='ln'>696</span>        sideLength = 32;</div>
+<div class='row nod'><span class='ln'>697</span></div>
+<div class='row nod'><span class='ln'>698</span>        paddingValue = onlyIcon ? 7 : 12;</div>
+<div class='row nod'><span class='ln'>699</span></div>
+<div class='row nod'><span class='ln'>700</span>      case TButtonSize.extraSmall:</div>
+<div class='row nod'><span class='ln'>701</span></div>
+<div class='row nod'><span class='ln'>702</span>        sideLength = 28;</div>
+<div class='row nod'><span class='ln'>703</span></div>
+<div class='row nod'><span class='ln'>704</span>        paddingValue = onlyIcon ? 5 : 8;</div>
+<div class='row nod'><span class='ln'>705</span></div>
+<div class='row nod'><span class='ln'>706</span>    }</div>
+<div class='row nod'><span class='ln'>707</span></div>
+<div class='row nod'><span class='ln'>708</span></div>
+<div class='row nod'><span class='ln'>709</span></div>
+<div class='row nod'><span class='ln'>710</span>    double? minWidth;</div>
+<div class='row nod'><span class='ln'>711</span></div>
+<div class='row nod'><span class='ln'>712</span>    var minHeight = sideLength;</div>
+<div class='row nod'><span class='ln'>713</span></div>
+<div class='row nod'><span class='ln'>714</span></div>
+<div class='row nod'><span class='ln'>715</span></div>
+<div class='row nod'><span class='ln'>716</span>    if (isSquareOrCircle) {</div>
+<div class='row nod'><span class='ln'>717</span></div>
+<div class='row nod'><span class='ln'>718</span>      // square/circle：固定宽高</div>
+<div class='row nod'><span class='ln'>719</span></div>
+<div class='row nod'><span class='ln'>720</span>      minWidth = sideLength;</div>
+<div class='row nod'><span class='ln'>721</span></div>
+<div class='row nod'><span class='ln'>722</span>    }</div>
+<div class='row nod'><span class='ln'>723</span></div>
+<div class='row nod'><span class='ln'>724</span></div>
+<div class='row nod'><span class='ln'>725</span></div>
+<div class='row nod'><span class='ln'>726</span>    // padding：纵向按 size，横向按内容</div>
+<div class='row nod'><span class='ln'>727</span></div>
+<div class='row nod'><span class='ln'>728</span>    final padH = (isSquareOrCircle &amp;&amp; onlyIcon) ? paddingValue : paddingValue;</div>
+<div class='row nod'><span class='ln'>729</span></div>
+<div class='row nod'><span class='ln'>730</span>    final padV = (isSquareOrCircle &amp;&amp; onlyIcon) ? paddingValue : _verticalPadding(size);</div>
+<div class='row nod'><span class='ln'>731</span></div>
+<div class='row nod'><span class='ln'>732</span></div>
+<div class='row nod'><span class='ln'>733</span></div>
+<div class='row nod'><span class='ln'>734</span>    return ButtonStyle(</div>
+<div class='row nod'><span class='ln'>735</span></div>
+<div class='row nod'><span class='ln'>736</span>      minimumSize: WidgetStatePropertyAll&lt;Size&gt;(</div>
+<div class='row nod'><span class='ln'>737</span></div>
+<div class='row nod'><span class='ln'>738</span>        Size(minWidth ?? 0, minHeight),</div>
+<div class='row nod'><span class='ln'>739</span></div>
+<div class='row nod'><span class='ln'>740</span>      ),</div>
+<div class='row nod'><span class='ln'>741</span></div>
+<div class='row nod'><span class='ln'>742</span>      padding: WidgetStatePropertyAll&lt;EdgeInsetsGeometry&gt;(</div>
+<div class='row nod'><span class='ln'>743</span></div>
+<div class='row nod'><span class='ln'>744</span>        EdgeInsets.symmetric(horizontal: padH, vertical: padV),</div>
+<div class='row nod'><span class='ln'>745</span></div>
+<div class='row nod'><span class='ln'>746</span>      ),</div>
+<div class='row nod'><span class='ln'>747</span></div>
+<div class='row nod'><span class='ln'>748</span>    );</div>
+<div class='row nod'><span class='ln'>749</span></div>
+<div class='row nod'><span class='ln'>750</span>  }</div>
+<div class='row nod'><span class='ln'>751</span></div>
+<div class='row nod'><span class='ln'>752</span></div>
+<div class='row nod'><span class='ln'>753</span></div>
+<div class='row nod'><span class='ln'>754</span>  /// 根据 size 获取纵向 padding</div>
+<div class='row nod'><span class='ln'>755</span></div>
+<div class='row nod'><span class='ln'>756</span>  static double _verticalPadding(TButtonSize size) {</div>
+<div class='row nod'><span class='ln'>757</span></div>
+<div class='row nod'><span class='ln'>758</span>    switch (size) {</div>
+<div class='row nod'><span class='ln'>759</span></div>
+<div class='row nod'><span class='ln'>760</span>      case TButtonSize.large:</div>
+<div class='row nod'><span class='ln'>761</span></div>
+<div class='row nod'><span class='ln'>762</span>        return 12;</div>
+<div class='row nod'><span class='ln'>763</span></div>
+<div class='row nod'><span class='ln'>764</span>      case TButtonSize.medium:</div>
+<div class='row nod'><span class='ln'>765</span></div>
+<div class='row nod'><span class='ln'>766</span>        return 8;</div>
+<div class='row nod'><span class='ln'>767</span></div>
+<div class='row nod'><span class='ln'>768</span>      case TButtonSize.small:</div>
+<div class='row nod'><span class='ln'>769</span></div>
+<div class='row nod'><span class='ln'>770</span>        return 5;</div>
+<div class='row nod'><span class='ln'>771</span></div>
+<div class='row nod'><span class='ln'>772</span>      case TButtonSize.extraSmall:</div>
+<div class='row nod'><span class='ln'>773</span></div>
+<div class='row nod'><span class='ln'>774</span>        return 3;</div>
+<div class='row nod'><span class='ln'>775</span></div>
+<div class='row nod'><span class='ln'>776</span>    }</div>
+<div class='row nod'><span class='ln'>777</span></div>
+<div class='row nod'><span class='ln'>778</span>  }</div>
+<div class='row nod'><span class='ln'>779</span></div>
+<div class='row nod'><span class='ln'>780</span></div>
+<div class='row nod'><span class='ln'>781</span></div>
+<div class='row nod'><span class='ln'>782</span>  /// 根据 size 获取字号（与 t_button.dart _fontSizeForButton 对齐）</div>
+<div class='row nod'><span class='ln'>783</span></div>
+<div class='row nod'><span class='ln'>784</span>  static double _fontSizeForSize(TButtonSize size) {</div>
+<div class='row nod'><span class='ln'>785</span></div>
+<div class='row nod'><span class='ln'>786</span>    return switch (size) {</div>
+<div class='row nod'><span class='ln'>787</span></div>
+<div class='row nod'><span class='ln'>788</span>      TButtonSize.large =&gt; 16,</div>
+<div class='row nod'><span class='ln'>789</span></div>
+<div class='row nod'><span class='ln'>790</span>      TButtonSize.medium =&gt; 14,</div>
+<div class='row nod'><span class='ln'>791</span></div>
+<div class='row nod'><span class='ln'>792</span>      TButtonSize.small =&gt; 12,</div>
+<div class='row nod'><span class='ln'>793</span></div>
+<div class='row nod'><span class='ln'>794</span>      TButtonSize.extraSmall =&gt; 10,</div>
+<div class='row nod'><span class='ln'>795</span></div>
+<div class='row nod'><span class='ln'>796</span>    };</div>
+<div class='row nod'><span class='ln'>797</span></div>
+<div class='row nod'><span class='ln'>798</span>  }</div>
+<div class='row nod'><span class='ln'>799</span></div>
+<div class='row nod'><span class='ln'>800</span></div>
+<div class='row nod'><span class='ln'>801</span></div>
+<div class='row nod'><span class='ln'>802</span>  /// 图标与文案间距</div>
+<div class='row nod'><span class='ln'>803</span></div>
+<div class='row nod'><span class='ln'>804</span>  static ButtonStyle _resolveIconSpacing(double spacing, TButtonIconPosition iconPosition) {</div>
+<div class='row nod'><span class='ln'>805</span></div>
+<div class='row nod'><span class='ln'>806</span>    // 使用 visualDensity 或通过 padding 间接控制间距</div>
+<div class='row nod'><span class='ln'>807</span></div>
+<div class='row nod'><span class='ln'>808</span>    // 此处由 TButton.build 内部 Row 的间隙控制，不写入 ButtonStyle</div>
+<div class='row nod'><span class='ln'>809</span></div>
+<div class='row nod'><span class='ln'>810</span>    return const ButtonStyle();</div>
+<div class='row nod'><span class='ln'>811</span></div>
+<div class='row nod'><span class='ln'>812</span>  }</div>
+<div class='row nod'><span class='ln'>813</span></div>
+<div class='row nod'><span class='ln'>814</span></div>
+<div class='row nod'><span class='ln'>815</span></div>
+<div class='row nod'><span class='ln'>816</span>  // --- 辅助颜色计算 ---</div>
+<div class='row nod'><span class='ln'>817</span></div>
+<div class='row nod'><span class='ln'>818</span></div>
+<div class='row nod'><span class='ln'>819</span></div>
+<div class='row nod'><span class='ln'>820</span>  static Color _disabledBackgroundColor(TButtonColorScheme scheme, TThemeData tTheme) {</div>
+<div class='row nod'><span class='ln'>821</span></div>
+<div class='row nod'><span class='ln'>822</span>    switch (scheme) {</div>
+<div class='row nod'><span class='ln'>823</span></div>
+<div class='row nod'><span class='ln'>824</span>      case TButtonColorScheme.primary:</div>
+<div class='row nod'><span class='ln'>825</span></div>
+<div class='row nod'><span class='ln'>826</span>        return tTheme.brandDisabledColor;</div>
+<div class='row nod'><span class='ln'>827</span></div>
+<div class='row nod'><span class='ln'>828</span>      case TButtonColorScheme.danger:</div>
+<div class='row nod'><span class='ln'>829</span></div>
+<div class='row nod'><span class='ln'>830</span>        return tTheme.errorDisabledColor;</div>
+<div class='row nod'><span class='ln'>831</span></div>
+<div class='row nod'><span class='ln'>832</span>      case TButtonColorScheme.light:</div>
+<div class='row nod'><span class='ln'>833</span></div>
+<div class='row nod'><span class='ln'>834</span>        return tTheme.brandLightColor;</div>
+<div class='row nod'><span class='ln'>835</span></div>
+<div class='row nod'><span class='ln'>836</span>      case TButtonColorScheme.defaultTheme:</div>
+<div class='row nod'><span class='ln'>837</span></div>
+<div class='row nod'><span class='ln'>838</span>        return tTheme.bgColorComponentDisabled;</div>
+<div class='row nod'><span class='ln'>839</span></div>
+<div class='row nod'><span class='ln'>840</span>    }</div>
+<div class='row nod'><span class='ln'>841</span></div>
+<div class='row nod'><span class='ln'>842</span>  }</div>
+<div class='row nod'><span class='ln'>843</span></div>
+<div class='row nod'><span class='ln'>844</span></div>
+<div class='row nod'><span class='ln'>845</span></div>
+<div class='row nod'><span class='ln'>846</span>  static Color _pressedBackgroundColor(TButtonColorScheme scheme, TThemeData tTheme) {</div>
+<div class='row nod'><span class='ln'>847</span></div>
+<div class='row nod'><span class='ln'>848</span>    switch (scheme) {</div>
+<div class='row nod'><span class='ln'>849</span></div>
+<div class='row nod'><span class='ln'>850</span>      case TButtonColorScheme.primary:</div>
+<div class='row nod'><span class='ln'>851</span></div>
+<div class='row nod'><span class='ln'>852</span>        return tTheme.brandClickColor;</div>
+<div class='row nod'><span class='ln'>853</span></div>
+<div class='row nod'><span class='ln'>854</span>      case TButtonColorScheme.danger:</div>
+<div class='row nod'><span class='ln'>855</span></div>
+<div class='row nod'><span class='ln'>856</span>        return tTheme.errorClickColor;</div>
+<div class='row nod'><span class='ln'>857</span></div>
+<div class='row nod'><span class='ln'>858</span>      case TButtonColorScheme.light:</div>
+<div class='row nod'><span class='ln'>859</span></div>
+<div class='row nod'><span class='ln'>860</span>        return tTheme.brandFocusColor;</div>
+<div class='row nod'><span class='ln'>861</span></div>
+<div class='row nod'><span class='ln'>862</span>      case TButtonColorScheme.defaultTheme:</div>
+<div class='row nod'><span class='ln'>863</span></div>
+<div class='row nod'><span class='ln'>864</span>        return tTheme.bgColorComponentHover;</div>
+<div class='row nod'><span class='ln'>865</span></div>
+<div class='row nod'><span class='ln'>866</span>    }</div>
+<div class='row nod'><span class='ln'>867</span></div>
+<div class='row nod'><span class='ln'>868</span>  }</div>
+<div class='row nod'><span class='ln'>869</span></div>
+<div class='row nod'><span class='ln'>870</span>}</div>
+<div class='row nod'><span class='ln'>871</span></div>
+<div class='row nod'><span class='ln'>872</span></div>
+</pre></body></html>

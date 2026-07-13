@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 
+/// 气泡弹层
+///
+/// 通过 [showPopover] 静态方法弹出，支持 12 个方向定位和箭头。
 class TPopover {
+  /// 显示气泡弹层
   static Future showPopover({
     required BuildContext context,
     String? content,
     Widget? contentWidget,
     double offset = 4,
-    TPopoverTheme? theme,
+    TPopoverColorScheme? colorScheme,
     bool closeOnClickOutside = true,
     TPopoverPlacement? placement,
     bool? showArrow = true,
@@ -31,7 +35,7 @@ class TPopover {
         content: content,
         contentWidget: contentWidget,
         offset: offset,
-        theme: theme,
+        colorScheme: colorScheme,
         placement: placement,
         showArrow: showArrow,
         arrowSize: arrowSize,

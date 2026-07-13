@@ -50,10 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: TTheme.of(context).brandNormalColor,
+        backgroundColor: context.tTheme.brandNormalColor,
         titleTextStyle: TextStyle(
-          color: TTheme.of(context).whiteColor1,
-          fontSize: TTheme.of(context).fontTitleLarge?.size,
+          color: context.tTheme.whiteColor1,
+          fontSize: context.tTheme.fontTitleLarge?.size,
         ),
         title: Text(widget.title),
         actions: ScreenUtil.isWebLargeScreen(context)
@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.only(
                       right: 16,
                     ),
-                    child: Icon(TIcons.setting, color: TTheme.of(context).whiteColor1,),
+                    child: Icon(TIcons.setting, color: context.tTheme.whiteColor1,),
                   ),
                   onTap: () {
                     focusNode.unfocus();
@@ -87,24 +87,28 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      TTheme(
-                        data: TThemeData.defaultData(),
+                      Theme(
+                        // mergeExtension 仅覆盖 TThemeData，保留 ColorScheme 等其他主题属性
+                        data: Theme.of(context)
+                            .mergeExtension(TThemeData.defaultData()),
                         child: TButton(
-                          text: AppLocalizations.of(context)?.defaultTheme,
-                          theme: TButtonTheme.primary,
-                          onTap: () async {
+                          child: Text(AppLocalizations.of(context)?.defaultTheme ?? ''),
+                          colorScheme: TButtonColorScheme.primary,
+                          onPressed: () async {
                             widget.onThemeChange?.call(
                                 TThemeData.defaultData());
                           },
                         ),
                       ),
-                      TTheme(
-                        data: TThemeData.fromJson('green', greenThemeConfig) ??
-                            TThemeData.defaultData(),
+                      Theme(
+                        data: Theme.of(context).mergeExtension(
+                          TThemeData.fromJson('green', greenThemeConfig) ??
+                              TThemeData.defaultData(),
+                        ),
                         child: TButton(
-                          text: AppLocalizations.of(context)?.greenTheme,
-                          theme: TButtonTheme.primary,
-                          onTap: () async {
+                          child: Text(AppLocalizations.of(context)?.greenTheme ?? ''),
+                          colorScheme: TButtonColorScheme.primary,
+                          onPressed: () async {
                             var jsonString = await rootBundle
                                 .loadString('assets/theme.json');
                             var themeData = TThemeData.fromJson(
@@ -116,13 +120,15 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                         ),
                       ),
-                      TTheme(
-                        data: TThemeData.fromJson('red', greenThemeConfig) ??
-                            TThemeData.defaultData(),
+                      Theme(
+                        data: Theme.of(context).mergeExtension(
+                          TThemeData.fromJson('red', greenThemeConfig) ??
+                              TThemeData.defaultData(),
+                        ),
                         child: TButton(
-                          text: AppLocalizations.of(context)?.redTheme,
-                          theme: TButtonTheme.primary,
-                          onTap: () async {
+                          child: Text(AppLocalizations.of(context)?.redTheme ?? ''),
+                          colorScheme: TButtonColorScheme.primary,
+                          onPressed: () async {
                             var jsonString = await rootBundle
                                 .loadString('assets/theme.json');
                             var themeData =
@@ -140,9 +146,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             TSearchBar(
-              placeHolder: '请输入组件名称',
+              hintText: '请输入组件名称',
               focusNode: focusNode,
-              onTextChanged: (value) {
+              onChanged: (value) {
                 setState(() {
                   searchText = value;
                 });
@@ -181,14 +187,12 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 40),
               child: TButton(
                   size: TButtonSize.medium,
-                  type: TButtonType.outline,
-                  shape: TButtonShape.filled,
-                  theme: TButtonTheme.defaultTheme,
-                  textStyle: TextStyle(color: TTheme.of(context).fontGyColor4),
-                  onTap: () {
+                  variant: TButtonVariant.outline,
+                  colorScheme: TButtonColorScheme.defaultTheme,
+                  onPressed: () {
                     Navigator.pushNamed(context, '${model.name}?showAction=1');
                   },
-                  text: model.text),
+                  child: Text(model.text)),
             ));
           }
         } else {
@@ -196,14 +200,13 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 40),
             child: TButton(
                 size: TButtonSize.medium,
-                type: TButtonType.outline,
-                shape: TButtonShape.filled,
-                theme: TButtonTheme.primary,
-                onTap: () {
+                variant: TButtonVariant.outline,
+                colorScheme: TButtonColorScheme.primary,
+                onPressed: () {
                   focusNode.unfocus();
                   Navigator.pushNamed(context, '${model.name}?showAction=1');
                 },
-                text: model.text),
+                child: Text(model.text)),
           ));
         }
       });
@@ -212,12 +215,12 @@ class _MyHomePageState extends State<MyHomePage> {
         margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
         padding: const EdgeInsets.only(left: 12),
         decoration: BoxDecoration(
-            color: TTheme.of(context).brandHoverColor,
+            color: context.tTheme.brandHoverColor,
             borderRadius: BorderRadius.only(
-                topRight: Radius.circular(TTheme.of(context).radiusLarge))),
+                topRight: Radius.circular(context.tTheme.radiusLarge))),
         child: TText(
           '$key(${subList.length})',
-          textColor: TTheme.of(context).whiteColor1,
+          textColor: context.tTheme.whiteColor1,
         ),
       ));
       children.addAll(subList);

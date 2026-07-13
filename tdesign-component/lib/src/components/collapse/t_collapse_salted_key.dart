@@ -13,10 +13,11 @@ class TCollapseSaltedKey<S, V> extends LocalKey {
   final V value;
 
   @override
-  bool operator ==(dynamic other) {
-    if (other.runtimeType != runtimeType) return false;
-    final TCollapseSaltedKey<S, V> typedOther = other;
-    return salt == typedOther.salt && value == typedOther.value;
+  bool operator ==(Object other) {
+    if (other is! TCollapseSaltedKey<S, V>) {
+      return false;
+    }
+    return salt == other.salt && value == other.value;
   }
 
   @override

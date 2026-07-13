@@ -101,6 +101,29 @@
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | child | Widget | - | - |
-| globalFontFamily | FontFamily? | - | 全局字体，kTextNeedGlobalFontFamily=true 时生效 |
+| globalFontFamily | FontFamily? | - | 全局字体族（v1.0 始终生效，不再依赖全局开关） |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | paddingConfig | TTextPaddingConfig? | - | forceVerticalCenter=true 时，内置 padding 配置 |
+
+### TTextThemeData（v1.0 新增）
+
+组件级 ThemeExtension，通过 `Theme.of(context).mergeExtension()` 子树注入。
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| defaultFont | Font? | - | 默认字体（含字号和行高） |
+| defaultTextColor | Color? | - | 默认文本颜色 |
+| defaultBackgroundColor | Color? | - | 默认背景色 |
+| forceVerticalCenter | bool | false | 默认是否启用强制垂直居中（替代 v0.2.x 全局变量） |
+| isTextThrough | bool | false | 默认删除线 |
+| lineThroughColor | Color? | - | 删除线默认颜色 |
+| isInFontLoader | bool | false | 是否处于字体加载器中 |
+| strutStyle | StrutStyle? | - | 默认 strut 样式 |
+| textWidthBasis | TextWidthBasis? | - | 默认文本宽度计算方式 |
+| textHeightBehavior | ui.TextHeightBehavior? | - | 默认文本高度行为 |
+| textScaleFactor | double? | - | 默认缩放因子 |
+
+### TTextResolve（v1.0 新增）
+
+样式解析器，提供 `resolve()`（TText 用）和 `resolveSpan()`（TTextSpan 用）两个入口，
+合并 v0.2.x 双份 getTextStyle 为单一路径。包含 iOS PingFang SC 回退和 globalFontFamily 注入逻辑。

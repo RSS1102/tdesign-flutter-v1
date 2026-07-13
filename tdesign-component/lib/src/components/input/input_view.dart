@@ -155,6 +155,15 @@ class TInputView extends StatelessWidget {
             focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent),
             ),
+            disabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+            ),
+            errorBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+            ),
+            focusedErrorBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+            ),
           ),
     );
   }

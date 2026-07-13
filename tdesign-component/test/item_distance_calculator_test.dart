@@ -40,7 +40,7 @@ void main() {
     testWidgets('4 档距离映射 - calculateFont 按主题字号缩放',
         (tester) async {
       final context = await _pumpContext(tester);
-      final baseSize = TTheme.of(context).fontBodyLarge?.size ?? 16.0;
+      final baseSize = context.tTheme.fontBodyLarge?.size ?? 16.0;
       // 选中档 1.00x，紧邻 0.94x，近边 0.88x，最远 0.82x
       expect(calculator.calculateFont(context, 0), baseSize * 1.00);
       expect(calculator.calculateFont(context, 1), baseSize * 0.94);
@@ -54,7 +54,7 @@ void main() {
     testWidgets('4 档距离映射 - calculateColor 主色 ↔ 占位色',
         (tester) async {
       final context = await _pumpContext(tester);
-      final theme = TTheme.of(context);
+      final theme = context.tTheme;
       final primary = theme.textColorPrimary;
       final placeholder = theme.textColorPlaceholder;
 
@@ -92,7 +92,7 @@ void main() {
 
       expect(custom.calculateColor(context, 0), brandColor);
       // 继承自父类的 calculateColor 在非 0 档走默认 lerp 逻辑
-      final theme = TTheme.of(context);
+      final theme = context.tTheme;
       expect(
         custom.calculateColor(context, 1),
         Color.lerp(theme.textColorPrimary, theme.textColorPlaceholder, 0.55),

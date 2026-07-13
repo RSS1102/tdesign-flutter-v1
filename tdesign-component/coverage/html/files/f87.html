@@ -1,0 +1,340 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/dropdown_menu/t_dropdown_menu.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/dropdown_menu/t_dropdown_menu.dart</h1></header><div class='meta'>行覆盖 <b>88.0%</b> (110/125) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:async&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span>import &#x27;package:tdesign_icons/tdesign_icons.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>5</span></div>
+<div class='row nod'><span class='ln'>6</span>import &#x27;../../theme/t_colors.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>7</span>import &#x27;../../theme/t_fonts.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>8</span>import &#x27;../../theme/t_theme.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>9</span>import &#x27;../text/t_text.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>10</span>import &#x27;./t_dropdown_item.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>11</span>import &#x27;t_dropdown_popup.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>/// 菜单展开方向</div>
+<div class='row nod'><span class='ln'>14</span>enum TDropdownMenuDirection {</div>
+<div class='row nod'><span class='ln'>15</span>  /// 向下</div>
+<div class='row nod'><span class='ln'>16</span>  down,</div>
+<div class='row nod'><span class='ln'>17</span></div>
+<div class='row nod'><span class='ln'>18</span>  /// 向上</div>
+<div class='row nod'><span class='ln'>19</span>  up,</div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row nod'><span class='ln'>21</span>  /// 根据内容高度动态展示方向</div>
+<div class='row nod'><span class='ln'>22</span>  auto,</div>
+<div class='row nod'><span class='ln'>23</span>}</div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>/// 下拉菜单构建器</div>
+<div class='row nod'><span class='ln'>26</span>typedef TDropdownItemBuilder = List&lt;TDropdownItem&gt; Function(</div>
+<div class='row nod'><span class='ln'>27</span>    BuildContext context);</div>
+<div class='row nod'><span class='ln'>28</span></div>
+<div class='row nod'><span class='ln'>29</span>/// 自定义标签内容</div>
+<div class='row nod'><span class='ln'>30</span>typedef LabelBuilder = Widget Function(</div>
+<div class='row nod'><span class='ln'>31</span>    BuildContext context, String label, bool isOpened, int index);</div>
+<div class='row nod'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span>/// 下拉菜单</div>
+<div class='row nod'><span class='ln'>34</span>class TDropdownMenu extends StatefulWidget {</div>
+<div class='row cov'><span class='ln'>35</span>  const TDropdownMenu({</div>
+<div class='row nod'><span class='ln'>36</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>37</span>    this.builder,</div>
+<div class='row nod'><span class='ln'>38</span>    this.items,</div>
+<div class='row nod'><span class='ln'>39</span>    this.closeOnClickOverlay = true,</div>
+<div class='row nod'><span class='ln'>40</span>    this.direction = TDropdownMenuDirection.auto,</div>
+<div class='row nod'><span class='ln'>41</span>    this.duration = 200.0,</div>
+<div class='row nod'><span class='ln'>42</span>    this.showOverlay = true,</div>
+<div class='row nod'><span class='ln'>43</span>    this.isScrollable = false,</div>
+<div class='row nod'><span class='ln'>44</span>    this.arrowIcon,</div>
+<div class='row nod'><span class='ln'>45</span>    this.arrowColor,</div>
+<div class='row nod'><span class='ln'>46</span>    this.labelBuilder,</div>
+<div class='row nod'><span class='ln'>47</span>    this.onMenuOpened,</div>
+<div class='row nod'><span class='ln'>48</span>    this.onMenuClosed,</div>
+<div class='row nod'><span class='ln'>49</span>    this.width,</div>
+<div class='row nod'><span class='ln'>50</span>    this.height = 48,</div>
+<div class='row nod'><span class='ln'>51</span>    this.tabBarAlign = MainAxisAlignment.center,</div>
+<div class='row nod'><span class='ln'>52</span>    this.decoration,</div>
+<div class='row cov'><span class='ln'>53</span>  }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row nod'><span class='ln'>55</span>  /// 下拉菜单构建器，优先级高于[items]</div>
+<div class='row nod'><span class='ln'>56</span>  final TDropdownItemBuilder? builder;</div>
+<div class='row nod'><span class='ln'>57</span></div>
+<div class='row nod'><span class='ln'>58</span>  /// 下拉菜单</div>
+<div class='row nod'><span class='ln'>59</span>  final List&lt;TDropdownItem&gt;? items;</div>
+<div class='row nod'><span class='ln'>60</span></div>
+<div class='row nod'><span class='ln'>61</span>  /// 是否在点击遮罩层后关闭菜单</div>
+<div class='row nod'><span class='ln'>62</span>  final bool? closeOnClickOverlay;</div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row nod'><span class='ln'>64</span>  /// 菜单展开方向（down、up、auto）</div>
+<div class='row nod'><span class='ln'>65</span>  final TDropdownMenuDirection? direction;</div>
+<div class='row nod'><span class='ln'>66</span></div>
+<div class='row nod'><span class='ln'>67</span>  /// 动画时长，毫秒</div>
+<div class='row nod'><span class='ln'>68</span>  final double? duration;</div>
+<div class='row nod'><span class='ln'>69</span></div>
+<div class='row nod'><span class='ln'>70</span>  /// 是否显示遮罩层</div>
+<div class='row nod'><span class='ln'>71</span>  final bool? showOverlay;</div>
+<div class='row nod'><span class='ln'>72</span></div>
+<div class='row nod'><span class='ln'>73</span>  /// 自定义箭头图标</div>
+<div class='row nod'><span class='ln'>74</span>  final IconData? arrowIcon;</div>
+<div class='row nod'><span class='ln'>75</span></div>
+<div class='row nod'><span class='ln'>76</span>  /// 自定义箭头颜色</div>
+<div class='row nod'><span class='ln'>77</span>  final Color? arrowColor;</div>
+<div class='row nod'><span class='ln'>78</span></div>
+<div class='row nod'><span class='ln'>79</span>  /// 自定义标签内容</div>
+<div class='row nod'><span class='ln'>80</span>  final LabelBuilder? labelBuilder;</div>
+<div class='row nod'><span class='ln'>81</span></div>
+<div class='row nod'><span class='ln'>82</span>  /// 展开菜单事件</div>
+<div class='row nod'><span class='ln'>83</span>  final ValueChanged&lt;int&gt;? onMenuOpened;</div>
+<div class='row nod'><span class='ln'>84</span></div>
+<div class='row nod'><span class='ln'>85</span>  /// 关闭菜单事件</div>
+<div class='row nod'><span class='ln'>86</span>  final ValueChanged&lt;int&gt;? onMenuClosed;</div>
+<div class='row nod'><span class='ln'>87</span></div>
+<div class='row nod'><span class='ln'>88</span>  /// 是否开启滚动列表</div>
+<div class='row nod'><span class='ln'>89</span>  final bool? isScrollable;</div>
+<div class='row nod'><span class='ln'>90</span></div>
+<div class='row nod'><span class='ln'>91</span>  /// menu的宽度</div>
+<div class='row nod'><span class='ln'>92</span>  final double? width;</div>
+<div class='row nod'><span class='ln'>93</span></div>
+<div class='row nod'><span class='ln'>94</span>  /// menu的高度</div>
+<div class='row nod'><span class='ln'>95</span>  final double? height;</div>
+<div class='row nod'><span class='ln'>96</span></div>
+<div class='row nod'><span class='ln'>97</span>  /// [TDropdownItem.label]和[arrowIcon]/[TDropdownItem.arrowIcon]的对齐方式</div>
+<div class='row nod'><span class='ln'>98</span>  final MainAxisAlignment? tabBarAlign;</div>
+<div class='row nod'><span class='ln'>99</span></div>
+<div class='row nod'><span class='ln'>100</span>  /// 下拉菜单的装饰器</div>
+<div class='row nod'><span class='ln'>101</span>  final Decoration? decoration;</div>
+<div class='row nod'><span class='ln'>102</span></div>
+<div class='row cov'><span class='ln'>103</span>  @override</div>
+<div class='row cov'><span class='ln'>104</span>  _TDropdownMenuState createState() =&gt; _TDropdownMenuState();</div>
+<div class='row nod'><span class='ln'>105</span>}</div>
+<div class='row nod'><span class='ln'>106</span></div>
+<div class='row nod'><span class='ln'>107</span>class _TDropdownMenuState extends State&lt;TDropdownMenu&gt;</div>
+<div class='row nod'><span class='ln'>108</span>    with TickerProviderStateMixin {</div>
+<div class='row nod'><span class='ln'>109</span>  List&lt;TDropdownItem&gt;? _items;</div>
+<div class='row nod'><span class='ln'>110</span>  List&lt;AnimationController&gt;? _iconControllers;</div>
+<div class='row nod'><span class='ln'>111</span>  late List&lt;Animation&lt;double&gt;&gt; _iconAnimations;</div>
+<div class='row nod'><span class='ln'>112</span>  late List&lt;bool&gt; _isOpened;</div>
+<div class='row nod'><span class='ln'>113</span>  TDropdownPopup? _dropdownPopup;</div>
+<div class='row nod'><span class='ln'>114</span></div>
+<div class='row cov'><span class='ln'>115</span>  @override</div>
+<div class='row nod'><span class='ln'>116</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>117</span>    super.initState();</div>
+<div class='row cov'><span class='ln'>118</span>    _init();</div>
+<div class='row nod'><span class='ln'>119</span>  }</div>
+<div class='row nod'><span class='ln'>120</span></div>
+<div class='row cov'><span class='ln'>121</span>  @override</div>
+<div class='row nod'><span class='ln'>122</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>123</span>    _iconControllers?.forEach((controller) {</div>
+<div class='row cov'><span class='ln'>124</span>      controller.dispose();</div>
+<div class='row nod'><span class='ln'>125</span>    });</div>
+<div class='row cov'><span class='ln'>126</span>    super.dispose();</div>
+<div class='row nod'><span class='ln'>127</span>  }</div>
+<div class='row nod'><span class='ln'>128</span></div>
+<div class='row unc'><span class='ln'>129</span>▶   @override</div>
+<div class='row nod'><span class='ln'>130</span>  void didUpdateWidget(TDropdownMenu oldWidget) {</div>
+<div class='row unc'><span class='ln'>131</span>▶     super.didUpdateWidget(oldWidget);</div>
+<div class='row unc'><span class='ln'>132</span>▶     if (widget.builder != oldWidget.builder ||</div>
+<div class='row unc'><span class='ln'>133</span>▶         widget.items != oldWidget.items) {</div>
+<div class='row unc'><span class='ln'>134</span>▶       _init();</div>
+<div class='row nod'><span class='ln'>135</span>    }</div>
+<div class='row nod'><span class='ln'>136</span>  }</div>
+<div class='row nod'><span class='ln'>137</span></div>
+<div class='row cov'><span class='ln'>138</span>  @override</div>
+<div class='row nod'><span class='ln'>139</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>140</span>    var tabBar = widget.isScrollable == true</div>
+<div class='row cov'><span class='ln'>141</span>        ? SingleChildScrollView(</div>
+<div class='row nod'><span class='ln'>142</span>            scrollDirection: Axis.horizontal,</div>
+<div class='row nod'><span class='ln'>143</span>            physics: const BouncingScrollPhysics(),</div>
+<div class='row cov'><span class='ln'>144</span>            child: Row(</div>
+<div class='row cov'><span class='ln'>145</span>              children: List.generate(</div>
+<div class='row cov'><span class='ln'>146</span>                _items?.length ?? 0,</div>
+<div class='row cov'><span class='ln'>147</span>                (index) =&gt; SizedBox(</div>
+<div class='row cov'><span class='ln'>148</span>                  width: _items![index].tabBarWidth,</div>
+<div class='row cov'><span class='ln'>149</span>                  child: _tabBarContent(index),</div>
+<div class='row nod'><span class='ln'>150</span>                ),</div>
+<div class='row nod'><span class='ln'>151</span>              ),</div>
+<div class='row nod'><span class='ln'>152</span>            ),</div>
+<div class='row nod'><span class='ln'>153</span>          )</div>
+<div class='row cov'><span class='ln'>154</span>        : Row(</div>
+<div class='row cov'><span class='ln'>155</span>            children: List.generate(</div>
+<div class='row cov'><span class='ln'>156</span>              _items?.length ?? 0,</div>
+<div class='row cov'><span class='ln'>157</span>              (index) {</div>
+<div class='row cov'><span class='ln'>158</span>                return Expanded(</div>
+<div class='row cov'><span class='ln'>159</span>                  flex: _items![index].tabBarFlex ?? 1,</div>
+<div class='row cov'><span class='ln'>160</span>                  child: _tabBarContent(index),</div>
+<div class='row nod'><span class='ln'>161</span>                );</div>
+<div class='row nod'><span class='ln'>162</span>              },</div>
+<div class='row nod'><span class='ln'>163</span>            ),</div>
+<div class='row nod'><span class='ln'>164</span>          );</div>
+<div class='row cov'><span class='ln'>165</span>    return Container(</div>
+<div class='row cov'><span class='ln'>166</span>      height: widget.height,</div>
+<div class='row cov'><span class='ln'>167</span>      width: widget.width ?? double.infinity,</div>
+<div class='row cov'><span class='ln'>168</span>      decoration: widget.decoration ??</div>
+<div class='row cov'><span class='ln'>169</span>          BoxDecoration(</div>
+<div class='row cov'><span class='ln'>170</span>            color: context.tTheme.bgColorContainer,</div>
+<div class='row cov'><span class='ln'>171</span>            border: Border(</div>
+<div class='row cov'><span class='ln'>172</span>              bottom: BorderSide(</div>
+<div class='row cov'><span class='ln'>173</span>                color: context.tTheme.componentStrokeColor,</div>
+<div class='row nod'><span class='ln'>174</span>                width: 0.5,</div>
+<div class='row nod'><span class='ln'>175</span>              ),</div>
+<div class='row nod'><span class='ln'>176</span>            ),</div>
+<div class='row nod'><span class='ln'>177</span>          ),</div>
+<div class='row nod'><span class='ln'>178</span>      child: tabBar,</div>
+<div class='row nod'><span class='ln'>179</span>    );</div>
+<div class='row nod'><span class='ln'>180</span>  }</div>
+<div class='row nod'><span class='ln'>181</span></div>
+<div class='row cov'><span class='ln'>182</span>  void _init() {</div>
+<div class='row cov'><span class='ln'>183</span>    var items = widget.builder?.call(context) ?? widget.items ?? [];</div>
+<div class='row cov'><span class='ln'>184</span>    if (items.length == _items?.length) {</div>
+<div class='row unc'><span class='ln'>185</span>▶       _items = items;</div>
+<div class='row nod'><span class='ln'>186</span>      return;</div>
+<div class='row nod'><span class='ln'>187</span>    }</div>
+<div class='row cov'><span class='ln'>188</span>    _isOpened = List.filled(items.length, false);</div>
+<div class='row cov'><span class='ln'>189</span>    _items = items;</div>
+<div class='row cov'><span class='ln'>190</span>    _iconControllers?.forEach((controller) {</div>
+<div class='row unc'><span class='ln'>191</span>▶       controller.dispose();</div>
+<div class='row nod'><span class='ln'>192</span>    });</div>
+<div class='row cov'><span class='ln'>193</span>    _iconControllers = List.generate(</div>
+<div class='row cov'><span class='ln'>194</span>        _items?.length ?? 0,</div>
+<div class='row cov'><span class='ln'>195</span>        (index) =&gt; AnimationController(</div>
+<div class='row nod'><span class='ln'>196</span>              duration:</div>
+<div class='row cov'><span class='ln'>197</span>                  Duration(milliseconds: (widget.duration ?? 200).toInt()),</div>
+<div class='row nod'><span class='ln'>198</span>              vsync: this,</div>
+<div class='row nod'><span class='ln'>199</span>            ));</div>
+<div class='row cov'><span class='ln'>200</span>    _iconAnimations = _iconControllers</div>
+<div class='row cov'><span class='ln'>201</span>            ?.map((e) =&gt; Tween&lt;double&gt;(begin: 0, end: 0.5).animate(e))</div>
+<div class='row cov'><span class='ln'>202</span>            .toList() ??</div>
+<div class='row unc'><span class='ln'>203</span>▶         [];</div>
+<div class='row nod'><span class='ln'>204</span>  }</div>
+<div class='row nod'><span class='ln'>205</span></div>
+<div class='row cov'><span class='ln'>206</span>  Widget _tabBarContent(int index) {</div>
+<div class='row cov'><span class='ln'>207</span>    final color = _disabled(index)</div>
+<div class='row cov'><span class='ln'>208</span>        ? context.tTheme.textDisabledColor</div>
+<div class='row cov'><span class='ln'>209</span>        : _isOpened[index]</div>
+<div class='row cov'><span class='ln'>210</span>            ? context.tTheme.brandNormalColor</div>
+<div class='row cov'><span class='ln'>211</span>            : context.tTheme.textColorPrimary;</div>
+<div class='row nod'><span class='ln'>212</span></div>
+<div class='row cov'><span class='ln'>213</span>    return GestureDetector(</div>
+<div class='row nod'><span class='ln'>214</span>      behavior: HitTestBehavior.opaque,</div>
+<div class='row cov'><span class='ln'>215</span>      onTap: () async {</div>
+<div class='row cov'><span class='ln'>216</span>        if (_disabled(index)) {</div>
+<div class='row nod'><span class='ln'>217</span>          return;</div>
+<div class='row nod'><span class='ln'>218</span>        }</div>
+<div class='row cov'><span class='ln'>219</span>        _isOpened[index] ? await Navigator.maybePop(context) : _openMenu(index);</div>
+<div class='row nod'><span class='ln'>220</span>      },</div>
+<div class='row cov'><span class='ln'>221</span>      child: Row(</div>
+<div class='row nod'><span class='ln'>222</span>        mainAxisSize: MainAxisSize.min,</div>
+<div class='row cov'><span class='ln'>223</span>        mainAxisAlignment: _items![index].tabBarAlign ??</div>
+<div class='row cov'><span class='ln'>224</span>            widget.tabBarAlign ??</div>
+<div class='row nod'><span class='ln'>225</span>            MainAxisAlignment.center,</div>
+<div class='row cov'><span class='ln'>226</span>        children: [</div>
+<div class='row cov'><span class='ln'>227</span>          Flexible(child: _getText(index, color)),</div>
+<div class='row cov'><span class='ln'>228</span>          _getIcon(index, color)</div>
+<div class='row nod'><span class='ln'>229</span>        ],</div>
+<div class='row nod'><span class='ln'>230</span>      ),</div>
+<div class='row nod'><span class='ln'>231</span>    );</div>
+<div class='row nod'><span class='ln'>232</span>  }</div>
+<div class='row nod'><span class='ln'>233</span></div>
+<div class='row cov'><span class='ln'>234</span>  Widget _getText(int index, Color color) {</div>
+<div class='row cov'><span class='ln'>235</span>    final label = _items![index].getLabel();</div>
+<div class='row cov'><span class='ln'>236</span>    if (widget.labelBuilder != null) {</div>
+<div class='row cov'><span class='ln'>237</span>      return widget.labelBuilder!(context, label, _isOpened[index], index);</div>
+<div class='row nod'><span class='ln'>238</span>    }</div>
+<div class='row cov'><span class='ln'>239</span>    return TText(</div>
+<div class='row nod'><span class='ln'>240</span>      label,</div>
+<div class='row cov'><span class='ln'>241</span>      font: context.tTheme.fontBodyMedium,</div>
+<div class='row nod'><span class='ln'>242</span>      textColor: color,</div>
+<div class='row nod'><span class='ln'>243</span>      maxLines: 1,</div>
+<div class='row nod'><span class='ln'>244</span>      overflow: TextOverflow.ellipsis,</div>
+<div class='row nod'><span class='ln'>245</span>    );</div>
+<div class='row nod'><span class='ln'>246</span>  }</div>
+<div class='row nod'><span class='ln'>247</span></div>
+<div class='row cov'><span class='ln'>248</span>  Widget _getIcon(int index, Color color) {</div>
+<div class='row cov'><span class='ln'>249</span>    var arrowIcon = _items![index].arrowIcon ??</div>
+<div class='row cov'><span class='ln'>250</span>        widget.arrowIcon ??</div>
+<div class='row cov'><span class='ln'>251</span>        (widget.direction == TDropdownMenuDirection.up</div>
+<div class='row nod'><span class='ln'>252</span>            ? TIcons.caret_up_small</div>
+<div class='row nod'><span class='ln'>253</span>            : TIcons.caret_down_small);</div>
+<div class='row cov'><span class='ln'>254</span>    return RotationTransition(</div>
+<div class='row cov'><span class='ln'>255</span>      turns: _iconAnimations[index],</div>
+<div class='row cov'><span class='ln'>256</span>      child: Icon(arrowIcon,</div>
+<div class='row nod'><span class='ln'>257</span>          size: 20,</div>
+<div class='row cov'><span class='ln'>258</span>          color: _items![index].arrowColor ?? widget.arrowColor ?? color),</div>
+<div class='row nod'><span class='ln'>259</span>    );</div>
+<div class='row nod'><span class='ln'>260</span>  }</div>
+<div class='row nod'><span class='ln'>261</span></div>
+<div class='row cov'><span class='ln'>262</span>  bool _disabled(int index) {</div>
+<div class='row cov'><span class='ln'>263</span>    return _items![index].disabled == true;</div>
+<div class='row nod'><span class='ln'>264</span>  }</div>
+<div class='row nod'><span class='ln'>265</span></div>
+<div class='row nod'><span class='ln'>266</span>  /// 打开指定索引的菜单</div>
+<div class='row unc'><span class='ln'>267</span>▶   Future&lt;void&gt; openMenu(int index) async {</div>
+<div class='row unc'><span class='ln'>268</span>▶     await _openMenu(index);</div>
+<div class='row nod'><span class='ln'>269</span>  }</div>
+<div class='row nod'><span class='ln'>270</span></div>
+<div class='row nod'><span class='ln'>271</span>  /// 关闭菜单</div>
+<div class='row unc'><span class='ln'>272</span>▶   Future&lt;void&gt; closeMenu() async {</div>
+<div class='row unc'><span class='ln'>273</span>▶     await _closeMenu();</div>
+<div class='row nod'><span class='ln'>274</span>  }</div>
+<div class='row nod'><span class='ln'>275</span></div>
+<div class='row nod'><span class='ln'>276</span>  /// 打开菜单</div>
+<div class='row cov'><span class='ln'>277</span>  Future&lt;void&gt; _openMenu(int index) async {</div>
+<div class='row nod'><span class='ln'>278</span>    /// 如果已经打开了，则关闭</div>
+<div class='row cov'><span class='ln'>279</span>    if (_isOpened.contains(true)) {</div>
+<div class='row unc'><span class='ln'>280</span>▶       await Navigator.maybePop(context);</div>
+<div class='row nod'><span class='ln'>281</span>    }</div>
+<div class='row cov'><span class='ln'>282</span>    _dropdownPopup ??= TDropdownPopup(</div>
+<div class='row cov'><span class='ln'>283</span>      child: _items![index],</div>
+<div class='row cov'><span class='ln'>284</span>      parentContext: context,</div>
+<div class='row cov'><span class='ln'>285</span>      handleClose: _closeMenu,</div>
+<div class='row cov'><span class='ln'>286</span>      direction: widget.direction,</div>
+<div class='row cov'><span class='ln'>287</span>      showOverlay: widget.showOverlay,</div>
+<div class='row cov'><span class='ln'>288</span>      closeOnClickOverlay: widget.closeOnClickOverlay,</div>
+<div class='row cov'><span class='ln'>289</span>      duration: Duration(milliseconds: (widget.duration ?? 200).toInt()),</div>
+<div class='row nod'><span class='ln'>290</span>    );</div>
+<div class='row cov'><span class='ln'>291</span>    unawaited(_dropdownPopup!.add(_items![index]).then((value) {</div>
+<div class='row cov'><span class='ln'>292</span>      widget.onMenuOpened?.call(index);</div>
+<div class='row nod'><span class='ln'>293</span>    }));</div>
+<div class='row nod'><span class='ln'>294</span></div>
+<div class='row cov'><span class='ln'>295</span>    _isOpened = List.filled(_items?.length ?? 0, false);</div>
+<div class='row cov'><span class='ln'>296</span>    _isOpened[index] = true;</div>
+<div class='row cov'><span class='ln'>297</span>    setState(() {});</div>
+<div class='row cov'><span class='ln'>298</span>    _iconControllers?.asMap().forEach((key, value) {</div>
+<div class='row cov'><span class='ln'>299</span>      if (value.status == AnimationStatus.completed) {</div>
+<div class='row unc'><span class='ln'>300</span>▶         value.reverse();</div>
+<div class='row cov'><span class='ln'>301</span>      } else if (key == index) {</div>
+<div class='row cov'><span class='ln'>302</span>        value.forward();</div>
+<div class='row nod'><span class='ln'>303</span>      }</div>
+<div class='row nod'><span class='ln'>304</span>    });</div>
+<div class='row nod'><span class='ln'>305</span>  }</div>
+<div class='row nod'><span class='ln'>306</span></div>
+<div class='row nod'><span class='ln'>307</span>  /// 关闭菜单</div>
+<div class='row cov'><span class='ln'>308</span>  Future&lt;void&gt; _closeMenu() async {</div>
+<div class='row cov'><span class='ln'>309</span>    var index = _isOpened.indexOf(true);</div>
+<div class='row cov'><span class='ln'>310</span>    if (index &lt; 0) {</div>
+<div class='row nod'><span class='ln'>311</span>      return;</div>
+<div class='row nod'><span class='ln'>312</span>    }</div>
+<div class='row cov'><span class='ln'>313</span>    _isOpened = List.filled(_items?.length ?? 0, false);</div>
+<div class='row cov'><span class='ln'>314</span>    setState(() {});</div>
+<div class='row cov'><span class='ln'>315</span>    _iconControllers?.forEach((value) {</div>
+<div class='row cov'><span class='ln'>316</span>      if (value.status == AnimationStatus.completed) {</div>
+<div class='row cov'><span class='ln'>317</span>        value.reverse();</div>
+<div class='row nod'><span class='ln'>318</span>      }</div>
+<div class='row nod'><span class='ln'>319</span>    });</div>
+<div class='row cov'><span class='ln'>320</span>    await _dropdownPopup?.remove();</div>
+<div class='row cov'><span class='ln'>321</span>    if (index &gt;= 0 &amp;&amp; widget.onMenuClosed != null) {</div>
+<div class='row unc'><span class='ln'>322</span>▶       widget.onMenuClosed!(index);</div>
+<div class='row nod'><span class='ln'>323</span>    }</div>
+<div class='row nod'><span class='ln'>324</span>  }</div>
+<div class='row nod'><span class='ln'>325</span>}</div>
+<div class='row nod'><span class='ln'>326</span></div>
+</pre></body></html>

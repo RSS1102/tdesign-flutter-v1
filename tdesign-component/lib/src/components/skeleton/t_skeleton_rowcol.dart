@@ -13,7 +13,7 @@ class TSkeletonRowColStyle {
 
   /// 默认行间距
   static double _defaultRowSpacing(BuildContext context) =>
-      TTheme.of(context).spacer16;
+      context.tTheme.spacer16;
 }
 
 /// 骨架屏行列框架
@@ -77,7 +77,7 @@ class TSkeletonRowColObjStyle {
 
   /// 默认背景颜色
   static Color _defaultBackground(BuildContext context) =>
-      TTheme.of(context).bgColorComponent;
+      context.tTheme.bgColorComponent;
 
   /// 透明背景颜色
   static Color _transparentBackground(BuildContext context) =>
@@ -85,15 +85,15 @@ class TSkeletonRowColObjStyle {
 
   /// 圆形圆角
   static double _circleBorderRadius(BuildContext context) =>
-      TTheme.of(context).radiusCircle;
+      context.tTheme.radiusCircle;
 
   /// 矩形圆角
   static double _rectBorderRadius(BuildContext context) =>
-      TTheme.of(context).radiusDefault;
+      context.tTheme.radiusDefault;
 
   /// 文本圆角
   static double _textBorderRadius(BuildContext context) =>
-      TTheme.of(context).radiusSmall;
+      context.tTheme.radiusSmall;
 }
 
 /// 骨架屏元素

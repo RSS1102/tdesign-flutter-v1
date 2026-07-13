@@ -9,6 +9,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart';
 
 import '../../theme/t_colors.dart';
 import '../../theme/t_fonts.dart';
@@ -17,7 +18,6 @@ import '../../theme/t_spacers.dart';
 import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
 import '../../util/t_toolbar_pressable.dart';
-import '../icon/t_icons.dart';
 import '../text/t_text.dart';
 
 part '_popup_center_close.dart';
@@ -52,7 +52,8 @@ part 't_popup_types.dart';
 ///
 /// 配置项见 [TPopupOptions]；方向见 [TPopupPlacement]。
 final class TPopup {
-  const TPopup._();
+  // 私有构造器：工具类仅暴露静态方法，无外部调用，标记为覆盖率例外（不可达死代码）。
+  const TPopup._(); // coverage:ignore-line
 
   /// 打开浮层并压入独立 [PopupRoute]。
   ///

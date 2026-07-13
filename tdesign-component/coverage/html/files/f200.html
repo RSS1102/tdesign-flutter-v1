@@ -1,0 +1,1245 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/tabbar/t_bottom_tab_bar.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/tabbar/t_bottom_tab_bar.dart</h1></header><div class='meta'>行覆盖 <b>95.6%</b> (411/430) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>/// 展开项 向下箭头宽</div>
+<div class='row nod'><span class='ln'>6</span>const double _kArrowWidth = 13.5;</div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span>/// 展开项  向下箭头高</div>
+<div class='row nod'><span class='ln'>9</span>const double _kArrowHeight = 8;</div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span>/// 展开项选项弹窗 单个item最低高度</div>
+<div class='row nod'><span class='ln'>12</span>const double _kMenuItemMinHeight = 23;</div>
+<div class='row nod'><span class='ln'>13</span></div>
+<div class='row nod'><span class='ln'>14</span>/// 展开项弹窗 单个item默认高度</div>
+<div class='row nod'><span class='ln'>15</span>const double _kDefaultMenuItemHeight = 48;</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>/// 展开项弹窗 单个item默认宽度为按钮宽度-20</div>
+<div class='row nod'><span class='ln'>18</span>const double _kDefaultMenuItemWidthShrink = 20;</div>
+<div class='row nod'><span class='ln'>19</span></div>
+<div class='row nod'><span class='ln'>20</span>/// 导航栏默认高度</div>
+<div class='row nod'><span class='ln'>21</span>const double _kDefaultTabBarHeight = 56;</div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>/// 展开项弹窗弹出动画时间</div>
+<div class='row nod'><span class='ln'>24</span>const Duration _kPopupMenuDuration = Duration(milliseconds: 10);</div>
+<div class='row nod'><span class='ln'>25</span></div>
+<div class='row nod'><span class='ln'>26</span>/// 底部标签栏基本类型</div>
+<div class='row nod'><span class='ln'>27</span>enum TBottomTabBarBasicType {</div>
+<div class='row nod'><span class='ln'>28</span>  /// 单层级纯文本标签栏</div>
+<div class='row nod'><span class='ln'>29</span>  text,</div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row nod'><span class='ln'>31</span>  /// 文本加图标标签栏</div>
+<div class='row nod'><span class='ln'>32</span>  iconText,</div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span>  /// 纯图标标签栏</div>
+<div class='row nod'><span class='ln'>35</span>  icon,</div>
+<div class='row nod'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>  /// 双层级纯文本标签栏</div>
+<div class='row nod'><span class='ln'>38</span>  expansionPanel,</div>
+<div class='row nod'><span class='ln'>39</span>}</div>
+<div class='row nod'><span class='ln'>40</span></div>
+<div class='row nod'><span class='ln'>41</span>/// 底部标签栏组件样式</div>
+<div class='row nod'><span class='ln'>42</span>enum TBottomTabBarComponentType {</div>
+<div class='row nod'><span class='ln'>43</span>  /// 普通样式</div>
+<div class='row nod'><span class='ln'>44</span>  normal,</div>
+<div class='row nod'><span class='ln'>45</span></div>
+<div class='row nod'><span class='ln'>46</span>  /// 带胶囊背景的item选中样式</div>
+<div class='row nod'><span class='ln'>47</span>  label</div>
+<div class='row nod'><span class='ln'>48</span>}</div>
+<div class='row nod'><span class='ln'>49</span></div>
+<div class='row nod'><span class='ln'>50</span>/// 底部标签栏轮廓样式</div>
+<div class='row nod'><span class='ln'>51</span>enum TBottomTabBarOutlineType {</div>
+<div class='row nod'><span class='ln'>52</span>  /// 填充样式</div>
+<div class='row nod'><span class='ln'>53</span>  filled,</div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row nod'><span class='ln'>55</span>  /// 胶囊样式</div>
+<div class='row nod'><span class='ln'>56</span>  capsule</div>
+<div class='row nod'><span class='ln'>57</span>}</div>
+<div class='row nod'><span class='ln'>58</span></div>
+<div class='row nod'><span class='ln'>59</span>/// 指示器动画类型</div>
+<div class='row nod'><span class='ln'>60</span>enum TBottomTabBarIndicatorAnimation {</div>
+<div class='row nod'><span class='ln'>61</span>  /// 无动画，瞬间切换</div>
+<div class='row nod'><span class='ln'>62</span>  none,</div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row nod'><span class='ln'>64</span>  /// 线性滑动：指示器匀速从一个 tab 滑到另一个</div>
+<div class='row nod'><span class='ln'>65</span>  linear,</div>
+<div class='row nod'><span class='ln'>66</span></div>
+<div class='row nod'><span class='ln'>67</span>  /// 弹性动画：指示器先拉伸后收缩</div>
+<div class='row nod'><span class='ln'>68</span>  elastic,</div>
+<div class='row nod'><span class='ln'>69</span>}</div>
+<div class='row nod'><span class='ln'>70</span></div>
+<div class='row nod'><span class='ln'>71</span>/// 飘新配置</div>
+<div class='row nod'><span class='ln'>72</span>class BadgeConfig {</div>
+<div class='row cov'><span class='ln'>73</span>  BadgeConfig({</div>
+<div class='row nod'><span class='ln'>74</span>    required this.showBadge,</div>
+<div class='row nod'><span class='ln'>75</span>    TBadge? tBadge,</div>
+<div class='row nod'><span class='ln'>76</span>    this.badgeTopOffset,</div>
+<div class='row nod'><span class='ln'>77</span>    this.badgeRightOffset,</div>
+<div class='row nod'><span class='ln'>78</span>  }) : tBadge = tBadge ?? const TBadge(TBadgeVariant.redPoint);</div>
+<div class='row nod'><span class='ln'>79</span></div>
+<div class='row nod'><span class='ln'>80</span>  /// 是否展示消息</div>
+<div class='row nod'><span class='ln'>81</span>  final bool showBadge;</div>
+<div class='row nod'><span class='ln'>82</span></div>
+<div class='row nod'><span class='ln'>83</span>  /// 消息样式（未设置但 showBadge 为 true，则默认使用红点）</div>
+<div class='row nod'><span class='ln'>84</span>  final TBadge? tBadge;</div>
+<div class='row nod'><span class='ln'>85</span></div>
+<div class='row nod'><span class='ln'>86</span>  /// 消息顶部偏移量</div>
+<div class='row nod'><span class='ln'>87</span>  final double? badgeTopOffset;</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row nod'><span class='ln'>89</span>  /// 消息右侧偏移量</div>
+<div class='row nod'><span class='ln'>90</span>  final double? badgeRightOffset;</div>
+<div class='row nod'><span class='ln'>91</span>}</div>
+<div class='row nod'><span class='ln'>92</span></div>
+<div class='row nod'><span class='ln'>93</span>/// 单个 tab 配置</div>
+<div class='row nod'><span class='ln'>94</span>class TBottomTabBarTabConfig {</div>
+<div class='row cov'><span class='ln'>95</span>  TBottomTabBarTabConfig(</div>
+<div class='row nod'><span class='ln'>96</span>      {required this.onTap,</div>
+<div class='row nod'><span class='ln'>97</span>      this.selectedIcon,</div>
+<div class='row nod'><span class='ln'>98</span>      this.unselectedIcon,</div>
+<div class='row nod'><span class='ln'>99</span>      this.tabText,</div>
+<div class='row nod'><span class='ln'>100</span>      this.selectTabTextStyle,</div>
+<div class='row nod'><span class='ln'>101</span>      this.unselectTabTextStyle,</div>
+<div class='row nod'><span class='ln'>102</span>      this.badgeConfig,</div>
+<div class='row nod'><span class='ln'>103</span>      this.popUpButtonConfig,</div>
+<div class='row nod'><span class='ln'>104</span>      this.onLongPress,</div>
+<div class='row nod'><span class='ln'>105</span>      this.allowMultipleTaps = false})</div>
+<div class='row cov'><span class='ln'>106</span>      : assert(() {</div>
+<div class='row cov'><span class='ln'>107</span>          if (badgeConfig?.showBadge ?? false) {</div>
+<div class='row cov'><span class='ln'>108</span>            if (badgeConfig?.tBadge == null) {</div>
+<div class='row unc'><span class='ln'>109</span>▶               throw FlutterError(&#x27;[NavigationTab] if set showBadge = true, &#x27;</div>
+<div class='row nod'><span class='ln'>110</span>                  &#x27;you must set a tBadge instance&#x27;);</div>
+<div class='row nod'><span class='ln'>111</span>            }</div>
+<div class='row nod'><span class='ln'>112</span>          }</div>
+<div class='row nod'><span class='ln'>113</span>          return true;</div>
+<div class='row cov'><span class='ln'>114</span>        }());</div>
+<div class='row nod'><span class='ln'>115</span></div>
+<div class='row nod'><span class='ln'>116</span>  /// 选中时图标</div>
+<div class='row nod'><span class='ln'>117</span>  final Widget? selectedIcon;</div>
+<div class='row nod'><span class='ln'>118</span></div>
+<div class='row nod'><span class='ln'>119</span>  /// 未选中时图标</div>
+<div class='row nod'><span class='ln'>120</span>  final Widget? unselectedIcon;</div>
+<div class='row nod'><span class='ln'>121</span></div>
+<div class='row nod'><span class='ln'>122</span>  /// tab 文本</div>
+<div class='row nod'><span class='ln'>123</span>  final String? tabText;</div>
+<div class='row nod'><span class='ln'>124</span></div>
+<div class='row nod'><span class='ln'>125</span>  /// 文本已选择样式 basicType为text时必填</div>
+<div class='row nod'><span class='ln'>126</span>  final TextStyle? selectTabTextStyle;</div>
+<div class='row nod'><span class='ln'>127</span></div>
+<div class='row nod'><span class='ln'>128</span>  /// 文本未选择样式 basicType为text时必填</div>
+<div class='row nod'><span class='ln'>129</span>  final TextStyle? unselectTabTextStyle;</div>
+<div class='row nod'><span class='ln'>130</span></div>
+<div class='row nod'><span class='ln'>131</span>  /// tab点击事件</div>
+<div class='row nod'><span class='ln'>132</span>  final GestureTapCallback? onTap;</div>
+<div class='row nod'><span class='ln'>133</span></div>
+<div class='row nod'><span class='ln'>134</span>  /// 消息配置</div>
+<div class='row nod'><span class='ln'>135</span>  final BadgeConfig? badgeConfig;</div>
+<div class='row nod'><span class='ln'>136</span></div>
+<div class='row nod'><span class='ln'>137</span>  /// 弹窗配置</div>
+<div class='row nod'><span class='ln'>138</span>  final TBottomTabBarPopUpBtnConfig? popUpButtonConfig;</div>
+<div class='row nod'><span class='ln'>139</span></div>
+<div class='row nod'><span class='ln'>140</span>  /// onTap 方法允许点击多次</div>
+<div class='row nod'><span class='ln'>141</span>  final bool allowMultipleTaps;</div>
+<div class='row nod'><span class='ln'>142</span></div>
+<div class='row nod'><span class='ln'>143</span>  /// 长按事件</div>
+<div class='row nod'><span class='ln'>144</span>  final GestureLongPressCallback? onLongPress;</div>
+<div class='row nod'><span class='ln'>145</span>}</div>
+<div class='row nod'><span class='ln'>146</span></div>
+<div class='row nod'><span class='ln'>147</span>/// 底部标签栏</div>
+<div class='row nod'><span class='ln'>148</span>///</div>
+<div class='row nod'><span class='ln'>149</span>/// 支持文本/图标/图文/展开面板四种基本类型，</div>
+<div class='row nod'><span class='ln'>150</span>/// 普通和胶囊两种选中样式，填充和胶囊两种轮廓样式。</div>
+<div class='row nod'><span class='ln'>151</span>class TBottomTabBar extends StatefulWidget {</div>
+<div class='row cov'><span class='ln'>152</span>  TBottomTabBar(</div>
+<div class='row nod'><span class='ln'>153</span>    this.basicType, {</div>
+<div class='row nod'><span class='ln'>154</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>155</span>    this.componentType = TBottomTabBarComponentType.label,</div>
+<div class='row nod'><span class='ln'>156</span>    this.outlineType = TBottomTabBarOutlineType.filled,</div>
+<div class='row nod'><span class='ln'>157</span>    required this.navigationTabs,</div>
+<div class='row nod'><span class='ln'>158</span>    this.barHeight = _kDefaultTabBarHeight,</div>
+<div class='row nod'><span class='ln'>159</span>    this.useVerticalDivider,</div>
+<div class='row nod'><span class='ln'>160</span>    this.dividerHeight,</div>
+<div class='row nod'><span class='ln'>161</span>    this.dividerThickness,</div>
+<div class='row nod'><span class='ln'>162</span>    this.dividerColor,</div>
+<div class='row nod'><span class='ln'>163</span>    this.showTopBorder = true,</div>
+<div class='row nod'><span class='ln'>164</span>    this.topBorder,</div>
+<div class='row nod'><span class='ln'>165</span>    this.useSafeArea = true,</div>
+<div class='row nod'><span class='ln'>166</span>    this.placeholder = true,</div>
+<div class='row nod'><span class='ln'>167</span>    this.selectedBgColor,</div>
+<div class='row nod'><span class='ln'>168</span>    this.unselectedBgColor,</div>
+<div class='row nod'><span class='ln'>169</span>    this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>170</span>    this.centerDistance,</div>
+<div class='row nod'><span class='ln'>171</span>    this.currentIndex,</div>
+<div class='row nod'><span class='ln'>172</span>    this.needInkWell = false,</div>
+<div class='row nod'><span class='ln'>173</span>    this.indicatorAnimation = TBottomTabBarIndicatorAnimation.none,</div>
+<div class='row nod'><span class='ln'>174</span>    this.animationDuration = const Duration(milliseconds: 300),</div>
+<div class='row nod'><span class='ln'>175</span>    this.animationCurve = Curves.easeInOutCubic,</div>
+<div class='row nod'><span class='ln'>176</span>    this.value,</div>
+<div class='row cov'><span class='ln'>177</span>  })  : assert(() {</div>
+<div class='row cov'><span class='ln'>178</span>          if (navigationTabs.isEmpty) {</div>
+<div class='row cov'><span class='ln'>179</span>            throw FlutterError(&#x27;[TBottomTabBar] please set at least one tab!&#x27;);</div>
+<div class='row nod'><span class='ln'>180</span>          }</div>
+<div class='row cov'><span class='ln'>181</span>          if (basicType == TBottomTabBarBasicType.text) {</div>
+<div class='row cov'><span class='ln'>182</span>            for (final item in navigationTabs) {</div>
+<div class='row cov'><span class='ln'>183</span>              if (item.tabText == null) {</div>
+<div class='row cov'><span class='ln'>184</span>                throw FlutterError(</div>
+<div class='row nod'><span class='ln'>185</span>                    &#x27;[TBottomTabBar] type is TBottomBarType.text, but not set tabText.&#x27;);</div>
+<div class='row nod'><span class='ln'>186</span>              }</div>
+<div class='row nod'><span class='ln'>187</span>            }</div>
+<div class='row nod'><span class='ln'>188</span>          }</div>
+<div class='row cov'><span class='ln'>189</span>          if (basicType == TBottomTabBarBasicType.icon) {</div>
+<div class='row cov'><span class='ln'>190</span>            for (final item in navigationTabs) {</div>
+<div class='row cov'><span class='ln'>191</span>              if (item.selectedIcon == null || item.unselectedIcon == null) {</div>
+<div class='row cov'><span class='ln'>192</span>                throw FlutterError(</div>
+<div class='row nod'><span class='ln'>193</span>                    &#x27;[TBottomTabBar] type is TBottomBarType.icon,&#x27;</div>
+<div class='row nod'><span class='ln'>194</span>                    &#x27;but has no set icon.&#x27;);</div>
+<div class='row nod'><span class='ln'>195</span>              }</div>
+<div class='row nod'><span class='ln'>196</span>            }</div>
+<div class='row nod'><span class='ln'>197</span>          }</div>
+<div class='row cov'><span class='ln'>198</span>          if (basicType == TBottomTabBarBasicType.iconText) {</div>
+<div class='row cov'><span class='ln'>199</span>            for (final item in navigationTabs) {</div>
+<div class='row cov'><span class='ln'>200</span>              if (item.tabText == null ||</div>
+<div class='row cov'><span class='ln'>201</span>                  item.selectedIcon == null ||</div>
+<div class='row cov'><span class='ln'>202</span>                  item.unselectedIcon == null) {</div>
+<div class='row cov'><span class='ln'>203</span>                throw FlutterError(</div>
+<div class='row nod'><span class='ln'>204</span>                    &#x27;[TBottomTabBar] type is TBottomBarType.iconText,&#x27;</div>
+<div class='row nod'><span class='ln'>205</span>                    &#x27;but not set tabText or icon.&#x27;);</div>
+<div class='row nod'><span class='ln'>206</span>              }</div>
+<div class='row nod'><span class='ln'>207</span>            }</div>
+<div class='row nod'><span class='ln'>208</span>          }</div>
+<div class='row nod'><span class='ln'>209</span>          if (currentIndex != null &amp;&amp;</div>
+<div class='row cov'><span class='ln'>210</span>              (currentIndex &lt; 0 || currentIndex &gt;= navigationTabs.length)) {</div>
+<div class='row cov'><span class='ln'>211</span>            throw FlutterError(</div>
+<div class='row nod'><span class='ln'>212</span>                &#x27;[TBottomTabBar] currentIndex must in [0,navigationTabs.length)&#x27;);</div>
+<div class='row nod'><span class='ln'>213</span>          }</div>
+<div class='row nod'><span class='ln'>214</span>          return true;</div>
+<div class='row cov'><span class='ln'>215</span>        }()),</div>
+<div class='row cov'><span class='ln'>216</span>        super(key: key);</div>
+<div class='row nod'><span class='ln'>217</span></div>
+<div class='row nod'><span class='ln'>218</span>  /// 基本样式（纯文本、纯图标、图标+文本）</div>
+<div class='row nod'><span class='ln'>219</span>  final TBottomTabBarBasicType basicType;</div>
+<div class='row nod'><span class='ln'>220</span></div>
+<div class='row nod'><span class='ln'>221</span>  /// 选项样式 默认label</div>
+<div class='row nod'><span class='ln'>222</span>  final TBottomTabBarComponentType? componentType;</div>
+<div class='row nod'><span class='ln'>223</span></div>
+<div class='row nod'><span class='ln'>224</span>  /// 标签栏样式 默认filled</div>
+<div class='row nod'><span class='ln'>225</span>  final TBottomTabBarOutlineType? outlineType;</div>
+<div class='row nod'><span class='ln'>226</span></div>
+<div class='row nod'><span class='ln'>227</span>  /// tabs配置</div>
+<div class='row nod'><span class='ln'>228</span>  final List&lt;TBottomTabBarTabConfig&gt; navigationTabs;</div>
+<div class='row nod'><span class='ln'>229</span></div>
+<div class='row nod'><span class='ln'>230</span>  /// tab高度</div>
+<div class='row nod'><span class='ln'>231</span>  final double? barHeight;</div>
+<div class='row nod'><span class='ln'>232</span></div>
+<div class='row nod'><span class='ln'>233</span>  /// 是否使用竖线分隔（如果选项样式为 label，则强制为 false）</div>
+<div class='row nod'><span class='ln'>234</span>  final bool? useVerticalDivider;</div>
+<div class='row nod'><span class='ln'>235</span></div>
+<div class='row nod'><span class='ln'>236</span>  /// 分割线高度（可选）</div>
+<div class='row nod'><span class='ln'>237</span>  final double? dividerHeight;</div>
+<div class='row nod'><span class='ln'>238</span></div>
+<div class='row nod'><span class='ln'>239</span>  /// 分割线厚度（可选）</div>
+<div class='row nod'><span class='ln'>240</span>  final double? dividerThickness;</div>
+<div class='row nod'><span class='ln'>241</span></div>
+<div class='row nod'><span class='ln'>242</span>  /// 分割线颜色（可选）</div>
+<div class='row nod'><span class='ln'>243</span>  final Color? dividerColor;</div>
+<div class='row nod'><span class='ln'>244</span></div>
+<div class='row nod'><span class='ln'>245</span>  /// 是否展示bar上边线（设置为true 但是topBorder样式未设置，则使用默认值，非胶囊型才生效）</div>
+<div class='row nod'><span class='ln'>246</span>  final bool? showTopBorder;</div>
+<div class='row nod'><span class='ln'>247</span></div>
+<div class='row nod'><span class='ln'>248</span>  /// 上边线样式</div>
+<div class='row nod'><span class='ln'>249</span>  final BorderSide? topBorder;</div>
+<div class='row nod'><span class='ln'>250</span></div>
+<div class='row nod'><span class='ln'>251</span>  /// 使用安全区域</div>
+<div class='row nod'><span class='ln'>252</span>  final bool useSafeArea;</div>
+<div class='row nod'><span class='ln'>253</span></div>
+<div class='row nod'><span class='ln'>254</span>  /// 是否添加安全区域占位</div>
+<div class='row nod'><span class='ln'>255</span>  final bool placeholder;</div>
+<div class='row nod'><span class='ln'>256</span></div>
+<div class='row nod'><span class='ln'>257</span>  /// 选中时背景颜色</div>
+<div class='row nod'><span class='ln'>258</span>  final Color? selectedBgColor;</div>
+<div class='row nod'><span class='ln'>259</span></div>
+<div class='row nod'><span class='ln'>260</span>  /// 未选中时背景颜色</div>
+<div class='row nod'><span class='ln'>261</span>  final Color? unselectedBgColor;</div>
+<div class='row nod'><span class='ln'>262</span></div>
+<div class='row nod'><span class='ln'>263</span>  /// 背景颜色 （可选）</div>
+<div class='row nod'><span class='ln'>264</span>  final Color? backgroundColor;</div>
+<div class='row nod'><span class='ln'>265</span></div>
+<div class='row nod'><span class='ln'>266</span>  /// icon与文本中间距离（可选）</div>
+<div class='row nod'><span class='ln'>267</span>  final double? centerDistance;</div>
+<div class='row nod'><span class='ln'>268</span></div>
+<div class='row nod'><span class='ln'>269</span>  /// 选中的index（可选，v1.0 推荐使用 [value]）</div>
+<div class='row nod'><span class='ln'>270</span>  final int? currentIndex;</div>
+<div class='row nod'><span class='ln'>271</span></div>
+<div class='row nod'><span class='ln'>272</span>  /// 是否需要水波纹效果</div>
+<div class='row nod'><span class='ln'>273</span>  final bool needInkWell;</div>
+<div class='row nod'><span class='ln'>274</span></div>
+<div class='row nod'><span class='ln'>275</span>  /// 指示器动画类型</div>
+<div class='row nod'><span class='ln'>276</span>  final TBottomTabBarIndicatorAnimation indicatorAnimation;</div>
+<div class='row nod'><span class='ln'>277</span></div>
+<div class='row nod'><span class='ln'>278</span>  /// 动画时长</div>
+<div class='row nod'><span class='ln'>279</span>  final Duration animationDuration;</div>
+<div class='row nod'><span class='ln'>280</span></div>
+<div class='row nod'><span class='ln'>281</span>  /// 动画曲线</div>
+<div class='row nod'><span class='ln'>282</span>  final Curve animationCurve;</div>
+<div class='row nod'><span class='ln'>283</span></div>
+<div class='row nod'><span class='ln'>284</span>  /// 选中的 index（v1.0 新增，等价于 [currentIndex]，优先级更高）</div>
+<div class='row nod'><span class='ln'>285</span>  final int? value;</div>
+<div class='row nod'><span class='ln'>286</span></div>
+<div class='row cov'><span class='ln'>287</span>  @override</div>
+<div class='row cov'><span class='ln'>288</span>  State&lt;TBottomTabBar&gt; createState() =&gt; _TBottomTabBarState();</div>
+<div class='row nod'><span class='ln'>289</span>}</div>
+<div class='row nod'><span class='ln'>290</span></div>
+<div class='row nod'><span class='ln'>291</span>class _TBottomTabBarState extends State&lt;TBottomTabBar&gt;</div>
+<div class='row nod'><span class='ln'>292</span>    with SingleTickerProviderStateMixin {</div>
+<div class='row nod'><span class='ln'>293</span>  int _selectedIndex = 0;</div>
+<div class='row nod'><span class='ln'>294</span>  late AnimationController _animationController;</div>
+<div class='row nod'><span class='ln'>295</span>  Animation&lt;double&gt;? _animation;</div>
+<div class='row nod'><span class='ln'>296</span></div>
+<div class='row nod'><span class='ln'>297</span>  /// P1 ThemeExtension 回退后的有效值</div>
+<div class='row nod'><span class='ln'>298</span>  late double _effectiveBarHeight;</div>
+<div class='row nod'><span class='ln'>299</span>  late Color _effectiveSelectedBgColor;</div>
+<div class='row nod'><span class='ln'>300</span>  late Color? _effectiveUnselectedBgColor;</div>
+<div class='row nod'><span class='ln'>301</span>  late Color _effectiveBackgroundColor;</div>
+<div class='row nod'><span class='ln'>302</span>  late double _effectiveCenterDistance;</div>
+<div class='row nod'><span class='ln'>303</span>  late bool _effectiveUseVerticalDivider;</div>
+<div class='row nod'><span class='ln'>304</span>  late double _effectiveDividerHeight;</div>
+<div class='row nod'><span class='ln'>305</span>  late double _effectiveDividerThickness;</div>
+<div class='row nod'><span class='ln'>306</span>  late Color _effectiveDividerColor;</div>
+<div class='row nod'><span class='ln'>307</span>  late bool _effectiveShowTopBorder;</div>
+<div class='row nod'><span class='ln'>308</span>  late BorderSide? _effectiveTopBorder;</div>
+<div class='row nod'><span class='ln'>309</span>  late bool _effectiveNeedInkWell;</div>
+<div class='row nod'><span class='ln'>310</span></div>
+<div class='row cov'><span class='ln'>311</span>  @override</div>
+<div class='row nod'><span class='ln'>312</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>313</span>    super.initState();</div>
+<div class='row cov'><span class='ln'>314</span>    _selectedIndex = widget.value ?? widget.currentIndex ?? 0;</div>
+<div class='row nod'><span class='ln'>315</span></div>
+<div class='row nod'><span class='ln'>316</span>    // 初始化动画控制器</div>
+<div class='row cov'><span class='ln'>317</span>    _animationController = AnimationController(</div>
+<div class='row cov'><span class='ln'>318</span>      duration: widget.animationDuration,</div>
+<div class='row nod'><span class='ln'>319</span>      vsync: this,</div>
+<div class='row nod'><span class='ln'>320</span>    );</div>
+<div class='row nod'><span class='ln'>321</span></div>
+<div class='row nod'><span class='ln'>322</span>    // 初始化动画（初始位置）</div>
+<div class='row cov'><span class='ln'>323</span>    _animation = Tween&lt;double&gt;(</div>
+<div class='row cov'><span class='ln'>324</span>      begin: _selectedIndex.toDouble(),</div>
+<div class='row cov'><span class='ln'>325</span>      end: _selectedIndex.toDouble(),</div>
+<div class='row cov'><span class='ln'>326</span>    ).animate(CurvedAnimation(</div>
+<div class='row cov'><span class='ln'>327</span>      parent: _animationController,</div>
+<div class='row cov'><span class='ln'>328</span>      curve: widget.animationCurve,</div>
+<div class='row nod'><span class='ln'>329</span>    ));</div>
+<div class='row nod'><span class='ln'>330</span>  }</div>
+<div class='row nod'><span class='ln'>331</span></div>
+<div class='row cov'><span class='ln'>332</span>  @override</div>
+<div class='row nod'><span class='ln'>333</span>  void didUpdateWidget(covariant TBottomTabBar oldWidget) {</div>
+<div class='row cov'><span class='ln'>334</span>    super.didUpdateWidget(oldWidget);</div>
+<div class='row cov'><span class='ln'>335</span>    final effectiveValue = widget.value ?? widget.currentIndex;</div>
+<div class='row cov'><span class='ln'>336</span>    if (effectiveValue != null &amp;&amp; effectiveValue != _selectedIndex) {</div>
+<div class='row cov'><span class='ln'>337</span>      _animateToIndex(effectiveValue);</div>
+<div class='row nod'><span class='ln'>338</span>    }</div>
+<div class='row nod'><span class='ln'>339</span></div>
+<div class='row nod'><span class='ln'>340</span>    // 更新动画时长和曲线</div>
+<div class='row cov'><span class='ln'>341</span>    if (oldWidget.animationDuration != widget.animationDuration) {</div>
+<div class='row cov'><span class='ln'>342</span>      _animationController.duration = widget.animationDuration;</div>
+<div class='row nod'><span class='ln'>343</span>    }</div>
+<div class='row nod'><span class='ln'>344</span>  }</div>
+<div class='row nod'><span class='ln'>345</span></div>
+<div class='row cov'><span class='ln'>346</span>  @override</div>
+<div class='row nod'><span class='ln'>347</span>  void didChangeDependencies() {</div>
+<div class='row cov'><span class='ln'>348</span>    super.didChangeDependencies();</div>
+<div class='row nod'><span class='ln'>349</span>    // P1: 组件级 ThemeExtension 回退</div>
+<div class='row cov'><span class='ln'>350</span>    final theme = Theme.of(context).extension&lt;TBottomTabBarThemeData&gt;();</div>
+<div class='row cov'><span class='ln'>351</span>    _effectiveBarHeight = widget.barHeight ?? theme?.barHeight ?? _kDefaultTabBarHeight;</div>
+<div class='row cov'><span class='ln'>352</span>    _effectiveSelectedBgColor = widget.selectedBgColor ?? theme?.selectedBgColor ?? context.tTheme.brandLightColor;</div>
+<div class='row cov'><span class='ln'>353</span>    _effectiveUnselectedBgColor = widget.unselectedBgColor ?? theme?.unselectedBgColor;</div>
+<div class='row cov'><span class='ln'>354</span>    _effectiveBackgroundColor = widget.backgroundColor ?? theme?.backgroundColor ?? context.tTheme.bgColorContainer;</div>
+<div class='row cov'><span class='ln'>355</span>    _effectiveCenterDistance = widget.centerDistance ?? theme?.centerDistance ?? 0;</div>
+<div class='row cov'><span class='ln'>356</span>    _effectiveUseVerticalDivider = widget.useVerticalDivider ?? theme?.useVerticalDivider ?? false;</div>
+<div class='row cov'><span class='ln'>357</span>    _effectiveDividerHeight = widget.dividerHeight ?? theme?.dividerHeight ?? 32;</div>
+<div class='row cov'><span class='ln'>358</span>    _effectiveDividerThickness = widget.dividerThickness ?? theme?.dividerThickness ?? 0.5;</div>
+<div class='row cov'><span class='ln'>359</span>    _effectiveDividerColor = widget.dividerColor ?? theme?.dividerColor ?? context.tTheme.componentStrokeColor;</div>
+<div class='row cov'><span class='ln'>360</span>    _effectiveShowTopBorder = widget.showTopBorder ?? theme?.showTopBorder ?? true;</div>
+<div class='row cov'><span class='ln'>361</span>    _effectiveTopBorder = widget.topBorder ?? theme?.topBorder;</div>
+<div class='row cov'><span class='ln'>362</span>    _effectiveNeedInkWell = widget.needInkWell; // 非空字段，构造器默认 false</div>
+<div class='row nod'><span class='ln'>363</span>  }</div>
+<div class='row nod'><span class='ln'>364</span></div>
+<div class='row cov'><span class='ln'>365</span>  @override</div>
+<div class='row nod'><span class='ln'>366</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>367</span>    _animationController.dispose();</div>
+<div class='row cov'><span class='ln'>368</span>    super.dispose();</div>
+<div class='row nod'><span class='ln'>369</span>  }</div>
+<div class='row nod'><span class='ln'>370</span></div>
+<div class='row cov'><span class='ln'>371</span>  @override</div>
+<div class='row nod'><span class='ln'>372</span>  Widget build(BuildContext context) {</div>
+<div class='row nod'><span class='ln'>373</span>    var isCapsuleOutlineType =</div>
+<div class='row cov'><span class='ln'>374</span>        widget.outlineType == TBottomTabBarOutlineType.capsule;</div>
+<div class='row cov'><span class='ln'>375</span>    var safeAreaBottomHeight = MediaQuery.of(context).padding.bottom;</div>
+<div class='row nod'><span class='ln'>376</span></div>
+<div class='row cov'><span class='ln'>377</span>    return AnimatedBuilder(</div>
+<div class='row cov'><span class='ln'>378</span>      animation: _animationController,</div>
+<div class='row cov'><span class='ln'>379</span>      builder: (BuildContext context, Widget? child) {</div>
+<div class='row cov'><span class='ln'>380</span>        return LayoutBuilder(</div>
+<div class='row cov'><span class='ln'>381</span>          builder: (BuildContext context, BoxConstraints constraints) {</div>
+<div class='row nod'><span class='ln'>382</span>            /// -2 是为了增加边框</div>
+<div class='row nod'><span class='ln'>383</span>            var maxWidth =</div>
+<div class='row cov'><span class='ln'>384</span>                double.parse(constraints.biggest.width.toStringAsFixed(1)) - 2;</div>
+<div class='row nod'><span class='ln'>385</span></div>
+<div class='row nod'><span class='ln'>386</span>            /// 胶囊样式 比正常样式宽度要小32</div>
+<div class='row nod'><span class='ln'>387</span>            if (isCapsuleOutlineType) {</div>
+<div class='row cov'><span class='ln'>388</span>              maxWidth -= 32;</div>
+<div class='row nod'><span class='ln'>389</span>            }</div>
+<div class='row cov'><span class='ln'>390</span>            var itemWidth = maxWidth / widget.navigationTabs.length;</div>
+<div class='row nod'><span class='ln'>391</span></div>
+<div class='row cov'><span class='ln'>392</span>            Widget result = Container(</div>
+<div class='row cov'><span class='ln'>393</span>                height: _effectiveBarHeight,</div>
+<div class='row nod'><span class='ln'>394</span>                alignment: Alignment.center,</div>
+<div class='row nod'><span class='ln'>395</span>                margin: isCapsuleOutlineType</div>
+<div class='row nod'><span class='ln'>396</span>                    ? const EdgeInsets.symmetric(horizontal: 16)</div>
+<div class='row nod'><span class='ln'>397</span>                    : null,</div>
+<div class='row cov'><span class='ln'>398</span>                decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>399</span>                    color: _effectiveBackgroundColor,</div>
+<div class='row nod'><span class='ln'>400</span>                    borderRadius: isCapsuleOutlineType</div>
+<div class='row cov'><span class='ln'>401</span>                        ? BorderRadius.circular(context.tTheme.radiusCircle)</div>
+<div class='row nod'><span class='ln'>402</span>                        : null,</div>
+<div class='row cov'><span class='ln'>403</span>                    border: _effectiveShowTopBorder &amp;&amp; !isCapsuleOutlineType</div>
+<div class='row cov'><span class='ln'>404</span>                        ? Border(</div>
+<div class='row cov'><span class='ln'>405</span>                        top: _effectiveTopBorder ??</div>
+<div class='row cov'><span class='ln'>406</span>                            BorderSide(</div>
+<div class='row cov'><span class='ln'>407</span>                                color: context.tTheme.componentStrokeColor,</div>
+<div class='row nod'><span class='ln'>408</span>                                width: 0.5))</div>
+<div class='row nod'><span class='ln'>409</span>                        : null,</div>
+<div class='row nod'><span class='ln'>410</span>                    boxShadow: isCapsuleOutlineType</div>
+<div class='row cov'><span class='ln'>411</span>                        ? context.tTheme.shadowsTop</div>
+<div class='row nod'><span class='ln'>412</span>                        : null),</div>
+<div class='row cov'><span class='ln'>413</span>                child: Stack(alignment: Alignment.center, children: [</div>
+<div class='row nod'><span class='ln'>414</span>                  // 动画指示器（在底层）</div>
+<div class='row cov'><span class='ln'>415</span>                  _buildAnimatedIndicator(context, itemWidth),</div>
+<div class='row nod'><span class='ln'>416</span>                  // Tab 项（在上层）</div>
+<div class='row cov'><span class='ln'>417</span>                  Row(</div>
+<div class='row nod'><span class='ln'>418</span>                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,</div>
+<div class='row nod'><span class='ln'>419</span>                      children:</div>
+<div class='row cov'><span class='ln'>420</span>                      List.generate(widget.navigationTabs.length, (index) {</div>
+<div class='row cov'><span class='ln'>421</span>                        return _item(index, itemWidth);</div>
+<div class='row nod'><span class='ln'>422</span>                      })),</div>
+<div class='row nod'><span class='ln'>423</span>                  // 分割线（在最上层）</div>
+<div class='row cov'><span class='ln'>424</span>                  _verticalDivider(),</div>
+<div class='row nod'><span class='ln'>425</span>                ]));</div>
+<div class='row cov'><span class='ln'>426</span>            if (widget.useSafeArea) {</div>
+<div class='row cov'><span class='ln'>427</span>              if (widget.placeholder) {</div>
+<div class='row cov'><span class='ln'>428</span>                result = Container(</div>
+<div class='row cov'><span class='ln'>429</span>                  padding: EdgeInsets.only(bottom: safeAreaBottomHeight),</div>
+<div class='row cov'><span class='ln'>430</span>                  color: _effectiveBackgroundColor,</div>
+<div class='row nod'><span class='ln'>431</span>                  child: result,</div>
+<div class='row nod'><span class='ln'>432</span>                );</div>
+<div class='row nod'><span class='ln'>433</span>              } else {</div>
+<div class='row cov'><span class='ln'>434</span>                result = SafeArea(child: result);</div>
+<div class='row nod'><span class='ln'>435</span>              }</div>
+<div class='row nod'><span class='ln'>436</span>            }</div>
+<div class='row nod'><span class='ln'>437</span>            return result;</div>
+<div class='row nod'><span class='ln'>438</span>          },</div>
+<div class='row nod'><span class='ln'>439</span>        );</div>
+<div class='row nod'><span class='ln'>440</span>      },</div>
+<div class='row nod'><span class='ln'>441</span>    );</div>
+<div class='row nod'><span class='ln'>442</span>  }</div>
+<div class='row nod'><span class='ln'>443</span></div>
+<div class='row cov'><span class='ln'>444</span>  void _onTap(int index) {</div>
+<div class='row cov'><span class='ln'>445</span>    setState(() {</div>
+<div class='row cov'><span class='ln'>446</span>      if (_selectedIndex != index ||</div>
+<div class='row cov'><span class='ln'>447</span>          widget.navigationTabs[index].allowMultipleTaps) {</div>
+<div class='row cov'><span class='ln'>448</span>        widget.navigationTabs[index].onTap?.call();</div>
+<div class='row nod'><span class='ln'>449</span>      }</div>
+<div class='row cov'><span class='ln'>450</span>      if (_selectedIndex != index) {</div>
+<div class='row cov'><span class='ln'>451</span>        _animateToIndex(index);</div>
+<div class='row nod'><span class='ln'>452</span>      }</div>
+<div class='row nod'><span class='ln'>453</span>    });</div>
+<div class='row nod'><span class='ln'>454</span>  }</div>
+<div class='row nod'><span class='ln'>455</span></div>
+<div class='row nod'><span class='ln'>456</span>  /// 动画切换到指定索引</div>
+<div class='row cov'><span class='ln'>457</span>  void _animateToIndex(int index) {</div>
+<div class='row cov'><span class='ln'>458</span>    final oldIndex = _selectedIndex;</div>
+<div class='row cov'><span class='ln'>459</span>    _selectedIndex = index;</div>
+<div class='row nod'><span class='ln'>460</span></div>
+<div class='row cov'><span class='ln'>461</span>    if (widget.indicatorAnimation == TBottomTabBarIndicatorAnimation.none) {</div>
+<div class='row nod'><span class='ln'>462</span>      // 无动画，直接切换</div>
+<div class='row nod'><span class='ln'>463</span>      return;</div>
+<div class='row nod'><span class='ln'>464</span>    }</div>
+<div class='row nod'><span class='ln'>465</span></div>
+<div class='row nod'><span class='ln'>466</span>    // 创建新的动画</div>
+<div class='row cov'><span class='ln'>467</span>    _animation = Tween&lt;double&gt;(</div>
+<div class='row cov'><span class='ln'>468</span>      begin: oldIndex.toDouble(),</div>
+<div class='row cov'><span class='ln'>469</span>      end: index.toDouble(),</div>
+<div class='row cov'><span class='ln'>470</span>    ).animate(CurvedAnimation(</div>
+<div class='row cov'><span class='ln'>471</span>      parent: _animationController,</div>
+<div class='row cov'><span class='ln'>472</span>      curve: widget.animationCurve,</div>
+<div class='row nod'><span class='ln'>473</span>    ));</div>
+<div class='row nod'><span class='ln'>474</span></div>
+<div class='row nod'><span class='ln'>475</span>    // 播放动画</div>
+<div class='row cov'><span class='ln'>476</span>    _animationController.forward(from: 0.0);</div>
+<div class='row nod'><span class='ln'>477</span>  }</div>
+<div class='row nod'><span class='ln'>478</span></div>
+<div class='row nod'><span class='ln'>479</span>  /// 构建动画指示器</div>
+<div class='row cov'><span class='ln'>480</span>  Widget _buildAnimatedIndicator(BuildContext context, double itemWidth) {</div>
+<div class='row nod'><span class='ln'>481</span>    // 只有 label 样式才显示背景指示器</div>
+<div class='row cov'><span class='ln'>482</span>    if (widget.componentType != TBottomTabBarComponentType.label) {</div>
+<div class='row nod'><span class='ln'>483</span>      return const SizedBox.shrink();</div>
+<div class='row nod'><span class='ln'>484</span>    }</div>
+<div class='row nod'><span class='ln'>485</span></div>
+<div class='row nod'><span class='ln'>486</span>    // 无动画模式不显示（由各个 item 自己渲染）</div>
+<div class='row cov'><span class='ln'>487</span>    if (widget.indicatorAnimation == TBottomTabBarIndicatorAnimation.none) {</div>
+<div class='row nod'><span class='ln'>488</span>      return const SizedBox.shrink();</div>
+<div class='row nod'><span class='ln'>489</span>    }</div>
+<div class='row nod'><span class='ln'>490</span></div>
+<div class='row cov'><span class='ln'>491</span>    final animValue = _animation?.value ?? _selectedIndex.toDouble();</div>
+<div class='row nod'><span class='ln'>492</span></div>
+<div class='row cov'><span class='ln'>493</span>    switch (widget.indicatorAnimation) {</div>
+<div class='row cov'><span class='ln'>494</span>      case TBottomTabBarIndicatorAnimation.linear:</div>
+<div class='row cov'><span class='ln'>495</span>        return _buildLinearIndicator(context, itemWidth, animValue);</div>
+<div class='row cov'><span class='ln'>496</span>      case TBottomTabBarIndicatorAnimation.elastic:</div>
+<div class='row cov'><span class='ln'>497</span>        return _buildElasticIndicator(context, itemWidth, animValue);</div>
+<div class='row unc'><span class='ln'>498</span>▶       case TBottomTabBarIndicatorAnimation.none:</div>
+<div class='row nod'><span class='ln'>499</span>        return const SizedBox.shrink();</div>
+<div class='row nod'><span class='ln'>500</span>    }</div>
+<div class='row nod'><span class='ln'>501</span>  }</div>
+<div class='row nod'><span class='ln'>502</span></div>
+<div class='row nod'><span class='ln'>503</span>  /// 线性滑动指示器</div>
+<div class='row cov'><span class='ln'>504</span>  Widget _buildLinearIndicator(</div>
+<div class='row nod'><span class='ln'>505</span>      BuildContext context, double itemWidth, double animValue) {</div>
+<div class='row cov'><span class='ln'>506</span>    final horizontalPadding = widget.navigationTabs.length &gt; 3 ? 8.0 : 12.0;</div>
+<div class='row cov'><span class='ln'>507</span>    final indicatorWidth = itemWidth - horizontalPadding * 2;</div>
+<div class='row nod'><span class='ln'>508</span></div>
+<div class='row nod'><span class='ln'>509</span>    // 计算指示器位置</div>
+<div class='row cov'><span class='ln'>510</span>    final left = animValue * itemWidth + horizontalPadding;</div>
+<div class='row nod'><span class='ln'>511</span></div>
+<div class='row nod'><span class='ln'>512</span>    // 计算高度</div>
+<div class='row cov'><span class='ln'>513</span>    final height = widget.basicType == TBottomTabBarBasicType.text ||</div>
+<div class='row unc'><span class='ln'>514</span>▶         widget.basicType == TBottomTabBarBasicType.expansionPanel</div>
+<div class='row nod'><span class='ln'>515</span>        ? 32.0</div>
+<div class='row nod'><span class='ln'>516</span>        : null;</div>
+<div class='row nod'><span class='ln'>517</span></div>
+<div class='row cov'><span class='ln'>518</span>    return Positioned(</div>
+<div class='row nod'><span class='ln'>519</span>      left: left,</div>
+<div class='row cov'><span class='ln'>520</span>      child: Container(</div>
+<div class='row nod'><span class='ln'>521</span>        width: indicatorWidth,</div>
+<div class='row nod'><span class='ln'>522</span>        height: height,</div>
+<div class='row cov'><span class='ln'>523</span>        decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>524</span>          color: _effectiveSelectedBgColor,</div>
+<div class='row nod'><span class='ln'>525</span>          borderRadius: const BorderRadius.all(Radius.circular(24)),</div>
+<div class='row nod'><span class='ln'>526</span>        ),</div>
+<div class='row nod'><span class='ln'>527</span>      ),</div>
+<div class='row nod'><span class='ln'>528</span>    );</div>
+<div class='row nod'><span class='ln'>529</span>  }</div>
+<div class='row nod'><span class='ln'>530</span></div>
+<div class='row nod'><span class='ln'>531</span>  /// 弹性拉伸指示器</div>
+<div class='row cov'><span class='ln'>532</span>  Widget _buildElasticIndicator(</div>
+<div class='row nod'><span class='ln'>533</span>      BuildContext context, double itemWidth, double animValue) {</div>
+<div class='row cov'><span class='ln'>534</span>    final horizontalPadding = widget.navigationTabs.length &gt; 3 ? 8.0 : 12.0;</div>
+<div class='row nod'><span class='ln'>535</span></div>
+<div class='row nod'><span class='ln'>536</span>    // 计算起始和目标索引</div>
+<div class='row cov'><span class='ln'>537</span>    final fromIndex = animValue.floor();</div>
+<div class='row cov'><span class='ln'>538</span>    final toIndex = animValue.ceil();</div>
+<div class='row cov'><span class='ln'>539</span>    final progress = animValue - fromIndex;</div>
+<div class='row nod'><span class='ln'>540</span></div>
+<div class='row nod'><span class='ln'>541</span>    // 弹性曲线：前半段快速拉伸，后半段缓慢收缩</div>
+<div class='row nod'><span class='ln'>542</span>    double width;</div>
+<div class='row nod'><span class='ln'>543</span>    double left;</div>
+<div class='row nod'><span class='ln'>544</span></div>
+<div class='row cov'><span class='ln'>545</span>    if (progress &lt; 0.5) {</div>
+<div class='row nod'><span class='ln'>546</span>      // 前半段：从起点向终点拉伸</div>
+<div class='row cov'><span class='ln'>547</span>      final stretchProgress = progress * 2; // 0 -&gt; 1</div>
+<div class='row cov'><span class='ln'>548</span>      width = (itemWidth - horizontalPadding * 2) *</div>
+<div class='row cov'><span class='ln'>549</span>          (1 + stretchProgress * (toIndex - fromIndex));</div>
+<div class='row cov'><span class='ln'>550</span>      left = fromIndex * itemWidth + horizontalPadding;</div>
+<div class='row nod'><span class='ln'>551</span>    } else {</div>
+<div class='row nod'><span class='ln'>552</span>      // 后半段：从终点收缩到正常宽度</div>
+<div class='row unc'><span class='ln'>553</span>▶       final shrinkProgress = (progress - 0.5) * 2; // 0 -&gt; 1</div>
+<div class='row unc'><span class='ln'>554</span>▶       width = (itemWidth - horizontalPadding * 2) *</div>
+<div class='row unc'><span class='ln'>555</span>▶           (1 + (1 - shrinkProgress) * (toIndex - fromIndex));</div>
+<div class='row unc'><span class='ln'>556</span>▶       left = fromIndex * itemWidth +</div>
+<div class='row unc'><span class='ln'>557</span>▶           horizontalPadding +</div>
+<div class='row unc'><span class='ln'>558</span>▶           shrinkProgress * (toIndex - fromIndex) * itemWidth;</div>
+<div class='row nod'><span class='ln'>559</span>    }</div>
+<div class='row nod'><span class='ln'>560</span></div>
+<div class='row nod'><span class='ln'>561</span>    // 计算高度</div>
+<div class='row cov'><span class='ln'>562</span>    final height = widget.basicType == TBottomTabBarBasicType.text ||</div>
+<div class='row unc'><span class='ln'>563</span>▶         widget.basicType == TBottomTabBarBasicType.expansionPanel</div>
+<div class='row nod'><span class='ln'>564</span>        ? 32.0</div>
+<div class='row nod'><span class='ln'>565</span>        : null;</div>
+<div class='row nod'><span class='ln'>566</span></div>
+<div class='row cov'><span class='ln'>567</span>    return Positioned(</div>
+<div class='row nod'><span class='ln'>568</span>      left: left,</div>
+<div class='row cov'><span class='ln'>569</span>      child: Container(</div>
+<div class='row nod'><span class='ln'>570</span>        width: width,</div>
+<div class='row nod'><span class='ln'>571</span>        height: height,</div>
+<div class='row cov'><span class='ln'>572</span>        decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>573</span>          color: _effectiveSelectedBgColor,</div>
+<div class='row nod'><span class='ln'>574</span>          borderRadius: const BorderRadius.all(Radius.circular(24)),</div>
+<div class='row nod'><span class='ln'>575</span>        ),</div>
+<div class='row nod'><span class='ln'>576</span>      ),</div>
+<div class='row nod'><span class='ln'>577</span>    );</div>
+<div class='row nod'><span class='ln'>578</span>  }</div>
+<div class='row nod'><span class='ln'>579</span></div>
+<div class='row cov'><span class='ln'>580</span>  Widget _item(int index, double itemWidth) {</div>
+<div class='row cov'><span class='ln'>581</span>    var tabItemConfig = widget.navigationTabs[index];</div>
+<div class='row nod'><span class='ln'>582</span>    // iconText 且存在 centerDistance 间距时，压缩上下内边距为图标+文本+间距腾出空间，</div>
+<div class='row nod'><span class='ln'>583</span>    // 避免 Column 内容溢出（centerDistance 默认为 0，不影响常规渲染与 Golden 基线）。</div>
+<div class='row cov'><span class='ln'>584</span>    final isIconTextWithGap = widget.basicType ==</div>
+<div class='row nod'><span class='ln'>585</span>            TBottomTabBarBasicType.iconText &amp;&amp;</div>
+<div class='row cov'><span class='ln'>586</span>        _effectiveCenterDistance &gt; 0;</div>
+<div class='row cov'><span class='ln'>587</span>    return Container(</div>
+<div class='row cov'><span class='ln'>588</span>        height: _effectiveBarHeight,</div>
+<div class='row nod'><span class='ln'>589</span>        width: itemWidth,</div>
+<div class='row nod'><span class='ln'>590</span>        alignment: Alignment.center,</div>
+<div class='row cov'><span class='ln'>591</span>        padding: EdgeInsets.only(</div>
+<div class='row nod'><span class='ln'>592</span>            top: isIconTextWithGap ? 4 : 7,</div>
+<div class='row nod'><span class='ln'>593</span>            bottom: isIconTextWithGap</div>
+<div class='row nod'><span class='ln'>594</span>                ? 1</div>
+<div class='row cov'><span class='ln'>595</span>                : (widget.basicType == TBottomTabBarBasicType.iconText ? 5 : 7)),</div>
+<div class='row cov'><span class='ln'>596</span>        child: TBottomTabBarItemWithBadge(</div>
+<div class='row cov'><span class='ln'>597</span>          basicType: widget.basicType,</div>
+<div class='row nod'><span class='ln'>598</span>          componentType:</div>
+<div class='row cov'><span class='ln'>599</span>              widget.componentType ?? TBottomTabBarComponentType.label,</div>
+<div class='row cov'><span class='ln'>600</span>          outlineType: widget.outlineType ?? TBottomTabBarOutlineType.filled,</div>
+<div class='row nod'><span class='ln'>601</span>          itemConfig: tabItemConfig,</div>
+<div class='row cov'><span class='ln'>602</span>          isSelected: index == _selectedIndex,</div>
+<div class='row cov'><span class='ln'>603</span>          itemHeight: _effectiveBarHeight,</div>
+<div class='row nod'><span class='ln'>604</span>          itemWidth: itemWidth,</div>
+<div class='row cov'><span class='ln'>605</span>          tabsLength: widget.navigationTabs.length,</div>
+<div class='row cov'><span class='ln'>606</span>          selectedBgColor: _effectiveSelectedBgColor,</div>
+<div class='row cov'><span class='ln'>607</span>          unselectedBgColor: _effectiveUnselectedBgColor,</div>
+<div class='row cov'><span class='ln'>608</span>          centerDistance: _effectiveCenterDistance,</div>
+<div class='row cov'><span class='ln'>609</span>          needInkWell: _effectiveNeedInkWell,</div>
+<div class='row nod'><span class='ln'>610</span>          showItemBackground:</div>
+<div class='row cov'><span class='ln'>611</span>          widget.indicatorAnimation == TBottomTabBarIndicatorAnimation.none,</div>
+<div class='row cov'><span class='ln'>612</span>          onTap: () {</div>
+<div class='row cov'><span class='ln'>613</span>            _onTap(index);</div>
+<div class='row nod'><span class='ln'>614</span>          },</div>
+<div class='row cov'><span class='ln'>615</span>          onLongPress: () {</div>
+<div class='row cov'><span class='ln'>616</span>            tabItemConfig.onLongPress?.call();</div>
+<div class='row nod'><span class='ln'>617</span>          },</div>
+<div class='row nod'><span class='ln'>618</span>        ));</div>
+<div class='row nod'><span class='ln'>619</span>  }</div>
+<div class='row nod'><span class='ln'>620</span></div>
+<div class='row cov'><span class='ln'>621</span>  Widget _verticalDivider() {</div>
+<div class='row cov'><span class='ln'>622</span>    return Visibility(</div>
+<div class='row cov'><span class='ln'>623</span>      visible: widget.componentType != TBottomTabBarComponentType.label &amp;&amp;</div>
+<div class='row cov'><span class='ln'>624</span>          (_effectiveUseVerticalDivider),</div>
+<div class='row cov'><span class='ln'>625</span>      child: Row(</div>
+<div class='row nod'><span class='ln'>626</span>        mainAxisAlignment: MainAxisAlignment.spaceEvenly,</div>
+<div class='row cov'><span class='ln'>627</span>        children: List.generate(widget.navigationTabs.length - 1, (index) {</div>
+<div class='row cov'><span class='ln'>628</span>          return SizedBox(</div>
+<div class='row cov'><span class='ln'>629</span>            width: _effectiveDividerThickness,</div>
+<div class='row cov'><span class='ln'>630</span>            height: _effectiveDividerHeight,</div>
+<div class='row cov'><span class='ln'>631</span>            child: VerticalDivider(</div>
+<div class='row cov'><span class='ln'>632</span>              color: _effectiveDividerColor,</div>
+<div class='row cov'><span class='ln'>633</span>              thickness: _effectiveDividerThickness,</div>
+<div class='row nod'><span class='ln'>634</span>            ),</div>
+<div class='row nod'><span class='ln'>635</span>          );</div>
+<div class='row nod'><span class='ln'>636</span>        }),</div>
+<div class='row nod'><span class='ln'>637</span>      ),</div>
+<div class='row nod'><span class='ln'>638</span>    );</div>
+<div class='row nod'><span class='ln'>639</span>  }</div>
+<div class='row nod'><span class='ln'>640</span>}</div>
+<div class='row nod'><span class='ln'>641</span></div>
+<div class='row nod'><span class='ln'>642</span>/// 带徽标的底部标签栏单项</div>
+<div class='row nod'><span class='ln'>643</span>class TBottomTabBarItemWithBadge extends StatelessWidget {</div>
+<div class='row cov'><span class='ln'>644</span>  const TBottomTabBarItemWithBadge({</div>
+<div class='row nod'><span class='ln'>645</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>646</span>    required this.basicType,</div>
+<div class='row nod'><span class='ln'>647</span>    required this.componentType,</div>
+<div class='row nod'><span class='ln'>648</span>    required this.outlineType,</div>
+<div class='row nod'><span class='ln'>649</span>    required this.itemConfig,</div>
+<div class='row nod'><span class='ln'>650</span>    required this.isSelected,</div>
+<div class='row nod'><span class='ln'>651</span>    required this.itemHeight,</div>
+<div class='row nod'><span class='ln'>652</span>    required this.itemWidth,</div>
+<div class='row nod'><span class='ln'>653</span>    required this.onTap,</div>
+<div class='row nod'><span class='ln'>654</span>    required this.tabsLength,</div>
+<div class='row nod'><span class='ln'>655</span>    required this.selectedBgColor,</div>
+<div class='row nod'><span class='ln'>656</span>    required this.unselectedBgColor,</div>
+<div class='row nod'><span class='ln'>657</span>    required this.centerDistance,</div>
+<div class='row nod'><span class='ln'>658</span>    this.onLongPress,</div>
+<div class='row nod'><span class='ln'>659</span>    this.needInkWell = false,</div>
+<div class='row nod'><span class='ln'>660</span>    this.showItemBackground = true,</div>
+<div class='row cov'><span class='ln'>661</span>  }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>662</span></div>
+<div class='row nod'><span class='ln'>663</span>  /// tab基本类型</div>
+<div class='row nod'><span class='ln'>664</span>  final TBottomTabBarBasicType basicType;</div>
+<div class='row nod'><span class='ln'>665</span></div>
+<div class='row nod'><span class='ln'>666</span>  /// tab选中背景类型</div>
+<div class='row nod'><span class='ln'>667</span>  final TBottomTabBarComponentType componentType;</div>
+<div class='row nod'><span class='ln'>668</span></div>
+<div class='row nod'><span class='ln'>669</span>  /// tab轮廓类型</div>
+<div class='row nod'><span class='ln'>670</span>  final TBottomTabBarOutlineType outlineType;</div>
+<div class='row nod'><span class='ln'>671</span></div>
+<div class='row nod'><span class='ln'>672</span>  /// 单个tab的属性配置</div>
+<div class='row nod'><span class='ln'>673</span>  final TBottomTabBarTabConfig itemConfig;</div>
+<div class='row nod'><span class='ln'>674</span></div>
+<div class='row nod'><span class='ln'>675</span>  /// 选中状态</div>
+<div class='row nod'><span class='ln'>676</span>  final bool isSelected;</div>
+<div class='row nod'><span class='ln'>677</span></div>
+<div class='row nod'><span class='ln'>678</span>  /// tab高度</div>
+<div class='row nod'><span class='ln'>679</span>  final double itemHeight;</div>
+<div class='row nod'><span class='ln'>680</span></div>
+<div class='row nod'><span class='ln'>681</span>  /// tab宽度</div>
+<div class='row nod'><span class='ln'>682</span>  final double itemWidth;</div>
+<div class='row nod'><span class='ln'>683</span></div>
+<div class='row nod'><span class='ln'>684</span>  /// 点击事件</div>
+<div class='row nod'><span class='ln'>685</span>  final GestureTapCallback onTap;</div>
+<div class='row nod'><span class='ln'>686</span></div>
+<div class='row nod'><span class='ln'>687</span>  /// tab总个数</div>
+<div class='row nod'><span class='ln'>688</span>  final int tabsLength;</div>
+<div class='row nod'><span class='ln'>689</span></div>
+<div class='row nod'><span class='ln'>690</span>  /// 选中时背景颜色</div>
+<div class='row nod'><span class='ln'>691</span>  final Color? selectedBgColor;</div>
+<div class='row nod'><span class='ln'>692</span></div>
+<div class='row nod'><span class='ln'>693</span>  /// 未选中时背景颜色</div>
+<div class='row nod'><span class='ln'>694</span>  final Color? unselectedBgColor;</div>
+<div class='row nod'><span class='ln'>695</span></div>
+<div class='row nod'><span class='ln'>696</span>  /// icon与文本中间距离</div>
+<div class='row nod'><span class='ln'>697</span>  final double centerDistance;</div>
+<div class='row nod'><span class='ln'>698</span></div>
+<div class='row nod'><span class='ln'>699</span>  /// 长按事件</div>
+<div class='row nod'><span class='ln'>700</span>  final GestureLongPressCallback? onLongPress;</div>
+<div class='row nod'><span class='ln'>701</span></div>
+<div class='row nod'><span class='ln'>702</span>  /// 是否需要水波纹效果</div>
+<div class='row nod'><span class='ln'>703</span>  final bool needInkWell;</div>
+<div class='row nod'><span class='ln'>704</span></div>
+<div class='row nod'><span class='ln'>705</span>  /// 是否显示 item 自身的背景（无动画模式下为 true，有动画模式下为 false）</div>
+<div class='row nod'><span class='ln'>706</span>  final bool showItemBackground;</div>
+<div class='row nod'><span class='ln'>707</span></div>
+<div class='row cov'><span class='ln'>708</span>  @override</div>
+<div class='row nod'><span class='ln'>709</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>710</span>    return GestureDetector(</div>
+<div class='row nod'><span class='ln'>711</span>      behavior: HitTestBehavior.opaque,</div>
+<div class='row cov'><span class='ln'>712</span>      onTap: () =&gt; handleTap(context),</div>
+<div class='row cov'><span class='ln'>713</span>      onLongPress: () {</div>
+<div class='row cov'><span class='ln'>714</span>        onLongPress?.call();</div>
+<div class='row nod'><span class='ln'>715</span>      },</div>
+<div class='row cov'><span class='ln'>716</span>      child: Container(</div>
+<div class='row cov'><span class='ln'>717</span>        height: itemHeight,</div>
+<div class='row nod'><span class='ln'>718</span>        alignment: Alignment.center,</div>
+<div class='row cov'><span class='ln'>719</span>        child: Stack(</div>
+<div class='row nod'><span class='ln'>720</span>          alignment: Alignment.center,</div>
+<div class='row nod'><span class='ln'>721</span>          clipBehavior: Clip.none,</div>
+<div class='row cov'><span class='ln'>722</span>          children: [</div>
+<div class='row nod'><span class='ln'>723</span>            // 只在无动画模式下显示 item 自身的背景</div>
+<div class='row cov'><span class='ln'>724</span>            if (showItemBackground &amp;&amp;</div>
+<div class='row cov'><span class='ln'>725</span>                (isSelected || unselectedBgColor != null))</div>
+<div class='row cov'><span class='ln'>726</span>              Visibility(</div>
+<div class='row cov'><span class='ln'>727</span>                visible: componentType == TBottomTabBarComponentType.label,</div>
+<div class='row cov'><span class='ln'>728</span>                child: Container(</div>
+<div class='row nod'><span class='ln'>729</span>                  /// 设计稿上 tab个数大于3时，左右边距为8，小于等于3时，左右边距为12</div>
+<div class='row cov'><span class='ln'>730</span>                  width: itemWidth - (tabsLength &gt; 3 ? 16 : 24),</div>
+<div class='row cov'><span class='ln'>731</span>                  height: basicType == TBottomTabBarBasicType.text ||</div>
+<div class='row cov'><span class='ln'>732</span>                          basicType == TBottomTabBarBasicType.expansionPanel</div>
+<div class='row nod'><span class='ln'>733</span>                      ? 32</div>
+<div class='row nod'><span class='ln'>734</span>                      : null,</div>
+<div class='row cov'><span class='ln'>735</span>                  decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>736</span>                    color: isSelected</div>
+<div class='row cov'><span class='ln'>737</span>                        ? selectedBgColor ?? context.tTheme.brandLightColor</div>
+<div class='row cov'><span class='ln'>738</span>                        : unselectedBgColor,</div>
+<div class='row nod'><span class='ln'>739</span>                    borderRadius: const BorderRadius.all(Radius.circular(24)),</div>
+<div class='row nod'><span class='ln'>740</span>                  ),</div>
+<div class='row nod'><span class='ln'>741</span>                ),</div>
+<div class='row nod'><span class='ln'>742</span>              ),</div>
+<div class='row cov'><span class='ln'>743</span>            _buildItem(context),</div>
+<div class='row nod'><span class='ln'>744</span>          ],</div>
+<div class='row nod'><span class='ln'>745</span>        ),</div>
+<div class='row nod'><span class='ln'>746</span>      ),</div>
+<div class='row nod'><span class='ln'>747</span>    );</div>
+<div class='row nod'><span class='ln'>748</span>  }</div>
+<div class='row nod'><span class='ln'>749</span></div>
+<div class='row cov'><span class='ln'>750</span>  Widget _badge(BadgeConfig? badgeConfig) {</div>
+<div class='row cov'><span class='ln'>751</span>    if (badgeConfig?.showBadge ?? false) {</div>
+<div class='row cov'><span class='ln'>752</span>      if (badgeConfig?.tBadge != null) {</div>
+<div class='row cov'><span class='ln'>753</span>        return badgeConfig!.tBadge!;</div>
+<div class='row nod'><span class='ln'>754</span>      }</div>
+<div class='row nod'><span class='ln'>755</span>    }</div>
+<div class='row cov'><span class='ln'>756</span>    return Container();</div>
+<div class='row nod'><span class='ln'>757</span>  }</div>
+<div class='row nod'><span class='ln'>758</span></div>
+<div class='row cov'><span class='ln'>759</span>  Widget _constructItem(</div>
+<div class='row nod'><span class='ln'>760</span>      BuildContext context, BadgeConfig? badgeConfig, bool isInOrOutCapsule) {</div>
+<div class='row cov'><span class='ln'>761</span>    Widget child = Container();</div>
+<div class='row cov'><span class='ln'>762</span>    if (basicType == TBottomTabBarBasicType.text) {</div>
+<div class='row cov'><span class='ln'>763</span>      child = _textItem(context, itemConfig, isSelected,</div>
+<div class='row cov'><span class='ln'>764</span>          context.tTheme.fontTitleMedium!);</div>
+<div class='row nod'><span class='ln'>765</span>    }</div>
+<div class='row cov'><span class='ln'>766</span>    if (basicType == TBottomTabBarBasicType.expansionPanel) {</div>
+<div class='row cov'><span class='ln'>767</span>      if (itemConfig.popUpButtonConfig != null) {</div>
+<div class='row cov'><span class='ln'>768</span>        child = Row(</div>
+<div class='row nod'><span class='ln'>769</span>          mainAxisSize: MainAxisSize.min,</div>
+<div class='row cov'><span class='ln'>770</span>          children: [</div>
+<div class='row cov'><span class='ln'>771</span>            Icon(</div>
+<div class='row nod'><span class='ln'>772</span>              TIcons.view_list,</div>
+<div class='row nod'><span class='ln'>773</span>              size: 16.0,</div>
+<div class='row cov'><span class='ln'>774</span>              color: isSelected</div>
+<div class='row cov'><span class='ln'>775</span>                  ? context.tTheme.brandNormalColor</div>
+<div class='row unc'><span class='ln'>776</span>▶                   : context.tTheme.textColorPrimary,</div>
+<div class='row nod'><span class='ln'>777</span>            ),</div>
+<div class='row nod'><span class='ln'>778</span>            const SizedBox(width: 5),</div>
+<div class='row cov'><span class='ln'>779</span>            _textItem(context, itemConfig, isSelected,</div>
+<div class='row cov'><span class='ln'>780</span>                context.tTheme.fontTitleMedium!)</div>
+<div class='row nod'><span class='ln'>781</span>          ],</div>
+<div class='row nod'><span class='ln'>782</span>        );</div>
+<div class='row nod'><span class='ln'>783</span>      } else {</div>
+<div class='row cov'><span class='ln'>784</span>        child = _textItem(context, itemConfig, isSelected,</div>
+<div class='row cov'><span class='ln'>785</span>            context.tTheme.fontTitleMedium!);</div>
+<div class='row nod'><span class='ln'>786</span>      }</div>
+<div class='row nod'><span class='ln'>787</span>    }</div>
+<div class='row cov'><span class='ln'>788</span>    if (basicType == TBottomTabBarBasicType.icon) {</div>
+<div class='row cov'><span class='ln'>789</span>      var selectedIcon = itemConfig.selectedIcon;</div>
+<div class='row cov'><span class='ln'>790</span>      var unSelectedIcon = itemConfig.unselectedIcon;</div>
+<div class='row cov'><span class='ln'>791</span>      child = IconTheme(</div>
+<div class='row cov'><span class='ln'>792</span>        data: IconThemeData(</div>
+<div class='row cov'><span class='ln'>793</span>          color: isSelected</div>
+<div class='row cov'><span class='ln'>794</span>              ? context.tTheme.brandNormalColor</div>
+<div class='row cov'><span class='ln'>795</span>              : context.tTheme.textColorPrimary,</div>
+<div class='row nod'><span class='ln'>796</span>        ),</div>
+<div class='row cov'><span class='ln'>797</span>        child: isSelected ? selectedIcon! : unSelectedIcon!,</div>
+<div class='row nod'><span class='ln'>798</span>      );</div>
+<div class='row nod'><span class='ln'>799</span>    }</div>
+<div class='row nod'><span class='ln'>800</span></div>
+<div class='row cov'><span class='ln'>801</span>    if (basicType == TBottomTabBarBasicType.iconText) {</div>
+<div class='row cov'><span class='ln'>802</span>      var selectedIcon = itemConfig.selectedIcon;</div>
+<div class='row cov'><span class='ln'>803</span>      var unSelectedIcon = itemConfig.unselectedIcon;</div>
+<div class='row cov'><span class='ln'>804</span>      child = Column(</div>
+<div class='row nod'><span class='ln'>805</span>        mainAxisAlignment: MainAxisAlignment.center,</div>
+<div class='row nod'><span class='ln'>806</span>        crossAxisAlignment: CrossAxisAlignment.center,</div>
+<div class='row cov'><span class='ln'>807</span>        children: [</div>
+<div class='row cov'><span class='ln'>808</span>          IconTheme(</div>
+<div class='row cov'><span class='ln'>809</span>            data: IconThemeData(</div>
+<div class='row cov'><span class='ln'>810</span>              color: isSelected</div>
+<div class='row cov'><span class='ln'>811</span>                  ? context.tTheme.brandNormalColor</div>
+<div class='row cov'><span class='ln'>812</span>                  : context.tTheme.textColorPrimary,</div>
+<div class='row nod'><span class='ln'>813</span>            ),</div>
+<div class='row cov'><span class='ln'>814</span>            child: isSelected ? selectedIcon! : unSelectedIcon!,</div>
+<div class='row nod'><span class='ln'>815</span>          ),</div>
+<div class='row cov'><span class='ln'>816</span>          if (centerDistance &gt; 0)</div>
+<div class='row cov'><span class='ln'>817</span>            SizedBox(</div>
+<div class='row cov'><span class='ln'>818</span>              height: centerDistance,</div>
+<div class='row nod'><span class='ln'>819</span>            ),</div>
+<div class='row cov'><span class='ln'>820</span>          itemConfig.tabText?.isNotEmpty ?? false</div>
+<div class='row cov'><span class='ln'>821</span>              ? _textItem(</div>
+<div class='row nod'><span class='ln'>822</span>                  context,</div>
+<div class='row cov'><span class='ln'>823</span>                  itemConfig,</div>
+<div class='row cov'><span class='ln'>824</span>                  isSelected,</div>
+<div class='row cov'><span class='ln'>825</span>                  context.tTheme.fontBodyExtraSmall!,</div>
+<div class='row nod'><span class='ln'>826</span>                )</div>
+<div class='row cov'><span class='ln'>827</span>              : Container()</div>
+<div class='row nod'><span class='ln'>828</span>        ],</div>
+<div class='row nod'><span class='ln'>829</span>      );</div>
+<div class='row nod'><span class='ln'>830</span>    }</div>
+<div class='row nod'><span class='ln'>831</span></div>
+<div class='row cov'><span class='ln'>832</span>    var top = badgeConfig?.badgeTopOffset ?? -2;</div>
+<div class='row cov'><span class='ln'>833</span>    var right = badgeConfig?.badgeRightOffset ?? -10;</div>
+<div class='row cov'><span class='ln'>834</span>    return Stack(</div>
+<div class='row nod'><span class='ln'>835</span>      clipBehavior: Clip.none,</div>
+<div class='row cov'><span class='ln'>836</span>      children: [</div>
+<div class='row nod'><span class='ln'>837</span>        child,</div>
+<div class='row cov'><span class='ln'>838</span>        Visibility(</div>
+<div class='row cov'><span class='ln'>839</span>            visible: badgeConfig?.showBadge ?? false,</div>
+<div class='row nod'><span class='ln'>840</span>            child:</div>
+<div class='row cov'><span class='ln'>841</span>                Positioned(top: top, right: right, child: _badge(badgeConfig))),</div>
+<div class='row nod'><span class='ln'>842</span>      ],</div>
+<div class='row nod'><span class='ln'>843</span>    );</div>
+<div class='row nod'><span class='ln'>844</span>  }</div>
+<div class='row nod'><span class='ln'>845</span></div>
+<div class='row cov'><span class='ln'>846</span>  Widget _textItem(BuildContext context, TBottomTabBarTabConfig config,</div>
+<div class='row nod'><span class='ln'>847</span>      bool isSelected, Font font) {</div>
+<div class='row cov'><span class='ln'>848</span>    return TText(</div>
+<div class='row cov'><span class='ln'>849</span>      config.tabText,</div>
+<div class='row nod'><span class='ln'>850</span>      font: font,</div>
+<div class='row nod'><span class='ln'>851</span>      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,</div>
+<div class='row nod'><span class='ln'>852</span>      style:</div>
+<div class='row cov'><span class='ln'>853</span>          isSelected ? config.selectTabTextStyle : config.unselectTabTextStyle,</div>
+<div class='row nod'><span class='ln'>854</span>      textColor: isSelected</div>
+<div class='row cov'><span class='ln'>855</span>          ? context.tTheme.brandNormalColor</div>
+<div class='row cov'><span class='ln'>856</span>          : context.tTheme.textColorPrimary,</div>
+<div class='row nod'><span class='ln'>857</span>      forceVerticalCenter: true,</div>
+<div class='row nod'><span class='ln'>858</span>    );</div>
+<div class='row nod'><span class='ln'>859</span>  }</div>
+<div class='row nod'><span class='ln'>860</span></div>
+<div class='row cov'><span class='ln'>861</span>  _buildItem(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>862</span>    var badgeConfig = itemConfig.badgeConfig;</div>
+<div class='row cov'><span class='ln'>863</span>    var isInOrOutCapsule = componentType == TBottomTabBarComponentType.label ||</div>
+<div class='row cov'><span class='ln'>864</span>        outlineType == TBottomTabBarOutlineType.capsule;</div>
+<div class='row nod'><span class='ln'>865</span></div>
+<div class='row nod'><span class='ln'>866</span>    // centerDistance &gt; 0 时进一步压缩顶部内边距，为图标与文本的间距腾出空间</div>
+<div class='row nod'><span class='ln'>867</span>    final reduceTopPad =</div>
+<div class='row cov'><span class='ln'>868</span>        basicType == TBottomTabBarBasicType.iconText &amp;&amp; centerDistance &gt; 0;</div>
+<div class='row cov'><span class='ln'>869</span>    var child = Container(</div>
+<div class='row nod'><span class='ln'>870</span>      alignment: Alignment.center,</div>
+<div class='row cov'><span class='ln'>871</span>      padding: EdgeInsets.only(</div>
+<div class='row cov'><span class='ln'>872</span>        top: (isInOrOutCapsule ? 3.0 : 2.0) - (reduceTopPad ? 1.0 : 0.0),</div>
+<div class='row nod'><span class='ln'>873</span>        bottom: isInOrOutCapsule</div>
+<div class='row cov'><span class='ln'>874</span>            ? (basicType == TBottomTabBarBasicType.iconText ? 0.0 : 1.0)</div>
+<div class='row nod'><span class='ln'>875</span>            : 0.0,</div>
+<div class='row nod'><span class='ln'>876</span>      ),</div>
+<div class='row nod'><span class='ln'>877</span>      color: Colors.transparent,</div>
+<div class='row cov'><span class='ln'>878</span>      child: _constructItem(context, badgeConfig, isInOrOutCapsule),</div>
+<div class='row nod'><span class='ln'>879</span>    );</div>
+<div class='row nod'><span class='ln'>880</span></div>
+<div class='row cov'><span class='ln'>881</span>    if (!needInkWell) {</div>
+<div class='row nod'><span class='ln'>882</span>      return child;</div>
+<div class='row nod'><span class='ln'>883</span>    }</div>
+<div class='row cov'><span class='ln'>884</span>    return Material(</div>
+<div class='row nod'><span class='ln'>885</span>      color: Colors.transparent,</div>
+<div class='row cov'><span class='ln'>886</span>      borderRadius: isInOrOutCapsule ? BorderRadius.circular(24) : null,</div>
+<div class='row cov'><span class='ln'>887</span>      child: InkWell(</div>
+<div class='row cov'><span class='ln'>888</span>        borderRadius: isInOrOutCapsule ? BorderRadius.circular(24) : null,</div>
+<div class='row nod'><span class='ln'>889</span>        splashFactory: InkRipple.splashFactory,</div>
+<div class='row cov'><span class='ln'>890</span>        splashColor: selectedBgColor ?? context.tTheme.brandLightColor,</div>
+<div class='row cov'><span class='ln'>891</span>        highlightColor: selectedBgColor ?? context.tTheme.brandLightColor,</div>
+<div class='row unc'><span class='ln'>892</span>▶         onTap: () =&gt; handleTap(context),</div>
+<div class='row nod'><span class='ln'>893</span>        child: child,</div>
+<div class='row nod'><span class='ln'>894</span>      ),</div>
+<div class='row nod'><span class='ln'>895</span>    );</div>
+<div class='row nod'><span class='ln'>896</span>  }</div>
+<div class='row nod'><span class='ln'>897</span></div>
+<div class='row cov'><span class='ln'>898</span>  void handleTap(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>899</span>    onTap.call();</div>
+<div class='row nod'><span class='ln'>900</span></div>
+<div class='row cov'><span class='ln'>901</span>    var popUpButtonConfig = itemConfig.popUpButtonConfig;</div>
+<div class='row nod'><span class='ln'>902</span>    if (popUpButtonConfig != null) {</div>
+<div class='row cov'><span class='ln'>903</span>      Navigator.push(</div>
+<div class='row nod'><span class='ln'>904</span>          context,</div>
+<div class='row cov'><span class='ln'>905</span>          PopRoute(</div>
+<div class='row cov'><span class='ln'>906</span>            child: PopupDialog(</div>
+<div class='row cov'><span class='ln'>907</span>              itemWidth - _kDefaultMenuItemWidthShrink,</div>
+<div class='row nod'><span class='ln'>908</span>              btnContext: context,</div>
+<div class='row cov'><span class='ln'>909</span>              config: popUpButtonConfig.popUpDialogConfig,</div>
+<div class='row cov'><span class='ln'>910</span>              items: popUpButtonConfig.items,</div>
+<div class='row cov'><span class='ln'>911</span>              onClickMenu: (value) {</div>
+<div class='row cov'><span class='ln'>912</span>                popUpButtonConfig.onChanged(value);</div>
+<div class='row nod'><span class='ln'>913</span>              },</div>
+<div class='row nod'><span class='ln'>914</span>            ),</div>
+<div class='row nod'><span class='ln'>915</span>          ));</div>
+<div class='row nod'><span class='ln'>916</span>    }</div>
+<div class='row nod'><span class='ln'>917</span>  }</div>
+<div class='row nod'><span class='ln'>918</span>}</div>
+<div class='row nod'><span class='ln'>919</span></div>
+<div class='row nod'><span class='ln'>920</span>/// 展开项配置</div>
+<div class='row nod'><span class='ln'>921</span>class TBottomTabBarPopUpBtnConfig {</div>
+<div class='row cov'><span class='ln'>922</span>  TBottomTabBarPopUpBtnConfig(</div>
+<div class='row nod'><span class='ln'>923</span>      {required this.items, required this.onChanged, this.popUpDialogConfig})</div>
+<div class='row cov'><span class='ln'>924</span>      : assert(() {</div>
+<div class='row nod'><span class='ln'>925</span>          if (popUpDialogConfig != null) {</div>
+<div class='row cov'><span class='ln'>926</span>            if ((popUpDialogConfig.arrowHeight != null &amp;&amp;</div>
+<div class='row cov'><span class='ln'>927</span>                    popUpDialogConfig.arrowHeight! &lt;= 0.0) ||</div>
+<div class='row cov'><span class='ln'>928</span>                (popUpDialogConfig.arrowWidth != null &amp;&amp;</div>
+<div class='row cov'><span class='ln'>929</span>                    popUpDialogConfig.arrowWidth! &lt;= 0.0)) {</div>
+<div class='row cov'><span class='ln'>930</span>              throw FlutterError(</div>
+<div class='row nod'><span class='ln'>931</span>                  &#x27;[TBottomTabBarPopUpBtnConfig] arrowHeight or arrowHeight can &#x27;</div>
+<div class='row nod'><span class='ln'>932</span>                  &#x27;not set less than or equal to zero&#x27;);</div>
+<div class='row nod'><span class='ln'>933</span>            }</div>
+<div class='row nod'><span class='ln'>934</span>          }</div>
+<div class='row nod'><span class='ln'>935</span>          return true;</div>
+<div class='row cov'><span class='ln'>936</span>        }());</div>
+<div class='row nod'><span class='ln'>937</span></div>
+<div class='row nod'><span class='ln'>938</span>  /// 选项list</div>
+<div class='row nod'><span class='ln'>939</span>  final List&lt;PopUpMenuItem&gt; items;</div>
+<div class='row nod'><span class='ln'>940</span></div>
+<div class='row nod'><span class='ln'>941</span>  /// 统一在 onChanged 中处理各item点击事件</div>
+<div class='row nod'><span class='ln'>942</span>  final ValueChanged&lt;String&gt; onChanged;</div>
+<div class='row nod'><span class='ln'>943</span></div>
+<div class='row nod'><span class='ln'>944</span>  /// 弹窗UI配置</div>
+<div class='row nod'><span class='ln'>945</span>  final TBottomTabBarPopUpShapeConfig? popUpDialogConfig;</div>
+<div class='row nod'><span class='ln'>946</span>}</div>
+<div class='row nod'><span class='ln'>947</span></div>
+<div class='row nod'><span class='ln'>948</span>/// 弹窗UI配置</div>
+<div class='row nod'><span class='ln'>949</span>class TBottomTabBarPopUpShapeConfig {</div>
+<div class='row cov'><span class='ln'>950</span>  TBottomTabBarPopUpShapeConfig(</div>
+<div class='row nod'><span class='ln'>951</span>      {this.popUpWidth,</div>
+<div class='row nod'><span class='ln'>952</span>      this.popUpItemHeight = _kDefaultMenuItemHeight,</div>
+<div class='row nod'><span class='ln'>953</span>      this.backgroundColor,</div>
+<div class='row nod'><span class='ln'>954</span>      this.radius,</div>
+<div class='row nod'><span class='ln'>955</span>      this.arrowWidth,</div>
+<div class='row nod'><span class='ln'>956</span>      this.arrowHeight});</div>
+<div class='row nod'><span class='ln'>957</span></div>
+<div class='row nod'><span class='ln'>958</span>  /// 弹窗宽度（不设置，默认为按钮宽度 - 20）</div>
+<div class='row nod'><span class='ln'>959</span>  final double? popUpWidth;</div>
+<div class='row nod'><span class='ln'>960</span></div>
+<div class='row nod'><span class='ln'>961</span>  /// 单个选项高度 所有选项等高 不设置则使用默认值 48</div>
+<div class='row nod'><span class='ln'>962</span>  final double? popUpItemHeight;</div>
+<div class='row nod'><span class='ln'>963</span></div>
+<div class='row nod'><span class='ln'>964</span>  /// 弹窗背景颜色</div>
+<div class='row nod'><span class='ln'>965</span>  final Color? backgroundColor;</div>
+<div class='row nod'><span class='ln'>966</span></div>
+<div class='row nod'><span class='ln'>967</span>  /// panel圆角 默认0</div>
+<div class='row nod'><span class='ln'>968</span>  final double? radius;</div>
+<div class='row nod'><span class='ln'>969</span></div>
+<div class='row nod'><span class='ln'>970</span>  /// 箭头宽度 默认13.5</div>
+<div class='row nod'><span class='ln'>971</span>  final double? arrowWidth;</div>
+<div class='row nod'><span class='ln'>972</span></div>
+<div class='row nod'><span class='ln'>973</span>  /// 箭头高度 默认8</div>
+<div class='row nod'><span class='ln'>974</span>  final double? arrowHeight;</div>
+<div class='row nod'><span class='ln'>975</span>}</div>
+<div class='row nod'><span class='ln'>976</span></div>
+<div class='row nod'><span class='ln'>977</span>/// 弹窗菜单item</div>
+<div class='row nod'><span class='ln'>978</span>class PopUpMenuItem extends StatelessWidget {</div>
+<div class='row unc'><span class='ln'>979</span>▶   const PopUpMenuItem({</div>
+<div class='row nod'><span class='ln'>980</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>981</span>    this.itemWidget,</div>
+<div class='row nod'><span class='ln'>982</span>    required this.value,</div>
+<div class='row nod'><span class='ln'>983</span>    this.alignment = AlignmentDirectional.center,</div>
+<div class='row unc'><span class='ln'>984</span>▶   }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>985</span></div>
+<div class='row nod'><span class='ln'>986</span>  /// 选项widget</div>
+<div class='row nod'><span class='ln'>987</span>  final Widget? itemWidget;</div>
+<div class='row nod'><span class='ln'>988</span></div>
+<div class='row nod'><span class='ln'>989</span>  /// 选项值</div>
+<div class='row nod'><span class='ln'>990</span>  final String value;</div>
+<div class='row nod'><span class='ln'>991</span></div>
+<div class='row nod'><span class='ln'>992</span>  /// 对齐方式</div>
+<div class='row nod'><span class='ln'>993</span>  final AlignmentGeometry alignment;</div>
+<div class='row nod'><span class='ln'>994</span></div>
+<div class='row cov'><span class='ln'>995</span>  @override</div>
+<div class='row nod'><span class='ln'>996</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>997</span>    return Container(</div>
+<div class='row nod'><span class='ln'>998</span>      constraints: const BoxConstraints(minHeight: _kMenuItemMinHeight),</div>
+<div class='row cov'><span class='ln'>999</span>      decoration: BoxDecoration(</div>
+<div class='row cov'><span class='ln'>1000</span>        color: context.tTheme.bgColorContainer,</div>
+<div class='row cov'><span class='ln'>1001</span>        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),</div>
+<div class='row nod'><span class='ln'>1002</span>      ),</div>
+<div class='row cov'><span class='ln'>1003</span>      alignment: alignment,</div>
+<div class='row cov'><span class='ln'>1004</span>      child: itemWidget ??</div>
+<div class='row cov'><span class='ln'>1005</span>          TText(</div>
+<div class='row cov'><span class='ln'>1006</span>            value,</div>
+<div class='row nod'><span class='ln'>1007</span>            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),</div>
+<div class='row nod'><span class='ln'>1008</span>          ),</div>
+<div class='row nod'><span class='ln'>1009</span>    );</div>
+<div class='row nod'><span class='ln'>1010</span>  }</div>
+<div class='row nod'><span class='ln'>1011</span>}</div>
+<div class='row nod'><span class='ln'>1012</span></div>
+<div class='row nod'><span class='ln'>1013</span>/// 弹出菜单路由</div>
+<div class='row nod'><span class='ln'>1014</span>class PopRoute extends PopupRoute {</div>
+<div class='row nod'><span class='ln'>1015</span>  /// 子内容</div>
+<div class='row nod'><span class='ln'>1016</span>  Widget child;</div>
+<div class='row nod'><span class='ln'>1017</span></div>
+<div class='row cov'><span class='ln'>1018</span>  PopRoute({required this.child});</div>
+<div class='row nod'><span class='ln'>1019</span></div>
+<div class='row cov'><span class='ln'>1020</span>  @override</div>
+<div class='row nod'><span class='ln'>1021</span>  Color? get barrierColor =&gt; Colors.transparent;</div>
+<div class='row nod'><span class='ln'>1022</span></div>
+<div class='row cov'><span class='ln'>1023</span>  @override</div>
+<div class='row nod'><span class='ln'>1024</span>  bool get barrierDismissible =&gt; true;</div>
+<div class='row nod'><span class='ln'>1025</span></div>
+<div class='row cov'><span class='ln'>1026</span>  @override</div>
+<div class='row nod'><span class='ln'>1027</span>  String? get barrierLabel =&gt; &#x27;popUpMenuBarrierLabel&#x27;;</div>
+<div class='row nod'><span class='ln'>1028</span></div>
+<div class='row cov'><span class='ln'>1029</span>  @override</div>
+<div class='row nod'><span class='ln'>1030</span>  Widget buildPage(BuildContext context, Animation&lt;double&gt; animation,</div>
+<div class='row nod'><span class='ln'>1031</span>      Animation&lt;double&gt; secondaryAnimation) {</div>
+<div class='row cov'><span class='ln'>1032</span>    return child;</div>
+<div class='row nod'><span class='ln'>1033</span>  }</div>
+<div class='row nod'><span class='ln'>1034</span></div>
+<div class='row cov'><span class='ln'>1035</span>  @override</div>
+<div class='row nod'><span class='ln'>1036</span>  Duration get transitionDuration =&gt; _kPopupMenuDuration;</div>
+<div class='row nod'><span class='ln'>1037</span>}</div>
+<div class='row nod'><span class='ln'>1038</span></div>
+<div class='row nod'><span class='ln'>1039</span>/// 弹出菜单对话框</div>
+<div class='row nod'><span class='ln'>1040</span>class PopupDialog extends StatefulWidget {</div>
+<div class='row nod'><span class='ln'>1041</span>  /// 按钮context</div>
+<div class='row nod'><span class='ln'>1042</span>  final BuildContext btnContext;</div>
+<div class='row nod'><span class='ln'>1043</span></div>
+<div class='row nod'><span class='ln'>1044</span>  /// 点击事件</div>
+<div class='row nod'><span class='ln'>1045</span>  final ValueChanged&lt;String&gt; onClickMenu;</div>
+<div class='row nod'><span class='ln'>1046</span></div>
+<div class='row nod'><span class='ln'>1047</span>  /// 弹窗选项列表</div>
+<div class='row nod'><span class='ln'>1048</span>  final List&lt;PopUpMenuItem&gt; items;</div>
+<div class='row nod'><span class='ln'>1049</span></div>
+<div class='row nod'><span class='ln'>1050</span>  /// 弹窗配置</div>
+<div class='row nod'><span class='ln'>1051</span>  final TBottomTabBarPopUpShapeConfig? config;</div>
+<div class='row nod'><span class='ln'>1052</span></div>
+<div class='row nod'><span class='ln'>1053</span>  /// 默认弹窗宽度</div>
+<div class='row nod'><span class='ln'>1054</span>  final double defaultPopUpWidth;</div>
+<div class='row nod'><span class='ln'>1055</span></div>
+<div class='row cov'><span class='ln'>1056</span>  const PopupDialog(this.defaultPopUpWidth,</div>
+<div class='row nod'><span class='ln'>1057</span>      {Key? key,</div>
+<div class='row nod'><span class='ln'>1058</span>      required this.btnContext,</div>
+<div class='row nod'><span class='ln'>1059</span>      required this.onClickMenu,</div>
+<div class='row nod'><span class='ln'>1060</span>      required this.items,</div>
+<div class='row nod'><span class='ln'>1061</span>      required this.config})</div>
+<div class='row cov'><span class='ln'>1062</span>      : super(key: key);</div>
+<div class='row nod'><span class='ln'>1063</span></div>
+<div class='row cov'><span class='ln'>1064</span>  @override</div>
+<div class='row cov'><span class='ln'>1065</span>  PopupDialogState createState() =&gt; PopupDialogState();</div>
+<div class='row nod'><span class='ln'>1066</span>}</div>
+<div class='row nod'><span class='ln'>1067</span></div>
+<div class='row nod'><span class='ln'>1068</span>class PopupDialogState extends State&lt;PopupDialog&gt; {</div>
+<div class='row nod'><span class='ln'>1069</span>  RenderBox? button;</div>
+<div class='row nod'><span class='ln'>1070</span>  RenderBox? overlay;</div>
+<div class='row nod'><span class='ln'>1071</span>  RelativeRect? position;</div>
+<div class='row nod'><span class='ln'>1072</span>  Size? size;</div>
+<div class='row nod'><span class='ln'>1073</span></div>
+<div class='row cov'><span class='ln'>1074</span>  @override</div>
+<div class='row nod'><span class='ln'>1075</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>1076</span>    super.initState();</div>
+<div class='row cov'><span class='ln'>1077</span>    button = widget.btnContext.findRenderObject() as RenderBox;</div>
+<div class='row cov'><span class='ln'>1078</span>    size = button!.size;</div>
+<div class='row cov'><span class='ln'>1079</span>    overlay =</div>
+<div class='row cov'><span class='ln'>1080</span>        Overlay.of(widget.btnContext).context.findRenderObject() as RenderBox;</div>
+<div class='row cov'><span class='ln'>1081</span>    position = RelativeRect.fromRect(</div>
+<div class='row cov'><span class='ln'>1082</span>      Rect.fromPoints(</div>
+<div class='row cov'><span class='ln'>1083</span>        button!.localToGlobal(Offset.zero, ancestor: overlay),</div>
+<div class='row cov'><span class='ln'>1084</span>        button!.localToGlobal(Offset.zero, ancestor: overlay),</div>
+<div class='row nod'><span class='ln'>1085</span>      ),</div>
+<div class='row cov'><span class='ln'>1086</span>      Offset.zero &amp; overlay!.size,</div>
+<div class='row nod'><span class='ln'>1087</span>    );</div>
+<div class='row nod'><span class='ln'>1088</span>  }</div>
+<div class='row nod'><span class='ln'>1089</span></div>
+<div class='row cov'><span class='ln'>1090</span>  @override</div>
+<div class='row nod'><span class='ln'>1091</span>  Widget build(BuildContext context) {</div>
+<div class='row nod'><span class='ln'>1092</span>    var popUpItemHeight =</div>
+<div class='row cov'><span class='ln'>1093</span>        widget.config?.popUpItemHeight ?? _kDefaultMenuItemHeight;</div>
+<div class='row cov'><span class='ln'>1094</span>    var popUpItemWidth = widget.config?.popUpWidth ?? widget.defaultPopUpWidth;</div>
+<div class='row cov'><span class='ln'>1095</span>    var menuItems = widget.items</div>
+<div class='row cov'><span class='ln'>1096</span>        .map((e) =&gt; GestureDetector(</div>
+<div class='row nod'><span class='ln'>1097</span>            behavior: HitTestBehavior.opaque,</div>
+<div class='row cov'><span class='ln'>1098</span>            onTap: () {</div>
+<div class='row cov'><span class='ln'>1099</span>              widget.onClickMenu(e.value);</div>
+<div class='row cov'><span class='ln'>1100</span>              Navigator.of(context).pop();</div>
+<div class='row nod'><span class='ln'>1101</span>            },</div>
+<div class='row cov'><span class='ln'>1102</span>            child: SizedBox(</div>
+<div class='row nod'><span class='ln'>1103</span>              height: popUpItemHeight,</div>
+<div class='row nod'><span class='ln'>1104</span>              child: e,</div>
+<div class='row nod'><span class='ln'>1105</span>            )))</div>
+<div class='row cov'><span class='ln'>1106</span>        .toList();</div>
+<div class='row nod'><span class='ln'>1107</span></div>
+<div class='row nod'><span class='ln'>1108</span>    // 计算弹窗整体高度（含箭头），用于将其约束在视口内避免被裁切到屏幕外</div>
+<div class='row cov'><span class='ln'>1109</span>    final popUpPanelHeight = popUpItemHeight * widget.items.length +</div>
+<div class='row cov'><span class='ln'>1110</span>        (widget.config?.arrowHeight ?? _kArrowHeight);</div>
+<div class='row cov'><span class='ln'>1111</span>    final screenHeight = MediaQuery.of(context).size.height;</div>
+<div class='row cov'><span class='ln'>1112</span>    final screenWidth = MediaQuery.of(context).size.width;</div>
+<div class='row nod'><span class='ln'>1113</span>    // 这里 -8 是因为widget.btnContext是TBottomTabBarItemWithBadge的，它在父widget内有8dp的padding</div>
+<div class='row nod'><span class='ln'>1114</span>    // -4 是设计稿上箭头和tab有4dp的距离</div>
+<div class='row cov'><span class='ln'>1115</span>    final rawTop = position!.top - popUpPanelHeight - 8 - 4;</div>
+<div class='row nod'><span class='ln'>1116</span>    // 若按钮靠近顶部导致弹窗上移越界，则将其夹紧到视口内（至少 8dp 边距）</div>
+<div class='row cov'><span class='ln'>1117</span>    final safeTop = rawTop.clamp(8.0, screenHeight - popUpPanelHeight - 8.0);</div>
+<div class='row nod'><span class='ln'>1118</span></div>
+<div class='row cov'><span class='ln'>1119</span>    return Material(</div>
+<div class='row nod'><span class='ln'>1120</span>      type: MaterialType.transparency,</div>
+<div class='row cov'><span class='ln'>1121</span>      child: GestureDetector(</div>
+<div class='row unc'><span class='ln'>1122</span>▶         onTap: () =&gt; Navigator.of(context).pop(),</div>
+<div class='row cov'><span class='ln'>1123</span>        child: Stack(</div>
+<div class='row cov'><span class='ln'>1124</span>          children: &lt;Widget&gt;[</div>
+<div class='row cov'><span class='ln'>1125</span>            Container(</div>
+<div class='row nod'><span class='ln'>1126</span>              width: screenWidth,</div>
+<div class='row nod'><span class='ln'>1127</span>              height: screenHeight,</div>
+<div class='row nod'><span class='ln'>1128</span>              color: Colors.transparent,</div>
+<div class='row nod'><span class='ln'>1129</span>            ),</div>
+<div class='row cov'><span class='ln'>1130</span>            Positioned(</div>
+<div class='row nod'><span class='ln'>1131</span>                top: safeTop,</div>
+<div class='row cov'><span class='ln'>1132</span>                right: position!.right - (popUpItemWidth + size!.width) / 2,</div>
+<div class='row cov'><span class='ln'>1133</span>                child: Container(</div>
+<div class='row nod'><span class='ln'>1134</span>                  width: popUpItemWidth,</div>
+<div class='row cov'><span class='ln'>1135</span>                  height: popUpItemHeight * widget.items.length +</div>
+<div class='row cov'><span class='ln'>1136</span>                      (widget.config?.arrowHeight ?? _kArrowHeight),</div>
+<div class='row nod'><span class='ln'>1137</span>                  decoration:</div>
+<div class='row cov'><span class='ln'>1138</span>                      BoxDecoration(boxShadow: context.tTheme.shadowsTop),</div>
+<div class='row cov'><span class='ln'>1139</span>                  child: CustomPaint(</div>
+<div class='row cov'><span class='ln'>1140</span>                    painter: PanelWithDownArrow(</div>
+<div class='row cov'><span class='ln'>1141</span>                        config: widget.config,</div>
+<div class='row cov'><span class='ln'>1142</span>                        backgroundColor: widget.config?.backgroundColor ??</div>
+<div class='row cov'><span class='ln'>1143</span>                            context.tTheme.bgColorContainer),</div>
+<div class='row cov'><span class='ln'>1144</span>                    child: Container(</div>
+<div class='row nod'><span class='ln'>1145</span>                      alignment: Alignment.topCenter,</div>
+<div class='row cov'><span class='ln'>1146</span>                      height: popUpItemHeight * widget.items.length,</div>
+<div class='row cov'><span class='ln'>1147</span>                      child: Container(</div>
+<div class='row cov'><span class='ln'>1148</span>                        constraints: BoxConstraints(</div>
+<div class='row cov'><span class='ln'>1149</span>                            maxHeight: popUpItemHeight * widget.items.length),</div>
+<div class='row cov'><span class='ln'>1150</span>                        child: Stack(</div>
+<div class='row cov'><span class='ln'>1151</span>                          children: [</div>
+<div class='row cov'><span class='ln'>1152</span>                            Column(children: menuItems),</div>
+<div class='row cov'><span class='ln'>1153</span>                            Column(</div>
+<div class='row nod'><span class='ln'>1154</span>                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,</div>
+<div class='row cov'><span class='ln'>1155</span>                              children: List.generate(</div>
+<div class='row cov'><span class='ln'>1156</span>                                  widget.items.length - 1,</div>
+<div class='row cov'><span class='ln'>1157</span>                                  (index) =&gt; Padding(</div>
+<div class='row nod'><span class='ln'>1158</span>                                        padding: const EdgeInsets.symmetric(</div>
+<div class='row nod'><span class='ln'>1159</span>                                            horizontal: 8.0),</div>
+<div class='row cov'><span class='ln'>1160</span>                                        child: Divider(</div>
+<div class='row nod'><span class='ln'>1161</span>                                          thickness: 0.5,</div>
+<div class='row nod'><span class='ln'>1162</span>                                          height: 0.5,</div>
+<div class='row cov'><span class='ln'>1163</span>                                          color: context.tTheme</div>
+<div class='row cov'><span class='ln'>1164</span>                                              .componentStrokeColor,</div>
+<div class='row nod'><span class='ln'>1165</span>                                        ),</div>
+<div class='row nod'><span class='ln'>1166</span>                                      )),</div>
+<div class='row nod'><span class='ln'>1167</span>                            )</div>
+<div class='row nod'><span class='ln'>1168</span>                          ],</div>
+<div class='row nod'><span class='ln'>1169</span>                        ),</div>
+<div class='row nod'><span class='ln'>1170</span>                      ),</div>
+<div class='row nod'><span class='ln'>1171</span>                    ),</div>
+<div class='row nod'><span class='ln'>1172</span>                  ),</div>
+<div class='row nod'><span class='ln'>1173</span>                ))</div>
+<div class='row nod'><span class='ln'>1174</span>          ],</div>
+<div class='row nod'><span class='ln'>1175</span>        ),</div>
+<div class='row nod'><span class='ln'>1176</span>      ),</div>
+<div class='row nod'><span class='ln'>1177</span>    );</div>
+<div class='row nod'><span class='ln'>1178</span>  }</div>
+<div class='row nod'><span class='ln'>1179</span>}</div>
+<div class='row nod'><span class='ln'>1180</span></div>
+<div class='row nod'><span class='ln'>1181</span>/// 带下箭头的展开panel</div>
+<div class='row nod'><span class='ln'>1182</span>class PanelWithDownArrow extends CustomPainter {</div>
+<div class='row nod'><span class='ln'>1183</span>  /// 弹出面板形状配置</div>
+<div class='row nod'><span class='ln'>1184</span>  TBottomTabBarPopUpShapeConfig? config;</div>
+<div class='row nod'><span class='ln'>1185</span></div>
+<div class='row nod'><span class='ln'>1186</span>  /// 背景颜色</div>
+<div class='row nod'><span class='ln'>1187</span>  Color backgroundColor;</div>
+<div class='row nod'><span class='ln'>1188</span></div>
+<div class='row cov'><span class='ln'>1189</span>  PanelWithDownArrow({this.config, required this.backgroundColor});</div>
+<div class='row nod'><span class='ln'>1190</span></div>
+<div class='row cov'><span class='ln'>1191</span>  @override</div>
+<div class='row nod'><span class='ln'>1192</span>  void paint(Canvas canvas, Size size) {</div>
+<div class='row cov'><span class='ln'>1193</span>    var paint = Paint()</div>
+<div class='row cov'><span class='ln'>1194</span>      ..isAntiAlias = true</div>
+<div class='row cov'><span class='ln'>1195</span>      ..color = backgroundColor</div>
+<div class='row cov'><span class='ln'>1196</span>      ..style = PaintingStyle.fill;</div>
+<div class='row cov'><span class='ln'>1197</span>    var path = Path();</div>
+<div class='row cov'><span class='ln'>1198</span>    var panelWidth = size.width;</div>
+<div class='row cov'><span class='ln'>1199</span>    var panelHeight = size.height - (config?.arrowHeight ?? _kArrowHeight);</div>
+<div class='row nod'><span class='ln'>1200</span></div>
+<div class='row cov'><span class='ln'>1201</span>    canvas.drawRRect(</div>
+<div class='row cov'><span class='ln'>1202</span>        RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, panelWidth, panelHeight),</div>
+<div class='row cov'><span class='ln'>1203</span>            Radius.circular(config?.radius ?? 0.0)),</div>
+<div class='row nod'><span class='ln'>1204</span>        paint);</div>
+<div class='row nod'><span class='ln'>1205</span></div>
+<div class='row nod'><span class='ln'>1206</span>    /// 下方箭头</div>
+<div class='row cov'><span class='ln'>1207</span>    if (config?.arrowWidth != 0.0 &amp;&amp; config?.arrowHeight != 0.0) {</div>
+<div class='row cov'><span class='ln'>1208</span>      var left = (panelWidth - _kArrowWidth) / 2;</div>
+<div class='row cov'><span class='ln'>1209</span>      var right = (panelWidth + _kArrowWidth) / 2;</div>
+<div class='row cov'><span class='ln'>1210</span>      var bottom = panelHeight + _kArrowHeight;</div>
+<div class='row cov'><span class='ln'>1211</span>      if (config?.arrowWidth != null) {</div>
+<div class='row unc'><span class='ln'>1212</span>▶         left = (panelWidth - config!.arrowWidth!) / 2;</div>
+<div class='row unc'><span class='ln'>1213</span>▶         right = (panelWidth + config!.arrowWidth!) / 2;</div>
+<div class='row nod'><span class='ln'>1214</span>      }</div>
+<div class='row cov'><span class='ln'>1215</span>      if (config?.arrowHeight != null) {</div>
+<div class='row unc'><span class='ln'>1216</span>▶         bottom = panelHeight + config!.arrowHeight!;</div>
+<div class='row nod'><span class='ln'>1217</span>      }</div>
+<div class='row nod'><span class='ln'>1218</span></div>
+<div class='row cov'><span class='ln'>1219</span>      path.moveTo(left, panelHeight);</div>
+<div class='row cov'><span class='ln'>1220</span>      path.lineTo(panelWidth / 2, bottom);</div>
+<div class='row cov'><span class='ln'>1221</span>      path.lineTo(right, panelHeight);</div>
+<div class='row cov'><span class='ln'>1222</span>      canvas.drawPath(path, paint);</div>
+<div class='row nod'><span class='ln'>1223</span>    }</div>
+<div class='row nod'><span class='ln'>1224</span>  }</div>
+<div class='row nod'><span class='ln'>1225</span></div>
+<div class='row unc'><span class='ln'>1226</span>▶   @override</div>
+<div class='row nod'><span class='ln'>1227</span>  bool shouldRepaint(covariant CustomPainter oldDelegate) {</div>
+<div class='row nod'><span class='ln'>1228</span>    return false;</div>
+<div class='row nod'><span class='ln'>1229</span>  }</div>
+<div class='row nod'><span class='ln'>1230</span>}</div>
+<div class='row nod'><span class='ln'>1231</span></div>
+</pre></body></html>

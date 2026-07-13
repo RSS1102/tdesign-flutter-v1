@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
 
+/// 树形选择变更事件回调
+///
+/// values 选中值列表，[level] 变更层级（1/2/3）
 typedef TTreeSelectChangeEvent = void Function(List<dynamic>, int level);
 
+/// 树形选择选项数据模型
 class TSelectOption {
   TSelectOption({
     required this.label,
@@ -35,43 +39,50 @@ class TSelectOption {
   final double? columnWidth;
 }
 
+/// 一级菜单样式
 enum TTreeSelectStyle {
+  /// 普通样式
   normal,
+
+  /// 描边样式（选中项左侧有蓝色边框）
   outline,
 }
 
+/// 树形选择器
+///
+/// 支持单选/多选，最多三级菜单。
 class TTreeSelect extends StatefulWidget {
   const TTreeSelect({
     Key? key,
     this.options = const [],
-    this.defaultValue = const [],
-    this.onChange,
+    this.value = const [],
+    this.onChanged,
     this.multiple = false,
-    this.style = TTreeSelectStyle.normal,
-    this.height = 336,
-    this.outwardCornerRadius = 9,
+    this.style,
+    this.height,
+    this.outwardCornerRadius,
   }) : super(key: key);
 
   /// 展示的选项列表
   final List<TSelectOption> options;
 
   /// 初始值，对应options中的value值
-  final List<dynamic> defaultValue;
+  final List<dynamic> value;
 
   /// 选中值发生变化
-  final TTreeSelectChangeEvent? onChange;
+  final TTreeSelectChangeEvent? onChanged;
 
   /// 高度
-  final double height;
+  final double? height;
 
   /// 支持多选
   final bool multiple;
 
   /// 一级菜单样式
-  final TTreeSelectStyle style;
+  final TTreeSelectStyle? style;
 
   /// 一级菜单选中项的外弯折圆角半径，默认为 9
-  final double outwardCornerRadius;
+  final double? outwardCornerRadius;
 
   @override
   State<TTreeSelect> createState() => _TTreeSelectState();
@@ -111,7 +122,10 @@ class _TTreeSelectState extends State<TTreeSelect> {
   void initState() {
     super.initState();
 
-    values = List.from(widget.defaultValue);
+    // 深拷贝一层，避免外部传入 const/不可修改列表时，内部对 values[1] 等子列表的增删报错
+    values = widget.value
+        .map((e) => e is List ? List.from(e) : e)
+        .toList();
     if (values.isEmpty && widget.options.isNotEmpty) {
       final option = widget.options[0];
       values.add(
@@ -130,8 +144,11 @@ class _TTreeSelectState extends State<TTreeSelect> {
   void didUpdateWidget(TTreeSelect oldWidget) {
     super.didUpdateWidget(oldWidget);
     // 外部传入的 defaultValue 发生变化时，更新 values
-    if (widget.defaultValue != oldWidget.defaultValue) {
-      values = List.from(widget.defaultValue);
+    if (widget.value != oldWidget.value) {
+      // 深拷贝一层，与 initState 保持一致
+      values = widget.value
+          .map((e) => e is List ? List.from(e) : e)
+          .toList();
     }
   }
 
@@ -155,15 +172,21 @@ class _TTreeSelectState extends State<TTreeSelect> {
 
   @override
   Widget build(BuildContext context) {
+    // P1: 组件级 ThemeExtension
+    final theme = Theme.of(context).extension<TTreeSelectThemeData>();
+    final effectiveHeight = widget.height ?? theme?.height ?? 336;
+    final effectiveStyle = widget.style ?? theme?.style ?? TTreeSelectStyle.normal;
+    final effectiveOutwardCornerRadius = widget.outwardCornerRadius ?? theme?.outwardCornerRadius ?? 9;
+
     return Container(
-        color: TTheme.of(context).bgColorContainer,
-        height: widget.height,
+        color: context.tTheme.bgColorContainer,
+        height: effectiveHeight,
         child: Row(
           children: [
             /// 一级菜单
             Container(
               width: _getLevelWidth(widget.options, 1) ?? 106,
-              color: TTheme.of(context).bgColorSecondaryContainer,
+              color: context.tTheme.bgColorSecondaryContainer,
               child: ListView.builder(
                 itemCount: widget.options.length,
                 itemBuilder: (context, index) {
@@ -188,7 +211,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             controller2.jumpTo(0);
                           }
                         }
-                        widget.onChange?.call(values, 1);
+                        widget.onChanged?.call(values, 1);
                       });
                     },
                     child: Stack(
@@ -198,14 +221,14 @@ class _TTreeSelectState extends State<TTreeSelect> {
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? TTheme.of(context).bgColorContainer
+                                ? context.tTheme.bgColorContainer
                                 : null,
                             border: isSelected &&
-                                    widget.style == TTreeSelectStyle.outline
+                                    effectiveStyle == TTreeSelectStyle.outline
                                 ? Border(
                                     left: BorderSide(
                                       color:
-                                          TTheme.of(context).brandNormalColor,
+                                          context.tTheme.brandNormalColor,
                                       width: 3,
                                     ),
                                   )
@@ -217,10 +240,10 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize:
-                                  TTheme.of(context).fontBodyLarge?.size ?? 16,
+                                  context.tTheme.fontBodyLarge?.size ?? 16,
                               color: isSelected
-                                  ? TTheme.of(context).brandNormalColor
-                                  : TTheme.of(context).textColorPrimary,
+                                  ? context.tTheme.brandNormalColor
+                                  : context.tTheme.textColorPrimary,
                               fontWeight: isSelected
                                   ? FontWeight.w600
                                   : FontWeight.normal,
@@ -233,10 +256,10 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             top: 0,
                             right: 0,
                             child: CustomPaint(
-                              size: Size(widget.outwardCornerRadius, widget.outwardCornerRadius),
+                              size: Size(effectiveOutwardCornerRadius, effectiveOutwardCornerRadius),
                               painter: _OutwardCornerPainter(
                                 color:
-                                    TTheme.of(context).bgColorContainer,
+                                    context.tTheme.bgColorContainer,
                                 corner: _Corner.topRight,
                               ),
                             ),
@@ -247,10 +270,10 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             bottom: 0,
                             right: 0,
                             child: CustomPaint(
-                              size: Size(widget.outwardCornerRadius, widget.outwardCornerRadius),
+                              size: Size(effectiveOutwardCornerRadius, effectiveOutwardCornerRadius),
                               painter: _OutwardCornerPainter(
                                 color:
-                                    TTheme.of(context).bgColorContainer,
+                                    context.tTheme.bgColorContainer,
                                 corner: _Corner.bottomRight,
                               ),
                             ),
@@ -406,7 +429,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             }
                         }
                       }
-                      widget.onChange?.call(values, level);
+                      widget.onChanged?.call(values, level);
                     });
                   },
                   child: ConstrainedBox(
@@ -427,8 +450,8 @@ class _TTreeSelectState extends State<TTreeSelect> {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: (!lastColumn && selected)
-                                    ? TTheme.of(context).brandNormalColor
-                                    : TTheme.of(context).textColorPrimary,
+                                    ? context.tTheme.brandNormalColor
+                                    : context.tTheme.textColorPrimary,
                                 fontWeight: (!lastColumn && selected)
                                     ? FontWeight.w600
                                     : FontWeight.w400,
@@ -445,7 +468,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
                               padding: const EdgeInsets.all(16),
                               child: Icon(
                                 TIcons.check,
-                                color: TTheme.of(context).brandNormalColor,
+                                color: context.tTheme.brandNormalColor,
                               ),
                             ),
                           ),
@@ -493,7 +516,7 @@ class _OutwardCornerPainter extends CustomPainter {
         path.lineTo(r, 0);
         path.lineTo(r, r);
         path.arcToPoint(
-          Offset(0, 0),
+          const Offset(0, 0),
           radius: Radius.circular(r),
           clockwise: false,
         );

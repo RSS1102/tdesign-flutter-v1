@@ -9,7 +9,7 @@
 | cellBuilder | TCalendarCellBuilder? | - | 整格自定义构建器；返回非 null 时替换该格默认布局（主数字 + 副标题均不渲染）。 与 `subtitleBuilder` 互斥：需要只改副标题时请用 `subtitleBuilder`。 |
 | firstDayOfWeek | int | 0 | 第一天从星期几开始，0 = 周日，1 = 周一，…，6 = 周六。默认 0（周日）。 |
 | height | double? | - | 高度，不传时自动按 5 行日期计算 |
-| initialValue | List<DateTime>? | - | 初始选中日期列表，**仅在组件首次挂载时**写入内部选中态，运行期变更不会同步。 若需从外部重置选中，请为 `TCalendar` 指定新的 `Key` 或销毁后重新创建实例 （例如弹层关闭再打开）。不传时内部选中为空列表，首屏滚动见 `anchorDate`。 列表长度与 `type` 对应： - `CalendarType.single`：1 个元素（选中日期） - `CalendarType.multiple`：N 个元素（所有选中日期） - `CalendarType.range`：2 个元素（起始、结束日期） |
+| initialValue | List<DateTime>? | - | 初始选中日期列表，**仅在组件首次挂载时**写入内部选中态，运行期变更不会同步。 若需从外部重置选中，请为 `TCalendar` 指定新的 `Key` 或销毁后重新创建实例 （例如弹层关闭再打开）。不传时内部选中为空列表，首屏滚动见 `anchorDate`。 列表长度与 `type` 对应： - `TCalendarVariant.single`：1 个元素（选中日期） - `TCalendarVariant.multiple`：N 个元素（所有选中日期） - `TCalendarVariant.range`：2 个元素（起始、结束日期） |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | maxDate | DateTime? | - | 最大可选的日期，默认 2100-12-31 |
 | minDate | DateTime? | - | 最小可选的日期，默认 1970-01-01 |
@@ -18,7 +18,7 @@
 | onMonthChanged | ValueChanged<DateTime>? | - | 可见月份变化时触发（用户滑动或程序化滚动结束后），参数为当月 1 日。 外置控制栏可只更新自身文案，避免为同步月份对 `TCalendar` 整组件 `setState`。 |
 | style | TCalendarStyle? | - | 自定义样式（包含 cellHeight、monthTitleHeight 等布局参数） |
 | subtitleBuilder | TCalendarSubtitleBuilder? | - | 副标题构建器，在日期主数字下方渲染自定义内容。 `TCalendarSubtitleContext.date` 为当前格日期； `TCalendarSubtitleContext.selectType` 为选中/区间/禁用等态。返回 null 不显示副标题行。 |
-| type | CalendarType | CalendarType.single | 日历的选择模式，决定点击日期后的选中行为： - `CalendarType.single`：单选，点击新日期取消旧选中 - `CalendarType.multiple`：多选，点击切换选中/取消 - `CalendarType.range`：区间选择，依次选起止日期 |
+| type | TCalendarVariant | TCalendarVariant.single | 日历的选择模式，决定点击日期后的选中行为： - `TCalendarVariant.single`：单选，点击新日期取消旧选中 - `TCalendarVariant.multiple`：多选，点击切换选中/取消 - `TCalendarVariant.range`：区间选择，依次选起止日期 |
 
 
 ### TCalendarStyle
@@ -73,6 +73,17 @@
 | selectType | DateSelectType | - | 当前格的选中/区间/禁用等展示状态，便于按态设置副标题样式。 |
 
 
+### TCalendarVariant
+#### 枚举值
+
+
+| 名称 | 说明 |
+| --- | --- |
+| single | 单选：点击新日期时自动取消旧日期的选中状态 |
+| multiple | 多选：点击日期切换选中/取消，可同时选中多个日期 |
+| range | 区间选择：两次点击定区间；终点须晚于起点，否则以新点击重开区间 |
+
+
 ### DateSelectType
 #### 枚举值
 
@@ -85,17 +96,6 @@
 | centre | 区间中间日期 |
 | end | 区间终点 |
 | empty | 未选中且可选 |
-
-
-### CalendarType
-#### 枚举值
-
-
-| 名称 | 说明 |
-| --- | --- |
-| single | 单选：点击新日期时自动取消旧日期的选中状态 |
-| multiple | 多选：点击日期切换选中/取消，可同时选中多个日期 |
-| range | 区间选择：两次点击定区间；终点须晚于起点，否则以新点击重开区间 |
 
 
 ### TCalendarSubtitleBuilder

@@ -49,7 +49,7 @@ class TMultiCascader extends StatefulWidget {
   final TCascaderAction? action;
 
   /// 值发生变更时触发
-  final MultiCascaderCallback onChange;
+  final MultiCascaderCallback onChanged;
 
   const TMultiCascader(
       {super.key,
@@ -67,7 +67,7 @@ class TMultiCascader extends StatefulWidget {
       this.isLetterSort = false,
       this.onClose,
       this.action,
-      required this.onChange});
+      required this.onChanged});
 
   @override
   State<TMultiCascader> createState() => _TMultiCascaderState();
@@ -87,7 +87,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
   int _level = 0;
 
   /// 缓存列表数据
-  List<MultiCascaderListModel> _listData = [];
+  final List<MultiCascaderListModel> _listData = [];
 
   /// tab选中对应的列表数据
   List<MultiCascaderListModel> _selectListData = [];
@@ -98,7 +98,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
   void initState() {
     super.initState();
     List.generate(widget.data.length, (index) {
-      MultiCascaderListModel item = MultiCascaderListModel(
+      var item = MultiCascaderListModel(
         labelFun: () => widget.data[index]['label'],
         value: widget.data[index]['value'],
         segmentValue: widget.data[index]['segmentValue'],
@@ -146,12 +146,12 @@ class _TMultiCascaderState extends State<TMultiCascader>
       width: maxWidth,
       height: widget.cascaderHeight,
       decoration: BoxDecoration(
-        color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+        color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(
-              widget.topRadius ?? TTheme.of(context).radiusExtraLarge),
+              widget.topRadius ?? context.tTheme.radiusExtraLarge),
           topRight: Radius.circular(
-              widget.topRadius ?? TTheme.of(context).radiusExtraLarge),
+              widget.topRadius ?? context.tTheme.radiusExtraLarge),
         ),
       ),
       child: Column(
@@ -185,7 +185,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
   }
 
   void _initLocation(String value) {
-    List<MultiCascaderListModel> list =
+    var list =
         _listData.where((element) => element.value == value).toList();
     if (list.isNotEmpty) {
       _tabListData.add(list[0]);
@@ -197,9 +197,11 @@ class _TMultiCascaderState extends State<TMultiCascader>
 
   /// 根据索引列表初始化选中位置
   String? _initLocationByIndexes(List<int> indexes) {
-    if (indexes.isEmpty) return null;
+    if (indexes.isEmpty) {
+      return null;
+    }
     
-    String? lastValue = _getValueByIndexes(indexes);
+    var lastValue = _getValueByIndexes(indexes);
     
     if (lastValue != null) {
       _initLocation(lastValue);
@@ -210,13 +212,15 @@ class _TMultiCascaderState extends State<TMultiCascader>
   
   /// 根据索引列表获取对应的值
   String? _getValueByIndexes(List<int> indexes) {
-    if (indexes.isEmpty) return null;
+    if (indexes.isEmpty) {
+      return null;
+    }
     
     List<dynamic> currentLevel = widget.data;
     String? value;
     
-    for (int i = 0; i < indexes.length; i++) {
-      int index = indexes[i];
+    for (var i = 0; i < indexes.length; i++) {
+      var index = indexes[i];
       
       if (index >= 0 && index < currentLevel.length) {
         Map item = currentLevel[index];
@@ -249,7 +253,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
 
   void _buildRecursiveList(int depth, String parentValue, List<Map> data) {
     List.generate(data.length, (index) {
-      MultiCascaderListModel item = MultiCascaderListModel(
+      var item = MultiCascaderListModel(
         labelFun: () => data[index]['label'],
         value: data[index]['value'],
         parentValue: parentValue,
@@ -277,9 +281,9 @@ class _TMultiCascaderState extends State<TMultiCascader>
                     widget.title,
                     style: widget.titleStyle ??
                         TextStyle(
-                            fontSize: TTheme.of(context).fontTitleLarge!.size,
+                            fontSize: context.tTheme.fontTitleLarge!.size,
                             fontWeight: FontWeight.w700,
-                            color: TTheme.of(context).textColorPrimary),
+                            color: context.tTheme.textColorPrimary),
                   ),
                 ),
           Positioned(
@@ -310,16 +314,16 @@ class _TMultiCascaderState extends State<TMultiCascader>
                           (widget.closeText == null
                               ? Icon(
                                   TIcons.close,
-                                  color: TTheme.of(context).textColorPrimary,
+                                  color: context.tTheme.textColorPrimary,
                                 )
                               : TText(
                                   widget.closeText,
                                   style: TextStyle(
-                                      fontSize: TTheme.of(context)
+                                      fontSize: context.tTheme
                                           .fontTitleMedium!
                                           .size,
                                       color:
-                                          TTheme.of(context).textColorPrimary),
+                                          context.tTheme.textColorPrimary),
                                 )),
                     ),
                   ))),
@@ -329,7 +333,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
   }
 
   Widget _buildTabThemeBox(BuildContext context) {
-    String them = widget.theme ?? 'step';
+    var them = widget.theme ?? 'step';
     return them == 'step' ? _buildStepBox(context) : _buildTabBox(context);
   }
 
@@ -339,13 +343,13 @@ class _TMultiCascaderState extends State<TMultiCascader>
         decoration: BoxDecoration(
             border: Border(
                 bottom: BorderSide(
-                    color: TTheme.of(context).componentStrokeColor,
+                    color: context.tTheme.componentStrokeColor,
                     width: 0.5))),
         width: maxWidth,
         child: ListView(
             shrinkWrap: true,
             children: List.generate(_tabListData.length, (index) {
-              MultiCascaderListModel tabItem = _tabListData[index];
+              var tabItem = _tabListData[index];
               return GestureDetector(
                   onTap: () {
                     _tabListChange(index);
@@ -373,8 +377,8 @@ class _TMultiCascaderState extends State<TMultiCascader>
                             style: TextStyle(
                                 fontSize: 14,
                                 color: _currentTabIndex == index
-                                    ? TTheme.of(context).brandNormalColor
-                                    : TTheme.of(context).textColorPrimary),
+                                    ? context.tTheme.brandNormalColor
+                                    : context.tTheme.textColorPrimary),
                             fontWeight: _currentTabIndex == index
                                 ? FontWeight.w600
                                 : FontWeight.w400,
@@ -384,7 +388,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
                           padding: const EdgeInsets.only(left: 2, right: 16),
                           child: Icon(
                             TIcons.chevron_right,
-                            color: TTheme.of(context).textColorPrimary,
+                            color: context.tTheme.textColorPrimary,
                           ),
                         ),
                       ],
@@ -400,7 +404,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-                  color: TTheme.of(context).componentStrokeColor,
+                  color: context.tTheme.componentStrokeColor,
                   width: 0.5))),
       width: maxWidth,
       child: TCustomTab(
@@ -430,8 +434,8 @@ class _TMultiCascaderState extends State<TMultiCascader>
                   child: TText(
                     widget.subTitles![_level],
                     style: TextStyle(
-                        color: TTheme.of(context).textColorPlaceholder),
-                    font: TTheme.of(context).fontTitleSmall,
+                        color: context.tTheme.textColorPlaceholder),
+                    font: context.tTheme.fontTitleSmall,
                   ) //,
                   ),
             Expanded(
@@ -444,13 +448,13 @@ class _TMultiCascaderState extends State<TMultiCascader>
                   controller: _scrollListController,
                   itemCount: _selectListData.length,
                   itemBuilder: (context, index) {
-                    MultiCascaderListModel item = _selectListData[index];
-                    MultiCascaderListModel preItem = index == 0
+                    var item = _selectListData[index];
+                    var preItem = index == 0
                         ? MultiCascaderListModel()
                         : _selectListData[index - 1];
                     return GestureDetector(
                       onTap: () {
-                        int level = 0;
+                        var level = 0;
                         if (item.level == 0 && _currentTabIndex == 0) {
                           _tabListData.clear();
                           _tabListData.add(MultiCascaderListModel(
@@ -510,7 +514,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
                               if (_selectTabValue == item.value)
                                 Icon(
                                   TIcons.check,
-                                  color: TTheme.of(context).brandNormalColor,
+                                  color: context.tTheme.brandNormalColor,
                                 )
                             ],
                           )),
@@ -524,7 +528,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
   }
 
   void _tabListChange(int index) {
-    MultiCascaderListModel tabItem = _tabListData[index];
+    var tabItem = _tabListData[index];
     _currentTabIndex = index;
     if (tabItem.level != null) {
       _selectTabValue = tabItem.value;
@@ -532,7 +536,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
     if (index < _tabListData.length - 1) {
       _getFindListData(level: tabItem.level!, value: tabItem.value);
     } else {
-      int cruIndex = index > 0 ? index - 1 : index;
+      var cruIndex = index > 0 ? index - 1 : index;
       _getFindListData(level: index, parentValue: _tabListData[cruIndex].value);
     }
     _level = index;
@@ -557,7 +561,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
       var result = _tabListData
           .where((element) => element.label != context.resource.cascadeLabel)
           .toList();
-      widget.onChange(result);
+      widget.onChanged(result);
       Navigator.of(context).pop();
     }
   }
@@ -565,9 +569,9 @@ class _TMultiCascaderState extends State<TMultiCascader>
   /// 查询列表数据
   void _getFindListData(
       {required int level, String? parentValue, String? value}) {
-    List<MultiCascaderListModel> list = [];
+    var list = <MultiCascaderListModel>[];
     //查询层级数据
-    List<MultiCascaderListModel> selectLevelData =
+    var selectLevelData =
         _listData.where((element) => element.level == (level)).toList();
     if (selectLevelData.isNotEmpty) {
       if (level == 0) {
@@ -587,7 +591,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
   /// 定位选项在列表中位置
   void _scrollToListIndex(int index) async {
     // 计算列表中特定索引的位置
-    double scrollTo = index * 56.0; // 每个列表项的高度是56.0
+    var scrollTo = index * 56.0; // 每个列表项的高度是56.0
     await _scrollListController.animateTo(
       scrollTo,
       duration: const Duration(milliseconds: 1),
@@ -620,7 +624,7 @@ class LeftLineWidget extends StatelessWidget {
       child: CustomPaint(
         painter: LeftLinePainter(
             isShowTopLine: isShowTopLine,
-            topLineColor: topLineColor ?? TTheme.of(context).brandNormalColor,
+            topLineColor: topLineColor ?? context.tTheme.brandNormalColor,
             isCircleFill: isCircleFill),
       ),
     );
@@ -649,14 +653,14 @@ class LeftLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double lineWidth = 1;
-    double topHeight = size.height / 2;
-    double centerX = size.width / 2;
-    Paint linePain = Paint();
+    var topHeight = size.height / 2;
+    var centerX = size.width / 2;
+    var linePain = Paint();
     linePain.color = Colors.transparent;
     linePain.strokeWidth = lineWidth;
     linePain.strokeCap = StrokeCap.square;
     canvas.drawLine(Offset(centerX, 0), Offset(centerX, topHeight), linePain);
-    Paint circlePaint = Paint();
+    var circlePaint = Paint();
     circlePaint.color = topLineColor;
     circlePaint.strokeWidth = 1;
     circlePaint.style =

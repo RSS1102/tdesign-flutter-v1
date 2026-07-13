@@ -57,26 +57,24 @@ class _SettingPageState extends State<SettingPage> {
         children: [
           TCellGroup(
             title: '语言设置',
-            theme: TCellGroupTheme.cardTheme,
+            groupVariant: TCellGroupVariant.cardTheme,
             cells: [
               TCell(
                   title: '当前语言（点击切换）',
                   // 获取系统locale
                   note: localeProvider.currentLanguageName,
-                  onClick: (cell) {
-                    localeProvider.toggleLocale();
-                  }),
+                  onTap: localeProvider.toggleLocale),
             ],
           ),
         TCellGroup(
-          theme: TCellGroupTheme.cardTheme,
+          groupVariant: TCellGroupVariant.cardTheme,
           title: '暗色模式',
           cells: [
             TCell(
               title: '跟随系统',
-              description: '开启后，将跟随系统打开或关闭深色模式。',
+              subtitle: '开启后，将跟随系统打开或关闭深色模式。',
               rightIconWidget: TSwitch(
-                isOn: themeModeProvider.themeMode == ThemeMode.system,
+                value: themeModeProvider.themeMode == ThemeMode.system,
                 onChanged: (isOn) {
                   if (isOn) {
                     themeModeProvider.themeMode = ThemeMode.system;
@@ -85,24 +83,22 @@ class _SettingPageState extends State<SettingPage> {
                   } else {
                     themeModeProvider.themeMode = ThemeMode.light;
                   }
-                  return isOn;
                 },
               ),
-              disabled: true,
             ),
             TCell(
               title: '浅色模式',
-              leftIcon: TIcons.mode_light,
+              prefix: TIcons.mode_light,
               rightIcon: enabledModeCheckIcon(ThemeMode.light),
-              onClick: (cell) {
+              onTap: () {
                 themeModeProvider.themeMode = ThemeMode.light;
               },
             ),
             TCell(
               title: '深色模式',
-              leftIcon: TIcons.mode_dark,
+              prefix: TIcons.mode_dark,
               rightIcon: enabledModeCheckIcon(ThemeMode.dark),
-              onClick: (cell) {
+              onTap: () {
                 themeModeProvider.themeMode = ThemeMode.dark;
               },
             ),
@@ -110,7 +106,7 @@ class _SettingPageState extends State<SettingPage> {
         ),
           TCellGroup(
             title: AppLocalizations.of(context)?.about ?? '关于我们',
-            theme: TCellGroupTheme.cardTheme,
+            groupVariant: TCellGroupVariant.cardTheme,
             cells: [
               TCell(
                   title: AppLocalizations.of(context)?.version ?? '版本号',

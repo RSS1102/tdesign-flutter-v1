@@ -99,12 +99,12 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
 
     pages.add(Container(
       height: MediaQuery.of(context).size.height - itemHeight,
-      decoration: BoxDecoration(color: TTheme.of(context).bgColorContainer),
+      decoration: BoxDecoration(color: context.tTheme.bgColorContainer),
     ));
 
-    list[1].badge = const TBadge(TBadgeType.redPoint);
+    list[1].badge = const TBadge(TBadgeVariant.redPoint);
     list[2].badge = const TBadge(
-      TBadgeType.message,
+      TBadgeVariant.message,
       count: '8',
     );
     if (_sideBarController.loading) {
@@ -127,7 +127,7 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
         SizedBox(
           width: list.isEmpty ? size.width : 110,
           child: TSideBar(
-            style: TSideBarStyle.normal,
+            style: TSideBarVariant.normal,
             value: currentValue,
             controller: _sideBarController,
             loading: true,
@@ -156,7 +156,7 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
 
   Widget getLoadingDemo(int index) {
     return Container(
-      decoration: BoxDecoration(color: TTheme.of(context).bgColorContainer),
+      decoration: BoxDecoration(color: context.tTheme.bgColorContainer),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -197,10 +197,8 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TImage(
-            assetUrl: 'assets/img/empty.png',
-            type: TImageType.roundedSquare,
-            width: 48,
-            height: 48,
+            src: 'assets/img/empty.png',
+            variant: TImageVariant.roundedSquare,
           ),
           SizedBox(width: 16),
           TText('标题', style: TextStyle(fontSize: 16))

@@ -8,91 +8,253 @@ import '../util/log.dart';
 import '../util/string_util.dart';
 import 't_default_theme.dart';
 
-/// 主题控件
-class TTheme extends StatelessWidget {
-  const TTheme({
-    required this.data,
-    required this.child,
-    this.systemData,
-    Key? key,
-  }) : super(key: key);
+// ============================================================
+// L2: 全局 theme.of 基础设施（v1.0 新增）
+// ============================================================
 
-  /// 仅使用Default主题，不需要切换主题功能
-  static bool _needMultiTheme = false;
+/// BuildContext 扩展：便捷获取全局 TThemeData Token
+///
+/// v1.0 统一走 Material 的 `Theme.of(context)`，不再使用旧 `TTheme.of`。
+/// 全库读取全局 Token（色板/间距/圆角/字体）统一用 `context.tTheme`。
+extension TThemeContextExtension on BuildContext {
+  /// 获取全局 TThemeData（P4 Token），取不到则回退默认值
+  TThemeData get tTheme =>
+      Theme.of(this).extension<TThemeData>() ?? TThemeData.defaultData();
+}
 
-  /// 主题数据
-  static TThemeData? _singleData;
-
-  /// 子控件
-  final Widget child;
-
-  /// 主题数据
-  final TThemeData data;
-
-  /// Flutter系统主题数据
-  final ThemeData? systemData;
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_needMultiTheme) {
-      _singleData = data;
-    }
-    var extensions = [data];
-    return Theme(
-        data: systemData?.copyWith(extensions: extensions) ??
-            ThemeData(extensions: extensions),
-        child: child);
-  }
-
-  /// 开启多套主题功能
-  static void needMultiTheme([bool value = true]) {
-    _needMultiTheme = value;
-  }
-
-  /// 设置资源代理,
-  /// needAlwaysBuild=true:每次都会走build方法;如果全局有多个Delegate,需要区分情况去获取,则可以设置needAlwaysBuild为true,业务自己判断返回哪个delegate
-  /// needAlwaysBuild=false:返回delegate为null,则每次都会走build方法,返回了
-  static void setResourceBuilder(
-    TResourceBuilder delegate, {
-    bool needAlwaysBuild = false,
-  }) {
-    TResourceManager.instance.setResourceBuilder(delegate, needAlwaysBuild);
-  }
-
-  /// 获取默认主题数据，全局唯一
-  static TThemeData defaultData() {
-    return TThemeData.defaultData();
-  }
-
-  /// 获取主题数据，如果未传context则获取全局唯一的默认数据,
-  /// 传了context，则获取最近的主题，取不到则会获取全局唯一默认数据
-  static TThemeData of([BuildContext? context]) {
-    if (!_needMultiTheme || context == null) {
-      // 如果context为null,则返回全局默认主题
-      return _singleData ?? TThemeData.defaultData();
-    }
-    // 如果传了context，则从其中获取最近主题
-    try {
-      var data = Theme.of(context).extensions[TThemeData] as TThemeData?;
-      return data ?? TThemeData.defaultData();
-    } catch (e) {
-      Log.w('TTheme', 'TTheme.of() error: $e');
-      return TThemeData.defaultData();
-    }
-  }
-
-  /// 获取主题数据，取不到则可空
-  /// 传了context，则获取最近的主题，取不到或未传context则返回null,
-  static TThemeData? ofNullable([BuildContext? context]) {
-    if (context != null) {
-      // 如果传了context，则从其中获取最近主题
-      return Theme.of(context).extensions[TThemeData] as TThemeData?;
-    } else {
-      // 如果context为null,则返回null
-      return null;
-    }
+/// ThemeData 扩展：子树 merge Extension（禁用 copyWith(extensions:) 覆盖）
+///
+/// v1.0 子树覆盖统一用 `mergeExtension(...)`，
+/// 禁止 `copyWith(extensions: [...])`（会覆盖其它 Extension）。
+extension TThemeDataMergeExtension on ThemeData {
+  /// 合并 Extension：保留现有所有 Extension，仅替换指定类型
+  ///
+  /// 示例：
+  /// ```dart
+  /// Theme(
+  ///   data: Theme.of(context).mergeExtension(
+  ///     TButtonThemeData(defaultVariant: TButtonVariant.outline),
+  ///   ),
+  ///   child: TButton(onPressed: () {}, child: Text('描边区')),
+  /// )
+  /// ```
+  ThemeData mergeExtension<T extends ThemeExtension<T>>(T extension) {
+    final merged = Map<Type, ThemeExtension<dynamic>>.from(extensions);
+    merged[T] = extension;
+    return copyWith(extensions: merged.values.toList());
   }
 }
+
+/// P0–P4 统一样式解析器
+///
+/// 优先级（覆盖方向，强 → 弱）：
+/// **P0 实例 > P1 组件 Theme > P2 Material > P3 ColorScheme > P4 Token**
+///
+/// 用法：
+/// ```dart
+/// final resolver = TStyleResolver.of(context);
+/// final token = resolver.token;              // P4
+/// final buttonTheme = resolver.componentExtension<TButtonThemeData>(); // P1
+/// final colorScheme = resolver.colorScheme;  // P3
+/// ```
+class TStyleResolver {
+  TStyleResolver._(this._context);
+
+  final BuildContext _context;
+
+  /// 创建解析器实例
+  static TStyleResolver of(BuildContext context) =>
+      TStyleResolver._(context);
+
+  /// P4: 全局设计 Token（色板 / 间距原始值）
+  TThemeData get token =>
+      Theme.of(_context).extension<TThemeData>() ??
+      TThemeData.defaultData();
+
+  /// P3: Material ColorScheme
+  ColorScheme get colorScheme => Theme.of(_context).colorScheme;
+
+  /// P3: Material TextTheme
+  TextTheme get textTheme => Theme.of(_context).textTheme;
+
+  /// P2: Material ThemeData（子主题）
+  ThemeData get materialTheme => Theme.of(_context);
+
+  /// P1: 组件 ThemeExtension
+  E? componentExtension<E extends ThemeExtension<E>>() =>
+      Theme.of(_context).extension<E>();
+}
+
+/// Token → 完整 ThemeData 的构建器
+///
+/// v1.0 四层架构的 L2 层：接收 [TThemeData] token，产出完整 [ThemeData]。
+/// 内部完成 Token → ColorScheme 映射、Token Font → TextTheme、
+/// Token 颜色 → M3 子主题，同时将 [TThemeData] 自身作为 Extension 注入。
+///
+/// 通常不直接使用，通过 [TThemeBuilder.light] / [TThemeBuilder.dark] 入口。
+class TMaterialThemeBuilder {
+  const TMaterialThemeBuilder(this.token);
+
+  /// Token 数据源
+  final TThemeData token;
+
+  /// 构建亮色 ThemeData
+  ThemeData buildLight() {
+    final light = token.light;
+    return _buildBase(
+      extensionData: light,
+      colorScheme: _lightColorScheme(light),
+      brightness: Brightness.light,
+    );
+  }
+
+  /// 构建暗色 ThemeData
+  ThemeData buildDark() {
+    final dark = token.dark ?? token;
+    return _buildBase(
+      extensionData: dark,
+      colorScheme: _darkColorScheme(dark),
+      brightness: Brightness.dark,
+    );
+  }
+
+  /// 构建基础 ThemeData（亮/暗共用）
+  ThemeData _buildBase({
+    required TThemeData extensionData,
+    required ColorScheme colorScheme,
+    required Brightness brightness,
+  }) {
+    return ThemeData(
+      extensions: [extensionData],
+      colorScheme: colorScheme,
+      scaffoldBackgroundColor: colorScheme.surface,
+      iconTheme: IconThemeData(color: colorScheme.primary),
+      useMaterial3: true,
+    );
+  }
+
+  /// 亮色 ColorScheme 映射（Token → ColorScheme）
+  ColorScheme _lightColorScheme(TThemeData t) {
+    return ColorScheme.light(
+      // 品牌主色
+      primary: t.brandNormalColor,
+      onPrimary: t.textColorAnti,
+      primaryContainer: t.brandLightColor,
+      onPrimaryContainer: t.brandNormalColor,
+      // 次级
+      secondary: t.brandHoverColor,
+      onSecondary: t.textColorAnti,
+      secondaryContainer: t.bgColorSecondaryContainer,
+      onSecondaryContainer: t.textColorPrimary,
+      // 警告色
+      tertiary: t.warningNormalColor,
+      onTertiary: t.textColorAnti,
+      tertiaryContainer: t.warningLightColor,
+      onTertiaryContainer: t.warningNormalColor,
+      // 错误色
+      error: t.errorNormalColor,
+      onError: t.textColorAnti,
+      errorContainer: t.errorLightColor,
+      onErrorContainer: t.errorNormalColor,
+      // 背景与表面
+      surface: t.bgColorContainer,
+      onSurface: t.textColorPrimary,
+      surfaceContainerHighest: t.bgColorComponent,
+      onSurfaceVariant: t.textColorSecondary,
+      // 描边
+      outline: t.componentBorderColor,
+      outlineVariant: t.componentStrokeColor,
+      // 反色
+      inverseSurface: t.grayColor13,
+      onInverseSurface: t.fontWhColor1,
+      inversePrimary: t.brandColor3,
+      // 基础
+      shadow: Colors.black,
+      scrim: Colors.black,
+    );
+  }
+
+  /// 暗色 ColorScheme 映射（Token → ColorScheme）
+  ColorScheme _darkColorScheme(TThemeData t) {
+    return ColorScheme.dark(
+      // 品牌主色
+      primary: t.brandNormalColor,
+      onPrimary: t.textColorAnti,
+      primaryContainer: t.brandLightColor,
+      onPrimaryContainer: t.brandNormalColor,
+      // 次级
+      secondary: t.brandHoverColor,
+      onSecondary: t.textColorAnti,
+      secondaryContainer: t.bgColorSecondaryContainer,
+      onSecondaryContainer: t.textColorPrimary,
+      // 警告色
+      tertiary: t.warningNormalColor,
+      onTertiary: t.textColorAnti,
+      tertiaryContainer: t.warningLightColor,
+      onTertiaryContainer: t.warningNormalColor,
+      // 错误色
+      error: t.errorNormalColor,
+      onError: t.textColorAnti,
+      errorContainer: t.errorLightColor,
+      onErrorContainer: t.errorNormalColor,
+      // 背景与表面
+      surface: t.bgColorContainer,
+      onSurface: t.textColorPrimary,
+      surfaceContainerHighest: t.bgColorComponent,
+      onSurfaceVariant: t.textColorSecondary,
+      // 描边
+      outline: t.componentBorderColor,
+      outlineVariant: t.componentStrokeColor,
+      // 反色
+      inverseSurface: t.grayColor13,
+      onInverseSurface: t.fontWhColor1,
+      inversePrimary: t.brandColor3,
+      // 基础
+      shadow: Colors.black,
+      scrim: Colors.black,
+    );
+  }
+}
+
+/// v1.0 应用入口：Token → 完整 ThemeData
+///
+/// 对齐 `MaterialApp.theme` / `darkTheme` / `themeMode` 三参数模式。
+///
+/// 用法：
+/// ```dart
+/// MaterialApp(
+///   theme: TThemeBuilder.light(token),
+///   darkTheme: TThemeBuilder.dark(token),
+///   themeMode: ThemeMode.system,
+/// )
+/// ```
+class TThemeBuilder {
+  const TThemeBuilder._();
+
+  /// 亮色主题
+  static ThemeData light(TThemeData token) =>
+      TMaterialThemeBuilder(token).buildLight();
+
+  /// 暗色主题
+  static ThemeData dark(TThemeData token) =>
+      TMaterialThemeBuilder(token).buildDark();
+}
+
+/// 设置资源代理（从旧 TTheme.setResourceBuilder 迁移为顶层函数）
+///
+/// [needAlwaysBuild]=true: 每次都会走 build 方法；如果全局有多个 Delegate，
+/// 需要区分情况去获取，则可以设置 needAlwaysBuild 为 true，业务自己判断返回哪个 delegate。
+/// [needAlwaysBuild]=false: 返回 delegate 为 null，则每次都会走 build 方法。
+void setTResourceBuilder(
+  TResourceBuilder delegate, {
+  bool needAlwaysBuild = false,
+}) {
+  TResourceManager.instance.setResourceBuilder(delegate, needAlwaysBuild);
+}
+
+// ============================================================
+// L1: TThemeData（JSON Token）—— 保持不变
+// ============================================================
 
 /// 主题数据
 class TThemeData extends ThemeExtension<TThemeData> {
@@ -186,36 +348,6 @@ class TThemeData extends ThemeExtension<TThemeData> {
     ) as TThemeData;
   }
 
-  /// 系统主题-亮色模式
-  ThemeData? get systemThemeDataLight => ThemeData(
-    extensions: [light],
-    colorScheme: ColorScheme.light(
-      primary: light.brandNormalColor,
-    ),
-    scaffoldBackgroundColor: light.bgColorPage,
-    iconTheme: const IconThemeData().copyWith(
-      color: light.brandNormalColor,
-    ),
-  );
-
-  /// 系统主题-暗色模式
-  ThemeData? get systemThemeDataDark=> dark != null ? ThemeData(
-    extensions: [dark!],
-    colorScheme: ColorScheme.dark(
-      primary: dark!.brandNormalColor,
-      secondary: dark!.brandNormalColor,
-    ),
-    scaffoldBackgroundColor: dark!.bgColorPage,
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData()
-        .copyWith(backgroundColor: dark!.grayColor14),
-    appBarTheme: const AppBarTheme().copyWith(
-      backgroundColor: dark!.grayColor13,
-    ),
-    iconTheme: const IconThemeData().copyWith(
-      color: dark!.brandNormalColor,
-    ),
-  ) : null;
-
   @override
   ThemeExtension<TThemeData> copyWith({
     String? name,
@@ -308,21 +440,6 @@ class TThemeData extends ThemeExtension<TThemeData> {
           theme.refMap.forEach((key, value) {
             darkTheme.refMap.putIfAbsent(key, ()=> value);
           });
-          // theme.fontMap.forEach((key, value) {
-          //   darkTheme.fontMap.putIfAbsent(key, ()=> value);
-          // });
-          // theme.radiusMap.forEach((key, value) {
-          //   darkTheme.radiusMap.putIfAbsent(key, ()=> value);
-          // });
-          // theme.fontFamilyMap.forEach((key, value) {
-          //   darkTheme.fontFamilyMap.putIfAbsent(key, ()=> value);
-          // });
-          // theme.shadowMap.forEach((key, value) {
-          //   darkTheme.shadowMap.putIfAbsent(key, ()=> value);
-          // });
-          // theme.spacerMap.forEach((key, value) {
-          //   darkTheme.spacerMap.putIfAbsent(key, ()=> value);
-          // });
         }
         if (recoverDefault) {
           _defaultThemeData = theme;

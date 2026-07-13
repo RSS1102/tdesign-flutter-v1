@@ -88,8 +88,8 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
   Widget _buildAsyncTreeSelect(BuildContext context) {
     return TTreeSelect(
       options: asyncOptions,
-      defaultValue: asyncValues,
-      onChange: (val, level) {
+      value: asyncValues,
+      onChanged: (val, level) {
         print('Async change: $val, level: $level');
         if (level == 1 && val.isNotEmpty) {
           var firstVal = val[0];
@@ -116,8 +116,8 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
   Widget _buildStringValueTreeSelect(BuildContext context) {
     return TTreeSelect(
       options: stringOptions,
-      defaultValue: stringValues,
-      onChange: (val, level) {
+      value: stringValues,
+      onChanged: (val, level) {
         print('String ID change: $val, level: $level');
       },
     );
@@ -141,8 +141,8 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
 
     return TTreeSelect(
       options: options,
-      defaultValue: values1,
-      onChange: (val, level) {
+      value: values1,
+      onChanged: (val, level) {
         print('$val, $level');
       },
     );
@@ -163,9 +163,9 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
 
     return TTreeSelect(
       options: options,
-      defaultValue: values2,
+      value: values2,
       multiple: true,
-      onChange: (val, level) {
+      onChanged: (val, level) {
         print('$val, $level');
       },
     );
@@ -205,8 +205,8 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
     }
     return TTreeSelect(
       options: options,
-      defaultValue: values3,
-      onChange: (val, level) {
+      value: values3,
+      onChanged: (val, level) {
         print('$val, $level');
       },
     );
@@ -231,8 +231,8 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
 
     return TTreeSelect(
       options: options,
-      defaultValue: values1,
-      onChange: (val, level) {
+      value: values1,
+      onChanged: (val, level) {
         print('$val, $level');
       },
     );
@@ -257,9 +257,9 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
 
     return TTreeSelect(
       options: options,
-      defaultValue: values1,
+      value: values1,
       style: TTreeSelectStyle.outline,
-      onChange: (val, level) {
+      onChanged: (val, level) {
         print('$val, $level');
       },
     );

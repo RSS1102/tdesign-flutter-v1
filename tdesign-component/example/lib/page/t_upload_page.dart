@@ -66,19 +66,19 @@ class TUploadState extends State<TUploadPage> {
   }
 
   void onValueChanged(List<TUploadFile> fileList, List<TUploadFile> value,
-      TUploadType event) {
+      TUploadAction event) {
     switch (event) {
-      case TUploadType.add:
+      case TUploadAction.add:
         setState(() {
           fileList.addAll(value);
         });
         break;
-      case TUploadType.remove:
+      case TUploadAction.remove:
         setState(() {
           fileList.removeWhere((element) => element.key == value[0].key);
         });
         break;
-      case TUploadType.replace:
+      case TUploadAction.replace:
         setState(() {
           final firstReplaceFile = value.first;
           final index =
@@ -139,7 +139,7 @@ class TUploadState extends State<TUploadPage> {
   Widget wrapDemoContainer(String title, {required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(16),
-      color: TTheme.of(context).bgColorContainer,
+      color: context.tTheme.bgColorContainer,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -148,7 +148,6 @@ class TUploadState extends State<TUploadPage> {
             style: const TextStyle(fontSize: 16),
           ),
           const SizedBox(
-            height: 16,
           ),
           child
         ],
@@ -161,11 +160,11 @@ class TUploadState extends State<TUploadPage> {
     return wrapDemoContainer('单选上传',
         child: TUpload(
           files: files1,
-          onClick: onClick,
+          onPressed: onClick,
           onCancel: onCancel,
           onError: print,
           onValidate: print,
-          onChange: ((files, type) => onValueChanged(files1, files, type)),
+          onChanged: ((files, type) => onValueChanged(files1, files, type)),
         ));
   }
 
@@ -174,15 +173,13 @@ class TUploadState extends State<TUploadPage> {
     return wrapDemoContainer('单选上传(替换)',
         child: TUpload(
           files: files6,
-          width: 60,
-          height: 60,
-          type: TUploadBoxType.circle,
+          type: TUploadVariant.circle,
           enabledReplaceType: true,
-          onClick: onClick,
+          onPressed: onClick,
           onCancel: onCancel,
           onError: print,
           onValidate: print,
-          onChange: ((files, type) => onValueChanged(files6, files, type)),
+          onChanged: ((files, type) => onValueChanged(files6, files, type)),
         ));
   }
 
@@ -193,11 +190,11 @@ class TUploadState extends State<TUploadPage> {
           files: files2,
           multiple: true,
           max: 9,
-          onClick: onClick,
+          onPressed: onClick,
           onCancel: onCancel,
           onError: print,
           onValidate: print,
-          onChange: ((files, type) => onValueChanged(files2, files, type)),
+          onChanged: ((files, type) => onValueChanged(files2, files, type)),
         ));
   }
 
@@ -209,11 +206,11 @@ class TUploadState extends State<TUploadPage> {
           multiple: true,
           max: 9,
           onUploadTap: onUploadTap,
-          onClick: onClick,
+          onPressed: onClick,
           onCancel: onCancel,
           onError: print,
           onValidate: print,
-          onChange: ((files, type) => onValueChanged(files7, files, type)),
+          onChanged: ((files, type) => onValueChanged(files7, files, type)),
         ));
   }
 
@@ -224,11 +221,11 @@ class TUploadState extends State<TUploadPage> {
           files: files3,
           multiple: true,
           max: 9,
-          onClick: onClick,
+          onPressed: onClick,
           onCancel: onCancel,
           onError: print,
           onValidate: print,
-          onChange: ((files, type) => onValueChanged(files3, files, type)),
+          onChanged: ((files, type) => onValueChanged(files3, files, type)),
         ));
   }
 
@@ -239,11 +236,11 @@ class TUploadState extends State<TUploadPage> {
           files: files4,
           multiple: true,
           max: 9,
-          onClick: onClick,
+          onPressed: onClick,
           onCancel: onCancel,
           onError: print,
           onValidate: print,
-          onChange: ((files, type) => onValueChanged(files4, files, type)),
+          onChanged: ((files, type) => onValueChanged(files4, files, type)),
         ));
   }
 
@@ -254,11 +251,11 @@ class TUploadState extends State<TUploadPage> {
           files: files5,
           multiple: true,
           max: 9,
-          onClick: onClick,
+          onPressed: onClick,
           onCancel: onCancel,
           onError: print,
           onValidate: print,
-          onChange: ((files, type) => onValueChanged(files5, files, type)),
+          onChanged: ((files, type) => onValueChanged(files5, files, type)),
         ));
   }
 
@@ -267,12 +264,12 @@ class TUploadState extends State<TUploadPage> {
     return wrapDemoContainer('限制10KB',
         child: TUpload(
           files: files1,
-          onClick: onClick,
+          onPressed: onClick,
           onCancel: onCancel,
           onError: print,
           onValidate: print,
           sizeLimit: 10,
-          onChange: ((files, type) => onValueChanged(files1, files, type)),
+          onChanged: ((files, type) => onValueChanged(files1, files, type)),
         ));
   }
 }

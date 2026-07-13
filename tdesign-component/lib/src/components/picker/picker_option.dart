@@ -1,5 +1,9 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../tdesign_flutter.dart' show TPickerValue;
+
+import 'picker_value.dart' show TPickerValue;
+
 /// 选择器选项。`label` 用于展示，`value` 用于 onChange 回传。
 @immutable
 class TPickerOption {

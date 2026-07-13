@@ -1,13 +1,9 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../../util/auto_size.dart';
 import '../../util/map_ext.dart';
 import 't_check_box.dart';
-
-///
-/// CheckBoxGroup变化监听器
-///
-typedef OnGroupChange = void Function(List<String> checkedIds);
+import 't_checkbox_theme_data.dart' show TCheckboxVariant;
 
 ///
 /// 控制CheckBoxGroup
@@ -80,9 +76,9 @@ class TCheckboxGroup extends StatefulWidget {
   const TCheckboxGroup(
       {required this.child,
         Key? key,
-        this.onChangeGroup,
+        this.onChanged,
         this.controller,
-        this.checkedIds,
+        this.value,
         this.maxChecked,
         this.titleMaxLine,
         this.customContentBuilder,
@@ -107,7 +103,7 @@ class TCheckboxGroup extends StatefulWidget {
   final Widget child;
 
   /// 状态变化监听器
-  final OnGroupChange? onChangeGroup;
+  final ValueChanged<List<String>>? onChanged;
 
   /// 可以通过控制器操作勾选状态
   final TCheckboxGroupController? controller;
@@ -116,7 +112,7 @@ class TCheckboxGroup extends StatefulWidget {
   final int? maxChecked;
 
   /// 勾选的CheckBox id列表
-  final List<String>? checkedIds;
+  final List<String>? value;
 
   /// 超过最大可勾选的个数
   final VoidCallback? onOverloadChecked;
@@ -132,7 +128,7 @@ class TCheckboxGroup extends StatefulWidget {
   final double? spacing;
 
   /// CheckBox复选框样式：圆形或方形
-  final TCheckboxStyle? style;
+  final TCheckboxVariant? style;
 
   /// 文字相对icon的方位
   final TContentDirection? contentDirection;
@@ -159,7 +155,7 @@ class TCheckboxGroupState extends State<TCheckboxGroup> {
     // 如果有controller的话，把state设置给controller
     widget.controller?._state = this;
 
-    _syncCheckState(widget.checkedIds);
+    _syncCheckState(widget.value);
   }
 
   /// 把group中配置的默认选中id，同步到状态中
@@ -174,8 +170,8 @@ class TCheckboxGroupState extends State<TCheckboxGroup> {
   @override
   void didUpdateWidget(TCheckboxGroup oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final oldCheckIds = oldWidget.checkedIds;
-    final newCheckIds = widget.checkedIds;
+    final oldCheckIds = oldWidget.value;
+    final newCheckIds = widget.value;
     if (oldCheckIds != newCheckIds) {
       _syncCheckState(newCheckIds);
     }
@@ -249,10 +245,10 @@ class TCheckboxGroupState extends State<TCheckboxGroup> {
   }
 
   void _notifyChange() {
-    final change = widget.onChangeGroup;
+    final change = widget.onChanged;
     if (change != null) {
-      final checkedIds = checkBoxStates.where((k, v) => v).keys.toList();
-      change.call(checkedIds);
+      final value = checkBoxStates.where((k, v) => v).keys.toList();
+      change.call(value);
     }
   }
 
@@ -293,13 +289,13 @@ class TCheckboxGroupContainer extends TCheckboxGroup {
     bool cardMode = false,
     int? titleMaxLine, // item的行数
     int? maxSelected, // 最大勾选数
-    TCheckboxStyle? style,// 勾选样式
+    TCheckboxVariant? style,// 勾选样式
     TCheckboxGroupController? controller,
     IconBuilder? customIconBuilder,
     ContentBuilder? customContentBuilder,
     double? spacing, // icon和文字距离
     TContentDirection? contentDirection,
-    OnCheckBoxGroupChange? onCheckBoxGroupChange,
+    ValueChanged<List<String>>? onCheckBoxGroupChange,
     VoidCallback? onOverloadChecked,
     int? rowCount,
   })  : assert(() {
@@ -457,13 +453,13 @@ class TCheckboxGroupContainer extends TCheckboxGroup {
           )),
         ),
         key: key,
-        onChangeGroup: (ids) {
+        onChanged: (ids) {
           selectIds = ids;
           onCheckBoxGroupChange?.call(ids);
         },
         onOverloadChecked: onOverloadChecked,
         controller: controller,
-        checkedIds: selectIds,
+        value: selectIds,
         maxChecked: maxSelected,
         titleMaxLine: titleMaxLine,
         contentDirection: contentDirection,
@@ -483,4 +479,3 @@ class TCheckboxGroupContainerState extends TCheckboxGroupState {
 
 }
 
-typedef OnCheckBoxGroupChange = void Function(List<String> ids);

@@ -136,7 +136,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftLabel: 'Label Text',
+          label: 'Label Text',
           controller: controller[0],
           hintText: 'Please enter text',
           onChanged: (text) {
@@ -148,7 +148,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -159,7 +158,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftLabel: '标签文字',
+          label: '标签文字',
           required: true,
           controller: controller[1],
           hintText: '请输入文字',
@@ -172,7 +171,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -183,7 +181,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftLabel: '标签文字',
+          label: '标签文字',
           controller: controller[2],
           hintText: '请输入文字(选填)',
           onChanged: (text) {
@@ -195,7 +193,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -217,7 +214,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -226,8 +222,8 @@ class _TInputViewPageState extends State<TInputViewPage> {
   @Demo(group: 'input')
   Widget _basicTypeAdditionalDesc(BuildContext context) {
     return TInput(
-      type: TInputType.normal,
-      leftLabel: '标签文字',
+      layout: TInputLayout.normal,
+      label: '标签文字',
       controller: controller[4],
       hintText: '请输入文字',
       additionInfo: '辅助说明',
@@ -246,8 +242,8 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          type: TInputType.normal,
-          leftLabel: '标签文字',
+          layout: TInputLayout.normal,
+          label: '标签文字',
           controller: controller[5],
           hintText: '请输入文字',
           maxLength: 10,
@@ -261,7 +257,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -270,8 +265,8 @@ class _TInputViewPageState extends State<TInputViewPage> {
   @Demo(group: 'input')
   Widget _basicTypeTextLimitChinese2(BuildContext context) {
     return TInput(
-      type: TInputType.normal,
-      leftLabel: '标签文字',
+      layout: TInputLayout.normal,
+      label: '标签文字',
       controller: controller[6],
       hintText: '请输入文字',
       inputFormatters: [Chinese2Formatter(10)],
@@ -291,12 +286,12 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftLabel: '标签文字',
+          label: '标签文字',
           controller: controller[7],
           hintText: '请输入文字',
           rightBtn: Icon(
             TIcons.error_circle_filled,
-            color: TTheme.of(context).textColorPlaceholder,
+            color: context.tTheme.textColorPlaceholder,
           ),
           onBtnTap: () {
             TToast.showText('点击右侧按钮', context: context);
@@ -310,7 +305,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -321,30 +315,27 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftLabel: '标签文字',
+          label: '标签文字',
           controller: controller[8],
           hintText: '请输入文字',
           rightBtn: Container(
             alignment: Alignment.center,
-            width: 73,
-            height: 28,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
-              color: TTheme.of(context).brandNormalColor,
+              color: context.tTheme.brandNormalColor,
             ),
             child: const TButton(
-              text: '操作按钮',
+              child: Text('操作按钮'),
               size: TButtonSize.extraSmall,
-              theme: TButtonTheme.primary,
+              colorScheme: TButtonColorScheme.primary,
             ),
           ),
           onBtnTap: () {
             TToast.showText('点击操作按钮', context: context);
           },
-          needClear: false,
+          showClearButton: false,
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -353,12 +344,12 @@ class _TInputViewPageState extends State<TInputViewPage> {
   @Demo(group: 'input')
   Widget _basicTypeWithHandleIconThree(BuildContext context) {
     return TInput(
-      leftLabel: '标签文字',
+      label: '标签文字',
       controller: controller[9],
       hintText: '请输入文字',
       rightBtn: Icon(
         TIcons.user_avatar,
-        color: TTheme.of(context).textColorPlaceholder,
+        color: context.tTheme.textColorPlaceholder,
       ),
       onBtnTap: () {
         TToast.showText('点击操作按钮', context: context);
@@ -378,8 +369,8 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftIcon: const Icon(TIcons.app),
-          leftLabel: '标签文字',
+          prefix: const Icon(TIcons.app),
+          label: '标签文字',
           controller: controller[10],
           hintText: '请输入文字',
           onChanged: (text) {
@@ -391,7 +382,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -402,7 +392,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftIcon: const Icon(TIcons.app),
+          prefix: const Icon(TIcons.app),
           controller: controller[11],
           hintText: '请输入文字',
           onChanged: (text) {
@@ -414,7 +404,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -425,29 +414,28 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          type: TInputType.normal,
+          layout: TInputLayout.normal,
           controller: controller[12],
           obscureText: !browseOn,
-          leftLabel: '输入密码',
+          label: '输入密码',
           hintText: '请输入密码',
           rightBtn: browseOn
               ? Icon(
                   TIcons.browse,
-                  color: TTheme.of(context).textColorPlaceholder,
+                  color: context.tTheme.textColorPlaceholder,
                 )
               : Icon(
                   TIcons.browse_off,
-                  color: TTheme.of(context).textColorPlaceholder,
+                  color: context.tTheme.textColorPlaceholder,
                 ),
           onBtnTap: () {
             setState(() {
               browseOn = !browseOn;
             });
           },
-          needClear: false,
+          showClearButton: false,
         ),
         const SizedBox(
-          height: 16,
         ),
       ],
     );
@@ -458,14 +446,14 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          type: TInputType.normal,
+          layout: TInputLayout.normal,
           controller: controller[27],
           obscureText: true,
           enableInteractiveSelection: true,
-          leftLabel: '密码复制粘贴',
+          label: '密码复制粘贴',
           hintText: '此密码框允许长按复制粘贴',
           contextMenuBuilder: (context, editableTextState) {
-            final List<ContextMenuButtonItem> buttonItems =
+            final buttonItems =
                 editableTextState.contextMenuButtonItems;
             if (!buttonItems.any((item) => item.type == ContextMenuButtonType.copy)) {
               buttonItems.insert(0, ContextMenuButtonItem(
@@ -491,7 +479,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         ),
       ],
     );
@@ -502,36 +489,31 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          type: TInputType.normal,
+          layout: TInputLayout.normal,
           size: TInputSize.small,
           controller: controller[13],
-          leftLabel: '验证码',
+          label: '验证码',
           hintText: '输入验证码',
           rightBtn: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 width: 0.5,
-                height: 24,
-                color: TTheme.of(context).componentBorderColor,
+                color: context.tTheme.componentBorderColor,
               ),
               const SizedBox(
-                width: 16,
               ),
               Image.network(
                 'https://img2018.cnblogs.com/blog/736399/202001/736399-20200108170302307-1377487770.jpg',
-                width: 72,
-                height: 36,
               )
             ],
           ),
-          needClear: false,
+          showClearButton: false,
           onBtnTap: () {
             TToast.showText('点击更换验证码', context: context);
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -542,12 +524,11 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          type: TInputType.normal,
+          layout: TInputLayout.normal,
           controller: controller[14],
-          leftLabel: '手机号',
+          label: '手机号',
           hintText: '输入手机号',
           rightBtn: SizedBox(
-            width: 98,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -555,21 +536,20 @@ class _TInputViewPageState extends State<TInputViewPage> {
                   padding: const EdgeInsets.only(right: 16),
                   child: Container(
                     width: 0.5,
-                    height: 24,
-                    color: TTheme.of(context).componentBorderColor,
+                    color: context.tTheme.componentBorderColor,
                   ),
                 ),
                 _countdownTime > 0
                     ? TText(
                         '${countDownText}(${_countdownTime}秒)',
-                        textColor: TTheme.of(context).textDisabledColor,
+                        textColor: context.tTheme.textDisabledColor,
                       )
                     : TText(confirmText,
-                        textColor: TTheme.of(context).brandNormalColor),
+                        textColor: context.tTheme.brandNormalColor),
               ],
             ),
           ),
-          needClear: false,
+          showClearButton: false,
           onBtnTap: () {
             if (_countdownTime == 0) {
               TToast.showText('点击了发送验证码', context: context);
@@ -581,7 +561,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -592,16 +571,15 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          type: TInputType.special,
+          layout: TInputLayout.special,
           controller: controller[15],
-          leftLabel: '价格',
+          label: '价格',
           hintText: '0.00',
           textAlign: TextAlign.end,
-          rightWidget:
-              TText('元', textColor: TTheme.of(context).textColorPrimary),
+          suffix:
+              TText('元', textColor: context.tTheme.textColorPrimary),
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -610,12 +588,12 @@ class _TInputViewPageState extends State<TInputViewPage> {
   @Demo(group: 'input')
   Widget _specialTypeNumber(BuildContext context) {
     return TInput(
-      type: TInputType.special,
+      layout: TInputLayout.special,
       controller: controller[16],
-      leftLabel: '数量',
+      label: '数量',
       hintText: '填写个数',
       textAlign: TextAlign.end,
-      rightWidget: TText('个', textColor: TTheme.of(context).textColorPrimary),
+      suffix: TText('个', textColor: context.tTheme.textColorPrimary),
     );
   }
 
@@ -624,11 +602,11 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftLabel: '标签文字',
+          label: '标签文字',
           controller: controller[17],
           hintText: '请输入文字',
           additionInfo: '错误提示说明',
-          additionInfoColor: TTheme.of(context).errorColor6,
+          additionInfoColor: context.tTheme.errorColor6,
           onChanged: (text) {
             setState(() {});
           },
@@ -638,7 +616,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -646,8 +623,8 @@ class _TInputViewPageState extends State<TInputViewPage> {
 
   @Demo(group: 'input')
   Widget _inputStatusReadOnly(BuildContext context) {
-    return TInput(
-      leftLabel: '标签文字',
+    return const TInput(
+      label: '标签文字',
       readOnly: true,
       // 不可编辑文字 则不必带入controller
       hintText: '不可编辑文字',
@@ -660,8 +637,8 @@ class _TInputViewPageState extends State<TInputViewPage> {
       children: [
         TInput(
           leftInfoWidth: 80,
-          spacer: TInputSpacer(iconLabelSpace: 4),
-          leftLabel: '标签超长时最多十个字',
+          spacer: const TInputSpacer(iconLabelSpace: 4),
+          label: '标签超长时最多十个字',
           controller: controller[18],
           hintText: '请输入文字',
           onChanged: (text) {
@@ -673,7 +650,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -682,12 +658,12 @@ class _TInputViewPageState extends State<TInputViewPage> {
   @Demo(group: 'input')
   Widget _inputStatusLongInput(BuildContext context) {
     return TInput(
-      type: TInputType.normal,
-      leftLabel: '标签文字',
+      layout: TInputLayout.normal,
+      label: '标签文字',
       controller: controller[19],
       hintText: '输入文字超长不超过两行输入文字超长不超过两行',
       hintTextStyle: TextStyle(
-        color: TTheme.of(context).textColorPrimary,
+        color: context.tTheme.textColorPrimary,
       ),
       maxLines: 2,
     );
@@ -696,14 +672,14 @@ class _TInputViewPageState extends State<TInputViewPage> {
   @Demo(group: 'input')
   Widget _verticalStyle(BuildContext context) {
     return TInput(
-      spacer: TInputSpacer(iconLabelSpace: 0),
-      type: TInputType.twoLine,
-      leftLabel: '标签文字',
+      spacer: const TInputSpacer(iconLabelSpace: 0),
+      layout: TInputLayout.twoLine,
+      label: '标签文字',
       controller: controller[20],
       hintText: '请输入文字',
       rightBtn: Icon(
         TIcons.error_circle_filled,
-        color: TTheme.of(context).textColorPlaceholder,
+        color: context.tTheme.textColorPlaceholder,
       ),
       onBtnTap: () {
         TToast.showText('点击右侧按钮', context: context);
@@ -721,9 +697,9 @@ class _TInputViewPageState extends State<TInputViewPage> {
   @Demo(group: 'input')
   Widget _cardStyle(BuildContext context) {
     return TInput(
-      type: TInputType.cardStyle,
+      layout: TInputLayout.cardStyle,
       width: MediaQuery.of(context).size.width - 32,
-      leftLabel: '标签文字',
+      label: '标签文字',
       controller: controller[21],
       hintText: '请输入文字',
       onChanged: (text) {
@@ -743,15 +719,14 @@ class _TInputViewPageState extends State<TInputViewPage> {
       padding: const EdgeInsets.only(top: 16, bottom: 24),
       width: MediaQuery.of(context).size.width,
       child: TInput(
-        type: TInputType.cardStyle,
-        cardStyle: TCardStyle.topText,
+        layout: TInputLayout.cardStyle,
         width: MediaQuery.of(context).size.width - 32,
         cardStyleTopText: '标签文字',
         controller: controller[22],
         hintText: '请输入文字',
         rightBtn: Icon(
           TIcons.error_circle_filled,
-          color: TTheme.of(context).textColorPlaceholder,
+          color: context.tTheme.textColorPlaceholder,
         ),
         onBtnTap: () {
           TToast.showText('点击右侧按钮', context: context);
@@ -772,7 +747,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftLabel: '左对齐',
+          label: '左对齐',
           controller: controller[23],
           hintText: '请输入文字',
           onChanged: (text) {
@@ -784,7 +759,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -795,7 +769,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftLabel: '居中',
+          label: '居中',
           controller: controller[24],
           contentAlignment: TextAlign.center,
           hintText: '请输入文字',
@@ -808,7 +782,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -819,7 +792,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftLabel: '右对齐',
+          label: '右对齐',
           controller: controller[25],
           contentAlignment: TextAlign.end,
           hintText: '请输入文字',
@@ -832,7 +805,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );
@@ -841,17 +813,17 @@ class _TInputViewPageState extends State<TInputViewPage> {
   @Demo(group: 'input')
   Widget _customStyle(BuildContext context) {
     return TInput(
-      leftLabel: '标签文字',
+      label: '标签文字',
       controller: controller[26],
-      backgroundColor: TTheme.of(context).grayColor12,
-      leftLabelStyle: TextStyle(color: TTheme.of(context).fontWhColor1),
-      textStyle: TextStyle(color: TTheme.of(context).fontWhColor1),
+      backgroundColor: context.tTheme.grayColor12,
+      labelStyle: TextStyle(color: context.tTheme.fontWhColor1),
+      textStyle: TextStyle(color: context.tTheme.fontWhColor1),
       hintText: '请输入文字',
-      hintTextStyle: TextStyle(color: TTheme.of(context).fontWhColor3),
+      hintTextStyle: TextStyle(color: context.tTheme.fontWhColor3),
       onChanged: (text) {
         setState(() {});
       },
-      clearBtnColor: TTheme.of(context).fontWhColor3,
+      clearBtnColor: context.tTheme.fontWhColor3,
       onClearTap: () {
         controller[26].clear();
         setState(() {});
@@ -867,15 +839,14 @@ class _TInputViewPageState extends State<TInputViewPage> {
       padding: const EdgeInsets.only(top: 16, bottom: 24),
       width: MediaQuery.of(context).size.width,
       child: TInput(
-          type: TInputType.longText,
-          cardStyle: TCardStyle.topText,
+          layout: TInputLayout.longText,
           width: MediaQuery.of(context).size.width - 32,
           cardStyleTopText: '标签文字',
           controller: controller,
           hintText: '请输入文字',
           rightBtn: Icon(
             TIcons.error_circle_filled,
-            color: TTheme.of(context).textColorPlaceholder,
+            color: context.tTheme.textColorPlaceholder,
           ),
           onBtnTap: () {
             TToast.showText('点击右侧按钮', context: context);
@@ -887,7 +858,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
   Widget _hideBottomDivider(BuildContext context) {
     var controller = TextEditingController();
     return TInput(
-      leftLabel: '标签文字',
+      label: '标签文字',
       controller: controller,
       hintText: '请输入文字',
       showBottomDivider: false,
@@ -898,17 +869,13 @@ class _TInputViewPageState extends State<TInputViewPage> {
   Widget _customHeight(BuildContext context) {
     var controller = TextEditingController();
     return Container(
-      color: Colors.yellow,
       alignment: Alignment.center,
-      height: 90,
       child: SizedBox(
-        height: 60,
         child: TInput(
           size: TInputSize.small,
-          leftLabel: '标签文字',
+          label: '标签文字',
           controller: controller,
-          hintText: '请输入文字',
-          needClear: true,
+          hintText: '请输入文字'
         ),
       ),
     );
@@ -918,14 +885,11 @@ class _TInputViewPageState extends State<TInputViewPage> {
   Widget _onTapOutside(BuildContext context) {
     var controller = TextEditingController();
     return Container(
-      color: Colors.yellow,
       alignment: Alignment.center,
-      height: 90,
       child: SizedBox(
-        height: 60,
         child: TInput(
           size: TInputSize.small,
-          leftLabel: '标签文字',
+          label: '标签文字',
           controller: controller,
           hintText: '请输入文字',
           onTapOutside: (event) {
@@ -941,7 +905,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
   Widget _contentPadding(BuildContext context) {
     var controller = TextEditingController();
     return Container(
-      color: Colors.yellow,
       alignment: Alignment.center,
       child: Column(
         children: [
@@ -953,7 +916,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             hintText: '请输入文字',
           ),
           TInput(
-            type: TInputType.twoLine,
+            layout: TInputLayout.twoLine,
             size: TInputSize.small,
             controller: controller,
             contentPadding:
@@ -961,7 +924,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             hintText: '请输入文字',
           ),
           TInput(
-            type: TInputType.normalMaxTwoLine,
+            layout: TInputLayout.normalMaxTwoLine,
             size: TInputSize.small,
             controller: controller,
             contentPadding:
@@ -978,7 +941,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Column(
       children: [
         TInput(
-          leftLabel: '地址',
+          label: '地址',
           controller: controller[27],
           hintText: '请输入地址，高度自适应',
           maxLines: null,
@@ -991,7 +954,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
         ),
         const SizedBox(
-          height: 16,
         )
       ],
     );

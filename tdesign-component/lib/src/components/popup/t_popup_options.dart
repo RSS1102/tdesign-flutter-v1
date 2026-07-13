@@ -1,4 +1,4 @@
-part of 't_popup.dart';
+﻿part of 't_popup.dart';
 
 /// 用于 [TPopupOptions.copyWith] 区分"不传"与"显式 null"。
 const Object _unset = Object();
@@ -518,7 +518,6 @@ class TPopupOptions {
     );
   }
 
-  /// {@nodoc}
   TPopupOptions normalized() {
     final isBottom = placement == TPopupPlacement.bottom;
     final isCenter = placement == TPopupPlacement.center;
@@ -553,42 +552,33 @@ class TPopupOptions {
     );
   }
 
-  /// {@nodoc}
   bool get usesDefaultHeader => _isPopupDefaultHeader(headerBuilder);
 
-  /// {@nodoc}
   bool get usesDefaultCancel => _isPopupDefaultCancel(cancelBuilder);
 
-  /// {@nodoc}
   bool get usesDefaultConfirm => _isPopupDefaultConfirm(confirmBuilder);
 
-  /// {@nodoc}
   bool get usesDefaultClose => _isPopupDefaultClose(closeBuilder);
 
-  /// {@nodoc}
   bool get useCustomHeader =>
       placement == TPopupPlacement.bottom &&
       headerBuilder != null &&
       !_isPopupDefaultHeader(headerBuilder);
 
-  /// {@nodoc}
   bool get useDefaultHeader =>
       placement == TPopupPlacement.bottom &&
       _isPopupDefaultHeader(headerBuilder);
 
-  /// {@nodoc}
   bool get showCancelSlot =>
       placement == TPopupPlacement.bottom &&
       useDefaultHeader &&
       cancelBuilder != null;
 
-  /// {@nodoc}
   bool get showConfirmSlot =>
       placement == TPopupPlacement.bottom &&
       useDefaultHeader &&
       confirmBuilder != null;
 
-  /// {@nodoc}
   bool get hasBuiltInHeader {
     if (placement != TPopupPlacement.bottom || headerBuilder == null) {
       return false;
@@ -601,7 +591,6 @@ class TPopupOptions {
         titleWidget != null;
   }
 
-  /// {@nodoc}
   void assertPlacementParams() {
     assert(() {
       final err = _validatePlacementParams();

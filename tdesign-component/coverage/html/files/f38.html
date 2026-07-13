@@ -1,0 +1,312 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/calendar/t_calendar_cell.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/calendar/t_calendar_cell.dart</h1></header><div class='meta'>行覆盖 <b>95.2%</b> (79/83) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;../../util/iterable_ext.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span>import &#x27;t_calendar_style.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>5</span></div>
+<div class='row nod'><span class='ln'>6</span>export &#x27;t_calendar_style.dart&#x27; show TCalendarStyle;</div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span>/// 日期在日历格中的选中/展示状态</div>
+<div class='row nod'><span class='ln'>9</span>enum DateSelectType {</div>
+<div class='row nod'><span class='ln'>10</span>  /// 单选 / 多选下的选中</div>
+<div class='row nod'><span class='ln'>11</span>  selected,</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>  /// 不可选（超出 [TCalendar.minDate] / [TCalendar.maxDate]）</div>
+<div class='row nod'><span class='ln'>14</span>  disabled,</div>
+<div class='row nod'><span class='ln'>15</span></div>
+<div class='row nod'><span class='ln'>16</span>  /// 区间起点</div>
+<div class='row nod'><span class='ln'>17</span>  start,</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>  /// 区间中间日期</div>
+<div class='row nod'><span class='ln'>20</span>  centre,</div>
+<div class='row nod'><span class='ln'>21</span></div>
+<div class='row nod'><span class='ln'>22</span>  /// 区间终点</div>
+<div class='row nod'><span class='ln'>23</span>  end,</div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>  /// 未选中且可选</div>
+<div class='row nod'><span class='ln'>26</span>  empty,</div>
+<div class='row nod'><span class='ln'>27</span>}</div>
+<div class='row nod'><span class='ln'>28</span></div>
+<div class='row nod'><span class='ln'>29</span>/// 副标题构建上下文：告知 [TCalendarSubtitleBuilder] 当前渲染哪一格。</div>
+<div class='row nod'><span class='ln'>30</span>class TCalendarSubtitleContext {</div>
+<div class='row cov'><span class='ln'>31</span>  const TCalendarSubtitleContext({</div>
+<div class='row nod'><span class='ln'>32</span>    required this.date,</div>
+<div class='row nod'><span class='ln'>33</span>    required this.selectType,</div>
+<div class='row nod'><span class='ln'>34</span>  });</div>
+<div class='row nod'><span class='ln'>35</span></div>
+<div class='row nod'><span class='ln'>36</span>  /// 当前格子的阳历日期（仅年月日，无时分秒）。</div>
+<div class='row nod'><span class='ln'>37</span>  final DateTime date;</div>
+<div class='row nod'><span class='ln'>38</span></div>
+<div class='row nod'><span class='ln'>39</span>  /// 当前格的选中/区间/禁用等展示状态，便于按态设置副标题样式。</div>
+<div class='row nod'><span class='ln'>40</span>  final DateSelectType selectType;</div>
+<div class='row nod'><span class='ln'>41</span>}</div>
+<div class='row nod'><span class='ln'>42</span></div>
+<div class='row nod'><span class='ln'>43</span>/// 副标题构建器；每个日期格渲染时调用一次。</div>
+<div class='row nod'><span class='ln'>44</span>///</div>
+<div class='row nod'><span class='ln'>45</span>/// 通过 [TCalendarSubtitleContext] 获取日期与选中态；返回 `null` 表示不显示副标题行。</div>
+<div class='row nod'><span class='ln'>46</span>///</div>
+<div class='row nod'><span class='ln'>47</span>/// ```dart</div>
+<div class='row nod'><span class='ln'>48</span>/// subtitleBuilder: (context, ctx) {</div>
+<div class='row nod'><span class='ln'>49</span>///   final text = lunarLabel(ctx.date);</div>
+<div class='row nod'><span class='ln'>50</span>///   if (text == null) return null;</div>
+<div class='row nod'><span class='ln'>51</span>///   return TText(text, style: TextStyle(fontSize: 9));</div>
+<div class='row nod'><span class='ln'>52</span>/// },</div>
+<div class='row nod'><span class='ln'>53</span>/// ```</div>
+<div class='row nod'><span class='ln'>54</span>typedef TCalendarSubtitleBuilder = Widget? Function(</div>
+<div class='row nod'><span class='ln'>55</span>  BuildContext context,</div>
+<div class='row nod'><span class='ln'>56</span>  TCalendarSubtitleContext subtitleContext,</div>
+<div class='row nod'><span class='ln'>57</span>);</div>
+<div class='row nod'><span class='ln'>58</span></div>
+<div class='row nod'><span class='ln'>59</span>/// 整格自定义构建器；返回非 null 时该格由接入方完全绘制（含主数字与副标题）。</div>
+<div class='row nod'><span class='ln'>60</span>typedef TCalendarCellBuilder = Widget? Function(</div>
+<div class='row nod'><span class='ln'>61</span>  BuildContext context,</div>
+<div class='row nod'><span class='ln'>62</span>  TCalendarCellModel cell,</div>
+<div class='row nod'><span class='ln'>63</span>);</div>
+<div class='row nod'><span class='ln'>64</span></div>
+<div class='row nod'><span class='ln'>65</span>/// 月标题构建器；[monthDate] 为当月 1 日。</div>
+<div class='row nod'><span class='ln'>66</span>typedef TCalendarMonthTitleBuilder = Widget Function(</div>
+<div class='row nod'><span class='ln'>67</span>  BuildContext context,</div>
+<div class='row nod'><span class='ln'>68</span>  DateTime monthDate,</div>
+<div class='row nod'><span class='ln'>69</span>);</div>
+<div class='row nod'><span class='ln'>70</span></div>
+<div class='row nod'><span class='ln'>71</span>/// 单个日期格数据（只读，选中态通过 [typeNotifier] 更新）</div>
+<div class='row nod'><span class='ln'>72</span>class TCalendarCellModel {</div>
+<div class='row cov'><span class='ln'>73</span>  TCalendarCellModel({</div>
+<div class='row nod'><span class='ln'>74</span>    required this.date,</div>
+<div class='row nod'><span class='ln'>75</span>    required this.typeNotifier,</div>
+<div class='row nod'><span class='ln'>76</span>    required this.isLastDayOfMonth,</div>
+<div class='row nod'><span class='ln'>77</span>  });</div>
+<div class='row nod'><span class='ln'>78</span></div>
+<div class='row nod'><span class='ln'>79</span>  final DateTime date;</div>
+<div class='row nod'><span class='ln'>80</span>  final DateSelectTypeNotifier typeNotifier;</div>
+<div class='row nod'><span class='ln'>81</span>  final bool isLastDayOfMonth;</div>
+<div class='row nod'><span class='ln'>82</span></div>
+<div class='row cov'><span class='ln'>83</span>  DateSelectType get selectType =&gt; typeNotifier.value;</div>
+<div class='row nod'><span class='ln'>84</span>}</div>
+<div class='row nod'><span class='ln'>85</span></div>
+<div class='row nod'><span class='ln'>86</span>class DateSelectTypeNotifier extends ChangeNotifier {</div>
+<div class='row nod'><span class='ln'>87</span>  DateSelectType value = DateSelectType.empty;</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row cov'><span class='ln'>89</span>  DateSelectTypeNotifier(DateSelectType selectType) {</div>
+<div class='row cov'><span class='ln'>90</span>    value = selectType;</div>
+<div class='row nod'><span class='ln'>91</span>  }</div>
+<div class='row nod'><span class='ln'>92</span></div>
+<div class='row cov'><span class='ln'>93</span>  void setType(DateSelectType type) {</div>
+<div class='row cov'><span class='ln'>94</span>    value = type;</div>
+<div class='row cov'><span class='ln'>95</span>    notifyListeners();</div>
+<div class='row nod'><span class='ln'>96</span>  }</div>
+<div class='row nod'><span class='ln'>97</span>}</div>
+<div class='row nod'><span class='ln'>98</span></div>
+<div class='row nod'><span class='ln'>99</span>class TCalendarCell extends StatefulWidget {</div>
+<div class='row cov'><span class='ln'>100</span>  const TCalendarCell({</div>
+<div class='row nod'><span class='ln'>101</span>    Key? key,</div>
+<div class='row nod'><span class='ln'>102</span>    this.cell,</div>
+<div class='row nod'><span class='ln'>103</span>    this.onTap,</div>
+<div class='row nod'><span class='ln'>104</span>    required this.height,</div>
+<div class='row nod'><span class='ln'>105</span>    required this.padding,</div>
+<div class='row nod'><span class='ln'>106</span>    required this.rowIndex,</div>
+<div class='row nod'><span class='ln'>107</span>    required this.colIndex,</div>
+<div class='row nod'><span class='ln'>108</span>    required this.dateList,</div>
+<div class='row nod'><span class='ln'>109</span>    this.cellBuilder,</div>
+<div class='row nod'><span class='ln'>110</span>    this.subtitleBuilder,</div>
+<div class='row nod'><span class='ln'>111</span>    this.dayStyle,</div>
+<div class='row nod'><span class='ln'>112</span>    this.todayDayStyle,</div>
+<div class='row nod'><span class='ln'>113</span>    this.subtitleStyle,</div>
+<div class='row cov'><span class='ln'>114</span>  }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>115</span></div>
+<div class='row nod'><span class='ln'>116</span>  final TCalendarCellModel? cell;</div>
+<div class='row nod'><span class='ln'>117</span></div>
+<div class='row nod'><span class='ln'>118</span>  final void Function(TCalendarCellModel cell)? onTap;</div>
+<div class='row nod'><span class='ln'>119</span></div>
+<div class='row nod'><span class='ln'>120</span>  final double height;</div>
+<div class='row nod'><span class='ln'>121</span>  final double padding;</div>
+<div class='row nod'><span class='ln'>122</span>  final int rowIndex;</div>
+<div class='row nod'><span class='ln'>123</span>  final int colIndex;</div>
+<div class='row nod'><span class='ln'>124</span>  final List&lt;TCalendarCellModel?&gt; dateList;</div>
+<div class='row nod'><span class='ln'>125</span>  final TCalendarCellBuilder? cellBuilder;</div>
+<div class='row nod'><span class='ln'>126</span>  final TCalendarSubtitleBuilder? subtitleBuilder;</div>
+<div class='row nod'><span class='ln'>127</span>  final TextStyle? dayStyle;</div>
+<div class='row nod'><span class='ln'>128</span>  final TextStyle? todayDayStyle;</div>
+<div class='row nod'><span class='ln'>129</span>  final TextStyle? subtitleStyle;</div>
+<div class='row nod'><span class='ln'>130</span></div>
+<div class='row cov'><span class='ln'>131</span>  @override</div>
+<div class='row cov'><span class='ln'>132</span>  State&lt;TCalendarCell&gt; createState() =&gt; _TCalendarCellState();</div>
+<div class='row nod'><span class='ln'>133</span>}</div>
+<div class='row nod'><span class='ln'>134</span></div>
+<div class='row nod'><span class='ln'>135</span>class _TCalendarCellState extends State&lt;TCalendarCell&gt; {</div>
+<div class='row nod'><span class='ln'>136</span>  var _isToday = false;</div>
+<div class='row nod'><span class='ln'>137</span>  var _positionOffset = 0;</div>
+<div class='row nod'><span class='ln'>138</span></div>
+<div class='row cov'><span class='ln'>139</span>  @override</div>
+<div class='row nod'><span class='ln'>140</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>141</span>    super.initState();</div>
+<div class='row cov'><span class='ln'>142</span>    _isToday = _checkIsToday();</div>
+<div class='row cov'><span class='ln'>143</span>    widget.cell?.typeNotifier.addListener(_onSelectTypeChange);</div>
+<div class='row nod'><span class='ln'>144</span>  }</div>
+<div class='row nod'><span class='ln'>145</span></div>
+<div class='row cov'><span class='ln'>146</span>  @override</div>
+<div class='row nod'><span class='ln'>147</span>  void didUpdateWidget(TCalendarCell oldWidget) {</div>
+<div class='row cov'><span class='ln'>148</span>    super.didUpdateWidget(oldWidget);</div>
+<div class='row cov'><span class='ln'>149</span>    if (widget.cell != oldWidget.cell) {</div>
+<div class='row cov'><span class='ln'>150</span>      _isToday = _checkIsToday();</div>
+<div class='row cov'><span class='ln'>151</span>      oldWidget.cell?.typeNotifier.removeListener(_onSelectTypeChange);</div>
+<div class='row cov'><span class='ln'>152</span>      widget.cell?.typeNotifier.addListener(_onSelectTypeChange);</div>
+<div class='row nod'><span class='ln'>153</span>    }</div>
+<div class='row nod'><span class='ln'>154</span>  }</div>
+<div class='row nod'><span class='ln'>155</span></div>
+<div class='row cov'><span class='ln'>156</span>  @override</div>
+<div class='row nod'><span class='ln'>157</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>158</span>    widget.cell?.typeNotifier.removeListener(_onSelectTypeChange);</div>
+<div class='row cov'><span class='ln'>159</span>    super.dispose();</div>
+<div class='row nod'><span class='ln'>160</span>  }</div>
+<div class='row nod'><span class='ln'>161</span></div>
+<div class='row cov'><span class='ln'>162</span>  bool _checkIsToday() {</div>
+<div class='row cov'><span class='ln'>163</span>    final today = DateTime.now();</div>
+<div class='row cov'><span class='ln'>164</span>    return widget.cell?.date ==</div>
+<div class='row cov'><span class='ln'>165</span>        DateTime(today.year, today.month, today.day);</div>
+<div class='row nod'><span class='ln'>166</span>  }</div>
+<div class='row nod'><span class='ln'>167</span></div>
+<div class='row cov'><span class='ln'>168</span>  @override</div>
+<div class='row nod'><span class='ln'>169</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>170</span>    final cell = widget.cell;</div>
+<div class='row nod'><span class='ln'>171</span>    if (cell == null) {</div>
+<div class='row nod'><span class='ln'>172</span>      return const SizedBox.shrink();</div>
+<div class='row nod'><span class='ln'>173</span>    }</div>
+<div class='row nod'><span class='ln'>174</span></div>
+<div class='row nod'><span class='ln'>175</span>    final themedStyle =</div>
+<div class='row cov'><span class='ln'>176</span>        TCalendarStyle.generateStyle(context: context).forSelectType(context, cell.selectType);</div>
+<div class='row nod'><span class='ln'>177</span>    final decoration =</div>
+<div class='row cov'><span class='ln'>178</span>        themedStyle.cellDecoration;</div>
+<div class='row cov'><span class='ln'>179</span>    final positionColor = _rangeBridgeColor(context, themedStyle, decoration);</div>
+<div class='row nod'><span class='ln'>180</span></div>
+<div class='row cov'><span class='ln'>181</span>    final content = widget.cellBuilder?.call(context, cell) ??</div>
+<div class='row cov'><span class='ln'>182</span>        _buildDefaultCell(context, cell, themedStyle);</div>
+<div class='row nod'><span class='ln'>183</span></div>
+<div class='row cov'><span class='ln'>184</span>    return GestureDetector(</div>
+<div class='row nod'><span class='ln'>185</span>      behavior: HitTestBehavior.translucent,</div>
+<div class='row cov'><span class='ln'>186</span>      onTap: () =&gt; widget.onTap?.call(cell),</div>
+<div class='row cov'><span class='ln'>187</span>      child: Stack(</div>
+<div class='row nod'><span class='ln'>188</span>        clipBehavior: Clip.none,</div>
+<div class='row cov'><span class='ln'>189</span>        children: [</div>
+<div class='row cov'><span class='ln'>190</span>          ClipRect(</div>
+<div class='row cov'><span class='ln'>191</span>            child: Container(</div>
+<div class='row nod'><span class='ln'>192</span>              width: double.infinity,</div>
+<div class='row cov'><span class='ln'>193</span>              height: widget.height,</div>
+<div class='row nod'><span class='ln'>194</span>              decoration: decoration,</div>
+<div class='row nod'><span class='ln'>195</span>              child: content,</div>
+<div class='row nod'><span class='ln'>196</span>            ),</div>
+<div class='row nod'><span class='ln'>197</span>          ),</div>
+<div class='row cov'><span class='ln'>198</span>          if (widget.colIndex &lt; 6)</div>
+<div class='row cov'><span class='ln'>199</span>            Positioned(</div>
+<div class='row cov'><span class='ln'>200</span>              right: -widget.padding - _positionOffset,</div>
+<div class='row cov'><span class='ln'>201</span>              child: Container(</div>
+<div class='row cov'><span class='ln'>202</span>                width: widget.padding + 2 * _positionOffset,</div>
+<div class='row cov'><span class='ln'>203</span>                height: widget.height,</div>
+<div class='row nod'><span class='ln'>204</span>                color: positionColor,</div>
+<div class='row nod'><span class='ln'>205</span>              ),</div>
+<div class='row nod'><span class='ln'>206</span>            ),</div>
+<div class='row nod'><span class='ln'>207</span>        ],</div>
+<div class='row nod'><span class='ln'>208</span>      ),</div>
+<div class='row nod'><span class='ln'>209</span>    );</div>
+<div class='row nod'><span class='ln'>210</span>  }</div>
+<div class='row nod'><span class='ln'>211</span></div>
+<div class='row cov'><span class='ln'>212</span>  void _onSelectTypeChange() {</div>
+<div class='row nod'><span class='ln'>213</span>    // 使用 addPostFrameCallback 避免在 build 期间调用 setState</div>
+<div class='row cov'><span class='ln'>214</span>    WidgetsBinding.instance.addPostFrameCallback((_) {</div>
+<div class='row cov'><span class='ln'>215</span>      if (!mounted) {</div>
+<div class='row nod'><span class='ln'>216</span>        return;</div>
+<div class='row nod'><span class='ln'>217</span>      }</div>
+<div class='row cov'><span class='ln'>218</span>      setState(() {});</div>
+<div class='row nod'><span class='ln'>219</span>    });</div>
+<div class='row nod'><span class='ln'>220</span>  }</div>
+<div class='row nod'><span class='ln'>221</span></div>
+<div class='row cov'><span class='ln'>222</span>  Color? _rangeBridgeColor(</div>
+<div class='row nod'><span class='ln'>223</span>    BuildContext context,</div>
+<div class='row nod'><span class='ln'>224</span>    TCalendarStyle cellStyle,</div>
+<div class='row nod'><span class='ln'>225</span>    BoxDecoration? decoration,</div>
+<div class='row nod'><span class='ln'>226</span>  ) {</div>
+<div class='row cov'><span class='ln'>227</span>    _positionOffset = 0;</div>
+<div class='row nod'><span class='ln'>228</span>    final bridgeColor =</div>
+<div class='row cov'><span class='ln'>229</span>        cellStyle.centreColor ?? context.tTheme.brandLightColor;</div>
+<div class='row cov'><span class='ln'>230</span>    final next = _nextDay();</div>
+<div class='row cov'><span class='ln'>231</span>    if (widget.cell?.selectType == DateSelectType.start) {</div>
+<div class='row cov'><span class='ln'>232</span>      if (widget.cell?.isLastDayOfMonth == true) {</div>
+<div class='row nod'><span class='ln'>233</span>        return null;</div>
+<div class='row nod'><span class='ln'>234</span>      }</div>
+<div class='row cov'><span class='ln'>235</span>      if (next?.selectType == DateSelectType.end) {</div>
+<div class='row unc'><span class='ln'>236</span>▶         _positionOffset = 1;</div>
+<div class='row unc'><span class='ln'>237</span>▶         return decoration?.color;</div>
+<div class='row nod'><span class='ln'>238</span>      }</div>
+<div class='row cov'><span class='ln'>239</span>      if (next?.selectType == DateSelectType.centre) {</div>
+<div class='row nod'><span class='ln'>240</span>        return bridgeColor;</div>
+<div class='row nod'><span class='ln'>241</span>      }</div>
+<div class='row nod'><span class='ln'>242</span>    }</div>
+<div class='row cov'><span class='ln'>243</span>    if (widget.cell?.selectType == DateSelectType.centre) {</div>
+<div class='row nod'><span class='ln'>244</span>      return bridgeColor;</div>
+<div class='row nod'><span class='ln'>245</span>    }</div>
+<div class='row nod'><span class='ln'>246</span>    return null;</div>
+<div class='row nod'><span class='ln'>247</span>  }</div>
+<div class='row nod'><span class='ln'>248</span></div>
+<div class='row cov'><span class='ln'>249</span>  TCalendarCellModel? _nextDay([int offset = 1]) {</div>
+<div class='row cov'><span class='ln'>250</span>    final index = widget.rowIndex * 7 + widget.colIndex + offset;</div>
+<div class='row cov'><span class='ln'>251</span>    return widget.dateList.getOrNull(index);</div>
+<div class='row nod'><span class='ln'>252</span>  }</div>
+<div class='row nod'><span class='ln'>253</span></div>
+<div class='row cov'><span class='ln'>254</span>  Widget _buildDefaultCell(</div>
+<div class='row nod'><span class='ln'>255</span>    BuildContext context,</div>
+<div class='row nod'><span class='ln'>256</span>    TCalendarCellModel cell,</div>
+<div class='row nod'><span class='ln'>257</span>    TCalendarStyle cellStyle,</div>
+<div class='row nod'><span class='ln'>258</span>  ) {</div>
+<div class='row cov'><span class='ln'>259</span>    final dayText = cell.date.day.toString();</div>
+<div class='row cov'><span class='ln'>260</span>    final dayTextStyle = (_isToday ? cellStyle.todayDayStyle : null) ??</div>
+<div class='row cov'><span class='ln'>261</span>        widget.todayDayStyle ??</div>
+<div class='row unc'><span class='ln'>262</span>▶         cellStyle.dayStyle ??</div>
+<div class='row unc'><span class='ln'>263</span>▶         widget.dayStyle;</div>
+<div class='row nod'><span class='ln'>264</span></div>
+<div class='row cov'><span class='ln'>265</span>    final subtitle = _buildSubtitle(context, cell, cellStyle);</div>
+<div class='row nod'><span class='ln'>266</span></div>
+<div class='row cov'><span class='ln'>267</span>    return Column(</div>
+<div class='row nod'><span class='ln'>268</span>      mainAxisAlignment: MainAxisAlignment.center,</div>
+<div class='row cov'><span class='ln'>269</span>      children: [</div>
+<div class='row cov'><span class='ln'>270</span>        TText(</div>
+<div class='row nod'><span class='ln'>271</span>          dayText,</div>
+<div class='row nod'><span class='ln'>272</span>          forceVerticalCenter: subtitle == null,</div>
+<div class='row nod'><span class='ln'>273</span>          style: dayTextStyle,</div>
+<div class='row nod'><span class='ln'>274</span>        ),</div>
+<div class='row nod'><span class='ln'>275</span>        if (subtitle != null)</div>
+<div class='row cov'><span class='ln'>276</span>          Padding(</div>
+<div class='row nod'><span class='ln'>277</span>            padding: const EdgeInsets.only(top: 2),</div>
+<div class='row nod'><span class='ln'>278</span>            child: subtitle,</div>
+<div class='row nod'><span class='ln'>279</span>          ),</div>
+<div class='row nod'><span class='ln'>280</span>      ],</div>
+<div class='row nod'><span class='ln'>281</span>    );</div>
+<div class='row nod'><span class='ln'>282</span>  }</div>
+<div class='row nod'><span class='ln'>283</span></div>
+<div class='row cov'><span class='ln'>284</span>  Widget? _buildSubtitle(</div>
+<div class='row nod'><span class='ln'>285</span>    BuildContext context,</div>
+<div class='row nod'><span class='ln'>286</span>    TCalendarCellModel cell,</div>
+<div class='row nod'><span class='ln'>287</span>    TCalendarStyle cellStyle,</div>
+<div class='row nod'><span class='ln'>288</span>  ) {</div>
+<div class='row cov'><span class='ln'>289</span>    return widget.subtitleBuilder?.call(</div>
+<div class='row nod'><span class='ln'>290</span>      context,</div>
+<div class='row cov'><span class='ln'>291</span>      TCalendarSubtitleContext(</div>
+<div class='row cov'><span class='ln'>292</span>        date: cell.date,</div>
+<div class='row cov'><span class='ln'>293</span>        selectType: cell.selectType,</div>
+<div class='row nod'><span class='ln'>294</span>      ),</div>
+<div class='row nod'><span class='ln'>295</span>    );</div>
+<div class='row nod'><span class='ln'>296</span>  }</div>
+<div class='row nod'><span class='ln'>297</span>}</div>
+<div class='row nod'><span class='ln'>298</span></div>
+</pre></body></html>

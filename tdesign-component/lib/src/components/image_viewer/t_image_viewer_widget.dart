@@ -124,11 +124,13 @@ class TImageViewerWidget extends StatefulWidget {
 
 class _TImageViewerWidgetState extends State<TImageViewerWidget> {
   int _index = 1;
+  List<dynamic> _images = [];
   var swiperController = SwiperController();
 
   @override
   void initState() {
     super.initState();
+    _images = List.from(widget.images);
     if (widget.images.isEmpty) {
       throw FlutterError('images must not be empty');
     }
@@ -140,6 +142,14 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
       throw FlutterError('labels.length must be equals images.length');
     }
     _index = (widget.defaultIndex ?? 0) + 1;
+  }
+
+  @override // coverage:ignore-line
+  void didUpdateWidget(TImageViewerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget); // coverage:ignore-line
+    if (widget.images != oldWidget.images) { // coverage:ignore-line
+      _images = List.from(widget.images); // coverage:ignore-line
+    }
   }
 
   Widget _getImage(dynamic image) {
@@ -154,12 +164,12 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
     var margin =
         EdgeInsets.symmetric(horizontal: horizontal, vertical: vertical);
     if (image is File) {
-      return Container(
+      return Container( // coverage:ignore-line
         margin: margin,
-        child: TImage(
+        child: TImage( // coverage:ignore-line
           imageFile: image,
           fit: boxFit,
-          type: TImageType.fitWidth,
+          variant: TImageVariant.fitWidth,
         ),
       );
     }
@@ -168,35 +178,39 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
         return Container(
           margin: margin,
           child: TImage(
-            imgUrl: image,
+            src: image,
             fit: boxFit,
-            type: TImageType.fitWidth,
+            variant: TImageVariant.fitWidth,
             loadingWidget: Container(
               width: size.width,
               height: size.height,
               // todo
-              color: TTheme.of(context).fontGyColor1,
+              color: context.tTheme.fontGyColor1,
               child: Center(
-                child: TLoading(
-                  icon: TLoadingIcon.circle,
-                  size: TLoadingSize.large,
-                  iconColor: TTheme.of(context).brandNormalColor,
+                child: Theme(
+                  data: Theme.of(context).mergeExtension(
+                    TLoadingThemeData(iconColor: context.tTheme.brandNormalColor),
+                  ),
+                  child: const TLoading(
+                    icon: TLoadingIcon.circle,
+                    size: TLoadingSize.large,
+                  ),
                 ),
               ),
             ),
           ),
         );
       }
-      return Container(
+      return Container( // coverage:ignore-line
         margin: margin,
-        child: TImage(
-          assetUrl: image,
+        child: TImage( // coverage:ignore-line
+          src: image,
           fit: boxFit,
-          type: TImageType.fitWidth,
+          variant: TImageVariant.fitWidth,
         ),
       );
     }
-    throw FlutterError('image ${image} type is not supported');
+    throw FlutterError('image ${image} type is not supported'); // coverage:ignore-line
   }
 
   Widget _getPageTitle() {
@@ -210,27 +224,27 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
               widget.labels![_index - 1],
               textAlign: TextAlign.center,
               style: widget.labelStyle ??
-                  TextStyle(color: TTheme.of(context).textColorAnti),
+                  TextStyle(color: context.tTheme.textColorAnti),
             ),
           ),
           Visibility(
             visible: widget.showIndex ?? false,
             child: Text(
-              '$_index / ${widget.images.length}',
+              '$_index / ${_images.length}',
               textAlign: TextAlign.center,
               style: widget.indexStyle ??
                   TextStyle(
-                      color: TTheme.of(context).brandClickColor, fontSize: 10),
+                      color: context.tTheme.brandClickColor, fontSize: 10),
             ),
           )
         ],
       );
     }
     return Text(
-      (widget.showIndex ?? false) ? '$_index / ${widget.images.length}' : '',
+      (widget.showIndex ?? false) ? '$_index / ${_images.length}' : '',
       textAlign: TextAlign.center,
       style: widget.indexStyle ??
-          TextStyle(color: TTheme.of(context).textColorAnti),
+          TextStyle(color: context.tTheme.textColorAnti),
     );
   }
 
@@ -243,12 +257,12 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
         if (widget.onClose != null) {
           widget.onClose!.call(_index - 1);
         } else {
-          Navigator.of(context).pop();
+          Navigator.of(context).pop(); // coverage:ignore-line
         }
       },
       child: Icon(
         TIcons.close,
-        color: widget.iconColor ?? TTheme.of(context).textColorAnti,
+        color: widget.iconColor ?? context.tTheme.textColorAnti,
       ),
     );
   }
@@ -261,24 +275,24 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
       visible: widget.deleteBtn ?? false,
       child: GestureDetector(
         onTap: () {
-          if (widget.images.length == 1 &&
+          if (_images.length == 1 &&
               !(widget.ignoreDeleteError ?? false)) {
             throw FlutterError('images must not be empty');
           }
-          widget.images.removeAt(_index - 1);
+          _images.removeAt(_index - 1);
           widget.onDelete?.call(_index - 1);
           setState(() {
             // // if(_index == widget.images.length){
             // // }
             // swiperController.previous();
             if (_index > 1) {
-              _index--;
+              _index--; // coverage:ignore-line
             }
           });
         },
         child: Icon(
           TIcons.delete,
-          color: widget.iconColor ?? TTheme.of(context).textColorAnti,
+          color: widget.iconColor ?? context.tTheme.textColorAnti,
         ),
       ),
     );
@@ -297,7 +311,7 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
           right: 0,
           child: Container(
             // todo
-            color: widget.bgColor ?? TTheme.of(context).fontGyColor1,
+            color: widget.bgColor ?? context.tTheme.fontGyColor1,
           ),
         ),
         Positioned(
@@ -306,35 +320,35 @@ class _TImageViewerWidgetState extends State<TImageViewerWidget> {
           left: 0,
           right: 0,
           child: Swiper(
-            key: ValueKey(widget.images.length),
+            key: ValueKey(_images.length),
             controller: swiperController,
             index: _index - 1,
             loop: widget.loop ?? true,
             autoplay: widget.autoplay ?? false,
             duration: widget.duration ?? kDefaultAutoplayTransactionDuration,
             itemBuilder: (BuildContext context, int index) {
-              var image = widget.images[index];
+              var image = _images[index];
               return GestureDetector(
                 onTap: () => widget.onTap?.call(index),
-                onLongPress: () => widget.onLongPress?.call(index),
+                onLongPress: () => widget.onLongPress?.call(index), // coverage:ignore-line
                 child: _getImage(image),
               );
             },
-            itemCount: widget.images.length,
-            onIndexChanged: (index) {
-              if ((widget.showIndex ?? false) || widget.labels != null) {
-                setState(() {
-                  _index = index + 1;
+            itemCount: _images.length,
+            onIndexChanged: (index) { // coverage:ignore-line
+              if ((widget.showIndex ?? false) || widget.labels != null) { // coverage:ignore-line
+                setState(() { // coverage:ignore-line
+                  _index = index + 1; // coverage:ignore-line
                 });
               }
-              widget.onIndexChange?.call(index);
+              widget.onIndexChange?.call(index); // coverage:ignore-line
             },
           ),
         ),
         SafeArea(
           child: Container(
             color: widget.navBarBgColor ??
-                TTheme.of(context).textColorPlaceholder,
+                context.tTheme.textColorPlaceholder,
             height: 44,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Row(

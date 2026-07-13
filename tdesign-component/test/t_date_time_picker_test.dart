@@ -81,7 +81,7 @@ Future<void> pumpDateTimePicker(
   bool showWeek = false,
   DateTimePickerSteps? steps,
   DateTimePickerRenderLabel? renderLabel,
-  void Function(TDateTimePickerValue)? onChange,
+  void Function(TDateTimePickerValue)? onChanged,
   double? height,
   int? itemCount,
 }) async {
@@ -95,7 +95,7 @@ Future<void> pumpDateTimePicker(
         showWeek: showWeek,
         steps: steps,
         renderLabel: renderLabel,
-        onChange: onChange,
+        onChanged: onChanged,
         height: height,
         itemCount: itemCount,
       ),
@@ -184,7 +184,7 @@ void main() {
 
     test('combined：dateMode 与 timeMode 同时为 null 触发 assert', () {
       expect(
-        () => DateTimePickerMode(),
+        DateTimePickerMode.new,
         throwsAssertionError,
       );
     });
@@ -346,9 +346,9 @@ void main() {
     });
 
     test('相等性比较包含全部字段', () {
-      final a = TDateTimePickerValue(year: 2026, month: 5, day: 15);
-      final b = TDateTimePickerValue(year: 2026, month: 5, day: 15);
-      final c = TDateTimePickerValue(year: 2026, month: 5, day: 16);
+      const a = TDateTimePickerValue(year: 2026, month: 5, day: 15);
+      const b = TDateTimePickerValue(year: 2026, month: 5, day: 15);
+      const c = TDateTimePickerValue(year: 2026, month: 5, day: 16);
       expect(a, equals(b));
       expect(a, isNot(equals(c)));
       expect(a.hashCode, equals(b.hashCode));
@@ -1198,7 +1198,7 @@ void main() {
           body: TDateTimePicker(
             mode: DateTimePickerMode(dateMode: DateMode.date),
             initialValue: valueFromDateTime(DateTime(2026, 2, 28)),
-            onChange: (v) => changed = v,
+            onChanged: (v) => changed = v,
           ),
         ),
       ));
@@ -1227,7 +1227,7 @@ void main() {
                 TDateTimePicker(
                   mode: DateTimePickerMode(dateMode: DateMode.date),
                   initialValue: valueFromDateTime(DateTime(2026, 5, 15)),
-                  onChange: (_) => callCount++,
+                  onChanged: (_) => callCount++,
                 ),
               ],
             ),
@@ -1312,7 +1312,7 @@ void main() {
           body: TDateTimePicker(
             mode: DateTimePickerMode(dateMode: DateMode.date),
             initialValue: valueFromDateTime(DateTime(2024, 2, 15)),
-            onChange: (v) => changed = v,
+            onChanged: (v) => changed = v,
           ),
         ),
       ));
@@ -1445,7 +1445,7 @@ void main() {
           body: TDateTimePicker(
             mode: DateTimePickerMode(dateMode: DateMode.date),
             initialValue: valueFromDateTime(DateTime(2024, 2, 15)),
-            onChange: (v) {
+            onChanged: (v) {
               changeCount++;
               last = v;
             },
@@ -1487,7 +1487,7 @@ void main() {
           timeMode: TimeMode.second,
         ),
         initialValue: valueFromDateTime(DateTime(2026, 5, 15, 10, 30, 0)),
-        onChange: (v) => changed = v,
+        onChanged: (v) => changed = v,
       );
       final wheels = find.byType(ListWheelScrollView);
       expect(wheels, findsNWidgets(6));
@@ -1575,7 +1575,7 @@ void main() {
         tester,
         mode: DateTimePickerMode(dateMode: DateMode.year),
         initialValue: valueFromDateTime(DateTime(2026, 1, 1)),
-        onChange: (v) => yearResult = v,
+        onChanged: (v) => yearResult = v,
       );
       final wheels = find.byType(ListWheelScrollView);
       await tester.drag(wheels.first, const Offset(0, -80));
@@ -1590,7 +1590,7 @@ void main() {
         tester,
         mode: DateTimePickerMode(timeMode: TimeMode.minute),
         initialValue: valueFromDateTime(DateTime(2026, 5, 15, 10, 30)),
-        onChange: (v) => timeResult = v,
+        onChanged: (v) => timeResult = v,
       );
       final timeWheels = find.byType(ListWheelScrollView);
       await tester.drag(timeWheels.at(1), const Offset(0, -80));
@@ -1660,7 +1660,7 @@ void main() {
           timeMode: TimeMode.minute,
         ),
         initialValue: valueFromDateTime(DateTime(2026, 5, 15, 10, 30)),
-        onChange: (v) => changed = v,
+        onChanged: (v) => changed = v,
       );
       expect(find.byType(ListWheelScrollView), findsNWidgets(4));
 
@@ -1692,7 +1692,7 @@ void main() {
         mode: DateTimePickerMode(dateMode: DateMode.date),
         initialValue: valueFromDateTime(DateTime(2026, 5, 15)),
         showWeek: true,
-        onChange: (v) => changed = v,
+        onChanged: (v) => changed = v,
       );
       final wheels = find.byType(ListWheelScrollView);
       await tester.drag(wheels.at(0), const Offset(0, 80));

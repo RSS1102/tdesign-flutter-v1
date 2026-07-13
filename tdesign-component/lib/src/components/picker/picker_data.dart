@@ -4,7 +4,7 @@ import 'picker_keys.dart';
 import 'picker_normalize.dart';
 import 'picker_option.dart';
 
-// 数据源密封基类（包内类型标记）；业务请用 [TPickerColumns] 或 [TPickerLinked]
+/// 数据源密封基类（包内类型标记）；业务请用 [TPickerColumns] 或 [TPickerLinked]
 @immutable
 sealed class TPickerItems {
   const TPickerItems();

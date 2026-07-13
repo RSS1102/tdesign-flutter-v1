@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
 import '../../util/context_extension.dart';
 import '../../util/iterable_ext.dart';
@@ -15,23 +15,10 @@ export 't_calendar_cell.dart'
         TCalendarSubtitleBuilder,
         TCalendarCellBuilder,
         TCalendarMonthTitleBuilder;
-export 't_calendar_style.dart';
 
 // ---------------------------------------------------------------------------
 // TCalendar — 纯日历组件
 // ---------------------------------------------------------------------------
-
-/// 日历选择模式
-enum CalendarType {
-  /// 单选：点击新日期时自动取消旧日期的选中状态
-  single,
-
-  /// 多选：点击日期切换选中/取消，可同时选中多个日期
-  multiple,
-
-  /// 区间选择：两次点击定区间；终点须晚于起点，否则以新点击重开区间
-  range,
-}
 
 /// 日历组件（纯日历面板，不含弹窗、表单等封装）。
 ///
@@ -42,7 +29,7 @@ enum CalendarType {
 ///
 /// - [initialValue]：**非受控**，仅在组件首次挂载时写入选中态；运行期修改本参数不会
 ///   同步到界面。外部重置选中请更换 [Key] 或销毁后重建（如弹层关闭再打开）。
-/// - [onChange]：用户点选导致选中变化时触发；挂载阶段不会调用。选中高亮由组件内部维护。
+/// - [onChanged]：用户点选导致选中变化时触发；挂载阶段不会调用。选中高亮由组件内部维护。
 /// - [anchorDate]：首屏及运行期可更新的**滚动锚点**，滚到该日所在月份，不自动改选中。
 /// - [onMonthChanged]：用户滑动导致可见月份变化时触发，便于外置年月条同步文案。
 ///
@@ -55,7 +42,7 @@ enum CalendarType {
 /// 弹层场景请自行 `showModalBottomSheet` 包裹本组件，并用新 [Key] 或新实例传入
 /// [initialValue]；外置月份导航请更新 [anchorDate] 而非回写 [initialValue]。
 ///
-/// ## 区间模式（[CalendarType.range]）点击规则
+/// ## 区间模式（[TCalendarVariant.range]）点击规则
 ///
 /// 两次点击定区间：无起点时本次为起点；有起点无终点且本次晚于起点时为终点；
 /// 其余情况（含点击早于等于起点、区间已完成后再点）以本次点击重新开始为起点。
@@ -69,11 +56,10 @@ class TCalendar extends StatefulWidget {
     this.firstDayOfWeek = 0,
     DateTime? minDate,
     DateTime? maxDate,
-    this.type = CalendarType.single,
+    this.type = TCalendarVariant.single,
     this.initialValue,
     this.height,
-    TCalendarStyle? style,
-    required this.onChange,
+    required this.onChanged,
     this.onMonthChanged,
     TCalendarMonthTitleBuilder? monthTitleBuilder,
     this.cellBuilder,
@@ -85,7 +71,6 @@ class TCalendar extends StatefulWidget {
         minDate = minDate ?? _getDefaultMinDate(),
         maxDate = maxDate ?? _getDefaultMaxDate(),
         monthTitleBuilder = monthTitleBuilder ?? _defaultMonthTitleBuilder,
-        style = style ?? TCalendarStyle.generateStyle(context: null),
         super(key: key);
 
   /// 第一天从星期几开始，0 = 周日，1 = 周一，…，6 = 周六。默认 0（周日）。
@@ -98,10 +83,10 @@ class TCalendar extends StatefulWidget {
   final DateTime maxDate;
 
   /// 日历的选择模式，决定点击日期后的选中行为：
-  /// - [CalendarType.single]：单选，点击新日期取消旧选中
-  /// - [CalendarType.multiple]：多选，点击切换选中/取消
-  /// - [CalendarType.range]：区间选择，依次选起止日期
-  final CalendarType type;
+  /// - [TCalendarVariant.single]：单选，点击新日期取消旧选中
+  /// - [TCalendarVariant.multiple]：多选，点击切换选中/取消
+  /// - [TCalendarVariant.range]：区间选择，依次选起止日期
+  final TCalendarVariant type;
 
   /// 初始选中日期列表，**仅在组件首次挂载时**写入内部选中态，运行期变更不会同步。
   ///
@@ -109,22 +94,19 @@ class TCalendar extends StatefulWidget {
   ///（例如弹层关闭再打开）。不传时内部选中为空列表，首屏滚动见 [anchorDate]。
   ///
   /// 列表长度与 [type] 对应：
-  /// - [CalendarType.single]：1 个元素（选中日期）
-  /// - [CalendarType.multiple]：N 个元素（所有选中日期）
-  /// - [CalendarType.range]：2 个元素（起始、结束日期）
+  /// - [TCalendarVariant.single]：1 个元素（选中日期）
+  /// - [TCalendarVariant.multiple]：N 个元素（所有选中日期）
+  /// - [TCalendarVariant.range]：2 个元素（起始、结束日期）
   final List<DateTime>? initialValue;
 
   /// 高度，不传时自动按 5 行日期计算
   final double? height;
 
-  /// 自定义样式（包含 cellHeight、monthTitleHeight 等布局参数）
-  final TCalendarStyle style;
-
   /// 选中结果变化时触发（单选立即触发；多选每次切换；区间在端点变化时触发）。
   ///
   /// 用于同步业务侧 State 或 [ValueNotifier]；勿依赖运行期回写 [initialValue] 驱动 UI。
   /// 组件挂载时不会调用本回调。点击禁用格或单选重复点已选格时不触发。
-  final ValueChanged<List<DateTime>> onChange;
+  final ValueChanged<List<DateTime>> onChanged;
 
   /// 可见月份变化时触发（用户滑动或程序化滚动结束后），参数为当月 1 日。
   ///
@@ -246,14 +228,14 @@ class _TCalendarState extends State<TCalendar> {
       context.resource.november,
       context.resource.december,
     ];
-    _style = widget.style;
+    _style = _resolveStyle(context);
     if (!_initializedSelected) {
       _initializedSelected = true;
       _applyInitialValue();
     }
   }
 
-  /// 挂载时从 [initialValue] 种子化内部选中缓存，不向 [onChange] 回传。
+  /// 挂载时从 initialValue 种子化内部选中缓存，不向 onChanged 回传。
   void _applyInitialValue() {
     _cachedValueDates = widget._value ?? const <DateTime>[];
   }
@@ -261,14 +243,33 @@ class _TCalendarState extends State<TCalendar> {
   @override
   void didUpdateWidget(covariant TCalendar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.style != widget.style) {
-      setState(() => _style = widget.style);
-    }
+    // 主题变更由 didChangeDependencies 处理，无需在此检查 style
+  }
+
+  /// P1: 从 ThemeExtension 解析样式（mergeExtension 子树覆盖 → token 默认）
+  TCalendarStyle _resolveStyle(BuildContext context) {
+    final theme = Theme.of(context).extension<TCalendarThemeData>();
+    final base = TCalendarStyle.generateStyle(context: context);
+    return TCalendarStyle(
+      decoration: theme?.decoration ?? base.decoration,
+      weekdayStyle: theme?.weekdayStyle ?? base.weekdayStyle,
+      monthTitleStyle: theme?.monthTitleStyle ?? base.monthTitleStyle,
+      dayStyle: theme?.dayStyle ?? base.dayStyle,
+      todayDayStyle: theme?.todayDayStyle ?? base.todayDayStyle,
+      cellDecoration: theme?.cellDecoration ?? base.cellDecoration,
+      subtitleStyle: theme?.subtitleStyle ?? base.subtitleStyle,
+      cellHeight: theme?.cellHeight ?? base.cellHeight,
+      monthTitleHeight: theme?.monthTitleHeight ?? base.monthTitleHeight,
+      verticalGap: theme?.verticalGap ?? base.verticalGap,
+      bodyPadding: theme?.bodyPadding ?? base.bodyPadding,
+      weekdayGap: theme?.weekdayGap ?? base.weekdayGap,
+      centreColor: theme?.centreColor ?? base.centreColor,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final verticalGap = _style.verticalGap ?? TTheme.of(context).spacer8;
+    final verticalGap = _style.verticalGap ?? context.tTheme.spacer8;
 
     return Container(
       height: widget.height ?? _calcInlineDefaultHeight(verticalGap),
@@ -278,10 +279,10 @@ class _TCalendarState extends State<TCalendar> {
         children: [
           TCalendarHeader(
             firstDayOfWeek: widget.firstDayOfWeek,
-            weekdayGap: _style.weekdayGap ?? TTheme.of(context).spacer4,
-            padding: _style.bodyPadding ?? TTheme.of(context).spacer16,
+            weekdayGap: _style.weekdayGap ?? context.tTheme.spacer4,
+            padding: _style.bodyPadding ?? context.tTheme.spacer16,
             weekdayStyle: _style.weekdayStyle,
-            weekdayHeight: _style.weekdayHeight ?? TCalendar._kWeekdayHeight,
+            weekdayHeight: _style.weekdayHeight,
             weekdayNames: weekdayNames,
           ),
           Expanded(
@@ -299,12 +300,12 @@ class _TCalendarState extends State<TCalendar> {
       minDate: widget.minDate,
       maxDate: widget.maxDate,
       initialValue: _cachedValueDates,
-      bodyPadding: _style.bodyPadding ?? TTheme.of(context).spacer16,
+      bodyPadding: _style.bodyPadding ?? context.tTheme.spacer16,
       monthNames: monthNames,
       monthTitleStyle: _style.monthTitleStyle,
       verticalGap: verticalGap,
-      cellHeight: _style.cellHeight ?? 60,
-      monthTitleHeight: _style.monthTitleHeight ?? 22,
+      cellHeight: _style.cellHeight,
+      monthTitleHeight: _style.monthTitleHeight,
       monthTitleBuilder: widget.monthTitleBuilder,
       anchorDate: widget.anchorDate,
       animateTo: widget.animateTo,
@@ -313,7 +314,7 @@ class _TCalendarState extends State<TCalendar> {
       onCacheInvalidated: _handleCacheInvalidated,
       builder: (cell, dateList, rowIndex, colIndex) {
         return TCalendarCell(
-          height: _style.cellHeight ?? 60,
+          height: _style.cellHeight,
           cell: cell,
           padding: verticalGap / 2,
           onTap: _handleCellTap,
@@ -333,7 +334,7 @@ class _TCalendarState extends State<TCalendar> {
   /// 月份单元格列表新生成时被 body 调用：登记 selected 引用，
   /// 让 state 不依赖 body 内部缓存即可定位当前选中的 cell 实例。
   void _handleCellGenerated(DateTime monthDate, List<TCalendarCellModel?> cells) {
-    if (widget.type == CalendarType.range) {
+    if (widget.type == TCalendarVariant.range) {
       return;
     }
     for (final cell in cells) {
@@ -343,9 +344,9 @@ class _TCalendarState extends State<TCalendar> {
       if (cell.typeNotifier.value != DateSelectType.selected) {
         continue;
       }
-      if (widget.type == CalendarType.single) {
+      if (widget.type == TCalendarVariant.single) {
         _selectedSingleRef = cell;
-      } else if (widget.type == CalendarType.multiple) {
+      } else if (widget.type == TCalendarVariant.multiple) {
         _selectedMultipleRefs[cell.date] = cell;
       }
     }
@@ -368,7 +369,7 @@ class _TCalendarState extends State<TCalendar> {
     }
 
     switch (widget.type) {
-      case CalendarType.single:
+      case TCalendarVariant.single:
         if (identical(_selectedSingleRef, cell)) {
           return;
         }
@@ -377,7 +378,7 @@ class _TCalendarState extends State<TCalendar> {
         _selectedSingleRef = cell;
         _emitSelection([curDate], rebuild: false);
         break;
-      case CalendarType.multiple:
+      case TCalendarVariant.multiple:
         final existing = _selectedMultipleRefs[curDate];
         List<DateTime> nextValue;
         if (existing != null) {
@@ -390,7 +391,7 @@ class _TCalendarState extends State<TCalendar> {
         nextValue = _selectedMultipleRefs.keys.toList()..sort();
         _emitSelection(nextValue, rebuild: false);
         break;
-      case CalendarType.range:
+      case TCalendarVariant.range:
         final resolved = _resolveRangeSelection([curDate]);
         _emitSelection(resolved, rebuild: true);
         break;
@@ -401,7 +402,7 @@ class _TCalendarState extends State<TCalendar> {
   void _emitSelection(List<DateTime> value, {required bool rebuild}) {
     final normalized = TCalendar._normalizeDateList(value);
     _cachedValueDates = normalized;
-    widget.onChange(List<DateTime>.from(normalized));
+    widget.onChanged(List<DateTime>.from(normalized));
     if (rebuild && mounted) {
       setState(() {});
     }
@@ -433,10 +434,10 @@ class _TCalendarState extends State<TCalendar> {
   ///
   /// 布局 = weekday(46) + monthTitle(22) + 5行(cellHeight + verticalGap) + bodyPadding*2
   double _calcInlineDefaultHeight(double verticalGap) {
-    final weekdayHeight = TCalendar._kWeekdayHeight;
-    final monthTitleHeight = _style.monthTitleHeight ?? 22;
-    final cellHeight = _style.cellHeight ?? 60;
-    final bodyPadding = _style.bodyPadding ?? TTheme.of(context).spacer16;
+    const weekdayHeight = TCalendar._kWeekdayHeight;
+    final monthTitleHeight = _style.monthTitleHeight;
+    final cellHeight = _style.cellHeight;
+    final bodyPadding = _style.bodyPadding ?? context.tTheme.spacer16;
     const visibleRows = 5;
     return weekdayHeight +
         monthTitleHeight +

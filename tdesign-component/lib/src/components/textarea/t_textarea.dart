@@ -1,77 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../theme/basic.dart';
-import '../../theme/t_colors.dart';
-import '../../theme/t_font_family.dart';
-import '../../theme/t_fonts.dart';
-import '../../theme/t_radius.dart';
-import '../../theme/t_spacers.dart';
-import '../../theme/t_theme.dart';
-import '../input/input_view.dart';
-import '../input/t_input.dart';
-import '../text/t_text.dart';
+import '../../../tdesign_flutter.dart';
 
+/// TTextarea 多行文本布局方式
 enum TTextareaLayout { vertical, horizontal }
 
-/// 用于多行文本信息输入
+/// TTextarea 多行文本输入组件
+///
+/// 基于 Material [TextField] 薄包装。
+/// 与 TInput 共用 [TInputThemeData]。
+/// D 类禁用：`enabled: false` / `readOnly: true`。
+/// 推荐新代码使用 [TInput.multiline()]。
 class TTextarea extends StatefulWidget {
-  const TTextarea(
-      {Key? key,
-      this.width,
-      this.textStyle,
-      this.backgroundColor,
-      this.decoration,
-      this.labelStyle,
-      this.required,
-      this.readOnly = false,
-      this.autofocus = false,
-      this.onEditingComplete,
-      this.onSubmitted,
-      this.hintText,
-      this.inputType,
-      this.onChanged,
-      this.inputFormatters,
-      this.inputDecoration,
-      this.maxLines,
-      this.minLines = 4,
-      this.focusNode,
-      this.controller,
-      this.cursorColor,
-      this.hintTextStyle,
-      this.labelWidget,
-      this.textInputBackgroundColor,
-      this.size = TInputSize.large,
-      this.maxLength,
-      this.maxLengthEnforcement,
-      this.allowInputOverMax = false,
-      this.additionInfo = '',
-      this.additionInfoColor,
-      this.textAlign,
-      this.label,
-      this.indicator = false,
-      this.layout = TTextareaLayout.horizontal,
-      this.autosize,
-      this.labelIcon,
-      this.labelWidth,
-      this.margin,
-      this.padding,
-      this.textareaDecoration,
-      this.bordered,
-      this.showBottomDivider = true})
-      : super(key: key);
+  const TTextarea({
+    Key? key,
+    this.width,
+    this.controller,
+    this.focusNode,
+    this.onChanged,
+    this.onSubmitted,
+    this.onEditingComplete,
+    this.hintText,
+    this.inputType,
+    this.maxLines,
+    this.minLines = 4,
+    this.maxLength,
+    this.maxLengthEnforcement,
+    this.allowInputOverMax = false,
+    this.autofocus = false,
+    this.readOnly = false,
+    this.inputFormatters,
+    this.textAlign,
+    this.inputDecoration,
+    this.label,
+    this.labelIcon,
+    this.labelWidget,
+    this.required,
+    this.additionInfo,
+    this.additionInfoColor,
+    this.indicator = false,
+    this.layout = TTextareaLayout.horizontal,
+    this.autosize,
+    this.labelWidth,
+    this.margin,
+    this.padding,
+    this.decoration,
+    this.textareaDecoration,
+    this.bordered,
+    this.showBottomDivider = true,
+    // L4 参数（P0 优先级，覆盖 Theme）
+    this.textStyle,
+    this.hintTextStyle,
+    this.labelStyle,
+    this.backgroundColor,
+    this.textInputBackgroundColor,
+    this.cursorColor,
+    this.size,
+  }) : super(key: key);
+
+  // ---- L1 语义属性 ----
+
+  /// 标题输入框布局方式
+  final TTextareaLayout? layout;
+
+  /// 输入框尺寸
+  final TInputSize? size;
+
+  // ---- L2 内容属性 ----
 
   /// 输入框宽度
   final double? width;
-
-  /// 输入框背景色
-  final Color? backgroundColor;
-
-  /// 输入框样式(包括标签)
-  final Decoration? decoration;
-
-  /// 输入框样式(不包括标签)
-  final Decoration? textareaDecoration;
 
   /// 输入框标题
   final String? label;
@@ -82,74 +81,14 @@ class TTextarea extends StatefulWidget {
   /// 输入框标题宽度
   final double? labelWidth;
 
-  /// label组件，支持自定义
+  /// label组件
   final Widget? labelWidget;
 
-  /// 是否必填标志（红色*）
+  /// 是否必填标志
   final bool? required;
-
-  /// 是否只读
-  final bool? readOnly;
 
   /// 提示文案
   final String? hintText;
-
-  /// 键盘类型，数字、字母
-  final TextInputType? inputType;
-
-  /// 输入文本变化时回调
-  final ValueChanged<String>? onChanged;
-
-  /// 显示输入内容，如限制长度(LengthLimitingTextInputFormatter(6))
-  final List<TextInputFormatter>? inputFormatters;
-
-  /// controller 用户获取或者赋值输入内容
-  final TextEditingController? controller;
-
-  /// 最大输入行数
-  final int? maxLines;
-
-  /// 最小输入行数
-  final int? minLines;
-
-  /// 获取或者取消焦点使用
-  final FocusNode? focusNode;
-
-  /// 是否自动获取焦点
-  final bool? autofocus;
-
-  /// 点击键盘完成按钮时触发的回调
-  final VoidCallback? onEditingComplete;
-
-  /// 点击键盘完成按钮时触发的回调, 参数值为输入的内容
-  final ValueChanged<String>? onSubmitted;
-
-  /// 自定义输入框TextField组件样式
-  final InputDecoration? inputDecoration;
-
-  /// 文本颜色
-  final TextStyle? textStyle;
-
-  /// 提示文本颜色，默认为文本颜色
-  final TextStyle? hintTextStyle;
-
-  /// 文本框背景色
-  final Color? textInputBackgroundColor;
-
-  /// 游标颜色
-  final Color? cursorColor;
-
-  /// 输入框规格
-  final TInputSize? size;
-
-  /// 最大字数限制
-  final int? maxLength;
-
-  /// 如何执行输入长度限制
-  final MaxLengthEnforcement? maxLengthEnforcement;
-
-  /// 超出[maxLength]之后是否还允许输入
-  final bool? allowInputOverMax;
 
   /// 错误提示信息
   final String? additionInfo;
@@ -157,20 +96,29 @@ class TTextarea extends StatefulWidget {
   /// 错误提示颜色
   final Color? additionInfoColor;
 
-  /// 文字对齐方向
-  final TextAlign? textAlign;
+  /// 文本颜色
+  final TextStyle? textStyle;
 
-  /// 左侧标签文本样式
+  /// 提示文本颜色
+  final TextStyle? hintTextStyle;
+
+  /// 标签文本样式
   final TextStyle? labelStyle;
 
-  /// 否显示文本计数器，如 0/140（必须设置maxLength）
-  final bool? indicator;
+  /// 输入框背景色
+  final Color? backgroundColor;
 
-  /// 标题输入框布局方式。可选项：vertical/horizontal
-  final TTextareaLayout? layout;
+  /// 文本框背景色
+  final Color? textInputBackgroundColor;
 
-  /// 是否自动增高，值为 true 时，[maxLines]不生效
-  final bool? autosize;
+  /// 游标颜色
+  final Color? cursorColor;
+
+  /// 输入框样式(包括标签)
+  final Decoration? decoration;
+
+  /// 输入框样式(不包括标签)
+  final Decoration? textareaDecoration;
 
   /// 外边距
   final EdgeInsetsGeometry? margin;
@@ -184,8 +132,64 @@ class TTextarea extends StatefulWidget {
   /// 边框外部下划线
   final bool? showBottomDivider;
 
+  /// 否显示文本计数器
+  final bool? indicator;
+
+  /// 文字对齐方向
+  final TextAlign? textAlign;
+
+  /// 自定义输入框TextField组件样式
+  final InputDecoration? inputDecoration;
+
+  // ---- L3 行为属性 ----
+
+  /// 是否只读
+  final bool? readOnly;
+
+  /// 是否自动获取焦点
+  final bool? autofocus;
+
+  /// 点击键盘完成按钮
+  final VoidCallback? onEditingComplete;
+
+  /// 提交回调
+  final ValueChanged<String>? onSubmitted;
+
+  /// 文本变更回调
+  final ValueChanged<String>? onChanged;
+
+  /// 键盘类型
+  final TextInputType? inputType;
+
+  /// 输入格式化器
+  final List<TextInputFormatter>? inputFormatters;
+
+  /// controller
+  final TextEditingController? controller;
+
+  /// 最大行数
+  final int? maxLines;
+
+  /// 最小行数
+  final int? minLines;
+
+  /// focusNode
+  final FocusNode? focusNode;
+
+  /// 最大字数
+  final int? maxLength;
+
+  /// 长度限制方式
+  final MaxLengthEnforcement? maxLengthEnforcement;
+
+  /// 超出后是否允许输入
+  final bool? allowInputOverMax;
+
+  /// 是否自动增高
+  final bool? autosize;
+
   @override
-  _TTextareaState createState() => _TTextareaState();
+  State<TTextarea> createState() => _TTextareaState();
 }
 
 class _TTextareaState extends State<TTextarea> {
@@ -205,6 +209,7 @@ class _TTextareaState extends State<TTextarea> {
     if (widget.focusNode == null) {
       _focusNode.dispose();
     }
+    _hasFocus.dispose();
     super.dispose();
   }
 
@@ -214,37 +219,40 @@ class _TTextareaState extends State<TTextarea> {
 
   @override
   Widget build(BuildContext context) {
-    var padding = _getInputPadding(context);
-    var textareaView = _getTextareaView(
-        context, _getInputView(context), _getIndicatorView(context));
-    var container =
-        _getContainer(context, _getLabelView(context), textareaView);
+    final theme = Theme.of(context).extension<TInputThemeData>();
+    final effectiveSize = widget.size ?? TInputSize.large;
+    final padding = _getInputPadding(context, effectiveSize);
+    final textareaView =
+        _getTextareaView(context, _getInputView(context, theme, effectiveSize),
+            _getIndicatorView(context));
+    final container =
+        _getContainer(context, _getLabelView(context, effectiveSize), textareaView);
     if (widget.bordered == true || widget.decoration != null) {
       return container;
     }
     return Stack(
       children: [
         container,
-        if (widget.showBottomDivider != null &&
-            widget!.showBottomDivider == true)
+        if (widget.showBottomDivider == true)
           Positioned(
-              bottom: 0,
-              left: padding,
-              right: 0,
-              child: Divider(
-                height: 0.5,
-                color: TTheme.of(context).componentStrokeColor,
-              )),
+            bottom: 0,
+            left: padding,
+            right: 0,
+            child: Divider(
+              height: 0.5,
+              color: context.tTheme.componentStrokeColor,
+            ),
+          ),
       ],
     );
   }
 
-  Widget _getLabelView(BuildContext context) {
-    var padding = _getInputPadding(context);
-    var isHorizontal = widget.layout == TTextareaLayout.horizontal;
-    var fontSize = isHorizontal
-        ? TTheme.of(context).fontBodyLarge?.size
-        : TTheme.of(context).fontBodyMedium?.size;
+  Widget _getLabelView(BuildContext context, TInputSize size) {
+    final pad = _getInputPadding(context, size);
+    final isHorizontal = widget.layout == TTextareaLayout.horizontal;
+    final fontSize = isHorizontal
+        ? context.tTheme.fontBodyLarge?.size
+        : context.tTheme.fontBodyMedium?.size;
     if ((widget.label == null || widget.label == '') &&
         widget.labelIcon == null &&
         widget.labelWidget == null) {
@@ -253,8 +261,8 @@ class _TTextareaState extends State<TTextarea> {
     return Container(
       width: widget.labelWidth,
       padding: isHorizontal
-          ? EdgeInsets.only(right: padding)
-          : EdgeInsets.only(bottom: TTheme.of(context).spacer8),
+          ? EdgeInsets.only(right: pad)
+          : EdgeInsets.only(bottom: context.tTheme.spacer8),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -264,13 +272,18 @@ class _TTextareaState extends State<TTextarea> {
                   child: Padding(
                     padding: EdgeInsets.only(
                         left: widget.labelIcon != null
-                            ? TTheme.of(context).spacer4
+                            ? context.tTheme.spacer4
                             : 0),
                     child: TText(
                       widget.label!,
                       maxLines: isHorizontal ? 2 : 1,
                       overflow: TextOverflow.ellipsis,
-                      style: widget.labelStyle ?? TextStyle(fontSize: fontSize),
+                      style: TInputResolve.resolveLabelStyle(
+                        context: context,
+                        theme: Theme.of(context).extension<TInputThemeData>(),
+                        instanceStyle: widget.labelStyle ??
+                            TextStyle(fontSize: fontSize),
+                      ),
                     ),
                   ),
                 )
@@ -278,11 +291,12 @@ class _TTextareaState extends State<TTextarea> {
           widget.labelWidget ?? const SizedBox.shrink(),
           widget.required == true
               ? Padding(
-                  padding: EdgeInsets.only(left: TTheme.of(context).spacer4),
+                  padding:
+                      EdgeInsets.only(left: context.tTheme.spacer4),
                   child: TText(
                     '*',
                     style: TextStyle(
-                        color: TTheme.of(context).errorColor6,
+                        color: context.tTheme.errorColor6,
                         fontSize: fontSize,
                         height: 1.3),
                   ),
@@ -293,13 +307,20 @@ class _TTextareaState extends State<TTextarea> {
     );
   }
 
-  Widget _getInputView(BuildContext context) {
+  Widget _getInputView(
+      BuildContext context, TInputThemeData? theme, TInputSize size) {
+    final textStyle = TInputResolve.resolveTextStyle(
+        context: context, theme: theme, instanceStyle: widget.textStyle);
+    final hintTextStyle = TInputResolve.resolveHintTextStyle(
+        context: context, theme: theme, instanceStyle: widget.hintTextStyle);
+    final cursorColor = TInputResolve.resolveCursorColor(
+        context: context, theme: theme, instanceColor: widget.cursorColor);
+
     return SingleChildScrollView(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 24), // 设置最小高度为24
+        constraints: const BoxConstraints(minHeight: 24),
         child: TInputView(
-          textStyle: widget.textStyle ??
-              TextStyle(color: TTheme.of(context).textColorPrimary),
+          textStyle: textStyle,
           readOnly: widget.readOnly ?? false,
           autofocus: widget.autofocus ?? false,
           onEditingComplete: widget.onEditingComplete,
@@ -315,7 +336,8 @@ class _TTextareaState extends State<TTextarea> {
           },
           inputFormatters: [
             ...(widget.inputFormatters ?? []),
-            ...(widget.maxLength != null && !(widget.allowInputOverMax ?? false)
+            ...(widget.maxLength != null &&
+                    !(widget.allowInputOverMax ?? false)
                 ? [
                     LengthLimitingTextInputFormatter(
                       widget.maxLength,
@@ -329,13 +351,12 @@ class _TTextareaState extends State<TTextarea> {
           maxLines: widget.autosize == true ? null : widget.maxLines,
           focusNode: _focusNode,
           isCollapsed: true,
-          hintTextStyle: widget.hintTextStyle ??
-              TextStyle(
-                  color: widget.readOnly == true
-                      ? TTheme.of(context).textDisabledColor
-                      : TTheme.of(context).textColorPlaceholder),
-          cursorColor: widget.cursorColor,
-          textInputBackgroundColor: widget.textInputBackgroundColor,
+          hintTextStyle: widget.readOnly == true
+              ? TextStyle(color: context.tTheme.textDisabledColor)
+              : hintTextStyle,
+          cursorColor: cursorColor,
+          textInputBackgroundColor: TInputResolve.resolveTextInputBackgroundColor(
+              theme: theme, instanceColor: widget.textInputBackgroundColor),
           controller: widget.controller,
           contentPadding: EdgeInsets.zero,
         ),
@@ -344,11 +365,12 @@ class _TTextareaState extends State<TTextarea> {
   }
 
   Widget _getIndicatorView(BuildContext context) {
-    var padding = _getInputPadding(context);
-    var showAdditionInfo =
-        widget.additionInfo != '' && widget.additionInfo != null;
-    var showIndicator = widget.indicator == true && widget.maxLength != null;
-    var widgetList = <Widget>[];
+    final pad = _getInputPadding(context, widget.size ?? TInputSize.large);
+    final showAdditionInfo = widget.additionInfo != null &&
+        widget.additionInfo!.isNotEmpty;
+    final showIndicator =
+        widget.indicator == true && widget.maxLength != null;
+    final widgetList = <Widget>[];
     if (showAdditionInfo) {
       widgetList.add(
         Expanded(
@@ -360,9 +382,12 @@ class _TTextareaState extends State<TTextarea> {
                 child: TText(
                   widget.additionInfo!,
                   style: TextStyle(
-                    fontSize: TTheme.of(context).fontBodySmall?.size,
-                    color: widget.additionInfoColor ??
-                        TTheme.of(context).textColorPlaceholder,
+                    fontSize: context.tTheme.fontBodySmall?.size,
+                    color: TInputResolve.resolveAdditionInfoColor(
+                      context: context,
+                      theme: Theme.of(context).extension<TInputThemeData>(),
+                      instanceColor: widget.additionInfoColor,
+                    ),
                   ),
                 ),
               );
@@ -372,14 +397,14 @@ class _TTextareaState extends State<TTextarea> {
       );
     }
     if (showAdditionInfo && showIndicator) {
-      widgetList.add(SizedBox(width: padding));
+      widgetList.add(SizedBox(width: pad));
     }
     if (showIndicator) {
       widgetList.add(TText(
         '${widget.controller?.text.length ?? 0}/${widget.maxLength}',
         style: TextStyle(
-            fontSize: TTheme.of(context).fontBodySmall?.size,
-            color: TTheme.of(context).textColorPlaceholder),
+            fontSize: context.tTheme.fontBodySmall?.size,
+            color: context.tTheme.textColorPlaceholder),
       ));
     }
     return Visibility(
@@ -394,7 +419,8 @@ class _TTextareaState extends State<TTextarea> {
 
   Widget _getTextareaView(
       BuildContext context, Widget inputView, Widget indicatorView) {
-    var padding = _getInputPadding(context);
+    final size = widget.size ?? TInputSize.large;
+    final padding = _getInputPadding(context, size);
     return Container(
       decoration: widget.textareaDecoration ??
           (widget.bordered == true
@@ -402,11 +428,11 @@ class _TTextareaState extends State<TTextarea> {
                   color: widget.decoration != null
                       ? null
                       : (widget.backgroundColor ??
-                          TTheme.of(context).bgColorContainer),
+                          context.tTheme.bgColorContainer),
                   borderRadius:
-                      BorderRadius.circular(TTheme.of(context).radiusDefault),
+                      BorderRadius.circular(context.tTheme.radiusDefault),
                   border: Border.all(
-                      color: TTheme.of(context).componentBorderColor),
+                      color: context.tTheme.componentBorderColor),
                 )
               : null),
       padding: widget.bordered == true ? EdgeInsets.all(padding) : null,
@@ -421,8 +447,9 @@ class _TTextareaState extends State<TTextarea> {
 
   Widget _getContainer(
       BuildContext context, Widget labelView, Widget textareaView) {
-    var padding = _getInputPadding(context);
-    var isHorizontal = widget.layout == TTextareaLayout.horizontal;
+    final size = widget.size ?? TInputSize.large;
+    final padding = _getInputPadding(context, size);
+    final isHorizontal = widget.layout == TTextareaLayout.horizontal;
     return Container(
       width: widget.width,
       decoration: widget.decoration,
@@ -448,15 +475,13 @@ class _TTextareaState extends State<TTextarea> {
     );
   }
 
-  /// 获取输入框规格
-  double _getInputPadding(BuildContext context) {
-    switch (widget.size) {
+  /// 获取输入框规格内边距
+  double _getInputPadding(BuildContext context, TInputSize size) {
+    switch (size) {
       case TInputSize.small:
-        return TTheme.of(context).spacer12;
+        return context.tTheme.spacer12;
       case TInputSize.large:
-        return TTheme.of(context).spacer16;
-      default:
-        return TTheme.of(context).spacer16;
+        return context.tTheme.spacer16;
     }
   }
 }

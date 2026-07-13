@@ -17,7 +17,7 @@ class TCustomTab extends StatefulWidget {
 }
 
 class _TCustomTabState extends State<TCustomTab> {
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   int _currentTabIndex = 0;
 
   @override
@@ -58,8 +58,8 @@ class _TCustomTabState extends State<TCustomTab> {
                             style: TextStyle(
                                 fontSize: 16,
                                 color: _currentTabIndex == index
-                                    ? TTheme.of(context).brandNormalColor
-                                    : TTheme.of(context).textColorPrimary),
+                                    ? context.tTheme.brandNormalColor
+                                    : context.tTheme.textColorPrimary),
                             fontWeight: _currentTabIndex == index
                                 ? FontWeight.w600
                                 : FontWeight.w400,
@@ -73,7 +73,7 @@ class _TCustomTabState extends State<TCustomTab> {
                               child: Container(
                                 width: 20,
                                 height: 1.5,
-                                color: TTheme.of(context).brandNormalColor,
+                                color: context.tTheme.brandNormalColor,
                               ),
                             ),
                           ),

@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/rate/t_rate_theme_data.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/rate/t_rate_theme_data.dart</h1></header><div class='meta'>行覆盖 <b>59.3%</b> (16/27) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:ui&#x27; show lerpDouble;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span></div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span></div>
+<div class='row nod'><span class='ln'>8</span></div>
+<div class='row nod'><span class='ln'>9</span>import &#x27;t_rate.dart&#x27; show PlacementEnum;</div>
+<div class='row nod'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span></div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>/// TRate 组件级 ThemeExtension</div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row nod'><span class='ln'>15</span>class TRateThemeData extends ThemeExtension&lt;TRateThemeData&gt; {</div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row nod'><span class='ln'>17</span>  /// 是否允许半选</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>  final bool? allowHalf;</div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row nod'><span class='ln'>21</span></div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row nod'><span class='ln'>23</span>  /// 评分图标的颜色 [选中颜色, 未选中颜色]</div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>  final List&lt;Color&gt;? color;</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row nod'><span class='ln'>28</span></div>
+<div class='row nod'><span class='ln'>29</span>  /// 评分的数量</div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row nod'><span class='ln'>31</span>  final int? count;</div>
+<div class='row nod'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span></div>
+<div class='row nod'><span class='ln'>35</span>  /// 间距</div>
+<div class='row nod'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>  final double? gap;</div>
+<div class='row nod'><span class='ln'>38</span></div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row nod'><span class='ln'>40</span></div>
+<div class='row nod'><span class='ln'>41</span>  /// 评分弹框位置</div>
+<div class='row cov'><span class='ln'>42</span></div>
+<div class='row nod'><span class='ln'>43</span>  final PlacementEnum? placement;</div>
+<div class='row nod'><span class='ln'>44</span></div>
+<div class='row nod'><span class='ln'>45</span></div>
+<div class='row nod'><span class='ln'>46</span></div>
+<div class='row nod'><span class='ln'>47</span>  /// 是否显示辅助文字</div>
+<div class='row nod'><span class='ln'>48</span></div>
+<div class='row nod'><span class='ln'>49</span>  final bool? showText;</div>
+<div class='row nod'><span class='ln'>50</span></div>
+<div class='row nod'><span class='ln'>51</span></div>
+<div class='row nod'><span class='ln'>52</span></div>
+<div class='row nod'><span class='ln'>53</span>  /// 辅助文字宽度</div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row nod'><span class='ln'>55</span>  final double? textWidth;</div>
+<div class='row cov'><span class='ln'>56</span></div>
+<div class='row nod'><span class='ln'>57</span></div>
+<div class='row nod'><span class='ln'>58</span></div>
+<div class='row nod'><span class='ln'>59</span>  /// 横向对齐</div>
+<div class='row nod'><span class='ln'>60</span></div>
+<div class='row nod'><span class='ln'>61</span>  final MainAxisAlignment? mainAxisAlignment;</div>
+<div class='row nod'><span class='ln'>62</span></div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row nod'><span class='ln'>64</span></div>
+<div class='row nod'><span class='ln'>65</span>  /// 纵向对齐</div>
+<div class='row nod'><span class='ln'>66</span></div>
+<div class='row nod'><span class='ln'>67</span>  final CrossAxisAlignment? crossAxisAlignment;</div>
+<div class='row nod'><span class='ln'>68</span></div>
+<div class='row nod'><span class='ln'>69</span></div>
+<div class='row cov'><span class='ln'>70</span></div>
+<div class='row unc'><span class='ln'>71</span>▶   /// 主轴尺寸</div>
+<div class='row unc'><span class='ln'>72</span>▶ </div>
+<div class='row unc'><span class='ln'>73</span>▶   final MainAxisSize? mainAxisSize;</div>
+<div class='row unc'><span class='ln'>74</span>▶ </div>
+<div class='row unc'><span class='ln'>75</span>▶ </div>
+<div class='row unc'><span class='ln'>76</span>▶ </div>
+<div class='row unc'><span class='ln'>77</span>▶   /// 图标与文字间距</div>
+<div class='row unc'><span class='ln'>78</span>▶ </div>
+<div class='row unc'><span class='ln'>79</span>▶   final double? iconTextGap;</div>
+<div class='row unc'><span class='ln'>80</span>▶ </div>
+<div class='row unc'><span class='ln'>81</span>▶ </div>
+<div class='row nod'><span class='ln'>82</span></div>
+<div class='row nod'><span class='ln'>83</span>  const TRateThemeData({</div>
+<div class='row nod'><span class='ln'>84</span></div>
+<div class='row cov'><span class='ln'>85</span>    this.allowHalf,</div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row cov'><span class='ln'>87</span>    this.color,</div>
+<div class='row nod'><span class='ln'>88</span></div>
+<div class='row nod'><span class='ln'>89</span>    this.count,</div>
+<div class='row cov'><span class='ln'>90</span></div>
+<div class='row cov'><span class='ln'>91</span>    this.gap,</div>
+<div class='row cov'><span class='ln'>92</span></div>
+<div class='row cov'><span class='ln'>93</span>    this.placement,</div>
+<div class='row cov'><span class='ln'>94</span></div>
+<div class='row cov'><span class='ln'>95</span>    this.showText,</div>
+<div class='row cov'><span class='ln'>96</span></div>
+<div class='row nod'><span class='ln'>97</span>    this.textWidth,</div>
+<div class='row cov'><span class='ln'>98</span></div>
+<div class='row nod'><span class='ln'>99</span>    this.mainAxisAlignment,</div>
+<div class='row cov'><span class='ln'>100</span></div>
+<div class='row cov'><span class='ln'>101</span>    this.crossAxisAlignment,</div>
+<div class='row cov'><span class='ln'>102</span></div>
+<div class='row nod'><span class='ln'>103</span>    this.mainAxisSize,</div>
+<div class='row nod'><span class='ln'>104</span></div>
+<div class='row nod'><span class='ln'>105</span>    this.iconTextGap,</div>
+<div class='row nod'><span class='ln'>106</span></div>
+<div class='row nod'><span class='ln'>107</span>  });</div>
+<div class='row nod'><span class='ln'>108</span></div>
+<div class='row nod'><span class='ln'>109</span></div>
+<div class='row nod'><span class='ln'>110</span></div>
+<div class='row nod'><span class='ln'>111</span>  @override</div>
+<div class='row nod'><span class='ln'>112</span></div>
+<div class='row nod'><span class='ln'>113</span>  TRateThemeData copyWith({</div>
+<div class='row nod'><span class='ln'>114</span></div>
+<div class='row nod'><span class='ln'>115</span>    bool? allowHalf,</div>
+<div class='row nod'><span class='ln'>116</span></div>
+<div class='row nod'><span class='ln'>117</span>    List&lt;Color&gt;? color,</div>
+<div class='row nod'><span class='ln'>118</span></div>
+<div class='row nod'><span class='ln'>119</span>    int? count,</div>
+<div class='row nod'><span class='ln'>120</span></div>
+<div class='row nod'><span class='ln'>121</span>    double? gap,</div>
+<div class='row nod'><span class='ln'>122</span></div>
+<div class='row nod'><span class='ln'>123</span>    PlacementEnum? placement,</div>
+<div class='row nod'><span class='ln'>124</span></div>
+<div class='row nod'><span class='ln'>125</span>    bool? showText,</div>
+<div class='row nod'><span class='ln'>126</span></div>
+<div class='row nod'><span class='ln'>127</span>    double? textWidth,</div>
+<div class='row nod'><span class='ln'>128</span></div>
+<div class='row nod'><span class='ln'>129</span>    MainAxisAlignment? mainAxisAlignment,</div>
+<div class='row nod'><span class='ln'>130</span></div>
+<div class='row nod'><span class='ln'>131</span>    CrossAxisAlignment? crossAxisAlignment,</div>
+<div class='row nod'><span class='ln'>132</span></div>
+<div class='row nod'><span class='ln'>133</span>    MainAxisSize? mainAxisSize,</div>
+<div class='row nod'><span class='ln'>134</span></div>
+<div class='row nod'><span class='ln'>135</span>    double? iconTextGap,</div>
+<div class='row nod'><span class='ln'>136</span></div>
+<div class='row nod'><span class='ln'>137</span>  }) {</div>
+<div class='row nod'><span class='ln'>138</span></div>
+<div class='row nod'><span class='ln'>139</span>    return TRateThemeData(</div>
+<div class='row nod'><span class='ln'>140</span></div>
+<div class='row nod'><span class='ln'>141</span>      allowHalf: allowHalf ?? this.allowHalf,</div>
+<div class='row nod'><span class='ln'>142</span></div>
+<div class='row nod'><span class='ln'>143</span>      color: color ?? this.color,</div>
+<div class='row nod'><span class='ln'>144</span></div>
+<div class='row nod'><span class='ln'>145</span>      count: count ?? this.count,</div>
+<div class='row nod'><span class='ln'>146</span></div>
+<div class='row nod'><span class='ln'>147</span>      gap: gap ?? this.gap,</div>
+<div class='row nod'><span class='ln'>148</span></div>
+<div class='row nod'><span class='ln'>149</span>      placement: placement ?? this.placement,</div>
+<div class='row nod'><span class='ln'>150</span></div>
+<div class='row nod'><span class='ln'>151</span>      showText: showText ?? this.showText,</div>
+<div class='row nod'><span class='ln'>152</span></div>
+<div class='row nod'><span class='ln'>153</span>      textWidth: textWidth ?? this.textWidth,</div>
+<div class='row nod'><span class='ln'>154</span></div>
+<div class='row nod'><span class='ln'>155</span>      mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,</div>
+<div class='row nod'><span class='ln'>156</span></div>
+<div class='row nod'><span class='ln'>157</span>      crossAxisAlignment: crossAxisAlignment ?? this.crossAxisAlignment,</div>
+<div class='row nod'><span class='ln'>158</span></div>
+<div class='row nod'><span class='ln'>159</span>      mainAxisSize: mainAxisSize ?? this.mainAxisSize,</div>
+<div class='row nod'><span class='ln'>160</span></div>
+<div class='row nod'><span class='ln'>161</span>      iconTextGap: iconTextGap ?? this.iconTextGap,</div>
+<div class='row nod'><span class='ln'>162</span></div>
+<div class='row nod'><span class='ln'>163</span>    );</div>
+<div class='row nod'><span class='ln'>164</span></div>
+<div class='row nod'><span class='ln'>165</span>  }</div>
+<div class='row nod'><span class='ln'>166</span></div>
+<div class='row nod'><span class='ln'>167</span></div>
+<div class='row nod'><span class='ln'>168</span></div>
+<div class='row nod'><span class='ln'>169</span>  @override</div>
+<div class='row nod'><span class='ln'>170</span></div>
+<div class='row nod'><span class='ln'>171</span>  TRateThemeData lerp(ThemeExtension&lt;TRateThemeData&gt;? other, double t) {</div>
+<div class='row nod'><span class='ln'>172</span></div>
+<div class='row nod'><span class='ln'>173</span>    if (other is! TRateThemeData) {</div>
+<div class='row nod'><span class='ln'>174</span>      return this;</div>
+<div class='row nod'><span class='ln'>175</span>    }</div>
+<div class='row nod'><span class='ln'>176</span>    return TRateThemeData(</div>
+<div class='row nod'><span class='ln'>177</span></div>
+<div class='row nod'><span class='ln'>178</span>      allowHalf: t &lt; 0.5 ? allowHalf : other.allowHalf,</div>
+<div class='row nod'><span class='ln'>179</span></div>
+<div class='row nod'><span class='ln'>180</span>      count: t &lt; 0.5 ? count : other.count,</div>
+<div class='row nod'><span class='ln'>181</span></div>
+<div class='row nod'><span class='ln'>182</span>      gap: lerpDouble(gap, other.gap, t),</div>
+<div class='row nod'><span class='ln'>183</span></div>
+<div class='row nod'><span class='ln'>184</span>      placement: t &lt; 0.5 ? placement : other.placement,</div>
+<div class='row nod'><span class='ln'>185</span></div>
+<div class='row nod'><span class='ln'>186</span>      showText: t &lt; 0.5 ? showText : other.showText,</div>
+<div class='row nod'><span class='ln'>187</span></div>
+<div class='row nod'><span class='ln'>188</span>      textWidth: lerpDouble(textWidth, other.textWidth, t),</div>
+<div class='row nod'><span class='ln'>189</span></div>
+<div class='row nod'><span class='ln'>190</span>      mainAxisAlignment:</div>
+<div class='row nod'><span class='ln'>191</span></div>
+<div class='row nod'><span class='ln'>192</span>          t &lt; 0.5 ? mainAxisAlignment : other.mainAxisAlignment,</div>
+<div class='row nod'><span class='ln'>193</span></div>
+<div class='row nod'><span class='ln'>194</span>      crossAxisAlignment:</div>
+<div class='row nod'><span class='ln'>195</span></div>
+<div class='row nod'><span class='ln'>196</span>          t &lt; 0.5 ? crossAxisAlignment : other.crossAxisAlignment,</div>
+<div class='row nod'><span class='ln'>197</span></div>
+<div class='row nod'><span class='ln'>198</span>      mainAxisSize: t &lt; 0.5 ? mainAxisSize : other.mainAxisSize,</div>
+<div class='row nod'><span class='ln'>199</span></div>
+<div class='row nod'><span class='ln'>200</span>      iconTextGap: lerpDouble(iconTextGap, other.iconTextGap, t),</div>
+<div class='row nod'><span class='ln'>201</span></div>
+<div class='row nod'><span class='ln'>202</span>    );</div>
+<div class='row nod'><span class='ln'>203</span></div>
+<div class='row nod'><span class='ln'>204</span>  }</div>
+<div class='row nod'><span class='ln'>205</span></div>
+<div class='row nod'><span class='ln'>206</span>}</div>
+<div class='row nod'><span class='ln'>207</span></div>
+<div class='row nod'><span class='ln'>208</span></div>
+</pre></body></html>

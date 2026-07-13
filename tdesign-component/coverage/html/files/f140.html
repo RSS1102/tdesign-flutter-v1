@@ -1,0 +1,378 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/notice_bar/t_notice_bar.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/notice_bar/t_notice_bar.dart</h1></header><div class='meta'>行覆盖 <b>86.6%</b> (142/164) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;dart:async&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span>import &#x27;dart:math&#x27; as math;</div>
+<div class='row nod'><span class='ln'>3</span></div>
+<div class='row nod'><span class='ln'>4</span>import &#x27;package:flutter/gestures.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>5</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>8</span></div>
+<div class='row nod'><span class='ln'>9</span>/// 公告栏</div>
+<div class='row nod'><span class='ln'>10</span>class TNoticeBar extends StatefulWidget {</div>
+<div class='row cov'><span class='ln'>11</span>  const TNoticeBar({</div>
+<div class='row nod'><span class='ln'>12</span>    super.key,</div>
+<div class='row nod'><span class='ln'>13</span>    this.content,</div>
+<div class='row nod'><span class='ln'>14</span>    this.left,</div>
+<div class='row nod'><span class='ln'>15</span>    this.right,</div>
+<div class='row nod'><span class='ln'>16</span>    this.direction = Axis.horizontal,</div>
+<div class='row nod'><span class='ln'>17</span>    this.maxLines = 1,</div>
+<div class='row nod'><span class='ln'>18</span>    this.onPressed,</div>
+<div class='row cov'><span class='ln'>19</span>  })  : assert(content == null || content is String || content is List&lt;String&gt;,</div>
+<div class='row nod'><span class='ln'>20</span>            &#x27;content must be String or List&lt;String&gt;&#x27;);</div>
+<div class='row nod'><span class='ln'>21</span></div>
+<div class='row nod'><span class='ln'>22</span>  /// 文本内容（字符串或字符串数组等）</div>
+<div class='row nod'><span class='ln'>23</span>  final dynamic content;</div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>  /// 左侧内容（自定义左侧内容，优先级高于prefixIcon）</div>
+<div class='row nod'><span class='ln'>26</span>  final Widget? left;</div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row nod'><span class='ln'>28</span>  /// 右侧内容（自定义右侧内容，优先级高于suffixIcon）</div>
+<div class='row nod'><span class='ln'>29</span>  final Widget? right;</div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row nod'><span class='ln'>31</span>  /// 滚动方向</div>
+<div class='row nod'><span class='ln'>32</span>  final Axis? direction;</div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span>  /// 文本行数（仅静态有效）</div>
+<div class='row nod'><span class='ln'>35</span>  final int? maxLines;</div>
+<div class='row nod'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>  /// 点击事件</div>
+<div class='row nod'><span class='ln'>38</span>  final ValueChanged? onPressed;</div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row nod'><span class='ln'>40</span>  /// 组件级主题配置，优先级高于 Theme Extension</div>
+<div class='row nod'><span class='ln'>41</span></div>
+<div class='row cov'><span class='ln'>42</span>  @override</div>
+<div class='row cov'><span class='ln'>43</span>  State&lt;StatefulWidget&gt; createState() =&gt; _TNoticeBarState();</div>
+<div class='row nod'><span class='ln'>44</span>}</div>
+<div class='row nod'><span class='ln'>45</span></div>
+<div class='row nod'><span class='ln'>46</span>class _TNoticeBarState extends State&lt;TNoticeBar&gt; {</div>
+<div class='row nod'><span class='ln'>47</span>  ScrollController? _scrollController;</div>
+<div class='row nod'><span class='ln'>48</span>  Timer? _timer;</div>
+<div class='row nod'><span class='ln'>49</span></div>
+<div class='row nod'><span class='ln'>50</span>  Size? _size;</div>
+<div class='row nod'><span class='ln'>51</span>  late TNoticeBarThemeData _resolved;</div>
+<div class='row nod'><span class='ln'>52</span></div>
+<div class='row nod'><span class='ln'>53</span>  final GlobalKey _key = GlobalKey();</div>
+<div class='row nod'><span class='ln'>54</span>  final GlobalKey _contentKey = GlobalKey();</div>
+<div class='row nod'><span class='ln'>55</span></div>
+<div class='row nod'><span class='ln'>56</span>  dynamic _content;</div>
+<div class='row nod'><span class='ln'>57</span></div>
+<div class='row cov'><span class='ln'>58</span>  @override</div>
+<div class='row nod'><span class='ln'>59</span>  void initState() {</div>
+<div class='row cov'><span class='ln'>60</span>    _content = widget.content;</div>
+<div class='row cov'><span class='ln'>61</span>    super.initState();</div>
+<div class='row cov'><span class='ln'>62</span>    _scrollController = ScrollController();</div>
+<div class='row cov'><span class='ln'>63</span>    WidgetsBinding.instance.addPostFrameCallback((time) {</div>
+<div class='row cov'><span class='ln'>64</span>      if (_effectiveMarquee == true) {</div>
+<div class='row cov'><span class='ln'>65</span>        _startTimer();</div>
+<div class='row nod'><span class='ln'>66</span>      }</div>
+<div class='row nod'><span class='ln'>67</span>    });</div>
+<div class='row nod'><span class='ln'>68</span>  }</div>
+<div class='row nod'><span class='ln'>69</span></div>
+<div class='row cov'><span class='ln'>70</span>  TNoticeBarThemeData get _theme {</div>
+<div class='row cov'><span class='ln'>71</span>    final ext = Theme.of(context).extension&lt;TNoticeBarThemeData&gt;();</div>
+<div class='row cov'><span class='ln'>72</span>    return (ext ?? const TNoticeBarThemeData()).resolve(context);</div>
+<div class='row nod'><span class='ln'>73</span>  }</div>
+<div class='row nod'><span class='ln'>74</span></div>
+<div class='row cov'><span class='ln'>75</span>  bool? get _effectiveMarquee =&gt;</div>
+<div class='row cov'><span class='ln'>76</span>      Theme.of(context).extension&lt;TNoticeBarThemeData&gt;()?.marquee ??</div>
+<div class='row nod'><span class='ln'>77</span>      false;</div>
+<div class='row nod'><span class='ln'>78</span></div>
+<div class='row cov'><span class='ln'>79</span>  double get _effectiveSpeed =&gt; _theme.speed ?? 50;</div>
+<div class='row nod'><span class='ln'>80</span></div>
+<div class='row cov'><span class='ln'>81</span>  int get _effectiveInterval =&gt; _theme.interval ?? 3000;</div>
+<div class='row nod'><span class='ln'>82</span></div>
+<div class='row cov'><span class='ln'>83</span>  double get _effectiveHeight =&gt; _theme.height ?? 22;</div>
+<div class='row nod'><span class='ln'>84</span></div>
+<div class='row cov'><span class='ln'>85</span>  EdgeInsetsGeometry get _effectivePadding =&gt; _theme.padding ?? TNoticeBarThemeData.defaultPadding;</div>
+<div class='row nod'><span class='ln'>86</span></div>
+<div class='row cov'><span class='ln'>87</span>  void _init() {</div>
+<div class='row cov'><span class='ln'>88</span>    _resolved = _theme;</div>
+<div class='row nod'><span class='ln'>89</span>  }</div>
+<div class='row nod'><span class='ln'>90</span></div>
+<div class='row cov'><span class='ln'>91</span>  @override</div>
+<div class='row nod'><span class='ln'>92</span>  void dispose() {</div>
+<div class='row cov'><span class='ln'>93</span>    super.dispose();</div>
+<div class='row cov'><span class='ln'>94</span>    _timer?.cancel();</div>
+<div class='row cov'><span class='ln'>95</span>    _scrollController?.dispose();</div>
+<div class='row nod'><span class='ln'>96</span>  }</div>
+<div class='row nod'><span class='ln'>97</span></div>
+<div class='row cov'><span class='ln'>98</span>  void _startTimer() {</div>
+<div class='row cov'><span class='ln'>99</span>    if (widget.direction == Axis.horizontal) {</div>
+<div class='row cov'><span class='ln'>100</span>      _scroll();</div>
+<div class='row cov'><span class='ln'>101</span>    } else if (widget.direction == Axis.vertical) {</div>
+<div class='row cov'><span class='ln'>102</span>      _step();</div>
+<div class='row nod'><span class='ln'>103</span>    }</div>
+<div class='row nod'><span class='ln'>104</span>  }</div>
+<div class='row nod'><span class='ln'>105</span></div>
+<div class='row cov'><span class='ln'>106</span>  void _scroll() {</div>
+<div class='row nod'><span class='ln'>107</span>    var scrollDistance =</div>
+<div class='row cov'><span class='ln'>108</span>        _getContextWidth() + (_size!.width - _effectivePadding.horizontal);</div>
+<div class='row cov'><span class='ln'>109</span>    var remainder = scrollDistance % _effectiveSpeed;</div>
+<div class='row cov'><span class='ln'>110</span>    _scrollController!.jumpTo(0);</div>
+<div class='row cov'><span class='ln'>111</span>    var offset = 0.0 + _effectiveSpeed;</div>
+<div class='row cov'><span class='ln'>112</span>    _scrollController!.animateTo(offset,</div>
+<div class='row nod'><span class='ln'>113</span>        duration: const Duration(seconds: 1), curve: Curves.linear);</div>
+<div class='row cov'><span class='ln'>114</span>    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {</div>
+<div class='row unc'><span class='ln'>115</span>▶       if (offset &lt; scrollDistance - remainder) {</div>
+<div class='row unc'><span class='ln'>116</span>▶         offset += _effectiveSpeed;</div>
+<div class='row unc'><span class='ln'>117</span>▶         await _scrollController!.animateTo(offset,</div>
+<div class='row nod'><span class='ln'>118</span>            duration: const Duration(seconds: 1), curve: Curves.linear);</div>
+<div class='row nod'><span class='ln'>119</span>      } else {</div>
+<div class='row unc'><span class='ln'>120</span>▶         var time = (remainder / _effectiveSpeed * 1000).round();</div>
+<div class='row unc'><span class='ln'>121</span>▶         await _scrollController!.animateTo(scrollDistance,</div>
+<div class='row unc'><span class='ln'>122</span>▶             duration: Duration(milliseconds: time), curve: Curves.linear);</div>
+<div class='row unc'><span class='ln'>123</span>▶         _scrollController!.jumpTo(0);</div>
+<div class='row unc'><span class='ln'>124</span>▶         offset = _effectiveSpeed - remainder;</div>
+<div class='row unc'><span class='ln'>125</span>▶         remainder = (scrollDistance - offset) % _effectiveSpeed;</div>
+<div class='row unc'><span class='ln'>126</span>▶         await _scrollController!.animateTo(offset,</div>
+<div class='row unc'><span class='ln'>127</span>▶             duration: Duration(milliseconds: 1000 - time),</div>
+<div class='row nod'><span class='ln'>128</span>            curve: Curves.linear);</div>
+<div class='row nod'><span class='ln'>129</span>      }</div>
+<div class='row nod'><span class='ln'>130</span>    });</div>
+<div class='row nod'><span class='ln'>131</span>  }</div>
+<div class='row nod'><span class='ln'>132</span></div>
+<div class='row cov'><span class='ln'>133</span>  void _step() {</div>
+<div class='row nod'><span class='ln'>134</span>    var step = 0;</div>
+<div class='row nod'><span class='ln'>135</span>    var offset = 0.0;</div>
+<div class='row cov'><span class='ln'>136</span>    _timer = Timer.periodic(Duration(milliseconds: _effectiveInterval), (timer) {</div>
+<div class='row unc'><span class='ln'>137</span>▶       var time = (_effectiveHeight / _effectiveSpeed * 1000).round();</div>
+<div class='row unc'><span class='ln'>138</span>▶       if (step &gt;= _content.length) {</div>
+<div class='row nod'><span class='ln'>139</span>        step = 0;</div>
+<div class='row nod'><span class='ln'>140</span>        offset = 0;</div>
+<div class='row unc'><span class='ln'>141</span>▶         _scrollController!.jumpTo(0);</div>
+<div class='row nod'><span class='ln'>142</span>      }</div>
+<div class='row unc'><span class='ln'>143</span>▶       step++;</div>
+<div class='row unc'><span class='ln'>144</span>▶       offset += _effectiveHeight;</div>
+<div class='row unc'><span class='ln'>145</span>▶       _scrollController!.animateTo(offset,</div>
+<div class='row unc'><span class='ln'>146</span>▶           duration: Duration(milliseconds: time), curve: Curves.linear);</div>
+<div class='row nod'><span class='ln'>147</span>    });</div>
+<div class='row nod'><span class='ln'>148</span>  }</div>
+<div class='row nod'><span class='ln'>149</span></div>
+<div class='row nod'><span class='ln'>150</span>  /// 获取文本内容尺寸消息</div>
+<div class='row cov'><span class='ln'>151</span>  Size _getFontSize() {</div>
+<div class='row cov'><span class='ln'>152</span>    var text = _content;</div>
+<div class='row cov'><span class='ln'>153</span>    if (_content is List&lt;String&gt;) {</div>
+<div class='row cov'><span class='ln'>154</span>      text = _content[0];</div>
+<div class='row nod'><span class='ln'>155</span>    }</div>
+<div class='row cov'><span class='ln'>156</span>    final textPainter = TextPainter(</div>
+<div class='row cov'><span class='ln'>157</span>      text: TextSpan(</div>
+<div class='row nod'><span class='ln'>158</span>        text: text,</div>
+<div class='row cov'><span class='ln'>159</span>        style: _resolved.textStyle,</div>
+<div class='row nod'><span class='ln'>160</span>      ),</div>
+<div class='row cov'><span class='ln'>161</span>      locale: Localizations.localeOf(context),</div>
+<div class='row nod'><span class='ln'>162</span>      textDirection: TextDirection.ltr,</div>
+<div class='row cov'><span class='ln'>163</span>      maxLines: _effectiveMarquee == true ? 1 : widget.maxLines,</div>
+<div class='row cov'><span class='ln'>164</span>    )..layout(maxWidth: _size!.width);</div>
+<div class='row cov'><span class='ln'>165</span>    return textPainter.size;</div>
+<div class='row nod'><span class='ln'>166</span>  }</div>
+<div class='row nod'><span class='ln'>167</span></div>
+<div class='row nod'><span class='ln'>168</span>  /// 获取文本内容宽度</div>
+<div class='row cov'><span class='ln'>169</span>  double _getContextWidth() {</div>
+<div class='row nod'><span class='ln'>170</span>    var contextWidth =</div>
+<div class='row cov'><span class='ln'>171</span>        _key.currentContext?.findRenderObject()?.paintBounds.size.width ?? 0;</div>
+<div class='row cov'><span class='ln'>172</span>    if (contextWidth == 0) {</div>
+<div class='row cov'><span class='ln'>173</span>      contextWidth = _getFontSize().width;</div>
+<div class='row nod'><span class='ln'>174</span>    }</div>
+<div class='row nod'><span class='ln'>175</span>    return contextWidth;</div>
+<div class='row nod'><span class='ln'>176</span>  }</div>
+<div class='row nod'><span class='ln'>177</span></div>
+<div class='row nod'><span class='ln'>178</span>  /// 获取滚动区域宽度</div>
+<div class='row cov'><span class='ln'>179</span>  double _getEmptyWidth() {</div>
+<div class='row cov'><span class='ln'>180</span>    return _contentKey.currentContext</div>
+<div class='row unc'><span class='ln'>181</span>▶             ?.findRenderObject()</div>
+<div class='row unc'><span class='ln'>182</span>▶             ?.paintBounds</div>
+<div class='row unc'><span class='ln'>183</span>▶             .size</div>
+<div class='row unc'><span class='ln'>184</span>▶             .width ??</div>
+<div class='row cov'><span class='ln'>185</span>        (_size!.width - _effectivePadding.horizontal);</div>
+<div class='row nod'><span class='ln'>186</span>  }</div>
+<div class='row nod'><span class='ln'>187</span></div>
+<div class='row nod'><span class='ln'>188</span>  /// 获取文字高度</div>
+<div class='row cov'><span class='ln'>189</span>  double _getTextHeight() {</div>
+<div class='row cov'><span class='ln'>190</span>    return _getFontSize().height;</div>
+<div class='row nod'><span class='ln'>191</span>  }</div>
+<div class='row nod'><span class='ln'>192</span></div>
+<div class='row nod'><span class='ln'>193</span>  /// 内容区域</div>
+<div class='row cov'><span class='ln'>194</span>  Widget _contentWidget() {</div>
+<div class='row nod'><span class='ln'>195</span>    Widget? textWidget;</div>
+<div class='row nod'><span class='ln'>196</span></div>
+<div class='row nod'><span class='ln'>197</span>    String? displayText;</div>
+<div class='row cov'><span class='ln'>198</span>    if (_content is String) {</div>
+<div class='row cov'><span class='ln'>199</span>      displayText = _content as String;</div>
+<div class='row cov'><span class='ln'>200</span>    } else if (_content is List&lt;String&gt; &amp;&amp; _content.isNotEmpty) {</div>
+<div class='row cov'><span class='ln'>201</span>      displayText = _content[0];</div>
+<div class='row nod'><span class='ln'>202</span>    }</div>
+<div class='row nod'><span class='ln'>203</span></div>
+<div class='row nod'><span class='ln'>204</span>    if (displayText != null) {</div>
+<div class='row cov'><span class='ln'>205</span>      textWidget = SizedBox(</div>
+<div class='row cov'><span class='ln'>206</span>        height: _getTextHeight(),</div>
+<div class='row cov'><span class='ln'>207</span>        child: Align(</div>
+<div class='row nod'><span class='ln'>208</span>          alignment: Alignment.centerLeft,</div>
+<div class='row cov'><span class='ln'>209</span>          child: TText(</div>
+<div class='row nod'><span class='ln'>210</span>            displayText,</div>
+<div class='row cov'><span class='ln'>211</span>            style: _resolved.textStyle,</div>
+<div class='row cov'><span class='ln'>212</span>            maxLines: _effectiveMarquee == true ? 1 : widget.maxLines,</div>
+<div class='row nod'><span class='ln'>213</span>            forceVerticalCenter: true,</div>
+<div class='row nod'><span class='ln'>214</span>          ),</div>
+<div class='row nod'><span class='ln'>215</span>        ),</div>
+<div class='row nod'><span class='ln'>216</span>      );</div>
+<div class='row nod'><span class='ln'>217</span>    } else {</div>
+<div class='row nod'><span class='ln'>218</span>      textWidget = const SizedBox.shrink();</div>
+<div class='row nod'><span class='ln'>219</span>    }</div>
+<div class='row nod'><span class='ln'>220</span></div>
+<div class='row cov'><span class='ln'>221</span>    if (_effectiveMarquee != true) {</div>
+<div class='row nod'><span class='ln'>222</span>      return textWidget;</div>
+<div class='row nod'><span class='ln'>223</span>    }</div>
+<div class='row nod'><span class='ln'>224</span></div>
+<div class='row nod'><span class='ln'>225</span>    Widget? child;</div>
+<div class='row cov'><span class='ln'>226</span>    switch (widget.direction) {</div>
+<div class='row cov'><span class='ln'>227</span>      case Axis.horizontal:</div>
+<div class='row cov'><span class='ln'>228</span>        final emptyWidth = _getEmptyWidth();</div>
+<div class='row cov'><span class='ln'>229</span>        final textHeight = _getTextHeight();</div>
+<div class='row cov'><span class='ln'>230</span>        final contextWidth = _getContextWidth();</div>
+<div class='row nod'><span class='ln'>231</span></div>
+<div class='row cov'><span class='ln'>232</span>        child = SingleChildScrollView(</div>
+<div class='row cov'><span class='ln'>233</span>          controller: _scrollController,</div>
+<div class='row nod'><span class='ln'>234</span>          scrollDirection: Axis.horizontal,</div>
+<div class='row nod'><span class='ln'>235</span>          physics: const NeverScrollableScrollPhysics(),</div>
+<div class='row cov'><span class='ln'>236</span>          child: Row(</div>
+<div class='row cov'><span class='ln'>237</span>            children: [</div>
+<div class='row cov'><span class='ln'>238</span>              SizedBox(</div>
+<div class='row cov'><span class='ln'>239</span>                key: _key,</div>
+<div class='row nod'><span class='ln'>240</span>                height: textHeight,</div>
+<div class='row nod'><span class='ln'>241</span>                child: textWidget,</div>
+<div class='row nod'><span class='ln'>242</span>              ),</div>
+<div class='row cov'><span class='ln'>243</span>              SizedBox(width: emptyWidth),</div>
+<div class='row cov'><span class='ln'>244</span>              SizedBox(</div>
+<div class='row cov'><span class='ln'>245</span>                width: math.max(emptyWidth, contextWidth),</div>
+<div class='row nod'><span class='ln'>246</span>                height: textHeight,</div>
+<div class='row nod'><span class='ln'>247</span>                child: textWidget,</div>
+<div class='row nod'><span class='ln'>248</span>              )</div>
+<div class='row nod'><span class='ln'>249</span>            ],</div>
+<div class='row nod'><span class='ln'>250</span>          ),</div>
+<div class='row nod'><span class='ln'>251</span>        );</div>
+<div class='row nod'><span class='ln'>252</span>        break;</div>
+<div class='row cov'><span class='ln'>253</span>      case Axis.vertical:</div>
+<div class='row cov'><span class='ln'>254</span>        var content = _content as List&lt;String&gt;;</div>
+<div class='row cov'><span class='ln'>255</span>        child = SizedBox(</div>
+<div class='row cov'><span class='ln'>256</span>          height: _effectiveHeight,</div>
+<div class='row cov'><span class='ln'>257</span>          child: SingleChildScrollView(</div>
+<div class='row cov'><span class='ln'>258</span>            controller: _scrollController,</div>
+<div class='row nod'><span class='ln'>259</span>            scrollDirection: Axis.vertical,</div>
+<div class='row cov'><span class='ln'>260</span>            child: Column(</div>
+<div class='row nod'><span class='ln'>261</span>                mainAxisAlignment: MainAxisAlignment.center,</div>
+<div class='row nod'><span class='ln'>262</span>                crossAxisAlignment: CrossAxisAlignment.start,</div>
+<div class='row cov'><span class='ln'>263</span>                children: [</div>
+<div class='row cov'><span class='ln'>264</span>                  for (int i = 0; i &lt; content.length; i++)</div>
+<div class='row cov'><span class='ln'>265</span>                    SizedBox(</div>
+<div class='row cov'><span class='ln'>266</span>                      height: _effectiveHeight,</div>
+<div class='row cov'><span class='ln'>267</span>                      child: Align(</div>
+<div class='row nod'><span class='ln'>268</span>                        alignment: Alignment.centerLeft,</div>
+<div class='row cov'><span class='ln'>269</span>                        child: TText(</div>
+<div class='row cov'><span class='ln'>270</span>                          content[i],</div>
+<div class='row cov'><span class='ln'>271</span>                          style: _resolved.textStyle,</div>
+<div class='row nod'><span class='ln'>272</span>                          maxLines: 1,</div>
+<div class='row nod'><span class='ln'>273</span>                          overflow: TextOverflow.ellipsis,</div>
+<div class='row nod'><span class='ln'>274</span>                        ),</div>
+<div class='row nod'><span class='ln'>275</span>                      ),</div>
+<div class='row nod'><span class='ln'>276</span>                    ),</div>
+<div class='row cov'><span class='ln'>277</span>                  SizedBox(</div>
+<div class='row cov'><span class='ln'>278</span>                    key: _key,</div>
+<div class='row cov'><span class='ln'>279</span>                    height: _effectiveHeight,</div>
+<div class='row cov'><span class='ln'>280</span>                    child: Align(</div>
+<div class='row nod'><span class='ln'>281</span>                      alignment: Alignment.centerLeft,</div>
+<div class='row cov'><span class='ln'>282</span>                      child: TText(</div>
+<div class='row cov'><span class='ln'>283</span>                        content[0],</div>
+<div class='row cov'><span class='ln'>284</span>                        style: _resolved.textStyle,</div>
+<div class='row nod'><span class='ln'>285</span>                        maxLines: 1,</div>
+<div class='row nod'><span class='ln'>286</span>                        overflow: TextOverflow.ellipsis,</div>
+<div class='row nod'><span class='ln'>287</span>                      ),</div>
+<div class='row nod'><span class='ln'>288</span>                    ),</div>
+<div class='row nod'><span class='ln'>289</span>                  ),</div>
+<div class='row nod'><span class='ln'>290</span>                ]),</div>
+<div class='row nod'><span class='ln'>291</span>          ),</div>
+<div class='row nod'><span class='ln'>292</span>        );</div>
+<div class='row nod'><span class='ln'>293</span>        break;</div>
+<div class='row nod'><span class='ln'>294</span>      default:</div>
+<div class='row nod'><span class='ln'>295</span>        child = textWidget;</div>
+<div class='row nod'><span class='ln'>296</span>        break;</div>
+<div class='row nod'><span class='ln'>297</span>    }</div>
+<div class='row nod'><span class='ln'>298</span>    return child;</div>
+<div class='row nod'><span class='ln'>299</span>  }</div>
+<div class='row nod'><span class='ln'>300</span></div>
+<div class='row cov'><span class='ln'>301</span>  void _onTap(trigger) {</div>
+<div class='row cov'><span class='ln'>302</span>    if (widget.onPressed != null) {</div>
+<div class='row cov'><span class='ln'>303</span>      widget.onPressed!(trigger);</div>
+<div class='row nod'><span class='ln'>304</span>    }</div>
+<div class='row nod'><span class='ln'>305</span>  }</div>
+<div class='row nod'><span class='ln'>306</span></div>
+<div class='row cov'><span class='ln'>307</span>  @override</div>
+<div class='row nod'><span class='ln'>308</span>  Widget build(BuildContext context) {</div>
+<div class='row cov'><span class='ln'>309</span>    _init();</div>
+<div class='row cov'><span class='ln'>310</span>    _size = MediaQuery.of(context).size;</div>
+<div class='row cov'><span class='ln'>311</span>    final prefixIcon = _theme.prefixIcon;</div>
+<div class='row cov'><span class='ln'>312</span>    final suffixIcon = _theme.suffixIcon;</div>
+<div class='row cov'><span class='ln'>313</span>    return Container(</div>
+<div class='row cov'><span class='ln'>314</span>      padding: _effectivePadding,</div>
+<div class='row cov'><span class='ln'>315</span>      color: _resolved.backgroundColor,</div>
+<div class='row cov'><span class='ln'>316</span>      child: Row(</div>
+<div class='row nod'><span class='ln'>317</span>        crossAxisAlignment: CrossAxisAlignment.center,</div>
+<div class='row nod'><span class='ln'>318</span>        mainAxisAlignment: MainAxisAlignment.start,</div>
+<div class='row cov'><span class='ln'>319</span>        children: [</div>
+<div class='row nod'><span class='ln'>320</span>          /// 左侧widget</div>
+<div class='row cov'><span class='ln'>321</span>          if (widget.left != null)</div>
+<div class='row cov'><span class='ln'>322</span>            widget.left!</div>
+<div class='row nod'><span class='ln'>323</span>          else if (prefixIcon != null)</div>
+<div class='row cov'><span class='ln'>324</span>            GestureDetector(</div>
+<div class='row cov'><span class='ln'>325</span>              onTap: () =&gt; _onTap(&#x27;prefix-icon&#x27;),</div>
+<div class='row cov'><span class='ln'>326</span>              child: Container(</div>
+<div class='row nod'><span class='ln'>327</span>                margin: const EdgeInsets.only(right: 8),</div>
+<div class='row cov'><span class='ln'>328</span>                child: Icon(</div>
+<div class='row nod'><span class='ln'>329</span>                  prefixIcon,</div>
+<div class='row cov'><span class='ln'>330</span>                  color: _resolved.leftIconColor,</div>
+<div class='row cov'><span class='ln'>331</span>                  size: _effectiveHeight,</div>
+<div class='row nod'><span class='ln'>332</span>                ),</div>
+<div class='row nod'><span class='ln'>333</span>              ),</div>
+<div class='row nod'><span class='ln'>334</span>            ),</div>
+<div class='row nod'><span class='ln'>335</span></div>
+<div class='row nod'><span class='ln'>336</span>          /// 中间内容</div>
+<div class='row cov'><span class='ln'>337</span>          Expanded(</div>
+<div class='row cov'><span class='ln'>338</span>            key: _contentKey,</div>
+<div class='row cov'><span class='ln'>339</span>            child: GestureDetector(</div>
+<div class='row cov'><span class='ln'>340</span>              onTap: () =&gt; _onTap(&#x27;context&#x27;),</div>
+<div class='row cov'><span class='ln'>341</span>              child: _contentWidget(),</div>
+<div class='row nod'><span class='ln'>342</span>            ),</div>
+<div class='row nod'><span class='ln'>343</span>          ),</div>
+<div class='row nod'><span class='ln'>344</span></div>
+<div class='row nod'><span class='ln'>345</span>          /// 右侧widget</div>
+<div class='row cov'><span class='ln'>346</span>          if (widget.right != null)</div>
+<div class='row cov'><span class='ln'>347</span>            widget.right!</div>
+<div class='row nod'><span class='ln'>348</span>          else if (suffixIcon != null)</div>
+<div class='row cov'><span class='ln'>349</span>            GestureDetector(</div>
+<div class='row cov'><span class='ln'>350</span>                onTap: () =&gt; _onTap(&#x27;suffix-icon&#x27;),</div>
+<div class='row cov'><span class='ln'>351</span>                child: Container(</div>
+<div class='row nod'><span class='ln'>352</span>                  margin: const EdgeInsets.only(left: 8),</div>
+<div class='row cov'><span class='ln'>353</span>                  child: Icon(</div>
+<div class='row nod'><span class='ln'>354</span>                    suffixIcon,</div>
+<div class='row cov'><span class='ln'>355</span>                    color: _resolved.rightIconColor,</div>
+<div class='row cov'><span class='ln'>356</span>                    size: _effectiveHeight,</div>
+<div class='row nod'><span class='ln'>357</span>                  ),</div>
+<div class='row nod'><span class='ln'>358</span>                )),</div>
+<div class='row nod'><span class='ln'>359</span>        ],</div>
+<div class='row nod'><span class='ln'>360</span>      ),</div>
+<div class='row nod'><span class='ln'>361</span>    );</div>
+<div class='row nod'><span class='ln'>362</span>  }</div>
+<div class='row nod'><span class='ln'>363</span>}</div>
+<div class='row nod'><span class='ln'>364</span></div>
+</pre></body></html>

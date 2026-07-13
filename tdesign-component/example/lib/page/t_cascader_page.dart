@@ -296,7 +296,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: TTheme.of(context).whiteColor1,
+      color: context.tTheme.whiteColor1,
       child: ExamplePage(
         title: tTitle(),
         exampleCodeGroup: 'cascader',
@@ -329,12 +329,12 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_1,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data,
               initialData: _initData,
-              theme: 'step', onChange: (List<MultiCascaderListModel> selectData) {
+              theme: 'step', onChanged: (List<MultiCascaderListModel> selectData) {
             setState(() {
               var result = [];
               var len = selectData.length;
@@ -357,12 +357,12 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_2,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data_2,
               initialData: _initData_2,
-              theme: 'step', onChange: (List<MultiCascaderListModel> selectData) {
+              theme: 'step', onChanged: (List<MultiCascaderListModel> selectData) {
             setState(() {
               var result = [];
               var len = selectData.length;
@@ -385,13 +385,13 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_1,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               subTitles: ['请选择省份', '请选择城市', '请选择区/县'],
               data: _data,
               initialData: _initData,
-              theme: 'tab', onChange: (List<MultiCascaderListModel> selectData) {
+              theme: 'tab', onChanged: (List<MultiCascaderListModel> selectData) {
             setState(() {
               var result = [];
               var len = selectData.length;
@@ -414,13 +414,13 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_2,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data_2,
               initialData: _initData_2,
               isLetterSort: true,
-              theme: 'tab', onChange: (List<MultiCascaderListModel> selectData) {
+              theme: 'tab', onChanged: (List<MultiCascaderListModel> selectData) {
             setState(() {
               var result = [];
               var len = selectData.length;
@@ -443,13 +443,13 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_3,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data_3,
               isLetterSort: true,
               initialData: _initData_3,
-              theme: 'tab', onChange: (List<MultiCascaderListModel> selectData) {
+              theme: 'tab', onChanged: (List<MultiCascaderListModel> selectData) {
             setState(() {
               var result = [];
               var len = selectData.length;
@@ -472,13 +472,13 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_3,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data_3,
               isLetterSort: true,
               initialData: _initData_3,
-              theme: 'step', onChange: (List<MultiCascaderListModel> selectData) {
+              theme: 'step', onChanged: (List<MultiCascaderListModel> selectData) {
             setState(() {
               var result = [];
               var len = selectData.length;
@@ -501,13 +501,13 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_1,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               subTitles: ['请选择省份', '请选择城市', '请选择区/县'],
               data: _data,
               initialData: _initData_4,
-              theme: 'tab', onChange: (List<MultiCascaderListModel> selectData) {
+              theme: 'tab', onChanged: (List<MultiCascaderListModel> selectData) {
             setState(() {
               var result = [];
               var len = selectData.length;
@@ -530,12 +530,12 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_4,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           TCascader.showMultiCascader(context,
               title: title,
               data: _data_4,
               initialData: _initData_5,
-              theme: 'step', onChange: (List<MultiCascaderListModel> selectData) {
+              theme: 'step', onChanged: (List<MultiCascaderListModel> selectData) {
             setState(() {
               var result = [];
               var len = selectData.length;
@@ -558,7 +558,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
         title: title,
         note: _selected_1,
         arrow: true,
-        onClick: (click) {
+        onTap: () {
           var action = (List<MultiCascaderListModel> selectData) {
             if (selectData.isEmpty) {
               TToast.showText(title, context: context);
@@ -580,7 +580,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
             data: _data,
             initialData: _initData_6,
             action: TCascaderAction(onConfirm: action),
-            onChange: action,
+            onChanged: action,
           );
         });
   }
@@ -591,14 +591,14 @@ class _TCascaderPageState extends State<TCascaderPage> {
       title: '选择地区',
       note: _selected_1.isEmpty ? '请选择' : _selected_1,
       arrow: true,
-      onClick: (click) {
+      onTap: () {
         TCascader.showMultiCascader(
           context,
           title: '选择地址',
           data: _data,
           initialIndexes: [0, 0, 1],
           theme: 'step',
-          onChange: (List<MultiCascaderListModel> selectData) {
+          onChanged: (List<MultiCascaderListModel> selectData) {
             setState(() {
               var result = [];
               var len = selectData.length;
@@ -634,7 +634,7 @@ class _TCascaderPageState extends State<TCascaderPage> {
                 data: _data_3,
                 initialData: _initData_3,
                 theme: 'step',
-                onChange: (List<MultiCascaderListModel> selectData) {
+                onChanged: (List<MultiCascaderListModel> selectData) {
                   setState(() {
                     var result = [];
                     var len = selectData.length;

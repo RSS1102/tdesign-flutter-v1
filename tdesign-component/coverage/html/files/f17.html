@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/action_sheet/t_action_sheet_item.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/action_sheet/t_action_sheet_item.dart</h1></header><div class='meta'>行覆盖 <b>100.0%</b> (1/1) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;../badge/t_badge.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span>import &#x27;t_action_sheet.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>5</span></div>
+<div class='row nod'><span class='ln'>6</span>/// 动作面板项目</div>
+<div class='row nod'><span class='ln'>7</span>class TActionSheetItem {</div>
+<div class='row cov'><span class='ln'>8</span>  TActionSheetItem({</div>
+<div class='row nod'><span class='ln'>9</span>    required this.label,</div>
+<div class='row nod'><span class='ln'>10</span>    this.textStyle,</div>
+<div class='row nod'><span class='ln'>11</span>    this.icon,</div>
+<div class='row nod'><span class='ln'>12</span>    this.badge,</div>
+<div class='row nod'><span class='ln'>13</span>    this.subtitle,</div>
+<div class='row nod'><span class='ln'>14</span>    this.disabled = false,</div>
+<div class='row nod'><span class='ln'>15</span>    this.iconSize,</div>
+<div class='row nod'><span class='ln'>16</span>    this.group,</div>
+<div class='row nod'><span class='ln'>17</span>  });</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>  /// 标题</div>
+<div class='row nod'><span class='ln'>20</span>  final String label;</div>
+<div class='row nod'><span class='ln'>21</span></div>
+<div class='row nod'><span class='ln'>22</span>  /// 标题样式</div>
+<div class='row nod'><span class='ln'>23</span>  final TextStyle? textStyle;</div>
+<div class='row nod'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>  /// 图标</div>
+<div class='row nod'><span class='ln'>26</span>  final Widget? icon;</div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row nod'><span class='ln'>28</span>  /// 角标</div>
+<div class='row nod'><span class='ln'>29</span>  final TBadge? badge;</div>
+<div class='row nod'><span class='ln'>30</span></div>
+<div class='row nod'><span class='ln'>31</span>  /// 是否禁用</div>
+<div class='row nod'><span class='ln'>32</span>  final bool disabled;</div>
+<div class='row nod'><span class='ln'>33</span></div>
+<div class='row nod'><span class='ln'>34</span>  /// 图标大小</div>
+<div class='row nod'><span class='ln'>35</span>  final double? iconSize;</div>
+<div class='row nod'><span class='ln'>36</span></div>
+<div class='row nod'><span class='ln'>37</span>  /// 分组，用于带描述多行滚动宫格</div>
+<div class='row nod'><span class='ln'>38</span>  /// 当[TActionSheet.theme]等于[TActionSheetTheme.group]时有效</div>
+<div class='row nod'><span class='ln'>39</span>  /// 有效时，如果该值未配置整个[TActionSheetItem]会被忽略，即不会展示</div>
+<div class='row nod'><span class='ln'>40</span>  final String? group;</div>
+<div class='row nod'><span class='ln'>41</span></div>
+<div class='row nod'><span class='ln'>42</span>  /// 描述信息</div>
+<div class='row nod'><span class='ln'>43</span>  final String? subtitle;</div>
+<div class='row nod'><span class='ln'>44</span>}</div>
+<div class='row nod'><span class='ln'>45</span></div>
+<div class='row nod'><span class='ln'>46</span></div>
+</pre></body></html>

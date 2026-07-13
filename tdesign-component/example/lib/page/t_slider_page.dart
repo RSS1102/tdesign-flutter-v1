@@ -89,138 +89,165 @@ class _TSliderPageState extends State<TSliderPage> {
 
   @Demo(group: 'slider')
   Widget _buildSingleHandle(BuildContext context) {
-    return TSlider(
-      sliderThemeData: TSliderThemeData(
-        context: context,
-        min: 0,
-        max: 100,
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData(
+          min: 0,
+          max: 100,
+        ),
       ),
-      value: 10,
-      onChanged: (value) {},
+      child: TSlider(
+        value: 10,
+        onChanged: (value) {},
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildDoubleHandle(BuildContext context) {
-    return TRangeSlider(
-      sliderThemeData: TSliderThemeData(
-        context: context,
-        min: 0,
-        max: 100,
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData(
+          min: 0,
+          max: 100,
+        ),
       ),
-      value: const RangeValues(10, 60),
-      onChanged: (value) {},
+      child: TRangeSlider(
+        value: const RangeValues(10, 60),
+        onChanged: (value) {},
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildSingleHandleWithNumber(BuildContext context) {
-    return TSlider(
-      sliderThemeData: TSliderThemeData(
-        context: context,
-        showThumbValue: true,
-        scaleFormatter: (value) => value.toInt().toString(),
-        min: 0,
-        max: 100,
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData(
+          showThumbValue: true,
+          scaleFormatter: (value) => value.toInt().toString(),
+          min: 0,
+          max: 100,
+        ),
       ),
-      value: 10,
-      leftLabel: '0',
-      rightLabel: '100',
-      onChanged: (value) {},
+      child: TSlider(
+        value: 10,
+        label: '0',
+        rightLabel: '100',
+        onChanged: (value) {},
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildDoubleHandleWithNumber(BuildContext context) {
-    return TRangeSlider(
-      sliderThemeData: TSliderThemeData(
-        context: context,
-        showThumbValue: true,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.round().toString(),
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData(
+          showThumbValue: true,
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.round().toString(),
+        ),
       ),
-      leftLabel: '0',
-      rightLabel: '100',
-      value: const RangeValues(40, 60),
-      onChanged: (value) {},
+      child: TRangeSlider(
+        label: '0',
+        rightLabel: '100',
+        value: const RangeValues(40, 60),
+        onChanged: (value) {},
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildSingleHandleWithScale(BuildContext context) {
-    return TSlider(
-      sliderThemeData: TSliderThemeData(
-        context: context,
-        showScaleValue: true,
-        divisions: 5,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.toInt().toString(),
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData(
+          showScaleValue: true,
+          divisions: 5,
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.toInt().toString(),
+        ),
       ),
-      value: 60,
-      onChanged: (value) {},
+      child: TSlider(
+        value: 60,
+        onChanged: (value) {},
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildDoubleHandleWithScale(BuildContext context) {
-    return TRangeSlider(
-      sliderThemeData: TSliderThemeData(
-        context: context,
-        showScaleValue: true,
-        divisions: 5,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.toInt().toString(),
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData(
+          showScaleValue: true,
+          divisions: 5,
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.toInt().toString(),
+        ),
       ),
-      value: const RangeValues(40, 70),
-      onChanged: (value) {},
+      child: TRangeSlider(
+        value: const RangeValues(40, 70),
+        onChanged: (value) {},
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildDisableSingleHandle(BuildContext context) {
-    return TSlider(
-      sliderThemeData: TSliderThemeData(
-        context: context,
-        min: 0,
-        max: 100,
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData(
+          min: 0,
+          max: 100,
+        ),
       ),
-      leftLabel: '0',
-      rightLabel: '100',
-      value: 40,
+      child: const TSlider(
+        label: '0',
+        rightLabel: '100',
+        value: 40,
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildDisableDoubleHandleWithNumber(BuildContext context) {
-    return TRangeSlider(
-      sliderThemeData: TSliderThemeData(
-        context: context,
-        showThumbValue: true,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.toInt().toString(),
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData(
+          showThumbValue: true,
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.toInt().toString(),
+        ),
       ),
-      leftLabel: '0',
-      rightLabel: '100',
-      value: const RangeValues(20, 60),
+      child: const TRangeSlider(
+        label: '0',
+        rightLabel: '100',
+        value: RangeValues(20, 60),
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildDisableDoubleHandleWithScale(BuildContext context) {
-    return TRangeSlider(
-      sliderThemeData: TSliderThemeData(
-        context: context,
-        showScaleValue: true,
-        divisions: 5,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.toInt().toString(),
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData(
+          showScaleValue: true,
+          divisions: 5,
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.toInt().toString(),
+        ),
       ),
-      value: const RangeValues(20, 60),
+      child: const TRangeSlider(
+        value: RangeValues(20, 60),
+      ),
     );
   }
 
@@ -245,20 +272,23 @@ class _TSliderPageState extends State<TSliderPage> {
                       'Tap at (${tapOffset!.dx.toStringAsFixed(0)}, ${tapOffset!.dy.toStringAsFixed(0)})'),
               ],
             ),
-            TSlider(
-              sliderThemeData: TSliderThemeData(
-                  context: context, min: 0, max: 100, showThumbValue: true),
-              leftLabel: '0',
-              rightLabel: '100',
-              value: currentValue,
-              onChanged: (value) {},
-              onTap: (offset, value) {
-                setState(() {
-                  currentValue = value;
-                  tapOffset = offset;
-                });
-                print('onTap  offset: $offset, value: $value');
-              },
+            Theme(
+              data: Theme.of(context).mergeExtension(
+                TSliderThemeData(min: 0, max: 100, showThumbValue: true),
+              ),
+              child: TSlider(
+                label: '0',
+                rightLabel: '100',
+                value: currentValue,
+                onChanged: (value) {},
+                onTap: (offset, value) {
+                  setState(() {
+                    currentValue = value;
+                    tapOffset = offset;
+                  });
+                  print('onTap  offset: $offset, value: $value');
+                },
+              ),
             ),
           ],
         );
@@ -299,21 +329,24 @@ class _TSliderPageState extends State<TSliderPage> {
           },
         ),
         const SizedBox(height: 10),
-        TRangeSlider(
-          sliderThemeData: TSliderThemeData(
-              context: context, min: 0, max: 100, showThumbValue: true),
-          leftLabel: '0',
-          rightLabel: '100',
-          value: const RangeValues(10, 60),
-          onChanged: (value) {},
-          onTap: (position, offset, value) {
-            displayRangeDataNotifier.value = DisplayRangeData(
-              currentPosition: position,
-              currentTapValue: value,
-              tapOffset: offset,
-            );
-            print('onTap offset: $offset, value: $value');
-          },
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData(min: 0, max: 100, showThumbValue: true),
+          ),
+          child: TRangeSlider(
+            label: '0',
+            rightLabel: '100',
+            value: const RangeValues(10, 60),
+            onChanged: (value) {},
+            onTap: (position, offset, value) {
+              displayRangeDataNotifier.value = DisplayRangeData(
+                currentPosition: position,
+                currentTapValue: value,
+                tapOffset: offset,
+              );
+              print('onTap offset: $offset, value: $value');
+            },
+          ),
         ),
       ],
     );
@@ -342,24 +375,27 @@ class _TSliderPageState extends State<TSliderPage> {
               ],
             ),
             const SizedBox(height: 10),
-            TSlider(
-              sliderThemeData: TSliderThemeData(
-                context: context,
-                min: 0,
-                max: 100,
-                showThumbValue: true,
+            Theme(
+              data: Theme.of(context).mergeExtension(
+                TSliderThemeData(
+                  min: 0,
+                  max: 100,
+                  showThumbValue: true,
+                ),
               ),
-              leftLabel: '0',
-              rightLabel: '100',
-              value: currentValue,
-              onChanged: (value) {},
-              onThumbTextTap: (offset, value) {
-                setState(() {
-                  currentValue = value;
-                  tapOffset = offset;
-                });
-                print('onTap  offset: $offset, value: $value');
-              },
+              child: TSlider(
+                label: '0',
+                rightLabel: '100',
+                value: currentValue,
+                onChanged: (value) {},
+                onThumbTextTap: (offset, value) {
+                  setState(() {
+                    currentValue = value;
+                    tapOffset = offset;
+                  });
+                  print('onTap  offset: $offset, value: $value');
+                },
+              ),
             ),
           ],
         );
@@ -400,25 +436,28 @@ class _TSliderPageState extends State<TSliderPage> {
           },
         ),
         const SizedBox(height: 10),
-        TRangeSlider(
-          sliderThemeData: TSliderThemeData(
-            context: context,
-            min: 0,
-            max: 100,
-            showThumbValue: true,
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData(
+              min: 0,
+              max: 100,
+              showThumbValue: true,
+            ),
           ),
-          leftLabel: '0',
-          rightLabel: '100',
-          value: const RangeValues(10, 60),
-          onChanged: (value) {},
-          onThumbTextTap: (position, offset, value) {
-            displayRangeDataNotifier.value = DisplayRangeData(
-              currentPosition: position,
-              currentTapValue: value,
-              tapOffset: offset,
-            );
-            print('onTap offset: $offset, value: $value');
-          },
+          child: TRangeSlider(
+            label: '0',
+            rightLabel: '100',
+            value: const RangeValues(10, 60),
+            onChanged: (value) {},
+            onThumbTextTap: (position, offset, value) {
+              displayRangeDataNotifier.value = DisplayRangeData(
+                currentPosition: position,
+                currentTapValue: value,
+                tapOffset: offset,
+              );
+              print('onTap offset: $offset, value: $value');
+            },
+          ),
         ),
       ],
     );
@@ -426,82 +465,94 @@ class _TSliderPageState extends State<TSliderPage> {
 
   @Demo(group: 'slider')
   Widget _buildCapsuleSingleHandleWithNumber(BuildContext context) {
-    return TSlider(
-      sliderThemeData: TSliderThemeData.capsule(
-        context: context,
-        showThumbValue: true,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.toInt().toString(),
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData.capsule(
+          showThumbValue: true,
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.toInt().toString(),
+        ),
       ),
-      value: 40,
-      onChanged: (value) {},
+      child: TSlider(
+        value: 40,
+        onChanged: (value) {},
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildCapsuleDoubleHandle(BuildContext context) {
-    return TRangeSlider(
-      sliderThemeData: TSliderThemeData.capsule(
-        context: context,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.toInt().toString(),
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData.capsule(
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.toInt().toString(),
+        ),
       ),
-      value: const RangeValues(20, 60),
-      onChanged: (value) {},
+      child: TRangeSlider(
+        value: const RangeValues(20, 60),
+        onChanged: (value) {},
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildCapsuleSingleHandle(BuildContext context) {
-    return TSlider(
-      sliderThemeData: TSliderThemeData.capsule(
-        context: context,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.toInt().toString(),
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData.capsule(
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.toInt().toString(),
+        ),
       ),
-      leftLabel: '0',
-      rightLabel: '100',
-      value: 40,
-      onChanged: (value) {},
+      child: TSlider(
+        label: '0',
+        rightLabel: '100',
+        value: 40,
+        onChanged: (value) {},
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildCapsuleDoubleHandleWithNumber(BuildContext context) {
-    return TRangeSlider(
-      sliderThemeData: TSliderThemeData.capsule(
-        context: context,
-        showThumbValue: true,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.toInt().toString(),
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData.capsule(
+          showThumbValue: true,
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.toInt().toString(),
+        ),
       ),
-      leftLabel: '0',
-      rightLabel: '100',
-      value: const RangeValues(20, 60),
-      onChanged: (value) {},
+      child: TRangeSlider(
+        label: '0',
+        rightLabel: '100',
+        value: const RangeValues(20, 60),
+        onChanged: (value) {},
+      ),
     );
   }
 
   @Demo(group: 'slider')
   Widget _buildCapsuleSingleHandleWithScale(BuildContext context) {
-    return TSlider(
-      sliderThemeData: TSliderThemeData.capsule(
-        context: context,
-        showScaleValue: true,
-        divisions: 5,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.toInt().toString(),
-      )..updateSliderThemeData((data) => data.copyWith(
-          // activeTickMarkColor: TTheme.of(context).componentBorderColor,
-          // inactiveTickMarkColor: TTheme.of(context).componentStrokeColor,
-          )),
-      value: 60,
-      onChanged: (value) {},
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData.capsule(
+          showScaleValue: true,
+          divisions: 5,
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.toInt().toString(),
+        ),
+      ),
+      child: TSlider(
+        value: 60,
+        onChanged: (value) {},
+      ),
     );
   }
 
@@ -510,80 +561,98 @@ class _TSliderPageState extends State<TSliderPage> {
     return Column(
       // spacing: 16,
       children: [
-        TSlider(
-          sliderThemeData: TSliderThemeData.capsule(
-            context: context,
-            showThumbValue: true,
-            min: 0,
-            max: 100,
-            scaleFormatter: (value) => value.toInt().toString(),
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData.capsule(
+              showThumbValue: true,
+              min: 0,
+              max: 100,
+              scaleFormatter: (value) => value.toInt().toString(),
+            ),
           ),
-          value: 40,
-        ),
-        const SizedBox(height: 16),
-        TRangeSlider(
-          sliderThemeData: TSliderThemeData.capsule(
-            context: context,
-            min: 0,
-            max: 100,
-            scaleFormatter: (value) => value.toInt().toString(),
+          child: const TSlider(
+            value: 40,
           ),
-          value: const RangeValues(20, 60),
         ),
         const SizedBox(height: 16),
-        TSlider(
-          sliderThemeData: TSliderThemeData.capsule(
-            context: context,
-            min: 0,
-            max: 100,
-            scaleFormatter: (value) => value.toInt().toString(),
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData.capsule(
+              min: 0,
+              max: 100,
+              scaleFormatter: (value) => value.toInt().toString(),
+            ),
           ),
-          leftLabel: '0',
-          rightLabel: '100',
-          value: 40,
-        ),
-        const SizedBox(height: 16),
-        TRangeSlider(
-          sliderThemeData: TSliderThemeData.capsule(
-            context: context,
-            min: 0,
-            max: 100,
-            showThumbValue: true,
-            scaleFormatter: (value) => value.toInt().toString(),
+          child: const TRangeSlider(
+            value: RangeValues(20, 60),
           ),
-          value: const RangeValues(20, 60),
-          leftLabel: '0',
-          rightLabel: '100',
         ),
         const SizedBox(height: 16),
-        TSlider(
-          sliderThemeData: TSliderThemeData.capsule(
-            context: context,
-            showScaleValue: true,
-            divisions: 5,
-            min: 0,
-            max: 100,
-            scaleFormatter: (value) => value.toInt().toString(),
-          )..updateSliderThemeData((data) => data.copyWith(
-                activeTickMarkColor: TTheme.of(context).componentStrokeColor,
-                inactiveTickMarkColor: TTheme.of(context).componentStrokeColor,
-              )),
-          value: 60,
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData.capsule(
+              min: 0,
+              max: 100,
+              scaleFormatter: (value) => value.toInt().toString(),
+            ),
+          ),
+          child: const TSlider(
+            label: '0',
+            rightLabel: '100',
+            value: 40,
+          ),
         ),
         const SizedBox(height: 16),
-        TRangeSlider(
-          sliderThemeData: TSliderThemeData.capsule(
-            context: context,
-            showScaleValue: true,
-            divisions: 5,
-            min: 0,
-            max: 100,
-            scaleFormatter: (value) => value.toInt().toString(),
-          )..updateSliderThemeData((data) => data.copyWith(
-                activeTickMarkColor: TTheme.of(context).bgColorComponentActive,
-                inactiveTickMarkColor: TTheme.of(context).bgColorComponent,
-              )),
-          value: const RangeValues(20, 60),
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData.capsule(
+              min: 0,
+              max: 100,
+              showThumbValue: true,
+              scaleFormatter: (value) => value.toInt().toString(),
+            ),
+          ),
+          child: const TRangeSlider(
+            value: RangeValues(20, 60),
+            label: '0',
+            rightLabel: '100',
+          ),
+        ),
+        const SizedBox(height: 16),
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData.capsule(
+              showScaleValue: true,
+              divisions: 5,
+              min: 0,
+              max: 100,
+              scaleFormatter: (value) => value.toInt().toString(),
+            ).copyWith(
+              activeTrackColor: context.tTheme.componentStrokeColor,
+              inactiveTrackColor: context.tTheme.componentStrokeColor,
+            ),
+          ),
+          child: const TSlider(
+            value: 60,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData.capsule(
+              showScaleValue: true,
+              divisions: 5,
+              min: 0,
+              max: 100,
+              scaleFormatter: (value) => value.toInt().toString(),
+            ).copyWith(
+              activeTrackColor: context.tTheme.bgColorComponentActive,
+              inactiveTrackColor: context.tTheme.bgColorComponent,
+            ),
+          ),
+          child: const TRangeSlider(
+            value: RangeValues(20, 60),
+          ),
         )
       ],
     );
@@ -594,28 +663,34 @@ class _TSliderPageState extends State<TSliderPage> {
     return Column(
       // spacing: 16,
       children: [
-        TSlider(
-          sliderThemeData: TSliderThemeData(
-            context: context,
-            min: 0,
-            max: 100,
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData(
+              min: 0,
+              max: 100,
+            ),
           ),
-          value: 40,
-          boxDecoration: const BoxDecoration(color: Colors.amber),
-          // divisions: 5,
-          onChanged: (value) {},
+          child: TSlider(
+            value: 40,
+            boxDecoration: const BoxDecoration(color: Colors.amber),
+            // divisions: 5,
+            onChanged: (value) {},
+          ),
         ),
         const SizedBox(height: 16),
-        TRangeSlider(
-          sliderThemeData: TSliderThemeData.capsule(
-            context: context,
-            min: 0,
-            max: 100,
-            scaleFormatter: (value) => value.toInt().toString(),
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData.capsule(
+              min: 0,
+              max: 100,
+              scaleFormatter: (value) => value.toInt().toString(),
+            ),
           ),
-          boxDecoration: const BoxDecoration(color: Colors.deepOrangeAccent),
-          value: const RangeValues(20, 60),
-          onChanged: (value) {},
+          child: TRangeSlider(
+            boxDecoration: const BoxDecoration(color: Colors.deepOrangeAccent),
+            value: const RangeValues(20, 60),
+            onChanged: (value) {},
+          ),
         ),
       ],
     );
@@ -623,20 +698,20 @@ class _TSliderPageState extends State<TSliderPage> {
 
   @Demo(group: 'slider')
   Widget _buildCapsuleDoubleHandleWithScale(BuildContext context) {
-    return TRangeSlider(
-      sliderThemeData: TSliderThemeData.capsule(
-        context: context,
-        showScaleValue: true,
-        divisions: 5,
-        min: 0,
-        max: 100,
-        scaleFormatter: (value) => value.toInt().toString(),
-      )..updateSliderThemeData((data) => data.copyWith(
-          // activeTickMarkColor: TTheme.of(context).bgColorComponent,
-          // inactiveTickMarkColor: TTheme.of(context).bgColorComponent,
-          )),
-      value: const RangeValues(20, 60),
-      onChanged: (value) {},
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TSliderThemeData.capsule(
+          showScaleValue: true,
+          divisions: 5,
+          min: 0,
+          max: 100,
+          scaleFormatter: (value) => value.toInt().toString(),
+        ),
+      ),
+      child: TRangeSlider(
+        value: const RangeValues(20, 60),
+        onChanged: (value) {},
+      ),
     );
   }
 
@@ -645,30 +720,36 @@ class _TSliderPageState extends State<TSliderPage> {
     return Column(
       // spacing: 16,
       children: [
-        TSlider(
-          sliderThemeData: TSliderThemeData(
-            activeTrackColor: Colors.red,
-            inactiveTrackColor: Colors.green,
-            context: context,
-            min: 0,
-            max: 100,
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData(
+              activeTrackColor: Colors.red,
+              inactiveTrackColor: Colors.green,
+              min: 0,
+              max: 100,
+            ),
           ),
-          value: 40,
-          // divisions: 5,
-          onChanged: (value) {},
+          child: TSlider(
+            value: 40,
+            // divisions: 5,
+            onChanged: (value) {},
+          ),
         ),
         const SizedBox(height: 16),
-        TRangeSlider(
-          sliderThemeData: TSliderThemeData.capsule(
-            activeTrackColor: Colors.green,
-            inactiveTrackColor: Colors.red,
-            context: context,
-            min: 0,
-            max: 100,
-            scaleFormatter: (value) => value.toInt().toString(),
+        Theme(
+          data: Theme.of(context).mergeExtension(
+            TSliderThemeData.capsule(
+              activeTrackColor: Colors.green,
+              inactiveTrackColor: Colors.red,
+              min: 0,
+              max: 100,
+              scaleFormatter: (value) => value.toInt().toString(),
+            ),
           ),
-          value: const RangeValues(20, 60),
-          onChanged: (value) {},
+          child: TRangeSlider(
+            value: const RangeValues(20, 60),
+            onChanged: (value) {},
+          ),
         ),
       ],
     );

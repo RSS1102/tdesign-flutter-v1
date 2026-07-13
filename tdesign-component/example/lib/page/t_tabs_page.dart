@@ -199,17 +199,16 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
         text: '选项',
         contentHeight: 48,
         textMargin: EdgeInsets.only(right: 8),
-        badge: TBadge(TBadgeType.redPoint),
+        badge: TBadge(TBadgeVariant.redPoint),
       ),
       const TTab(
         text: '选项',
         contentHeight: 42,
         textMargin: EdgeInsets.only(right: 16, top: 2, bottom: 2),
-        badge: TBadge(TBadgeType.message, message: '8'),
+        badge: TBadge(TBadgeVariant.message),
       ),
       const TTab(
         text: '选项',
-        height: 48,
         icon: Icon(TIcons.app, size: 18),
       ),
     ];
@@ -234,8 +233,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
             isScrollable: false,
           ),
           Container(
-            height: 120,
-            color: TTheme.of(context).bgColorContainer,
+            color: context.tTheme.bgColorContainer,
             child: TTabBarView(
               children: _getTabViews(),
               controller: tabController,
@@ -251,7 +249,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     var tabs = [
       const TTab(text: '选中'),
       const TTab(text: '默认'),
-      const TTab(text: '禁用', enable: false),
+      const TTab(text: '禁用', enabled: false),
     ];
     return TTabBar(
       tabs: tabs,
@@ -300,7 +298,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     ];
     return TTabBar(
       tabs: tabs,
-      outlineType: TTabBarOutlineType.capsule,
+      variant: TTabBarVariant.capsule,
       controller: TabController(length: tabs.length, vsync: this),
       showIndicator: false,
     );
@@ -316,7 +314,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     ];
     return TTabBar(
       tabs: tabs,
-      outlineType: TTabBarOutlineType.card,
+      variant: TTabBarVariant.card,
       controller: TabController(length: tabs.length, vsync: this),
       showIndicator: false,
     );
@@ -362,8 +360,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     return TTabBar(
       tabs: subList(2),
       controller: _tabController1,
-      backgroundColor: Colors.red,
-      outlineType: TTabBarOutlineType.capsule,
+      variant: TTabBarVariant.capsule,
     );
   }
 }

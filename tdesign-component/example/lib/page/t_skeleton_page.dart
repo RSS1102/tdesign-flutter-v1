@@ -79,9 +79,9 @@ class TSkeletonPage extends StatelessWidget {
       (context) => Container(
             alignment: Alignment.topLeft,
             padding: EdgeInsets.fromLTRB(
-              TTheme.of(context).spacer16,
+              context.tTheme.spacer16,
               0,
-              TTheme.of(context).spacer16,
+              context.tTheme.spacer16,
               0,
             ),
             child: isFlexible
@@ -91,27 +91,27 @@ class TSkeletonPage extends StatelessWidget {
 
   @Demo(group: 'skeleton')
   Widget _buildAvatarSkeleton(BuildContext context) {
-    return TSkeleton(theme: TSkeletonTheme.avatar);
+    return TSkeleton(variant: TSkeletonVariant.avatar);
   }
 
   @Demo(group: 'skeleton')
   Widget _buildImageSkeleton(BuildContext context) {
-    return TSkeleton(theme: TSkeletonTheme.image);
+    return TSkeleton(variant: TSkeletonVariant.image);
   }
 
   @Demo(group: 'skeleton')
   Widget _buildTextSkeleton(BuildContext context) {
-    return TSkeleton(theme: TSkeletonTheme.text);
+    return TSkeleton(variant: TSkeletonVariant.text);
   }
 
   @Demo(group: 'skeleton')
   Widget _buildParagraphSkeleton(BuildContext context) {
-    return TSkeleton(theme: TSkeletonTheme.paragraph);
+    return TSkeleton(variant: TSkeletonVariant.paragraph);
   }
 
   @Demo(group: 'skeleton')
   Widget _buildCellSkeleton(BuildContext context) {
-    final rowColsAvatar = TSkeleton(theme: TSkeletonTheme.avatar);
+    final rowColsAvatar = TSkeleton(variant: TSkeletonVariant.avatar);
     final rowColsImage = TSkeleton.fromRowCol(
       rowCol: TSkeletonRowCol(objects: const [
         [TSkeletonRowColObj.rect(width: 48, height: 48)]
@@ -181,7 +181,7 @@ class TSkeletonPage extends StatelessWidget {
                               flex: null,
                               style: TSkeletonRowColObjStyle(
                                   borderRadius: (context) =>
-                                      TTheme.of(context).radiusExtraLarge))
+                                      context.tTheme.radiusExtraLarge))
                         ],
                         [TSkeletonRowColObj.text(width: constraints.maxWidth)],
                         const [
@@ -194,10 +194,10 @@ class TSkeletonPage extends StatelessWidget {
                 ])));
 
     return Row(
-      // spacing: TTheme.of(context).spacer16,
+      // spacing: context.tTheme.spacer16,
       children: [
         rowCols,
-        SizedBox(width: TTheme.of(context).spacer16),
+        SizedBox(width: context.tTheme.spacer16),
         rowCols,
       ],
     );
@@ -207,7 +207,7 @@ class TSkeletonPage extends StatelessWidget {
   Widget _buildGradientSkeleton(BuildContext context) {
     return TSkeleton(
       animation: TSkeletonAnimation.gradient,
-      theme: TSkeletonTheme.paragraph,
+      variant: TSkeletonVariant.paragraph,
     );
   }
 
@@ -215,7 +215,7 @@ class TSkeletonPage extends StatelessWidget {
   Widget _buildFlashedSkeleton(BuildContext context) {
     return TSkeleton(
       animation: TSkeletonAnimation.flashed,
-      theme: TSkeletonTheme.paragraph,
+      variant: TSkeletonVariant.paragraph,
     );
   }
 }

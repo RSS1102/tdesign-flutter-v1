@@ -3,6 +3,10 @@
  */
 import 'package:flutter/material.dart';
 
+import '../../../tdesign_flutter.dart' show TCollapse;
+
+import 't_collapse.dart' show TCollapse;
+
 typedef TCollapseIconTextBuilder = String Function(
     BuildContext context, bool isExpanded);
 
@@ -21,7 +25,7 @@ class TCollapsePanel extends ExpansionPanel {
     /// 折叠按钮操作说明文案的构造函数
     this.expandIconTextBuilder,
 
-    /// 折叠面板的值，当使用 [TCollapse.accordion] 时，必须传入此值
+    /// 折叠面板的值，当使用 TCollapse.accordion 时，必须传入此值
     this.value,
 
     /// 折叠面板的背景色

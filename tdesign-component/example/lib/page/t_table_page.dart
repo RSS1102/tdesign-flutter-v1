@@ -96,7 +96,7 @@ class TTablePage extends StatelessWidget {
         ExampleItem(desc: '空数据表格', builder: _emptyTable),
         ExampleItem(desc: '加载动画表格', builder: _loadingTable),
         ExampleItem(desc: '可选表格+默认选中', builder: _selectTable),
-        ExampleItem(desc: '自定义表尾组件', builder: (context) => ShowFooterTable()),
+        ExampleItem(desc: '自定义表尾组件', builder: (context) => const ShowFooterTable()),
       ],
     );
   }
@@ -145,13 +145,13 @@ class TTablePage extends StatelessWidget {
                 TText(
                   '修改',
                   style: TextStyle(
-                      color: TTheme.of(context).brandNormalColor,
+                      color: context.tTheme.brandNormalColor,
                       fontSize: 14),
                 ),
                 TText(
                   '通过',
                   style: TextStyle(
-                      color: TTheme.of(context).brandNormalColor,
+                      color: context.tTheme.brandNormalColor,
                       fontSize: 14),
                 ),
               ],
@@ -178,9 +178,9 @@ class TTablePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Icon(TIcons.upload,
-                    color: TTheme.of(context).brandNormalColor, size: 16),
+                    color: context.tTheme.brandNormalColor, size: 16),
                 Icon(TIcons.delete,
-                    color: TTheme.of(context).brandNormalColor, size: 16),
+                    color: context.tTheme.brandNormalColor, size: 16),
               ],
             );
           },
@@ -194,7 +194,6 @@ class TTablePage extends StatelessWidget {
   Widget _fixedFirstColTable(BuildContext context) {
     return TTable(
       bordered: true,
-      height: 240,
       columns: [
         TTableCol(title: '固定列', colKey: 'title1', fixed: TTableColFixed.left, width: 100),
         TTableCol(title: '标题二', colKey: 'title2', width: 160),
@@ -211,7 +210,6 @@ class TTablePage extends StatelessWidget {
   Widget _fixedEndColTable(BuildContext context) {
     return TTable(
       bordered: true,
-      height: 240,
       columns: [
         TTableCol(title: '标题一', colKey: 'title1', width: 160),
         TTableCol(title: '标题二', colKey: 'title2', width: 160),
@@ -222,7 +220,6 @@ class TTablePage extends StatelessWidget {
           title: '操作',
           colKey: 'title4',
           fixed: TTableColFixed.right,
-          width: 100,
           cellBuilder: (BuildContext context, int index) {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -230,14 +227,14 @@ class TTablePage extends StatelessWidget {
                 TText(
                   '修改',
                   style: TextStyle(
-                    color: TTheme.of(context).brandNormalColor,
+                    color: context.tTheme.brandNormalColor,
                     fontSize: 14,
                   ),
                 ),
                 TText(
                   '通过',
                   style: TextStyle(
-                    color: TTheme.of(context).brandNormalColor,
+                    color: context.tTheme.brandNormalColor,
                     fontSize: 14,
                   ),
                 ),
@@ -294,7 +291,6 @@ class TTablePage extends StatelessWidget {
   Widget _fixedHeaderTable(BuildContext context) {
     return TTable(
       bordered: true,
-      height: 240,
       columns: [
         TTableCol(title: '标题', colKey: 'title1', ellipsis: true),
         TTableCol(title: '标题', colKey: 'title2'),
@@ -323,14 +319,14 @@ class TTablePage extends StatelessWidget {
                 TText(
                   '修改',
                   style: TextStyle(
-                    color: TTheme.of(context).brandNormalColor,
+                    color: context.tTheme.brandNormalColor,
                     fontSize: 14,
                   ),
                 ),
                 TText(
                   '通过',
                   style: TextStyle(
-                    color: TTheme.of(context).brandNormalColor,
+                    color: context.tTheme.brandNormalColor,
                     fontSize: 14,
                   ),
                 ),
@@ -394,7 +390,6 @@ class TTablePage extends StatelessWidget {
             checked: (index, row) {
               return index == 0;
             },
-            width: 50,
             selectable: (index, row) {
               return index % 2 == 0;
             }),
@@ -415,7 +410,7 @@ class ShowFooterTable extends StatefulWidget {
 
 class _ShowFooterTableState extends State<ShowFooterTable> {
   var _hasMore = true;
-  var _data = [];
+  final _data = [];
   var _pageIndex = 1;
 
   @override
@@ -444,8 +439,7 @@ class _ShowFooterTableState extends State<ShowFooterTable> {
   @Demo(group: 'table')
   Widget _showFooterTable(BuildContext context) {
     return TTable(
-      height: 100,
-      footerWidget: _hasMore ? TText('加载更多...') : TText('没有更多数据了'),
+      footerWidget: _hasMore ? const TText('加载更多...') : const TText('没有更多数据了'),
       onScroll: (controller) {
         if (controller.position.pixels == controller.position.maxScrollExtent &&
             _hasMore) {

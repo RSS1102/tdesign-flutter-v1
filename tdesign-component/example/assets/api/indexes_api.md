@@ -13,12 +13,14 @@
 | indexList | List<String>? | - | 索引字符列表。不传默认 A-Z |
 | indexListMaxHeight | double? | 0.8 | 索引列表最大高度（父容器高度的百分比，默认 0.8） |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| onChange | void Function(String index)? | - | 索引发生变更时触发事件 |
+| onChange | void Function(String index)? | - | 索引发生变更时触发事件（v1.0 推荐使用 onChanged） |
+| onChanged | void Function(String index)? | - | 索引发生变更时触发事件（v1.0 新增） |
 | onSelect | void Function(String index)? | - | 点击侧边栏时触发事件 |
-| reverse | bool? | false | 反方向滚动置顶 |
+| reverse | bool? | false | 反方向滚动置顶（可覆盖 Theme） |
 | scrollController | ScrollController? | - | 滚动控制器 |
-| sticky | bool? | true | 锚点是否吸顶 |
-| stickyOffset | double? | 0 | 锚点吸顶时与顶部的距离 |
+| sticky | bool? | true | 锚点是否吸顶（可覆盖 Theme） |
+| stickyOffset | double? | 0 | 锚点吸顶时与顶部的距离（可覆盖 Theme） |
+| themeData | TIndexesThemeData? | - | 子树级主题数据（v1.0 新增） |
 
 
 ### TIndexesAnchor

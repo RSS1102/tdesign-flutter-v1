@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart';
 
 import '../../theme/t_colors.dart';
 import '../../theme/t_fonts.dart';
 import '../../theme/t_theme.dart';
-import '../icon/t_icons.dart';
 import '../text/t_text.dart';
 import './t_dropdown_item.dart';
 import 't_dropdown_popup.dart';
@@ -167,10 +167,10 @@ class _TDropdownMenuState extends State<TDropdownMenu>
       width: widget.width ?? double.infinity,
       decoration: widget.decoration ??
           BoxDecoration(
-            color: TTheme.of(context).bgColorContainer,
+            color: context.tTheme.bgColorContainer,
             border: Border(
               bottom: BorderSide(
-                color: TTheme.of(context).componentStrokeColor,
+                color: context.tTheme.componentStrokeColor,
                 width: 0.5,
               ),
             ),
@@ -205,10 +205,10 @@ class _TDropdownMenuState extends State<TDropdownMenu>
 
   Widget _tabBarContent(int index) {
     final color = _disabled(index)
-        ? TTheme.of(context).textDisabledColor
+        ? context.tTheme.textDisabledColor
         : _isOpened[index]
-            ? TTheme.of(context).brandNormalColor
-            : TTheme.of(context).textColorPrimary;
+            ? context.tTheme.brandNormalColor
+            : context.tTheme.textColorPrimary;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -238,7 +238,7 @@ class _TDropdownMenuState extends State<TDropdownMenu>
     }
     return TText(
       label,
-      font: TTheme.of(context).fontBodyMedium,
+      font: context.tTheme.fontBodyMedium,
       textColor: color,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
@@ -263,10 +263,12 @@ class _TDropdownMenuState extends State<TDropdownMenu>
     return _items![index].disabled == true;
   }
 
+  /// 打开指定索引的菜单
   Future<void> openMenu(int index) async {
     await _openMenu(index);
   }
 
+  /// 关闭菜单
   Future<void> closeMenu() async {
     await _closeMenu();
   }

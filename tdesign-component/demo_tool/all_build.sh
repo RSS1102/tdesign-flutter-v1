@@ -6,7 +6,7 @@ PARENT_DIR="$(dirname "$SCRIPT_DIR")"
 
 # 基础
 # button
-dart run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/button" --name TButton,TButtonStyle --folder-name button --output "$PARENT_DIR/example/assets/api/" --only-api
+dart run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/button" --name TButton,TButtonThemeData,TButtonResolve --folder-name button --output "$PARENT_DIR/example/assets/api/" --only-api
 # divider
 dart run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/divider/t_divider.dart" --name TDivider --folder-name divider --output "$PARENT_DIR/example/assets/api/" --only-api
 # fab
@@ -55,7 +55,7 @@ dart run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/compo
 # input
 dart run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/input/t_input.dart" --name TInput, TInputSpacer --folder-name input --output "$PARENT_DIR/example/assets/api/" --only-api
 # radio
-dart run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/radio/t_radio.dart" --name TRadioStyle,TRadio,TRadioGroup --folder-name radio --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+dart run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/radio/t_radio.dart" --name TRadioVariant,TRadio,TRadioGroup --folder-name radio --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # rate
 dart run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/rate/t_rate.dart" --name TRate --folder-name rate --output "$PARENT_DIR/example/assets/api/" --only-api
 # search

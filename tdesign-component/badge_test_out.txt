@@ -1,0 +1,67 @@
+﻿
+00:00 +0: loading E:/tdesign-flutter-v1/tdesign-component/test/components/badge/t_badge_test.dart                                                                                                      
+00:01 +0: loading E:/tdesign-flutter-v1/tdesign-component/test/components/badge/t_badge_test.dart                                                                                                      
+00:02 +0: loading E:/tdesign-flutter-v1/tdesign-component/test/components/badge/t_badge_test.dart                                                                                                      
+00:02 +0: TBadge 基础渲染 redPoint variant 渲染红点                                                                                                                                                            
+00:03 +0: TBadge 基础渲染 redPoint variant 渲染红点                                                                                                                                                            
+00:03 +1: TBadge 基础渲染 redPoint variant 渲染红点                                                                                                                                                            
+00:03 +1: TBadge 基础渲染 message variant 渲染数字                                                                                                                                                             
+00:03 +2: TBadge 基础渲染 message variant 渲染数字                                                                                                                                                             
+00:03 +2: TBadge 基础渲染 bubble variant 渲染气泡                                                                                                                                                              
+00:03 +3: TBadge 基础渲染 bubble variant 渲染气泡                                                                                                                                                              
+00:03 +3: TBadge 基础渲染 square variant 渲染方形                                                                                                                                                              
+00:03 +4: TBadge 基础渲染 square variant 渲染方形                                                                                                                                                              
+00:03 +4: TBadge 基础渲染 subscript variant 渲染角标                                                                                                                                                           
+00:03 +5: TBadge 基础渲染 subscript variant 渲染角标                                                                                                                                                           
+00:03 +5: TBadge variant 全量验证 variant: TBadgeVariant.redPoint 可正常渲染                                                                                                                                    
+00:03 +6: TBadge variant 全量验证 variant: TBadgeVariant.redPoint 可正常渲染                                                                                                                                    
+00:03 +6: TBadge variant 全量验证 variant: TBadgeVariant.message 可正常渲染                                                                                                                                     
+00:03 +7: TBadge variant 全量验证 variant: TBadgeVariant.message 可正常渲染                                                                                                                                     
+00:03 +7: TBadge variant 全量验证 variant: TBadgeVariant.bubble 可正常渲染                                                                                                                                      
+00:04 +7: TBadge variant 全量验证 variant: TBadgeVariant.bubble 可正常渲染                                                                                                                                      
+00:04 +8: TBadge variant 全量验证 variant: TBadgeVariant.bubble 可正常渲染                                                                                                                                      
+00:04 +8: TBadge variant 全量验证 variant: TBadgeVariant.square 可正常渲染                                                                                                                                      
+00:04 +9: TBadge variant 全量验证 variant: TBadgeVariant.square 可正常渲染                                                                                                                                      
+00:04 +9: TBadge variant 全量验证 variant: TBadgeVariant.subscript 可正常渲染                                                                                                                                   
+00:04 +10: TBadge variant 全量验证 variant: TBadgeVariant.subscript 可正常渲染                                                                                                                                  
+00:04 +10: TBadge size 两档 size: small（默认）                                                                                                                                                              
+00:04 +11: TBadge size 两档 size: small（默认）                                                                                                                                                              
+00:04 +11: TBadge size 两档 size: large                                                                                                                                                                  
+00:04 +12: TBadge size 两档 size: large                                                                                                                                                                  
+00:04 +12: TBadge count/maxCount 溢出逻辑 count 未超过 maxCount 时原样显示                                                                                                                                         
+00:04 +13: TBadge count/maxCount 溢出逻辑 count 未超过 maxCount 时原样显示                                                                                                                                         
+00:04 +13: TBadge count/maxCount 溢出逻辑 count 超过 maxCount 时 badgeNum 计算为 maxCount+                                                                                                                       
+00:04 +14: TBadge count/maxCount 溢出逻辑 count 超过 maxCount 时 badgeNum 计算为 maxCount+                                                                                                                       
+00:04 +14: TBadge count/maxCount 溢出逻辑 count 等于 maxCount 时原样显示                                                                                                                                          
+00:04 +15: TBadge count/maxCount 溢出逻辑 count 等于 maxCount 时原样显示                                                                                                                                          
+00:04 +15: TBadge count/maxCount 溢出逻辑 单字符 count 渲染圆形容器                                                                                                                                                 
+00:04 +16: TBadge count/maxCount 溢出逻辑 单字符 count 渲染圆形容器                                                                                                                                                 
+00:04 +16: TBadge count/maxCount 溢出逻辑 多字符 count 渲染胶囊容器                                                                                                                                                 
+00:04 +17: TBadge count/maxCount 溢出逻辑 多字符 count 渲染胶囊容器                                                                                                                                                 
+00:04 +17: TBadge 边界情况 count 为 null 时使用资源默认值                                                                                                                                                           
+00:04 +18: TBadge 边界情况 count 为 null 时使用资源默认值                                                                                                                                                           
+00:04 +18: TBadge 边界情况 count 为非数字字符串时原样显示                                                                                                                                                              
+00:04 +19: TBadge 边界情况 count 为非数字字符串时原样显示                                                                                                                                                              
+00:04 +19: TBadge 边界情况 redPoint 不依赖 count                                                                                                                                                              
+00:04 +20: TBadge 边界情况 redPoint 不依赖 count                                                                                                                                                              
+00:04 +20: TBadge 边界情况 didUpdateWidget count 变化后更新显示                                                                                                                                                   
+00:04 +21: TBadge 边界情况 didUpdateWidget count 变化后更新显示                                                                                                                                                   
+00:04 +21: TBadge Theme 注入 TBadgeThemeData.color 覆盖背景色                                                                                                                                                 
+00:04 +22: TBadge Theme 注入 TBadgeThemeData.color 覆盖背景色                                                                                                                                                 
+00:04 +22: TBadge Theme 注入 TBadgeThemeData.message 覆盖 count 显示                                                                                                                                         
+00:04 +23: TBadge Theme 注入 TBadgeThemeData.message 覆盖 count 显示                                                                                                                                         
+00:04 +23: TBadge Theme 注入 TBadgeThemeData.showZero=false 时 count 为 0 不显示                                                                                                                              
+00:04 +24: TBadge Theme 注入 TBadgeThemeData.showZero=false 时 count 为 0 不显示                                                                                                                              
+00:04 +24: TBadge Theme 注入 TBadgeThemeData.showZero=true（默认）时 count 为 0 显示                                                                                                                             
+00:04 +25: TBadge Theme 注入 TBadgeThemeData.showZero=true（默认）时 count 为 0 显示                                                                                                                             
+00:04 +25: TBadge Theme 注入 TBadgeThemeData.textColor 覆盖文字色                                                                                                                                             
+00:04 +26: TBadge Theme 注入 TBadgeThemeData.textColor 覆盖文字色                                                                                                                                             
+00:04 +26: TBadge Theme 注入 TBadgeThemeData.border 影响方形圆角                                                                                                                                               
+00:04 +27: TBadge Theme 注入 TBadgeThemeData.border 影响方形圆角                                                                                                                                               
+00:04 +27: TBadge Theme 注入 TBadgeThemeData.widthLarge/widthSmall 影响角标尺寸                                                                                                                                
+00:04 +28: TBadge Theme 注入 TBadgeThemeData.widthLarge/widthSmall 影响角标尺寸                                                                                                                                
+00:04 +28: TBadge Theme 注入 TBadgeThemeData.copyWith 正确合并字段                                                                                                                                             
+00:04 +29: TBadge Theme 注入 TBadgeThemeData.copyWith 正确合并字段                                                                                                                                             
+00:04 +29: TBadge Theme 注入 TBadgeThemeData.lerp 插值正确                                                                                                                                                   
+00:04 +30: TBadge Theme 注入 TBadgeThemeData.lerp 插值正确                                                                                                                                                   
+00:04 +30: All tests passed!                                                                                                                                                                           

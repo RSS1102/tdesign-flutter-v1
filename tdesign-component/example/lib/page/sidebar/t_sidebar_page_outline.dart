@@ -97,21 +97,20 @@ class TSideBarOutlinePageState extends State<TSideBarOutlinePage> {
 
     pages.add(Container(
       height: MediaQuery.of(context).size.height - itemHeight,
-      decoration: BoxDecoration(color: TTheme.of(context).bgColorContainer),
+      decoration: BoxDecoration(color: context.tTheme.bgColorContainer),
     ));
 
-    list[1].badge = const TBadge(TBadgeType.redPoint);
+    list[1].badge = const TBadge(TBadgeVariant.redPoint);
     list[2].badge = const TBadge(
-      TBadgeType.message,
+      TBadgeVariant.message,
       count: '8',
     );
 
     return Row(
       children: [
         SizedBox(
-          width: 110,
           child: TSideBar(
-            style: TSideBarStyle.outline,
+            style: TSideBarVariant.outline,
             value: currentValue,
             controller: _sideBarController,
             children: list
@@ -139,7 +138,7 @@ class TSideBarOutlinePageState extends State<TSideBarOutlinePage> {
 
   Widget getAnchorDemo(int index) {
     return Container(
-      decoration: BoxDecoration(color: TTheme.of(context).bgColorContainer),
+      decoration: BoxDecoration(color: context.tTheme.bgColorContainer),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -180,10 +179,8 @@ class TSideBarOutlinePageState extends State<TSideBarOutlinePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TImage(
-            assetUrl: 'assets/img/empty.png',
-            type: TImageType.roundedSquare,
-            width: 48,
-            height: 48,
+            src: 'assets/img/empty.png',
+            variant: TImageVariant.roundedSquare,
           ),
           SizedBox(width: 16),
           TText('标题', style: TextStyle(fontSize: 16))

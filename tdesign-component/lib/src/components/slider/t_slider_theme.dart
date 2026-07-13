@@ -15,16 +15,20 @@ typedef OnSliderThemeDataUpdate = SliderThemeData Function(
   SliderThemeData sliderThemeData,
 );
 
-/// slider显示样式配置
-class TSliderThemeData {
+/// slider 显示样式配置（v1.0 ThemeExtension）
+///
+/// 通过 `Theme.of(context).extension<TSliderThemeData>()` 读取，
+/// 子树覆盖用 `Theme.of(context).mergeExtension(TSliderThemeData(...))`。
+/// 颜色解析延迟到 [normal] / [capsule] 调用时，由调用方传入 `TThemeData token`。
+class TSliderThemeData extends ThemeExtension<TSliderThemeData> {
   /// 是否显示游标值
   final bool showThumbValue;
 
-  /// 游标上文本样式
+  /// 游标上文本样式（颜色延迟到 normal/capsule 中解析）
   final TextStyle? thumbTextStyle;
 
-  /// disable时游标的样式
-  final TextStyle disabledThumbTextStyle;
+  /// disable 时游标的样式（颜色延迟到 normal/capsule 中解析）
+  final TextStyle? disabledThumbTextStyle;
 
   /// 是否显示刻度值
   final bool showScaleValue;
@@ -32,11 +36,11 @@ class TSliderThemeData {
   /// 刻度值的格式化
   final ScaleFormatter? scaleFormatter;
 
-  /// 刻度值的样式
+  /// 刻度值的样式（颜色延迟到 normal/capsule 中解析）
   final TextStyle? scaleTextStyle;
 
-  /// disabled状态时刻度的样式
-  final TextStyle disabledScaleTextStyle;
+  /// disabled 状态时刻度的样式（颜色延迟到 normal/capsule 中解析）
+  final TextStyle? disabledScaleTextStyle;
 
   /// 分割几块
   final int? divisions;
@@ -48,16 +52,17 @@ class TSliderThemeData {
   final double max;
 
   /// 运行时测量的数据，这里用于组件内部使用
-  final SliderMeasureData sliderMeasureData = SliderMeasureData();
+  /// 每个 Widget 实例应通过 [copyWith] 创建独立副本以隔离测量数据
+  final SliderMeasureData sliderMeasureData;
 
-  /// 系统组件库
+  /// 系统 SliderThemeData 缓存
   SliderThemeData? _sliderThemeData;
-
-  /// 上下文，用于获取主题颜色
-  final BuildContext? context;
 
   /// 是否为胶囊类型
   final bool _capsule;
+
+  /// 运行时 token 引用（由 sliderThemeData(token) 设置，供 effective* getter 解析颜色）
+  TThemeData? _token;
 
   /// 激活颜色
   final Color? activeTrackColor;
@@ -67,7 +72,6 @@ class TSliderThemeData {
 
   /// 普通构建方法
   TSliderThemeData({
-    this.context,
     this.showScaleValue = false,
     this.showThumbValue = false,
     this.divisions,
@@ -81,32 +85,16 @@ class TSliderThemeData {
     this.activeTrackColor,
     this.inactiveTrackColor,
     SliderThemeData? sliderThemeData,
-  })  : scaleTextStyle = scaleTextStyle ??
-            TextStyle(
-              fontSize: 14,
-              color: TTheme.of(context).textColorPrimary,
-            ),
-        disabledScaleTextStyle = disabledScaleTextStyle ??
-            TextStyle(
-              fontSize: 14,
-              color: TTheme.of(context).textColorPlaceholder,
-            ),
-        thumbTextStyle = thumbTextStyle ??
-            TextStyle(
-              fontSize: 14,
-              color: TTheme.of(context).textColorPrimary,
-            ),
-        disabledThumbTextStyle = disabledThumbTextStyle ??
-            TextStyle(
-              fontSize: 14,
-              color: TTheme.of(context).textColorPlaceholder,
-            ),
+  })  : scaleTextStyle = scaleTextStyle,
+        disabledScaleTextStyle = disabledScaleTextStyle,
+        thumbTextStyle = thumbTextStyle,
+        disabledThumbTextStyle = disabledThumbTextStyle,
         _sliderThemeData = sliderThemeData,
-        _capsule = false;
+        _capsule = false,
+        sliderMeasureData = SliderMeasureData();
 
   /// 胶囊型构建方法
   TSliderThemeData.capsule({
-    this.context,
     this.showScaleValue = false,
     this.showThumbValue = false,
     this.divisions,
@@ -120,106 +108,140 @@ class TSliderThemeData {
     this.activeTrackColor,
     this.inactiveTrackColor,
     SliderThemeData? sliderThemeData,
-  })  : scaleTextStyle = scaleTextStyle ??
-            TextStyle(
-              fontSize: 14,
-              color: TTheme.of(context).textColorPrimary,
-            ),
-        disabledScaleTextStyle = disabledScaleTextStyle ??
-            TextStyle(
-              fontSize: 14,
-              color: TTheme.of(context).textColorPlaceholder,
-            ),
-        thumbTextStyle = thumbTextStyle ??
-            TextStyle(
-              fontSize: 14,
-              color: TTheme.of(context).textColorPrimary,
-            ),
-        disabledThumbTextStyle = disabledThumbTextStyle ??
-            TextStyle(
-              fontSize: 14,
-              color: TTheme.of(context).textColorPlaceholder,
-            ),
+  })  : scaleTextStyle = scaleTextStyle,
+        disabledScaleTextStyle = disabledScaleTextStyle,
+        thumbTextStyle = thumbTextStyle,
+        disabledThumbTextStyle = disabledThumbTextStyle,
         _sliderThemeData = sliderThemeData,
-        _capsule = true;
+        _capsule = true,
+        sliderMeasureData = SliderMeasureData();
 
-  /// 获取系统主题
-  SliderThemeData get sliderThemeData {
-    _sliderThemeData ??= _capsule ? capsule() : normal();
+  /// 私有构造器，用于 copyWith 内部创建副本
+  TSliderThemeData._internal({
+    required this.showScaleValue,
+    required this.showThumbValue,
+    required this.scaleTextStyle,
+    required this.disabledScaleTextStyle,
+    required this.thumbTextStyle,
+    required this.disabledThumbTextStyle,
+    required this.divisions,
+    required this.min,
+    required this.max,
+    required this.scaleFormatter,
+    required this.activeTrackColor,
+    required this.inactiveTrackColor,
+    required bool capsule,
+    required this.sliderMeasureData,
+    SliderThemeData? sliderThemeData,
+  })  : _capsule = capsule,
+        _sliderThemeData = sliderThemeData;
+
+  /// 获取系统主题（接收 token 参数延迟解析颜色）
+  SliderThemeData sliderThemeData(TThemeData token) {
+    _token = token;
+    _sliderThemeData ??= _capsule ? capsule(token) : normal(token);
     return _sliderThemeData!;
   }
 
+  /// 游标文本样式（带主题色回退）
+  TextStyle get effectiveThumbTextStyle =>
+      TextStyle(color: _token?.textColorPrimary ?? Colors.black87)
+          .merge(thumbTextStyle);
+
+  /// 禁用态游标文本样式（带主题色回退）
+  TextStyle get effectiveDisabledThumbTextStyle =>
+      TextStyle(color: _token?.textDisabledColor ?? Colors.grey)
+          .merge(disabledThumbTextStyle);
+
+  /// 刻度文本样式（带主题色回退）
+  TextStyle get effectiveScaleTextStyle =>
+      TextStyle(color: _token?.textColorSecondary ?? Colors.black54)
+          .merge(scaleTextStyle);
+
+  /// 禁用态刻度文本样式（带主题色回退）
+  TextStyle get effectiveDisabledScaleTextStyle =>
+      TextStyle(color: _token?.textDisabledColor ?? Colors.grey)
+          .merge(disabledScaleTextStyle);
+
   /// 更新系统主题
-  void updateSliderThemeData(OnSliderThemeDataUpdate onSliderThemeDataUpdate) {
-    _sliderThemeData = onSliderThemeDataUpdate(sliderThemeData);
+  void updateSliderThemeData(
+    TThemeData token,
+    OnSliderThemeDataUpdate onSliderThemeDataUpdate,
+  ) {
+    _sliderThemeData = onSliderThemeDataUpdate(sliderThemeData(token));
   }
 
   /// 构建普通系统主题
-  SliderThemeData normal() {
+  SliderThemeData normal(TThemeData token) {
     return SliderThemeData(
       trackHeight: 4,
-      activeTrackColor:
-          activeTrackColor ?? TTheme.of(context).brandNormalColor,
-      inactiveTrackColor:
-          inactiveTrackColor ?? TTheme.of(context).bgColorComponent,
-      disabledActiveTrackColor: TTheme.of(context).brandDisabledColor,
-      disabledInactiveTrackColor: TTheme.of(context).bgColorComponentDisabled,
-      activeTickMarkColor: TTheme.of(context).brandNormalColor,
-      inactiveTickMarkColor: TTheme.of(context).bgColorComponent,
-      disabledActiveTickMarkColor: TTheme.of(context).brandDisabledColor,
-      disabledInactiveTickMarkColor:
-          TTheme.of(context).bgColorComponentDisabled,
+      activeTrackColor: activeTrackColor ?? token.brandNormalColor,
+      inactiveTrackColor: inactiveTrackColor ?? token.bgColorComponent,
+      disabledActiveTrackColor: token.brandDisabledColor,
+      disabledInactiveTrackColor: token.bgColorComponentDisabled,
+      activeTickMarkColor: token.brandNormalColor,
+      inactiveTickMarkColor: token.bgColorComponent,
+      disabledActiveTickMarkColor: token.brandDisabledColor,
+      disabledInactiveTickMarkColor: token.bgColorComponentDisabled,
       thumbColor: Colors.white,
-      disabledThumbColor: TTheme.of(context).bgColorSecondaryContainer,
+      disabledThumbColor: token.bgColorSecondaryContainer,
       overlayShape: const TNoOverlayShape(),
       tickMarkShape: TRoundSliderTickMarkShape(themeData: this),
-      thumbShape:
-          TRoundSliderThumbShape(themeData: this, buildContext: context),
+      thumbShape: TRoundSliderThumbShape(
+        themeData: this,
+        strokeColor: token.componentStrokeColor,
+      ),
       trackShape: TRoundedRectSliderTrackShape(themeData: this),
       rangeTickMarkShape: TRoundRangeSliderTickMarkShape(themeData: this),
-      rangeThumbShape:
-          TRoundRangeSliderThumbShape(themeData: this, buildContext: context),
+      rangeThumbShape: TRoundRangeSliderThumbShape(
+        themeData: this,
+        strokeColor: token.componentStrokeColor,
+      ),
       rangeTrackShape: TRoundedRectRangeSliderTrackShape(themeData: this),
       showValueIndicator: ShowValueIndicator.never,
     );
   }
 
   /// 构建胶囊型系统主题
-  SliderThemeData capsule() {
+  SliderThemeData capsule(TThemeData token) {
     return SliderThemeData(
       trackShape: TCapsuleRectSliderTrackShape(
-          themeData: this,
-          trackColorWhenShowScale: TTheme.of(context).bgColorContainerActive),
+        themeData: this,
+        trackColorWhenShowScale: token.bgColorContainerActive,
+      ),
       tickMarkShape: TCapsuleSliderTickMarkShape(themeData: this),
-      thumbShape:
-          TCapsuleSliderThumbShape(themeData: this, buildContext: context),
+      thumbShape: TCapsuleSliderThumbShape(
+        themeData: this,
+        strokeColor: token.componentStrokeColor,
+      ),
       rangeTrackShape: TCapsuleRectRangeSliderTrackShape(
-          themeData: this,
-          trackColorWhenShowScale: TTheme.of(context).bgColorContainerActive),
+        themeData: this,
+        trackColorWhenShowScale: token.bgColorContainerActive,
+      ),
       rangeTickMarkShape: TCapsuleRangeSliderTickMarkShape(themeData: this),
       rangeThumbShape: TCapsuleRangeSliderThumbShape(
-          themeData: this, buildContext: context),
-      activeTickMarkColor: TTheme.of(context).bgColorContainerActive,
-      inactiveTickMarkColor: TTheme.of(context).bgColorContainerActive,
-      disabledActiveTickMarkColor: TTheme.of(context).bgColorContainerActive,
-      disabledInactiveTickMarkColor: TTheme.of(context).bgColorContainerActive,
+        themeData: this,
+        strokeColor: token.componentStrokeColor,
+      ),
+      activeTickMarkColor: token.bgColorContainerActive,
+      inactiveTickMarkColor: token.bgColorContainerActive,
+      disabledActiveTickMarkColor: token.bgColorContainerActive,
+      disabledInactiveTickMarkColor: token.bgColorContainerActive,
       thumbColor: Colors.white,
-      disabledThumbColor: TTheme.of(context).bgColorSecondaryContainer,
+      disabledThumbColor: token.bgColorSecondaryContainer,
       trackHeight: 24,
-      activeTrackColor:
-          activeTrackColor ?? TTheme.of(context).brandNormalColor,
-      inactiveTrackColor:
-          inactiveTrackColor ?? TTheme.of(context).bgColorComponent,
-      disabledActiveTrackColor: TTheme.of(context).brandDisabledColor,
-      disabledInactiveTrackColor: TTheme.of(context).bgColorComponentDisabled,
+      activeTrackColor: activeTrackColor ?? token.brandNormalColor,
+      inactiveTrackColor: inactiveTrackColor ?? token.bgColorComponent,
+      disabledActiveTrackColor: token.brandDisabledColor,
+      disabledInactiveTrackColor: token.bgColorComponentDisabled,
       overlayShape: const TNoOverlayShape(),
       showValueIndicator: ShowValueIndicator.never,
     );
   }
 
-  /// 复制数据，该方法配[updateSliderThemeData]可以快速服用对象属性
+  /// 复制数据，创建工作副本（隔离 sliderMeasureData 运行时数据）
+  @override
   TSliderThemeData copyWith({
-    SliderThemeData? themeData,
     bool? showScaleValue,
     bool? showThumbValue,
     TextStyle? disabledScaleTextStyle,
@@ -233,7 +255,7 @@ class TSliderThemeData {
     Color? activeTrackColor,
     Color? inactiveTrackColor,
   }) {
-    return TSliderThemeData(
+    return TSliderThemeData._internal(
       showScaleValue: showScaleValue ?? this.showScaleValue,
       showThumbValue: showThumbValue ?? this.showThumbValue,
       disabledScaleTextStyle:
@@ -248,7 +270,21 @@ class TSliderThemeData {
       scaleFormatter: scaleFormatter ?? this.scaleFormatter,
       activeTrackColor: activeTrackColor ?? this.activeTrackColor,
       inactiveTrackColor: inactiveTrackColor ?? this.inactiveTrackColor,
+      capsule: _capsule,
+      sliderMeasureData: SliderMeasureData(),
     );
+  }
+
+  @override
+  TSliderThemeData lerp(ThemeExtension<TSliderThemeData>? other, double t) {
+    if (other is! TSliderThemeData) {
+      return this;
+    }
+    // 无法 lerp 的字段（函数、可变对象）采用阈值切换
+    if (t < 0.5) {
+      return this;
+    }
+    return other;
   }
 }
 
@@ -383,7 +419,7 @@ class TRoundSliderThumbShape extends SliderComponentShape {
     this.elevation = 4.0,
     this.pressedElevation = 4.0,
     required this.themeData,
-    required this.buildContext,
+    required this.strokeColor,
   });
 
   /// The preferred radius of the round thumb shape when the slider is enabled.
@@ -418,7 +454,8 @@ class TRoundSliderThumbShape extends SliderComponentShape {
 
   final TSliderThemeData themeData;
 
-  final BuildContext? buildContext;
+  /// 游标描边颜色（v1.0：从 buildContext.tTheme 改为直接传入 Color）
+  final Color strokeColor;
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
@@ -493,8 +530,8 @@ class TRoundSliderThumbShape extends SliderComponentShape {
           text: TextSpan(
               text: '$formatterValue',
               style: enableAnimation.value > 0
-                  ? themeData.thumbTextStyle
-                  : themeData.disabledThumbTextStyle),
+                  ? themeData.effectiveThumbTextStyle
+                  : themeData.effectiveDisabledThumbTextStyle),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
         ..layout(maxWidth: 100);
@@ -523,7 +560,7 @@ class TRoundSliderThumbShape extends SliderComponentShape {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1
-          ..color = TTheme.of(buildContext).componentStrokeColor);
+          ..color = strokeColor);
   }
 }
 
@@ -658,8 +695,8 @@ class TRoundSliderTickMarkShape extends SliderTickMarkShape {
             text: TextSpan(
                 text: valueFormatter,
                 style: enableAnimation.value > 0
-                    ? themeData.scaleTextStyle
-                    : themeData.disabledScaleTextStyle),
+                    ? themeData.effectiveScaleTextStyle
+                    : themeData.effectiveDisabledScaleTextStyle),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center)
           ..layout(maxWidth: 100);
@@ -888,7 +925,7 @@ class TRoundRangeSliderThumbShape extends RangeSliderThumbShape {
     this.elevation = 3.0,
     this.pressedElevation = 3.0,
     required this.themeData,
-    required this.buildContext,
+    required this.strokeColor,
   });
 
   /// The preferred radius of the round thumb shape when the slider is enabled.
@@ -916,7 +953,8 @@ class TRoundRangeSliderThumbShape extends RangeSliderThumbShape {
 
   final TSliderThemeData themeData;
 
-  final BuildContext? buildContext;
+  /// 游标描边颜色（v1.0：从 buildContext.tTheme 改为直接传入 Color）
+  final Color strokeColor;
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
@@ -997,8 +1035,8 @@ class TRoundRangeSliderThumbShape extends RangeSliderThumbShape {
           text: TextSpan(
               text: '$formatterValue',
               style: enableAnimation.value > 0
-                  ? themeData.thumbTextStyle
-                  : themeData.disabledThumbTextStyle),
+                  ? themeData.effectiveThumbTextStyle
+                  : themeData.effectiveDisabledThumbTextStyle),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
         ..layout(maxWidth: 100);
@@ -1033,7 +1071,7 @@ class TRoundRangeSliderThumbShape extends RangeSliderThumbShape {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1
-          ..color = TTheme.of(buildContext).componentStrokeColor);
+          ..color = strokeColor);
   }
 }
 
@@ -1151,8 +1189,8 @@ class TRoundRangeSliderTickMarkShape extends RangeSliderTickMarkShape {
             text: TextSpan(
                 text: valueFormatter,
                 style: enableAnimation.value > 0
-                    ? themeData.scaleTextStyle
-                    : themeData.disabledScaleTextStyle),
+                    ? themeData.effectiveScaleTextStyle
+                    : themeData.effectiveDisabledScaleTextStyle),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center)
           ..layout(maxWidth: 100);
@@ -1355,7 +1393,7 @@ class TCapsuleSliderThumbShape extends SliderComponentShape
     this.elevation = 4.0,
     this.pressedElevation = 4.0,
     required this.themeData,
-    required this.buildContext,
+    required this.strokeColor,
   });
 
   /// The preferred radius of the round thumb shape when the slider is enabled.
@@ -1391,7 +1429,8 @@ class TCapsuleSliderThumbShape extends SliderComponentShape
   @override
   final TSliderThemeData themeData;
 
-  final BuildContext? buildContext;
+  /// 游标描边颜色（v1.0：从 buildContext.tTheme 改为直接传入 Color）
+  final Color strokeColor;
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
@@ -1466,8 +1505,8 @@ class TCapsuleSliderThumbShape extends SliderComponentShape
           text: TextSpan(
               text: '$formatterValue',
               style: enableAnimation.value > 0
-                  ? themeData.thumbTextStyle
-                  : themeData.disabledThumbTextStyle),
+                  ? themeData.effectiveThumbTextStyle
+                  : themeData.effectiveDisabledThumbTextStyle),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
         ..layout(maxWidth: 100);
@@ -1491,7 +1530,7 @@ class TCapsuleSliderThumbShape extends SliderComponentShape
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1
-          ..color = TTheme.of(buildContext).componentStrokeColor);
+          ..color = strokeColor);
   }
 }
 
@@ -1585,8 +1624,8 @@ class TCapsuleSliderTickMarkShape extends SliderTickMarkShape {
             text: TextSpan(
                 text: valueFormatter,
                 style: enableAnimation.value > 0
-                    ? themeData.scaleTextStyle
-                    : themeData.disabledScaleTextStyle),
+                    ? themeData.effectiveScaleTextStyle
+                    : themeData.effectiveDisabledScaleTextStyle),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center)
           ..layout(maxWidth: 100);
@@ -1823,7 +1862,7 @@ class TCapsuleRangeSliderThumbShape extends RangeSliderThumbShape
     this.elevation = 3.0,
     this.pressedElevation = 3.0,
     required this.themeData,
-    required this.buildContext,
+    required this.strokeColor,
   });
 
   /// The preferred radius of the round thumb shape when the slider is enabled.
@@ -1852,7 +1891,8 @@ class TCapsuleRangeSliderThumbShape extends RangeSliderThumbShape
   @override
   final TSliderThemeData themeData;
 
-  final BuildContext? buildContext;
+  /// 游标描边颜色（v1.0：从 buildContext.tTheme 改为直接传入 Color）
+  final Color strokeColor;
 
   @override
   Size getPreferredSize(bool isEnabled, bool isDiscrete) {
@@ -1934,8 +1974,8 @@ class TCapsuleRangeSliderThumbShape extends RangeSliderThumbShape
           text: TextSpan(
               text: '$formatterValue',
               style: enableAnimation.value > 0
-                  ? themeData.thumbTextStyle
-                  : themeData.disabledThumbTextStyle),
+                  ? themeData.effectiveThumbTextStyle
+                  : themeData.effectiveDisabledThumbTextStyle),
           textDirection: TextDirection.ltr,
           textAlign: TextAlign.center)
         ..layout(maxWidth: 100);
@@ -1960,7 +2000,7 @@ class TCapsuleRangeSliderThumbShape extends RangeSliderThumbShape
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1
-          ..color = TTheme.of(buildContext).componentStrokeColor);
+          ..color = strokeColor);
   }
 }
 
@@ -2062,8 +2102,8 @@ class TCapsuleRangeSliderTickMarkShape extends RangeSliderTickMarkShape {
             text: TextSpan(
                 text: valueFormatter,
                 style: enableAnimation.value > 0
-                    ? themeData.scaleTextStyle
-                    : themeData.disabledScaleTextStyle),
+                    ? themeData.effectiveScaleTextStyle
+                    : themeData.effectiveDisabledScaleTextStyle),
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center)
           ..layout(maxWidth: 100);

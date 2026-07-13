@@ -6,7 +6,7 @@
 | --- | --- | --- | --- |
 | boxDecoration | Decoration? | - | 自定义盒子样式 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| leftLabel | String? | - | 左侧标签 |
+| label | String? | - | 左侧标签 |
 | onChanged | ValueChanged<double>? | - | 滑动变化监听 |
 | onChangeEnd | ValueChanged<double>? | - | 滑动结束监听 |
 | onChangeStart | ValueChanged<double>? | - | 滑动开始监听 |
@@ -24,7 +24,7 @@
 | --- | --- | --- | --- |
 | boxDecoration | Decoration? | - | 自定义盒子样式 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| leftLabel | String? | - | 左侧标签 |
+| label | String? | - | 左侧标签 |
 | onChanged | ValueChanged<RangeValues>? | - | 滑动变化监听 |
 | onChangeEnd | ValueChanged<RangeValues>? | - | 滑动结束监听 |
 | onChangeStart | ValueChanged<RangeValues>? | - | 滑动开始监听 |

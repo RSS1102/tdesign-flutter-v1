@@ -4,11 +4,21 @@ import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
 import '../../util/context_extension.dart';
 
+/// 单元格点击事件回调
 typedef OnCellTap = void Function(int rowIndex, dynamic row, TTableCol col);
+
+/// 表格滚动事件回调
 typedef OnScroll = void Function(ScrollController controller);
+
+/// 选中行事件回调
 typedef OnSelect = void Function(List<dynamic>? data);
+
+/// 行选择事件回调
 typedef OnRowSelect = void Function(int index, bool checked);
 
+/// 表格组件
+///
+/// 支持固定列、排序、选择、斑马纹、自定义单元格等。
 class TTable extends StatefulWidget {
   const TTable({
     super.key,
@@ -206,8 +216,8 @@ class TTableState extends State<TTable> {
       }
       cells.add(Container(
         color: (widget.stripe ?? false) && i % 2 == 0
-            ? TTheme.of(context).bgColorSecondaryContainer
-            : TTheme.of(context).bgColorContainer,
+            ? context.tTheme.bgColorSecondaryContainer
+            : context.tTheme.bgColorContainer,
         child: Row(children: row),
       ));
     }
@@ -228,9 +238,9 @@ class TTableState extends State<TTable> {
 
     // 单元格边框
     var halfBorder =
-        BorderSide(width: 0.5, color: TTheme.of(context).componentStrokeColor);
+        BorderSide(width: 0.5, color: context.tTheme.componentStrokeColor);
     var doubleBorder =
-        BorderSide(width: 1, color: TTheme.of(context).componentStrokeColor);
+        BorderSide(width: 1, color: context.tTheme.componentStrokeColor);
     var topBorder = BorderSide.none,
         rightBorder = BorderSide.none,
         leftBorder = BorderSide.none;
@@ -255,20 +265,20 @@ class TTableState extends State<TTable> {
         var enable = col.selectable?.call(index, widget.data?[index]) ?? true;
         checkBox = TCheckbox(
           id: 'index:$index',
-          checked: _checkedList[index],
-          enable: enable,
+          value: _checkedList[index],
+          enabled: enable,
           customIconBuilder: (context, checked) {
             if (checked) {
               return Icon(TIcons.check_rectangle_filled,
-                  size: 16, color: TTheme.of(context).brandNormalColor);
+                  size: 16, color: context.tTheme.brandNormalColor);
             }
             return Icon(TIcons.rectangle,
                 size: 16,
                 color: enable
-                    ? TTheme.of(context).textColorPrimary
-                    : TTheme.of(context).textColorPlaceholder);
+                    ? context.tTheme.textColorPrimary
+                    : context.tTheme.textColorPlaceholder);
           },
-          onCheckBoxChanged: (checked) {
+          onChanged: (checked) {
             setState(() {
               _checkedList[index] = checked;
               if (checked) {
@@ -294,13 +304,13 @@ class TTableState extends State<TTable> {
       if (isHeader) {
         checkBox = TCheckbox(
           id: 'header',
-          checked: _checkAll,
+          value: _checkAll,
           customIconBuilder: (context, checked) {
             if (_hasChecked == 0) {
               return Icon(
                 TIcons.rectangle,
                 size: 16,
-                color: TTheme.of(context).textColorPlaceholder,
+                color: context.tTheme.textColorPlaceholder,
               );
             }
             var allCheck = _hasChecked >= _totalSelectable;
@@ -308,7 +318,7 @@ class TTableState extends State<TTable> {
                 _hasChecked > 0 && _hasChecked < _totalSelectable;
             return getAllIcon(allCheck, halfSelected);
           },
-          onCheckBoxChanged: (checked) {
+          onChanged: (checked) {
             setState(() {
               if (!_notEmptyData() && checked) {
                 _hasChecked = _totalSelectable = 1;
@@ -374,8 +384,8 @@ class TTableState extends State<TTable> {
         overflow: overflow,
         style: TextStyle(
           color: isHeader
-              ? TTheme.of(context).textColorPlaceholder
-              : TTheme.of(context).textColorPrimary,
+              ? context.tTheme.textColorPlaceholder
+              : context.tTheme.textColorPrimary,
           fontSize: 14,
           height: 1,
           letterSpacing: 0,
@@ -383,8 +393,8 @@ class TTableState extends State<TTable> {
 
     // 表头（需考虑排序模式）
     if (isHeader) {
-      var selectColor = TTheme.of(context).brandNormalColor;
-      var unSelectColor = TTheme.of(context).textColorPlaceholder;
+      var selectColor = context.tTheme.brandNormalColor;
+      var unSelectColor = context.tTheme.textColorPlaceholder;
       return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -526,19 +536,6 @@ class TTableState extends State<TTable> {
       headers.add(SizedBox(width: col.width ?? cellWidth, child: cell));
     }
     return headers;
-  }
-
-  /// 生成固定列的单行数据单元格（按列返回一行中各列的Widget）
-  List<Widget> _getFixedRowCells(
-      List<TTableCol> cols, double cellWidth, int rowIndex) {
-    var cells = <Widget>[];
-    for (var i = 0; i < cols.length; i++) {
-      var col = cols[i];
-      var cell = _getCell(
-          col, false, widget.data?[rowIndex], rowIndex, i == cols.length - 1);
-      cells.add(SizedBox(width: col.width ?? cellWidth, child: cell));
-    }
-    return cells;
   }
 
   /// 生成固定列的数据单元格（按列组织，每列一个Column，无height时使用）
@@ -685,7 +682,7 @@ class TTableState extends State<TTable> {
     if (widget.height != null) {
       return Container(
         width: width,
-        color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+        color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -702,7 +699,7 @@ class TTableState extends State<TTable> {
     // 无height时，表头+数据体直接展示
     return Container(
       width: width,
-      color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+      color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -736,9 +733,9 @@ class TTableState extends State<TTable> {
   TImage _buildEmptyImage() {
     var url = widget.empty?.assetUrl ?? '';
     if (url.startsWith('http')) {
-      return TImage(imgUrl: url);
+      return TImage(src: url);
     }
-    return TImage(assetUrl: url);
+    return TImage(src: url);
   }
 
   /// 半选图标
@@ -751,8 +748,8 @@ class TTableState extends State<TTable> {
                 : TIcons.check_rectangle,
         size: 16,
         color: (checked || halfSelected)
-            ? TTheme.of(context).brandNormalColor
-            : TTheme.of(context).textDisabledColor);
+            ? context.tTheme.brandNormalColor
+            : context.tTheme.textDisabledColor);
   }
 
   @override
@@ -776,7 +773,7 @@ class TTableState extends State<TTable> {
     if (width < _getColsWidth()) {
       return Container(
         width: width,
-        color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+        color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: const ClampingScrollPhysics(),
@@ -801,7 +798,7 @@ class TTableState extends State<TTable> {
     }
     return Container(
       width: width,
-      color: widget.backgroundColor ?? TTheme.of(context).bgColorContainer,
+      color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
       child: Column(
         children: [
           Visibility(

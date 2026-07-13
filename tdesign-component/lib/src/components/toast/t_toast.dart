@@ -1,10 +1,13 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
+
 import '../../../tdesign_flutter.dart';
 import '../../util/auto_size.dart';
 import '../../util/context_extension.dart';
+import '../loading/t_circle_indicator.dart';
 
+/// Toast 文案排列方向
 enum IconTextDirection {
   /// 横向
   horizontal,
@@ -14,23 +17,6 @@ enum IconTextDirection {
 }
 
 /// Toast配置类，支持独立样式定制
-class TToastConfig {
-  final Color? backgroundColor;
-  final TextStyle? textStyle;
-  final double? iconSize;
-  final Color? iconColor;
-  final Duration duration;
-  final bool preventTap;
-
-  const TToastConfig({
-    this.backgroundColor,
-    this.textStyle,
-    this.iconSize,
-    this.iconColor,
-    this.duration = const Duration(milliseconds: 3000),
-    this.preventTap = false,
-  });
-}
 
 /// Toast实例管理类
 class _ToastInstance {
@@ -53,7 +39,9 @@ class _ToastInstance {
   }
 }
 
-/// 改进的Toast组件，支持多个实例和独立样式
+/// 轻提示组件
+///
+/// 支持文本、图标、加载中等样式，支持多实例同时显示。
 class TToast {
   static final Map<String, _ToastInstance> _toastInstances = {};
   static int _instanceCounter = 0;
@@ -83,7 +71,7 @@ class TToast {
         maxLines: maxLines,
         constraints: constraints,
         customWidget: customWidget,
-        config: TToastConfig(
+        config: TToastThemeData(
           backgroundColor: backgroundColor,
           textStyle: textStyle,
           duration: duration,
@@ -120,7 +108,7 @@ class TToast {
         iconData: icon,
         iconTextDirection: direction,
         maxLines: maxLines,
-        config: TToastConfig(
+        config: TToastThemeData(
           backgroundColor: backgroundColor,
           textStyle: textStyle,
           iconSize: iconSize,
@@ -245,7 +233,7 @@ class TToast {
       _TToastLoading(
         text: text,
         customWidget: customWidget,
-        config: TToastConfig(
+        config: TToastThemeData(
           backgroundColor: backgroundColor,
           textStyle: textStyle,
           iconSize: iconSize,
@@ -275,7 +263,7 @@ class TToast {
     final id = toastId ?? _generateToastId();
     _showOverlay(
       _TToastLoadingWithoutText(
-        config: TToastConfig(
+        config: TToastThemeData(
           backgroundColor: backgroundColor,
           iconSize: iconSize,
           iconColor: iconColor,
@@ -389,7 +377,7 @@ class _TIconTextToast extends StatelessWidget {
   final IconData? iconData;
   final IconTextDirection iconTextDirection;
   final int? maxLines;
-  final TToastConfig config;
+  final TToastThemeData config;
 
   const _TIconTextToast({
     this.text,
@@ -400,7 +388,7 @@ class _TIconTextToast extends StatelessWidget {
   });
 
   Widget buildHorizontalWidgets(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 191, maxHeight: 94),
       child: Container(
@@ -434,7 +422,7 @@ class _TIconTextToast extends StatelessWidget {
   }
 
   Widget buildVerticalWidgets(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 136),
       child: Container(
@@ -478,7 +466,7 @@ class _TIconTextToast extends StatelessWidget {
 class _TToastLoading extends StatelessWidget {
   final String? text;
   final Widget? customWidget;
-  final TToastConfig config;
+  final TToastThemeData config;
 
   const _TToastLoading({
     this.text,
@@ -488,7 +476,7 @@ class _TToastLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     return Container(
         height: 110,
         width: 110,
@@ -522,7 +510,7 @@ class _TToastLoading extends StatelessWidget {
 }
 
 class _TToastLoadingWithoutText extends StatelessWidget {
-  final TToastConfig config;
+  final TToastThemeData config;
 
   const _TToastLoadingWithoutText({
     required this.config,
@@ -530,7 +518,7 @@ class _TToastLoadingWithoutText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     return Container(
       width: 80,
       height: 80,
@@ -553,7 +541,7 @@ class _TTextToast extends StatelessWidget {
   final int? maxLines;
   final BoxConstraints? constraints;
   final Widget? customWidget;
-  final TToastConfig config;
+  final TToastThemeData config;
 
   const _TTextToast({
     this.text,
@@ -565,7 +553,7 @@ class _TTextToast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = TTheme.of(context);
+    final theme = context.tTheme;
     return ConstrainedBox(
       constraints: constraints ?? BoxConstraints(maxWidth: 191.scale),
       child: Container(

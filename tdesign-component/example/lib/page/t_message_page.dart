@@ -34,201 +34,225 @@ class TMessagePage extends StatelessWidget {
 
   @Demo(group: 'message')
   Widget _buildPlainTextMessage(BuildContext context) {
-    return TButton(
-      isBlock: true,
-      text: '纯文字的通知',
-      size: TButtonSize.large,
-      type: TButtonType.outline,
-      theme: TButtonTheme.primary,
-      onTap: () {
-        TMessage.showMessage(
-          context: context,
-          content: _commonContent,
-          visible: true,
-          icon: false,
-          theme: MessageTheme.info,
-          duration: 3000,
-          onDurationEnd: () {
-            print('message end');
-          },
-        );
-      },
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: const Text('纯文字的通知'),
+        size: TButtonSize.large,
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: () {
+          TMessage.showMessage(
+            context: context,
+            content: _commonContent,
+            visible: true,
+            icon: false,
+            theme: TMessageVariant.info,
+            duration: 3000,
+            onDurationEnd: () {
+              print('message end');
+            },
+          );
+        },
+      ),
     );
   }
 
   @Demo(group: 'message')
   Widget _buildIconTextMessage(BuildContext context) {
-    return TButton(
-        isBlock: true,
-        text: '带图标的通知',
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: const Text('带图标的通知'),
         size: TButtonSize.large,
-        type: TButtonType.outline,
-        theme: TButtonTheme.primary,
-        onTap: () {
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: () {
           TMessage.showMessage(
             context: context,
             content: _commonContent,
             visible: true,
             icon: true,
-            theme: MessageTheme.info,
+            theme: TMessageVariant.info,
             duration: 3000,
           );
-        });
+        },
+      ),
+    );
   }
 
   @Demo(group: 'message')
   Widget _buildMessageWithCloseButton(BuildContext context) {
-    return TButton(
-        isBlock: true,
-        text: '带关闭的通知',
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: const Text('带关闭的通知'),
         size: TButtonSize.large,
-        type: TButtonType.outline,
-        theme: TButtonTheme.primary,
-        onTap: () {
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: () {
           TMessage.showMessage(
             context: context,
             visible: true,
             icon: true,
             content: _commonContent,
-            theme: MessageTheme.info,
+            theme: TMessageVariant.info,
             duration: 300000,
             closeBtn: true,
-            link: MessageLink(name: '按钮', uri: Uri.parse('www.example.com')),
+            link: TMessageLink(name: '按钮', uri: Uri.parse('www.example.com')),
             onCloseBtnClick: () {
               print('Close button clicked!');
             },
           );
-        });
+        },
+      ),
+    );
   }
 
   @Demo(group: 'message')
   Widget _buildRollingMessage(BuildContext context) {
-    return TButton(
-        isBlock: true,
-        text: '可滚动的通知',
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: const Text('可滚动的通知'),
         size: TButtonSize.large,
-        type: TButtonType.outline,
-        theme: TButtonTheme.primary,
-        onTap: () {
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: () {
           TMessage.showMessage(
               context: context,
               visible: true,
               icon: false,
-              marquee: MessageMarquee(speed: 5000, loop: 1, delay: 300),
+              marquee: TMessageMarquee(speed: 5000, loop: 1, delay: 300),
               content: longContent,
-              theme: MessageTheme.info,
+              theme: TMessageVariant.info,
               duration: 8000,
               onCloseBtnClick: () {
                 print('Close button clicked!');
               });
-        });
+        },
+      ),
+    );
   }
 
   @Demo(group: 'message')
   Widget _buildLinkMessage(BuildContext context) {
-    return TButton(
-        isBlock: true,
-        text: '带按钮的通知',
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: const Text('带按钮的通知'),
         size: TButtonSize.large,
-        type: TButtonType.outline,
-        theme: TButtonTheme.primary,
-        onTap: () {
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: () {
           TMessage.showMessage(
               context: context,
               visible: true,
               icon: true,
               content: _commonContent,
-              theme: MessageTheme.info,
+              theme: TMessageVariant.info,
               duration: 3000,
-              link: MessageLink(
+              link: TMessageLink(
                 name: '按钮',
                 uri: Uri.parse('https://tdesign.tencent.com/'),
               ),
               onLinkClick: () {
                 print('link clicked!');
               });
-        });
+        },
+      ),
+    );
   }
 
   @Demo(group: 'message')
   Widget _buildInfoMessage(BuildContext context) {
-    return TButton(
-      isBlock: true,
-      text: '普通通知',
-      size: TButtonSize.large,
-      type: TButtonType.outline,
-      theme: TButtonTheme.primary,
-      onTap: () {
-        TMessage.showMessage(
-          context: context,
-          visible: true,
-          icon: true,
-          content: _commonContent,
-          theme: MessageTheme.info,
-          duration: 3000,
-        );
-      },
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: const Text('普通通知'),
+        size: TButtonSize.large,
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: () {
+          TMessage.showMessage(
+            context: context,
+            visible: true,
+            icon: true,
+            content: _commonContent,
+            theme: TMessageVariant.info,
+            duration: 3000,
+          );
+        },
+      ),
     );
   }
 
   @Demo(group: 'message')
   Widget _buildSuccessMessage(BuildContext context) {
-    return TButton(
-      isBlock: true,
-      text: '成功通知',
-      size: TButtonSize.large,
-      type: TButtonType.outline,
-      theme: TButtonTheme.primary,
-      onTap: () {
-        TMessage.showMessage(
-          context: context,
-          visible: true,
-          icon: true,
-          content: _commonContent,
-          theme: MessageTheme.success,
-          duration: 3000,
-        );
-      },
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: const Text('成功通知'),
+        size: TButtonSize.large,
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: () {
+          TMessage.showMessage(
+            context: context,
+            visible: true,
+            icon: true,
+            content: _commonContent,
+            theme: TMessageVariant.success,
+            duration: 3000,
+          );
+        },
+      ),
     );
   }
 
   @Demo(group: 'message')
   Widget _buildWarningMessage(BuildContext context) {
-    return TButton(
-        isBlock: true,
-        text: '警示通知',
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: const Text('警示通知'),
         size: TButtonSize.large,
-        type: TButtonType.outline,
-        theme: TButtonTheme.primary,
-        onTap: () {
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: () {
           TMessage.showMessage(
             context: context,
             visible: true,
             icon: true,
             content: _commonContent,
-            theme: MessageTheme.warning,
+            theme: TMessageVariant.warning,
             duration: 3000,
           );
-        });
+        },
+      ),
+    );
   }
 
   @Demo(group: 'message')
   Widget _buildErrorMessage(BuildContext context) {
-    return TButton(
-        isBlock: true,
-        text: '错误通知',
+    return SizedBox(
+      width: double.infinity,
+      child: TButton(
+        child: const Text('错误通知'),
         size: TButtonSize.large,
-        type: TButtonType.outline,
-        theme: TButtonTheme.primary,
-        onTap: () {
+        variant: TButtonVariant.outline,
+        colorScheme: TButtonColorScheme.primary,
+        onPressed: () {
           TMessage.showMessage(
             context: context,
             visible: true,
             icon: true,
             content: _commonContent,
-            theme: MessageTheme.error,
+            theme: TMessageVariant.error,
             duration: 3000,
           );
-        });
+        },
+      ),
+    );
   }
 }

@@ -63,13 +63,11 @@ class _StudyDetailState extends State with SingleTickerProviderStateMixin {
             TTabBar(
                 controller: _tabController,
                 height: 44.h,
-                backgroundColor: Colors.white,
-                indicatorColor: TTheme.of().brandNormalColor,
-                // labelColor:TTheme.of().brandNormalColor,
+                indicatorColor: context.tTheme.brandNormalColor,
+                // labelColor:context.tTheme.brandNormalColor,
                 unselectedLabelStyle: TextStyle(fontSize: 12.sp, color: Colors.red),
                 labelStyle: TextStyle(
                     fontSize: 28.sp,
-                    color: Colors.deepPurpleAccent,
                     fontWeight: FontWeight.w500),
                 indicatorWidth: 16.w,
                 showIndicator: true,
@@ -79,8 +77,8 @@ class _StudyDetailState extends State with SingleTickerProviderStateMixin {
                 ))
                     .toList()),
             Expanded(
-                child: TTabBarView(
-                    isSlideSwitch: true,
+                child:             TTabBarView(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     controller: _tabController,
                     children: _tabs
                         .map((e) => Center(
@@ -102,7 +100,6 @@ class _CourseItemDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(15.w, 10.h, 15.w, 8.h),
-      color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -132,7 +129,7 @@ class _CourseItemDetail extends StatelessWidget {
                   child: Text(
                     '集合图形离开撒娇的案例三等奖集合图形离开撒娇的案例',
                     style: TextStyle(
-                        color: TTheme.of().fontGyColor1,
+                        color: context.tTheme.fontGyColor1,
                         fontSize: 14.sp,
                         overflow: TextOverflow.ellipsis,
                         height: 1.5.h),
@@ -144,17 +141,16 @@ class _CourseItemDetail extends StatelessWidget {
             padding: EdgeInsets.only(top: 5.h, bottom: 12.h),
             child: Text(
               '2020年8月15日开始，共20节课',
-              style: TextStyle(fontSize: 12.sp, color: TTheme.of().fontGyColor2,),
+              style: TextStyle(fontSize: 12.sp, color: context.tTheme.fontGyColor2,),
             ),
           ),
           Row(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(28.w),
-                child: Container(
+                child: SizedBox(
                   width: 28.w,
                   height: 28.w,
-                  color: Colors.grey,
                 ),
               ),
               SizedBox(
@@ -165,7 +161,7 @@ class _CourseItemDetail extends StatelessWidget {
                 maxLines: 1,
                 style: TextStyle(
                     fontSize: 12.sp,
-                    color: TTheme.of().fontGyColor2,
+                    color: context.tTheme.fontGyColor2,
                     overflow: TextOverflow.ellipsis),
               )
             ],

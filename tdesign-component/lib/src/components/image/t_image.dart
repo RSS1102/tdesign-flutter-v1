@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../tdesign_flutter.dart';
+import 'image_widget.dart';
 
-enum TImageType {
+/// 图片形态
+enum TImageVariant {
   /// 裁剪
   clip,
 
@@ -18,7 +19,7 @@ enum TImageType {
   /// 拉伸
   stretch,
 
-  /// 方形,
+  /// 方形
   square,
 
   /// 圆角方形
@@ -30,46 +31,31 @@ enum TImageType {
 
 class TImage extends StatefulWidget {
   const TImage({
-    this.imgUrl,
+    this.src,
     Key? key,
-    this.type = TImageType.roundedSquare,
+    this.variant = TImageVariant.roundedSquare,
     this.errorWidget,
     this.loadingWidget,
     this.width,
-    this.height,
     this.fit,
     this.frameBuilder,
     this.loadingBuilder,
     this.errorBuilder,
     this.semanticLabel,
-    this.excludeFromSemantics = false,
-    this.color,
-    this.opacity,
-    this.colorBlendMode,
+    this.filterQuality = FilterQuality.low,
     this.alignment = Alignment.center,
     this.repeat = ImageRepeat.noRepeat,
-    this.centerSlice,
-    this.matchTextDirection = false,
-    this.gaplessPlayback = false,
-    this.isAntiAlias = false,
-    this.filterQuality = FilterQuality.low,
-    this.cacheHeight,
-    this.cacheWidth,
-    this.assetUrl,
     this.imageFile,
   }) : super(key: key);
 
-  /// 图片地址
-  final String? imgUrl;
-
-  /// 本地素材地址
-  final String? assetUrl;
+  /// 图片地址（网络 URL 或本地 asset 路径）
+  final String? src;
 
   /// 图片文件路径
   final File? imageFile;
 
-  /// 图片类型
-  final TImageType type;
+  /// 图片形态
+  final TImageVariant variant;
 
   /// 加载自定义提示
   final Widget? loadingWidget;
@@ -80,596 +66,167 @@ class TImage extends StatefulWidget {
   /// 自定义宽
   final double? width;
 
-  /// 自定义高
-  final double? height;
-
   /// 适配样式
   final BoxFit? fit;
 
-  /// 以下系统Image属性，释义请参考系统[Image]中注释
-
+  /// 以下系统 Image 属性，释义请参考系统 [Image] 中注释
   final ImageFrameBuilder? frameBuilder;
 
   final ImageLoadingBuilder? loadingBuilder;
 
   final ImageErrorWidgetBuilder? errorBuilder;
 
-  final Color? color;
-
-  final Animation<double>? opacity;
-
   final FilterQuality filterQuality;
-
-  final BlendMode? colorBlendMode;
 
   final AlignmentGeometry alignment;
 
   final ImageRepeat repeat;
 
-  final Rect? centerSlice;
-
-  final bool matchTextDirection;
-
-  final bool gaplessPlayback;
-
   final String? semanticLabel;
-
-  final bool excludeFromSemantics;
-
-  final bool isAntiAlias;
-
-  final int? cacheHeight;
-
-  final int? cacheWidth;
 
   @override
   State<StatefulWidget> createState() => _TImageState();
 }
 
 class _TImageState extends State<TImage> {
-  /// @todo 重复代码，需简化
-  @override
-  Widget build(BuildContext context) {
-    switch (widget.type) {
-      case TImageType.clip:
-        return widget.imageFile == null
-            ? (widget.assetUrl == null
-                ? ImageWidget.network(
-                    widget.imgUrl,
-                    height: widget.height ?? 72,
-                    width: widget.width ?? 72,
-                    errorWidget: widget.errorWidget,
-                    loadingWidget: widget.loadingWidget,
-                    fit: widget.fit ?? BoxFit.none,
-                    color: widget.color,
-                    frameBuilder: widget.frameBuilder,
-                    loadingBuilder: widget.loadingBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    semanticLabel: widget.semanticLabel,
-                    excludeFromSemantics: widget.excludeFromSemantics,
-                    opacity: widget.opacity,
-                    colorBlendMode: widget.colorBlendMode,
-                    alignment: widget.alignment,
-                    repeat: widget.repeat,
-                    centerSlice: widget.centerSlice,
-                    matchTextDirection: widget.matchTextDirection,
-                    gaplessPlayback: widget.gaplessPlayback,
-                    filterQuality: widget.filterQuality,
-                    isAntiAlias: widget.isAntiAlias,
-                    cacheHeight: widget.cacheHeight,
-                    cacheWidth: widget.cacheWidth,
-                  )
-                : ImageWidget.asset(
-                    widget.assetUrl!,
-                    width: widget.width ?? 72,
-                    height: widget.height ?? 72,
-                    errorWidget: widget.errorWidget,
-                    loadingWidget: widget.loadingWidget,
-                    fit: widget.fit ?? BoxFit.none,
-                    color: widget.color,
-                    frameBuilder: widget.frameBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    semanticLabel: widget.semanticLabel,
-                    excludeFromSemantics: widget.excludeFromSemantics,
-                    opacity: widget.opacity,
-                    colorBlendMode: widget.colorBlendMode,
-                    alignment: widget.alignment,
-                    repeat: widget.repeat,
-                    centerSlice: widget.centerSlice,
-                    matchTextDirection: widget.matchTextDirection,
-                    gaplessPlayback: widget.gaplessPlayback,
-                    filterQuality: widget.filterQuality,
-                    isAntiAlias: widget.isAntiAlias,
-                    cacheHeight: widget.cacheHeight,
-                    cacheWidth: widget.cacheWidth,
-                  ))
-            : ImageWidget.file(
-                widget.imageFile,
-                width: widget.width ?? 72,
-                height: widget.height ?? 72,
-                fit: widget.fit ?? BoxFit.none,
-                color: widget.color,
-                frameBuilder: widget.frameBuilder,
-                errorBuilder: widget.errorBuilder,
-                semanticLabel: widget.semanticLabel,
-                excludeFromSemantics: widget.excludeFromSemantics,
-                colorBlendMode: widget.colorBlendMode,
-                alignment: widget.alignment,
-                repeat: widget.repeat,
-                centerSlice: widget.centerSlice,
-                matchTextDirection: widget.matchTextDirection,
-                gaplessPlayback: widget.gaplessPlayback,
-                filterQuality: widget.filterQuality,
-                isAntiAlias: widget.isAntiAlias,
-                cacheWidth: widget.cacheWidth,
-                cacheHeight: widget.cacheHeight,
-              );
-      case TImageType.fitHeight:
-        return widget.imageFile == null
-            ? (widget.assetUrl == null
-                ? ImageWidget.network(
-                    widget.imgUrl,
-                    height: widget.height,
-                    width: widget.width,
-                    errorWidget: widget.errorWidget,
-                    loadingWidget: widget.loadingWidget,
-                    fit: widget.fit ?? BoxFit.fitHeight,
-                    color: widget.color,
-                    frameBuilder: widget.frameBuilder,
-                    loadingBuilder: widget.loadingBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    semanticLabel: widget.semanticLabel,
-                    excludeFromSemantics: widget.excludeFromSemantics,
-                    opacity: widget.opacity,
-                    colorBlendMode: widget.colorBlendMode,
-                    alignment: widget.alignment,
-                    repeat: widget.repeat,
-                    centerSlice: widget.centerSlice,
-                    matchTextDirection: widget.matchTextDirection,
-                    gaplessPlayback: widget.gaplessPlayback,
-                    filterQuality: widget.filterQuality,
-                    isAntiAlias: widget.isAntiAlias,
-                    cacheHeight: widget.cacheHeight,
-                    cacheWidth: widget.cacheWidth,
-                  )
-                : ImageWidget.asset(
-                    widget.assetUrl!,
-                    width: widget.width,
-                    height: widget.height,
-                    errorWidget: widget.errorWidget,
-                    loadingWidget: widget.loadingWidget,
-                    fit: widget.fit ?? BoxFit.fitHeight,
-                    color: widget.color,
-                    frameBuilder: widget.frameBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    semanticLabel: widget.semanticLabel,
-                    excludeFromSemantics: widget.excludeFromSemantics,
-                    opacity: widget.opacity,
-                    colorBlendMode: widget.colorBlendMode,
-                    alignment: widget.alignment,
-                    repeat: widget.repeat,
-                    centerSlice: widget.centerSlice,
-                    matchTextDirection: widget.matchTextDirection,
-                    gaplessPlayback: widget.gaplessPlayback,
-                    filterQuality: widget.filterQuality,
-                    isAntiAlias: widget.isAntiAlias,
-                    cacheHeight: widget.cacheHeight,
-                    cacheWidth: widget.cacheWidth,
-                  ))
-            : ImageWidget.file(
-                widget.imageFile,
-                width: widget.width,
-                height: widget.height,
-                fit: widget.fit ?? BoxFit.fitHeight,
-                color: widget.color,
-                frameBuilder: widget.frameBuilder,
-                errorBuilder: widget.errorBuilder,
-                semanticLabel: widget.semanticLabel,
-                excludeFromSemantics: widget.excludeFromSemantics,
-                colorBlendMode: widget.colorBlendMode,
-                alignment: widget.alignment,
-                repeat: widget.repeat,
-                centerSlice: widget.centerSlice,
-                matchTextDirection: widget.matchTextDirection,
-                gaplessPlayback: widget.gaplessPlayback,
-                filterQuality: widget.filterQuality,
-                isAntiAlias: widget.isAntiAlias,
-                cacheWidth: widget.cacheWidth,
-                cacheHeight: widget.cacheHeight,
-              );
-      case TImageType.stretch:
-        return widget.imageFile == null
-            ? (widget.assetUrl == null
-                ? ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: widget.height ?? 72,
-                        maxWidth: widget.width ?? 72),
-                    child: ImageWidget.network(
-                      widget.imgUrl,
-                      height: widget.height ?? 72,
-                      width: widget.width ?? 72,
-                      errorWidget: widget.errorWidget,
-                      loadingWidget: widget.loadingWidget,
-                      fit: widget.fit ?? BoxFit.fill,
-                      color: widget.color,
-                      frameBuilder: widget.frameBuilder,
-                      loadingBuilder: widget.loadingBuilder,
-                      errorBuilder: widget.errorBuilder,
-                      semanticLabel: widget.semanticLabel,
-                      excludeFromSemantics: widget.excludeFromSemantics,
-                      opacity: widget.opacity,
-                      colorBlendMode: widget.colorBlendMode,
-                      alignment: widget.alignment,
-                      repeat: widget.repeat,
-                      centerSlice: widget.centerSlice,
-                      matchTextDirection: widget.matchTextDirection,
-                      gaplessPlayback: widget.gaplessPlayback,
-                      filterQuality: widget.filterQuality,
-                      isAntiAlias: widget.isAntiAlias,
-                      cacheHeight: widget.cacheHeight,
-                      cacheWidth: widget.cacheWidth,
-                    ),
-                  )
-                : ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: widget.height ?? 72,
-                        maxWidth: widget.width ?? 72),
-                    child: ImageWidget.asset(
-                      widget.assetUrl!,
-                      width: widget.width ?? 72,
-                      height: widget.height ?? 72,
-                      errorWidget: widget.errorWidget,
-                      loadingWidget: widget.loadingWidget,
-                      fit: widget.fit ?? BoxFit.fill,
-                      color: widget.color,
-                      frameBuilder: widget.frameBuilder,
-                      errorBuilder: widget.errorBuilder,
-                      semanticLabel: widget.semanticLabel,
-                      excludeFromSemantics: widget.excludeFromSemantics,
-                      opacity: widget.opacity,
-                      colorBlendMode: widget.colorBlendMode,
-                      alignment: widget.alignment,
-                      repeat: widget.repeat,
-                      centerSlice: widget.centerSlice,
-                      matchTextDirection: widget.matchTextDirection,
-                      gaplessPlayback: widget.gaplessPlayback,
-                      filterQuality: widget.filterQuality,
-                      isAntiAlias: widget.isAntiAlias,
-                      cacheHeight: widget.cacheHeight,
-                      cacheWidth: widget.cacheWidth,
-                    ),
-                  ))
-            : ImageWidget.file(
-                widget.imageFile,
-                width: widget.width ?? 72,
-                height: widget.height ?? 72,
-                fit: widget.fit ?? BoxFit.fill,
-                color: widget.color,
-                frameBuilder: widget.frameBuilder,
-                errorBuilder: widget.errorBuilder,
-                semanticLabel: widget.semanticLabel,
-                excludeFromSemantics: widget.excludeFromSemantics,
-                colorBlendMode: widget.colorBlendMode,
-                alignment: widget.alignment,
-                repeat: widget.repeat,
-                centerSlice: widget.centerSlice,
-                matchTextDirection: widget.matchTextDirection,
-                gaplessPlayback: widget.gaplessPlayback,
-                filterQuality: widget.filterQuality,
-                isAntiAlias: widget.isAntiAlias,
-                cacheWidth: widget.cacheWidth,
-                cacheHeight: widget.cacheHeight,
-              );
-      case TImageType.square:
-        return widget.imageFile == null
-            ? (widget.assetUrl == null
-                ? ImageWidget.network(
-                    widget.imgUrl,
-                    height: widget.height ?? 72,
-                    width: widget.width ?? 72,
-                    errorWidget: widget.errorWidget,
-                    loadingWidget: widget.loadingWidget,
-                    fit: widget.fit ?? BoxFit.cover,
-                    color: widget.color,
-                    frameBuilder: widget.frameBuilder,
-                    loadingBuilder: widget.loadingBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    semanticLabel: widget.semanticLabel,
-                    excludeFromSemantics: widget.excludeFromSemantics,
-                    opacity: widget.opacity,
-                    colorBlendMode: widget.colorBlendMode,
-                    alignment: widget.alignment,
-                    repeat: widget.repeat,
-                    centerSlice: widget.centerSlice,
-                    matchTextDirection: widget.matchTextDirection,
-                    gaplessPlayback: widget.gaplessPlayback,
-                    filterQuality: widget.filterQuality,
-                    isAntiAlias: widget.isAntiAlias,
-                    cacheHeight: widget.cacheHeight,
-                    cacheWidth: widget.cacheWidth,
-                  )
-                : ImageWidget.asset(
-                    widget.assetUrl!,
-                    width: widget.width ?? 72,
-                    height: widget.height ?? 72,
-                    errorWidget: widget.errorWidget,
-                    loadingWidget: widget.loadingWidget,
-                    fit: widget.fit ?? BoxFit.cover,
-                    color: widget.color,
-                    frameBuilder: widget.frameBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    semanticLabel: widget.semanticLabel,
-                    excludeFromSemantics: widget.excludeFromSemantics,
-                    opacity: widget.opacity,
-                    colorBlendMode: widget.colorBlendMode,
-                    alignment: widget.alignment,
-                    repeat: widget.repeat,
-                    centerSlice: widget.centerSlice,
-                    matchTextDirection: widget.matchTextDirection,
-                    gaplessPlayback: widget.gaplessPlayback,
-                    filterQuality: widget.filterQuality,
-                    isAntiAlias: widget.isAntiAlias,
-                    cacheHeight: widget.cacheHeight,
-                    cacheWidth: widget.cacheWidth,
-                  ))
-            : ImageWidget.file(
-                widget.imageFile,
-                width: widget.width ?? 72,
-                height: widget.height ?? 72,
-                fit: widget.fit ?? BoxFit.cover,
-                color: widget.color,
-                frameBuilder: widget.frameBuilder,
-                errorBuilder: widget.errorBuilder,
-                semanticLabel: widget.semanticLabel,
-                excludeFromSemantics: widget.excludeFromSemantics,
-                colorBlendMode: widget.colorBlendMode,
-                alignment: widget.alignment,
-                repeat: widget.repeat,
-                centerSlice: widget.centerSlice,
-                matchTextDirection: widget.matchTextDirection,
-                gaplessPlayback: widget.gaplessPlayback,
-                filterQuality: widget.filterQuality,
-                isAntiAlias: widget.isAntiAlias,
-                cacheWidth: widget.cacheWidth,
-                cacheHeight: widget.cacheHeight,
-              );
-      case TImageType.roundedSquare:
-        return Container(
-            height: widget.height ?? 72,
-            width: widget.width ?? 72,
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.circular(TTheme.of(context).radiusDefault)),
-            child: widget.imageFile == null
-                ? (widget.assetUrl == null
-                    ? ImageWidget.network(
-                        widget.imgUrl,
-                        height: widget.height ?? 72,
-                        width: widget.width ?? 72,
-                        errorWidget: widget.errorWidget,
-                        loadingWidget: widget.loadingWidget,
-                        fit: widget.fit ?? BoxFit.cover,
-                        color: widget.color,
-                        frameBuilder: widget.frameBuilder,
-                        loadingBuilder: widget.loadingBuilder,
-                        errorBuilder: widget.errorBuilder,
-                        semanticLabel: widget.semanticLabel,
-                        excludeFromSemantics: widget.excludeFromSemantics,
-                        opacity: widget.opacity,
-                        colorBlendMode: widget.colorBlendMode,
-                        alignment: widget.alignment,
-                        repeat: widget.repeat,
-                        centerSlice: widget.centerSlice,
-                        matchTextDirection: widget.matchTextDirection,
-                        gaplessPlayback: widget.gaplessPlayback,
-                        filterQuality: widget.filterQuality,
-                        isAntiAlias: widget.isAntiAlias,
-                        cacheHeight: widget.cacheHeight,
-                        cacheWidth: widget.cacheWidth,
-                      )
-                    : ImageWidget.asset(
-                        widget.assetUrl!,
-                        width: widget.width ?? 72,
-                        height: widget.height ?? 72,
-                        errorWidget: widget.errorWidget,
-                        loadingWidget: widget.loadingWidget,
-                        fit: widget.fit ?? BoxFit.cover,
-                        color: widget.color,
-                        frameBuilder: widget.frameBuilder,
-                        errorBuilder: widget.errorBuilder,
-                        semanticLabel: widget.semanticLabel,
-                        excludeFromSemantics: widget.excludeFromSemantics,
-                        opacity: widget.opacity,
-                        colorBlendMode: widget.colorBlendMode,
-                        alignment: widget.alignment,
-                        repeat: widget.repeat,
-                        centerSlice: widget.centerSlice,
-                        matchTextDirection: widget.matchTextDirection,
-                        gaplessPlayback: widget.gaplessPlayback,
-                        filterQuality: widget.filterQuality,
-                        isAntiAlias: widget.isAntiAlias,
-                        cacheHeight: widget.cacheHeight,
-                        cacheWidth: widget.cacheWidth,
-                      ))
-                : ImageWidget.file(
-                    widget.imageFile,
-                    width: widget.width ?? 72,
-                    height: widget.height ?? 72,
-                    fit: widget.fit ?? BoxFit.cover,
-                    color: widget.color,
-                    frameBuilder: widget.frameBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    semanticLabel: widget.semanticLabel,
-                    excludeFromSemantics: widget.excludeFromSemantics,
-                    colorBlendMode: widget.colorBlendMode,
-                    alignment: widget.alignment,
-                    repeat: widget.repeat,
-                    centerSlice: widget.centerSlice,
-                    matchTextDirection: widget.matchTextDirection,
-                    gaplessPlayback: widget.gaplessPlayback,
-                    filterQuality: widget.filterQuality,
-                    isAntiAlias: widget.isAntiAlias,
-                    cacheWidth: widget.cacheWidth,
-                    cacheHeight: widget.cacheHeight,
-                  ));
-      case TImageType.circle:
-        return Container(
-            height: widget.height ?? 72,
-            width: widget.width ?? 72,
-            clipBehavior: Clip.hardEdge,
-            decoration: const BoxDecoration(shape: BoxShape.circle),
-            child: widget.imageFile == null
-                ? (widget.assetUrl == null
-                    ? ImageWidget.network(
-                        widget.imgUrl,
-                        height: widget.height ?? 72,
-                        width: widget.width ?? 72,
-                        errorWidget: widget.errorWidget,
-                        loadingWidget: widget.loadingWidget,
-                        fit: widget.fit ?? BoxFit.cover,
-                        color: widget.color,
-                        frameBuilder: widget.frameBuilder,
-                        loadingBuilder: widget.loadingBuilder,
-                        errorBuilder: widget.errorBuilder,
-                        semanticLabel: widget.semanticLabel,
-                        excludeFromSemantics: widget.excludeFromSemantics,
-                        opacity: widget.opacity,
-                        colorBlendMode: widget.colorBlendMode,
-                        alignment: widget.alignment,
-                        repeat: widget.repeat,
-                        centerSlice: widget.centerSlice,
-                        matchTextDirection: widget.matchTextDirection,
-                        gaplessPlayback: widget.gaplessPlayback,
-                        filterQuality: widget.filterQuality,
-                        isAntiAlias: widget.isAntiAlias,
-                        cacheHeight: widget.cacheHeight,
-                        cacheWidth: widget.cacheWidth,
-                      )
-                    : ImageWidget.asset(
-                        widget.assetUrl!,
-                        width: widget.width ?? 72,
-                        height: widget.height ?? 72,
-                        errorWidget: widget.errorWidget,
-                        loadingWidget: widget.loadingWidget,
-                        fit: widget.fit ?? BoxFit.cover,
-                        color: widget.color,
-                        frameBuilder: widget.frameBuilder,
-                        errorBuilder: widget.errorBuilder,
-                        semanticLabel: widget.semanticLabel,
-                        excludeFromSemantics: widget.excludeFromSemantics,
-                        opacity: widget.opacity,
-                        colorBlendMode: widget.colorBlendMode,
-                        alignment: widget.alignment,
-                        repeat: widget.repeat,
-                        centerSlice: widget.centerSlice,
-                        matchTextDirection: widget.matchTextDirection,
-                        gaplessPlayback: widget.gaplessPlayback,
-                        filterQuality: widget.filterQuality,
-                        isAntiAlias: widget.isAntiAlias,
-                        cacheHeight: widget.cacheHeight,
-                        cacheWidth: widget.cacheWidth,
-                      ))
-                : ImageWidget.file(
-                    widget.imageFile!,
-                    width: widget.width ?? 72,
-                    height: widget.height ?? 72,
-                    errorWidget: widget.errorWidget,
-                    loadingWidget: widget.loadingWidget,
-                    fit: widget.fit ?? BoxFit.cover,
-                    color: widget.color,
-                    frameBuilder: widget.frameBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    semanticLabel: widget.semanticLabel,
-                    excludeFromSemantics: widget.excludeFromSemantics,
-                    opacity: widget.opacity,
-                    colorBlendMode: widget.colorBlendMode,
-                    alignment: widget.alignment,
-                    repeat: widget.repeat,
-                    centerSlice: widget.centerSlice,
-                    matchTextDirection: widget.matchTextDirection,
-                    gaplessPlayback: widget.gaplessPlayback,
-                    filterQuality: widget.filterQuality,
-                    isAntiAlias: widget.isAntiAlias,
-                    cacheHeight: widget.cacheHeight,
-                    cacheWidth: widget.cacheWidth,
-                  ));
-      case TImageType.fitWidth:
-        return widget.imageFile == null
-            ? (widget.assetUrl == null
-                ? ImageWidget.network(
-                    widget.imgUrl,
-                    height: widget.height,
-                    width: widget.width,
-                    errorWidget: widget.errorWidget,
-                    loadingWidget: widget.loadingWidget,
-                    fit: widget.fit ?? BoxFit.fitWidth,
-                    color: widget.color,
-                    frameBuilder: widget.frameBuilder,
-                    loadingBuilder: widget.loadingBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    semanticLabel: widget.semanticLabel,
-                    excludeFromSemantics: widget.excludeFromSemantics,
-                    opacity: widget.opacity,
-                    colorBlendMode: widget.colorBlendMode,
-                    alignment: widget.alignment,
-                    repeat: widget.repeat,
-                    centerSlice: widget.centerSlice,
-                    matchTextDirection: widget.matchTextDirection,
-                    gaplessPlayback: widget.gaplessPlayback,
-                    filterQuality: widget.filterQuality,
-                    isAntiAlias: widget.isAntiAlias,
-                    cacheHeight: widget.cacheHeight,
-                    cacheWidth: widget.cacheWidth,
-                  )
-                : ImageWidget.asset(
-                    widget.assetUrl!,
-                    width: widget.width,
-                    height: widget.height,
-                    errorWidget: widget.errorWidget,
-                    loadingWidget: widget.loadingWidget,
-                    fit: widget.fit ?? BoxFit.fitWidth,
-                    color: widget.color,
-                    frameBuilder: widget.frameBuilder,
-                    errorBuilder: widget.errorBuilder,
-                    semanticLabel: widget.semanticLabel,
-                    excludeFromSemantics: widget.excludeFromSemantics,
-                    opacity: widget.opacity,
-                    colorBlendMode: widget.colorBlendMode,
-                    alignment: widget.alignment,
-                    repeat: widget.repeat,
-                    centerSlice: widget.centerSlice,
-                    matchTextDirection: widget.matchTextDirection,
-                    gaplessPlayback: widget.gaplessPlayback,
-                    filterQuality: widget.filterQuality,
-                    isAntiAlias: widget.isAntiAlias,
-                    cacheHeight: widget.cacheHeight,
-                    cacheWidth: widget.cacheWidth,
-                  ))
-            : ImageWidget.file(
-                widget.imageFile!,
-                width: widget.width,
-                height: widget.height,
+  /// 从 Theme 子树读取 L4 默认值
+  TImageThemeData? _theme(BuildContext context) =>
+      Theme.of(context).extension<TImageThemeData>();
+
+  /// 解析高度：实例无 height 参数，从 Theme 读取
+  double get _height => _theme(context)?.height ?? 72;
+
+  /// 解析宽度：实例 width 优先，否则 Theme 无 width 时取 72
+  double get _width => widget.width ?? 72;
+
+  /// 根据 variant 返回默认 BoxFit
+  BoxFit _defaultFit(TImageVariant variant) {
+    switch (variant) {
+      case TImageVariant.clip:
+        return BoxFit.none;
+      case TImageVariant.fitHeight:
+        return BoxFit.fitHeight;
+      case TImageVariant.fitWidth:
+        return BoxFit.fitWidth;
+      case TImageVariant.stretch:
+        return BoxFit.fill;
+      case TImageVariant.square:
+      case TImageVariant.roundedSquare:
+      case TImageVariant.circle:
+        return BoxFit.cover;
+    }
+  }
+
+  /// 构建内部 ImageWidget（统一参数来源，消除重复代码）
+  ImageWidget _buildImageWidget(BoxFit fit) {
+    final theme = _theme(context);
+    return widget.imageFile == null
+        ? (widget.src == null || widget.src!.startsWith('http')
+            ? ImageWidget.network(
+                widget.src,
+                height: _height,
+                width: _width,
                 errorWidget: widget.errorWidget,
                 loadingWidget: widget.loadingWidget,
-                fit: widget.fit ?? BoxFit.fitWidth,
-                color: widget.color,
+                fit: fit,
+                color: theme?.color,
+                frameBuilder: widget.frameBuilder,
+                loadingBuilder: widget.loadingBuilder,
+                errorBuilder: widget.errorBuilder,
+                semanticLabel: widget.semanticLabel,
+                excludeFromSemantics: theme?.excludeFromSemantics ?? false,
+                opacity: theme?.opacity,
+                colorBlendMode: theme?.colorBlendMode,
+                alignment: widget.alignment,
+                repeat: widget.repeat,
+                centerSlice: theme?.centerSlice,
+                matchTextDirection: theme?.matchTextDirection ?? false,
+                gaplessPlayback: theme?.gaplessPlayback ?? false,
+                filterQuality: widget.filterQuality,
+                isAntiAlias: theme?.isAntiAlias ?? false,
+                cacheHeight: theme?.cacheHeight,
+                cacheWidth: theme?.cacheWidth,
+              )
+            : ImageWidget.asset(
+                widget.src!,
+                width: _width,
+                height: _height,
+                errorWidget: widget.errorWidget,
+                loadingWidget: widget.loadingWidget,
+                fit: fit,
+                color: theme?.color, // coverage:ignore-line
                 frameBuilder: widget.frameBuilder,
                 errorBuilder: widget.errorBuilder,
                 semanticLabel: widget.semanticLabel,
-                excludeFromSemantics: widget.excludeFromSemantics,
-                opacity: widget.opacity,
-                colorBlendMode: widget.colorBlendMode,
+                excludeFromSemantics: theme?.excludeFromSemantics ?? false, // coverage:ignore-line
+                opacity: theme?.opacity, // coverage:ignore-line
+                colorBlendMode: theme?.colorBlendMode, // coverage:ignore-line
                 alignment: widget.alignment,
                 repeat: widget.repeat,
-                centerSlice: widget.centerSlice,
-                matchTextDirection: widget.matchTextDirection,
-                gaplessPlayback: widget.gaplessPlayback,
+                centerSlice: theme?.centerSlice, // coverage:ignore-line
+                matchTextDirection: theme?.matchTextDirection ?? false, // coverage:ignore-line
+                gaplessPlayback: theme?.gaplessPlayback ?? false, // coverage:ignore-line
                 filterQuality: widget.filterQuality,
-                isAntiAlias: widget.isAntiAlias,
-                cacheHeight: widget.cacheHeight,
-                cacheWidth: widget.cacheWidth,
-              );
+                isAntiAlias: theme?.isAntiAlias ?? false, // coverage:ignore-line
+                cacheHeight: theme?.cacheHeight, // coverage:ignore-line
+                cacheWidth: theme?.cacheWidth, // coverage:ignore-line
+              ))
+        : ImageWidget.file(
+            widget.imageFile,
+            width: _width,
+            height: _height,
+            fit: fit,
+            color: theme?.color, // coverage:ignore-line
+            frameBuilder: widget.frameBuilder,
+            errorBuilder: widget.errorBuilder,
+            semanticLabel: widget.semanticLabel,
+            excludeFromSemantics: theme?.excludeFromSemantics ?? false, // coverage:ignore-line
+            colorBlendMode: theme?.colorBlendMode, // coverage:ignore-line
+            alignment: widget.alignment,
+            repeat: widget.repeat,
+            centerSlice: theme?.centerSlice, // coverage:ignore-line
+            matchTextDirection: theme?.matchTextDirection ?? false, // coverage:ignore-line
+            gaplessPlayback: theme?.gaplessPlayback ?? false, // coverage:ignore-line
+            filterQuality: widget.filterQuality,
+            isAntiAlias: theme?.isAntiAlias ?? false, // coverage:ignore-line
+            cacheWidth: theme?.cacheWidth, // coverage:ignore-line
+            cacheHeight: theme?.cacheHeight, // coverage:ignore-line
+          );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fit = widget.fit ?? _defaultFit(widget.variant);
+
+    switch (widget.variant) {
+      case TImageVariant.clip:
+      case TImageVariant.fitHeight:
+      case TImageVariant.fitWidth:
+      case TImageVariant.square:
+        return _buildImageWidget(fit);
+      case TImageVariant.stretch:
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: _height, maxWidth: _width),
+          child: _buildImageWidget(fit),
+        );
+      case TImageVariant.roundedSquare:
+        return Container(
+          height: _height,
+          width: _width,
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+              borderRadius:
+                  BorderRadius.circular(context.tTheme.radiusDefault)),
+          child: _buildImageWidget(fit),
+        );
+      case TImageVariant.circle:
+        return Container(
+          height: _height,
+          width: _width,
+          clipBehavior: Clip.hardEdge,
+          decoration: const BoxDecoration(shape: BoxShape.circle),
+          child: _buildImageWidget(fit),
+        );
     }
   }
 }

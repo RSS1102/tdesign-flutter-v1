@@ -14,13 +14,13 @@
 | multiple | bool | false | 是否多选上传，默认false |
 | onCancel | VoidCallback? | - | 监听取消上传 |
 | onChange | TUploadValueChangedEvent? | - | 监听添加, 删除和替换media事件 |
-| onClick | TUploadClickEvent? | - | 监听点击图片位 |
+| onPressed | TUploadClickEvent? | - | 监听点击图片位 |
 | onError | TUploadErrorEvent? | - | 监听获取资源错误 |
 | onMaxLimitReached | VoidCallback? | - | 监听文件超过最大数量 |
 | onUploadTap | VoidCallback? | - | 自定义upload按钮事件 |
 | onValidate | TUploadValidatorEvent? | - | 监听文件校验出错 |
 | sizeLimit | double? | - | 图片大小限制，单位为KB |
-| type | TUploadBoxType | TUploadBoxType.roundedSquare | Box类型 |
+| type | TUploadVariant | TUploadVariant.roundedSquare | Box类型 |
 | width | double? | 80.0 | 图片宽度 |
 | wrapAlignment | WrapAlignment? | - | 多图对齐方式 |
 | wrapRunSpacing | double? | - | 多图布局时的 runSpacing |
@@ -59,7 +59,7 @@
 | retry | - |
 
 
-### TUploadType
+### TUploadAction
 #### 枚举值
 
 
@@ -70,7 +70,7 @@
 | replace | - |
 
 
-### TUploadBoxType
+### TUploadVariant
 #### 枚举值
 
 
@@ -100,7 +100,7 @@ typedef TUploadClickEvent = void Function(int value);
 #### 类型定义
 
 ```dart
-typedef TUploadValueChangedEvent = void Function(List<TUploadFile> files, TUploadType type);
+typedef TUploadValueChangedEvent = void Function(List<TUploadFile> files, TUploadAction type);
 ```
 
 

@@ -13,29 +13,29 @@
 | left | Widget? | - | 左侧内容（自定义左侧内容，优先级高于prefixIcon） |
 | marquee | bool? | false | 跑马灯效果 |
 | maxLines | int? | 1 | 文本行数（仅静态有效） |
-| onTap | ValueChanged? | - | 点击事件 |
+| onPressed | ValueChanged? | - | 点击事件 |
 | prefixIcon | IconData? | - | 左侧图标 |
 | right | Widget? | - | 右侧内容（自定义右侧内容，优先级高于suffixIcon） |
 | speed | double? | 50 | 滚动速度 |
-| style | TNoticeBarStyle? | - | 公告栏样式 `TNoticeBarStyle` |
+| style | TNoticeBarThemeData? | - | 公告栏样式 `TNoticeBarThemeData` |
 | suffixIcon | IconData? | - | 右侧图标 |
-| theme | TNoticeBarTheme? | TNoticeBarTheme.info | 主题 |
+| theme | TNoticeBarVariant? | TNoticeBarVariant.info | 主题 |
 
 
-### TNoticeBarStyle
+### TNoticeBarThemeData
 #### 简介
 公告栏样式
 
 #### 工厂构造方法
 
-##### TNoticeBarStyle.generateTheme
+##### TNoticeBarThemeData.generateTheme
 
 根据主题生成样式
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | context | BuildContext | - | 上下文 |
-| theme | TNoticeBarTheme? | TNoticeBarTheme.info | - |
+| theme | TNoticeBarVariant? | TNoticeBarVariant.info | - |
 
 #### 默认构造方法
 
@@ -62,7 +62,7 @@
 | step | 步进 |
 
 
-### TNoticeBarTheme
+### TNoticeBarVariant
 #### 简介
 公告栏主题
 #### 枚举值

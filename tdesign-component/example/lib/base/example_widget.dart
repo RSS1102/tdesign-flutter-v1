@@ -7,13 +7,11 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-import '../page/t_theme_page.dart';
 import '../provider/theme_mode_provider.dart';
-import 'syntax_highlighter.dart';
-import 'api_widget.dart';
 import 'example_base.dart';
 import 'example_route.dart';
 import 'notification_center.dart';
+import 'syntax_highlighter.dart';
 import 'web_md_tool.dart';
 
 var navBarkey = GlobalKey();
@@ -105,7 +103,7 @@ class _ExamplePageState extends State<ExamplePage> {
         floatingActionButton: widget.floatingActionButton,
         body: ScrollbarTheme(
             data: ScrollbarThemeData(
-              trackVisibility: MaterialStateProperty.all(true),
+              trackVisibility: WidgetStateProperty.all(true),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,9 +136,9 @@ class _ExamplePageState extends State<ExamplePage> {
                                           child: Column(
                                             children: [
                                               TButton(
-                                                text: '生成Web使用md',
-                                                type: TButtonType.fill,
-                                                onTap: () =>
+                                                child: const Text('生成Web使用md'),
+                                                variant: TButtonVariant.fill,
+                                                onPressed: () =>
                                                     WebMdTool.generateWebMd(
                                                         model: model,
                                                         description:
@@ -156,9 +154,9 @@ class _ExamplePageState extends State<ExamplePage> {
                                                             : null),
                                               ),
                                               TButton(
-                                                text: '返回首页',
-                                                type: TButtonType.fill,
-                                                onTap: () =>
+                                                child: const Text('返回首页'),
+                                                variant: TButtonVariant.fill,
+                                                onPressed: () =>
                                                     Navigator.of(context)
                                                         .maybePop(),
                                               ),
@@ -201,9 +199,9 @@ class _ExamplePageState extends State<ExamplePage> {
               child: Column(
                 children: [
                   TButton(
-                    text: '生成Web使用md',
-                    type: TButtonType.fill,
-                    onTap: () => WebMdTool.generateWebMd(
+                    child: const Text('生成Web使用md'),
+                    variant: TButtonVariant.fill,
+                    onPressed: () => WebMdTool.generateWebMd(
                         model: model,
                         description: widget.desc,
                         exampleCodeGroup: widget.exampleCodeGroup,
@@ -213,9 +211,9 @@ class _ExamplePageState extends State<ExamplePage> {
                             widget.showSingleChild ? widget.singleChild : null),
                   ),
                   TButton(
-                    text: '返回首页',
-                    type: TButtonType.fill,
-                    onTap: () => Navigator.of(context).maybePop(),
+                    child: const Text('返回首页'),
+                    variant: TButtonVariant.fill,
+                    onPressed: () => Navigator.of(context).maybePop(),
                   ),
                 ],
               )),
@@ -283,8 +281,8 @@ class _ExamplePageState extends State<ExamplePage> {
     return TNavBar(
       key: widget.navBarKey,
       title: widget.title,
-      leftBarItems: leftBarItems,
-      rightBarItems: rightBarItems,
+      leading: leftBarItems,
+      actions: rightBarItems,
     );
   }
 
@@ -304,8 +302,8 @@ class _ExamplePageState extends State<ExamplePage> {
           if (WebMdTool.needGenerateWebMd) const TText('WebGenTag'),
           TText(
             widget.title,
-            font: TTheme.of(context).fontHeadlineSmall,
-            textColor: TTheme.of(context).textColorPrimary,
+            font: context.tTheme.fontHeadlineSmall,
+            textColor: context.tTheme.textColorPrimary,
           ),
           Container(
             margin: const EdgeInsets.only(
@@ -313,8 +311,8 @@ class _ExamplePageState extends State<ExamplePage> {
             ),
             child: TText(
               widget.desc,
-              font: TTheme.of(context).fontBodyMedium,
-              textColor: TTheme.of(context).textColorSecondary,
+              font: context.tTheme.fontBodyMedium,
+              textColor: context.tTheme.textColorSecondary,
             ),
           ),
           // Expanded(child: ),
@@ -332,9 +330,9 @@ class _ExamplePageState extends State<ExamplePage> {
           margin: const EdgeInsets.only(left: 16, right: 16, top: 32),
           child: TText(
             '${index < 10 ? "0$index" : index} ${data.title}',
-            font: TTheme.of(context).fontTitleLarge,
+            font: context.tTheme.fontTitleLarge,
             // todo BuildContext
-            // textColor: TTheme.of(context).textColorPrimary,
+            // textColor: context.tTheme.textColorPrimary,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -466,8 +464,8 @@ class _ExampleItemWidgetState extends State<ExampleItemWidget> {
                     bottom: 16),
                 child: TText(
                   widget.data.desc,
-                  font: TTheme.of(context).fontBodyMedium,
-                  textColor: TTheme.of(context).textColorSecondary,
+                  font: context.tTheme.fontBodyMedium,
+                  textColor: context.tTheme.textColorSecondary,
                 ),
               ),
         child
@@ -568,11 +566,11 @@ class _CodeWrapperState extends State<CodeWrapper> {
               child: GestureDetector(
                 onTap: _showCodePanel,
                 child: Container(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                   alignment: Alignment.center,
                   child: TText(
                     'code',
-                    textColor: TTheme.of(context).whiteColor1,
+                    textColor: context.tTheme.whiteColor1,
                   ),
                 ),
               ))
@@ -608,18 +606,16 @@ class _CodeWrapperState extends State<CodeWrapper> {
     codeString ??= await loadCodeString();
     await showModalBottomSheet(
         isScrollControlled: true,
-        barrierColor: Colors.black.withOpacity(0.5),
-        backgroundColor: Colors.transparent,
+        barrierColor: Colors.black.withValues(alpha: 0.5),
         context: context,
         builder: (_) {
           if (codeString!.isEmpty) {
             return Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  color: TTheme.of(context).bgColorSecondaryContainer,
+                  color: context.tTheme.bgColorSecondaryContainer,
                   borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(TTheme.of(context).radiusDefault))),
-              height: 500,
+                      top: Radius.circular(context.tTheme.radiusDefault))),
               child:
                   TText(PlatformUtil.isWeb ? 'web不支持演示代码，请在移动端查看' : '暂无演示代码'),
             );
@@ -642,9 +638,9 @@ ${codeString}
           return Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: TTheme.of(context).bgColorSecondaryContainer,
+                color: context.tTheme.bgColorSecondaryContainer,
                 borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(TTheme.of(context).radiusDefault))),
+                    top: Radius.circular(context.tTheme.radiusDefault))),
             height: height,
             child: Markdown(
               physics: const BouncingScrollPhysics(),

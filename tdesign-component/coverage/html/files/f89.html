@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/tag/t_select_tag.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/tag/t_select_tag.dart</h1></header><div class='meta'>行覆盖 <b>0.0%</b> (0/16) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>import &#x27;package:flutter/material.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span>/// 点击型标签组件，点击时内部更改自身状态</div>
+<div class='row nod'><span class='ln'>6</span>/// 支持样式：方形/圆角/半圆/带关闭图标</div>
+<div class='row nod'><span class='ln'>7</span>class TSelectTag extends StatefulWidget {</div>
+<div class='row unc'><span class='ln'>8</span>▶   const TSelectTag(</div>
+<div class='row nod'><span class='ln'>9</span>    this.text, {</div>
+<div class='row nod'><span class='ln'>10</span>    this.colorScheme,</div>
+<div class='row nod'><span class='ln'>11</span>    this.icon,</div>
+<div class='row nod'><span class='ln'>12</span>    required this.value,</div>
+<div class='row nod'><span class='ln'>13</span>    this.onChanged,</div>
+<div class='row nod'><span class='ln'>14</span>    this.size = TTagSize.medium,</div>
+<div class='row nod'><span class='ln'>15</span>    Key? key,</div>
+<div class='row unc'><span class='ln'>16</span>▶   }) : super(key: key);</div>
+<div class='row nod'><span class='ln'>17</span></div>
+<div class='row nod'><span class='ln'>18</span>  /// 标签内容</div>
+<div class='row nod'><span class='ln'>19</span>  final String text;</div>
+<div class='row nod'><span class='ln'>20</span></div>
+<div class='row nod'><span class='ln'>21</span>  /// 语义色（选中时使用）</div>
+<div class='row nod'><span class='ln'>22</span>  final TTagColorScheme? colorScheme;</div>
+<div class='row nod'><span class='ln'>23</span></div>
+<div class='row nod'><span class='ln'>24</span>  /// 图标内容，可随状态改变颜色</div>
+<div class='row nod'><span class='ln'>25</span>  final IconData? icon;</div>
+<div class='row nod'><span class='ln'>26</span></div>
+<div class='row nod'><span class='ln'>27</span>  /// 是否选中</div>
+<div class='row nod'><span class='ln'>28</span>  final bool value;</div>
+<div class='row nod'><span class='ln'>29</span></div>
+<div class='row nod'><span class='ln'>30</span>  /// 选中状态变更回调；为 null 时禁用选择</div>
+<div class='row nod'><span class='ln'>31</span>  final ValueChanged&lt;bool&gt;? onChanged;</div>
+<div class='row nod'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span>  /// 标签大小</div>
+<div class='row nod'><span class='ln'>34</span>  final TTagSize size;</div>
+<div class='row nod'><span class='ln'>35</span></div>
+<div class='row unc'><span class='ln'>36</span>▶   @override</div>
+<div class='row unc'><span class='ln'>37</span>▶   _TSelectTagState createState() =&gt; _TSelectTagState();</div>
+<div class='row nod'><span class='ln'>38</span>}</div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row nod'><span class='ln'>40</span>class _TSelectTagState extends State&lt;TSelectTag&gt; {</div>
+<div class='row unc'><span class='ln'>41</span>▶   @override</div>
+<div class='row nod'><span class='ln'>42</span>  Widget build(BuildContext context) {</div>
+<div class='row unc'><span class='ln'>43</span>▶     final theme = Theme.of(context).extension&lt;TTagThemeData&gt;();</div>
+<div class='row unc'><span class='ln'>44</span>▶     final effectiveColorScheme = widget.value</div>
+<div class='row unc'><span class='ln'>45</span>▶         ? (widget.colorScheme ?? theme?.colorScheme ?? TTagColorScheme.primary)</div>
+<div class='row nod'><span class='ln'>46</span>        : TTagColorScheme.defaultTheme;</div>
+<div class='row nod'><span class='ln'>47</span></div>
+<div class='row unc'><span class='ln'>48</span>▶     Widget result = TTag(</div>
+<div class='row unc'><span class='ln'>49</span>▶       widget.text,</div>
+<div class='row nod'><span class='ln'>50</span>      colorScheme: effectiveColorScheme,</div>
+<div class='row unc'><span class='ln'>51</span>▶       icon: widget.icon,</div>
+<div class='row unc'><span class='ln'>52</span>▶       size: widget.size,</div>
+<div class='row nod'><span class='ln'>53</span>    );</div>
+<div class='row nod'><span class='ln'>54</span></div>
+<div class='row unc'><span class='ln'>55</span>▶     if (widget.onChanged != null) {</div>
+<div class='row unc'><span class='ln'>56</span>▶       result = GestureDetector(</div>
+<div class='row unc'><span class='ln'>57</span>▶         onTap: () {</div>
+<div class='row unc'><span class='ln'>58</span>▶           widget.onChanged!(!widget.value);</div>
+<div class='row nod'><span class='ln'>59</span>        },</div>
+<div class='row nod'><span class='ln'>60</span>        child: result,</div>
+<div class='row nod'><span class='ln'>61</span>      );</div>
+<div class='row nod'><span class='ln'>62</span>    }</div>
+<div class='row nod'><span class='ln'>63</span>    return result;</div>
+<div class='row nod'><span class='ln'>64</span>  }</div>
+<div class='row nod'><span class='ln'>65</span>}</div>
+<div class='row nod'><span class='ln'>66</span></div>
+</pre></body></html>

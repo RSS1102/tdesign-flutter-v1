@@ -12,7 +12,7 @@ class TForm extends StatefulWidget {
       required this.data,
       this.colon = false,
       this.formContentAlign = TextAlign.left,
-      this.isHorizontal = true,
+      this.layout = true,
       this.disabled = false,
       this.errorMessage,
       this.formLabelAlign = TextAlign.left,
@@ -20,10 +20,10 @@ class TForm extends StatefulWidget {
       this.preventSubmitDefault = true,
       this.requiredMark = true, // 此处必填项有小问题
       this.scrollToFirstError,
-      this.formShowErrorMessage = true,
+      this.showErrorMessage = true,
       this.submitWithWarningMessage = false,
       this.onReset,
-      this.formController,
+      this.controller,
       this.btnGroup})
       : super(key: key);
 
@@ -44,7 +44,7 @@ class TForm extends StatefulWidget {
   final Map<String, dynamic> data;
 
   /// 表单排列方式是否为 水平方向
-  final bool isHorizontal;
+  final bool layout;
 
   /// 是否禁用整个表单
   final bool disabled;
@@ -77,7 +77,7 @@ class TForm extends StatefulWidget {
 
   /// 校验不通过时，是否显示错误提示信息，统一控制全部表单项
   /// 如果希望控制单个表单项，请给 FormItem 设置该属性
-  final bool? formShowErrorMessage;
+  final bool? showErrorMessage;
 
   /// 【讨论中】当校验结果只有告警信息时，是否触发 submit 提交事件
   final bool? submitWithWarningMessage;
@@ -92,7 +92,7 @@ class TForm extends StatefulWidget {
   final List<Widget>? btnGroup;
 
   /// 表单控制器
-  final FormController? formController;
+  final FormController? controller;
 
   @override
   State<TForm> createState() => _TFormState();
@@ -111,11 +111,11 @@ class _TFormState extends State<TForm> {
   void initState() {
     super.initState();
     _formData = widget.data;
-    if (widget.formController != null) {
-      widget.formController?.addListener(() {
-        if (widget.formController?.eventType == 'submit') {
+    if (widget.controller != null) {
+      widget.controller?.addListener(() {
+        if (widget.controller?.eventType == 'submit') {
           onSubmit();
-        } else if (widget.formController?.eventType == 'reset') {
+        } else if (widget.controller?.eventType == 'reset') {
           onReset();
         }
       });
@@ -125,7 +125,7 @@ class _TFormState extends State<TForm> {
   onReset() {
     _updateCount += 1;
     setState(() {
-      _formData = widget.formController!.formData;
+      _formData = widget.controller!.formData;
       _isReset = true;
     });
   }
@@ -133,7 +133,7 @@ class _TFormState extends State<TForm> {
   onSubmit() {
     _updateCount += 1;
     _isReset = false;
-    bool isValidateSuc = true;
+    var isValidateSuc = true;
     _formData.forEach((key, value) {
       if (isValidateSuc) {
         isValidateSuc = validate(key, '${value}');
@@ -170,11 +170,11 @@ class _TFormState extends State<TForm> {
     return TFormInherited(
       formData: widget.data,
       labelWidth: widget.labelWidth,
-      isHorizontal: widget.isHorizontal,
+      layout: widget.layout,
       isValidate: _isValidate,
       rules: widget.rules,
-      formContentAlign: widget.formContentAlign,
-      formShowErrorMessage: widget.formShowErrorMessage,
+      contentAlign: widget.formContentAlign,
+      showErrorMessage: widget.showErrorMessage,
       requiredMark: widget.requiredMark,
       updateCount: _updateCount,
       onFormDataChange: (value) {

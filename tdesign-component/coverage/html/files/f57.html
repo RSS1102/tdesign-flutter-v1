@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang='zh'><head><meta charset='utf-8'><title>lib/src/components/collapse/t_collapse_salted_key.dart</title><style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:0; color:#1f2328; background:#fff; }
+    header { background:#24292f; color:#fff; padding:14px 20px; }
+    header a { color:#79c0ff; }
+    header h1 { margin:0; font-size:16px; }
+    .meta { padding:8px 20px; font-size:13px; background:#f6f8fa; border-bottom:1px solid #e1e4e8; }
+    pre { margin:0; padding:12px 0; font-size:12.5px; line-height:1.5; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ln { display:inline-block; width:48px; text-align:right; padding-right:12px; color:#8c959f; user-select:none; }
+    .cov { background:#e6ffec; }
+    .unc { background:#ffebe9; }
+    .nod { color:#8c959f; }
+    .row { white-space:pre; padding:0 20px; }
+    </style></head><body><header><a href='../index.html'>&larr; 返回</a><h1>lib/src/components/collapse/t_collapse_salted_key.dart</h1></header><div class='meta'>行覆盖 <b>60.0%</b> (6/10) &nbsp;|&nbsp; 函数覆盖 <b>100.0%</b> (0/0)</div><pre><div class='row nod'><span class='ln'>1</span>/*</div>
+<div class='row nod'><span class='ln'>2</span></div>
+<div class='row nod'><span class='ln'>3</span> * Created by dorayhong@tencent.com on 6/8/23.</div>
+<div class='row nod'><span class='ln'>4</span></div>
+<div class='row nod'><span class='ln'>5</span> */</div>
+<div class='row nod'><span class='ln'>6</span></div>
+<div class='row nod'><span class='ln'>7</span>import &#x27;package:flutter/cupertino.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>8</span></div>
+<div class='row nod'><span class='ln'>9</span></div>
+<div class='row cov'><span class='ln'>10</span></div>
+<div class='row nod'><span class='ln'>11</span>import &#x27;../../../tdesign_flutter.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>12</span></div>
+<div class='row nod'><span class='ln'>13</span>import &#x27;../../theme/t_theme.dart&#x27;;</div>
+<div class='row nod'><span class='ln'>14</span></div>
+<div class='row cov'><span class='ln'>15</span></div>
+<div class='row nod'><span class='ln'>16</span></div>
+<div class='row cov'><span class='ln'>17</span>class TCollapseSaltedKey&lt;S, V&gt; extends LocalKey {</div>
+<div class='row nod'><span class='ln'>18</span></div>
+<div class='row nod'><span class='ln'>19</span>  const TCollapseSaltedKey(this.salt, this.value);</div>
+<div class='row cov'><span class='ln'>20</span></div>
+<div class='row nod'><span class='ln'>21</span></div>
+<div class='row nod'><span class='ln'>22</span></div>
+<div class='row cov'><span class='ln'>23</span>  final S salt;</div>
+<div class='row cov'><span class='ln'>24</span></div>
+<div class='row nod'><span class='ln'>25</span>  final V value;</div>
+<div class='row unc'><span class='ln'>26</span>▶ </div>
+<div class='row nod'><span class='ln'>27</span></div>
+<div class='row nod'><span class='ln'>28</span></div>
+<div class='row unc'><span class='ln'>29</span>▶   @override</div>
+<div class='row unc'><span class='ln'>30</span>▶ </div>
+<div class='row unc'><span class='ln'>31</span>▶   bool operator ==(Object other) {</div>
+<div class='row nod'><span class='ln'>32</span></div>
+<div class='row nod'><span class='ln'>33</span>    if (other is! TCollapseSaltedKey&lt;S, V&gt;) {</div>
+<div class='row nod'><span class='ln'>34</span>      return false;</div>
+<div class='row nod'><span class='ln'>35</span>    }</div>
+<div class='row nod'><span class='ln'>36</span>    return salt == other.salt &amp;&amp; value == other.value;</div>
+<div class='row nod'><span class='ln'>37</span></div>
+<div class='row nod'><span class='ln'>38</span>  }</div>
+<div class='row nod'><span class='ln'>39</span></div>
+<div class='row nod'><span class='ln'>40</span></div>
+<div class='row nod'><span class='ln'>41</span></div>
+<div class='row nod'><span class='ln'>42</span>  @override</div>
+<div class='row nod'><span class='ln'>43</span></div>
+<div class='row nod'><span class='ln'>44</span>  int get hashCode =&gt; Object.hash(runtimeType, salt, value);</div>
+<div class='row nod'><span class='ln'>45</span></div>
+<div class='row nod'><span class='ln'>46</span></div>
+<div class='row nod'><span class='ln'>47</span></div>
+<div class='row nod'><span class='ln'>48</span>  @override</div>
+<div class='row nod'><span class='ln'>49</span></div>
+<div class='row nod'><span class='ln'>50</span>  String toString() {</div>
+<div class='row nod'><span class='ln'>51</span></div>
+<div class='row nod'><span class='ln'>52</span></div>
+<div class='row nod'><span class='ln'>53</span></div>
+<div class='row nod'><span class='ln'>54</span>    final saltString = S == String ? &#x27;&lt;\&#x27;$salt\&#x27;&gt;&#x27; : &#x27;&lt;$salt&gt;&#x27;;</div>
+<div class='row nod'><span class='ln'>55</span></div>
+<div class='row nod'><span class='ln'>56</span>    final valueString = V == String ? &#x27;&lt;\&#x27;$value\&#x27;&gt;&#x27; : &#x27;&lt;$value&gt;&#x27;;</div>
+<div class='row nod'><span class='ln'>57</span></div>
+<div class='row nod'><span class='ln'>58</span>    return &#x27;[$saltString $valueString]&#x27;;</div>
+<div class='row nod'><span class='ln'>59</span></div>
+<div class='row nod'><span class='ln'>60</span>  }</div>
+<div class='row nod'><span class='ln'>61</span></div>
+<div class='row nod'><span class='ln'>62</span>}</div>
+<div class='row nod'><span class='ln'>63</span></div>
+<div class='row nod'><span class='ln'>64</span></div>
+</pre></body></html>

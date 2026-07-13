@@ -1,13 +1,11 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart' show FilteringTextInputFormatter, TextInputFormatter;
 
 import '../../../tdesign_flutter.dart';
 
 enum TStepperSize { small, medium, large }
-
-enum TStepperTheme { normal, filled, outline }
 
 enum TStepperIconType { remove, add }
 
@@ -47,11 +45,10 @@ class TStepper extends StatefulWidget {
     this.min = 0,
     this.size = TStepperSize.medium,
     this.step = 1,
-    this.theme = TStepperTheme.normal,
+    this.theme = TStepperColorScheme.normal,
     this.value = 0,
-    this.defaultValue = 0,
     this.onBlur,
-    this.onChange,
+    this.onChanged,
     this.onOverlimit,
     this.controller,
   }) : super(key: key);
@@ -78,19 +75,16 @@ class TStepper extends StatefulWidget {
   final int step;
 
   /// 组件风格
-  final TStepperTheme theme;
+  final TStepperColorScheme theme;
 
   /// 值
   final int? value;
-
-  /// 默认值
-  final int? defaultValue;
 
   /// 输入框失去焦点时触发
   final VoidCallback? onBlur;
 
   /// 数值发生变更时触发
-  final ValueChanged<int>? onChange;
+  final ValueChanged<int>? onChanged;
 
   /// 数值超出限制时触发
   final TStepperOverlimitFunction? onOverlimit;
@@ -106,6 +100,9 @@ class TStepper extends StatefulWidget {
 }
 
 class _TStepperState extends State<TStepper> {
+  /// B/C 类禁用约定：onChanged 为 null 时禁用全部操作
+  bool get _isDisabled => widget.onChanged == null;
+
   late TStepperController _controller;
   late TextEditingController _textController;
   final FocusNode _focusNode = FocusNode();
@@ -117,7 +114,7 @@ class _TStepperState extends State<TStepper> {
       _controller = widget.controller!;
     } else {
       _controller = TStepperController()
-        ..value = widget.value ?? widget.defaultValue ?? 0;
+        ..value = widget.value ?? 0;
     }
     _controller._bindState(this);
     if (widget.eventController != null) {
@@ -158,8 +155,6 @@ class _TStepperState extends State<TStepper> {
         return 38;
       case TStepperSize.large:
         return 45;
-      default:
-        return 38;
     }
   }
 
@@ -176,21 +171,18 @@ class _TStepperState extends State<TStepper> {
         return 24;
       case TStepperSize.large:
         return 28;
-      default:
-        return 24;
     }
   }
 
   Color? _getBackgroundColor(BuildContext context) {
     switch (widget.theme) {
-      case TStepperTheme.filled:
+      case TStepperColorScheme.filled:
         return widget.disabled
-            ? TTheme.of(context).bgColorComponentDisabled
-            : TTheme.of(context).bgColorSecondaryContainer;
-      case TStepperTheme.outline:
+            ? context.tTheme.bgColorComponentDisabled
+            : context.tTheme.bgColorSecondaryContainer;
+      case TStepperColorScheme.outline:
         return null;
-      case TStepperTheme.normal:
-      default:
+      case TStepperColorScheme.normal:
         return null;
     }
   }
@@ -203,8 +195,6 @@ class _TStepperState extends State<TStepper> {
         return 12;
       case TStepperSize.large:
         return 16;
-      default:
-        return 12;
     }
   }
 
@@ -277,8 +267,8 @@ class _TStepperState extends State<TStepper> {
         )));
     _focusNode.unfocus();
 
-    if (widget.onChange != null) {
-      widget.onChange!(_controller._value);
+    if (widget.onChanged != null) {
+      widget.onChanged!(_controller._value);
     }
   }
 
@@ -295,18 +285,18 @@ class _TStepperState extends State<TStepper> {
         ),
         Container(
           decoration: BoxDecoration(
-              border: widget.theme == TStepperTheme.outline
+              border: widget.theme == TStepperColorScheme.outline
                   ? Border(
                       top: BorderSide(
-                        color: TTheme.of(context).componentBorderColor,
+                        color: context.tTheme.componentBorderColor,
                       ),
                       bottom: BorderSide(
-                        color: TTheme.of(context).componentBorderColor,
+                        color: context.tTheme.componentBorderColor,
                       ))
                   : null),
           child: Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: widget.theme == TStepperTheme.normal ? 0 : 4),
+                  horizontal: widget.theme == TStepperColorScheme.normal ? 0 : 4),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                     minWidth: _getWidth(),
@@ -321,18 +311,21 @@ class _TStepperState extends State<TStepper> {
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: TextField(
                       controller: _textController,
-                      enabled: !widget.disabled && !widget.disableInput,
+                      enabled: !_isDisabled && !widget.disableInput,
                       focusNode: _focusNode,
                       style: TextStyle(
                           fontSize: _getFontSize(),
-                          color: widget.disabled
-                              ? TTheme.of(context).textDisabledColor
-                              : TTheme.of(context).textColorPrimary),
+                          color: _isDisabled
+                              ? context.tTheme.textDisabledColor
+                              : context.tTheme.textColorPrimary),
                       textAlign: TextAlign.center,
                       textAlignVertical: TextAlignVertical.center,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
                         isDense: true,
                         contentPadding: EdgeInsets.zero,
                       ),
@@ -393,8 +386,8 @@ class _TStepperState extends State<TStepper> {
                       ],
                       onChanged: (newValue) {
                         final result = int.parse(newValue);
-                        if (widget.onChange != null) {
-                          widget.onChange!(result);
+                        if (widget.onChanged != null) {
+                          widget.onChanged!(result);
                         }
                       },
                     ),
@@ -433,7 +426,7 @@ class TStepperIconButton extends StatelessWidget {
     this.onTap,
     this.size = TStepperSize.medium,
     this.disabled = false,
-    this.theme = TStepperTheme.normal,
+    this.theme = TStepperColorScheme.normal,
     required this.type,
   }) : super(key: key);
 
@@ -441,7 +434,7 @@ class TStepperIconButton extends StatelessWidget {
   final TStepperSize size;
   final TStepperIconType type;
   final bool disabled;
-  final TStepperTheme theme;
+  final TStepperColorScheme theme;
 
   double _getIconSize() {
     switch (size) {
@@ -451,37 +444,34 @@ class TStepperIconButton extends StatelessWidget {
         return 16;
       case TStepperSize.small:
         return 12;
-      default:
-        return 16;
     }
   }
 
-  Icon _getIcon(context) {
+  Icon _getIcon(BuildContext context) {
     var iconType = type == TStepperIconType.add ? Icons.add : Icons.remove;
 
     return Icon(iconType,
         size: _getIconSize(),
         color: disabled
-            ? TTheme.of(context).textDisabledColor
-            : TTheme.of(context).textColorPrimary);
+            ? context.tTheme.textDisabledColor
+            : context.tTheme.textColorPrimary);
   }
 
   Color? _getBackgroundColor(BuildContext context) {
     switch (theme) {
-      case TStepperTheme.filled:
+      case TStepperColorScheme.filled:
         return disabled
-            ? TTheme.of(context).bgColorComponentDisabled
-            : TTheme.of(context).bgColorSecondaryContainer;
-      case TStepperTheme.outline:
-        return disabled ? TTheme.of(context).bgColorComponentDisabled : null;
-      case TStepperTheme.normal:
-      default:
+            ? context.tTheme.bgColorComponentDisabled
+            : context.tTheme.bgColorSecondaryContainer;
+      case TStepperColorScheme.outline:
+        return disabled ? context.tTheme.bgColorComponentDisabled : null;
+      case TStepperColorScheme.normal:
         return null;
     }
   }
 
   BorderRadiusGeometry? _getBorderRadius(BuildContext context) {
-    if (theme == TStepperTheme.normal) {
+    if (theme == TStepperColorScheme.normal) {
       return null;
     }
 
@@ -493,9 +483,9 @@ class TStepperIconButton extends StatelessWidget {
   }
 
   BoxBorder? _getBoxBorder(BuildContext context) {
-    if (theme == TStepperTheme.outline) {
+    if (theme == TStepperColorScheme.outline) {
       return Border.all(
-        color: TTheme.of(context).componentBorderColor,
+        color: context.tTheme.componentBorderColor,
       );
     }
 

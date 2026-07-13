@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../tdesign_flutter.dart' show TPicker, TPopup;
 import '../../util/context_extension.dart';
 import 't_date_time_picker_column.dart';
 import 't_date_time_picker_enums.dart';
@@ -17,7 +18,7 @@ export 't_date_time_picker_model.dart';
 /// 与 [`TCalendar`]、[`TPicker`] 为三个独立对外组件；本组件底层复用 [`TPicker`]
 /// 滚轮能力（经内部 [`DateTimePickerWheel`]），与 [`TCalendar`] 无代码耦合。
 ///
-/// 纯滚轮组件：不含工具栏、确认按钮或弹窗；选中变化通过 `onChange` 实时回调
+/// 纯滚轮组件：不含工具栏、确认按钮或弹窗；选中变化通过 `onChanged` 实时回调
 ///（无 `TPicker.onConfirm` 语义）。弹窗与确认请配合 `TPopup` 等自行组装。
 ///
 /// `initialValue` 为非受控初始值；外部重置选中请变更 `initialValue` 或 `key`。
@@ -32,7 +33,7 @@ class TDateTimePicker extends StatefulWidget {
     this.steps,
     this.initialValue,
     this.showWeek = false,
-    this.onChange,
+    this.onChanged,
     this.height,
     this.itemCount,
   }) : mode = mode ?? DateTimePickerMode(dateMode: DateMode.date);
@@ -87,7 +88,7 @@ class TDateTimePicker extends StatefulWidget {
   /// - **触发时机**：滚轮选中变化且结果与上次通知值不同时
   /// - **返回值**：[TDateTimePickerValue]；不含的列字段为 null
   /// - **典型用法**：维护 draft 状态；弹窗场景配合 [TPopup] 确认后再提交
-  final void Function(TDateTimePickerValue result)? onChange;
+  final void Function(TDateTimePickerValue result)? onChanged;
 
   /// 滚轮视窗高度（像素），默认 200
   final double? height;
@@ -187,7 +188,7 @@ class _TDateTimePickerState extends State<TDateTimePicker> {
       return;
     }
     _lastNotifiedValue = result;
-    widget.onChange?.call(result);
+    widget.onChanged?.call(result);
   }
 
   static bool _listEqualInt(List<dynamic> a, List<dynamic> b) {

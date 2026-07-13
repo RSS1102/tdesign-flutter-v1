@@ -109,7 +109,7 @@ class TIndexesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: TTheme.of(context).grayColor2,
+        color: context.tTheme.grayColor2,
         child: ExamplePage(
           title: tTitle(context),
           desc: '用于页面中信息快速检索，可以根据目录中的页码快速找到所需的内容。',
@@ -150,17 +150,17 @@ class TIndexesPage extends StatelessWidget {
 Widget _buildSimple(BuildContext context) {
   final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
-  return TButton(
-    text: '基础用法',
-    isBlock: true,
-    size: TButtonSize.large,
-    theme: TButtonTheme.primary,
-    type: TButtonType.outline,
-    onTap: () {
+  return SizedBox(
+    width: double.infinity,
+    child: TButton(
+      child: const Text('基础用法'),
+      size: TButtonSize.large,
+      colorScheme: TButtonColorScheme.primary,
+      variant: TButtonVariant.outline,
+      onPressed: () {
       TPopup.show(
         context,
         options: TPopupOptions.right(
-            width: 280,
             inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
             child: TIndexes(
               indexList: indexList,
@@ -175,6 +175,7 @@ Widget _buildSimple(BuildContext context) {
             )),
       );
     },
+  ),
   );
 }
 
@@ -182,17 +183,17 @@ Widget _buildSimple(BuildContext context) {
 Widget _buildOther(BuildContext context) {
   final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
-  return TButton(
-    text: '胶囊索引',
-    isBlock: true,
-    size: TButtonSize.large,
-    theme: TButtonTheme.primary,
-    type: TButtonType.outline,
-    onTap: () {
+  return SizedBox(
+    width: double.infinity,
+    child: TButton(
+      child: const Text('胶囊索引'),
+      size: TButtonSize.large,
+      colorScheme: TButtonColorScheme.primary,
+      variant: TButtonVariant.outline,
+      onPressed: () {
       TPopup.show(
         context,
         options: TPopupOptions.right(
-            width: 280,
             inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
             child: TIndexes(
               indexList: indexList,
@@ -208,6 +209,7 @@ Widget _buildOther(BuildContext context) {
             )),
       );
     },
+  ),
   );
 }
 
@@ -215,17 +217,17 @@ Widget _buildOther(BuildContext context) {
 Widget _buildCustomIndexes(BuildContext context) {
   final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
-  return TButton(
-    text: '自定义索引',
-    isBlock: true,
-    size: TButtonSize.large,
-    theme: TButtonTheme.primary,
-    type: TButtonType.outline,
-    onTap: () {
+  return SizedBox(
+    width: double.infinity,
+    child: TButton(
+      child: const Text('自定义索引'),
+      size: TButtonSize.large,
+      colorScheme: TButtonColorScheme.primary,
+      variant: TButtonVariant.outline,
+      onPressed: () {
       TPopup.show(
         context,
         options: TPopupOptions.right(
-            width: 280,
             inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
             child: TIndexes(
               indexList: indexList,
@@ -233,8 +235,8 @@ Widget _buildCustomIndexes(BuildContext context) {
                 return TText(
                   '自定义 $index',
                   textColor: isActive
-                      ? TTheme.of(context).brandNormalColor
-                      : TTheme.of(context).textColorPrimary,
+                      ? context.tTheme.brandNormalColor
+                      : context.tTheme.textColorPrimary,
                 );
               },
               builderContent: (context, index) {
@@ -248,5 +250,6 @@ Widget _buildCustomIndexes(BuildContext context) {
             )),
       );
     },
+  ),
   );
 }

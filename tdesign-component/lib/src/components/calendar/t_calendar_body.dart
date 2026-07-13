@@ -27,12 +27,12 @@ class TCalendarBody extends StatefulWidget {
     this.onCacheInvalidated,
   }) : super(key: key);
 
-  final CalendarType type;
+  final TCalendarVariant type;
 
   /// 用于新建单元格时标记选中/区间态的快照（来自 [TCalendar] 内部缓存，非运行期受控 prop）。
   final List<DateTime>? initialValue;
 
-  /// 首屏及运行期滚动目标月份；优先于 [initialValue] 决定 [_calcScrollOffset]。
+  /// 首屏及运行期滚动目标月份；优先于 [initialValue] 决定 _calcScrollOffset。
   final DateTime? anchorDate;
   final int firstDayOfWeek;
   final DateTime minDate;
@@ -220,9 +220,9 @@ class _TCalendarBodyState extends State<TCalendarBody> {
     return lo;
   }
 
-  /// 计算首屏滚动偏移：优先 [anchorDate]，否则取 [initialValue] 最早一日，再否则为 0。
+  /// 计算首屏滚动偏移：优先 anchorDate，否则取 initialValue 最早一日，再否则为 0。
   ///
-  /// 越界时 clamp 到 [minDate]/[maxDate] 对应的首尾月，避免锚点落在范围外时静默回顶。
+  /// 越界时 clamp 到 minDate/maxDate 对应的首尾月，避免锚点落在范围外时静默回顶。
   double _calcScrollOffset() {
     var scrollToDate = widget.anchorDate;
     if (scrollToDate == null) {
@@ -511,17 +511,17 @@ class _TCalendarBodyState extends State<TCalendarBody> {
       var selectType = DateSelectType.empty;
       if (date.compareTo(min) == -1 || date.compareTo(max) == 1) {
         selectType = DateSelectType.disabled;
-      } else if (widget.type == CalendarType.single &&
+      } else if (widget.type == TCalendarVariant.single &&
           (widget.initialValue?.length ?? 0) >= 1) {
         if (date.compareTo(widget.initialValue![0]) == 0) {
           selectType = DateSelectType.selected;
         }
-      } else if (widget.type == CalendarType.multiple &&
+      } else if (widget.type == TCalendarVariant.multiple &&
           widget.initialValue != null) {
         if (widget.initialValue!.isContains((e) => date.compareTo(e) == 0)) {
           selectType = DateSelectType.selected;
         }
-      } else if (widget.type == CalendarType.range &&
+      } else if (widget.type == TCalendarVariant.range &&
           (widget.initialValue?.length ?? 0) >= 1) {
         final end =
             (widget.initialValue?.length ?? 0) > 1 ? widget.initialValue![1] : null;

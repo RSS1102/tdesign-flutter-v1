@@ -79,42 +79,42 @@ class _TPickerPageState extends State<TPickerPage> {
 
   final linkedItems = TPickerLinked({
     const TPickerOption(label: '广东省', value: 'GD'): {
-      const TPickerOption(label: '深圳市', value: 'SZ'): [
-        const TPickerOption(label: '南山区', value: 'NS'),
-        const TPickerOption(label: '福田区', value: 'FT'),
-        const TPickerOption(label: '宝安区', value: 'BA'),
-        const TPickerOption(label: '罗湖区', value: 'LH'),
-        const TPickerOption(label: '龙岗区', value: 'LG'),
+      const TPickerOption(label: '深圳市', value: 'SZ'): const [
+        TPickerOption(label: '南山区', value: 'NS'),
+        TPickerOption(label: '福田区', value: 'FT'),
+        TPickerOption(label: '宝安区', value: 'BA'),
+        TPickerOption(label: '罗湖区', value: 'LH'),
+        TPickerOption(label: '龙岗区', value: 'LG'),
       ],
-      const TPickerOption(label: '广州市', value: 'GZ'): [
-        const TPickerOption(label: '天河区', value: 'TH'),
-        const TPickerOption(label: '越秀区', value: 'YX'),
-        const TPickerOption(label: '白云区', value: 'BY'),
-        const TPickerOption(label: '花都区', value: 'HD'),
+      const TPickerOption(label: '广州市', value: 'GZ'): const [
+        TPickerOption(label: '天河区', value: 'TH'),
+        TPickerOption(label: '越秀区', value: 'YX'),
+        TPickerOption(label: '白云区', value: 'BY'),
+        TPickerOption(label: '花都区', value: 'HD'),
       ],
-      const TPickerOption(label: '佛山市', value: 'FS'): [
-        const TPickerOption(label: '顺德区', value: 'SD'),
-        const TPickerOption(label: '南海区', value: 'NH'),
-        const TPickerOption(label: '禅城区', value: 'CC'),
+      const TPickerOption(label: '佛山市', value: 'FS'): const [
+        TPickerOption(label: '顺德区', value: 'SD'),
+        TPickerOption(label: '南海区', value: 'NH'),
+        TPickerOption(label: '禅城区', value: 'CC'),
       ],
     },
     const TPickerOption(label: '浙江省', value: 'ZJ'): {
-      const TPickerOption(label: '杭州市', value: 'HZ'): [
-        const TPickerOption(label: '西湖区', value: 'XH'),
-        const TPickerOption(label: '余杭区', value: 'YH'),
-        const TPickerOption(label: '萧山区', value: 'XS'),
+      const TPickerOption(label: '杭州市', value: 'HZ'): const [
+        TPickerOption(label: '西湖区', value: 'XH'),
+        TPickerOption(label: '余杭区', value: 'YH'),
+        TPickerOption(label: '萧山区', value: 'XS'),
       ],
-      const TPickerOption(label: '宁波市', value: 'NB'): [
-        const TPickerOption(label: '江东区', value: 'JD'),
-        const TPickerOption(label: '北仑区', value: 'BL'),
+      const TPickerOption(label: '宁波市', value: 'NB'): const [
+        TPickerOption(label: '江东区', value: 'JD'),
+        TPickerOption(label: '北仑区', value: 'BL'),
       ],
     },
     // 直辖市（只有 2 级：市 → 区），用于测试"3 列 ↔ 2 列"切换
-    const TPickerOption(label: '重庆市', value: 'CQ'): [
-      const TPickerOption(label: '渝中区', value: 'YZ'),
-      const TPickerOption(label: '江北区', value: 'JB'),
-      const TPickerOption(label: '渝北区', value: 'YB'),
-      const TPickerOption(label: '南岸区', value: 'NA'),
+    const TPickerOption(label: '重庆市', value: 'CQ'): const [
+      TPickerOption(label: '渝中区', value: 'YZ'),
+      TPickerOption(label: '江北区', value: 'JB'),
+      TPickerOption(label: '渝北区', value: 'YB'),
+      TPickerOption(label: '南岸区', value: 'NA'),
     ],
   });
 
@@ -183,6 +183,7 @@ class _TPickerPageState extends State<TPickerPage> {
   bool globalDisabled = false;
 
   // ========== 全局 disabled 开关 ==========
+  @override
   Widget build(BuildContext context) {
     return ExamplePage(
       title: tTitle(),
@@ -235,14 +236,14 @@ class _TPickerPageState extends State<TPickerPage> {
     TPopup.show(
       context,
       options: TPopupOptions.bottom(
-        titleWidget: TText(title, font: TTheme.of(context).fontTitleMedium),
+        titleWidget: TText(title, font: context.tTheme.fontTitleMedium),
         onVisibleChange: (visible, trigger) {
           if (!visible && trigger == TPopupTrigger.confirm) {
             onConfirm();
           }
         },
         child: Material(
-          color: TTheme.of(context).bgColorContainer,
+          color: context.tTheme.bgColorContainer,
           child: SafeArea(
             top: false,
             child: picker,
@@ -285,8 +286,8 @@ class _TPickerPageState extends State<TPickerPage> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        color: TTheme.of(context).bgColorContainer,
-        borderRadius: BorderRadius.circular(TTheme.of(context).radiusDefault),
+        color: context.tTheme.bgColorContainer,
+        borderRadius: BorderRadius.circular(context.tTheme.radiusDefault),
       ),
       child: child,
     );
@@ -301,13 +302,13 @@ class _TPickerPageState extends State<TPickerPage> {
       children: [
         Text('选中城市: ${selectedCity.isEmpty ? "未选择" : selectedCity}',
             style: TextStyle(
-                fontSize: 14, color: TTheme.of(context).textColorSecondary)),
+                fontSize: 14, color: context.tTheme.textColorSecondary)),
         const SizedBox(height: 8),
         _pickerCard(
           context,
           child: TPicker(
               items: cityItems,
-              onChange: (_, v) => setState(() => selectedCity = v.labels.first)),
+              onChanged: (_, v) => setState(() => selectedCity = v.labels.first)),
         ),
       ],
     );
@@ -321,13 +322,13 @@ class _TPickerPageState extends State<TPickerPage> {
         Text(
           'TPickerLinked：切换月份后日列自动变为 28 / 30 / 31 天（demo 平年，2 月固定 28 天）',
           style: TextStyle(
-              fontSize: 12, color: TTheme.of(context).textColorPlaceholder),
+              fontSize: 12, color: context.tTheme.textColorPlaceholder),
         ),
         const SizedBox(height: 4),
         Text(
           '选中: ${selectedMonthDay.isEmpty ? "未选择" : selectedMonthDay}',
           style: TextStyle(
-              fontSize: 14, color: TTheme.of(context).textColorSecondary),
+              fontSize: 14, color: context.tTheme.textColorSecondary),
         ),
         const SizedBox(height: 8),
         _pickerCard(
@@ -335,7 +336,7 @@ class _TPickerPageState extends State<TPickerPage> {
           child: TPicker(
             items: _monthDayItems,
             initialValue: const [1, 1],
-            onChange: (_, v) =>
+            onChanged: (_, v) =>
                 setState(() => selectedMonthDay = v.labels.join(' / ')),
           ),
         ),
@@ -350,14 +351,14 @@ class _TPickerPageState extends State<TPickerPage> {
       children: [
         Text('选中时间: ${selectedTime.isEmpty ? "未选择" : selectedTime}',
             style: TextStyle(
-                fontSize: 14, color: TTheme.of(context).textColorSecondary)),
+                fontSize: 14, color: context.tTheme.textColorSecondary)),
         const SizedBox(height: 8),
         _pickerCard(
           context,
           child: TPicker(
               items: timeItems,
               itemCount: 5,
-              onChange: (_, v) => setState(() => selectedTime =
+              onChanged: (_, v) => setState(() => selectedTime =
                   '${v.values[0]}:${v.values[1].toString().padLeft(2, '0')}:${v.values[2].toString().padLeft(2, '0')}')),
         ),
       ],
@@ -372,19 +373,19 @@ class _TPickerPageState extends State<TPickerPage> {
         Text(
           '五级联动：${_kFiveLevelNames.join(' → ')}（切换第 1 级后，第 2–5 级数据全部刷新）',
           style: TextStyle(
-              fontSize: 12, color: TTheme.of(context).textColorPlaceholder),
+              fontSize: 12, color: context.tTheme.textColorPlaceholder),
         ),
         const SizedBox(height: 4),
         Text(
           '适用 TPickerLinked 静态树：整树在内存、每级项数可控；label 用 1 / 1.1 / 1.1.1 便于窄列展示',
           style: TextStyle(
-              fontSize: 12, color: TTheme.of(context).textColorPlaceholder),
+              fontSize: 12, color: context.tTheme.textColorPlaceholder),
         ),
         const SizedBox(height: 4),
         Text(
           '选中: ${selectedFiveLevel.isEmpty ? "未选择" : selectedFiveLevel}',
           style: TextStyle(
-              fontSize: 14, color: TTheme.of(context).textColorSecondary),
+              fontSize: 14, color: context.tTheme.textColorSecondary),
         ),
         const SizedBox(height: 8),
         _pickerCard(
@@ -398,7 +399,7 @@ class _TPickerPageState extends State<TPickerPage> {
               '1.1.1.1',
               '1.1.1.1.1',
             ],
-            onChange: (_, v) =>
+            onChanged: (_, v) =>
                 setState(() => selectedFiveLevel = v.labels.join(' / ')),
           ),
         ),
@@ -416,18 +417,18 @@ class _TPickerPageState extends State<TPickerPage> {
         Text(
             '选中: ${selectedItemDisabled.isEmpty ? "未选择" : selectedItemDisabled}',
             style: TextStyle(
-                fontSize: 14, color: TTheme.of(context).textColorSecondary)),
+                fontSize: 14, color: context.tTheme.textColorSecondary)),
         const SizedBox(height: 4),
         Text('提示: 标灰的选项不可选（第1列「保密」、第2列「A排1座/A排6座/A排7座/A排8座/A排12座」）',
             style: TextStyle(
-                fontSize: 12, color: TTheme.of(context).textColorPlaceholder)),
+                fontSize: 12, color: context.tTheme.textColorPlaceholder)),
         const SizedBox(height: 8),
         _pickerCard(
           context,
           child: TPicker(
               items: itemDisabledItems,
               initialValue: const ['M', 'A5'],
-              onChange: (_, v) => setState(() =>
+              onChanged: (_, v) => setState(() =>
                   selectedItemDisabled = '${v.labels.first} ${v.labels.last}')),
         ),
       ],
@@ -450,8 +451,8 @@ class _TPickerPageState extends State<TPickerPage> {
                 style: TextStyle(
                     fontSize: 14,
                     color: globalDisabled
-                        ? TTheme.of(context).errorNormalColor
-                        : TTheme.of(context).successNormalColor)),
+                        ? context.tTheme.errorNormalColor
+                        : context.tTheme.successNormalColor)),
           ],
         ),
         const SizedBox(height: 8),
@@ -460,13 +461,13 @@ class _TPickerPageState extends State<TPickerPage> {
           child: TPicker(
               items: cityItems,
               initialValue: const ['GZ'],
-              onChange: (_, v) => debugPrint('选中: $v'),
+              onChanged: (_, v) => debugPrint('选中: $v'),
               disabled: globalDisabled),
         ),
         const SizedBox(height: 4),
         Text('切换开关可控制整个选择器的禁用/启用状态',
             style: TextStyle(
-                fontSize: 12, color: TTheme.of(context).textColorPlaceholder)),
+                fontSize: 12, color: context.tTheme.textColorPlaceholder)),
       ],
     );
   }
@@ -484,7 +485,7 @@ class _TPickerPageState extends State<TPickerPage> {
       title: '弹窗-联动选择(省市区)',
       note: label.isEmpty ? '请选择' : label,
       arrow: true,
-      onClick: (_) {
+      onTap: () {
         TPickerValue? draft;
         final initial =
             _popupLinkedValue?.values ?? List<dynamic>.from(_popupLinkedInitial);
@@ -501,7 +502,7 @@ class _TPickerPageState extends State<TPickerPage> {
           picker: TPicker(
             items: linkedItems,
             initialValue: initial,
-            onChange: (_, value) => draft = value,
+            onChanged: (_, value) => draft = value,
           ),
         );
       },
@@ -580,13 +581,13 @@ class _TPickerPageState extends State<TPickerPage> {
               '在 onColumnScrollEnd 里判断接近列底后 append items；onChange 仅维护 draft',
               style: TextStyle(
                   fontSize: 12,
-                  color: TTheme.of(context).textColorPlaceholder),
+                  color: context.tTheme.textColorPlaceholder),
             ),
             const SizedBox(height: 4),
             Text(
               vm.statusLine,
               style: TextStyle(
-                  fontSize: 14, color: TTheme.of(context).textColorSecondary),
+                  fontSize: 14, color: context.tTheme.textColorSecondary),
             ),
             const SizedBox(height: 8),
             Stack(
@@ -602,20 +603,16 @@ class _TPickerPageState extends State<TPickerPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: TTheme.of(context)
+                          color: context.tTheme
                               .fontGyColor1
-                              .withOpacity(0.72),
+                              .withValues(alpha: 0.72),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const SizedBox(
-                              width: 12,
-                              height: 12,
                               child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(width: 6),
@@ -636,7 +633,7 @@ class _TPickerPageState extends State<TPickerPage> {
               '滚近底部每次追加 10 条（无总量上限）；切换分类时子列读缓存或按需拉取',
               style: TextStyle(
                   fontSize: 12,
-                  color: TTheme.of(context).textColorPlaceholder),
+                  color: context.tTheme.textColorPlaceholder),
             ),
           ],
         );
@@ -701,13 +698,13 @@ class _TPickerPageState extends State<TPickerPage> {
         Text(
           '后端原始字段：city / code / readonly。通过 keys(label: "city") 映射为 label',
           style: TextStyle(
-              fontSize: 12, color: TTheme.of(context).textColorPlaceholder),
+              fontSize: 12, color: context.tTheme.textColorPlaceholder),
         ),
         const SizedBox(height: 4),
         Text(
           '当前选中：${_customKeysSelectionText()}',
           style: TextStyle(
-              fontSize: 14, color: TTheme.of(context).textColorSecondary),
+              fontSize: 14, color: context.tTheme.textColorSecondary),
         ),
         const SizedBox(height: 8),
         _pickerCard(
@@ -715,7 +712,7 @@ class _TPickerPageState extends State<TPickerPage> {
           child: TPicker(
             items: _customKeysItems,
             initialValue: _kCustomKeysInitial,
-            onChange: (_, v) => setState(() => _customKeysValue = v),
+            onChanged: (_, v) => setState(() => _customKeysValue = v),
           ),
         ),
       ],
@@ -732,16 +729,15 @@ class _TPickerPageState extends State<TPickerPage> {
         Text(
           '示例：height(350) + itemCount(7)，每屏显示 7 项',
           style: TextStyle(
-              fontSize: 12, color: TTheme.of(context).textColorPlaceholder),
+              fontSize: 12, color: context.tTheme.textColorPlaceholder),
         ),
         const SizedBox(height: 8),
         _pickerCard(
           context,
           child: TPicker(
             items: cityItems,
-            height: 350,
             itemCount: 7,
-            onChange: (_, v) => debugPrint('选中: ${v.labels.first}'),
+            onChanged: (_, v) => debugPrint('选中: ${v.labels.first}'),
           ),
         ),
       ],
@@ -758,13 +754,13 @@ class _TPickerPageState extends State<TPickerPage> {
         Text(
           '示例：itemBuilder 自定义子项渲染，可添加图标、背景色等',
           style: TextStyle(
-              fontSize: 12, color: TTheme.of(context).textColorPlaceholder),
+              fontSize: 12, color: context.tTheme.textColorPlaceholder),
         ),
         const SizedBox(height: 4),
         Text(
           '选中: ${_customItemBuilderValue.isEmpty ? "未选择" : _customItemBuilderValue}',
           style: TextStyle(
-              fontSize: 14, color: TTheme.of(context).textColorSecondary),
+              fontSize: 14, color: context.tTheme.textColorSecondary),
         ),
         const SizedBox(height: 8),
         _pickerCard(
@@ -772,7 +768,7 @@ class _TPickerPageState extends State<TPickerPage> {
           child: TPicker(
             items: cityItems,
             itemBuilder: (ctx, content, colIndex, index, calculator, distance) {
-              final theme = TTheme.of(ctx);
+              final theme = ctx.tTheme;
               final selected = distance == 0;
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -801,7 +797,7 @@ class _TPickerPageState extends State<TPickerPage> {
                 ),
               );
             },
-            onChange: (_, v) =>
+            onChanged: (_, v) =>
                 setState(() => _customItemBuilderValue = v.labels.first),
           ),
         ),

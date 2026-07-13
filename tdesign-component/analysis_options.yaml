@@ -1,6 +1,4 @@
 analyzer:
-  enable-experiment:
-    - extension-methods
   errors:
     unused_import: ignore
     camel_case_types: warning
@@ -62,8 +60,6 @@ linter:
     - prefer_is_empty
     #3.51 【必须】不要使用lambda表达式来替代tear-off
     - unnecessary_lambdas
-    #3.61 【必须】参数默认值用=号
-    - prefer_equal_for_default_values
     #3.71 【必须】不要把变量初始化为null
     - avoid_init_to_null
     #3.82 【必须】去掉不必要的setter和getter
@@ -132,8 +128,6 @@ linter:
     - empty_constructor_bodies
     # 避免使用空语句
     - empty_statements
-    # 不要出现可以在编译阶段推算出恒true或者false的条件判断
-    - invariant_booleans
     # 当contains方法的参数和可枚举的类型不同，不要触发可枚举类型的contains方法
     - iterable_contains_unrelated_type
     # 用小写加下划线做库的命名

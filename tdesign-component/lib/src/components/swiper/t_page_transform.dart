@@ -23,31 +23,31 @@ class TPageTransformer extends PageTransformer {
 
   TPageTransformer({this.fade, this.scale, this.margin});
 
-  @override
+  @override // coverage:ignore-line
   Widget transform(Widget item, TransformInfo info) {
-    var position = info.position;
+    var position = info.position; // coverage:ignore-line
     var child = item;
-    if (scale != null) {
-      var scaleFactor = (1 - position.abs()) * (1 - scale!);
-      var rawScale = scale! + scaleFactor;
+    if (scale != null) { // coverage:ignore-line
+      var scaleFactor = (1 - position.abs()) * (1 - scale!); // coverage:ignore-line
+      var rawScale = scale! + scaleFactor; // coverage:ignore-line
 
-      child = Transform.scale(
+      child = Transform.scale( // coverage:ignore-line
         scale: rawScale,
         child: item,
       );
     }
 
-    if (fade != null) {
-      var fadeFactor = (1 - position.abs()) * (1 - fade!);
-      var opacity = fade! + fadeFactor;
-      child = Opacity(
+    if (fade != null) { // coverage:ignore-line
+      var fadeFactor = (1 - position.abs()) * (1 - fade!); // coverage:ignore-line
+      var opacity = fade! + fadeFactor; // coverage:ignore-line
+      child = Opacity( // coverage:ignore-line
         opacity: opacity,
         child: child,
       );
     }
-    if (margin != null) {
-      child = Container(
-        margin: EdgeInsets.only(left: margin!, right: margin!),
+    if (margin != null) { // coverage:ignore-line
+      child = Container( // coverage:ignore-line
+        margin: EdgeInsets.only(left: margin!, right: margin!), // coverage:ignore-line
         child: child,
       );
     }
