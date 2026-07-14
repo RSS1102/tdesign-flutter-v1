@@ -15,12 +15,12 @@ Widget _buildTestApp(Widget child) {
 }
 
 /// Helper: 构建标准 iconText 类型 TBottomTabBar
-Widget _buildIconTextTabBar({int currentIndex = 0}) {
+Widget _buildIconTextTabBar({int value = 0}) {
   return TBottomTabBar(
     TBottomTabBarBasicType.iconText,
     componentType: TBottomTabBarComponentType.normal,
     useVerticalDivider: false,
-    currentIndex: currentIndex,
+    value: value,
     navigationTabs: [
       TBottomTabBarTabConfig(
         tabText: '书籍',
@@ -39,12 +39,12 @@ Widget _buildIconTextTabBar({int currentIndex = 0}) {
 }
 
 /// Helper: 构建标准 icon 类型 TBottomTabBar
-Widget _buildIconTabBar({int currentIndex = 0}) {
+Widget _buildIconTabBar({int value = 0}) {
   return TBottomTabBar(
     TBottomTabBarBasicType.icon,
     componentType: TBottomTabBarComponentType.normal,
     useVerticalDivider: false,
-    currentIndex: currentIndex,
+    value: value,
     navigationTabs: [
       TBottomTabBarTabConfig(
         selectedIcon: const Icon(Icons.book),
@@ -64,8 +64,7 @@ void main() {
   group('TBottomTabBar — iconText 图标颜色 (issue #900)', () {
     // TC-01: iconText 选中 tab 图标颜色为 brandNormalColor
     testWidgets('TC-01: 选中 tab 的图标颜色应为 brandNormalColor', (tester) async {
-      await tester
-          .pumpWidget(_buildTestApp(_buildIconTextTabBar(currentIndex: 0)));
+      await tester.pumpWidget(_buildTestApp(_buildIconTextTabBar(value: 0)));
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
@@ -93,8 +92,7 @@ void main() {
 
     // TC-02: iconText 未选中 tab 图标颜色为 textColorPrimary
     testWidgets('TC-02: 未选中 tab 的图标颜色应为 textColorPrimary', (tester) async {
-      await tester
-          .pumpWidget(_buildTestApp(_buildIconTextTabBar(currentIndex: 0)));
+      await tester.pumpWidget(_buildTestApp(_buildIconTextTabBar(value: 0)));
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
@@ -126,7 +124,7 @@ void main() {
             TBottomTabBarBasicType.iconText,
             componentType: TBottomTabBarComponentType.normal,
             useVerticalDivider: false,
-            currentIndex: selectedIndex,
+            value: selectedIndex,
             navigationTabs: [
               TBottomTabBarTabConfig(
                 tabText: '书籍',
@@ -169,7 +167,7 @@ void main() {
     // TC-04: icon 类型选中 tab 图标颜色为 brandNormalColor
     testWidgets('TC-04: icon 类型 — 选中 tab 图标颜色应为 brandNormalColor',
         (tester) async {
-      await tester.pumpWidget(_buildTestApp(_buildIconTabBar(currentIndex: 0)));
+      await tester.pumpWidget(_buildTestApp(_buildIconTabBar(value: 0)));
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
@@ -192,7 +190,7 @@ void main() {
     // TC-05: icon 类型未选中 tab 图标颜色为 textColorPrimary
     testWidgets('TC-05: icon 类型 — 未选中 tab 图标颜色应为 textColorPrimary',
         (tester) async {
-      await tester.pumpWidget(_buildTestApp(_buildIconTabBar(currentIndex: 0)));
+      await tester.pumpWidget(_buildTestApp(_buildIconTabBar(value: 0)));
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
@@ -214,8 +212,7 @@ void main() {
   group('TBottomTabBar — 回归检查', () {
     // TC-06: 文字颜色不受影响
     testWidgets('TC-06: iconText 类型文字颜色回归验证', (tester) async {
-      await tester
-          .pumpWidget(_buildTestApp(_buildIconTextTabBar(currentIndex: 0)));
+      await tester.pumpWidget(_buildTestApp(_buildIconTextTabBar(value: 0)));
       await tester.pumpAndSettle();
 
       final BuildContext context = tester.element(find.byType(TBottomTabBar));
@@ -250,7 +247,7 @@ void main() {
       await tester.pumpWidget(_buildTestApp(TBottomTabBar(
         TBottomTabBarBasicType.iconText,
         componentType: TBottomTabBarComponentType.normal,
-        currentIndex: 0,
+        value: 0,
         navigationTabs: [
           TBottomTabBarTabConfig(
             tabText: '书籍',

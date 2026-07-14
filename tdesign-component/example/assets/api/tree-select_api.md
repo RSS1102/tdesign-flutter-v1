@@ -4,14 +4,14 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| value | List<dynamic> | const [] | 初始值，对应options中的value值 |
-| height | double | 336 | 高度 |
+| height | double? | - | 高度 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | multiple | bool | false | 支持多选 |
-| onChange | TTreeSelectChangeEvent? | - | 选中值发生变化 |
+| onChanged | TTreeSelectChangeEvent? | - | 选中值发生变化 |
 | options | List<TSelectOption> | const [] | 展示的选项列表 |
-| outwardCornerRadius | double | 9 | 一级菜单选中项的外弯折圆角半径，默认为 9 |
-| style | TTreeSelectStyle | TTreeSelectStyle.normal | 一级菜单样式 |
+| outwardCornerRadius | double? | - | 一级菜单选中项的外弯折圆角半径，默认为 9 |
+| style | TTreeSelectStyle? | - | 一级菜单样式 |
+| value | List<dynamic> | const [] | 初始值，对应options中的value值 |
 
 
 ### TSelectOption
@@ -33,8 +33,8 @@
 
 | 名称 | 说明 |
 | --- | --- |
-| normal | - |
-| outline | - |
+| normal | 普通样式 |
+| outline | 描边样式（选中项左侧有蓝色边框） |
 
 
 ### TTreeSelectChangeEvent

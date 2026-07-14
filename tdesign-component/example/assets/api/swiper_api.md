@@ -8,7 +8,7 @@ TDesign风格的Swiper指示器样式，与flutter_swiper的Swiper结合使用
 | --- | --- | --- | --- |
 | alignment | Alignment? | - | 当 scrollDirection== Axis.horizontal 时，默认Alignment.bottomCenter 当 scrollDirection== Axis.vertical 时，默认Alignment.centerRight |
 | builder | SwiperPlugin | TSwiperPagination.dots | 具体样式 |
-| key | Key? | - | 组件标识，用于区分或保留组件状态。 |
+| key | Key? | - | 自定义 Key |
 | margin | EdgeInsetsGeometry | const EdgeInsets.all(10.0) | 指示器和container之间的距离 |
 
 #### 静态成员

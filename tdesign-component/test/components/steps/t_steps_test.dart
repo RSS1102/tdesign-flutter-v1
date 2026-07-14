@@ -17,8 +17,8 @@ void main() {
   }
 
   List<TStepsItemData> buildSteps(int count) {
-    return List.generate(
-        count, (i) => TStepsItemData(title: '步骤${i + 1}', content: '内容${i + 1}'));
+    return List.generate(count,
+        (i) => TStepsItemData(title: '步骤${i + 1}', content: '内容${i + 1}'));
   }
 
   group('TStepsItemData', () {
@@ -113,16 +113,12 @@ void main() {
       expect(find.byType(TSteps), findsOneWidget);
     });
 
-    testWidgets('使用 activeIndex 指定激活索引（向后兼容）', (tester) async {
+    testWidgets('父级更新 value 同步激活索引', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TSteps(steps: buildSteps(3), activeIndex: 2),
+        TSteps(steps: buildSteps(3), value: 0),
       ));
-      expect(find.byType(TSteps), findsOneWidget);
-    });
-
-    testWidgets('value 优先级高于 activeIndex', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TSteps(steps: buildSteps(3), value: 1, activeIndex: 2),
+        TSteps(steps: buildSteps(3), value: 2),
       ));
       expect(find.byType(TSteps), findsOneWidget);
     });
@@ -170,16 +166,16 @@ void main() {
   });
 
   group('TSteps 边界', () {
-    testWidgets('activeIndex 超出上限自动 clamp', (tester) async {
+    testWidgets('value 超出上限自动 clamp', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TSteps(steps: buildSteps(3), activeIndex: 10),
+        TSteps(steps: buildSteps(3), value: 10),
       ));
       expect(find.byType(TSteps), findsOneWidget);
     });
 
-    testWidgets('activeIndex 为负数自动 clamp', (tester) async {
+    testWidgets('value 为负数自动 clamp', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TSteps(steps: buildSteps(3), activeIndex: -1),
+        TSteps(steps: buildSteps(3), value: -1),
       ));
       expect(find.byType(TSteps), findsOneWidget);
     });
@@ -207,7 +203,7 @@ void main() {
             TStepsItemData(title: '步骤1', successIcon: TIcons.check_circle),
             TStepsItemData(title: '步骤2'),
           ],
-          activeIndex: 1,
+          value: 1,
         ),
       ));
       expect(find.byType(TSteps), findsOneWidget);
@@ -222,7 +218,7 @@ void main() {
             TStepsItemData(title: '步骤1', errorIcon: TIcons.close_circle),
             TStepsItemData(title: '步骤2'),
           ],
-          activeIndex: 0,
+          value: 0,
           direction: TStepsDirection.vertical,
         ),
       ));
@@ -234,7 +230,7 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         TSteps(
           steps: buildSteps(3),
-          activeIndex: 1,
+          value: 1,
           direction: TStepsDirection.vertical,
         ),
         stepsTheme: const TStepsThemeData(simple: true),

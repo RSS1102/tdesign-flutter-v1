@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tdesign_flutter/src/components/fab/t_fab_defaults.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TFab V1.0 Widget 测试
@@ -141,7 +142,7 @@ void main() {
       expect(find.byType(Positioned), findsOneWidget);
     });
 
-    testWidgets('draggable: false 时仅 Positioned 定位', (tester) async {
+    testWidgets('不传 draggable 时仅 Positioned 定位', (tester) async {
       await tester.pumpWidget(wrapWithTheme(const TFab()));
       expect(find.byType(Positioned), findsOneWidget);
     });
@@ -410,10 +411,9 @@ void main() {
   // 补充：TFab 拖拽模式
   // ============================================================
   group('TFab 拖拽模式', () {
-    testWidgets('draggable=true 进入拖拽模式（不创建 Positioned 直接子）',
-        (tester) async {
+    testWidgets('draggable=true 进入拖拽模式（不创建 Positioned 直接子）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TFab(draggable: true),
+        const TFab(draggable: TFabDragAxis.all),
       ));
       // 拖拽模式下内部使用 Positioned 但带 GestureDetector(onPanStart)
       expect(find.byType(TFab), findsOneWidget);
@@ -444,7 +444,7 @@ void main() {
       TFabDragDetails? endDetails;
       await tester.pumpWidget(wrapWithTheme(
         TFab(
-          draggable: true,
+          draggable: TFabDragAxis.all,
           onDragEnd: (details) => endDetails = details,
         ),
       ));
@@ -463,7 +463,7 @@ void main() {
       var tapped = false;
       await tester.pumpWidget(wrapWithTheme(
         TFab(
-          draggable: true,
+          draggable: TFabDragAxis.all,
           onPressed: () => tapped = true,
         ),
       ));
@@ -479,7 +479,7 @@ void main() {
 
     testWidgets('拖拽 + magnet=true 吸附', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TFab(draggable: true, magnet: true),
+        const TFab(draggable: TFabDragAxis.all, magnet: TFabMagnet.right),
       ));
       await tester.timedDrag(
         find.byType(TFab),
@@ -494,7 +494,7 @@ void main() {
 
     testWidgets('拖拽 + magnet=TFabMagnet.left 吸附', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TFab(draggable: true, magnet: TFabMagnet.left),
+        const TFab(draggable: TFabDragAxis.all, magnet: TFabMagnet.left),
       ));
       await tester.timedDrag(
         find.byType(TFab),
@@ -508,7 +508,7 @@ void main() {
 
     testWidgets('拖拽 + magnet=TFabMagnet.right 吸附', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TFab(draggable: true, magnet: TFabMagnet.right),
+        const TFab(draggable: TFabDragAxis.all, magnet: TFabMagnet.right),
       ));
       await tester.timedDrag(
         find.byType(TFab),
@@ -523,7 +523,7 @@ void main() {
     testWidgets('拖拽 + xBounds/yBounds 边界限制', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TFab(
-          draggable: true,
+          draggable: TFabDragAxis.all,
           xBounds: TFabBounds(start: 8, end: 8),
           yBounds: TFabBounds(start: 4, end: 4),
         ),
@@ -566,7 +566,7 @@ void main() {
     testWidgets('拖拽 + onDragStart 回调', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TFab(
-          draggable: true,
+          draggable: TFabDragAxis.all,
           onDragStart: (_) {},
         ),
       ));
@@ -585,7 +585,7 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         TFab(
           child: Container(width: 56, height: 56, color: Colors.red),
-          draggable: true,
+          draggable: TFabDragAxis.all,
           onPressed: () => tapped = true,
         ),
       ));
@@ -602,8 +602,8 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         TFab(
           child: Container(width: 56, height: 56, color: Colors.red),
-          draggable: true,
-          magnet: true,
+          draggable: TFabDragAxis.all,
+          magnet: TFabMagnet.right,
         ),
       ));
       await tester.timedDrag(
@@ -681,7 +681,7 @@ void main() {
     testWidgets('dragTapSlop + magnetAnimationDuration 从 Theme 注入',
         (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TFab(draggable: true, magnet: true),
+        const TFab(draggable: TFabDragAxis.all, magnet: TFabMagnet.right),
         fabTheme: const TFabThemeData(
           dragTapSlop: 5,
           magnetAnimationDuration: Duration(milliseconds: 10),
@@ -695,6 +695,64 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.byType(TFab), findsOneWidget);
+    });
+
+    test('copyWith 空参数保留原值', () {
+      const theme = TFabThemeData(
+        defaultRight: 12,
+        defaultBottom: 24,
+        defaultXBounds: TFabBounds(start: 1, end: 2),
+        defaultYBounds: TFabBounds(start: 3, end: 4),
+        magnetAnimationDuration: Duration(milliseconds: 120),
+        dragTapSlop: 6,
+      );
+      final copied = theme.copyWith();
+      expect(copied.defaultRight, 12);
+      expect(copied.defaultBottom, 24);
+      expect(copied.defaultXBounds, theme.defaultXBounds);
+      expect(copied.defaultYBounds, theme.defaultYBounds);
+      expect(copied.magnetAnimationDuration, theme.magnetAnimationDuration);
+      expect(copied.dragTapSlop, 6);
+    });
+
+    test('lerp t < 0.5 取 this 的离散字段并插值数值字段', () {
+      const a = TFabThemeData(
+        defaultRight: 10,
+        defaultBottom: 20,
+        defaultXBounds: TFabBounds(start: 1, end: 1),
+        defaultYBounds: TFabBounds(start: 2, end: 2),
+        magnetAnimationDuration: Duration(milliseconds: 100),
+        dragTapSlop: 4,
+      );
+      const b = TFabThemeData(
+        defaultRight: 30,
+        defaultBottom: 60,
+        defaultXBounds: TFabBounds(start: 9, end: 9),
+        defaultYBounds: TFabBounds(start: 8, end: 8),
+        magnetAnimationDuration: Duration(milliseconds: 500),
+        dragTapSlop: 12,
+      );
+      final result = a.lerp(b, 0.25);
+      expect(result.defaultRight, 15);
+      expect(result.defaultBottom, 30);
+      expect(result.defaultXBounds, same(a.defaultXBounds));
+      expect(result.defaultYBounds, same(a.defaultYBounds));
+      expect(result.magnetAnimationDuration, a.magnetAnimationDuration);
+      expect(result.dragTapSlop, 6);
+    });
+  });
+
+  // ============================================================
+  // 补充：TFabDefaults 边界
+  // ============================================================
+  group('TFabDefaults 边界', () {
+    test('默认常量与 shapeForText', () {
+      expect(TFabDefaults.defaultSizeIndex, 0);
+      expect(TFabDefaults.defaultVariantIndex, 0);
+      expect(TFabDefaults.defaultColorSchemeIndex, 1);
+      expect(TFabDefaults.defaultIconData, Icons.add);
+      expect(TFabDefaults.shapeForText(false), 'circle');
+      expect(TFabDefaults.shapeForText(true), 'round');
     });
   });
 

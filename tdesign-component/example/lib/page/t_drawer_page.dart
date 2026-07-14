@@ -85,14 +85,13 @@ Widget _buildBaseSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          visible: true,
           drawerTop: renderBox?.size.height,
-          items: List.generate(
-              drawerItemLength, (index) => TDrawerItem(title: '菜单${index + 1}')),
+          items: List.generate(drawerItemLength,
+              (index) => TDrawerItem(title: '菜单${index + 1}')),
           onItemClick: (index, item) {
             print('drawer item被点击，index：$index，title：${item.title}');
           },
-        );
+        ).show();
       },
     ),
   );
@@ -112,13 +111,12 @@ Widget _buildIconSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          visible: true,
           drawerTop: renderBox?.size.height,
           items: List.generate(
               drawerItemLength,
               (index) => TDrawerItem(
                   title: '菜单${index + 1}', icon: const Icon(TIcons.app))),
-        );
+        ).show();
       },
     ),
   );
@@ -138,13 +136,12 @@ Widget _buildTitleSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          visible: true,
           drawerTop: renderBox?.size.height,
           title: '标题',
           placement: TDrawerPlacement.left,
-          items: List.generate(
-              drawerItemLength, (index) => TDrawerItem(title: '菜单${index + 1}')),
-        );
+          items: List.generate(drawerItemLength,
+              (index) => TDrawerItem(title: '菜单${index + 1}')),
+        ).show();
       },
     ),
   );
@@ -164,12 +161,11 @@ Widget _buildBottomSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          visible: true,
           drawerTop: renderBox?.size.height,
           title: '标题',
           placement: TDrawerPlacement.left,
-          items: List.generate(
-              drawerItemLength, (index) => TDrawerItem(title: '菜单${index + 1}')),
+          items: List.generate(drawerItemLength,
+              (index) => TDrawerItem(title: '菜单${index + 1}')),
           footer: const SizedBox(
             width: double.infinity,
             child: TButton(
@@ -178,7 +174,7 @@ Widget _buildBottomSimple(BuildContext context) {
               size: TButtonSize.large,
             ),
           ),
-        );
+        ).show();
       },
     ),
   );
@@ -199,17 +195,16 @@ Widget _buildColorSimple(BuildContext context) {
       colorScheme: TButtonColorScheme.primary,
       size: TButtonSize.large,
       onPressed: () {
-      TDrawer(
-        context,
-        visible: true,
-        drawerTop: renderBox?.size.height,
-        title: '标题',
-        backgroundColor: context.tTheme.bgColorSecondaryContainer,
-        style: tCellStyle,
-        placement: TDrawerPlacement.right,
-        items: List.generate(
-            drawerItemLength, (index) => TDrawerItem(title: '菜单${index + 1}')),
-      );
+        TDrawer(
+          context,
+          drawerTop: renderBox?.size.height,
+          title: '标题',
+          backgroundColor: context.tTheme.bgColorSecondaryContainer,
+          style: tCellStyle,
+          placement: TDrawerPlacement.right,
+          items: List.generate(drawerItemLength,
+              (index) => TDrawerItem(title: '菜单${index + 1}')),
+        ).show();
       },
     ),
   );
@@ -228,14 +223,13 @@ Widget _buildChildSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          visible: true,
           drawerTop: renderBox?.size.height,
           title: '标题',
           child: Container(
             padding: const EdgeInsets.all(16),
             child: const Text('这是通过 child 传入的自定义内容'),
           ),
-        );
+        ).show();
       },
     ),
   );

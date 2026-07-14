@@ -52,7 +52,7 @@ TNavBar(
 | `titleFontWeight` | `titleFontWeight` |
 | `titleFontFamily` | `titleFontFamily` |
 | `backgroundColor` | `backgroundColor` |
-| `height` | `height` |
+| `height` | 保留在 `TNavBar.height` 构造器参数；不进 Theme（PreferredSizeWidget 需要无 context 高度） |
 | `padding` | `padding` |
 | `titleMargin` | `titleMargin` |
 | `opacity` | `opacity` |
@@ -68,7 +68,6 @@ MaterialApp(
   theme: ThemeData(
     extensions: const [
       TNavBarThemeData(
-        height: 56,
         backgroundColor: Colors.white,
         titleFontWeight: FontWeight.w600,
       ),
@@ -119,9 +118,11 @@ TNavBar(border: TNavBarBorder(width: 1.0, radius: 22.0), ...)
 ## 3. 优先级链
 
 ```
-构造器参数 (height / titleColor / backgroundColor / ...)
+构造器参数 (titleColor / backgroundColor / ...)
   > TNavBarThemeData (子树 ThemeExtension 注入)
-    > 内部默认值 (height: 48 / fontSize: fontBodyLarge / 等)
+    > 内部默认值 (fontSize: fontBodyLarge / 等)
+
+height 单独遵循 PreferredSizeWidget 契约：TNavBar.height > 默认 48。
 ```
 
 ---

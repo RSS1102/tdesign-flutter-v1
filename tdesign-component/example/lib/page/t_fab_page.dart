@@ -24,9 +24,7 @@ class _TFabPageState extends State<TFabPage> {
         ExampleItem(desc: '悬浮按钮尺寸', builder: _buildSizeFab),
       ]),
       ExampleModule(title: '交互能力', children: [
-        ExampleItem(
-            desc: '可拖拽悬浮按钮（在卡片内拖动试试）',
-            builder: _buildDraggableFab),
+        ExampleItem(desc: '可拖拽悬浮按钮（在卡片内拖动试试）', builder: _buildDraggableFab),
       ]),
     ]);
   }
@@ -166,8 +164,8 @@ class _TFabPageState extends State<TFabPage> {
       fab: const TFab(
         right: 16,
         bottom: 16,
-        draggable: true,
-        magnet: true,
+        draggable: TFabDragAxis.all,
+        magnet: TFabMagnet.right,
       ),
     );
   }

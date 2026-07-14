@@ -13,49 +13,20 @@
 | cursorHeight | double? | - | 光标的高 |
 | enabled | bool? | - | 是否禁用 |
 | focusNode | FocusNode? | - | 自定义焦点 |
+| hintText | String? | - | 预设文案 |
 | inputAction | TextInputAction? | - | 键盘动作类型 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | mediumStyle | bool | false | 是否在导航栏中的样式 |
 | needCancel | bool | false | 是否需要取消按钮 |
-| onActionClick | TSearchBarEvent? | - | 自定义操作回调 |
+| onActionClick | ValueChanged<String>? | - | 自定义操作回调 |
+| onChanged | ValueChanged<String>? | - | 文字改变回调 |
 | onClearClick | TSearchBarClearEvent? | - | 自定义操作回调 |
-| onEditComplete | TSearchBarCallBack? | - | 编辑完成回调 |
-| onInputClick | GestureTapCallback? | - | 输入框点击事件 |
-| onSubmitted | TSearchBarEvent? | - | 提交回调 |
+| onEditComplete | VoidCallback? | - | 编辑完成回调 |
+| onSubmitted | ValueChanged<String>? | - | 提交回调 |
 | onTapOutside | TapRegionCallback? | - | 点击输入框外部回调 |
-| onChanged | TSearchBarEvent? | - | 文字改变回调 |
 | padding | EdgeInsets | const EdgeInsets.symmetric(horizontal: 16, vertical: 8) | 内部填充 |
-| hintText | String? | - | 预设文案 |
 | readOnly | bool? | - | 是否只读 |
-| style | TSearchBarStyle? | TSearchBarStyle.square | 样式 |
-
-
-### TSearchBarStyle
-#### 枚举值
-
-
-| 名称 | 说明 |
-| --- | --- |
-| square | 方形 |
-| round | 圆形 |
-
-
-### TSearchBarAlignment
-#### 枚举值
-
-
-| 名称 | 说明 |
-| --- | --- |
-| left | 默认头部对齐 |
-| center | 居中 |
-
-
-### TSearchBarEvent
-#### 类型定义
-
-```dart
-typedef TSearchBarEvent = void Function(String value);
-```
+| style | TSearchBarVariant? | TSearchBarVariant.square | 样式 |
 
 
 ### TSearchBarClearEvent
@@ -63,12 +34,4 @@ typedef TSearchBarEvent = void Function(String value);
 
 ```dart
 typedef TSearchBarClearEvent = bool? Function(String value);
-```
-
-
-### TSearchBarCallBack
-#### 类型定义
-
-```dart
-typedef TSearchBarCallBack = void Function();
 ```

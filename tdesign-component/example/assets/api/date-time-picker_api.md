@@ -4,7 +4,7 @@
 日期/时间滚轮选择器。
 与 ``TCalendar``、``TPicker`` 为三个独立对外组件；本组件底层复用 ``TPicker``
 滚轮能力（经内部 ``DateTimePickerWheel``），与 ``TCalendar`` 无代码耦合。
-纯滚轮组件：不含工具栏、确认按钮或弹窗；选中变化通过 `onChange` 实时回调
+纯滚轮组件：不含工具栏、确认按钮或弹窗；选中变化通过 `onChanged` 实时回调
 （无 `TPicker.onConfirm` 语义）。弹窗与确认请配合 `TPopup` 等自行组装。
 `initialValue` 为非受控初始值；外部重置选中请变更 `initialValue` 或 `key`。
 与 `TPicker` 不同，本组件不提供受控 `value` 参数。
@@ -18,7 +18,7 @@
 | itemCount | int? | - | 每屏显示 item 数（奇数更利于中央高亮），默认 5 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | mode | DateTimePickerMode? | - | 滚轮列结构（必填） - **类型**：`DateTimePickerMode`，通过 `DateMode`、`TimeMode` 组合列 - **默认**：未传时等价于 `DateTimePickerMode(dateMode: DateMode.date)`（年月日） - **变更语义**：列结构变化会重建滚轮并清空上次通知值 |
-| onChange | void Function(TDateTimePickerValue result)? | - | 选中值变化回调（滚动时实时触发，不代表用户已确认选择） - **触发时机**：滚轮选中变化且结果与上次通知值不同时 - **返回值**：`TDateTimePickerValue`；不含的列字段为 null - **典型用法**：维护 draft 状态；弹窗场景配合 `TPopup` 确认后再提交 |
+| onChanged | void Function(TDateTimePickerValue result)? | - | 选中值变化回调（滚动时实时触发，不代表用户已确认选择） - **触发时机**：滚轮选中变化且结果与上次通知值不同时 - **返回值**：`TDateTimePickerValue`；不含的列字段为 null - **典型用法**：维护 draft 状态；弹窗场景配合 `TPopup` 确认后再提交 |
 | renderLabel | DateTimePickerRenderLabel? | - | 自定义列展示文案 - **回调参数**：`column` 为 `DateTimeColumn`，`value` 为列数值 - **回退**：返回 null 时使用内置默认文案（含国际化单位后缀） |
 | showWeek | bool | false | 日列是否在 label 后附加星期，默认 false - **生效范围**：仅 `DateTimeColumn.day` 列 - **变更语义**：变更会触发列重建 |
 | start | TDateTimePickerValue? | - | 可选范围下限 - **类型**：`TDateTimePickerValue`，仅传当前 mode 涉及的字段即可 - **语义**：超出范围的候选项会被裁剪；变更会触发列重建 |

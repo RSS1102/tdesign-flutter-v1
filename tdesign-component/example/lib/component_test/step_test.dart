@@ -72,7 +72,7 @@ class TestPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: TSteps(
                   steps: horizontalSteps,
-                  activeIndex: 1, // 设置当前激活的步骤索引
+                  value: 1, // 设置当前激活的步骤索引
                   direction: TStepsDirection.horizontal, // 设置步骤条方向为水平
                   status: TStepsStatus.success, // 设置步骤条状态
                 ),
@@ -84,7 +84,7 @@ class TestPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: TSteps(
                   steps: verticalSteps,
-                  activeIndex: 1, // 设置当前激活的步骤索引
+                  value: 1, // 设置当前激活的步骤索引
                   direction: TStepsDirection.vertical, // 设置步骤条方向为垂直
                   status: TStepsStatus.success, // 设置步骤条状态
                 ),

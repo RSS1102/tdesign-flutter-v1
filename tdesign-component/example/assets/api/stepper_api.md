@@ -5,7 +5,6 @@
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | controller | TStepperController? | - | Stepper控制器 |
-| value | int? | 0 | 默认值 |
 | disabled | bool | false | 禁用全部操作 |
 | disableInput | bool | false | 禁用输入框 |
 | eventController | StreamController<TStepperEventType>? | - | 事件控制器 |
@@ -14,7 +13,7 @@
 | max | int | 100 | 最大值 |
 | min | int | 0 | 最小值 |
 | onBlur | VoidCallback? | - | 输入框失去焦点时触发 |
-| onChange | ValueChanged<int>? | - | 数值发生变更时触发 |
+| onChanged | ValueChanged<int>? | - | 数值发生变更时触发 |
 | onOverlimit | TStepperOverlimitFunction? | - | 数值超出限制时触发 |
 | size | TStepperSize | TStepperSize.medium | 组件尺寸 |
 | step | int | 1 | 步长 |
@@ -31,17 +30,6 @@
 | small | - |
 | medium | - |
 | large | - |
-
-
-### TStepperColorScheme
-#### 枚举值
-
-
-| 名称 | 说明 |
-| --- | --- |
-| normal | - |
-| filled | - |
-| outline | - |
 
 
 ### TStepperIconType

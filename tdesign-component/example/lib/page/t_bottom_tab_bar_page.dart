@@ -73,11 +73,13 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
         ExampleItem(desc: '自定义上边线样式', builder: _buildCustomTopStyle),
         ExampleItem(desc: '自定义选择的背景颜色', builder: _customBgColor),
         ExampleItem(desc: '设置文本标签栏背景', builder: _customBgTypeTabBar),
-        ExampleItem(desc: '外部设置tabbar的选中项', builder: _setCurrentIndexToTabBar),
+        ExampleItem(desc: '外部设置tabbar的选中项', builder: _setValueToTabBar),
         ExampleItem(desc: 'onTap支持重复触发', builder: _allowMultipleTaps),
         ExampleItem(desc: '支持水波纹效果', builder: _needInkWellTabBar),
-        ExampleItem(desc: 'tabbar切换线性滑动效果', builder: _indicatorLinearAnimationTabBar),
-        ExampleItem(desc: 'tabbar切换弹性动画效果', builder: _indicatorElasticAnimationTabBar),
+        ExampleItem(
+            desc: 'tabbar切换线性滑动效果', builder: _indicatorLinearAnimationTabBar),
+        ExampleItem(
+            desc: 'tabbar切换弹性动画效果', builder: _indicatorElasticAnimationTabBar),
       ],
     );
   }
@@ -590,10 +592,10 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
         ]);
   }
 
-  var currentIndex = 0;
+  var _tabBarValue = 0;
 
   @Demo(group: 'bottomTabBar')
-  Widget _setCurrentIndexToTabBar(BuildContext context) {
+  Widget _setValueToTabBar(BuildContext context) {
     return SizedBox(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -606,14 +608,13 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
             ],
             onPageChanged: (index) {
               setState(() {
-                currentIndex = index;
+                _tabBarValue = index;
               });
             },
           )),
-          TBottomTabBar(
-              // 设置选择index
-              currentIndex: currentIndex,
-              TBottomTabBarBasicType.icon,
+          TBottomTabBar(TBottomTabBarBasicType.icon,
+              // 设置选中索引
+              value: _tabBarValue,
               useVerticalDivider: true,
               navigationTabs: List.generate(2, (index) {
                 final label = '标签${index + 1}';

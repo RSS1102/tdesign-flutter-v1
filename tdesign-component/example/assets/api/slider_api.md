@@ -13,7 +13,6 @@
 | onTap | Function(Offset offset, double value)? | - | Thumb 点击事件 坐标、当前值 |
 | onThumbTextTap | Function(Offset offset, double value)? | - | Thumb 点击浮标文字 坐标、当前值 |
 | rightLabel | String? | - | 右侧标签 |
-| sliderThemeData | TSliderThemeData? | - | 样式 |
 | value | double | - | 默认值 |
 
 
@@ -31,7 +30,6 @@
 | onTap | Function(Position position, Offset offset, double value)? | - | Thumb 点击事件 位置、坐标、当前值 |
 | onThumbTextTap | Function(Position position, Offset offset, double value)? | - | Thumb 点击浮标文字 位置、坐标、当前值 |
 | rightLabel | String? | - | 右侧标签 |
-| sliderThemeData | TSliderThemeData? | - | 样式 |
 | value | RangeValues | - | 默认值 |
 
 

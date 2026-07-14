@@ -146,7 +146,10 @@ void main() {
         ),
       ));
       final container = tester.widget<Container>(
-        find.ancestor(of: find.byType(SizedBox), matching: find.byType(Container)).first,
+        find
+            .ancestor(
+                of: find.byType(SizedBox), matching: find.byType(Container))
+            .first,
       );
       expect(container.constraints?.maxWidth, 300);
     });
@@ -172,7 +175,7 @@ void main() {
   });
 
   group('TDrawer', () {
-    testWidgets('visible: true 时调用 show', (tester) async {
+    testWidgets('show 方法打开抽屉', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -183,9 +186,8 @@ void main() {
                   onPressed: () {
                     TDrawer(
                       context,
-                      visible: true,
                       items: [TDrawerItem(title: '菜单1')],
-                    );
+                    ).show();
                   },
                 );
               },
@@ -240,9 +242,8 @@ void main() {
                   onPressed: () {
                     TDrawer(
                       context,
-                      visible: true,
                       child: const Text('自定义内容', key: childKey),
-                    );
+                    ).show();
                   },
                 );
               },
@@ -273,9 +274,8 @@ void main() {
                   onPressed: () {
                     TDrawer(
                       context,
-                      visible: true,
                       items: [TDrawerItem(title: '菜单1')],
-                    );
+                    ).show();
                   },
                 );
               },
@@ -303,10 +303,9 @@ void main() {
                   onPressed: () {
                     TDrawer(
                       context,
-                      visible: true,
                       width: 250,
                       items: [TDrawerItem(title: '菜单1')],
-                    );
+                    ).show();
                   },
                 );
               },
@@ -330,10 +329,9 @@ void main() {
                   onPressed: () {
                     TDrawer(
                       context,
-                      visible: true,
                       placement: TDrawerPlacement.left,
                       items: [TDrawerItem(title: '左抽屉')],
-                    );
+                    ).show();
                   },
                 );
               },
@@ -357,10 +355,9 @@ void main() {
                   onPressed: () {
                     TDrawer(
                       context,
-                      visible: true,
                       showOverlay: false,
                       items: [TDrawerItem(title: '无遮罩')],
-                    );
+                    ).show();
                   },
                 );
               },
@@ -385,12 +382,11 @@ void main() {
                   onPressed: () {
                     TDrawer(
                       context,
-                      visible: true,
                       onClose: () {
                         closed = true;
                       },
                       items: [TDrawerItem(title: '菜单1')],
-                    );
+                    ).show();
                   },
                 );
               },

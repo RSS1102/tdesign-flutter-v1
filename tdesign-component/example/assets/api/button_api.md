@@ -10,7 +10,7 @@
 | iconPosition | TButtonIconPosition | TButtonIconPosition.left | 图标位置 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | onPressed | VoidCallback? | - | 点击回调，`null` 表示禁用 |
-| size | TButtonSize | TButtonSize.medium | 尺寸，未传时使用 Theme `TButtonThemeData.defaultSize` |
+| size | TButtonSize? | - | 尺寸，未传时使用 Theme `TButtonThemeData.defaultSize` |
 | style | ButtonStyle? | - | P0 逃逸舱：`ButtonStyle` 覆盖所有 resolve 结果 |
 | variant | TButtonVariant? | - | 变体（fill / outline / text / ghost），未传时使用 Theme `TButtonThemeData.defaultVariant` |
 
@@ -31,7 +31,6 @@
 | padding | EdgeInsetsGeometry? | - | 覆盖默认 padding（null 时由 resolve 按 size/shape 推导） |
 | shape | TButtonShape? | - | 外形，会展开进 resolves `ButtonStyle.shape` |
 | textButtonStyle | ButtonStyle? | - | P2 色板：text 变体的 `ButtonStyle`（仅颜色相关字段，不含 shape） |
-| textStyle | TextStyle? | - | 默认文案样式 |
 
 
 ### TButtonResolve
@@ -46,27 +45,15 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| variant | TButtonVariant | - | - |
+| variant | TButtonVariant | - | 为按钮形态，`colorScheme` 为语义色方案，`size` 为尺寸规格。 |
 | colorScheme | TButtonColorScheme? | - | - |
 | size | TButtonSize | - | - |
-| icon | Widget? | - | - |
+| icon | Widget? | - | 与 `iconPosition` 用于计算图标间距，`theme` 为 P1 组件主题， |
 | iconPosition | TButtonIconPosition | - | - |
 | theme | TButtonThemeData? | - | - |
-| instanceStyle | ButtonStyle? | - | - |
+| instanceStyle | ButtonStyle? | - | 为 P0 实例样式，`context` 用于读取全局 Token， |
 | context | BuildContext | - | - |
-
-
-### TButtonShape
-#### 枚举值
-
-
-| 名称 | 说明 |
-| --- | --- |
-| rectangle | - |
-| round | - |
-| square | - |
-| circle | - |
-| filled | - |
+| hasGradient | bool | - | 表示启用渐变背景时需要清理 Material 默认背景。 |
 
 
 ### TButtonSize
@@ -113,3 +100,16 @@
 | --- | --- |
 | left | - |
 | right | - |
+
+
+### TButtonShape
+#### 枚举值
+
+
+| 名称 | 说明 |
+| --- | --- |
+| rectangle | - |
+| round | - |
+| square | - |
+| circle | - |
+| filled | - |

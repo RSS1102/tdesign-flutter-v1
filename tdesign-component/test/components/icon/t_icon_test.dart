@@ -168,6 +168,30 @@ void main() {
     expect(result, equals(a));
   });
 
+  test('T06d - TIconThemeData 默认值和 copyWith 空参数', () {
+    const empty = TIconThemeData();
+    expect(empty.size, isNull);
+    expect(empty.color, isNull);
+
+    const original = TIconThemeData(size: 18, color: Colors.black);
+    final copied = original.copyWith();
+    expect(copied.size, 18);
+    expect(copied.color, Colors.black);
+  });
+
+  test('T06e - TIconThemeData.lerp 端点边界', () {
+    const a = TIconThemeData(size: 10.0, color: Colors.red);
+    const b = TIconThemeData(size: 20.0, color: Colors.blue);
+
+    final atStart = a.lerp(b, 0);
+    final atEnd = a.lerp(b, 1);
+
+    expect(atStart.size, 10.0);
+    expect(atStart.color, Color.lerp(Colors.red, Colors.blue, 0));
+    expect(atEnd.size, 20.0);
+    expect(atEnd.color, Color.lerp(Colors.red, Colors.blue, 1));
+  });
+
   // 补充用例至 ≥15
   testWidgets('T07 - mergeExtension 覆盖 defaultSize', (tester) async {
     await tester.pumpWidget(MaterialApp(
@@ -185,7 +209,9 @@ void main() {
   testWidgets('T08 - 多个 TIcon 同时渲染', (tester) async {
     await tester.pumpWidget(MaterialApp(
       theme: ThemeData(extensions: [TThemeData.defaultData()]),
-      home: const Scaffold(body: Center(child: Row(children: [
+      home: const Scaffold(
+          body: Center(
+              child: Row(children: [
         TIcon(TIcons.home),
         TIcon(TIcons.search),
         TIcon(TIcons.user),

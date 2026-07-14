@@ -7,13 +7,13 @@ TDesign刷新头部
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| backgroundColor | Color? | - | 背景颜色（L4，可经 themeData 提供） |
+| backgroundColor | Color? | - | - |
 | clamping | bool? | - | - |
-| completeDuration | Duration? | - | 完成延时（L4，可经 themeData 提供） |
+| completeDuration | Duration? | - | - |
 | enableHapticFeedback | bool | true | 开启震动反馈（保留实例，≠ 禁用） |
 | enableInfiniteRefresh | bool | false | 是否开启无限刷新（保留实例，≠ 禁用） |
-| extent | double? | 48.0 | Header容器高度（L4，可经 themeData 提供） |
-| float | bool? | false | 是否悬浮（L4，可经 themeData 提供） |
+| extent | double? | - | - |
+| float | bool? | - | - |
 | frictionFactor | - | - | - |
 | hapticFeedback | bool? | - | - |
 | hitOver | - | - | - |
@@ -21,13 +21,13 @@ TDesign刷新头部
 | horizontalReadySpringBuilder | - | - | - |
 | horizontalSpring | - | - | - |
 | infiniteHitOver | bool? | - | - |
-| infiniteOffset | double? | - | 无限刷新偏移量（L4，可经 themeData 提供） |
+| infiniteOffset | double? | - | - |
 | key | Key? | - | Key |
 | listenable | - | - | - |
-| loadingIcon | TLoadingIcon? | TLoadingIcon.circle | loading样式（L4，可经 themeData 提供） |
+| loadingIcon | TLoadingIcon? | - | - |
 | maxOverOffset | - | - | - |
 | notifyWhenInvisible | - | - | - |
-| overScroll | bool? | true | 越界滚动（L4，可经 themeData 提供） |
+| overScroll | bool? | - | - |
 | position | - | - | - |
 | processedDuration | Duration? | - | - |
 | readySpringBuilder | - | - | - |
@@ -39,25 +39,19 @@ TDesign刷新头部
 | spring | - | - | - |
 | springRebound | - | - | - |
 | themeData | TRefreshThemeData? | - | 组件级主题配置，优先级高于 Theme Extension |
-| triggerDistance | double? | 48.0 | 触发刷新任务的偏移量，同`triggerOffset`（L4，可经 themeData 提供） |
-| triggerOffset | double? | - | - |
+| triggerDistance | double? | - | - |
 | triggerWhenReach | - | - | - |
 | triggerWhenRelease | - | - | - |
 | triggerWhenReleaseNoWait | - | - | - |
 
+#### 公开属性
 
-### TRefreshThemeData
-#### 简介
-TRefreshHeader 组件级 ThemeExtension，控制子树的下拉刷新默认样式。实例 `themeData` 优先于 Theme Extension。
-#### 默认构造方法
-
-| 参数 | 类型 | 默认值 | 说明 |
+| 属性 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| backgroundColor | Color? | - | 背景颜色 |
-| completeDuration | Duration? | - | 完成延时 |
-| extent | double? | - | Header容器高度 |
-| float | bool? | - | 是否悬浮 |
-| infiniteOffset | double? | - | 无限刷新偏移量 |
-| loadingIcon | TLoadingIcon? | - | loading样式 |
-| overScroll | bool? | - | 越界滚动 |
-| triggerDistance | double? | - | 触发刷新任务的偏移量 |
+| finalBackgroundColor | Color? | - | 背景颜色（从 themeData 或参数合并后的最终值） |
+| finalCompleteDuration | Duration? | - | 完成延时（从 themeData 或参数合并后的最终值） |
+| finalExtent | double | - | Header容器高度（从 themeData 或参数合并后的最终值） |
+| finalFloat | bool | - | 是否悬浮（从 themeData 或参数合并后的最终值） |
+| finalLoadingIcon | TLoadingIcon | - | loading样式（从 themeData 或参数合并后的最终值） |
+| finalOverScroll | bool | - | 越界滚动（从 themeData 或参数合并后的最终值） |
+| finalTriggerDistance | double | - | 触发刷新任务的偏移量（从 themeData 或参数合并后的最终值） |

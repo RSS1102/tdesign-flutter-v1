@@ -187,14 +187,22 @@ class _TBackTopState extends State<TBackTop> {
     final controller = widget.controller;
     if (controller != null && controller.hasClients) {
       _isAnimating = true;
-      await controller.animateTo(
-        0,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeIn,
-      );
-      _isAnimating = false;
+      try {
+        await controller.animateTo(
+          0,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+        );
+      } finally {
+        if (mounted) {
+          _isAnimating = false;
+        }
+      }
     }
 
+    if (!mounted) {
+      return;
+    }
     widget.onPressed?.call();
   }
 

@@ -18,7 +18,7 @@
 | id | String? | - | - |
 | insetSpacing | double? | - | - |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| radioStyle | TRadioStyle | TRadioStyle.circle | 单选框按钮样式 |
+| radioStyle | TRadioVariant | TRadioVariant.circle | 单选框按钮样式 |
 | selectColor | Color? | - | - |
 | showDivider | bool? | - | - |
 | size | TCheckBoxSize | TCheckBoxSize.small | - |
@@ -53,32 +53,12 @@ cardMode: 使用卡片样式，需要配合direction 和 directionalTdRadios 使
 | directionalTdRadios | List<TRadio>? | - | - |
 | divider | Widget? | - | 自定义下划线 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| onChanged | ValueChanged? | - | - |
+| onRadioGroupChange | void Function(String? selectedId)? | - | - |
 | passThrough | bool? | - | - |
-| radioCheckStyle | TRadioStyle? | - | 勾选样式 |
+| radioCheckStyle | TRadioVariant? | - | 勾选样式 |
 | rowCount | int | 1 | 每行几列 |
 | selectId | String? | - | - |
 | showDivider | bool | false | 是否显示下划线 |
 | spacing | double? | - | - |
 | strictMode | bool | true | 严格模式下，用户不能取消勾选，只能切换选择项， |
 | titleMaxLine | int? | - | - |
-
-
-### TRadioStyle
-#### 枚举值
-
-
-| 名称 | 说明 |
-| --- | --- |
-| circle | - |
-| square | - |
-| check | - |
-| hollowCircle | - |
-
-
-### ValueChanged
-#### 类型定义
-
-```dart
-typedef ValueChanged = void Function(String? selectedId);
-```

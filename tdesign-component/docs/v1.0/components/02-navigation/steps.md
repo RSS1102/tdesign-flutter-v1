@@ -31,7 +31,7 @@
 
 **Material 对照**：对齐「流程进度展示」语义；**非** Material `Stepper`（`onStepContinue` / `onStepCancel` 等分步表单交互）。导航 **TSteps**（`—`）≠ 输入 **[TStepper](../03-input/stepper.md)**（B/C，`value` + `onChanged`）。
 
-**与 B 类区别**：展示型允许 `activeIndex` 构造器默认 `0` 作回落；父亦可显式传 `value`。切步由业务改父 State（按钮、接口回调等），**不由**步骤条自身点击驱动。
+**与 B 类区别**：展示型允许 `value` 构造器默认 `0` 作回落；父亦可显式传 `value`。切步由业务改父 State（按钮、接口回调等），**不由**步骤条自身点击驱动。
 
 → [controlled.md §6](../../foundation/controlled.md#控制类-)
 
@@ -50,7 +50,7 @@
 | 决策 | 参数 | 类型 | 层级 | 默认 | 说明 |
 |------|------|------|------|------|------|
 | | `steps` | `List<TStepsItemData>` | L2 | — | 步骤数据 |
-| ✏️ | `value` | `int?` | L1 | — | 当前步索引（原 `activeIndex`）；展示型，见 **§1.1.1** |
+| ✏️ | `value` | `int` | L1 | `0` | 当前步索引（原 `activeIndex`）；展示型，见 **§1.1.1** |
 | | `direction` | `TStepsDirection` | L1 | `horizontal` | 横向/纵向 |
 | | `readOnly` | `bool?` | L1 | Theme | 流程展示视觉态，见 **§1.1.2** |
 | | `status` | `TStepsStatus?` | L1 | Theme | `success` / `error`；可覆盖 Theme |
@@ -59,16 +59,15 @@
 
 > 样式默认经 `Theme.of(context).extension<TStepsThemeData>()`；**禁止**构造器 `themeData`（→ [theme.md §2.1](../../foundation/theme.md#禁止构造器-themedatav10-裁决)）。  
 > 构造器可选 `Key`（`super.key`）见 [api.md §1.1](../../foundation/api.md#11-flutter-keywidget-基建)；**不进上表**。  
-> **`activeIndex`**：0.2.x 兼容参数，KEEP；新代码用 `value`；解析见 **§1.1.1**。
+> **`value`**：v1.0 唯一当前步索引参数；旧 `activeIndex` 已移除。
 
 #### §1.1.1 当前步索引（展示型 value）
 
-有效索引：`effectiveIndex = value ?? activeIndex`（`value` 优先）。
+有效索引：`effectiveIndex = value`。
 
 | 参数 | 默认 | 说明 |
 |------|------|------|
-| `value` | `null` | 推荐；父 State 传入当前步 |
-| `activeIndex` | `0` | 仅兼容；`value == null` 时回落 |
+| `value` | `0` | 父 State 传入当前步 |
 
 **规则**（展示型 `—`，**非** B 类）：
 
@@ -96,11 +95,10 @@ ElevatedButton(
 ```
 
 ```dart
-// 兼容写法（新代码不推荐）
-TSteps(steps: [...], activeIndex: 1);
+TSteps(steps: [...], value: 1);
 
-// 等价于 value 优先
-TSteps(steps: [...], value: 2, activeIndex: 1); // 生效索引为 2
+// 业务驱动更新当前步
+setState(() => _step = 2);
 ```
 
 #### §1.1.2 交互与 `readOnly`（纯展示）
@@ -112,7 +110,7 @@ v1.0 **不提供** `onTap` / `onChanged` / 步骤级点击 API。步骤条仅渲
 | `false`（默认） | **进行中**：区分已完成 / 当前 / 未完成；当前步标题可加粗 |
 | `true` | **流程展示态**：连线与节点按「流程已走完」样式渲染（非「禁用点击」——本身即无点击） |
 
-> **不进 Theme**：`steps` · `value` / `activeIndex` · `direction`。
+> **不进 Theme**：`steps` · `value` · `direction`。
 
 ### 1.2 类型定义
 
@@ -149,7 +147,7 @@ v1.0 **不提供** `onTap` / `onChanged` / 步骤级点击 API。步骤条仅渲
 
 | 从（0.2.x） | 到（v1.0） | 怎么改 |
 |------------|-----------|--------|
-| `activeIndex` | `value` | 推荐新名；`activeIndex` KEEP 兼容；`value` 优先 |
+| `value` | `value` | 推荐新名；`value` KEEP 兼容；`value` 优先 |
 
 ### ✏️ 行为澄清
 
@@ -199,7 +197,7 @@ v1.0 **不提供** `onTap` / `onChanged` / 步骤级点击 API。步骤条仅渲
 - `status`（`success` / `error`）· `simple` · `verticalSelect` · `readOnly`
 
 **不进 Theme（构造器 L1/L2）**
-- `steps`（L2）· `value` / `activeIndex`（L1）· `direction`（L1）
+- `steps`（L2）· `value` / `value`（L1）· `direction`（L1）
 
 ---
 
@@ -209,8 +207,8 @@ v1.0 **不提供** `onTap` / `onChanged` / 步骤级点击 API。步骤条仅渲
 
 **Theme 合并**：`status` / `simple` / `verticalSelect` / `readOnly` 须按 §3 优先级解析（构造器 L1 **>** `Theme.extension<TStepsThemeData>()` **>** 内置默认）；**禁止**构造器 `themeData` 参数。
 
-**必测**：横/纵布局 · `value` 驱动激活态 · 父 `setState` 改 `value` 同步 · `value` 优先于 `activeIndex` · `activeIndex` 兼容回落 · 越界 clamp · `readOnly` 两档视觉 · `status: error` 当前步样式 · `simple` · `verticalSelect` · Theme 子树覆盖 · **无**步骤点击 / `onChanged` · **无**构造器 `themeData`。
+**必测**：横/纵布局 · `value` 驱动激活态 · 父 `setState` 改 `value` 同步 · `value` 优先于 `value` · `value` 兼容回落 · 越界 clamp · `readOnly` 两档视觉 · `status: error` 当前步样式 · `simple` · `verticalSelect` · Theme 子树覆盖 · **无**步骤点击 / `onChanged` · **无**构造器 `themeData`。
 
-**Example**：`activeIndex→value` · 父 State + 外部按钮切步 · `readOnly` 流程展示态 · `status: error` · 横纵示例 · Theme `simple` 覆盖。
+**Example**：`value→value` · 父 State + 外部按钮切步 · `readOnly` 流程展示态 · `status: error` · 横纵示例 · Theme `simple` 覆盖。
 
 > [api.md](../../foundation/api.md) · [controlled.md](../../foundation/controlled.md) · [testing.md](../../guide/testing.md) · [steps-upgrade-guide.md](./steps-upgrade-guide.md)（类名与 **§1** 冲突时以 **§1** 为准）

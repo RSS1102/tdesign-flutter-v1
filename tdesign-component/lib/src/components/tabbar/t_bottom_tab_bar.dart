@@ -168,7 +168,6 @@ class TBottomTabBar extends StatefulWidget {
     this.unselectedBgColor,
     this.backgroundColor,
     this.centerDistance,
-    this.currentIndex,
     this.needInkWell = false,
     this.indicatorAnimation = TBottomTabBarIndicatorAnimation.none,
     this.animationDuration = const Duration(milliseconds: 300),
@@ -206,10 +205,9 @@ class TBottomTabBar extends StatefulWidget {
               }
             }
           }
-          if (currentIndex != null &&
-              (currentIndex < 0 || currentIndex >= navigationTabs.length)) {
+          if (value != null && (value < 0 || value >= navigationTabs.length)) {
             throw FlutterError(
-                '[TBottomTabBar] currentIndex must in [0,navigationTabs.length)');
+                '[TBottomTabBar] value must in [0,navigationTabs.length)');
           }
           return true;
         }()),
@@ -266,9 +264,6 @@ class TBottomTabBar extends StatefulWidget {
   /// icon与文本中间距离（可选）
   final double? centerDistance;
 
-  /// 选中的index（可选，v1.0 推荐使用 [value]）
-  final int? currentIndex;
-
   /// 是否需要水波纹效果
   final bool needInkWell;
 
@@ -281,7 +276,7 @@ class TBottomTabBar extends StatefulWidget {
   /// 动画曲线
   final Curve animationCurve;
 
-  /// 选中的 index（v1.0 新增，等价于 [currentIndex]，优先级更高）
+  /// 选中的 index
   final int? value;
 
   @override
@@ -311,7 +306,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.value ?? widget.currentIndex ?? 0;
+    _selectedIndex = widget.value ?? 0;
 
     // 初始化动画控制器
     _animationController = AnimationController(
@@ -332,7 +327,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
   @override
   void didUpdateWidget(covariant TBottomTabBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final effectiveValue = widget.value ?? widget.currentIndex;
+    final effectiveValue = widget.value;
     if (effectiveValue != null && effectiveValue != _selectedIndex) {
       _animateToIndex(effectiveValue);
     }
@@ -348,16 +343,29 @@ class _TBottomTabBarState extends State<TBottomTabBar>
     super.didChangeDependencies();
     // P1: 组件级 ThemeExtension 回退
     final theme = Theme.of(context).extension<TBottomTabBarThemeData>();
-    _effectiveBarHeight = widget.barHeight ?? theme?.barHeight ?? _kDefaultTabBarHeight;
-    _effectiveSelectedBgColor = widget.selectedBgColor ?? theme?.selectedBgColor ?? context.tTheme.brandLightColor;
-    _effectiveUnselectedBgColor = widget.unselectedBgColor ?? theme?.unselectedBgColor;
-    _effectiveBackgroundColor = widget.backgroundColor ?? theme?.backgroundColor ?? context.tTheme.bgColorContainer;
-    _effectiveCenterDistance = widget.centerDistance ?? theme?.centerDistance ?? 0;
-    _effectiveUseVerticalDivider = widget.useVerticalDivider ?? theme?.useVerticalDivider ?? false;
-    _effectiveDividerHeight = widget.dividerHeight ?? theme?.dividerHeight ?? 32;
-    _effectiveDividerThickness = widget.dividerThickness ?? theme?.dividerThickness ?? 0.5;
-    _effectiveDividerColor = widget.dividerColor ?? theme?.dividerColor ?? context.tTheme.componentStrokeColor;
-    _effectiveShowTopBorder = widget.showTopBorder ?? theme?.showTopBorder ?? true;
+    _effectiveBarHeight =
+        widget.barHeight ?? theme?.barHeight ?? _kDefaultTabBarHeight;
+    _effectiveSelectedBgColor = widget.selectedBgColor ??
+        theme?.selectedBgColor ??
+        context.tTheme.brandLightColor;
+    _effectiveUnselectedBgColor =
+        widget.unselectedBgColor ?? theme?.unselectedBgColor;
+    _effectiveBackgroundColor = widget.backgroundColor ??
+        theme?.backgroundColor ??
+        context.tTheme.bgColorContainer;
+    _effectiveCenterDistance =
+        widget.centerDistance ?? theme?.centerDistance ?? 0;
+    _effectiveUseVerticalDivider =
+        widget.useVerticalDivider ?? theme?.useVerticalDivider ?? false;
+    _effectiveDividerHeight =
+        widget.dividerHeight ?? theme?.dividerHeight ?? 32;
+    _effectiveDividerThickness =
+        widget.dividerThickness ?? theme?.dividerThickness ?? 0.5;
+    _effectiveDividerColor = widget.dividerColor ??
+        theme?.dividerColor ??
+        context.tTheme.componentStrokeColor;
+    _effectiveShowTopBorder =
+        widget.showTopBorder ?? theme?.showTopBorder ?? true;
     _effectiveTopBorder = widget.topBorder ?? theme?.topBorder;
     _effectiveNeedInkWell = widget.needInkWell; // 非空字段，构造器默认 false
   }
@@ -402,10 +410,10 @@ class _TBottomTabBarState extends State<TBottomTabBar>
                         : null,
                     border: _effectiveShowTopBorder && !isCapsuleOutlineType
                         ? Border(
-                        top: _effectiveTopBorder ??
-                            BorderSide(
-                                color: context.tTheme.componentStrokeColor,
-                                width: 0.5))
+                            top: _effectiveTopBorder ??
+                                BorderSide(
+                                    color: context.tTheme.componentStrokeColor,
+                                    width: 0.5))
                         : null,
                     boxShadow: isCapsuleOutlineType
                         ? context.tTheme.shadowsTop
@@ -417,7 +425,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children:
-                      List.generate(widget.navigationTabs.length, (index) {
+                          List.generate(widget.navigationTabs.length, (index) {
                         return _item(index, itemWidth);
                       })),
                   // 分割线（在最上层）
@@ -511,7 +519,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
 
     // 计算高度
     final height = widget.basicType == TBottomTabBarBasicType.text ||
-        widget.basicType == TBottomTabBarBasicType.expansionPanel
+            widget.basicType == TBottomTabBarBasicType.expansionPanel
         ? 32.0
         : null;
 
@@ -560,7 +568,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
 
     // 计算高度
     final height = widget.basicType == TBottomTabBarBasicType.text ||
-        widget.basicType == TBottomTabBarBasicType.expansionPanel
+            widget.basicType == TBottomTabBarBasicType.expansionPanel
         ? 32.0
         : null;
 
@@ -581,9 +589,9 @@ class _TBottomTabBarState extends State<TBottomTabBar>
     var tabItemConfig = widget.navigationTabs[index];
     // iconText 且存在 centerDistance 间距时，压缩上下内边距为图标+文本+间距腾出空间，
     // 避免 Column 内容溢出（centerDistance 默认为 0，不影响常规渲染与 Golden 基线）。
-    final isIconTextWithGap = widget.basicType ==
-            TBottomTabBarBasicType.iconText &&
-        _effectiveCenterDistance > 0;
+    final isIconTextWithGap =
+        widget.basicType == TBottomTabBarBasicType.iconText &&
+            _effectiveCenterDistance > 0;
     return Container(
         height: _effectiveBarHeight,
         width: itemWidth,
@@ -592,7 +600,9 @@ class _TBottomTabBarState extends State<TBottomTabBar>
             top: isIconTextWithGap ? 4 : 7,
             bottom: isIconTextWithGap
                 ? 1
-                : (widget.basicType == TBottomTabBarBasicType.iconText ? 5 : 7)),
+                : (widget.basicType == TBottomTabBarBasicType.iconText
+                    ? 5
+                    : 7)),
         child: TBottomTabBarItemWithBadge(
           basicType: widget.basicType,
           componentType:
@@ -608,7 +618,7 @@ class _TBottomTabBarState extends State<TBottomTabBar>
           centerDistance: _effectiveCenterDistance,
           needInkWell: _effectiveNeedInkWell,
           showItemBackground:
-          widget.indicatorAnimation == TBottomTabBarIndicatorAnimation.none,
+              widget.indicatorAnimation == TBottomTabBarIndicatorAnimation.none,
           onTap: () {
             _onTap(index);
           },
@@ -721,8 +731,7 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             // 只在无动画模式下显示 item 自身的背景
-            if (showItemBackground &&
-                (isSelected || unselectedBgColor != null))
+            if (showItemBackground && (isSelected || unselectedBgColor != null))
               Visibility(
                 visible: componentType == TBottomTabBarComponentType.label,
                 child: Container(
@@ -760,8 +769,8 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
       BuildContext context, BadgeConfig? badgeConfig, bool isInOrOutCapsule) {
     Widget child = Container();
     if (basicType == TBottomTabBarBasicType.text) {
-      child = _textItem(context, itemConfig, isSelected,
-          context.tTheme.fontTitleMedium!);
+      child = _textItem(
+          context, itemConfig, isSelected, context.tTheme.fontTitleMedium!);
     }
     if (basicType == TBottomTabBarBasicType.expansionPanel) {
       if (itemConfig.popUpButtonConfig != null) {
@@ -781,8 +790,8 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
           ],
         );
       } else {
-        child = _textItem(context, itemConfig, isSelected,
-            context.tTheme.fontTitleMedium!);
+        child = _textItem(
+            context, itemConfig, isSelected, context.tTheme.fontTitleMedium!);
       }
     }
     if (basicType == TBottomTabBarBasicType.icon) {
@@ -903,6 +912,8 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
       Navigator.push(
           context,
           PopRoute(
+            barrierLabel:
+                MaterialLocalizations.of(context).modalBarrierDismissLabel,
             child: PopupDialog(
               itemWidth - _kDefaultMenuItemWidthShrink,
               btnContext: context,
@@ -1015,7 +1026,11 @@ class PopRoute extends PopupRoute {
   /// 子内容
   Widget child;
 
-  PopRoute({required this.child});
+  /// 弹窗屏障无障碍文案
+  final String? _barrierLabel;
+
+  PopRoute({required this.child, String? barrierLabel})
+      : _barrierLabel = barrierLabel;
 
   @override
   Color? get barrierColor => Colors.transparent;
@@ -1024,7 +1039,7 @@ class PopRoute extends PopupRoute {
   bool get barrierDismissible => true;
 
   @override
-  String? get barrierLabel => 'popUpMenuBarrierLabel';
+  String? get barrierLabel => _barrierLabel;
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
@@ -1074,10 +1089,21 @@ class PopupDialogState extends State<PopupDialog> {
   @override
   void initState() {
     super.initState();
-    button = widget.btnContext.findRenderObject() as RenderBox;
+    if (!widget.btnContext.mounted) {
+      return;
+    }
+    final buttonRenderObject = widget.btnContext.findRenderObject();
+    final overlayState = Overlay.maybeOf(widget.btnContext);
+    final overlayRenderObject = overlayState?.context.findRenderObject();
+    if (buttonRenderObject is! RenderBox || overlayRenderObject is! RenderBox) {
+      return;
+    }
+    if (!buttonRenderObject.attached || !overlayRenderObject.attached) {
+      return;
+    }
+    button = buttonRenderObject;
     size = button!.size;
-    overlay =
-        Overlay.of(widget.btnContext).context.findRenderObject() as RenderBox;
+    overlay = overlayRenderObject;
     position = RelativeRect.fromRect(
       Rect.fromPoints(
         button!.localToGlobal(Offset.zero, ancestor: overlay),
@@ -1089,6 +1115,9 @@ class PopupDialogState extends State<PopupDialog> {
 
   @override
   Widget build(BuildContext context) {
+    if (position == null || size == null) {
+      return const SizedBox.shrink();
+    }
     var popUpItemHeight =
         widget.config?.popUpItemHeight ?? _kDefaultMenuItemHeight;
     var popUpItemWidth = widget.config?.popUpWidth ?? widget.defaultPopUpWidth;
@@ -1114,7 +1143,11 @@ class PopupDialogState extends State<PopupDialog> {
     // -4 是设计稿上箭头和tab有4dp的距离
     final rawTop = position!.top - popUpPanelHeight - 8 - 4;
     // 若按钮靠近顶部导致弹窗上移越界，则将其夹紧到视口内（至少 8dp 边距）
-    final safeTop = rawTop.clamp(8.0, screenHeight - popUpPanelHeight - 8.0);
+    final maxTop = screenHeight - popUpPanelHeight - 8.0;
+    final safeTop = rawTop.clamp(8.0, maxTop < 8.0 ? 8.0 : maxTop);
+    final rawLeft = position!.left + (size!.width - popUpItemWidth) / 2;
+    final maxLeft = screenWidth - popUpItemWidth - 8.0;
+    final safeLeft = rawLeft.clamp(8.0, maxLeft < 8.0 ? 8.0 : maxLeft);
 
     return Material(
       type: MaterialType.transparency,
@@ -1129,7 +1162,7 @@ class PopupDialogState extends State<PopupDialog> {
             ),
             Positioned(
                 top: safeTop,
-                right: position!.right - (popUpItemWidth + size!.width) / 2,
+                left: safeLeft,
                 child: Container(
                   width: popUpItemWidth,
                   height: popUpItemHeight * widget.items.length +
@@ -1160,8 +1193,8 @@ class PopupDialogState extends State<PopupDialog> {
                                         child: Divider(
                                           thickness: 0.5,
                                           height: 0.5,
-                                          color: context.tTheme
-                                              .componentStrokeColor,
+                                          color: context
+                                              .tTheme.componentStrokeColor,
                                         ),
                                       )),
                             )

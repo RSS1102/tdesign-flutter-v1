@@ -2,19 +2,19 @@
 ### TPicker
 #### 简介
 纯滚轮选择器。数据用 `TPickerColumns`（多列独立）或 `TPickerLinked`（联动）。
-选中变化通过 `onChange`；列底分页建议用 `onColumnScrollEnd`。弹窗确认请配合 `TPopup`。
+选中变化通过 `onChanged`；列底分页建议用 `onColumnScrollEnd`。弹窗确认请配合 `TPopup`。
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | disabled | bool | false | 是否禁用整个选择器（禁止滚动与无障碍操作），默认 false |
 | height | double | 200 | 滚轮视窗高度（像素），默认 200 |
-| initialValue | List<dynamic>? | - | 初始选中（按各列 `value` 匹配），仅首次构建生效；运行期请用 `onChange` 维护选中态。 |
+| initialValue | List<dynamic>? | - | 初始选中（按各列 `value` 匹配），仅首次构建生效；运行期请用 `onChanged` 维护选中态。 |
 | itemBuilder | ItemBuilderType? | - | 自定义子项构建器 `(context, content, colIndex, index, itemDistanceCalculator, distance) => Widget?`；`distance` 为 0 表示选中项，返回 null 用默认样式，disabled 项不走此 builder。 |
 | itemCount | int | 5 | 每屏显示项数（奇数更利于中央高亮），默认 5 |
 | items | TPickerItems | - | 数据源（必填）。独立选 `TPickerColumns`，内存联动树选 `TPickerLinked`；接口/字面量用对应 `fromRaw`。 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| onChange | void Function(int col, TPickerValue value)? | - | 值改变回调（滚动实时触发，非确认）。`col` 为触发列；`value` 为各列选中快照。 |
+| onChanged | void Function(int col, TPickerValue value)? | - | 值改变回调（滚动实时触发，非确认）。`col` 为触发列；`value` 为各列选中快照。 |
 | onColumnScrollEnd | void Function(int col, TPickerValue value)? | - | 列滚动结束回调（滚停时触发，适合列底分页）。`col` 为滚停列；`value` 为当前选中快照。 |
 
 

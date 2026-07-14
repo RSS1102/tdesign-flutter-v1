@@ -130,8 +130,8 @@ class TFabDragDetails {
 | --- | --- |
 | 标准页内悬浮（推荐） | `Stack(fit: StackFit.expand)` 顶层放 `TFab(...)`；`Positioned` + `MediaQuery.padding` 安全区 |
 | 页面含 `Scaffold` | `TFab` 在 **`body` 内 `Stack` 顶层**；**不要**用 `Scaffold.floatingActionButton` |
-| 固定悬浮、不需拖拽 | `draggable: false`（默认）；仍用 `Stack` + `right`/`bottom` |
-| Demo 横排 | `Row`/`Wrap` + `draggable: false`；仅文档示例 |
+| 固定悬浮、不需拖拽 | `不传 draggable`（默认）；仍用 `Stack` + `right`/`bottom` |
+| Demo 横排 | `Row`/`Wrap` + `不传 draggable`；仅文档示例 |
 
 与 [TBackTop](../02-navigation/backtop.md) 区分：BackTop 绑定滚动回顶；Fab 为通用操作 + 可拖拽。
 
@@ -223,8 +223,8 @@ class TFabDragDetails {
 
 ### 3.5 拖拽与吸附
 
-1. `draggable: false`：固定 `right`/`bottom`。
-2. `draggable: true` / `all`：全向；`vertical` / `horizontal` 单轴。
+1. `不传 draggable`：固定 `right`/`bottom`。
+2. `draggable: TFabDragAxis.all` / `all`：全向；`vertical` / `horizontal` 单轴。
 3. `xBounds` / `yBounds`：`TFabBounds` 限制范围。
 4. `magnet`：拖拽结束吸附；`true` 为左右均可。
 5. 位移 ≤ `dragTapSlop` → `onPressed`；否则 `onDragStart` → `onDragEnd`。

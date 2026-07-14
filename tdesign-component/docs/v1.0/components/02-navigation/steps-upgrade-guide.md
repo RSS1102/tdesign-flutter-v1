@@ -4,14 +4,13 @@
 
 | 变更类型 | 说明 |
 |---------|------|
-| New | 新增 `value` 参数（替代 `activeIndex`，优先级更高） |
+| Changed | 使用 `value` 作为唯一当前步索引参数，移除旧 `activeIndex` |
 | New | 新增 `TStepsThemeData` ThemeExtension |
 | Removed | 移除 `themeData` 构造器参数（改用 `mergeExtension` 子树覆盖） |
-| Compatible | `activeIndex` 保留向后兼容 |
 
 ## 迁移清单
 
-### 1. 新增 `value` 参数（推荐）
+### 1. 使用 `value` 控制当前步
 
 **0.2.x:**
 ```dart

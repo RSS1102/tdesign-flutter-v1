@@ -72,8 +72,8 @@ Stack(
     TFab(
       right: 16,
       bottom: 32,
-      draggable: true,
-      magnet: true,
+      draggable: TFabDragAxis.all,
+      magnet: TFabMagnet.right,
       onPressed: () {},
     ),
   ],

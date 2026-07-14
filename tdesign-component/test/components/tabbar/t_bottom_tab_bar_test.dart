@@ -74,9 +74,12 @@ void main() {
   group('枚举', () {
     test('TBottomTabBarBasicType 枚举值', () {
       expect(TBottomTabBarBasicType.values.length, 4);
-      expect(TBottomTabBarBasicType.values, contains(TBottomTabBarBasicType.text));
-      expect(TBottomTabBarBasicType.values, contains(TBottomTabBarBasicType.iconText));
-      expect(TBottomTabBarBasicType.values, contains(TBottomTabBarBasicType.icon));
+      expect(
+          TBottomTabBarBasicType.values, contains(TBottomTabBarBasicType.text));
+      expect(TBottomTabBarBasicType.values,
+          contains(TBottomTabBarBasicType.iconText));
+      expect(
+          TBottomTabBarBasicType.values, contains(TBottomTabBarBasicType.icon));
       expect(TBottomTabBarBasicType.values,
           contains(TBottomTabBarBasicType.expansionPanel));
     });
@@ -146,7 +149,8 @@ void main() {
   group('TBottomTabBar 基础渲染', () {
     testWidgets('text 类型渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TBottomTabBar(TBottomTabBarBasicType.text, navigationTabs: buildTextTabs(3)),
+        TBottomTabBar(TBottomTabBarBasicType.text,
+            navigationTabs: buildTextTabs(3)),
       ));
       expect(find.byType(TBottomTabBar), findsOneWidget);
       expect(find.text('标签1'), findsOneWidget);
@@ -187,7 +191,7 @@ void main() {
     });
   });
 
-  group('TBottomTabBar value/currentIndex', () {
+  group('TBottomTabBar value', () {
     testWidgets('使用 value 指定初始选中', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TBottomTabBar(
@@ -199,23 +203,18 @@ void main() {
       expect(find.byType(TBottomTabBar), findsOneWidget);
     });
 
-    testWidgets('使用 currentIndex 指定初始选中（向后兼容）', (tester) async {
+    testWidgets('父级更新 value 同步选中态', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TBottomTabBar(
           TBottomTabBarBasicType.text,
-          currentIndex: 2,
+          value: 0,
           navigationTabs: buildTextTabs(3),
         ),
       ));
-      expect(find.byType(TBottomTabBar), findsOneWidget);
-    });
-
-    testWidgets('value 优先级高于 currentIndex', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TBottomTabBar(
           TBottomTabBarBasicType.text,
-          value: 1,
-          currentIndex: 2,
+          value: 2,
           navigationTabs: buildTextTabs(3),
         ),
       ));
@@ -335,7 +334,9 @@ void main() {
         () => tester.pumpWidget(wrapWithTheme(
           TBottomTabBar(
             TBottomTabBarBasicType.icon,
-            navigationTabs: [TBottomTabBarTabConfig(tabText: '标签', onTap: () {})],
+            navigationTabs: [
+              TBottomTabBarTabConfig(tabText: '标签', onTap: () {})
+            ],
           ),
         )),
         throwsA(isA<FlutterError>()),
@@ -374,12 +375,12 @@ void main() {
       );
     });
 
-    testWidgets('currentIndex 越界抛异常', (tester) async {
+    testWidgets('value 越界抛异常', (tester) async {
       expect(
         () => tester.pumpWidget(wrapWithTheme(
           TBottomTabBar(
             TBottomTabBarBasicType.text,
-            currentIndex: 5,
+            value: 5,
             navigationTabs: buildTextTabs(3),
           ),
         )),
@@ -387,12 +388,12 @@ void main() {
       );
     });
 
-    testWidgets('currentIndex 为负数抛异常', (tester) async {
+    testWidgets('value 为负数抛异常', (tester) async {
       expect(
         () => tester.pumpWidget(wrapWithTheme(
           TBottomTabBar(
             TBottomTabBarBasicType.text,
-            currentIndex: -1,
+            value: -1,
             navigationTabs: buildTextTabs(3),
           ),
         )),
@@ -417,7 +418,8 @@ void main() {
 
     testWidgets('icon 类型正常渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TBottomTabBar(TBottomTabBarBasicType.icon, navigationTabs: buildIconTabs(3)),
+        TBottomTabBar(TBottomTabBarBasicType.icon,
+            navigationTabs: buildIconTabs(3)),
       ));
       expect(find.byType(TBottomTabBar), findsOneWidget);
       // 选中第一个 tab，应显示 selectedIcon
@@ -633,7 +635,8 @@ void main() {
       expect(find.byType(TBottomTabBar), findsOneWidget);
     });
 
-    testWidgets('useSafeArea: true + placeholder: false 使用 SafeArea', (tester) async {
+    testWidgets('useSafeArea: true + placeholder: false 使用 SafeArea',
+        (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TBottomTabBar(
           TBottomTabBarBasicType.text,
@@ -716,7 +719,8 @@ void main() {
   // 自定义文本样式与颜色
   // ============================================================
   group('TBottomTabBar 自定义文本样式与颜色', () {
-    testWidgets('selectTabTextStyle / unselectTabTextStyle 自定义', (tester) async {
+    testWidgets('selectTabTextStyle / unselectTabTextStyle 自定义',
+        (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TBottomTabBar(
           TBottomTabBarBasicType.text,
@@ -724,8 +728,10 @@ void main() {
             TBottomTabBarTabConfig(
               tabText: '标签1',
               onTap: () {},
-              selectTabTextStyle: const TextStyle(color: Colors.red, fontSize: 16),
-              unselectTabTextStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+              selectTabTextStyle:
+                  const TextStyle(color: Colors.red, fontSize: 16),
+              unselectTabTextStyle:
+                  const TextStyle(color: Colors.grey, fontSize: 14),
             ),
             TBottomTabBarTabConfig(tabText: '标签2', onTap: () {}),
           ],
@@ -816,7 +822,8 @@ void main() {
           TBottomTabBarBasicType.text,
           navigationTabs: buildTextTabs(3),
         ),
-        tabBarTheme: const TBottomTabBarThemeData(backgroundColor: Colors.white),
+        tabBarTheme:
+            const TBottomTabBarThemeData(backgroundColor: Colors.white),
       ));
       expect(find.byType(TBottomTabBar), findsOneWidget);
     });
@@ -993,8 +1000,8 @@ void main() {
       expect(find.byType(TBottomTabBar), findsOneWidget);
     });
 
-    testWidgets('currentIndex 变化触发选中切换', (tester) async {
-      var currentIndex = 0;
+    testWidgets('value 变化触发选中切换', (tester) async {
+      var value = 0;
       late StateSetter setState;
       await tester.pumpWidget(wrapWithTheme(
         StatefulBuilder(
@@ -1002,13 +1009,13 @@ void main() {
             setState = setter;
             return TBottomTabBar(
               TBottomTabBarBasicType.text,
-              currentIndex: currentIndex,
+              value: value,
               navigationTabs: buildTextTabs(3),
             );
           },
         ),
       ));
-      setState(() => currentIndex = 2);
+      setState(() => value = 2);
       await tester.pumpAndSettle();
       expect(find.byType(TBottomTabBar), findsOneWidget);
     });
@@ -1164,7 +1171,8 @@ void main() {
   group('TBottomTabBar tab 数量场景', () {
     testWidgets('4 个 tab（>3）渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TBottomTabBar(TBottomTabBarBasicType.text, navigationTabs: buildTextTabs(4)),
+        TBottomTabBar(TBottomTabBarBasicType.text,
+            navigationTabs: buildTextTabs(4)),
       ));
       expect(find.byType(TBottomTabBar), findsOneWidget);
       expect(find.text('标签4'), findsOneWidget);
@@ -1172,7 +1180,8 @@ void main() {
 
     testWidgets('2 个 tab（<=3）渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TBottomTabBar(TBottomTabBarBasicType.text, navigationTabs: buildTextTabs(2)),
+        TBottomTabBar(TBottomTabBarBasicType.text,
+            navigationTabs: buildTextTabs(2)),
       ));
       expect(find.byType(TBottomTabBar), findsOneWidget);
     });

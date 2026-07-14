@@ -55,7 +55,7 @@ class TNavBar extends StatefulWidget implements PreferredSizeWidget {
   /// 是否使用默认的返回按钮
   final bool useDefaultBack;
 
-  /// 返回事件
+  /// 返回事件；传入后由调用方接管返回行为，不再自动执行 Navigator.maybePop
   final VoidCallback? onBack;
 
   /// NavBar 下方的 Widget
@@ -84,7 +84,7 @@ class TNavBar extends StatefulWidget implements PreferredSizeWidget {
   /// 背景颜色
   final Color? backgroundColor;
 
-  /// 高度
+  /// 高度；作为 [PreferredSizeWidget.preferredSize] 的唯一高度来源
   final double? height;
 
   /// 内部填充
@@ -129,8 +129,7 @@ class _TNavBarState extends State<TNavBar> {
       _themeData.backIconColor ??
       context.tTheme.textColorPrimary;
 
-  Font? get _effectiveTitleFont =>
-      widget.titleFont ?? _themeData.titleFont;
+  Font? get _effectiveTitleFont => widget.titleFont ?? _themeData.titleFont;
 
   FontWeight? get _effectiveTitleFontWeight =>
       widget.titleFontWeight ?? _themeData.titleFontWeight;
@@ -143,7 +142,7 @@ class _TNavBarState extends State<TNavBar> {
       _themeData.backgroundColor ??
       context.tTheme.bgColorContainer;
 
-  double get _effectiveHeight => widget.height ?? _themeData.height ?? 48;
+  double get _effectiveHeight => widget.preferredSize.height;
 
   EdgeInsetsGeometry get _effectivePadding =>
       widget.padding ??
@@ -156,8 +155,7 @@ class _TNavBarState extends State<TNavBar> {
   double get _effectiveTitleMargin =>
       widget.titleMargin ?? _themeData.titleMargin ?? 16;
 
-  double get _effectiveOpacity =>
-      widget.opacity ?? _themeData.opacity ?? 1.0;
+  double get _effectiveOpacity => widget.opacity ?? _themeData.opacity ?? 1.0;
 
   bool get _effectiveUseBorderStyle =>
       widget.useBorderStyle ?? _themeData.useBorderStyle ?? false;
@@ -209,7 +207,11 @@ class _TNavBarState extends State<TNavBar> {
       iconSize: 28.0,
       iconColor: iconColor,
       action: () {
-        widget.onBack?.call();
+        final onBack = widget.onBack;
+        if (onBack != null) {
+          onBack();
+          return;
+        }
         Navigator.maybePop(context);
       },
     ).toWidget(context);
@@ -342,10 +344,6 @@ class TNavBarItem {
   /// 自定义组件，优先级高于 icon，可以是任意 Widget
   Widget? customWidget;
 
-  /// 图标组件，优先级高于 icon
-  @Deprecated('Use customWidget instead')
-  Widget? iconWidget;
-
   TNavBarItem({
     this.icon,
     this.iconColor,
@@ -353,7 +351,6 @@ class TNavBarItem {
     this.iconSize = 24.0,
     this.padding,
     this.customWidget,
-    @Deprecated('Use customWidget instead') this.iconWidget,
   });
 
   Widget toWidget(BuildContext context, {bool isLeading = true}) =>
@@ -366,7 +363,6 @@ class TNavBarItem {
                   ? EdgeInsets.only(right: context.tTheme.spacer8)
                   : EdgeInsets.only(left: context.tTheme.spacer8)),
           child: customWidget ??
-              iconWidget ??
               Icon(
                 icon,
                 size: iconSize,

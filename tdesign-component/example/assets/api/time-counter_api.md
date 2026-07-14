@@ -12,13 +12,13 @@
 | direction | TTimeCounterDirection | TTimeCounterDirection.down | 计时方向，默认倒计时 |
 | format | String | 'HH:mm:ss' | 时间格式，DD-日，HH-时，mm-分，ss-秒，SSS-毫秒（分隔符必须为长度为1的非空格的字符） |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| millisecond | bool | false | 是否开启毫秒级渲染 |
-| onChange | Function(int time)? | - | 时间变化时触发回调 |
+| millisecond | bool? | - | 是否开启毫秒级渲染 |
+| onChanged | Function(int time)? | - | 时间变化时触发回调 |
 | onFinish | VoidCallback? | - | 计时结束时触发回调 |
-| size | TTimeCounterSize | TTimeCounterSize.medium | 尺寸 |
-| splitWithUnit | bool | false | 使用时间单位分割 |
+| size | TTimeCounterSize? | - | 尺寸 |
+| splitWithUnit | bool? | - | 使用时间单位分割 |
 | style | TTimeCounterStyle? | - | 自定义样式，有则优先用它，没有则根据size和theme选取 |
-| theme | TTimeCounterTheme | TTimeCounterTheme.defaultTheme | 风格 |
+| theme | TTimeCounterVariant? | - | 风格 |
 | time | int | - | 必需；计时时长，单位毫秒 |
 
 
@@ -40,7 +40,7 @@
 | --- | --- | --- | --- |
 | context | BuildContext | - | - |
 | size | TTimeCounterSize? | - | - |
-| theme | TTimeCounterTheme? | - | - |
+| theme | TTimeCounterVariant? | - | - |
 | splitWithUnit | bool? | - | - |
 
 #### 默认构造方法
@@ -62,6 +62,21 @@
 | timeMargin | EdgeInsets? | - | 时间容器外边距 |
 | timePadding | EdgeInsets? | - | 时间容器内边距 |
 | timeWidth | double? | - | 时间容器宽度 |
+
+
+### TTimeCounterStatus
+#### 简介
+计时组件控制器转态
+#### 枚举值
+
+
+| 名称 | 说明 |
+| --- | --- |
+| start | 开始 |
+| pause | 暂停 |
+| resume | 继续 |
+| reset | 重置 |
+| idle | 空，默认值 |
 
 
 ### TTimeCounterDirection
@@ -89,7 +104,7 @@
 | large | 大 |
 
 
-### TTimeCounterTheme
+### TTimeCounterVariant
 #### 简介
 计时组件风格
 #### 枚举值
@@ -100,18 +115,3 @@
 | defaultTheme | 默认 |
 | round | 圆形 |
 | square | 方形 |
-
-
-### TTimeCounterStatus
-#### 简介
-计时组件控制器转态
-#### 枚举值
-
-
-| 名称 | 说明 |
-| --- | --- |
-| start | 开始 |
-| pause | 暂停 |
-| resume | 继续 |
-| reset | 重置 |
-| idle | 空，默认值 |

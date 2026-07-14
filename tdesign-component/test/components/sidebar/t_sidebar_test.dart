@@ -270,8 +270,7 @@ void main() {
 
   group('TWrapSideBarItem 覆盖率补充', () {
     // 直接渲染 TWrapSideBarItem，覆盖分支行（70/140/158/203/215/216/219/221/222）
-    testWidgets('normal 样式未选中且未指定 unSelectedBgColor（覆盖 70 行）',
-        (tester) async {
+    testWidgets('normal 样式未选中且未指定 unSelectedBgColor（覆盖 70 行）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TWrapSideBarItem(
           style: TSideBarVariant.normal,
@@ -283,8 +282,7 @@ void main() {
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
     });
 
-    testWidgets('选中且设置 selectedTextStyle 颜色（覆盖 140/158 行）',
-        (tester) async {
+    testWidgets('选中且设置 selectedTextStyle 颜色（覆盖 140/158 行）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TWrapSideBarItem(
           style: TSideBarVariant.normal,
@@ -299,8 +297,7 @@ void main() {
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
     });
 
-    testWidgets('短标签带 badge 渲染 label 内 badge（覆盖 203 行）',
-        (tester) async {
+    testWidgets('短标签带 badge 渲染 label 内 badge（覆盖 203 行）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TWrapSideBarItem(
           style: TSideBarVariant.normal,
@@ -344,6 +341,29 @@ void main() {
       expect(controller.children.length, 2);
     });
 
+    test('children setter 触发通知并更新只读 children', () {
+      final controller = TSideBarController();
+      var notifyCount = 0;
+      controller.addListener(() => notifyCount++);
+      controller.children = [SideItemProps(value: 2, index: 0)];
+
+      expect(controller.children.single.value, 2);
+      expect(notifyCount, 1);
+      expect(() => controller.children.add(SideItemProps(value: 3, index: 1)),
+          throwsUnsupportedError);
+    });
+
+    test('setChildren needNotify=false 不触发通知', () {
+      final controller = TSideBarController();
+      var notifyCount = 0;
+      controller.addListener(() => notifyCount++);
+      controller
+          .setChildren([SideItemProps(value: 4, index: 0)], needNotify: false);
+
+      expect(controller.children.single.value, 4);
+      expect(notifyCount, 0);
+    });
+
     test('loading setter/getter', () {
       final controller = TSideBarController();
       controller.loading = true;
@@ -374,7 +394,8 @@ void main() {
   // 覆盖率补充
   // ============================================================
   group('TSideBar 覆盖率补充', () {
-    testWidgets('controller with children 触发 getDisplayChildren', (tester) async {
+    testWidgets('controller with children 触发 getDisplayChildren',
+        (tester) async {
       // 覆盖 195-203（controller.children 非空 → map SideItemProps）
       final controller = TSideBarController();
       controller.init([
@@ -433,6 +454,76 @@ void main() {
         ),
       ));
       await tester.pumpAndSettle();
+      expect(find.byType(TSideBar), findsOneWidget);
+    });
+
+    testWidgets('controller 加载态变化触发相同选中项重建', (tester) async {
+      final controller = TSideBarController()
+        ..init([
+          SideItemProps(index: 0, value: 0, label: '选项1'),
+          SideItemProps(index: 1, value: 1, label: '选项2'),
+        ]);
+      await tester.pumpWidget(wrapWithTheme(TSideBar(controller: controller)));
+
+      controller.setLoading(true);
+      await tester.pump();
+
+      expect(find.byType(TLoading), findsOneWidget);
+    });
+
+    testWidgets('findSideItem 可按 value 查找当前展示项', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSideBar(children: buildItems(count: 3), value: 0),
+      ));
+
+      final dynamic state = tester.state(find.byType(TSideBar));
+      final item = state.findSideItem(2) as SideItemProps;
+
+      expect(item.value, 2);
+      expect(item.index, 2);
+    });
+
+    testWidgets('controller 切换时移除旧监听并注册新监听', (tester) async {
+      final controller1 = TSideBarController()
+        ..init([SideItemProps(index: 0, value: 0, label: '旧')]);
+      final controller2 = TSideBarController()
+        ..init([SideItemProps(index: 0, value: 0, label: '新')]);
+      var useFirst = true;
+      late StateSetter setState;
+
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TSideBar(controller: useFirst ? controller1 : controller2);
+          },
+        ),
+      ));
+
+      setState(() => useFirst = false);
+      await tester.pumpAndSettle();
+      controller2.selectTo(0);
+      await tester.pump();
+
+      expect(find.byType(TSideBar), findsOneWidget);
+    });
+
+    testWidgets('controller selectTo 触发向下和向上滚动分支', (tester) async {
+      final controller = TSideBarController()
+        ..init(List.generate(
+          12,
+          (index) =>
+              SideItemProps(index: index, value: index, label: '选项$index'),
+        ));
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(height: 120, child: TSideBar(controller: controller)),
+      ));
+
+      controller.selectTo(5);
+      await tester.pump(const Duration(milliseconds: 150));
+      controller.selectTo(0);
+      await tester.pump(const Duration(milliseconds: 150));
+
       expect(find.byType(TSideBar), findsOneWidget);
     });
   });

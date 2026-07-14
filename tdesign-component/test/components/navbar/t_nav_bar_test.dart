@@ -160,45 +160,34 @@ void main() {
       const theme = TNavBarThemeData();
       expect(theme.titleColor, null);
       expect(theme.backgroundColor, null);
-      expect(theme.height, null);
       expect(theme.opacity, null);
     });
 
     test('copyWith 部分覆盖', () {
-      const theme = TNavBarThemeData(height: 48, opacity: 1.0);
-      final copied = theme.copyWith(height: 56);
-      expect(copied.height, 56);
-      expect(copied.opacity, 1.0);
+      const theme = TNavBarThemeData(opacity: 1.0);
+      final copied = theme.copyWith(opacity: 0.5);
+      expect(copied.opacity, 0.5);
     });
 
     test('lerp', () {
-      const a = TNavBarThemeData(height: 48, opacity: 1.0);
-      const b = TNavBarThemeData(height: 56, opacity: 0.5);
+      const a = TNavBarThemeData(opacity: 1.0);
+      const b = TNavBarThemeData(opacity: 0.5);
       final result = a.lerp(b, 0.5);
-      expect(result.height! > 48, true);
-      expect(result.height! < 56, true);
+      expect(result.opacity, 0.75);
     });
 
     test('lerp 非同类返回自身', () {
-      const a = TNavBarThemeData(height: 48);
+      const a = TNavBarThemeData(opacity: 1.0);
       final result = a.lerp(null, 0.5);
-      expect(result.height, 48);
+      expect(result.opacity, 1.0);
     });
 
-    testWidgets('Theme 注入 height 生效', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TNavBar(title: '标题'),
-        navBarTheme: const TNavBarThemeData(height: 56),
-      ));
-      expect(find.byType(TNavBar), findsOneWidget);
-    });
-
-    testWidgets('构造器 height 覆盖 Theme', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TNavBar(title: '标题', height: 64),
-        navBarTheme: const TNavBarThemeData(height: 56),
-      ));
-      expect(find.byType(TNavBar), findsOneWidget);
+    testWidgets('Theme 不承载 height，构造器 height 同步 preferredSize 与实际高度',
+        (tester) async {
+      const navBar = TNavBar(title: '标题', height: 64);
+      await tester.pumpWidget(wrapWithTheme(navBar));
+      expect(navBar.preferredSize.height, 64);
+      expect(tester.getSize(find.byType(TNavBar)).height, 64);
     });
   });
 
@@ -220,7 +209,8 @@ void main() {
         title: '标题',
         useDefaultBack: false,
         actions: [
-          TNavBarItem(icon: TIcons.home, iconSize: 24, action: () => called = true),
+          TNavBarItem(
+              icon: TIcons.home, iconSize: 24, action: () => called = true),
         ],
       )));
       await tester.tap(find.byIcon(TIcons.home));

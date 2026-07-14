@@ -24,7 +24,6 @@ class TDrawer {
     this.showOverlay = true,
     this.title,
     this.titleWidget,
-    this.visible,
     this.onClose,
     this.onItemClick,
     this.width,
@@ -35,11 +34,7 @@ class TDrawer {
     this.bordered,
     this.isShowLastBordered,
     this.child,
-  }) {
-    if (visible == true) {
-      show();
-    }
-  }
+  });
 
   /// 上下文
   final BuildContext context;
@@ -67,9 +62,6 @@ class TDrawer {
 
   /// 抽屉的标题组件
   final Widget? titleWidget;
-
-  /// 组件是否可见
-  final bool? visible;
 
   /// 关闭时触发
   final VoidCallback? onClose;

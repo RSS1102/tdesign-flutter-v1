@@ -4,16 +4,13 @@
 
 | 变更类型 | 说明 |
 |---------|------|
-| New | 新增 `value` 参数（替代 `currentIndex`，优先级更高） |
+| Changed | 使用 `value` 作为唯一选中索引参数，移除旧 `currentIndex` |
 | New | 新增 `TBottomTabBarThemeData` ThemeExtension |
 | Removed | 移除 `themeData` 构造器参数（改用 `mergeExtension` 子树覆盖） |
-| Compatible | `currentIndex` 保留向后兼容 |
 
 ## 迁移清单
 
-### 1. 新增 `value` 参数（推荐）
-
-`value` 是 `currentIndex` 的 v1.0 别名，优先级更高。
+### 1. 使用 `value` 控制选中索引
 
 **0.2.x:**
 ```dart

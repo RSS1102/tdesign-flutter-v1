@@ -195,10 +195,9 @@ void main() {
   });
 
   group('TIndexes 选中/回调/滚动', () {
-    testWidgets('点击侧边索引触发 onSelect/onChanged/onChange 并滚动（向上）', (tester) async {
+    testWidgets('点击侧边索引触发 onSelect/onChanged 并滚动（向上）', (tester) async {
       String? selected;
       String? changed;
-      String? onChange;
       await tester.pumpWidget(wrapWithTheme(
         SizedBox(
           height: 400,
@@ -207,7 +206,6 @@ void main() {
             indexList: const ['A', 'B', 'C'],
             onSelect: (i) => selected = i,
             onChanged: (i) => changed = i,
-            onChange: (i) => onChange = i,
             builderContent: (context, index) => SizedBox(
               height: 120,
               child: ListTile(title: Text('内容$index')),
@@ -215,15 +213,14 @@ void main() {
           ),
         ),
       ));
-      final bFinder =
-          find.descendant(of: find.byType(TIndexesList), matching: find.text('B'));
+      final bFinder = find.descendant(
+          of: find.byType(TIndexesList), matching: find.text('B'));
       final bCenter = tester.getCenter(bFinder);
       await tester.tapAt(bCenter);
       // 等待 _scrollToTarget 内部 postFrameCallback 与 _hideTip 计时器
       await tester.pump(const Duration(seconds: 1, milliseconds: 200));
       expect(selected, 'B');
       expect(changed, 'B');
-      expect(onChange, 'B');
     });
 
     testWidgets('从高位选中低位触发向下滚动分支', (tester) async {
@@ -381,7 +378,8 @@ void main() {
             return TIndexes(
               indexList: const ['A', 'B'],
               scrollController: useC1 ? c1 : c2,
-              builderContent: (context, index) => ListTile(title: Text('内容$index')),
+              builderContent: (context, index) =>
+                  ListTile(title: Text('内容$index')),
             );
           },
         ),
@@ -389,6 +387,80 @@ void main() {
       setState(() => useC1 = false);
       await tester.pumpAndSettle();
       expect(find.byType(TIndexes), findsOneWidget);
+    });
+
+    testWidgets('内部 scrollController 切换为外部 controller 时释放内部实例', (tester) async {
+      final externalController = ScrollController();
+      var useExternal = false;
+      late StateSetter setState;
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TIndexes(
+              indexList: const ['A', 'B'],
+              scrollController: useExternal ? externalController : null,
+              builderContent: (context, index) =>
+                  SizedBox(height: 80, child: Text('内容$index')),
+            );
+          },
+        ),
+      ));
+
+      setState(() => useExternal = true);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(TIndexes), findsOneWidget);
+      externalController.dispose();
+    });
+
+    testWidgets('点击跨多个索引触发向上递归滚动', (tester) async {
+      String? selected;
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 320,
+          width: 240,
+          child: TIndexes(
+            indexList: const ['A', 'B', 'C', 'D'],
+            onSelect: (index) => selected = index,
+            builderContent: (context, index) =>
+                SizedBox(height: 120, child: Text('内容$index')),
+          ),
+        ),
+      ));
+
+      final dFinder = find.descendant(
+          of: find.byType(TIndexesList), matching: find.text('D'));
+      await tester.tapAt(tester.getCenter(dFinder));
+      await tester.pump();
+      await tester.pump();
+
+      expect(selected, 'D');
+    });
+
+    testWidgets('滚动时 sticky header pinned 更新 activeIndex', (tester) async {
+      String? changed;
+      final controller = ScrollController();
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          height: 180,
+          width: 240,
+          child: TIndexes(
+            indexList: const ['A', 'B', 'C'],
+            scrollController: controller,
+            onChanged: (index) => changed = index,
+            builderContent: (context, index) =>
+                SizedBox(height: 220, child: Text('内容$index')),
+          ),
+        ),
+      ));
+
+      controller.jumpTo(260);
+      await tester.pump();
+      await tester.pump();
+
+      expect(changed, isNotNull);
+      controller.dispose();
     });
   });
 }

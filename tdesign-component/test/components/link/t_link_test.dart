@@ -348,28 +348,6 @@ void main() {
 
     expect(find.text('富文本'), findsOneWidget);
   });
-
-  // ============================================================
-  // T18 – TLinkConfiguration 存在性
-  // ============================================================
-  testWidgets('T18 - TLinkConfiguration 存在性', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: TLinkConfiguration(
-            onTapAll: (_) {},
-            child: TLink(
-              child: const Text('配置链接'),
-              onPressed: () {},
-            ),
-          ),
-        ),
-      ),
-    );
-
-    expect(find.text('配置链接'), findsOneWidget);
-    // TLinkConfiguration 存在且不报错
-  });
 }
 
 /// 最小化包装

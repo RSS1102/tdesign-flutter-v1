@@ -176,8 +176,9 @@ class _TTabBarState extends State<TTabBar> {
             _themeData.unselectedLabelStyle ??
             _getUnSelectLabelStyle(),
         tabs: widget.tabs,
-        indicatorPadding:
-            widget.indicatorPadding ?? _themeData.indicatorPadding ?? EdgeInsets.zero,
+        indicatorPadding: widget.indicatorPadding ??
+            _themeData.indicatorPadding ??
+            EdgeInsets.zero,
         outlineType: widget.variant,
         controller: widget.controller,
         backgroundColor: widget.backgroundColor ?? _themeData.backgroundColor,
@@ -195,14 +196,12 @@ class _TTabBarState extends State<TTabBar> {
 
   TextStyle _getUnSelectLabelStyle() {
     return TextStyle(
-        fontWeight: FontWeight.w400,
-        color: context.tTheme.textColorPrimary);
+        fontWeight: FontWeight.w400, color: context.tTheme.textColorPrimary);
   }
 
   TextStyle _getLabelStyle() {
     return TextStyle(
-        fontWeight: FontWeight.w600,
-        color: context.tTheme.textColorPrimary);
+        fontWeight: FontWeight.w600, color: context.tTheme.textColorPrimary);
   }
 
   Decoration _getIndicator() {
@@ -240,7 +239,7 @@ class TTabBarIndicator extends Decoration {
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) =>
-      _TTabBarIndicatorPainter(this, onChanged!);
+      _TTabBarIndicatorPainter(this, onChanged);
 }
 
 class _TTabBarIndicatorPainter extends BoxPainter {
@@ -250,7 +249,7 @@ class _TTabBarIndicatorPainter extends BoxPainter {
   final TTabBarIndicator decoration;
   final _paint = Paint();
 
-  _TTabBarIndicatorPainter(this.decoration, VoidCallback onChanged) {
+  _TTabBarIndicatorPainter(this.decoration, VoidCallback? onChanged) {
     _paint.color = decoration.indicatorColor ??
         decoration.context!.tTheme.brandNormalColor;
     _paint.strokeCap = StrokeCap.round;
@@ -292,7 +291,7 @@ class TTabBarVerticalIndicator extends Decoration {
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) =>
-      _TTabBarVerticalIndicatorPainter(this, onChanged!);
+      _TTabBarVerticalIndicatorPainter(this, onChanged);
 }
 
 class _TTabBarVerticalIndicatorPainter extends BoxPainter {
@@ -302,7 +301,7 @@ class _TTabBarVerticalIndicatorPainter extends BoxPainter {
   final TTabBarVerticalIndicator decoration;
   final _paint = Paint();
 
-  _TTabBarVerticalIndicatorPainter(this.decoration, VoidCallback onChanged) {
+  _TTabBarVerticalIndicatorPainter(this.decoration, VoidCallback? onChanged) {
     _paint.color = decoration.context!.tTheme.brandNormalColor;
     _paint.strokeCap = StrokeCap.round;
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../components/button/t_button.dart';
 import '../../components/button/t_button_theme_data.dart';
+import '../../theme/t_theme.dart';
 import 't_fab_defaults.dart';
 import 't_fab_layout.dart';
 
@@ -10,14 +11,14 @@ import 't_fab_layout.dart';
 /// - [resolveLayout]：将构造器扁平参数 + Theme + 安全区组装为 [TFabLayout]
 /// - [resolveButton]：将默认配置 + [TButtonProps] + text/icon 组装为一颗 [TButton]
 class TFabResolve {
-  TFabResolve._();
+  TFabResolve._(); // coverage:ignore-line
 
   /// 组装定位层模型
   static TFabLayout resolveLayout({
     required double? right,
     required double? bottom,
-    required Object? draggable,
-    required Object? magnet,
+    required TFabDragAxis? draggable,
+    required TFabMagnet? magnet,
     required TFabBounds? xBounds,
     required TFabBounds? yBounds,
     required double? themeDefaultRight,
@@ -30,25 +31,11 @@ class TFabResolve {
     final effectiveBottom = bottom ?? themeDefaultBottom ?? 32;
     final adjustedBottom = effectiveBottom + safePadding.bottom;
 
-    TFabDragAxis? effectiveDraggable;
-    if (draggable is TFabDragAxis) {
-      effectiveDraggable = draggable;
-    } else if (draggable == true) {
-      effectiveDraggable = TFabDragAxis.all;
-    }
-
-    TFabMagnet? effectiveMagnet;
-    if (magnet is TFabMagnet) {
-      effectiveMagnet = magnet;
-    } else if (magnet == true) {
-      effectiveMagnet = TFabMagnet.right;
-    }
-
     return TFabLayout(
       right: effectiveRight,
       bottom: adjustedBottom,
-      draggable: effectiveDraggable,
-      magnet: effectiveMagnet,
+      draggable: draggable,
+      magnet: magnet,
       xBounds: xBounds ?? themeDefaultXBounds,
       yBounds: yBounds ?? themeDefaultYBounds,
     );
@@ -71,8 +58,8 @@ class TFabResolve {
     final effectiveIcon = icon ?? const Icon(TFabDefaults.defaultIconData);
 
     // shape 推导：纯图标=圆形，有文字=胶囊形；buttonProps.shape 覆盖
-    final effectiveShape =
-        buttonProps?.shape ?? (hasText ? TButtonShape.round : TButtonShape.circle);
+    final effectiveShape = buttonProps?.shape ??
+        (hasText ? TButtonShape.round : TButtonShape.circle);
 
     final tButton = TButton(
       child: hasText ? Text(text) : null,
@@ -87,17 +74,11 @@ class TFabResolve {
     // TButton 的 shape 由 TButtonThemeData.shape 控制
     // 合并父级 TButtonThemeData（保留其他字段）+ 推导出的 shape
     final parentBtnTheme = Theme.of(context).extension<TButtonThemeData>();
-    final fabBtnTheme =
-        (parentBtnTheme ?? const TButtonThemeData()).copyWith(shape: effectiveShape);
+    final fabBtnTheme = (parentBtnTheme ?? const TButtonThemeData())
+        .copyWith(shape: effectiveShape);
 
     return Theme(
-      data: Theme.of(context).copyWith(
-        extensions: [
-          ...Theme.of(context).extensions.values
-              .where((e) => e is! TButtonThemeData),
-          fabBtnTheme,
-        ],
-      ),
+      data: Theme.of(context).mergeExtension(fabBtnTheme),
       child: tButton,
     );
   }

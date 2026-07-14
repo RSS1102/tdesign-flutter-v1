@@ -31,7 +31,7 @@
 
 控制类 **B**：**仅** `value` + `onChanged`；无 `defaultValue`；**`value` 必填**且由**父 State** 持有。用户点击 → `onChanged`；父 `setState` 回写 `value`。命令式切 tab 由父 `setState` 改 `value`，**无** `Controller` 辅助 API。禁用：`onChanged: null`。
 
-**Material 对照**：对齐 M3 `NavigationBar`（`selectedIndex` + `onDestinationSelected`）/ `BottomNavigationBar`（`currentIndex` + `onTap`）；API 统一为 `value` + `onChanged`（→ [controlled.md §1.1](../../foundation/controlled.md#11-导航选中b-类)）。同类导航选中 → [sidebar.md](./sidebar.md)。**非** [tabs.md](./tabs.md) 的 `TabController` 持态。
+**Material 对照**：对齐 M3 `NavigationBar`（`selectedIndex` + `onDestinationSelected`）/ `BottomNavigationBar`（`value` + `onTap`）；API 统一为 `value` + `onChanged`（→ [controlled.md §1.1](../../foundation/controlled.md#11-导航选中b-类)）。同类导航选中 → [sidebar.md](./sidebar.md)。**非** [tabs.md](./tabs.md) 的 `TabController` 持态。
 
 → [controlled.md](../../foundation/controlled.md) · [form.md §2](../../foundation/form.md#2-字段桥接控制类--form-写法)
 
@@ -49,7 +49,7 @@
 
 | 决策 | 参数 | 类型 | 层级 | 默认 | 说明 |
 |------|------|------|------|------|------|
-| ✏️ | `value` | `int` | L1 | — | 选中索引（原 `currentIndex`）；**必填**；见 **§1.1.1** |
+| ✏️ | `value` | `int` | L1 | — | 选中索引（原 `value`）；**必填**；见 **§1.1.1** |
 | ✨ | `onChanged` | `ValueChanged<int>?` | L3 | — | 选中变化；与 `value` 成对；`null` 禁用整栏 |
 | | `navigationTabs` | `List<TTabBarItemConfig>` | L2 | — | 底栏项（≥1） |
 | ✏️ | `variant` | `TTabBarVariant?` | L1 | Theme | 合并原三枚举；去 positional `basicType` |
@@ -59,11 +59,11 @@
 
 > 样式默认经 `Theme.of(context).extension<TTabBarThemeData>()`；**禁止**构造器 `themeData`（→ [theme.md §2.1](../../foundation/theme.md#禁止构造器-themedatav10-裁决)）。  
 > 构造器可选 `Key`（`super.key`）见 [api.md §1.1](../../foundation/api.md#11-flutter-keywidget-基建)；**不进上表**。  
-> **`currentIndex`**：0.2.x 兼容参数，KEEP；新代码用 `value`；解析见 **§1.1.1**。
+> **`value`**：0.2.x 兼容参数，KEEP；新代码用 `value`；解析见 **§1.1.1**。
 
 #### §1.1.1 受控与回调（B 类）
 
-有效索引：`effectiveIndex = value ?? currentIndex`（`value` 优先；**新代码须传 `value`**）。
+有效索引：`effectiveIndex = value ?? value`（`value` 优先；**新代码须传 `value`**）。
 
 凡**选中索引变化**，**仅**触发 **`onChanged`**（用户点击新 tab；父 `setState` 改 `value` **不**触发）。
 
@@ -100,11 +100,10 @@ setState(() => _index = 1);
 - **严格 B 类**：高亮由构造器 **`value`** 驱动；父 `setState` 改 `value` 后须同步高亮（`didUpdateWidget` 跟 `widget.value`），**不**仅靠组件内部 index / 局部 State 持选中态。
 
 ```dart
-// 兼容写法（新代码不推荐）
 TTabBar(value: 1, onChanged: ..., navigationTabs: [...]);
 
-// value 优先于 currentIndex
-TTabBar(value: 2, currentIndex: 0, onChanged: ..., navigationTabs: [...]); // 生效索引为 2
+// 父 State 更新 value 后，组件同步高亮
+setState(() => _index = 2);
 ```
 
 #### §1.1.2 项级 `onTap`（L3 旁听）
@@ -182,7 +181,7 @@ PR-2 落地时删除 [tabs.md](./tabs.md) 临时 `typedef TTabBar = TTabsBar`。
 | 从（0.2.x） | 到（v1.0） | 怎么改 |
 |------------|-----------|--------|
 | `TBottomTabBar` | `TTabBar` | 类名；deprecated 别名保留一 minor |
-| `currentIndex` | `value` | 推荐新名；`currentIndex` KEEP；`value` 优先 |
+| `value` | `value` | 推荐新名；`value` KEEP；`value` 优先 |
 | — | `onChanged` | **新增** B 类选中闭环 |
 | positional `basicType` + `componentType` + `outlineType` | `variant: TTabBarVariant` | 去 positional；`fromLegacy` 迁移 |
 | `TBottomTabBarTabConfig` | `TTabBarItemConfig` | 字段同名迁移 |
@@ -194,7 +193,7 @@ PR-2 落地时删除 [tabs.md](./tabs.md) 临时 `typedef TTabBar = TTabsBar`。
 | 0.2.x | v1.0 |
 |-------|------|
 | 点击 tab 仅改内部 `_selectedIndex` | 点击新 tab → **`onChanged`**；父 `setState` 回写 **`value`** |
-| 省略 `currentIndex` 默认 `0` | 新代码 **`value` 必填**；仅兼容路径可回落 `currentIndex` |
+| 省略 `value` 默认 `0` | 新代码 **`value` 必填**；仅兼容路径可回落 `value` |
 | 构造器 `themeData:` | `mergeExtension(TTabBarThemeData(...))` |
 
 ### 🗑️ 移除
@@ -253,8 +252,8 @@ PR-2 落地时删除 [tabs.md](./tabs.md) 临时 `typedef TTabBar = TTabsBar`。
 
 **Theme 合并**：L4 字段须按 §3 优先级解析（构造器 L1 **>** `Theme.extension<TTabBarThemeData>()` **>** 内置默认）；**禁止**构造器 `themeData` 参数。
 
-**必测**：基础渲染 · 受控 `value`+`onChanged`（点击新 tab 触发）· 父改 `value` 同步高亮 · `value` 优先于 `currentIndex` · `currentIndex` 兼容 · 越界 assert · `onChanged: null` 禁用（不切 tab、不触发项 `onTap`）· 项 `onTap` / `allowMultipleTaps` · `variant` 矩阵 · 动效 · `useSafeArea`/`placeholder` · Theme 子树 · deprecated 别名 · export 不泄漏内部类 · **无**业务 Controller · **无**构造器 `themeData`。
+**必测**：基础渲染 · 受控 `value`+`onChanged`（点击新 tab 触发）· 父改 `value` 同步高亮 · `value` 优先于 `value` · `value` 兼容 · 越界 assert · `onChanged: null` 禁用（不切 tab、不触发项 `onTap`）· 项 `onTap` / `allowMultipleTaps` · `variant` 矩阵 · 动效 · `useSafeArea`/`placeholder` · Theme 子树 · deprecated 别名 · export 不泄漏内部类 · **无**业务 Controller · **无**构造器 `themeData`。
 
-**Example**：`currentIndex→value` · B 类受控示例 · 项 `onTap` 旁听 · 父 `setState` 切 tab · `onChanged: null` · `useSafeArea` · Theme `defaultVariant` 覆盖。
+**Example**：`value→value` · B 类受控示例 · 项 `onTap` 旁听 · 父 `setState` 切 tab · `onChanged: null` · `useSafeArea` · Theme `defaultVariant` 覆盖。
 
 > [api.md](../../foundation/api.md) · [controlled.md](../../foundation/controlled.md) · [testing.md](../../guide/testing.md) · [tabs.md](./tabs.md) · [bottom-tab-bar-upgrade-guide.md](./bottom-tab-bar-upgrade-guide.md)（类名与 **§1** 冲突时以 **§1** 为准）

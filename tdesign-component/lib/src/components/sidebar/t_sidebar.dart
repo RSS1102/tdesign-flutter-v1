@@ -109,6 +109,42 @@ class _TSideBarState extends State<TSideBar> {
         const TSideBarThemeData();
   }
 
+  void _handleControllerChanged() {
+    if (!mounted || widget.controller == null) {
+      return;
+    }
+    _loading = widget.controller!.loading;
+    getDisplayChildren();
+    final previousIndex = currentIndex;
+    selectValue(widget.controller!.currentValue, needScroll: true);
+    if (mounted && previousIndex == currentIndex) {
+      setState(() {});
+    }
+  }
+
+  void _syncSelectedValue(int? value) {
+    if (value == null) {
+      currentValue = null;
+      currentIndex = null;
+      return;
+    }
+    for (final item in displayChildren) {
+      if (item.value == value) {
+        currentValue = item.value;
+        currentIndex = item.index;
+        return;
+      }
+    }
+    currentValue = null;
+    currentIndex = null;
+  }
+
+  int? _initialValue() {
+    return widget.value ??
+        widget.controller?.currentValue ??
+        (displayChildren.isNotEmpty ? displayChildren[0].value : null);
+  }
+
   // 查找某值对应项
   SideItemProps findSideItem(int value) {
     return displayChildren.where((element) => element.value == value).first;
@@ -124,21 +160,22 @@ class _TSideBarState extends State<TSideBar> {
     }
 
     if (needScroll && item != null) {
-      try {
-        var height = globalKey.currentContext!.size!.height;
-        var offset = _scrollerController.offset;
-        var distance = item.index * itemHeight - offset;
+      final context = globalKey.currentContext;
+      final height = context?.size?.height;
+      if (height != null && _scrollerController.hasClients) {
+        final offset = _scrollerController.offset;
+        final distance = item.index * itemHeight - offset;
         if (distance + itemHeight > height) {
-          _scrollerController.animateTo(offset + itemHeight, // coverage:ignore-line
+          _scrollerController.animateTo(
+              offset + itemHeight, // coverage:ignore-line
               duration: const Duration(milliseconds: 100),
               curve: Curves.easeIn);
         } else if (distance < 0) {
-          _scrollerController.animateTo(offset - itemHeight, // coverage:ignore-line
+          _scrollerController.animateTo(
+              offset - itemHeight, // coverage:ignore-line
               duration: const Duration(milliseconds: 100),
               curve: Curves.easeIn);
         }
-      } catch (e) {
-        print(e); // coverage:ignore-line
       }
     }
 
@@ -152,42 +189,9 @@ class _TSideBarState extends State<TSideBar> {
     super.initState();
 
     _loading = widget.loading ?? widget.controller?.loading ?? false;
-    // controller注册事件
-    if (widget.controller != null) {
-      widget.controller!.addListener(() {
-        selectValue(widget.controller!.currentValue, needScroll: true);
-        _loading = widget.controller!.loading;
-        getDisplayChildren();
-        setState(() {});
-      });
-    }
-
-    displayChildren = widget.children
-        .asMap()
-        .entries
-        .map((entry) => SideItemProps(
-            index: entry.key,
-            disabled: entry.value.disabled,
-            value: entry.value.value,
-            icon: entry.value.icon,
-            label: entry.value.label,
-            textStyle: entry.value.textStyle,
-            badge: entry.value.badge))
-        .toList();
-
-    currentValue = widget.value ??
-        (displayChildren.isNotEmpty ? displayChildren[0].value : null);
-    if (currentValue != null) {
-      try {
-        final item = findSideItem(currentValue!);
-        currentIndex = item.index;
-      } catch (e) {
-        currentIndex = null;
-        currentValue = null;
-      }
-    } else {
-      currentIndex = null;
-    }
+    getDisplayChildren();
+    _syncSelectedValue(_initialValue());
+    widget.controller?.addListener(_handleControllerChanged);
   }
 
   void getDisplayChildren() {
@@ -195,7 +199,8 @@ class _TSideBarState extends State<TSideBar> {
       displayChildren = widget.controller!.children // coverage:ignore-line
           .asMap() // coverage:ignore-line
           .entries // coverage:ignore-line
-          .map((entry) => SideItemProps( // coverage:ignore-line
+          .map((entry) => SideItemProps(
+              // coverage:ignore-line
               index: entry.key, // coverage:ignore-line
               disabled: entry.value.disabled, // coverage:ignore-line
               value: entry.value.value, // coverage:ignore-line
@@ -224,37 +229,39 @@ class _TSideBarState extends State<TSideBar> {
 
   // 选中某项
   void onSelect(SideItemProps item, {isController = false}) {
-    if (currentIndex != item.index) {
-      if (isController) {
-        if (widget.onChanged != null) {
-          widget.onChanged!(item.value);
-        }
-      } else {
-        if (widget.onSelected != null) {
-          widget.onSelected!(item.value);
-        }
-      }
-
-      setState(() {
-        currentIndex = item.index;
-      });
+    if (currentIndex == item.index) {
+      return;
     }
+
+    if (isController) {
+      widget.onChanged?.call(item.value);
+    } else {
+      widget.onSelected?.call(item.value);
+    }
+
+    if (!isController && widget.value != null) {
+      return;
+    }
+
+    setState(() {
+      currentValue = item.value;
+      currentIndex = item.index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = _resolveTheme();
-    final effectiveStyle = widget.style ?? theme.style ?? TSideBarVariant.normal;
+    final effectiveStyle =
+        widget.style ?? theme.style ?? TSideBarVariant.normal;
     if (_loading) {
-      widget.controller?.loading = true;
       if (widget.loadingWidget != null) {
         return widget.loadingWidget!;
       }
       return SizedBox(
         width: MediaQuery.of(context).size.width,
         child: const Align(
-          child:
-              TLoading(icon: TLoadingIcon.circle, size: TLoadingSize.large),
+          child: TLoading(icon: TLoadingIcon.circle, size: TLoadingSize.large),
         ),
       );
     }
@@ -265,7 +272,9 @@ class _TSideBarState extends State<TSideBar> {
             maxHeight: MediaQuery.of(context).size.height -
                 MediaQuery.of(context).padding.top),
         child: SizedBox(
-            height: widget.height ?? theme.height ?? MediaQuery.of(context).size.height,
+            height: widget.height ??
+                theme.height ??
+                MediaQuery.of(context).size.height,
             child: MediaQuery.removePadding(
                 context: context,
                 removeTop: true,
@@ -286,10 +295,14 @@ class _TSideBarState extends State<TSideBar> {
                         badge: ele.badge,
                         textStyle: ele.textStyle,
                         selected: currentIndex == ele.index,
-                        selectedColor: widget.selectedColor ?? theme.selectedColor,
-                        unSelectedColor: widget.unSelectedColor ?? theme.unSelectedColor,
-                        selectedTextStyle: widget.selectedTextStyle ?? theme.selectedTextStyle,
-                        contentPadding: widget.contentPadding ?? theme.contentPadding,
+                        selectedColor:
+                            widget.selectedColor ?? theme.selectedColor,
+                        unSelectedColor:
+                            widget.unSelectedColor ?? theme.unSelectedColor,
+                        selectedTextStyle:
+                            widget.selectedTextStyle ?? theme.selectedTextStyle,
+                        contentPadding:
+                            widget.contentPadding ?? theme.contentPadding,
                         topAdjacent: currentIndex != null &&
                             currentIndex! + 1 == ele.index,
                         bottomAdjacent: currentIndex != null &&
@@ -311,7 +324,20 @@ class _TSideBarState extends State<TSideBar> {
 
   @override
   void didUpdateWidget(covariant TSideBar oldWidget) {
-    getDisplayChildren();
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?.removeListener(_handleControllerChanged);
+      widget.controller?.addListener(_handleControllerChanged);
+    }
+    _loading = widget.loading ?? widget.controller?.loading ?? false;
+    getDisplayChildren();
+    _syncSelectedValue(_initialValue());
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.removeListener(_handleControllerChanged);
+    _scrollerController.dispose();
+    super.dispose();
   }
 }

@@ -21,7 +21,7 @@
 | animation | TSkeletonAnimation? | - | 动画效果 |
 | delay | int | 0 | 延迟显示加载时间 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| theme | TSkeletonTheme | TSkeletonTheme.text | - |
+| variant | TSkeletonVariant | TSkeletonVariant.text | - |
 
 #### 公开属性
 
@@ -164,7 +164,7 @@
 | flashed | 闪烁 |
 
 
-### TSkeletonTheme
+### TSkeletonVariant
 #### 枚举值
 
 

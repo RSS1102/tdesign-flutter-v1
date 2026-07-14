@@ -14,9 +14,8 @@
 | maxDate | DateTime? | - | 最大可选的日期，默认 2100-12-31 |
 | minDate | DateTime? | - | 最小可选的日期，默认 1970-01-01 |
 | monthTitleBuilder | TCalendarMonthTitleBuilder? | - | 月标题构建器，参数 `DateTime` 为当月 1 日（仅年月有效）。 |
-| onChange | ValueChanged<List<DateTime>> | - | 选中结果变化时触发（单选立即触发；多选每次切换；区间在端点变化时触发）。 用于同步业务侧 State 或 `ValueNotifier`；勿依赖运行期回写 `initialValue` 驱动 UI。 组件挂载时不会调用本回调。点击禁用格或单选重复点已选格时不触发。 |
+| onChanged | ValueChanged<List<DateTime>> | - | 选中结果变化时触发（单选立即触发；多选每次切换；区间在端点变化时触发）。 用于同步业务侧 State 或 `ValueNotifier`；勿依赖运行期回写 `initialValue` 驱动 UI。 组件挂载时不会调用本回调。点击禁用格或单选重复点已选格时不触发。 |
 | onMonthChanged | ValueChanged<DateTime>? | - | 可见月份变化时触发（用户滑动或程序化滚动结束后），参数为当月 1 日。 外置控制栏可只更新自身文案，避免为同步月份对 `TCalendar` 整组件 `setState`。 |
-| style | TCalendarStyle? | - | 自定义样式（包含 cellHeight、monthTitleHeight 等布局参数） |
 | subtitleBuilder | TCalendarSubtitleBuilder? | - | 副标题构建器，在日期主数字下方渲染自定义内容。 `TCalendarSubtitleContext.date` 为当前格日期； `TCalendarSubtitleContext.selectType` 为选中/区间/禁用等态。返回 null 不显示副标题行。 |
 | type | TCalendarVariant | TCalendarVariant.single | 日历的选择模式，决定点击日期后的选中行为： - `TCalendarVariant.single`：单选，点击新日期取消旧选中 - `TCalendarVariant.multiple`：多选，点击切换选中/取消 - `TCalendarVariant.range`：区间选择，依次选起止日期 |
 
@@ -42,7 +41,7 @@
 | bodyPadding | double? | - | 内边距 |
 | cellDecoration | BoxDecoration? | - | 日期单元格装饰（选中状态） |
 | cellHeight | double | 60 | 日期单元格高度，默认 60 |
-| centreColor | Color? | - | 区间中间格背景与格间衔接条颜色；`forSelectType` 中设为 `TTheme.brandLightColor`。 |
+| centreColor | Color? | - | 区间中间格背景与格间衔接条颜色；`forSelectType` 中设为 TTheme.brandLightColor。 |
 | dayStyle | TextStyle? | - | 日期数字样式 |
 | decoration | BoxDecoration? | - | 组件容器装饰 |
 | monthTitleHeight | double | 22 | 月份标题高度，默认 22 |
@@ -71,17 +70,6 @@
 | --- | --- | --- | --- |
 | date | DateTime | - | 当前格子的阳历日期（仅年月日，无时分秒）。 |
 | selectType | DateSelectType | - | 当前格的选中/区间/禁用等展示状态，便于按态设置副标题样式。 |
-
-
-### TCalendarVariant
-#### 枚举值
-
-
-| 名称 | 说明 |
-| --- | --- |
-| single | 单选：点击新日期时自动取消旧日期的选中状态 |
-| multiple | 多选：点击日期切换选中/取消，可同时选中多个日期 |
-| range | 区间选择：两次点击定区间；终点须晚于起点，否则以新点击重开区间 |
 
 
 ### DateSelectType

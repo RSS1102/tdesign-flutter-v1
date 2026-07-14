@@ -659,7 +659,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
 
   @override
   void dispose() {
-    _indicatorPainter!.dispose();
+    _indicatorPainter?.dispose();
     if (_controllerIsValid) {
       _controller!.animation!.removeListener(_handleTabControllerAnimationTick);
       _controller!.removeListener(_handleTabControllerTick);
@@ -803,8 +803,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
     } else if (widget.outlineType == TTabBarVariant.card) {
       if (index == _currentIndex) {
         return BoxDecoration(
-            color:
-                widget.backgroundColor ?? context.tTheme.bgColorContainer,
+            color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(index + 1 < widget.tabs.length
                     ? context.tTheme.radiusLarge
@@ -815,12 +814,10 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
         return BoxDecoration(
           color: context.tTheme.bgColorSecondaryContainer,
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(index - 1 == _currentIndex
-                ? context.tTheme.radiusLarge
-                : 0),
-            bottomRight: Radius.circular(index + 1 == _currentIndex
-                ? context.tTheme.radiusLarge
-                : 0),
+            bottomLeft: Radius.circular(
+                index - 1 == _currentIndex ? context.tTheme.radiusLarge : 0),
+            bottomRight: Radius.circular(
+                index + 1 == _currentIndex ? context.tTheme.radiusLarge : 0),
           ),
         );
       }
@@ -1024,11 +1021,10 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
     );
 
     if (widget.isScrollable) {
-      final effectivePadding =
-          effectiveTabAlignment == TabAlignment.startOffset
-              ? const EdgeInsetsDirectional.only(start: _kStartOffset)
-                  .add(widget.padding ?? EdgeInsets.zero)
-              : widget.padding;
+      final effectivePadding = effectiveTabAlignment == TabAlignment.startOffset
+          ? const EdgeInsetsDirectional.only(start: _kStartOffset)
+              .add(widget.padding ?? EdgeInsets.zero)
+          : widget.padding;
       _scrollController ??= _TabBarScrollController(this);
       tHorizontalTabBar = SingleChildScrollView(
         dragStartBehavior: widget.dragStartBehavior,
@@ -1296,7 +1292,7 @@ class THorizontalTabBarView extends StatefulWidget {
 
 class _THorizontalTabBarViewState extends State<THorizontalTabBarView> {
   TabController? _controller;
-  late PageController _pageController;
+  PageController? _pageController;
   late List<Widget> _children;
   late List<Widget> _childrenWithKey;
   int? _currentIndex;
@@ -1337,6 +1333,7 @@ class _THorizontalTabBarViewState extends State<THorizontalTabBarView> {
     super.didChangeDependencies();
     _updateTabController();
     _currentIndex = _controller!.index;
+    _pageController?.dispose();
     _pageController = PageController(initialPage: _currentIndex!);
   }
 
@@ -1346,7 +1343,7 @@ class _THorizontalTabBarViewState extends State<THorizontalTabBarView> {
     if (widget.controller != oldWidget.controller) {
       _updateTabController();
       _currentIndex = _controller!.index;
-      _pageController.jumpToPage(_currentIndex!);
+      _pageController!.jumpToPage(_currentIndex!);
     }
     if (widget.children != oldWidget.children && _warpUnderwayCount == 0) {
       _updateChildren();
@@ -1359,6 +1356,8 @@ class _THorizontalTabBarViewState extends State<THorizontalTabBarView> {
       _controller!.animation!.removeListener(_handleTabControllerAnimationTick);
     }
     _controller = null;
+    _pageController?.dispose();
+    _pageController = null;
     // We don't own the _controller Animation, so it's not disposed here.
     super.dispose();
   }
@@ -1384,14 +1383,14 @@ class _THorizontalTabBarViewState extends State<THorizontalTabBarView> {
       return Future<void>.value();
     }
 
-    if (_pageController.page == _currentIndex!.toDouble()) {
+    if (_pageController!.page == _currentIndex!.toDouble()) {
       return Future<void>.value();
     }
 
     final duration = _controller!.animationDuration;
 
     if (duration == Duration.zero) {
-      _pageController.jumpToPage(_currentIndex!);
+      _pageController!.jumpToPage(_currentIndex!);
       return Future<void>.value();
     }
 
@@ -1399,7 +1398,7 @@ class _THorizontalTabBarViewState extends State<THorizontalTabBarView> {
 
     if ((_currentIndex! - previousIndex).abs() == 1) {
       _warpUnderwayCount += 1;
-      await _pageController.animateToPage(_currentIndex!,
+      await _pageController!.animateToPage(_currentIndex!,
           duration: duration, curve: Curves.ease);
       _warpUnderwayCount -= 1;
       return Future<void>.value();
@@ -1418,10 +1417,10 @@ class _THorizontalTabBarViewState extends State<THorizontalTabBarView> {
       _childrenWithKey[initialPage] = _childrenWithKey[previousIndex];
       _childrenWithKey[previousIndex] = temp;
     });
-    _pageController.jumpToPage(initialPage);
+    _pageController!.jumpToPage(initialPage);
 
-    await _pageController.animateToPage(_currentIndex!,
-        duration: duration, curve: Curves.ease);
+    await _pageController!
+        .animateToPage(_currentIndex!, duration: duration, curve: Curves.ease);
     if (!mounted) {
       return Future<void>.value();
     }
@@ -1448,18 +1447,18 @@ class _THorizontalTabBarViewState extends State<THorizontalTabBarView> {
     _warpUnderwayCount += 1;
     if (notification is ScrollUpdateNotification &&
         !_controller!.indexIsChanging) {
-      if ((_pageController.page! - _controller!.index).abs() > 1.0) {
-        _controller!.index = _pageController.page!.round();
+      if ((_pageController!.page! - _controller!.index).abs() > 1.0) {
+        _controller!.index = _pageController!.page!.round();
         _currentIndex = _controller!.index;
       }
       _controller!.offset =
-          (_pageController.page! - _controller!.index).clamp(-1.0, 1.0);
+          (_pageController!.page! - _controller!.index).clamp(-1.0, 1.0);
     } else if (notification is ScrollEndNotification) {
-      _controller!.index = _pageController.page!.round();
+      _controller!.index = _pageController!.page!.round();
       _currentIndex = _controller!.index;
       if (!_controller!.indexIsChanging) {
         _controller!.offset =
-            (_pageController.page! - _controller!.index).clamp(-1.0, 1.0);
+            (_pageController!.page! - _controller!.index).clamp(-1.0, 1.0);
       }
     }
     _warpUnderwayCount -= 1;

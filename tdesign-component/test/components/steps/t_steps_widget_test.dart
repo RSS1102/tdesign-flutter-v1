@@ -15,13 +15,14 @@ void main() {
     testWidgets('横向 success 可构建', (tester) async {
       await tester.pumpWidget(wrap(TSteps(
         steps: baseSteps,
-        activeIndex: 1,
+        value: 1,
       )));
       expect(find.byType(TSteps), findsOneWidget);
       expect(find.text('步骤一'), findsOneWidget);
     });
 
-    testWidgets('纵向 / error / simple / readOnly / verticalSelect', (tester) async {
+    testWidgets('纵向 / error / simple / readOnly / verticalSelect',
+        (tester) async {
       await tester.pumpWidget(wrap(TSteps(
         steps: baseSteps,
         direction: TStepsDirection.vertical,
@@ -40,16 +41,16 @@ void main() {
           TStepsItemData(customTitle: const Text('自定义标题')),
           TStepsItemData(customContent: const Text('自定义内容')),
         ],
-        activeIndex: 0,
+        value: 0,
       )));
       expect(find.text('自定义标题'), findsOneWidget);
       expect(find.text('自定义内容'), findsOneWidget);
     });
 
-    testWidgets('activeIndex 越界被 clamp', (tester) async {
+    testWidgets('value 越界被 clamp', (tester) async {
       await tester.pumpWidget(wrap(TSteps(
         steps: baseSteps,
-        activeIndex: 99,
+        value: 99,
       )));
       expect(find.byType(TSteps), findsOneWidget);
     });

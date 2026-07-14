@@ -32,62 +32,62 @@ import 't_text_resolve.dart';
 ///
 class TText extends StatelessWidget {
   const TText(
-      this.data, {
-        this.font,
-        this.fontWeight,
-        this.fontFamily,
-        this.textColor,
-        this.backgroundColor,
-        this.isTextThrough = false,
-        this.lineThroughColor,
-        this.package,
-        this.style,
-        this.strutStyle,
-        this.textAlign,
-        this.textDirection,
-        this.locale,
-        this.softWrap,
-        this.overflow,
-        this.textScaleFactor,
-        this.maxLines,
-        this.semanticsLabel,
-        this.textWidthBasis,
-        this.textHeightBehavior,
-        this.forceVerticalCenter = false,
-        this.isInFontLoader = false,
-        this.fontFamilyUrl,
-        Key? key,
-      })  : textSpan = null,
+    this.data, {
+    this.font,
+    this.fontWeight,
+    this.fontFamily,
+    this.textColor,
+    this.backgroundColor,
+    this.isTextThrough = false,
+    this.lineThroughColor,
+    this.package,
+    this.style,
+    this.strutStyle,
+    this.textAlign,
+    this.textDirection,
+    this.locale,
+    this.softWrap,
+    this.overflow,
+    this.textScaleFactor,
+    this.maxLines,
+    this.semanticsLabel,
+    this.textWidthBasis,
+    this.textHeightBehavior,
+    this.forceVerticalCenter = false,
+    this.isInFontLoader = false,
+    this.fontFamilyUrl,
+    Key? key,
+  })  : textSpan = null,
         super(key: key);
 
   /// 富文本构造方法
   const TText.rich(
-      this.textSpan, {
-        this.font,
-        this.fontWeight,
-        this.fontFamily,
-        this.textColor,
-        this.backgroundColor,
-        this.isTextThrough = false,
-        this.lineThroughColor,
-        this.package,
-        Key? key,
-        this.style,
-        this.strutStyle,
-        this.textAlign,
-        this.textDirection,
-        this.locale,
-        this.softWrap,
-        this.overflow,
-        this.textScaleFactor,
-        this.maxLines,
-        this.semanticsLabel,
-        this.textWidthBasis,
-        this.textHeightBehavior,
-        this.forceVerticalCenter = false,
-        this.isInFontLoader = false,
-        this.fontFamilyUrl,
-      })  : data = null,
+    this.textSpan, {
+    this.font,
+    this.fontWeight,
+    this.fontFamily,
+    this.textColor,
+    this.backgroundColor,
+    this.isTextThrough = false,
+    this.lineThroughColor,
+    this.package,
+    Key? key,
+    this.style,
+    this.strutStyle,
+    this.textAlign,
+    this.textDirection,
+    this.locale,
+    this.softWrap,
+    this.overflow,
+    this.textScaleFactor,
+    this.maxLines,
+    this.semanticsLabel,
+    this.textWidthBasis,
+    this.textHeightBehavior,
+    this.forceVerticalCenter = false,
+    this.isInFontLoader = false,
+    this.fontFamilyUrl,
+  })  : data = null,
         super(key: key);
 
   /// 字体尺寸，包含 大小size 和 行高height
@@ -117,31 +117,43 @@ class TText extends StatelessWidget {
   /// 自定义的 TextStyle，其中指定的属性，将覆盖扩展的外层属性
   final TextStyle? style;
 
-  /// 以下系统 text 属性，释义请参考系统 [Text] 中注释
+  /// 透传至系统 [Text.data] 的文本内容
   final data;
 
+  /// 透传至系统 [Text.strutStyle] 的段落支柱样式
   final StrutStyle? strutStyle;
 
+  /// 透传至系统 [Text.textAlign] 的文本对齐方式
   final TextAlign? textAlign;
 
+  /// 透传至系统 [Text.textDirection] 的文本方向
   final TextDirection? textDirection;
 
+  /// 透传至系统 [Text.locale] 的区域设置
   final Locale? locale;
 
+  /// 透传至系统 [Text.softWrap]，控制是否自动换行
   final bool? softWrap;
 
+  /// 透传至系统 [Text.overflow] 的溢出处理方式
   final TextOverflow? overflow;
 
+  /// 文本缩放倍率，内部转换为系统 [Text.textScaler]
   final double? textScaleFactor;
 
+  /// 透传至系统 [Text.maxLines] 的最大行数
   final int? maxLines;
 
+  /// 透传至系统 [Text.semanticsLabel] 的无障碍标签
   final String? semanticsLabel;
 
+  /// 透传至系统 [Text.textWidthBasis] 的宽度计算基准
   final TextWidthBasis? textWidthBasis;
 
+  /// 透传至系统 [Text.textHeightBehavior] 的高度行为
   final ui.TextHeightBehavior? textHeightBehavior;
 
+  /// 透传至系统 [Text.rich] 的富文本片段
   final InlineSpan? textSpan;
 
   /// 是否强制居中
@@ -160,14 +172,16 @@ class TText extends StatelessWidget {
 
     if (fontFamilyUrl?.isNotEmpty ?? false) {
       // 如果设置了 Url，则使用 TGFontLoader
-      return TFontLoaderWidget( // coverage:ignore-line
+      return TFontLoaderWidget(
+        // coverage:ignore-line
         textWidget: this,
         fontFamilyUrl: fontFamilyUrl!, // coverage:ignore-line
       );
     }
 
     // v1.0 变更：TTextThemeData.forceVerticalCenter 作为子树级默认，实例参数可覆盖
-    final effectiveVC = forceVerticalCenter || (themeExtension?.forceVerticalCenter ?? false);
+    final effectiveVC =
+        forceVerticalCenter || (themeExtension?.forceVerticalCenter ?? false);
     if (effectiveVC) {
       var config = getConfiguration(context);
       var paddingConfig = config?.paddingConfig;
@@ -242,47 +256,50 @@ class TText extends StatelessWidget {
   /// 获取系统原始 [Text]，以便使用到只能接收系统 [Text] 组件的地方
   /// 转化为系统原始 [Text] 后，将失去 padding 和 background 属性
   Text getRawText({required BuildContext context}) {
-    return _getRawText(context: context, textStyleBackgroundColor: backgroundColor);
+    return _getRawText(
+        context: context, textStyleBackgroundColor: backgroundColor);
   }
 
   Text _getRawText(
       {required BuildContext context,
-        TextStyle? textStyle,
-        Color? textStyleBackgroundColor}) {
+      TextStyle? textStyle,
+      Color? textStyleBackgroundColor}) {
     return textSpan == null
         ? Text(
-      data,
-      key: key,
-      style: textStyle ??
-          getTextStyle(context, textStyleBackgroundColor: textStyleBackgroundColor),
-      strutStyle: strutStyle,
-      textAlign: textAlign,
-      textDirection: textDirection,
-      locale: locale,
-      softWrap: softWrap,
-      overflow: overflow,
-      textScaler: TextScaler.linear(textScaleFactor ?? 1.0),
-      maxLines: maxLines,
-      semanticsLabel: semanticsLabel,
-      textWidthBasis: textWidthBasis,
-      textHeightBehavior: textHeightBehavior,
-    )
+            data,
+            key: key,
+            style: textStyle ??
+                getTextStyle(context,
+                    textStyleBackgroundColor: textStyleBackgroundColor),
+            strutStyle: strutStyle,
+            textAlign: textAlign,
+            textDirection: textDirection,
+            locale: locale,
+            softWrap: softWrap,
+            overflow: overflow,
+            textScaler: TextScaler.linear(textScaleFactor ?? 1.0),
+            maxLines: maxLines,
+            semanticsLabel: semanticsLabel,
+            textWidthBasis: textWidthBasis,
+            textHeightBehavior: textHeightBehavior,
+          )
         : Text.rich(
-      textSpan!,
-      style: textStyle ??
-          getTextStyle(context, textStyleBackgroundColor: textStyleBackgroundColor),
-      strutStyle: strutStyle,
-      textAlign: textAlign,
-      textDirection: textDirection,
-      locale: locale,
-      softWrap: softWrap,
-      overflow: overflow,
-      textScaler: TextScaler.linear(textScaleFactor ?? 1.0),
-      maxLines: maxLines,
-      semanticsLabel: semanticsLabel,
-      textWidthBasis: textWidthBasis,
-      textHeightBehavior: textHeightBehavior,
-    );
+            textSpan!,
+            style: textStyle ??
+                getTextStyle(context,
+                    textStyleBackgroundColor: textStyleBackgroundColor),
+            strutStyle: strutStyle,
+            textAlign: textAlign,
+            textDirection: textDirection,
+            locale: locale,
+            softWrap: softWrap,
+            overflow: overflow,
+            textScaler: TextScaler.linear(textScaleFactor ?? 1.0),
+            maxLines: maxLines,
+            semanticsLabel: semanticsLabel,
+            textWidthBasis: textWidthBasis,
+            textHeightBehavior: textHeightBehavior,
+          );
   }
 }
 
@@ -291,7 +308,7 @@ class TTextSpan extends TextSpan {
   /// 构造参数，扩展参数释义可参考[TText]中字段注释
   TTextSpan({
     BuildContext?
-    context, // 如果未设置font，且不想使用默认的 fontBodyLarge 尺寸时，需设置context，否则可省略
+        context, // 如果未设置font，且不想使用默认的 fontBodyLarge 尺寸时，需设置context，否则可省略
     Font? font,
     FontWeight? fontWeight,
     FontFamily? fontFamily,
@@ -308,28 +325,28 @@ class TTextSpan extends TextSpan {
     PointerExitEventListener? onExit,
     String? semanticsLabel,
   }) : super(
-    text: text,
-    children: children,
-    style: _getTextStyle(context, style, font, fontWeight, fontFamily,
-        textColor, isTextThrough, lineThroughColor, package),
-    recognizer: recognizer,
-    mouseCursor: mouseCursor,
-    onEnter: onEnter,
-    onExit: onExit,
-    semanticsLabel: semanticsLabel,
-  );
+          text: text,
+          children: children,
+          style: _getTextStyle(context, style, font, fontWeight, fontFamily,
+              textColor, isTextThrough, lineThroughColor, package),
+          recognizer: recognizer,
+          mouseCursor: mouseCursor,
+          onEnter: onEnter,
+          onExit: onExit,
+          semanticsLabel: semanticsLabel,
+        );
 
   static TextStyle? _getTextStyle(
-      BuildContext? context,
-      TextStyle? style,
-      Font? font,
-      FontWeight? fontWeight,
-      FontFamily? fontFamily,
-      Color? textColor,
-      bool? isTextThrough,
-      Color? lineThroughColor,
-      String? package,
-      ) {
+    BuildContext? context,
+    TextStyle? style,
+    Font? font,
+    FontWeight? fontWeight,
+    FontFamily? fontFamily,
+    Color? textColor,
+    bool? isTextThrough,
+    Color? lineThroughColor,
+    String? package,
+  ) {
     return TTextResolve.resolveSpan(
       context: context,
       style: style,
@@ -356,9 +373,9 @@ class TTextConfiguration extends InheritedWidget {
 
   const TTextConfiguration(
       {Key? key,
-        required Widget child,
-        this.paddingConfig,
-        this.globalFontFamily})
+      required Widget child,
+      this.paddingConfig,
+      this.globalFontFamily})
       : super(key: key, child: child);
 
   @override
@@ -375,7 +392,8 @@ class TTextPaddingConfig {
   /// v1.0 变更：缓存 key 从 (fontSize, height) 扩容为
   /// (fontSize, height, fontFamily, fontWeightIndex, textScale, paddingConfigHashCode)，
   /// 解决字体切换、缩放变化后命中过期缓存的问题。
-  static final Map<(double, double, String?, int?, double, int), EdgeInsetsGeometry> _cacheMap = {};
+  static final Map<(double, double, String?, int?, double, int),
+      EdgeInsetsGeometry> _cacheMap = {};
 
   /// 获取默认配置
   static TTextPaddingConfig getDefaultConfig() {
@@ -414,13 +432,16 @@ class TTextPaddingConfig {
       // Web 端文字实际占用高度约为 fontSize 的 0.9 倍（实测值，可微调）
       final textActualHeight = fontSize * 0.9; // coverage:ignore-line
       // 计算垂直居中需要的 top padding
-      final webPaddingTop = (totalHeight - textActualHeight) / 2; // coverage:ignore-line
+      final webPaddingTop =
+          (totalHeight - textActualHeight) / 2; // coverage:ignore-line
       // v1.0 变更：移除 Dart SDK 版本代理，固定使用当前系数。
       // 当前 Flutter 版本（≥3.41）使用固定系数。
       const adjustRate = -0.05;
-      final finalTop = webPaddingTop + (fontSize * adjustRate); // coverage:ignore-line
+      final finalTop =
+          webPaddingTop + (fontSize * adjustRate); // coverage:ignore-line
 
-      padding = EdgeInsets.only(top: finalTop.clamp(0, double.infinity)); // coverage:ignore-line
+      padding = EdgeInsets.only(
+          top: finalTop.clamp(0, double.infinity)); // coverage:ignore-line
     } else {
       // 移动端原有逻辑
       var paddingFont = fontSize * paddingRate;
@@ -429,7 +450,8 @@ class TTextPaddingConfig {
         paddingLeading = 0;
       } else {
         if (PlatformUtil.isIOS || PlatformUtil.isAndroid) {
-          paddingLeading = (height * 0.5 - paddingExtraRate) * fontSize; // coverage:ignore-line
+          paddingLeading = (height * 0.5 - paddingExtraRate) *
+              fontSize; // coverage:ignore-line
         } else {
           paddingLeading = 0;
         }
@@ -461,7 +483,8 @@ class TTextPaddingConfig {
   }
 
   /// 以多个汉字测量计算的平均值，Android 为 Pixel 4 模拟器，iOS 为 iphone 8 plus 模拟器
-  double get paddingExtraRate => PlatformUtil.isAndroid ? 115 / 256 : 97 / 240; // coverage:ignore-line
+  double get paddingExtraRate =>
+      PlatformUtil.isAndroid ? 115 / 256 : 97 / 240; // coverage:ignore-line
 
   /// height比 率，因为设置 1 时，Android 文字可能显示不全，默认为 1.1
   double get heightRate => PlatformUtil.isAndroid ? 1.1 : 1;

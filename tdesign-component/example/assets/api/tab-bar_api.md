@@ -11,8 +11,6 @@
 | barHeight | double? | _kDefaultTabBarHeight | tab高度 |
 | centerDistance | double? | - | icon与文本中间距离（可选） |
 | componentType | TBottomTabBarComponentType? | TBottomTabBarComponentType.label | 选项样式 默认label |
-| currentIndex | int? | - | 选中的index（可选，v1.0 推荐使用 value） |
-| value | int? | - | 选中的index（v1.0 新增，优先级高于 currentIndex） |
 | dividerColor | Color? | - | 分割线颜色（可选） |
 | dividerHeight | double? | - | 分割线高度（可选） |
 | dividerThickness | double? | - | 分割线厚度（可选） |
@@ -28,30 +26,7 @@
 | unselectedBgColor | Color? | - | 未选中时背景颜色 |
 | useSafeArea | bool | true | 使用安全区域 |
 | useVerticalDivider | bool? | - | 是否使用竖线分隔（如果选项样式为 label，则强制为 false） |
-| themeData | TBottomTabBarThemeData? | - | 子树级主题数据（v1.0 新增） |
-
-
-### TBottomTabBarThemeData
-#### 简介
-底部标签栏组件 ThemeExtension，管理子树级默认样式（v1.0 新增）
-#### 默认构造方法
-
-| 参数 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| barHeight | double? | - | 默认高度 |
-| selectedBgColor | Color? | - | 默认选中背景颜色 |
-| unselectedBgColor | Color? | - | 默认未选中背景颜色 |
-| backgroundColor | Color? | - | 默认背景颜色 |
-| centerDistance | double? | - | 默认 icon 与文本中间距离 |
-| useVerticalDivider | bool? | - | 默认是否使用竖线分隔 |
-| dividerHeight | double? | - | 默认分割线高度 |
-| dividerThickness | double? | - | 默认分割线厚度 |
-| dividerColor | Color? | - | 默认分割线颜色 |
-| showTopBorder | bool? | - | 默认是否展示 bar 上边线 |
-| topBorder | BorderSide? | - | 默认上边线样式 |
-| needInkWell | bool? | - | 默认是否需要水波纹效果 |
-| animationDuration | Duration? | - | 默认动画时长 |
-| animationCurve | Curve? | - | 默认动画曲线 |
+| value | int? | - | 选中的 index |
 
 
 ### BadgeConfig
