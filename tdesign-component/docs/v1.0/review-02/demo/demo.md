@@ -262,6 +262,180 @@ Review 建议：
 - 先补齐 sidebar 子页面 `PageController.dispose()`。
 - 若白屏仍复现，应抓取进入 `sidebar` 页面时的 Flutter exception / logcat，并再判断是否为布局约束或组件运行问题。
 
+### 10. `TInput` demo 在 Android 上唤起输入法卡顿，验证码示例右侧内容溢出
+
+定位：
+
+- `tdesign-component/example/lib/page/t_input_page.dart:18-41`
+- `tdesign-component/example/lib/page/t_input_page.dart:487-515`
+- `tdesign-component/example/lib/page/t_input_page.dart:522-560`
+
+证据：
+
+- 页面在 `initState` 一次性创建了 30 个 `TextEditingController`，但 `dispose()` 里只取消了 `_timer`，没有释放这些 controller。
+- 组件类型、状态、样式与测试区块都大量通过 `onChanged: (text) { setState(() {}); }` 驱动整页重建，输入过程中会反复刷新整个 `ExamplePage`。
+- 验证码示例的 `rightBtn` 直接把 `Row`、`Container(width: 0.5)` 和 `Image.network(...)` 塞进输入框右侧，没有给图片明确尺寸，也没有为右侧区域做收敛约束。
+
+诊断：
+
+- 输入法卡顿更像是 demo 级生命周期和重建面过大叠加出来的体验问题，而不是 `TInput` 单点输入逻辑错误。
+- 验证码示例的右侧内容溢出是 demo 布局问题，右侧插槽没有固定尺寸，`Image.network` 在窄宽度下容易把输入框撑爆。
+
+Review 建议：
+
+- 需要进入 demo review，优先处理。
+- `TInputPage` 里创建的 `TextEditingController` 应统一释放。
+- 输入示例里只保留必要的 `setState` 范围，避免每次输入都重建整页。
+- 验证码示例右侧图片应显式约束宽高，右侧按钮区也应收窄成稳定尺寸。
+
+### 11. `TStepper` demo 的禁用态展示与组件语义不一致，且 `disabled` 不能完全封住输入
+
+定位：
+
+- `tdesign-component/example/lib/page/t_stepper_page.dart:34-37`
+- `tdesign-component/example/lib/page/t_stepper_page.dart:68-79`
+- `tdesign-component/lib/src/components/stepper/t_stepper.dart:103-104`
+- `tdesign-component/lib/src/components/stepper/t_stepper.dart:275-405`
+
+证据：
+
+- demo 里的“禁用状态”示例并没有传 `disabled: true`，只是再次渲染了三个正常 `TStepper`。
+- 组件内部 `_isDisabled` 只看 `widget.onChanged == null`，并没有把 `widget.disabled` 纳入输入框可编辑性的总开关。
+- `TextField.enabled` 使用的是 `!_isDisabled && !widget.disableInput`，所以当 `disabled=true` 但 `onChanged` 仍然存在时，输入框仍可能保留可编辑交互。
+
+诊断：
+
+- demo 的“禁用状态”并没有真正展示禁用态，是明显的示例缺失。
+- 组件实现也没有把 `disabled` 作为完整禁用总开关收敛掉，导致图标按钮与文本输入的禁用语义不完全一致。
+
+Review 建议：
+
+- 需要进入源码 review，同时修正 demo。
+- demo 里必须补出真正的 `disabled` 示例，不要拿正常态重复冒充禁用态。
+- 组件内部应把 `disabled` 和 `onChanged == null` 的语义统一收敛，避免出现半禁用状态。
+
+### 12. `TRate` demo 只展示了隐式禁用态，没有单独的禁用状态示例
+
+定位：
+
+- `tdesign-component/example/lib/page/t_rate_page.dart:39-42`
+- `tdesign-component/example/lib/page/t_rate_page.dart:95-109`
+- `tdesign-component/lib/src/components/rate/t_rate.dart:109-111`
+- `tdesign-component/lib/src/components/rate/t_rate.dart:208-230`
+
+证据：
+
+- `TRatePage` 的“组件状态”区域没有单独传 `disabled: true` 的示例。
+- 页面里多处直接使用 `TRate(value: 3)`，而 `TRate` 的禁用判断却是 `_isDisabled => widget.onChanged == null`。
+- 这意味着 demo 当前看到的“完全不可操作”主要来自没传 `onChanged`，不是专门演示 `disabled` 参数。
+
+诊断：
+
+- 当前 demo 只把 `onChanged == null` 这一隐式禁用态展示出来了，没有把 `disabled` 参数单独讲清楚。
+- 组件本身的可交互判断也偏向“回调存在即可操作”，`disabled` 更像视觉辅助参数，而不是完整的交互总开关。
+
+Review 建议：
+
+- 需要进入 demo review。
+- 增加单独的 `disabled` 示例，区分“无回调禁用”和“显式禁用”两种语义。
+- 若 v1.0 设计要求 `disabled` 作为主禁用入口，组件实现也应同步收敛。
+
+### 13. `TCalendar` demo 自定义单元格和副标题没有沿用组件默认状态表达，选中/未选中观感偏离规范
+
+定位：
+
+- `tdesign-component/example/lib/page/t_calendar_page.dart:712-787`
+- `tdesign-component/example/lib/page/t_calendar_page.dart:816-851`
+- `tdesign-component/lib/src/components/calendar/t_calendar.dart:23-52`
+- `tdesign-component/lib/src/components/calendar/t_calendar_cell.dart:169-219`
+
+证据：
+
+- `TCalendar` 组件内部已经明确维护 `DateSelectType`，并通过 `TCalendarCell` 的默认渲染表达 selected / empty / disabled / range 等态。
+- demo 的 `_buildCustomDayCell` 直接重绘了“今天 / 已选 / 默认”三种状态，内部使用的是原生 `Text`，没有继续沿用 `TCalendarCell` 的默认字号、选中容器和副标题排版。
+- `_buildPriceSubtitle` 也用原生 `Text` 拼副标题，视觉上更像业务自绘，而不是组件规范示例。
+
+诊断：
+
+- 日历组件本身的选中状态逻辑是存在的，问题更集中在 demo 自定义 cell 过度重绘后，状态表现不再贴近 v1.0 规范。
+- 现在的示例更像“业务自定义样式演示”，而不是“组件标准态演示”。
+
+Review 建议：
+
+- 需要进入 demo review。
+- 自定义单元格示例应保留一组基于默认态的对照，不要把 selected / unselected / today 全部改造成完全不同的视觉语言。
+- 若要展示整格自定义，建议明确标注这是自定义渲染，不代表默认规范态。
+
+### 14. `TPopup` demo 仍使用原生 `Text`，未统一切到 `TText`，主题文字表现不一致
+
+定位：
+
+- `tdesign-component/example/lib/page/t_popup_page.dart:29-149`
+- `tdesign-component/lib/src/components/popup/t_popup.dart:34-85`
+
+证据：
+
+- demo 的按钮文案、标题文案、内容文案都直接使用了原生 `Text`。
+- `TPopup` 组件本身已经是以 `TText` 为默认文字组件入口的弹层实现。
+
+诊断：
+
+- 这是 demo 的文字组件使用不统一问题，不是 Popup 核心逻辑错误。
+- 直接用 `Text` 会让弹层示例和组件主题的字号、颜色、字体族表现不完全一致，影响 v1.0 文档对齐。
+
+Review 建议：
+
+- 需要进入 demo review。
+- 示例中的标题、正文、按钮文案统一改用 `TText`，让弹层示例和主题体系保持一致。
+
+### 15. `TBadge` demo 页面滚动卡死，数字徽标在部分示例中被默认裁剪
+
+定位：
+
+- `tdesign-component/example/lib/page/t_badge_page.dart:20-121`
+- `tdesign-component/example/lib/page/t_badge_page.dart:240-307`
+- `tdesign-component/example/lib/page/t_badge_page.dart:311-467`
+- `tdesign-component/lib/src/components/badge/t_badge.dart:181-219`
+
+证据：
+
+- `TBadgePage` 一页里塞了大量 `CodeWrapper + Stack + Positioned + Icon/TAvatar/TButton` 示例，滚动区本身就比普通组件页更重。
+- 一部分自定义示例的 `Stack` 没有显式写 `clipBehavior: Clip.none`，而 `Stack` 默认会裁剪溢出内容。
+- 徽标数字类示例中，badge 往往靠 `Positioned` 挂在父容器外侧，父容器又没有稳定的预留尺寸，容易出现“徽标被切掉”的视觉问题。
+
+诊断：
+
+- 数字徽标被裁剪是 demo 布局问题，核心原因是父容器没有给 badge 留出足够的外溢空间，同时部分 `Stack` 没有关闭裁剪。
+- 页面滚动卡死目前还不能只凭源码把根因钉死，但从结构上看，重型示例过多、嵌套层级深、滚动时重建压力大，是最直接的风险来源。
+
+Review 建议：
+
+- 需要进入 demo review，优先拆轻页面。
+- 所有 badge 溢出式示例统一显式加 `clipBehavior: Clip.none`，并给父容器预留稳定尺寸。
+- 如滚动卡死可稳定复现，再进一步拆分 `CodeWrapper` 和大图标示例定位具体重建热点。
+
+### 16. `TTable` demo 的操作列文字容易溢出，原因是单元格布局没有做收敛
+
+定位：
+
+- `tdesign-component/example/lib/page/t_table_page.dart:131-163`
+- `tdesign-component/example/lib/page/t_table_page.dart:209-247`
+
+证据：
+
+- 操作列直接在 `Row(mainAxisAlignment: MainAxisAlignment.spaceBetween)` 里放两个 `TText`，没有给文本设置弹性宽度或省略策略。
+- 表格列宽在多个示例里是固定值，操作列文字又是中文短词，但一旦表格整体宽度被压缩，`Row` 里的两个文本就会先抢空间。
+
+诊断：
+
+- 这是 demo 单元格布局没有收敛的问题，不是表格核心数据逻辑错误。
+- 当前写法更像“能展示内容”，但不是“能稳定适配不同宽度”的表格操作列写法。
+
+Review 建议：
+
+- 需要进入 demo review。
+- 操作列应改成固定宽度 + 居中排列，或者给文本加弹性与省略，避免在窄屏上直接溢出。
+
 ## 其他验证记录
 
 - 对以下 demo 文件执行定向 `flutter analyze`，未发现静态分析问题：
