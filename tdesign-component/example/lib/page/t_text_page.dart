@@ -98,6 +98,11 @@ class TTextPage extends StatelessWidget {
       exampleTxt,
       font: context.tTheme.fontBodyLarge,
       textColor: context.tTheme.brandNormalColor,
+      style: TextStyle(
+        color: context.tTheme.errorNormalColor,
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
+      ),
     );
   }
 
@@ -124,8 +129,7 @@ class TTextPage extends StatelessWidget {
       ]),
       font: context.tTheme.fontBodyLarge,
       textColor: context.tTheme.brandNormalColor,
-      style:
-          TextStyle(color: context.tTheme.errorNormalColor, fontSize: 32),
+      style: TextStyle(color: context.tTheme.errorNormalColor, fontSize: 32),
     );
   }
 

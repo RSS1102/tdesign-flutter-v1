@@ -115,6 +115,7 @@ class TIndexesPage extends StatelessWidget {
           desc: '用于页面中信息快速检索，可以根据目录中的页码快速找到所需的内容。',
           exampleCodeGroup: 'indexes',
           navBarKey: navBarkey,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             ExampleModule(title: '组件类型', children: [
               ExampleItem(
@@ -148,7 +149,6 @@ class TIndexesPage extends StatelessWidget {
 
 @Demo(group: 'indexes')
 Widget _buildSimple(BuildContext context) {
-  final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
   return SizedBox(
     width: double.infinity,
@@ -158,10 +158,10 @@ Widget _buildSimple(BuildContext context) {
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
       onPressed: () {
-      TPopup.show(
-        context,
-        options: TPopupOptions.right(
-            inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
+        TPopup.show(
+          context,
+          options: TPopupOptions.right(
+            inset: const TPopupRightInset(top: 0),
             child: TIndexes(
               indexList: indexList,
               builderContent: (context, index) {
@@ -172,16 +172,17 @@ Widget _buildSimple(BuildContext context) {
                   cells: list.map((e) => TCell(title: e)).toList(),
                 );
               },
-            )),
-      );
-    },
-  ),
+            ),
+            useSafeArea: false,
+          ),
+        );
+      },
+    ),
   );
 }
 
 @Demo(group: 'indexes')
 Widget _buildOther(BuildContext context) {
-  final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
   return SizedBox(
     width: double.infinity,
@@ -191,10 +192,10 @@ Widget _buildOther(BuildContext context) {
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
       onPressed: () {
-      TPopup.show(
-        context,
-        options: TPopupOptions.right(
-            inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
+        TPopup.show(
+          context,
+          options: TPopupOptions.right(
+            inset: const TPopupRightInset(top: 0),
             child: TIndexes(
               indexList: indexList,
               capsuleTheme: true,
@@ -206,16 +207,17 @@ Widget _buildOther(BuildContext context) {
                   cells: list.map((e) => TCell(title: e)).toList(),
                 );
               },
-            )),
-      );
-    },
-  ),
+            ),
+            useSafeArea: false,
+          ),
+        );
+      },
+    ),
   );
 }
 
 @Demo(group: 'indexes')
 Widget _buildCustomIndexes(BuildContext context) {
-  final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
   return SizedBox(
     width: double.infinity,
@@ -225,10 +227,10 @@ Widget _buildCustomIndexes(BuildContext context) {
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
       onPressed: () {
-      TPopup.show(
-        context,
-        options: TPopupOptions.right(
-            inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
+        TPopup.show(
+          context,
+          options: TPopupOptions.right(
+            inset: const TPopupRightInset(top: 0),
             child: TIndexes(
               indexList: indexList,
               builderIndex: (context, index, isActive) {
@@ -247,9 +249,11 @@ Widget _buildCustomIndexes(BuildContext context) {
                   cells: list.map((e) => TCell(title: e)).toList(),
                 );
               },
-            )),
-      );
-    },
-  ),
+            ),
+            useSafeArea: false,
+          ),
+        );
+      },
+    ),
   );
 }

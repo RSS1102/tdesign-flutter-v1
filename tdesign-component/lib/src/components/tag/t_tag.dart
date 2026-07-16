@@ -41,14 +41,15 @@ class TTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = _theme(context);
-    final resolvedColorScheme = colorScheme ?? theme?.colorScheme ?? TTagColorScheme.defaultTheme;
+    final resolvedColorScheme =
+        colorScheme ?? theme?.colorScheme ?? TTagColorScheme.defaultTheme;
     final isOutline = theme?.isOutline ?? false;
     final isLight = theme?.isLight ?? false;
     final shape = theme?.shape ?? TTagShape.square;
     final disable = theme?.disable ?? false;
     final needCloseIcon = theme?.needCloseIcon ?? false;
-    final forceVerticalCenter = theme?.forceVerticalCenter ?? true;
     final overflow = theme?.overflow;
+
     final fixedWidth = theme?.fixedWidth;
     final padding = theme?.padding;
     final iconWidget = theme?.iconWidget;
@@ -58,16 +59,15 @@ class TTag extends StatelessWidget {
     final fontWeight = theme?.fontWeight;
 
     // 计算样式颜色
-    final colors = _resolveColors(context, resolvedColorScheme, isLight, isOutline, disable);
+    final colors = _resolveColors(
+        context, resolvedColorScheme, isLight, isOutline, disable);
     final borderRadius = _resolveBorderRadius(context, shape);
 
-    Widget child = TText(
-      text,
-      overflow: overflow ?? TextOverflow.ellipsis,
-      forceVerticalCenter: forceVerticalCenter,
+    var child = _buildLabel(
       textColor: textColor ?? colors.textColor,
       font: font ?? _getFont(context),
       fontWeight: fontWeight,
+      overflow: overflow ?? TextOverflow.ellipsis,
     );
 
     var innerIcon = _getIcon(iconWidget, colors.textColor);
@@ -103,16 +103,38 @@ class TTag extends StatelessWidget {
       );
     }
 
+    final effectivePadding = padding ?? _getPadding(isOutline ? 1.0 : 0.0);
     return Container(
       width: fixedWidth,
-      padding: padding ?? _getPadding(isOutline ? 1.0 : 0.0),
+      height: _getTagHeight(context, effectivePadding),
+      padding: effectivePadding,
       decoration: BoxDecoration(
           color: backgroundColor ?? colors.backgroundColor,
-          border: Border.all(width: isOutline ? 1 : 0, color: colors.borderColor),
+          border:
+              Border.all(width: isOutline ? 1 : 0, color: colors.borderColor),
           borderRadius: borderRadius),
       child: Align(
-        widthFactor: 1,
+        alignment: Alignment.center,
+        widthFactor: fixedWidth == null ? 1 : null,
         child: child,
+      ),
+    );
+  }
+
+  /// 构建标签文本，参考按钮的文字居中方式：文本本身不额外设置行高，交给外层固定高度居中。
+  Widget _buildLabel({
+    required Color textColor,
+    required Font? font,
+    required FontWeight? fontWeight,
+    required TextOverflow overflow,
+  }) {
+    return Text(
+      text,
+      overflow: overflow,
+      style: TextStyle(
+        color: textColor,
+        fontSize: font?.size,
+        fontWeight: fontWeight ?? font?.fontWeight,
       ),
     );
   }
@@ -144,10 +166,15 @@ class TTag extends StatelessWidget {
         if (isOutline) {
           borderColor = context.tTheme.brandNormalColor;
           textColor = context.tTheme.brandNormalColor;
-          backgroundColor = isLight ? context.tTheme.brandLightColor : Colors.transparent;
+          backgroundColor =
+              isLight ? context.tTheme.brandLightColor : Colors.transparent;
         } else {
-          textColor = isLight ? context.tTheme.brandNormalColor : context.tTheme.textColorAnti;
-          backgroundColor = isLight ? context.tTheme.brandLightColor : context.tTheme.brandNormalColor;
+          textColor = isLight
+              ? context.tTheme.brandNormalColor
+              : context.tTheme.textColorAnti;
+          backgroundColor = isLight
+              ? context.tTheme.brandLightColor
+              : context.tTheme.brandNormalColor;
           borderColor = backgroundColor;
         }
         break;
@@ -155,10 +182,15 @@ class TTag extends StatelessWidget {
         if (isOutline) {
           borderColor = context.tTheme.warningNormalColor;
           textColor = context.tTheme.warningNormalColor;
-          backgroundColor = isLight ? context.tTheme.warningLightColor : Colors.transparent;
+          backgroundColor =
+              isLight ? context.tTheme.warningLightColor : Colors.transparent;
         } else {
-          textColor = isLight ? context.tTheme.warningNormalColor : context.tTheme.textColorAnti;
-          backgroundColor = isLight ? context.tTheme.warningLightColor : context.tTheme.warningNormalColor;
+          textColor = isLight
+              ? context.tTheme.warningNormalColor
+              : context.tTheme.textColorAnti;
+          backgroundColor = isLight
+              ? context.tTheme.warningLightColor
+              : context.tTheme.warningNormalColor;
           borderColor = backgroundColor;
         }
         break;
@@ -166,10 +198,15 @@ class TTag extends StatelessWidget {
         if (isOutline) {
           borderColor = context.tTheme.errorNormalColor;
           textColor = context.tTheme.errorNormalColor;
-          backgroundColor = isLight ? context.tTheme.errorLightColor : Colors.transparent;
+          backgroundColor =
+              isLight ? context.tTheme.errorLightColor : Colors.transparent;
         } else {
-          textColor = isLight ? context.tTheme.errorNormalColor : context.tTheme.textColorAnti;
-          backgroundColor = isLight ? context.tTheme.errorLightColor : context.tTheme.errorNormalColor;
+          textColor = isLight
+              ? context.tTheme.errorNormalColor
+              : context.tTheme.textColorAnti;
+          backgroundColor = isLight
+              ? context.tTheme.errorLightColor
+              : context.tTheme.errorNormalColor;
           borderColor = backgroundColor;
         }
         break;
@@ -177,10 +214,15 @@ class TTag extends StatelessWidget {
         if (isOutline) {
           borderColor = context.tTheme.successNormalColor;
           textColor = context.tTheme.successNormalColor;
-          backgroundColor = isLight ? context.tTheme.successLightColor : Colors.transparent;
+          backgroundColor =
+              isLight ? context.tTheme.successLightColor : Colors.transparent;
         } else {
-          textColor = isLight ? context.tTheme.successNormalColor : context.tTheme.textColorAnti;
-          backgroundColor = isLight ? context.tTheme.successLightColor : context.tTheme.successNormalColor;
+          textColor = isLight
+              ? context.tTheme.successNormalColor
+              : context.tTheme.textColorAnti;
+          backgroundColor = isLight
+              ? context.tTheme.successLightColor
+              : context.tTheme.successNormalColor;
           borderColor = backgroundColor;
         }
         break;
@@ -188,10 +230,14 @@ class TTag extends StatelessWidget {
         if (isOutline) {
           borderColor = context.tTheme.componentBorderColor;
           textColor = context.tTheme.textColorPrimary;
-          backgroundColor = isLight ? context.tTheme.bgColorSecondaryContainer : Colors.transparent;
+          backgroundColor = isLight
+              ? context.tTheme.bgColorSecondaryContainer
+              : Colors.transparent;
         } else {
           textColor = context.tTheme.textColorPrimary;
-          backgroundColor = isLight ? context.tTheme.bgColorSecondaryContainer : context.tTheme.bgColorComponent;
+          backgroundColor = isLight
+              ? context.tTheme.bgColorSecondaryContainer
+              : context.tTheme.bgColorComponent;
           borderColor = backgroundColor;
         }
     }
@@ -204,7 +250,8 @@ class TTag extends StatelessWidget {
     );
   }
 
-  BorderRadiusGeometry _resolveBorderRadius(BuildContext context, TTagShape shape) {
+  BorderRadiusGeometry _resolveBorderRadius(
+      BuildContext context, TTagShape shape) {
     switch (shape) {
       case TTagShape.square:
         return BorderRadius.circular(context.tTheme.radiusSmall);
@@ -244,6 +291,18 @@ class TTag extends StatelessWidget {
       default:
         return context.tTheme.fontBodySmall;
     }
+  }
+
+  /// 计算标签高度，只约束纵向布局，不影响标签按内容自适应宽度
+  double? _getTagHeight(BuildContext context, EdgeInsets padding) {
+    if (size == TTagSize.custom) {
+      return null;
+    }
+    final textFont = _getFont(context);
+    if (textFont == null) {
+      return null;
+    }
+    return textFont.size * textFont.height + padding.vertical;
   }
 
   /// 计算padding，需去除描边的宽对，对内描边

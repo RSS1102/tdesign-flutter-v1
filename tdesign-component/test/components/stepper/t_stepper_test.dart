@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/src/components/stepper/t_stepper.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
@@ -15,15 +14,15 @@ void main() {
     for (final size in TStepperSize.values) {
       for (final theme in TStepperColorScheme.values) {
         testWidgets('size=$size theme=$theme 渲染', (tester) async {
-          int? changed;
           await tester.pumpWidget(wrap(TStepper(
             size: size,
             theme: theme,
             max: 100,
             min: 0,
             value: 5,
-            onChanged: (v) => changed = v,
+            onChanged: (_) {},
           )));
+
           expect(find.byType(TStepper), findsOneWidget);
           expect(find.byIcon(Icons.add), findsOneWidget);
           expect(find.byIcon(Icons.remove), findsOneWidget);
@@ -102,7 +101,7 @@ void main() {
       expect(changed, -1);
     });
 
-    testWidgets('disabled 时按钮不可点', (tester) async {
+    testWidgets('disabled 时按钮和输入框都不可交互', (tester) async {
       var changed = -1;
       await tester.pumpWidget(wrap(TStepper(
         disabled: true,
@@ -112,6 +111,14 @@ void main() {
       await tester.tap(find.byIcon(Icons.add));
       await tester.pumpAndSettle();
       expect(changed, -1);
+      final tf = tester.widget<TextField>(find.byType(TextField));
+      expect(tf.enabled, isFalse);
+    });
+
+    testWidgets('onChanged 为 null 时按钮和输入框都禁用', (tester) async {
+      await tester.pumpWidget(wrap(const TStepper(value: 5)));
+      final tf = tester.widget<TextField>(find.byType(TextField));
+      expect(tf.enabled, isFalse);
     });
 
     testWidgets('长数值触发 _getTextWidth 正分支', (tester) async {
@@ -217,7 +224,8 @@ void main() {
   group('TStepperIconButton 独立渲染', () {
     for (final size in TStepperSize.values) {
       for (final theme in TStepperColorScheme.values) {
-        testWidgets('size=$size theme=$theme disabled=${(size.index + theme.index) % 2 == 0}',
+        testWidgets(
+            'size=$size theme=$theme disabled=${(size.index + theme.index) % 2 == 0}',
             (tester) async {
           final disabled = (size.index + theme.index) % 2 == 0;
           await tester.pumpWidget(wrap(TStepperIconButton(

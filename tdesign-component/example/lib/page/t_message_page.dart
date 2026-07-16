@@ -15,6 +15,7 @@ class TMessagePage extends StatelessWidget {
         title: tTitle(context),
         desc: '用于轻量级反馈或提示，不会打断用户操作。',
         exampleCodeGroup: 'message',
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         children: [
           ExampleModule(title: '组件类型', children: [
             ExampleItem(desc: '纯文字的通知', builder: _buildPlainTextMessage),

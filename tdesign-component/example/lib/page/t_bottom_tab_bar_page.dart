@@ -597,8 +597,8 @@ class _TBottomTabBarPageState extends State<TBottomTabBarPage> {
   @Demo(group: 'bottomTabBar')
   Widget _setValueToTabBar(BuildContext context) {
     return SizedBox(
+      height: 220,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Expanded(
               child: PageView(

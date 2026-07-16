@@ -125,6 +125,7 @@ class TDrawer {
         showOverlay: overlayEnabled,
         closeOnOverlayClick: dismissible,
         overlayColor: overlayEnabled ? null : Colors.transparent,
+        useSafeArea: false,
         onClosed: _deleteRouter,
         child: TDrawerWidget(
           footer: footer,

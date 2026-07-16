@@ -1,7 +1,8 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show FilteringTextInputFormatter, TextInputFormatter;
+import 'package:flutter/services.dart'
+    show FilteringTextInputFormatter, TextInputFormatter;
 
 import '../../../tdesign_flutter.dart';
 
@@ -100,8 +101,11 @@ class TStepper extends StatefulWidget {
 }
 
 class _TStepperState extends State<TStepper> {
-  /// B/C 类禁用约定：onChanged 为 null 时禁用全部操作
-  bool get _isDisabled => widget.onChanged == null;
+  /// disabled 或 onChanged 为 null 时禁用全部操作
+  bool get _isDisabled => widget.disabled || widget.onChanged == null;
+
+  /// disableInput 仅额外禁用输入框，不影响左右按钮
+  bool get _isInputDisabled => _isDisabled || widget.disableInput;
 
   late TStepperController _controller;
   late TextEditingController _textController;
@@ -113,8 +117,7 @@ class _TStepperState extends State<TStepper> {
     if (widget.controller != null) {
       _controller = widget.controller!;
     } else {
-      _controller = TStepperController()
-        ..value = widget.value ?? 0;
+      _controller = TStepperController()..value = widget.value ?? 0;
     }
     _controller._bindState(this);
     if (widget.eventController != null) {
@@ -199,7 +202,7 @@ class _TStepperState extends State<TStepper> {
   }
 
   void onAdd() {
-    if (_controller._value >= widget.max) {
+    if (_isDisabled || _controller._value >= widget.max) {
       return;
     }
 
@@ -224,7 +227,7 @@ class _TStepperState extends State<TStepper> {
   }
 
   void onReduce() {
-    if (_controller._value <= widget.min) {
+    if (_isDisabled || _controller._value <= widget.min) {
       return;
     }
 
@@ -278,7 +281,7 @@ class _TStepperState extends State<TStepper> {
       children: [
         TStepperIconButton(
           type: TStepperIconType.remove,
-          disabled: widget.disabled || _controller._value <= widget.min,
+          disabled: _isDisabled || _controller._value <= widget.min,
           theme: widget.theme,
           size: widget.size,
           onTap: onReduce,
@@ -296,7 +299,8 @@ class _TStepperState extends State<TStepper> {
                   : null),
           child: Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: widget.theme == TStepperColorScheme.normal ? 0 : 4),
+                  horizontal:
+                      widget.theme == TStepperColorScheme.normal ? 0 : 4),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                     minWidth: _getWidth(),
@@ -311,7 +315,7 @@ class _TStepperState extends State<TStepper> {
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: TextField(
                       controller: _textController,
-                      enabled: !_isDisabled && !widget.disableInput,
+                      enabled: !_isInputDisabled,
                       focusNode: _focusNode,
                       style: TextStyle(
                           fontSize: _getFontSize(),
@@ -365,8 +369,7 @@ class _TStepperState extends State<TStepper> {
                                 _controller._value = widget.max;
                               });
                               if (widget.onOverlimit != null) {
-                                widget
-                                    .onOverlimit!(TStepperOverlimitType.plus);
+                                widget.onOverlimit!(TStepperOverlimitType.plus);
                               }
                             } else {
                               setState(() {
@@ -397,7 +400,7 @@ class _TStepperState extends State<TStepper> {
         ),
         TStepperIconButton(
           type: TStepperIconType.add,
-          disabled: widget.disabled || _controller._value >= widget.max,
+          disabled: _isDisabled || _controller._value >= widget.max,
           theme: widget.theme,
           size: widget.size,
           onTap: onAdd,

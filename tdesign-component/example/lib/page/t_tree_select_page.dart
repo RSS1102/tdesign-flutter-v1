@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 import '../annotation/demo.dart';
@@ -66,8 +67,9 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
           children: [
             ExampleItem(desc: '基础树形选择', builder: _buildDefaultTreeSelect),
             ExampleItem(desc: '多选树形选择', builder: _buildMultipleTreeSelect),
-            ExampleItem(desc: '异步加载(问题1)', builder: _buildAsyncTreeSelect),
-            ExampleItem(desc: 'String类型ID(问题3)', builder: _buildStringValueTreeSelect),
+            ExampleItem(desc: '异步加载', builder: _buildAsyncTreeSelect),
+            ExampleItem(
+                desc: 'String 类型 ID', builder: _buildStringValueTreeSelect),
           ],
         ),
         ExampleModule(
@@ -79,7 +81,8 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
       ],
       test: [
         ExampleItem(desc: '局部多选', builder: _buildPartMultipleTreeSelect),
-        ExampleItem(desc: '局部多选', builder: _buildPartMultipleTreeSelect2),
+        ExampleItem(desc: '局部多选（描边）', builder: _buildPartMultipleTreeSelect2),
+        ExampleItem(desc: '局部单选', builder: _buildPartSingleTreeSelect),
       ],
     );
   }
@@ -87,25 +90,27 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
   @Demo(group: 'tree')
   Widget _buildAsyncTreeSelect(BuildContext context) {
     return TTreeSelect(
+      height: 260,
       options: asyncOptions,
       value: asyncValues,
       onChanged: (val, level) {
         print('Async change: $val, level: $level');
         if (level == 1 && val.isNotEmpty) {
           var firstVal = val[0];
-          var index = asyncOptions.indexWhere((element) => element.value == firstVal);
+          var index =
+              asyncOptions.indexWhere((element) => element.value == firstVal);
           if (index != -1 && asyncOptions[index].children.isEmpty) {
-             // 模拟异步加载
-             Future.delayed(const Duration(seconds: 1), () {
-               if(mounted) {
-                 setState(() {
-                   asyncOptions[index].children = [
-                     TSelectOption(label: '异步加载二级-1', value: 101),
-                     TSelectOption(label: '异步加载二级-2', value: 102),
-                   ];
-                 });
-               }
-             });
+            // 模拟异步加载
+            Future.delayed(const Duration(seconds: 1), () {
+              if (mounted) {
+                setState(() {
+                  asyncOptions[index].children = [
+                    TSelectOption(label: '异步加载二级-1', value: 101),
+                    TSelectOption(label: '异步加载二级-2', value: 102),
+                  ];
+                });
+              }
+            });
           }
         }
       },
@@ -115,6 +120,7 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
   @Demo(group: 'tree')
   Widget _buildStringValueTreeSelect(BuildContext context) {
     return TTreeSelect(
+      height: 260,
       options: stringOptions,
       value: stringValues,
       onChanged: (val, level) {
@@ -140,6 +146,7 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
     }
 
     return TTreeSelect(
+      height: 260,
       options: options,
       value: values1,
       onChanged: (val, level) {
@@ -162,6 +169,7 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
     }
 
     return TTreeSelect(
+      height: 260,
       options: options,
       value: values2,
       multiple: true,
@@ -204,6 +212,7 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
       }
     }
     return TTreeSelect(
+      height: 260,
       options: options,
       value: values3,
       onChanged: (val, level) {
@@ -230,6 +239,7 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
     }
 
     return TTreeSelect(
+      height: 260,
       options: options,
       value: values1,
       onChanged: (val, level) {
@@ -256,9 +266,36 @@ class _TTreeSelectPageState extends State<TTreeSelectPage> {
     }
 
     return TTreeSelect(
+      height: 260,
       options: options,
       value: values1,
       style: TTreeSelectStyle.outline,
+      onChanged: (val, level) {
+        print('$val, $level');
+      },
+    );
+  }
+
+  @Demo(group: 'tree')
+  Widget _buildPartSingleTreeSelect(BuildContext context) {
+    var options = <TSelectOption>[];
+
+    for (var i = 1; i <= 2; i++) {
+      options.add(TSelectOption(label: '单选组$i', value: i, children: []));
+      for (var j = 1; j <= 6; j++) {
+        options[i - 1].children.add(TSelectOption(
+              label: '单选项$i.$j',
+              value: i * 10 + j,
+              children: [],
+              multiple: false,
+            ));
+      }
+    }
+
+    return TTreeSelect(
+      height: 260,
+      options: options,
+      value: values1,
       onChanged: (val, level) {
         print('$val, $level');
       },

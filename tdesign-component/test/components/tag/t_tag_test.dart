@@ -40,6 +40,24 @@ void main() {
       expect(find.byType(TTag), findsOneWidget);
     });
 
+    testWidgets('文字垂直居中且宽度按内容自适应', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TTag('居中')));
+
+      final tagContainerFinder = find.descendant(
+        of: find.byType(TTag),
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Container && widget.decoration is BoxDecoration,
+        ),
+      );
+      final tagRect = tester.getRect(tagContainerFinder.first);
+      final textRect = tester.getRect(find.text('居中'));
+      final textWidget = tester.widget<Text>(find.text('居中'));
+
+      expect((tagRect.center.dy - textRect.center.dy).abs(), lessThan(1));
+      expect(tagRect.width, lessThan(120));
+      expect(textWidget.style?.height, isNull);
+    });
+
     testWidgets('带图标的标签渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TTag('图标标签', icon: Icons.star),
@@ -170,7 +188,9 @@ void main() {
       expect(find.text('描边'), findsOneWidget);
       // 描边时 Container 应有 border
       final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
       );
       expect(container.decoration, isA<BoxDecoration>());
       final decoration = container.decoration as BoxDecoration;
@@ -276,7 +296,9 @@ void main() {
         tagTheme: const TTagThemeData(fixedWidth: 120),
       ));
       final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
       );
       expect(container.constraints?.maxWidth, 120);
     });
@@ -288,7 +310,9 @@ void main() {
         tagTheme: const TTagThemeData(padding: customPadding),
       ));
       final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
       );
       expect(container.padding, customPadding);
     });
@@ -317,7 +341,9 @@ void main() {
         tagTheme: const TTagThemeData(backgroundColor: Colors.purple),
       ));
       final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
       );
       final decoration = container.decoration as BoxDecoration;
       expect(decoration.color, Colors.purple);
@@ -365,33 +391,37 @@ void main() {
   // ============================================================
   group('TTag widget 渲染', () {
     testWidgets('基础渲染', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TTag('标签')));
+      await tester.pumpWidget(wrapWithTheme(const TTag('标签')));
       expect(find.text('标签'), findsOneWidget);
     });
 
     testWidgets('icon 渲染', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TTag('带图标', icon: Icons.star)));
+      await tester
+          .pumpWidget(wrapWithTheme(const TTag('带图标', icon: Icons.star)));
       expect(find.byIcon(Icons.star), findsOneWidget);
     });
 
     testWidgets('size extraLarge', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TTag('大', size: TTagSize.extraLarge)));
+      await tester.pumpWidget(
+          wrapWithTheme(const TTag('大', size: TTagSize.extraLarge)));
       expect(find.text('大'), findsOneWidget);
     });
 
     testWidgets('size large', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TTag('中', size: TTagSize.large)));
+      await tester
+          .pumpWidget(wrapWithTheme(const TTag('中', size: TTagSize.large)));
       expect(find.text('中'), findsOneWidget);
     });
 
     testWidgets('size small', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TTag('小', size: TTagSize.small)));
+      await tester
+          .pumpWidget(wrapWithTheme(const TTag('小', size: TTagSize.small)));
       expect(find.text('小'), findsOneWidget);
     });
 
     testWidgets('shape round', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('圆角'),
+        const TTag('圆角'),
         tagTheme: const TTagThemeData(shape: TTagShape.round),
       ));
       expect(find.text('圆角'), findsOneWidget);
@@ -399,7 +429,7 @@ void main() {
 
     testWidgets('shape mark', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('半圆'),
+        const TTag('半圆'),
         tagTheme: const TTagThemeData(shape: TTagShape.mark),
       ));
       expect(find.text('半圆'), findsOneWidget);
@@ -415,7 +445,7 @@ void main() {
 
     testWidgets('isOutline + isLight', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('描边'),
+        const TTag('描边'),
         tagTheme: const TTagThemeData(isOutline: true, isLight: true),
       ));
       expect(find.text('描边'), findsOneWidget);
@@ -423,7 +453,7 @@ void main() {
 
     testWidgets('disable', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('禁用'),
+        const TTag('禁用'),
         tagTheme: const TTagThemeData(disable: true),
       ));
       expect(find.text('禁用'), findsOneWidget);
@@ -431,22 +461,22 @@ void main() {
 
     testWidgets('colorScheme danger', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('危险', colorScheme: TTagColorScheme.danger),
+        const TTag('危险', colorScheme: TTagColorScheme.danger),
       ));
       expect(find.text('危险'), findsOneWidget);
     });
 
     testWidgets('iconWidget 自定义', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('自定义图标'),
-        tagTheme: TTagThemeData(iconWidget: const Icon(Icons.favorite)),
+        const TTag('自定义图标'),
+        tagTheme: const TTagThemeData(iconWidget: Icon(Icons.favorite)),
       ));
       expect(find.byIcon(Icons.favorite), findsOneWidget);
     });
 
     testWidgets('primary + isOutline', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('primary', colorScheme: TTagColorScheme.primary),
+        const TTag('primary', colorScheme: TTagColorScheme.primary),
         tagTheme: const TTagThemeData(isOutline: true),
       ));
       expect(find.text('primary'), findsOneWidget);
@@ -454,7 +484,7 @@ void main() {
 
     testWidgets('warning + isOutline', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('warning', colorScheme: TTagColorScheme.warning),
+        const TTag('warning', colorScheme: TTagColorScheme.warning),
         tagTheme: const TTagThemeData(isOutline: true),
       ));
       expect(find.text('warning'), findsOneWidget);
@@ -462,7 +492,7 @@ void main() {
 
     testWidgets('medium size + icon', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('med', icon: Icons.star, size: TTagSize.medium),
+        const TTag('med', icon: Icons.star, size: TTagSize.medium),
       ));
       expect(find.byIcon(Icons.star), findsOneWidget);
     });

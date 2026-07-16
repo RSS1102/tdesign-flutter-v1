@@ -112,8 +112,16 @@ class TNavBarPage extends StatelessWidget {
       useDefaultBack: false,
       centerTitle: false,
       titleMargin: 0,
-      titleWidget: const TImage(
-        src: 'assets/img/t_brand.png',
+      titleWidget: Theme(
+        data: Theme.of(context).mergeExtension(
+          const TImageThemeData(height: 32),
+        ),
+        child: const TImage(
+          src: 'assets/img/t_brand.png',
+          width: 120,
+          variant: TImageVariant.fitWidth,
+          fit: BoxFit.contain,
+        ),
       ),
       actions: [
         TNavBarItem(icon: TIcons.home, iconSize: 24),
@@ -171,18 +179,20 @@ class TNavBarPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: TNavBar(
+        height: 80,
         title: '返回',
         titleColor: context.tTheme.textColorPrimary,
         belowTitleWidget: SizedBox(
+          height: 36,
           child: TText(
             titleText,
-            font: Font(size: 28, lineHeight: 52),
+            font: Font(size: 28, lineHeight: 36),
             fontWeight: FontWeight.w600,
           ),
         ),
         titleFont: Font(size: 16, lineHeight: 24),
         centerTitle: false,
-        titleMargin: 0,
+        titleMargin: 8,
         useDefaultBack: false,
         leading: [
           TNavBarItem(icon: TIcons.chevron_left, iconSize: 24),

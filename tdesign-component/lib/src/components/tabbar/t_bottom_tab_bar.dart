@@ -875,14 +875,17 @@ class TBottomTabBarItemWithBadge extends StatelessWidget {
     // centerDistance > 0 时进一步压缩顶部内边距，为图标与文本的间距腾出空间
     final reduceTopPad =
         basicType == TBottomTabBarBasicType.iconText && centerDistance > 0;
+    final itemPadding = basicType == TBottomTabBarBasicType.text
+        ? EdgeInsets.zero
+        : EdgeInsets.only(
+            top: (isInOrOutCapsule ? 3.0 : 2.0) - (reduceTopPad ? 1.0 : 0.0),
+            bottom: isInOrOutCapsule
+                ? (basicType == TBottomTabBarBasicType.iconText ? 0.0 : 1.0)
+                : 0.0,
+          );
     var child = Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.only(
-        top: (isInOrOutCapsule ? 3.0 : 2.0) - (reduceTopPad ? 1.0 : 0.0),
-        bottom: isInOrOutCapsule
-            ? (basicType == TBottomTabBarBasicType.iconText ? 0.0 : 1.0)
-            : 0.0,
-      ),
+      padding: itemPadding,
       color: Colors.transparent,
       child: _constructItem(context, badgeConfig, isInOrOutCapsule),
     );

@@ -20,6 +20,7 @@ class TButtonResolve {
     required TButtonColorScheme? colorScheme,
     required TButtonSize size,
     required Widget? icon,
+    required bool hasChild,
     required TButtonIconPosition iconPosition,
     required TButtonThemeData? theme,
     required ButtonStyle? instanceStyle,
@@ -51,7 +52,7 @@ class TButtonResolve {
     final sizeStyle = _resolveSize(
       size: size,
       hasIcon: icon != null,
-      hasChild: true, // v1.0 始终有 child
+      hasChild: hasChild,
       effectiveShape: effectiveShape,
     );
 
@@ -75,18 +76,19 @@ class TButtonResolve {
 
     // 合并：P2 色板 → colorScheme → shape → size → textStyle → Theme padding → iconSpacing → P0
     var resolved = variantPalette ?? const ButtonStyle();
-    resolved = resolved.merge(colorStyle);
-    resolved = resolved.merge(shapeStyle);
-    resolved = resolved.merge(sizeStyle);
-    resolved = resolved.merge(textStyleStyle);
+    resolved = _overrideWith(resolved, colorStyle);
+    resolved = _overrideWith(resolved, shapeStyle);
+    resolved = _overrideWith(resolved, sizeStyle);
+    resolved = _overrideWith(resolved, textStyleStyle);
     if (paddingStyle != null) {
-      resolved = resolved.merge(paddingStyle);
+      resolved = _overrideWith(resolved, paddingStyle);
     }
-    resolved = resolved.merge(iconSpacingStyle);
+    resolved = _overrideWith(resolved, iconSpacingStyle);
 
     // 渐变存在时强制背景 null（触发 MaterialType.transparency），阻止 M3 默认样式污染渐变效果（在 P0 之前，允许 P0 覆盖）
     if (hasGradient) {
-      resolved = resolved.merge(
+      resolved = _overrideWith(
+        resolved,
         const ButtonStyle(
           // 设为 null 而非 Colors.transparent，确保 ButtonStyleButton 使用 MaterialType.transparency
           backgroundColor: WidgetStatePropertyAll<Color?>(null),
@@ -99,13 +101,20 @@ class TButtonResolve {
 
     // P0：实例 style 覆盖所有
     if (instanceStyle != null) {
-      resolved = resolved.merge(instanceStyle);
+      resolved = _overrideWith(resolved, instanceStyle);
     }
 
     return resolved;
   }
 
+  /// 使用 [overrideStyle] 覆盖 [base] 中同名字段。
+  static ButtonStyle _overrideWith(
+      ButtonStyle base, ButtonStyle overrideStyle) {
+    return overrideStyle.merge(base);
+  }
+
   /// 获取 variant 对应的 P2 色板
+
   static ButtonStyle? _variantPalette(
       TButtonThemeData? theme, TButtonVariant variant) {
     return switch (variant) {

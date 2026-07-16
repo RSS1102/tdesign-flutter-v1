@@ -147,6 +147,7 @@ class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
           child: Row(
             children: [
               SizedBox(
+                width: 106,
                 child: TSideBar(
                   style: TSideBarVariant.normal,
                   value: currentValue,

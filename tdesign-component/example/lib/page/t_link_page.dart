@@ -12,6 +12,10 @@ class TLinkViewPage extends StatefulWidget {
 }
 
 class _TLinkViewPageState extends State<TLinkViewPage> {
+  void _onLinkPressed() {
+    TToast.showText('点击了链接', context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExamplePage(
@@ -71,12 +75,14 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
         colorScheme: TLinkColorScheme.primary,
         variant: variant,
         size: TLinkSize.medium,
+        onPressed: _onLinkPressed,
       ),
       TLink(
         child: const Text('跳转链接'),
         colorScheme: TLinkColorScheme.defaultTheme,
         variant: variant,
         size: TLinkSize.medium,
+        onPressed: _onLinkPressed,
       ),
     ];
   }
@@ -153,7 +159,7 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
       colorScheme: colorScheme,
       variant: TLinkVariant.basic,
       size: TLinkSize.medium,
-      onPressed: disabled ? null : () {},
+      onPressed: disabled ? null : _onLinkPressed,
     );
   }
 
@@ -172,15 +178,14 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
   }
 
   TLink _buildLinkWithSize(TLinkSize size) {
-    final label = size == TLinkSize.small
-        ? 'S'
-        : (size == TLinkSize.medium ? 'M' : 'L');
+    final label =
+        size == TLinkSize.small ? 'S' : (size == TLinkSize.medium ? 'M' : 'L');
     return TLink(
       child: Text('${label}号链接'),
       colorScheme: TLinkColorScheme.primary,
       variant: TLinkVariant.icon,
       size: size,
-      onPressed: () {},
+      onPressed: _onLinkPressed,
     );
   }
 }

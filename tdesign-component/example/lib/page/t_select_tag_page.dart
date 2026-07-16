@@ -35,9 +35,15 @@ class _TSelectTagPageState extends State<TSelectTagPage> {
     return Wrap(
       spacing: 8,
       children: [
-        TSelectTag('标签一', value: _selected1, onChanged: (v) => setState(() => _selected1 = v)),
-        TSelectTag('标签二', value: _selected2, onChanged: (v) => setState(() => _selected2 = v)),
-        TSelectTag('标签三', value: _selected3, onChanged: (v) => setState(() => _selected3 = v)),
+        TSelectTag('标签一',
+            value: _selected1,
+            onChanged: (v) => setState(() => _selected1 = v)),
+        TSelectTag('标签二',
+            value: _selected2,
+            onChanged: (v) => setState(() => _selected2 = v)),
+        TSelectTag('标签三',
+            value: _selected3,
+            onChanged: (v) => setState(() => _selected3 = v)),
       ],
     );
   }
@@ -46,10 +52,22 @@ class _TSelectTagPageState extends State<TSelectTagPage> {
     return Wrap(
       spacing: 8,
       children: [
-        TSelectTag('主要', colorScheme: TTagColorScheme.primary, value: true, onChanged: (_) {}),
-        TSelectTag('成功', colorScheme: TTagColorScheme.success, value: true, onChanged: (_) {}),
-        TSelectTag('警告', colorScheme: TTagColorScheme.warning, value: true, onChanged: (_) {}),
-        TSelectTag('危险', colorScheme: TTagColorScheme.danger, value: true, onChanged: (_) {}),
+        TSelectTag('主要',
+            colorScheme: TTagColorScheme.primary,
+            value: true,
+            onChanged: (_) {}),
+        TSelectTag('成功',
+            colorScheme: TTagColorScheme.success,
+            value: true,
+            onChanged: (_) {}),
+        TSelectTag('警告',
+            colorScheme: TTagColorScheme.warning,
+            value: true,
+            onChanged: (_) {}),
+        TSelectTag('危险',
+            colorScheme: TTagColorScheme.danger,
+            value: true,
+            onChanged: (_) {}),
       ],
     );
   }

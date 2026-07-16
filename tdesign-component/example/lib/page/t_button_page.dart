@@ -612,8 +612,8 @@ class _TButtonPageState extends State<TButtonPage> {
       child: const Text('加载中'),
       icon: Theme(
         // TLoading 已移除 themeData 构造参数，改用 mergeExtension 注入子树主题
-        data: Theme.of(context)
-            .mergeExtension(TLoadingThemeData(iconColor: context.tTheme.whiteColor1)),
+        data: Theme.of(context).mergeExtension(
+            TLoadingThemeData(iconColor: context.tTheme.whiteColor1)),
         child: const TLoading(
           size: TLoadingSize.small,
           icon: TLoadingIcon.circle,
@@ -725,8 +725,7 @@ class _TButtonPageState extends State<TButtonPage> {
   @Demo(group: 'button')
   Widget _buildChildTestButton(BuildContext context) {
     return TButton(
-      child: Container(
-      ),
+      child: Container(),
       onPressed: null,
     );
   }
@@ -957,15 +956,16 @@ class _TButtonPageState extends State<TButtonPage> {
         runSpacing: 16,
         alignment: WrapAlignment.center,
         children: [
-          // 默认态（无交互）
+          // 默认启用态
           TButton(
             icon: template.icon,
             child: template.child,
             variant: template.variant,
             colorScheme: template.colorScheme,
             size: template.size,
-            onPressed: null,
+            onPressed: _onTap,
           ),
+
           // 可交互态（按压由 Material WidgetState 自动处理）
           TButton(
             icon: template.icon,
@@ -1008,7 +1008,7 @@ class _TButtonPageState extends State<TButtonPage> {
               icon: Icon(TIcons.app),
               child: Text('Button'),
               variant: TButtonVariant.ghost,
-            ).copyWithColorScheme(scheme, onPressed: null),
+            ).copyWithColorScheme(scheme, onPressed: _onTap),
             const TButton(
               icon: Icon(TIcons.app),
               child: Text('Button'),

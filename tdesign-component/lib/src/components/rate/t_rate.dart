@@ -107,8 +107,8 @@ class TRate extends StatefulWidget {
 }
 
 class _TRateState extends State<TRate> with TickerProviderStateMixin {
-  /// B/C 类禁用约定：onChanged 为 null 时禁用
-  bool get _isDisabled => widget.onChanged == null;
+  /// disabled 或 onChanged 为 null 时禁用
+  bool get _isDisabled => widget.disabled == true || widget.onChanged == null;
 
   /// 节流
   final _throttle = Throttle(delay: const Duration(milliseconds: 100));
@@ -238,8 +238,7 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
               final isLast = index == (widget.count ?? 5) - 1;
               return Padding(
                 padding: EdgeInsets.only(
-                    right:
-                        isLast ? 0 : widget.gap ?? context.tTheme.spacer8),
+                    right: isLast ? 0 : widget.gap ?? context.tTheme.spacer8),
                 child: AnimatedBuilder(
                   animation: _animation[index],
                   builder: (context, child) {
@@ -342,7 +341,8 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
               : entry.key.ceil().toDouble();
           var index = _index(value);
           if (!_rateSize.containsKey(index) ||
-              !_rateOffset.containsKey(index)) { // coverage:ignore-line
+              !_rateOffset.containsKey(index)) {
+            // coverage:ignore-line
             final parentRenderBox = renderBox.parent as RenderBox;
             _rateSize[index] = parentRenderBox.size;
             _rateOffset[index] = parentRenderBox.localToGlobal(Offset.zero);
@@ -374,10 +374,8 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
         (widget.allowHalf == true ? _activeValue * 2 : _activeValue) - 1;
     return Padding(
       padding: widget.direction == Axis.horizontal
-          ? EdgeInsets.only(
-              left: widget.iconTextGap ?? context.tTheme.spacer16)
-          : EdgeInsets.only(
-              top: widget.iconTextGap ?? context.tTheme.spacer8),
+          ? EdgeInsets.only(left: widget.iconTextGap ?? context.tTheme.spacer16)
+          : EdgeInsets.only(top: widget.iconTextGap ?? context.tTheme.spacer8),
       child: SizedBox(
         width: widget.textWidth ?? 50,
         child: TText(
@@ -396,8 +394,14 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
   }
 
   Color _getIconColor({double? value, bool? isActive}) {
-    return (value != null && _activeValue >= value) ||
-            (isActive != null && isActive)
+    final selected = (value != null && _activeValue >= value) ||
+        (isActive != null && isActive);
+    if (_isDisabled) {
+      return selected
+          ? context.tTheme.textDisabledColor
+          : context.tTheme.bgColorComponentDisabled;
+    }
+    return selected
         ? widget.color?.getOrNull(0) ?? context.tTheme.warningColor5
         : widget.color?.getOrNull(1) ?? context.tTheme.bgColorComponent;
   }
@@ -441,7 +445,8 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
             _overlay.update();
           }
         },
-        tipClick: (value) { // coverage:ignore-start
+        tipClick: (value) {
+          // coverage:ignore-start
           _showTip = false;
           _isClick = true;
           _reverse();
@@ -450,7 +455,7 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
             _activeValue = value;
             setState(() {});
             widget.onChanged?.call(value);
-          // coverage:ignore-end
+            // coverage:ignore-end
           }
         },
       ),

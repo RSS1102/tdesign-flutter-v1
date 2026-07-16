@@ -71,6 +71,7 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
     return Row(
       children: [
         SizedBox(
+          width: 106,
           child: TSideBar(
             style: TSideBarVariant.normal,
             value: currentValue,

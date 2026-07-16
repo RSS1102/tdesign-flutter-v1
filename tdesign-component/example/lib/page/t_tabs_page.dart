@@ -16,6 +16,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
   TabController? _tabController2;
   TabController? _tabController3;
   TabController? _tabController4;
+  final Map<String, TabController> _demoControllers = {};
   List<TTab> tabs = [];
   List<Widget> tabViews = [];
 
@@ -57,9 +58,28 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    super.initState();
     _initTabController();
     _getTabs();
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController1?.dispose();
+    _tabController2?.dispose();
+    _tabController3?.dispose();
+    _tabController4?.dispose();
+    for (final controller in _demoControllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  TabController _demoController(String key, int length) {
+    return _demoControllers.putIfAbsent(
+      key,
+      () => TabController(length: length, vsync: this),
+    );
   }
 
   List<TTab> subList(int length) {
@@ -169,7 +189,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
   Widget _buildItemWithSpace(BuildContext context) {
     return TTabBar(
       tabs: subList(16),
-      controller: TabController(length: 16, vsync: this),
+      controller: _demoController('space', 16),
       labelPadding: const EdgeInsets.all(10),
       showIndicator: true,
       isScrollable: true,
@@ -187,7 +207,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     });
     return TTabBar(
       tabs: tabs,
-      controller: TabController(length: tabs.length, vsync: this),
+      controller: _demoController('icon', tabs.length),
       showIndicator: true,
     );
   }
@@ -214,14 +234,14 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     ];
     return TTabBar(
       tabs: tabs,
-      controller: TabController(length: tabs.length, vsync: this),
+      controller: _demoController('logo', tabs.length),
       showIndicator: true,
     );
   }
 
   @Demo(group: 'tabs')
   Widget _buildItemWithContent(BuildContext context) {
-    var tabController = TabController(length: 3, vsync: this);
+    final tabController = _demoController('content', 3);
     return SizedBox(
       height: 120 + 48,
       child: Column(
@@ -232,11 +252,13 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
             showIndicator: true,
             isScrollable: false,
           ),
-          Container(
-            color: context.tTheme.bgColorContainer,
-            child: TTabBarView(
-              children: _getTabViews(),
-              controller: tabController,
+          Expanded(
+            child: Container(
+              color: context.tTheme.bgColorContainer,
+              child: TTabBarView(
+                children: _getTabViews(),
+                controller: tabController,
+              ),
             ),
           )
         ],
@@ -253,7 +275,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     ];
     return TTabBar(
       tabs: tabs,
-      controller: TabController(length: tabs.length, vsync: this),
+      controller: _demoController('status', tabs.length),
       showIndicator: true,
     );
   }
@@ -268,7 +290,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     ];
     return TTabBar(
       tabs: tabs,
-      controller: TabController(length: tabs.length, vsync: this),
+      controller: _demoController('sizeSmall', tabs.length),
       showIndicator: true,
     );
   }
@@ -283,7 +305,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     ];
     return TTabBar(
       tabs: tabs,
-      controller: TabController(length: tabs.length, vsync: this),
+      controller: _demoController('sizeLarge', tabs.length),
       showIndicator: true,
     );
   }
@@ -299,7 +321,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     return TTabBar(
       tabs: tabs,
       variant: TTabBarVariant.capsule,
-      controller: TabController(length: tabs.length, vsync: this),
+      controller: _demoController('outlineNormal', tabs.length),
       showIndicator: false,
     );
   }
@@ -315,7 +337,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
     return TTabBar(
       tabs: tabs,
       variant: TTabBarVariant.card,
-      controller: TabController(length: tabs.length, vsync: this),
+      controller: _demoController('outlineCard', tabs.length),
       showIndicator: false,
     );
   }

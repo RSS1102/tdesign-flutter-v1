@@ -17,6 +17,7 @@ class TDrawerPage extends StatelessWidget {
           desc: '用作一组平行关系页面/内容的切换器，相较于Tab，同屏可展示更多的选项数量。',
           exampleCodeGroup: 'drawer',
           navBarKey: navBarkey,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             ExampleModule(title: '组件类型', children: [
               ExampleItem(
@@ -73,8 +74,6 @@ class TDrawerPage extends StatelessWidget {
 
 @Demo(group: 'drawer')
 Widget _buildBaseSimple(BuildContext context) {
-  /// 获取navBar尺寸
-  var renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   return SizedBox(
     width: double.infinity,
     child: TButton(
@@ -85,7 +84,6 @@ Widget _buildBaseSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          drawerTop: renderBox?.size.height,
           items: List.generate(drawerItemLength,
               (index) => TDrawerItem(title: '菜单${index + 1}')),
           onItemClick: (index, item) {
@@ -99,8 +97,6 @@ Widget _buildBaseSimple(BuildContext context) {
 
 @Demo(group: 'drawer')
 Widget _buildIconSimple(BuildContext context) {
-  /// 获取navBar尺寸
-  var renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   return SizedBox(
     width: double.infinity,
     child: TButton(
@@ -111,7 +107,6 @@ Widget _buildIconSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          drawerTop: renderBox?.size.height,
           items: List.generate(
               drawerItemLength,
               (index) => TDrawerItem(
@@ -124,8 +119,6 @@ Widget _buildIconSimple(BuildContext context) {
 
 @Demo(group: 'drawer')
 Widget _buildTitleSimple(BuildContext context) {
-  /// 获取navBar尺寸
-  var renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   return SizedBox(
     width: double.infinity,
     child: TButton(
@@ -136,7 +129,6 @@ Widget _buildTitleSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          drawerTop: renderBox?.size.height,
           title: '标题',
           placement: TDrawerPlacement.left,
           items: List.generate(drawerItemLength,
@@ -149,8 +141,6 @@ Widget _buildTitleSimple(BuildContext context) {
 
 @Demo(group: 'drawer')
 Widget _buildBottomSimple(BuildContext context) {
-  /// 获取navBar尺寸
-  var renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   return SizedBox(
     width: double.infinity,
     child: TButton(
@@ -161,17 +151,17 @@ Widget _buildBottomSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          drawerTop: renderBox?.size.height,
           title: '标题',
           placement: TDrawerPlacement.left,
           items: List.generate(drawerItemLength,
               (index) => TDrawerItem(title: '菜单${index + 1}')),
-          footer: const SizedBox(
+          footer: SizedBox(
             width: double.infinity,
             child: TButton(
-              child: Text('操作'),
+              child: const Text('操作'),
               variant: TButtonVariant.outline,
               size: TButtonSize.large,
+              onPressed: () {},
             ),
           ),
         ).show();
@@ -182,8 +172,6 @@ Widget _buildBottomSimple(BuildContext context) {
 
 @Demo(group: 'drawer')
 Widget _buildColorSimple(BuildContext context) {
-  var renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
-
   var tCellStyle = TCellThemeData.cellStyle(context);
   tCellStyle.backgroundColor = context.tTheme.brandNormalColor;
 
@@ -197,7 +185,6 @@ Widget _buildColorSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          drawerTop: renderBox?.size.height,
           title: '标题',
           backgroundColor: context.tTheme.bgColorSecondaryContainer,
           style: tCellStyle,
@@ -212,7 +199,6 @@ Widget _buildColorSimple(BuildContext context) {
 
 @Demo(group: 'drawer')
 Widget _buildChildSimple(BuildContext context) {
-  var renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   return SizedBox(
     width: double.infinity,
     child: TButton(
@@ -223,7 +209,6 @@ Widget _buildChildSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          drawerTop: renderBox?.size.height,
           title: '标题',
           child: Container(
             padding: const EdgeInsets.all(16),

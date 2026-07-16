@@ -109,6 +109,7 @@ class TSideBarIconPageState extends State<TSideBarIconPage> {
     return Row(
       children: [
         SizedBox(
+          width: 106,
           child: TSideBar(
             style: TSideBarVariant.normal,
             value: currentValue,

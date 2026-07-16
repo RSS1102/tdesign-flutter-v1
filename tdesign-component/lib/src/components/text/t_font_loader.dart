@@ -58,9 +58,8 @@ class TFontLoaderWidget extends StatefulWidget {
 }
 
 class _TFontLoaderWidgetState extends State<TFontLoaderWidget> {
-  bool fontFamilyLoaded = false;
-
   @override // coverage:ignore-line
+
   void initState() {
     super.initState(); // coverage:ignore-line
     loadFont(); // coverage:ignore-line
@@ -89,12 +88,6 @@ class _TFontLoaderWidgetState extends State<TFontLoaderWidget> {
         // 字体加载失败时保持原文本渲染。
       }
     }
-
-    if (!mounted) {
-      // coverage:ignore-line
-      return; // coverage:ignore-line
-    }
-    fontFamilyLoaded = true; // coverage:ignore-line
   }
 
   @override // coverage:ignore-line

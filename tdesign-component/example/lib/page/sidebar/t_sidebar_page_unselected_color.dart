@@ -144,6 +144,7 @@ class TSideBarUnSelectedColorPageState
             child: Row(
           children: [
             SizedBox(
+              width: 106,
               child: TSideBar(
                 unSelectedColor: Colors.red,
                 style: TSideBarVariant.normal,

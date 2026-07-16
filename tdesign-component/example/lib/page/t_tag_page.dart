@@ -123,7 +123,8 @@ class TTagPage extends StatelessWidget {
                   return Container(
                     alignment: Alignment.topLeft,
                     padding: const EdgeInsets.only(left: 16),
-                    child: Wrap(spacing: 8, direction: Axis.vertical, children: [
+                    child:
+                        Wrap(spacing: 8, direction: Axis.vertical, children: [
                       CodeWrapper(builder: _buildAllSizeTags),
                     ]),
                   );
@@ -161,7 +162,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildSimpleOutlineTag(BuildContext context) {
     // 描边标签：通过 TTagThemeData(isOutline: true) 子树注入
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isOutline: true)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(isOutline: true)),
       child: const TTag('标签文字'),
     );
   }
@@ -170,7 +172,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildCircleFillTag(BuildContext context) {
     // 圆弧标签：通过 TTagThemeData(shape: TTagShape.round) 子树注入
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(shape: TTagShape.round)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(shape: TTagShape.round)),
       child: const TTag('标签文字'),
     );
   }
@@ -178,7 +181,8 @@ class TTagPage extends StatelessWidget {
   @Demo(group: 'tag')
   Widget _buildCircleOutlineTag(BuildContext context) {
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(shape: TTagShape.round, isOutline: true)),
+      data: Theme.of(context).mergeExtension(
+          const TTagThemeData(shape: TTagShape.round, isOutline: true)),
       child: const TTag('标签文字'),
     );
   }
@@ -187,7 +191,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildMarkFillTag(BuildContext context) {
     // Mark 标签：左圆角右直角
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(shape: TTagShape.mark)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(shape: TTagShape.mark)),
       child: const TTag('标签文字'),
     );
   }
@@ -195,7 +200,8 @@ class TTagPage extends StatelessWidget {
   @Demo(group: 'tag')
   Widget _buildMarkOutlineTag(BuildContext context) {
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(shape: TTagShape.mark, isOutline: true)),
+      data: Theme.of(context).mergeExtension(
+          const TTagThemeData(shape: TTagShape.mark, isOutline: true)),
       child: const TTag('标签文字'),
     );
   }
@@ -209,7 +215,8 @@ class TTagPage extends StatelessWidget {
   @Demo(group: 'tag')
   Widget _buildIconOutlineTag(BuildContext context) {
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isOutline: true)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(isOutline: true)),
       child: const TTag('标签文字', icon: TIcons.discount),
     );
   }
@@ -218,7 +225,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildCloseFillTag(BuildContext context) {
     // 可关闭的标签：通过 TTagThemeData(needCloseIcon: true) 注入 + onCloseTap 回调
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(needCloseIcon: true)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(needCloseIcon: true)),
       child: TTag('标签文字', onCloseTap: () {}),
     );
   }
@@ -226,7 +234,8 @@ class TTagPage extends StatelessWidget {
   @Demo(group: 'tag')
   Widget _buildCloseOutlineTag(BuildContext context) {
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isOutline: true, needCloseIcon: true)),
+      data: Theme.of(context).mergeExtension(
+          const TTagThemeData(isOutline: true, needCloseIcon: true)),
       child: TTag('标签文字', onCloseTap: () {}),
     );
   }
@@ -252,7 +261,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildLightShowTags(BuildContext context) {
     // 浅色填充各主题
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isLight: true)),
+      data:
+          Theme.of(context).mergeExtension(const TTagThemeData(isLight: true)),
       child: const Wrap(
         spacing: 8,
         children: [
@@ -270,7 +280,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildOutlineShowTags(BuildContext context) {
     // 非浅色描边各主题
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isOutline: true)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(isOutline: true)),
       child: const Wrap(
         spacing: 8,
         children: [
@@ -288,7 +299,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildLightOutlineShowTags(BuildContext context) {
     // 浅色描边各主题
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isOutline: true, isLight: true)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(isOutline: true, isLight: true)),
       child: const Wrap(
         spacing: 8,
         children: [
@@ -323,7 +335,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildDisabledTag(BuildContext context) {
     // 禁用状态：通过 TTagThemeData(disable: true) 注入
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(disable: true)),
+      data:
+          Theme.of(context).mergeExtension(const TTagThemeData(disable: true)),
       child: const Wrap(
         spacing: 8,
         children: [

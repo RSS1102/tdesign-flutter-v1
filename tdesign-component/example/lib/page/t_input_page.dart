@@ -147,8 +147,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -170,8 +169,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -192,8 +190,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -213,8 +210,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -256,8 +252,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -304,8 +299,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -335,8 +329,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
           showClearButton: false,
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -381,8 +374,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -403,8 +395,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -435,8 +426,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           },
           showClearButton: false,
         ),
-        const SizedBox(
-        ),
+        const SizedBox(),
       ],
     );
   }
@@ -453,24 +443,28 @@ class _TInputViewPageState extends State<TInputViewPage> {
           label: '密码复制粘贴',
           hintText: '此密码框允许长按复制粘贴',
           contextMenuBuilder: (context, editableTextState) {
-            final buttonItems =
-                editableTextState.contextMenuButtonItems;
-            if (!buttonItems.any((item) => item.type == ContextMenuButtonType.copy)) {
-              buttonItems.insert(0, ContextMenuButtonItem(
-                onPressed: () {
-                  final selection = editableTextState.textEditingValue.selection;
-                  final text = editableTextState.textEditingValue.text;
-                  if (selection.isValid && !selection.isCollapsed) {
-                    final selectedText = text.substring(selection.start, selection.end);
-                    Clipboard.setData(ClipboardData(text: selectedText));
-                  } else {
-                    // 如果没有选中文本，则复制全部
-                    Clipboard.setData(ClipboardData(text: text));
-                  }
-                  editableTextState.hideToolbar();
-                },
-                type: ContextMenuButtonType.copy,
-              ));
+            final buttonItems = editableTextState.contextMenuButtonItems;
+            if (!buttonItems
+                .any((item) => item.type == ContextMenuButtonType.copy)) {
+              buttonItems.insert(
+                  0,
+                  ContextMenuButtonItem(
+                    onPressed: () {
+                      final selection =
+                          editableTextState.textEditingValue.selection;
+                      final text = editableTextState.textEditingValue.text;
+                      if (selection.isValid && !selection.isCollapsed) {
+                        final selectedText =
+                            text.substring(selection.start, selection.end);
+                        Clipboard.setData(ClipboardData(text: selectedText));
+                      } else {
+                        // 如果没有选中文本，则复制全部
+                        Clipboard.setData(ClipboardData(text: text));
+                      }
+                      editableTextState.hideToolbar();
+                    },
+                    type: ContextMenuButtonType.copy,
+                  ));
             }
             return AdaptiveTextSelectionToolbar.buttonItems(
               anchors: editableTextState.contextMenuAnchors,
@@ -478,8 +472,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             );
           },
         ),
-        const SizedBox(
-        ),
+        const SizedBox(),
       ],
     );
   }
@@ -494,27 +487,36 @@ class _TInputViewPageState extends State<TInputViewPage> {
           controller: controller[13],
           label: '验证码',
           hintText: '输入验证码',
-          rightBtn: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 0.5,
-                color: context.tTheme.componentBorderColor,
-              ),
-              const SizedBox(
-              ),
-              Image.network(
-                'https://img2018.cnblogs.com/blog/736399/202001/736399-20200108170302307-1377487770.jpg',
-              )
-            ],
+          rightBtn: SizedBox(
+            width: 104,
+            height: 32,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 0.5,
+                  height: 24,
+                  color: context.tTheme.componentBorderColor,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: Image.network(
+                      'https://img2018.cnblogs.com/blog/736399/202001/736399-20200108170302307-1377487770.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           showClearButton: false,
           onBtnTap: () {
             TToast.showText('点击更换验证码', context: context);
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -560,8 +562,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             }
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -576,11 +577,9 @@ class _TInputViewPageState extends State<TInputViewPage> {
           label: '价格',
           hintText: '0.00',
           textAlign: TextAlign.end,
-          suffix:
-              TText('元', textColor: context.tTheme.textColorPrimary),
+          suffix: TText('元', textColor: context.tTheme.textColorPrimary),
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -615,8 +614,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -649,8 +647,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -758,8 +755,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -781,8 +777,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -804,8 +799,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }
@@ -872,11 +866,10 @@ class _TInputViewPageState extends State<TInputViewPage> {
       alignment: Alignment.center,
       child: SizedBox(
         child: TInput(
-          size: TInputSize.small,
-          label: '标签文字',
-          controller: controller,
-          hintText: '请输入文字'
-        ),
+            size: TInputSize.small,
+            label: '标签文字',
+            controller: controller,
+            hintText: '请输入文字'),
       ),
     );
   }
@@ -953,8 +946,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
             setState(() {});
           },
         ),
-        const SizedBox(
-        )
+        const SizedBox()
       ],
     );
   }

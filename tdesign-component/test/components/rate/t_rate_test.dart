@@ -39,7 +39,9 @@ void main() {
       ));
 
       // 点击评分图标
-      await tester.tap(find.byIcon(TIcons.star_filled).first);
+      await tester.tap(find.byIcon(TIcons.star_filled).first,
+          warnIfMissed: false);
+
       await tester.pump();
       // 禁用时组件仍存在但不响应交互
       expect(find.byType(TRate), findsOneWidget);
@@ -232,9 +234,25 @@ void main() {
       ));
       expect(find.byType(TRate), findsOneWidget);
     });
+
+    testWidgets('disabled=true 即使 onChanged 非 null 也不响应点击', (tester) async {
+      var changed = -1.0;
+      await tester.pumpWidget(wrapWithTheme(
+        TRate(
+          value: 0,
+          disabled: true,
+          onChanged: (value) => changed = value,
+        ),
+      ));
+
+      await tester.tap(find.byIcon(TIcons.star_filled).last);
+      await tester.pump(const Duration(milliseconds: 150));
+      expect(changed, -1.0);
+    });
   });
 
   // ============================================================
+
   // showText 更多文案场景
   // ============================================================
   group('TRate showText 更多场景', () {
@@ -266,8 +284,18 @@ void main() {
           value: 2.5,
           showText: true,
           allowHalf: true,
-          texts: ['极差', '失望', '一般', '满意', '惊喜',
-            '极差半', '失望半', '一般半', '满意半', '惊喜半'],
+          texts: [
+            '极差',
+            '失望',
+            '一般',
+            '满意',
+            '惊喜',
+            '极差半',
+            '失望半',
+            '一般半',
+            '满意半',
+            '惊喜半'
+          ],
         ),
       ));
       expect(find.byType(TRate), findsOneWidget);
@@ -745,13 +773,13 @@ void main() {
   group('TRate 交互补充', () {
     testWidgets('拖拽评分触发 onHorizontalDragUpdate/End', (tester) async {
       // 覆盖 226-227（_isClick=false; _changeSelect）+ 233（_hideTip）
-      var changed = -1.0;
       await tester.pumpWidget(wrapWithTheme(
-        TRate(value: 0, onChanged: (v) => changed = v),
+        TRate(value: 0, onChanged: (_) {}),
       ));
+
       // 从 TRate 中心向右拖拽（覆盖 onHorizontalDragUpdate/End + _fingerInsideContainer）
-      await tester.drag(
-          find.byType(TRate), const Offset(60, 0), warnIfMissed: false);
+      await tester.drag(find.byType(TRate), const Offset(60, 0),
+          warnIfMissed: false);
       // Throttle 延迟 100ms 执行 _changeSelect
       await tester.pump(const Duration(milliseconds: 150));
       await tester.pumpAndSettle();
@@ -760,12 +788,12 @@ void main() {
 
     testWidgets('allowHalf=true 拖拽半选', (tester) async {
       // 覆盖 341（entry.key 半选值）+ 345（首次计算尺寸）
-      var changed = -1.0;
       await tester.pumpWidget(wrapWithTheme(
-        TRate(value: 0, allowHalf: true, onChanged: (v) => changed = v),
+        TRate(value: 0, allowHalf: true, onChanged: (_) {}),
       ));
-      await tester.drag(
-          find.byType(TRate), const Offset(30, 0), warnIfMissed: false);
+
+      await tester.drag(find.byType(TRate), const Offset(30, 0),
+          warnIfMissed: false);
       await tester.pump(const Duration(milliseconds: 150));
       await tester.pumpAndSettle();
       expect(find.byType(TRate), findsOneWidget);
@@ -781,8 +809,8 @@ void main() {
       // ClipRect 列表：每个评分2个（左半+右半），第3个评分右半 = index 5
       if (clips.evaluate().length > 5) {
         final box = tester.renderObject<RenderBox>(clips.at(5));
-        final center = box.localToGlobal(
-            Offset(box.size.width / 2, box.size.height / 2));
+        final center =
+            box.localToGlobal(Offset(box.size.width / 2, box.size.height / 2));
         await tester.tapAt(center);
       } else {
         await tester.tapAt(tester.getCenter(find.byType(TRate)));
@@ -845,8 +873,8 @@ void main() {
         ),
       ));
       // 拖拽触发 _changeSelect → _showTip=true → _overlay.update() → _buildOverlay
-      await tester.drag(
-          find.byType(TRate), const Offset(30, 0), warnIfMissed: false);
+      await tester.drag(find.byType(TRate), const Offset(30, 0),
+          warnIfMissed: false);
       await tester.pump(const Duration(milliseconds: 150));
       await tester.pumpAndSettle();
       expect(find.byType(TRate), findsOneWidget);
@@ -862,8 +890,8 @@ void main() {
           onChanged: (_) {},
         ),
       ));
-      await tester.drag(
-          find.byType(TRate), const Offset(30, 0), warnIfMissed: false);
+      await tester.drag(find.byType(TRate), const Offset(30, 0),
+          warnIfMissed: false);
       await tester.pump(const Duration(milliseconds: 150));
       await tester.pumpAndSettle();
       expect(find.byType(TRate), findsOneWidget);
@@ -875,8 +903,8 @@ void main() {
         TRate(value: 2, onChanged: (_) {}),
       ));
       // 向左拖到边界外
-      await tester.drag(
-          find.byType(TRate), const Offset(-200, 0), warnIfMissed: false);
+      await tester.drag(find.byType(TRate), const Offset(-200, 0),
+          warnIfMissed: false);
       await tester.pump(const Duration(milliseconds: 150));
       await tester.pumpAndSettle();
       expect(find.byType(TRate), findsOneWidget);
@@ -913,8 +941,8 @@ void main() {
       final clips = find.byType(ClipRect);
       if (clips.evaluate().length > 1) {
         final box = tester.renderObject<RenderBox>(clips.at(1));
-        final center = box.localToGlobal(
-            Offset(box.size.width / 2, box.size.height / 2));
+        final center =
+            box.localToGlobal(Offset(box.size.width / 2, box.size.height / 2));
         await tester.tapAt(center);
         await tester.pump(const Duration(milliseconds: 150));
         await tester.pumpAndSettle();

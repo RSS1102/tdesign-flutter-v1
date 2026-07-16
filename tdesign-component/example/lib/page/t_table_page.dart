@@ -96,7 +96,8 @@ class TTablePage extends StatelessWidget {
         ExampleItem(desc: '空数据表格', builder: _emptyTable),
         ExampleItem(desc: '加载动画表格', builder: _loadingTable),
         ExampleItem(desc: '可选表格+默认选中', builder: _selectTable),
-        ExampleItem(desc: '自定义表尾组件', builder: (context) => const ShowFooterTable()),
+        ExampleItem(
+            desc: '自定义表尾组件', builder: (context) => const ShowFooterTable()),
       ],
     );
   }
@@ -145,14 +146,12 @@ class TTablePage extends StatelessWidget {
                 TText(
                   '修改',
                   style: TextStyle(
-                      color: context.tTheme.brandNormalColor,
-                      fontSize: 14),
+                      color: context.tTheme.brandNormalColor, fontSize: 14),
                 ),
                 TText(
                   '通过',
                   style: TextStyle(
-                      color: context.tTheme.brandNormalColor,
-                      fontSize: 14),
+                      color: context.tTheme.brandNormalColor, fontSize: 14),
                 ),
               ],
             );
@@ -195,7 +194,11 @@ class TTablePage extends StatelessWidget {
     return TTable(
       bordered: true,
       columns: [
-        TTableCol(title: '固定列', colKey: 'title1', fixed: TTableColFixed.left, width: 100),
+        TTableCol(
+            title: '固定列',
+            colKey: 'title1',
+            fixed: TTableColFixed.left,
+            width: 100),
         TTableCol(title: '标题二', colKey: 'title2', width: 160),
         TTableCol(title: '标题三', colKey: 'title3', width: 160),
         TTableCol(title: '标题四', colKey: 'title4', width: 160),
@@ -220,6 +223,7 @@ class TTablePage extends StatelessWidget {
           title: '操作',
           colKey: 'title4',
           fixed: TTableColFixed.right,
+          width: 120,
           cellBuilder: (BuildContext context, int index) {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -312,6 +316,7 @@ class TTablePage extends StatelessWidget {
           title: '标题',
           colKey: 'title4',
           fixed: TTableColFixed.right,
+          width: 120,
           cellBuilder: (BuildContext context, int index) {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -343,12 +348,9 @@ class TTablePage extends StatelessWidget {
   Widget _centerTable(BuildContext context) {
     return TTable(
       columns: [
-        TTableCol(
-            title: '标题', colKey: 'title1', align: TTableColAlign.center),
-        TTableCol(
-            title: '标题', colKey: 'title2', align: TTableColAlign.center),
-        TTableCol(
-            title: '标题', colKey: 'title3', align: TTableColAlign.center),
+        TTableCol(title: '标题', colKey: 'title1', align: TTableColAlign.center),
+        TTableCol(title: '标题', colKey: 'title2', align: TTableColAlign.center),
+        TTableCol(title: '标题', colKey: 'title3', align: TTableColAlign.center),
         TTableCol(title: '标题', colKey: 'title4', align: TTableColAlign.center)
       ],
       data: _getData(10),
@@ -401,6 +403,7 @@ class TTablePage extends StatelessWidget {
     );
   }
 }
+
 class ShowFooterTable extends StatefulWidget {
   const ShowFooterTable({super.key});
 

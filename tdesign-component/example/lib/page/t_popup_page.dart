@@ -14,6 +14,7 @@ class TPopupPage extends StatelessWidget {
       title: tTitle(context),
       desc: '由其他控件触发，屏幕滑出或弹出一块自定义内容区域，覆盖屏幕。',
       exampleCodeGroup: 'popup',
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
         ExampleModule(title: '组件类型', children: [
           ExampleItem(desc: '底部弹出', builder: _buildBottomPopup),

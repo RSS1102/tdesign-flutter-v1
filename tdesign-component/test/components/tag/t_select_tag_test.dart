@@ -18,6 +18,26 @@ void main() {
       expect(find.text('标签'), findsOneWidget);
     });
 
+    testWidgets('文字垂直居中且宽度按内容自适应', (tester) async {
+      await tester.pumpWidget(wrap(
+        const TSelectTag('居中', value: false),
+      ));
+
+      final tagContainerFinder = find.descendant(
+        of: find.byType(TSelectTag),
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Container && widget.decoration is BoxDecoration,
+        ),
+      );
+      final tagRect = tester.getRect(tagContainerFinder.first);
+      final textRect = tester.getRect(find.text('居中'));
+      final textWidget = tester.widget<Text>(find.text('居中'));
+
+      expect((tagRect.center.dy - textRect.center.dy).abs(), lessThan(1));
+      expect(tagRect.width, lessThan(120));
+      expect(textWidget.style?.height, isNull);
+    });
+
     testWidgets('未选中带 onChanged，点击触发取反回调', (tester) async {
       var changed = false;
       await tester.pumpWidget(wrap(
