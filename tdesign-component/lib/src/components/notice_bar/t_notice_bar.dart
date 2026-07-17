@@ -16,7 +16,7 @@ class TNoticeBar extends StatefulWidget {
     this.direction = Axis.horizontal,
     this.maxLines = 1,
     this.onPressed,
-  })  : assert(content == null || content is String || content is List<String>,
+  }) : assert(content == null || content is String || content is List<String>,
             'content must be String or List<String>');
 
   /// 文本内容（字符串或字符串数组等）
@@ -55,6 +55,17 @@ class _TNoticeBarState extends State<TNoticeBar> {
 
   dynamic _content;
 
+  List<String> get _contentList {
+    final content = _content;
+    if (content is List<String>) {
+      return content;
+    }
+    if (content is String) {
+      return [content];
+    }
+    return const [];
+  }
+
   @override
   void initState() {
     _content = widget.content;
@@ -73,8 +84,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
   }
 
   bool? get _effectiveMarquee =>
-      Theme.of(context).extension<TNoticeBarThemeData>()?.marquee ??
-      false;
+      Theme.of(context).extension<TNoticeBarThemeData>()?.marquee ?? false;
 
   double get _effectiveSpeed => _theme.speed ?? 50;
 
@@ -82,7 +92,8 @@ class _TNoticeBarState extends State<TNoticeBar> {
 
   double get _effectiveHeight => _theme.height ?? 22;
 
-  EdgeInsetsGeometry get _effectivePadding => _theme.padding ?? TNoticeBarThemeData.defaultPadding;
+  EdgeInsetsGeometry get _effectivePadding =>
+      _theme.padding ?? TNoticeBarThemeData.defaultPadding;
 
   void _init() {
     _resolved = _theme;
@@ -93,6 +104,14 @@ class _TNoticeBarState extends State<TNoticeBar> {
     super.dispose();
     _timer?.cancel();
     _scrollController?.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant TNoticeBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.content != widget.content) {
+      _content = widget.content;
+    }
   }
 
   void _startTimer() {
@@ -117,14 +136,19 @@ class _TNoticeBarState extends State<TNoticeBar> {
         await _scrollController!.animateTo(offset,
             duration: const Duration(seconds: 1), curve: Curves.linear);
       } else {
-        var time = (remainder / _effectiveSpeed * 1000).round(); // coverage:ignore-line
-        await _scrollController!.animateTo(scrollDistance, // coverage:ignore-line
-            duration: Duration(milliseconds: time), curve: Curves.linear); // coverage:ignore-line
+        var time = (remainder / _effectiveSpeed * 1000)
+            .round(); // coverage:ignore-line
+        await _scrollController!
+            .animateTo(scrollDistance, // coverage:ignore-line
+                duration: Duration(milliseconds: time),
+                curve: Curves.linear); // coverage:ignore-line
         _scrollController!.jumpTo(0); // coverage:ignore-line
         offset = _effectiveSpeed - remainder; // coverage:ignore-line
-        remainder = (scrollDistance - offset) % _effectiveSpeed; // coverage:ignore-line
+        remainder =
+            (scrollDistance - offset) % _effectiveSpeed; // coverage:ignore-line
         await _scrollController!.animateTo(offset, // coverage:ignore-line
-            duration: Duration(milliseconds: 1000 - time), // coverage:ignore-line
+            duration:
+                Duration(milliseconds: 1000 - time), // coverage:ignore-line
             curve: Curves.linear);
       }
     });
@@ -133,9 +157,18 @@ class _TNoticeBarState extends State<TNoticeBar> {
   void _step() {
     var step = 0;
     var offset = 0.0;
-    _timer = Timer.periodic(Duration(milliseconds: _effectiveInterval), (timer) {
+    final content = _contentList;
+    if (content.isEmpty) {
+      return;
+    }
+    _timer =
+        Timer.periodic(Duration(milliseconds: _effectiveInterval), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
       var time = (_effectiveHeight / _effectiveSpeed * 1000).round();
-      if (step >= _content.length) {
+      if (step >= content.length) {
         step = 0;
         offset = 0;
         _scrollController!.jumpTo(0);
@@ -251,7 +284,11 @@ class _TNoticeBarState extends State<TNoticeBar> {
         );
         break;
       case Axis.vertical:
-        var content = _content as List<String>;
+        var content = _contentList;
+        if (content.isEmpty) {
+          child = textWidget;
+          break;
+        }
         child = SizedBox(
           height: _effectiveHeight,
           child: SingleChildScrollView(

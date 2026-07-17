@@ -148,7 +148,7 @@ class _TSkeletonState extends State<TSkeleton>
           vsync: this,
         )..repeat();
         _animation = Tween<double>(begin: -1, end: 1).animate(_controller!)
-          ..addListener(() => setState(() {}));
+          ..addListener(_safeSetState);
         break;
       case TSkeletonAnimation.flashed:
         _controller = AnimationController(
@@ -157,7 +157,7 @@ class _TSkeletonState extends State<TSkeleton>
         )..repeat(reverse: true);
         _animation = Tween<double>(begin: 1, end: _animationFlashed)
             .animate(_controller!)
-          ..addListener(() => setState(() {}));
+          ..addListener(_safeSetState);
         break;
       default:
         _controller = null;
@@ -165,11 +165,22 @@ class _TSkeletonState extends State<TSkeleton>
     }
 
     // 延迟显示加载效果
-    Future.delayed(Duration(milliseconds: widget.delay),
-        () => setState(() => _isLoading = false));
+    Future.delayed(Duration(milliseconds: widget.delay), () {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _isLoading = false);
+    });
   }
 
-  Widget Function(TSkeletonRowColObj) _buildObj(BuildContext context) =>
+  void _safeSetState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Widget Function(TSkeletonRowColObj) _buildObj(BuildContext context,
+          {bool allowFlex = true}) =>
       (TSkeletonRowColObj obj) {
         // 骨架图对象
         Widget skeletonObj = Container(
@@ -210,7 +221,7 @@ class _TSkeletonState extends State<TSkeleton>
         }
 
         // 根据弹性因子创建弹性布局
-        return obj.flex == null
+        return !allowFlex || obj.flex == null
             ? skeletonObj
             : Flexible(flex: obj.flex!, child: skeletonObj);
       };
@@ -225,13 +236,14 @@ class _TSkeletonState extends State<TSkeleton>
     if (widget.rowCol.objects.length == 1) {
       return widget.rowCol.objects.first.length == 1
           // 单个对象
-          ? _buildObj(context)(widget.rowCol.objects.first.first)
+          ? _buildObj(context, allowFlex: false)(
+              widget.rowCol.objects.first.first,
+            )
           // 单行多个对象
-          : Flexible(
-              child: Row(
+          : Row(
               children:
                   widget.rowCol.objects.first.map(_buildObj(context)).toList(),
-            ));
+            );
     }
 
     // 多行多个对象
@@ -247,18 +259,19 @@ class _TSkeletonState extends State<TSkeleton>
         skeletonRows.removeLast();
       }
     } // 添加行间距
-    var skeletonRowCol = Column(children: skeletonRows); // 行列布局
+    var skeletonRowCol = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: skeletonRows,
+    ); // 行列布局
 
     return widget.rowCol.objects
             .any((row) => row.any((obj) => obj.flex != null))
         // 添加弹性布局
-        ? Flexible(
-            child: Container(
-              constraints: BoxConstraints(
-                maxHeight: widget.rowCol.visualHeight(context),
-              ), // 限制最大高度
-              child: skeletonRowCol,
-            ),
+        ? Container(
+            constraints: BoxConstraints(
+              maxHeight: widget.rowCol.visualHeight(context),
+            ), // 限制最大高度
+            child: skeletonRowCol,
           )
         : skeletonRowCol;
   }

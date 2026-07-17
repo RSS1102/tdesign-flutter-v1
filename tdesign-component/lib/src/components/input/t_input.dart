@@ -224,9 +224,12 @@ class TInput extends StatelessWidget {
     final theme = Theme.of(context).extension<TInputThemeData>();
     final resolvedSpacer =
         TInputResolve.resolveSpacer(theme: theme, instanceSpacer: spacer);
-    return SizedBox(
-      width: width ?? MediaQuery.of(context).size.width,
-      child: buildInputView(context, theme, resolvedSpacer),
+    return _TInputControllerListener(
+      controller: controller,
+      builder: (context) => SizedBox(
+        width: width ?? MediaQuery.sizeOf(context).width,
+        child: buildInputView(context, theme, resolvedSpacer),
+      ),
     );
   }
 
@@ -327,14 +330,11 @@ class TInput extends StatelessWidget {
     final clearBtnColor = TInputResolve.resolveClearBtnColor(
         context: context, theme: theme, instanceColor: this.clearBtnColor);
     final additionInfoColor = TInputResolve.resolveAdditionInfoColor(
-        context: context,
-        theme: theme,
-        instanceColor: this.additionInfoColor);
+        context: context, theme: theme, instanceColor: this.additionInfoColor);
     final bgColor = TInputResolve.resolveBackgroundColor(
         context: context, theme: theme, instanceColor: backgroundColor);
     final showDivider = showBottomDivider ?? theme?.showBottomDivider ?? true;
-    final showClear =
-        showClearButton ?? theme?.showClearButton ?? true;
+    final showClear = showClearButton ?? theme?.showClearButton ?? true;
     final clearSize = clearIconSize ?? theme?.clearIconSize;
 
     return Stack(
@@ -402,8 +402,7 @@ class TInput extends StatelessWidget {
                           child: TText(
                             '*',
                             maxLines: 1,
-                            style: TextStyle(
-                                color: context.tTheme.errorColor6),
+                            style: TextStyle(color: context.tTheme.errorColor6),
                             font: context.tTheme.fontBodyLarge,
                             fontWeight: FontWeight.w400,
                           ),
@@ -465,8 +464,7 @@ class TInput extends StatelessWidget {
                           textColor: additionInfoColor,
                         ),
                       ),
-                      visible:
-                          additionInfo != null && additionInfo!.isNotEmpty,
+                      visible: additionInfo != null && additionInfo!.isNotEmpty,
                     )
                   ],
                 ),
@@ -505,7 +503,8 @@ class TInput extends StatelessWidget {
                   ),
                   onTap: onClearTap ??
                       () {
-                        controller?.text = '';
+                        controller?.clear();
+                        onChanged?.call('');
                       },
                 ),
                 replacement: Visibility(
@@ -557,8 +556,7 @@ class TInput extends StatelessWidget {
     final bgColor = TInputResolve.resolveBackgroundColor(
         context: context, theme: theme, instanceColor: backgroundColor);
     final showDivider = showBottomDivider ?? theme?.showBottomDivider ?? true;
-    final showClear =
-        showClearButton ?? theme?.showClearButton ?? true;
+    final showClear = showClearButton ?? theme?.showClearButton ?? true;
     final clearSize = clearIconSize ?? theme?.clearIconSize;
     final padding = TInputResolve.resolveContentPadding(
       context: context,
@@ -622,8 +620,7 @@ class TInput extends StatelessWidget {
                         child: TText(
                           '*',
                           maxLines: 1,
-                          style: TextStyle(
-                              color: context.tTheme.errorColor6),
+                          style: TextStyle(color: context.tTheme.errorColor6),
                           font: context.tTheme.fontBodyLarge,
                           fontWeight: FontWeight.w400,
                         ),
@@ -693,7 +690,11 @@ class TInput extends StatelessWidget {
                             color: clearBtnColor,
                           ),
                         ),
-                        onTap: onClearTap,
+                        onTap: onClearTap ??
+                            () {
+                              controller?.clear();
+                              onChanged?.call('');
+                            },
                       ),
                       replacement: Visibility(
                         visible: rightBtn != null,
@@ -805,8 +806,8 @@ class TInput extends StatelessWidget {
               focusNode: focusNode,
               hintTextStyle: hintTextStyle,
               cursorColor: cursorColor,
-              textInputBackgroundColor: TInputResolve
-                  .resolveTextInputBackgroundColor(
+              textInputBackgroundColor:
+                  TInputResolve.resolveTextInputBackgroundColor(
                       theme: theme, instanceColor: textInputBackgroundColor),
               controller: controller,
               contentPadding: padding,
@@ -895,8 +896,7 @@ class TInput extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      left: spacer.labelInputSpace ?? 16),
+                  padding: EdgeInsets.only(left: spacer.labelInputSpace ?? 16),
                   child: TInputView(
                     textStyle: textStyle,
                     readOnly: readOnly,
@@ -994,4 +994,51 @@ class TInput extends StatelessWidget {
       ],
     );
   }
+}
+
+class _TInputControllerListener extends StatefulWidget {
+  const _TInputControllerListener({
+    required this.controller,
+    required this.builder,
+  });
+
+  final TextEditingController? controller;
+  final WidgetBuilder builder;
+
+  @override
+  State<_TInputControllerListener> createState() =>
+      _TInputControllerListenerState();
+}
+
+class _TInputControllerListenerState extends State<_TInputControllerListener> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller?.addListener(_handleControllerChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant _TInputControllerListener oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller == widget.controller) {
+      return;
+    }
+    oldWidget.controller?.removeListener(_handleControllerChanged);
+    widget.controller?.addListener(_handleControllerChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.removeListener(_handleControllerChanged);
+    super.dispose();
+  }
+
+  void _handleControllerChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.builder(context);
 }

@@ -22,6 +22,13 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
   final _sideBarController = TSideBarController();
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    _sideBarController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var current = buildWidget(context);
     return current;
@@ -64,7 +71,9 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
     void setCurrentValue(int value) {
       _pageController.jumpToPage(value);
       if (currentValue != value) {
-        currentValue = value;
+        setState(() {
+          currentValue = value;
+        });
       }
     }
 

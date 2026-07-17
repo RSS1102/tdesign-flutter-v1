@@ -50,6 +50,7 @@ class _TBackTopState extends State<TBackTop> {
   bool _isAnimating = false;
   bool _isVisible = true;
   bool _listenerAttached = false;
+  double? _lastVisibilityOffset;
 
   Color _bgColor = Colors.transparent;
   Color _borderColor = Colors.transparent;
@@ -78,6 +79,7 @@ class _TBackTopState extends State<TBackTop> {
     super.didChangeDependencies();
     _initColors();
     _attachScrollListener();
+    _refreshVisibility();
   }
 
   void _attachScrollListener() {
@@ -88,6 +90,7 @@ class _TBackTopState extends State<TBackTop> {
     if (offset != null && widget.controller != null) {
       widget.controller!.addListener(_handleScroll);
       _listenerAttached = true;
+      _lastVisibilityOffset = offset;
       _updateVisibility(offset);
     }
   }
@@ -125,6 +128,7 @@ class _TBackTopState extends State<TBackTop> {
       _listenerAttached = false;
       _attachScrollListener();
     }
+    _refreshVisibility();
   }
 
   @override
@@ -145,6 +149,16 @@ class _TBackTopState extends State<TBackTop> {
     _fontColor = colorScheme == TBackTopColorScheme.light
         ? theme.textColorPrimary
         : theme.textColorAnti;
+  }
+
+  void _refreshVisibility() {
+    final offset = _effectiveVisibilityOffset;
+    if (offset != _lastVisibilityOffset) {
+      _lastVisibilityOffset = offset;
+    }
+    if (offset != null) {
+      _updateVisibility(offset);
+    }
   }
 
   String _resolveTooltip(BuildContext context) {

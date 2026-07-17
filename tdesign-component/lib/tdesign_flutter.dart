@@ -2,7 +2,8 @@
 export 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
 export 'src/components/action_sheet/t_action_sheet.dart';
-export 'src/components/action_sheet/t_action_sheet_theme_data.dart' show TActionSheetThemeData;
+export 'src/components/action_sheet/t_action_sheet_theme_data.dart'
+    show TActionSheetThemeData;
 export 'src/components/avatar/t_avatar.dart';
 export 'src/components/avatar/t_avatar_theme_data.dart' show TAvatarThemeData;
 export 'src/components/backtop/t_backtop.dart';
@@ -38,13 +39,16 @@ export 'src/components/date_time_picker/t_date_time_picker.dart';
 export 'src/components/dialog/t_dialog.dart';
 export 'src/components/dialog/t_dialog_theme_data.dart' show TDialogThemeData;
 export 'src/components/divider/t_divider.dart';
-export 'src/components/divider/t_divider_theme_data.dart' show TDividerThemeData;
+export 'src/components/divider/t_divider_theme_data.dart'
+    show TDividerThemeData;
 export 'src/components/drawer/t_drawer.dart';
 export 'src/components/drawer/t_drawer_theme_data.dart' show TDrawerThemeData;
-export 'src/components/drawer/t_drawer_widget.dart' show TDrawerWidget, TDrawerItem, TDrawerItemClickCallback;
+export 'src/components/drawer/t_drawer_widget.dart'
+    show TDrawerItem, TDrawerItemClickCallback;
 export 'src/components/dropdown_menu/t_dropdown_item.dart';
 export 'src/components/dropdown_menu/t_dropdown_menu.dart';
-export 'src/components/dropdown_menu/t_dropdown_theme_data.dart' show TDropdownThemeData;
+export 'src/components/dropdown_menu/t_dropdown_theme_data.dart'
+    show TDropdownThemeData;
 export 'src/components/empty/t_empty.dart';
 export 'src/components/empty/t_empty_theme_data.dart' show TEmptyThemeData;
 export 'src/components/fab/t_fab.dart';
@@ -63,19 +67,28 @@ export 'src/components/image_viewer/t_image_viewer.dart';
 export 'src/components/image_viewer/t_image_viewer_theme_data.dart'
     show TImageViewerThemeData;
 export 'src/components/indexes/t_indexes.dart';
-export 'src/components/indexes/t_indexes_theme_data.dart' show TIndexesThemeData;
+export 'src/components/indexes/t_indexes_theme_data.dart'
+    show TIndexesThemeData;
 export 'src/components/input/input_view.dart';
 export 'src/components/input/t_input.dart';
-export 'src/components/input/t_input_resolve.dart' show TInputResolve, Chinese2Formatter;
+export 'src/components/input/t_input_resolve.dart'
+    show TInputResolve, Chinese2Formatter;
 export 'src/components/input/t_input_theme_data.dart'
-    show TInputThemeData, TInputLayout, TInputSize, TInputCardStyle, TInputSpacer;
+    show
+        TInputThemeData,
+        TInputLayout,
+        TInputSize,
+        TInputCardStyle,
+        TInputSpacer;
 export 'src/components/link/t_link.dart';
 export 'src/components/link/t_link_theme_data.dart' show TLinkThemeData;
 export 'src/components/loading/t_loading.dart';
 export 'src/components/loading/t_loading_controller.dart';
-export 'src/components/loading/t_loading_theme_data.dart' show TLoadingThemeData;
+export 'src/components/loading/t_loading_theme_data.dart'
+    show TLoadingThemeData;
 export 'src/components/message/t_message.dart';
-export 'src/components/message/t_message_theme_data.dart' show TMessageThemeData, TMessageVariant;
+export 'src/components/message/t_message_theme_data.dart'
+    show TMessageThemeData, TMessageVariant;
 export 'src/components/navbar/t_nav_bar.dart';
 export 'src/components/navbar/t_nav_bar_theme_data.dart'
     show TNavBarThemeData, TNavBarBorder;
@@ -91,7 +104,8 @@ export 'src/components/picker/picker_value.dart';
 export 'src/components/picker/t_picker.dart';
 export 'src/components/picker/t_picker_theme_data.dart' show TPickerThemeData;
 export 'src/components/popover/t_popover.dart';
-export 'src/components/popover/t_popover_theme_data.dart' show TPopoverThemeData, TPopoverColorScheme;
+export 'src/components/popover/t_popover_theme_data.dart'
+    show TPopoverThemeData, TPopoverColorScheme;
 export 'src/components/popover/t_popover_widget.dart';
 export 'src/components/popup/t_popup.dart'
     show
@@ -118,10 +132,10 @@ export 'src/components/radio/t_radio_theme_data.dart'
 export 'src/components/rate/t_rate.dart';
 export 'src/components/rate/t_rate_theme_data.dart' show TRateThemeData;
 export 'src/components/refresh/t_refresh_header.dart';
-export 'src/components/refresh/t_refresh_theme_data.dart' show TRefreshThemeData;
+export 'src/components/refresh/t_refresh_theme_data.dart'
+    show TRefreshThemeData;
 export 'src/components/result/t_result.dart';
-export 'src/components/result/t_result_theme_data.dart'
-    show TResultThemeData;
+export 'src/components/result/t_result_theme_data.dart' show TResultThemeData;
 export 'src/components/search/t_search_bar.dart';
 export 'src/components/search/t_search_bar_theme_data.dart'
     show TSearchBarThemeData, TSearchBarVariant, TSearchBarAlignment;
@@ -155,9 +169,8 @@ export 'src/components/switch/t_switch.dart';
 export 'src/components/switch/t_switch_resolve.dart' show TSwitchResolve;
 export 'src/components/switch/t_switch_theme_data.dart'
     show TSwitchThemeData, TSwitchSize, TSwitchVariant;
-export 'src/components/tabbar/t_bottom_tab_bar.dart';
-export 'src/components/tabbar/t_bottom_tab_bar_theme_data.dart'
-    show TBottomTabBarThemeData;
+export 'src/components/tabbar/t_tab_bar.dart';
+export 'src/components/tabbar/t_tab_bar_theme_data.dart' show TTabBarThemeData;
 export 'src/components/table/t_table.dart';
 export 'src/components/table/t_table_col.dart';
 export 'src/components/table/t_table_empty.dart';
@@ -165,7 +178,7 @@ export 'src/components/table/t_table_theme_data.dart' show TTableThemeData;
 export 'src/components/tabs/t_tab.dart';
 export 'src/components/tabs/t_tab_bar.dart';
 export 'src/components/tabs/t_tab_bar_theme_data.dart'
-    show TTabBarThemeData, TTabBarVariant, TTabSize;
+    show TTabsBarThemeData, TTabsBarVariant, TTabSize;
 export 'src/components/tabs/t_tab_bar_view.dart';
 export 'src/components/tag/t_select_tag.dart';
 export 'src/components/tag/t_tag.dart';

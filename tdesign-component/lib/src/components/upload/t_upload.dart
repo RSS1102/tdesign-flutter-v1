@@ -113,28 +113,28 @@ typedef TUploadValidatorEvent = void Function(TUploadValidatorError e);
 ///
 /// 支持图片/视频上传、多选、数量限制、大小限制、替换和删除。
 class TUpload extends StatefulWidget {
-  const TUpload({
-    Key? key,
-    this.max = 0,
-    this.mediaType = const [TUploadMediaType.image, TUploadMediaType.video],
-    this.sizeLimit,
-    this.onCancel,
-    this.onError,
-    this.onValidate,
-    this.onPressed,
-    this.onMaxLimitReached,
-    required this.files,
-    this.onChanged,
-    this.multiple = false,
-    this.width = 80.0,
-    this.height = 80.0,
-    this.type = TUploadVariant.roundedSquare,
-    this.enabledReplaceType = false,
-    this.wrapSpacing,
-    this.wrapRunSpacing,
-    this.wrapAlignment,
-    this.onUploadTap
-  }) : super(key: key);
+  const TUpload(
+      {Key? key,
+      this.max = 0,
+      this.mediaType = const [TUploadMediaType.image, TUploadMediaType.video],
+      this.sizeLimit,
+      this.onCancel,
+      this.onError,
+      this.onValidate,
+      this.onPressed,
+      this.onMaxLimitReached,
+      required this.files,
+      this.onChanged,
+      this.multiple = false,
+      this.width = 80.0,
+      this.height = 80.0,
+      this.type = TUploadVariant.roundedSquare,
+      this.enabledReplaceType = false,
+      this.wrapSpacing,
+      this.wrapRunSpacing,
+      this.wrapAlignment,
+      this.onUploadTap})
+      : super(key: key);
 
   /// 控制展示的文件列表
   final List<TUploadFile> files;
@@ -217,10 +217,18 @@ class _TUploadState extends State<TUpload> {
   @override
   initState() {
     super.initState();
-    fileList = widget.files;
+    fileList = List<TUploadFile>.of(widget.files);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _validateInitialFiles();
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant TUpload oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.files != widget.files) {
+      fileList = List<TUploadFile>.of(widget.files);
+    }
   }
 
   void _validateInitialFiles() {
@@ -417,8 +425,8 @@ class _TUploadState extends State<TUpload> {
                     )
                   : BoxDecoration(
                       color: context.tTheme.bgColorSecondaryContainer,
-                      borderRadius: BorderRadius.circular(
-                          context.tTheme.radiusDefault)),
+                      borderRadius:
+                          BorderRadius.circular(context.tTheme.radiusDefault)),
               child: Center(
                   child: Icon(
                 TIcons.add,

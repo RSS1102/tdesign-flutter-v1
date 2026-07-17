@@ -80,7 +80,6 @@ class TSearchBar extends StatefulWidget {
   /// 自定义操作文字
   final String action;
 
-
   /// 自定义操作回调
   final ValueChanged<String>? onActionClick;
 
@@ -103,61 +102,100 @@ class TSearchBar extends StatefulWidget {
   State<StatefulWidget> createState() => _TSearchBarState();
 }
 
-class _TSearchBarState extends State<TSearchBar>
-    with TickerProviderStateMixin {
-  late FocusNode focusNode = FocusNode();
-  final TextEditingController controller = TextEditingController();
+class _TSearchBarState extends State<TSearchBar> with TickerProviderStateMixin {
+  late FocusNode focusNode;
+  late TextEditingController controller;
   final GlobalKey _textFieldKey = GlobalKey();
+  late final TextEditingController _internalController;
+  late final FocusNode _internalFocusNode;
 
   bool clearBtnHide = true;
   bool cancelBtnHide = true;
 
+  TextEditingController get _effectiveController =>
+      widget.controller ?? _internalController;
+
   @override
   void initState() {
     super.initState();
-    if (widget.controller == null) {
-      controller.addListener(() {
-        var clearVisible = controller.text.isNotEmpty;
-        _updateClearBtnVisible(clearVisible);
-      });
-    } else {
-      widget.controller?.addListener(() {
-        var clearVisible = widget.controller?.text.isNotEmpty;
-        _updateClearBtnVisible(clearVisible!);
-      });
-    }
-    _updateFocusNode();
+    _internalController = TextEditingController();
+    _internalFocusNode = FocusNode();
+    controller = _effectiveController;
+    controller.addListener(_handleControllerChanged);
+    _updateClearBtnVisible(controller.text.isNotEmpty, notify: false);
+
+    focusNode = widget.focusNode ?? _internalFocusNode;
+    focusNode.addListener(_handleFocusChanged);
+    cancelBtnHide = !focusNode.hasFocus;
   }
 
-  void _updateFocusNode() {
-    focusNode = widget.focusNode ?? focusNode;
-    focusNode.addListener(() {
-      setState(() {
-        cancelBtnHide = !focusNode.hasFocus;
-      });
+  void _handleControllerChanged() {
+    _updateClearBtnVisible(controller.text.isNotEmpty);
+  }
+
+  void _handleFocusChanged() {
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      cancelBtnHide = !focusNode.hasFocus;
     });
+  }
+
+  void _bindControllerIfNeeded() {
+    final nextController = _effectiveController;
+    if (controller == nextController) {
+      return;
+    }
+    controller.removeListener(_handleControllerChanged);
+    controller = nextController;
+    controller.addListener(_handleControllerChanged);
+    _updateClearBtnVisible(controller.text.isNotEmpty, notify: false);
+  }
+
+  void _bindFocusNodeIfNeeded() {
+    final nextFocusNode = widget.focusNode ?? _internalFocusNode;
+    if (focusNode == nextFocusNode) {
+      return;
+    }
+    focusNode.removeListener(_handleFocusChanged);
+    focusNode = nextFocusNode;
+    focusNode.addListener(_handleFocusChanged);
+    cancelBtnHide = !focusNode.hasFocus;
   }
 
   @override
   void didUpdateWidget(covariant TSearchBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _updateFocusNode();
+    _bindControllerIfNeeded();
+    _bindFocusNodeIfNeeded();
   }
 
-  void _updateClearBtnVisible(bool visible) {
-    setState(() {
+  @override
+  void dispose() {
+    controller.removeListener(_handleControllerChanged);
+    focusNode.removeListener(_handleFocusChanged);
+    _internalController.dispose();
+    _internalFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _updateClearBtnVisible(bool visible, {bool notify = true}) {
+    void update() {
       clearBtnHide = !visible;
-    });
+    }
+
+    if (!notify || !mounted) {
+      update();
+      return;
+    }
+    setState(update);
   }
 
   void _cleanInputText() {
     if (!(widget.onClearClick?.call(controller.text) ?? false)) {
       // 如果外部没处理,则走默认清除逻辑
-      if (widget.controller == null) {
-        controller.clear();
-      } else {
-        widget.controller?.clear();
-      }
+      controller.clear();
     }
   }
 
@@ -187,9 +225,13 @@ class _TSearchBarState extends State<TSearchBar>
   Widget build(BuildContext context) {
     // P1: 组件级 ThemeExtension
     final theme = Theme.of(context).extension<TSearchBarThemeData>();
-    final effectiveStyle = widget.style ?? theme?.defaultStyle ?? TSearchBarVariant.square;
-    final effectiveAlignment = widget.alignment ?? theme?.defaultAlignment ?? TSearchBarAlignment.left;
-    final effectiveBgColor = widget.backgroundColor ?? theme?.backgroundColor ?? context.tTheme.bgColorContainer;
+    final effectiveStyle =
+        widget.style ?? theme?.defaultStyle ?? TSearchBarVariant.square;
+    final effectiveAlignment =
+        widget.alignment ?? theme?.defaultAlignment ?? TSearchBarAlignment.left;
+    final effectiveBgColor = widget.backgroundColor ??
+        theme?.backgroundColor ??
+        context.tTheme.bgColorContainer;
     final effectiveCursorHeight = widget.cursorHeight ?? theme?.cursorHeight;
 
     return Container(
@@ -226,7 +268,7 @@ class _TSearchBarState extends State<TSearchBar>
                         // 为了适配TextField与Text的差异，后续需要做通用适配
                         child: TextField(
                           key: _textFieldKey,
-                          controller: widget.controller ?? controller,
+                          controller: controller,
                           autofocus: widget.autoFocus,
                           cursorColor: context.tTheme.brandNormalColor,
                           cursorHeight: effectiveCursorHeight,

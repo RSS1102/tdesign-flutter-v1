@@ -20,6 +20,10 @@ class TCellPage extends StatelessWidget {
         ExampleModule(title: '组件样式', children: [
           ExampleItem(desc: '卡片单元格', builder: _buildCard),
         ]),
+        ExampleModule(title: '单元格组', children: [
+          ExampleItem(desc: '默认风格', builder: _buildGroupDefault),
+          ExampleItem(desc: '卡片风格', builder: _buildGroupCard),
+        ]),
       ],
       test: const [
         ExampleItem(desc: '自定义内边距-padding', builder: _buildPadding),
@@ -80,10 +84,7 @@ Widget _buildDesSimple(BuildContext context) {
     cells: [
       TCell(arrow: true, title: '单行标题', subtitle: '一段很长很长的内容文字'),
       TCell(
-          arrow: true,
-          title: '单行标题',
-          subtitle: '一段很长很长的内容文字',
-          required: true),
+          arrow: true, title: '单行标题', subtitle: '一段很长很长的内容文字', required: true),
       TCell(
           arrow: true,
           title: '单行标题',
@@ -94,8 +95,7 @@ Widget _buildDesSimple(BuildContext context) {
           title: '单行标题',
           subtitle: '一段很长很长的内容文字',
           rightIconWidget: TSwitch(value: true)),
-      TCell(
-          arrow: true, title: '单行标题', subtitle: '一段很长很长的内容文字', note: '辅助信息'),
+      TCell(arrow: true, title: '单行标题', subtitle: '一段很长很长的内容文字', note: '辅助信息'),
       TCell(
           arrow: true,
           title: '单行标题',
@@ -135,6 +135,32 @@ Widget _buildCard(BuildContext context) {
       TCell(arrow: true, title: '单行标题'),
       TCell(arrow: true, title: '单行标题', required: true),
       TCell(arrow: true, title: '单行标题'),
+    ],
+  );
+}
+
+@Demo(group: 'cell')
+Widget _buildGroupDefault(BuildContext context) {
+  return const TCellGroup(
+    title: '标题',
+    bordered: true,
+    cells: [
+      TCell(title: '单元格', subtitle: '描述信息'),
+      TCell(title: '单元格', subtitle: '描述信息'),
+      TCell(title: '单元格', arrow: true),
+    ],
+  );
+}
+
+@Demo(group: 'cell')
+Widget _buildGroupCard(BuildContext context) {
+  return const TCellGroup(
+    title: '卡片风格',
+    groupVariant: TCellGroupVariant.cardTheme,
+    bordered: true,
+    cells: [
+      TCell(title: '单元格', subtitle: '描述信息'),
+      TCell(title: '单元格', arrow: true),
     ],
   );
 }

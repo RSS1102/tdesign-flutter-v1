@@ -168,37 +168,45 @@ class TSkeletonPage extends StatelessWidget {
 
   @Demo(group: 'skeleton')
   Widget _buildCombineSkeleton(BuildContext context) {
-    final rowCols = Flexible(
+    Widget buildRowCols() {
+      return Flexible(
         child: LayoutBuilder(
-            builder: (context, constraints) => Row(children: [
-                  TSkeleton.fromRowCol(
-                    rowCol: TSkeletonRowCol(
-                      objects: [
-                        [
-                          TSkeletonRowColObj(
-                              width: constraints.maxWidth,
-                              height: constraints.maxWidth,
-                              flex: null,
-                              style: TSkeletonRowColObjStyle(
-                                  borderRadius: (context) =>
-                                      context.tTheme.radiusExtraLarge))
-                        ],
-                        [TSkeletonRowColObj.text(width: constraints.maxWidth)],
-                        const [
-                          TSkeletonRowColObj.text(),
-                          TSkeletonRowColObj.spacer(flex: 1),
-                        ],
-                      ],
-                    ),
-                  )
-                ])));
+          builder: (context, constraints) => Row(
+            children: [
+              TSkeleton.fromRowCol(
+                rowCol: TSkeletonRowCol(
+                  objects: [
+                    [
+                      TSkeletonRowColObj(
+                        width: constraints.maxWidth,
+                        height: constraints.maxWidth,
+                        flex: null,
+                        style: TSkeletonRowColObjStyle(
+                          borderRadius: (context) =>
+                              context.tTheme.radiusExtraLarge,
+                        ),
+                      ),
+                    ],
+                    [TSkeletonRowColObj.text(width: constraints.maxWidth)],
+                    const [
+                      TSkeletonRowColObj.text(),
+                      TSkeletonRowColObj.spacer(flex: 1),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Row(
       // spacing: context.tTheme.spacer16,
       children: [
-        rowCols,
+        buildRowCols(),
         SizedBox(width: context.tTheme.spacer16),
-        rowCols,
+        buildRowCols(),
       ],
     );
   }

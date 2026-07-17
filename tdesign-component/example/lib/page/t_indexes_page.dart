@@ -234,11 +234,18 @@ Widget _buildCustomIndexes(BuildContext context) {
             child: TIndexes(
               indexList: indexList,
               builderIndex: (context, index, isActive) {
-                return TText(
-                  '自定义 $index',
-                  textColor: isActive
-                      ? context.tTheme.brandNormalColor
-                      : context.tTheme.textColorPrimary,
+                return SizedBox(
+                  width: 64,
+                  height: 20,
+                  child: Center(
+                    child: TText(
+                      '自定义 $index',
+                      forceVerticalCenter: true,
+                      textColor: isActive
+                          ? context.tTheme.brandNormalColor
+                          : context.tTheme.textColorPrimary,
+                    ),
+                  ),
                 );
               },
               builderContent: (context, index) {

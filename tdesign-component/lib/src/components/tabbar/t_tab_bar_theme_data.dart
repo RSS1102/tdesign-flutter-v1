@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 /// 底部标签栏 ThemeExtension
 ///
-/// 管理 TBottomTabBar 的子树级默认样式（高度、颜色、分割线、指示器动画等）。
+/// 管理 TTabBar 的子树级默认样式（高度、颜色、分割线、指示器动画等）。
 /// 构造器参数优先级高于 ThemeData。
-class TBottomTabBarThemeData extends ThemeExtension<TBottomTabBarThemeData> {
+class TTabBarThemeData extends ThemeExtension<TTabBarThemeData> {
   /// 默认高度
   final double? barHeight;
 
@@ -49,7 +49,7 @@ class TBottomTabBarThemeData extends ThemeExtension<TBottomTabBarThemeData> {
   /// 默认动画曲线
   final Curve? animationCurve;
 
-  const TBottomTabBarThemeData({
+  const TTabBarThemeData({
     this.barHeight,
     this.selectedBgColor,
     this.unselectedBgColor,
@@ -67,7 +67,7 @@ class TBottomTabBarThemeData extends ThemeExtension<TBottomTabBarThemeData> {
   });
 
   @override
-  TBottomTabBarThemeData copyWith({
+  TTabBarThemeData copyWith({
     double? barHeight,
     Color? selectedBgColor,
     Color? unselectedBgColor,
@@ -83,7 +83,7 @@ class TBottomTabBarThemeData extends ThemeExtension<TBottomTabBarThemeData> {
     Duration? animationDuration,
     Curve? animationCurve,
   }) {
-    return TBottomTabBarThemeData(
+    return TTabBarThemeData(
       barHeight: barHeight ?? this.barHeight,
       selectedBgColor: selectedBgColor ?? this.selectedBgColor,
       unselectedBgColor: unselectedBgColor ?? this.unselectedBgColor,
@@ -102,12 +102,11 @@ class TBottomTabBarThemeData extends ThemeExtension<TBottomTabBarThemeData> {
   }
 
   @override
-  TBottomTabBarThemeData lerp(
-      ThemeExtension<TBottomTabBarThemeData>? other, double t) {
-    if (other is! TBottomTabBarThemeData) {
+  TTabBarThemeData lerp(ThemeExtension<TTabBarThemeData>? other, double t) {
+    if (other is! TTabBarThemeData) {
       return this;
     }
-    return TBottomTabBarThemeData(
+    return TTabBarThemeData(
       barHeight: lerpDouble(barHeight, other.barHeight, t),
       selectedBgColor: Color.lerp(selectedBgColor, other.selectedBgColor, t),
       unselectedBgColor:

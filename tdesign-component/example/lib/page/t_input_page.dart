@@ -17,7 +17,7 @@ class TInputViewPage extends StatefulWidget {
 
 class _TInputViewPageState extends State<TInputViewPage> {
   String inputText = '请输入...';
-  var controller = [];
+  var controller = <TextEditingController>[];
   var browseOn = false;
   var confirmText = '发送验证码';
   var countDownText = '重发';
@@ -26,7 +26,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
 
   @override
   void initState() {
-    for (var i = 0; i < 30; i++) {
+    for (var i = 0; i < 35; i++) {
       controller.add(TextEditingController());
     }
     super.initState();
@@ -34,10 +34,11 @@ class _TInputViewPageState extends State<TInputViewPage> {
 
   @override
   void dispose() {
-    super.dispose();
-    if (_timer != null) {
-      _timer!.cancel();
+    _timer?.cancel();
+    for (final item in controller) {
+      item.dispose();
     }
+    super.dispose();
   }
 
   void startCountdownTimer() {
@@ -695,7 +696,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
   Widget _cardStyle(BuildContext context) {
     return TInput(
       layout: TInputLayout.cardStyle,
-      width: MediaQuery.of(context).size.width - 32,
+      width: MediaQuery.sizeOf(context).width - 32,
       label: '标签文字',
       controller: controller[21],
       hintText: '请输入文字',
@@ -714,10 +715,10 @@ class _TInputViewPageState extends State<TInputViewPage> {
     return Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.only(top: 16, bottom: 24),
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.sizeOf(context).width,
       child: TInput(
         layout: TInputLayout.cardStyle,
-        width: MediaQuery.of(context).size.width - 32,
+        width: MediaQuery.sizeOf(context).width - 32,
         cardStyleTopText: '标签文字',
         controller: controller[22],
         hintText: '请输入文字',
@@ -827,16 +828,15 @@ class _TInputViewPageState extends State<TInputViewPage> {
 
   @Demo(group: 'input')
   Widget _customLongTextStyle(BuildContext context) {
-    var controller = TextEditingController();
     return Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.only(top: 16, bottom: 24),
-      width: MediaQuery.of(context).size.width,
+      width: MediaQuery.sizeOf(context).width,
       child: TInput(
           layout: TInputLayout.longText,
-          width: MediaQuery.of(context).size.width - 32,
+          width: MediaQuery.sizeOf(context).width - 32,
           cardStyleTopText: '标签文字',
-          controller: controller,
+          controller: controller[30],
           hintText: '请输入文字',
           rightBtn: Icon(
             TIcons.error_circle_filled,
@@ -850,10 +850,9 @@ class _TInputViewPageState extends State<TInputViewPage> {
 
   @Demo(group: 'input')
   Widget _hideBottomDivider(BuildContext context) {
-    var controller = TextEditingController();
     return TInput(
       label: '标签文字',
-      controller: controller,
+      controller: controller[31],
       hintText: '请输入文字',
       showBottomDivider: false,
     );
@@ -861,14 +860,13 @@ class _TInputViewPageState extends State<TInputViewPage> {
 
   @Demo(group: 'input')
   Widget _customHeight(BuildContext context) {
-    var controller = TextEditingController();
     return Container(
       alignment: Alignment.center,
       child: SizedBox(
         child: TInput(
             size: TInputSize.small,
             label: '标签文字',
-            controller: controller,
+            controller: controller[32],
             hintText: '请输入文字'),
       ),
     );
@@ -876,14 +874,13 @@ class _TInputViewPageState extends State<TInputViewPage> {
 
   @Demo(group: 'input')
   Widget _onTapOutside(BuildContext context) {
-    var controller = TextEditingController();
     return Container(
       alignment: Alignment.center,
       child: SizedBox(
         child: TInput(
           size: TInputSize.small,
           label: '标签文字',
-          controller: controller,
+          controller: controller[33],
           hintText: '请输入文字',
           onTapOutside: (event) {
             TToast.showText('点击输入框外部区域', context: context);
@@ -896,14 +893,13 @@ class _TInputViewPageState extends State<TInputViewPage> {
 
   @Demo(group: 'input')
   Widget _contentPadding(BuildContext context) {
-    var controller = TextEditingController();
     return Container(
       alignment: Alignment.center,
       child: Column(
         children: [
           TInput(
             size: TInputSize.small,
-            controller: controller,
+            controller: controller[34],
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             hintText: '请输入文字',
@@ -911,7 +907,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           TInput(
             layout: TInputLayout.twoLine,
             size: TInputSize.small,
-            controller: controller,
+            controller: controller[34],
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
             hintText: '请输入文字',
@@ -919,7 +915,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           TInput(
             layout: TInputLayout.normalMaxTwoLine,
             size: TInputSize.small,
-            controller: controller,
+            controller: controller[34],
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 10, horizontal: 70),
             hintText: '请输入文字',

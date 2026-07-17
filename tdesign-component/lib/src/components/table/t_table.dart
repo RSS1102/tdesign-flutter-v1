@@ -108,6 +108,7 @@ class TTableState extends State<TTable> {
   bool _checkAll = false;
   late TTableCol _selectableCol;
   late List<bool> _checkedList;
+  late List<dynamic> _displayData;
   final _scrollController = ScrollController();
   final _headerHScrollController = ScrollController();
   final _dataHScrollController = ScrollController();
@@ -183,12 +184,12 @@ class TTableState extends State<TTable> {
         alignment: Alignment.center,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 32),
-          child: widget.loadingWidget ??
-              const TLoading(size: TLoadingSize.large),
+          child:
+              widget.loadingWidget ?? const TLoading(size: TLoadingSize.large),
         ),
       );
     }
-    if (widget.data == null || widget.data!.isEmpty) {
+    if (_displayData.isEmpty) {
       return _buildEmpty();
     }
     var cells = <Widget>[];
@@ -196,8 +197,8 @@ class TTableState extends State<TTable> {
     var fixedNonCol = _getCol(TTableColFixed.none);
     var fixedRightCol = _getCol(TTableColFixed.right);
     var headerCol = [...fixedLeftCol, ...fixedNonCol, ...fixedRightCol];
-    for (var i = 0; i < widget.data!.length; i++) {
-      var data = widget.data![i];
+    for (var i = 0; i < _displayData.length; i++) {
+      var data = _displayData[i];
       var row = <Widget>[];
       for (var j = 0; j < headerCol.length; j++) {
         var cell = _getCell(
@@ -221,7 +222,7 @@ class TTableState extends State<TTable> {
         child: Row(children: row),
       ));
     }
-    if (widget.footerWidget != null){
+    if (widget.footerWidget != null) {
       cells.add(widget.footerWidget!);
     }
     return Column(
@@ -230,8 +231,8 @@ class TTableState extends State<TTable> {
   }
 
   /// 获取单元格
-  Widget _getCell(TTableCol col, bool isHeader, dynamic data, int index,
-      bool fixedBorder) {
+  Widget _getCell(
+      TTableCol col, bool isHeader, dynamic data, int index, bool fixedBorder) {
     var title = isHeader ? (col.title ?? '') : (data[col.colKey] ?? '');
     var ellipsis = (isHeader ? col.ellipsisTitle : col.ellipsis) ?? false;
     var sortable = col.sortable ?? false;
@@ -262,7 +263,7 @@ class TTableState extends State<TTable> {
       var checkBox;
       // 行选择框
       if (_notEmptyData() && !isHeader) {
-        var enable = col.selectable?.call(index, widget.data?[index]) ?? true;
+        var enable = col.selectable?.call(index, _displayData[index]) ?? true;
         checkBox = TCheckbox(
           id: 'index:$index',
           value: _checkedList[index],
@@ -290,7 +291,7 @@ class TTableState extends State<TTable> {
               var selectList = [];
               for (var i = 0; i < _checkedList.length; i++) {
                 if (_checkedList[i]) {
-                  selectList.add(widget.data![i]);
+                  selectList.add(_displayData[i]);
                 }
               }
               widget.onSelect?.call(selectList);
@@ -325,13 +326,13 @@ class TTableState extends State<TTable> {
               }
               _checkAll = checked;
               _hasChecked = checked ? _totalSelectable : 0;
-              for (var i = 0; i < widget.data!.length; i++) {
+              for (var i = 0; i < _displayData.length; i++) {
                 // 不选中selectable == false的行
-                if (_selectableCol.selectable!(i, widget.data![i])) {
+                if (_selectableCol.selectable!(i, _displayData[i])) {
                   _checkedList[i] = checked;
                 }
               }
-              widget.onSelect?.call(checked ? widget.data : []);
+              widget.onSelect?.call(checked ? _displayData : []);
             });
           },
         );
@@ -376,8 +377,8 @@ class TTableState extends State<TTable> {
   }
 
   /// 获取单元格内容
-  Widget _getCellText(TTableCol col, String title, bool ellipsis,
-      bool isHeader, bool sortable, int index) {
+  Widget _getCellText(TTableCol col, String title, bool ellipsis, bool isHeader,
+      bool sortable, int index) {
     var overflow = ellipsis ? TextOverflow.ellipsis : TextOverflow.visible;
     var titleWidget = TText(title,
         maxLines: 1,
@@ -417,7 +418,7 @@ class TTableState extends State<TTable> {
                       }
                     }
                     _sortKey = col.colKey;
-                    widget.data?.sort((a, b) {
+                    _displayData.sort((a, b) {
                       if (_sortable == false) {
                         return b[col.colKey].compareTo(a[col.colKey]);
                       }
@@ -460,7 +461,7 @@ class TTableState extends State<TTable> {
   }
 
   bool _notEmptyData() {
-    return widget.data != null && widget.data!.isNotEmpty;
+    return _displayData.isNotEmpty;
   }
 
   @override
@@ -468,6 +469,7 @@ class TTableState extends State<TTable> {
     super.initState();
     _sortKey = widget.defaultSort;
     _sortable = widget.defaultSort != null;
+    _displayData = List<dynamic>.of(widget.data ?? const []);
     _scrollController.addListener(() {
       widget.onScroll?.call(_scrollController);
     });
@@ -491,6 +493,9 @@ class TTableState extends State<TTable> {
   @override
   void didUpdateWidget(covariant TTable oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.data != widget.data) {
+      _displayData = List<dynamic>.of(widget.data ?? const []);
+    }
     _initCols();
   }
 
@@ -505,14 +510,14 @@ class TTableState extends State<TTable> {
   void _initCols() {
     _totalSelectable = 0;
     _hasChecked = 0;
-    _checkedList = List.generate((widget.data?.length ?? 0), (index) => false);
+    _checkedList = List.generate(_displayData.length, (index) => false);
     var cols = widget.columns.where((col) => col.selection ?? false);
     if (cols.length > 1) {
       throw FlutterError('selectable column must be only one');
     }
-    if (widget.data != null && cols.isNotEmpty) {
+    if (_displayData.isNotEmpty && cols.isNotEmpty) {
       _selectableCol = cols.first;
-      var data = widget.data!;
+      var data = _displayData;
       for (var i = 0; i < data.length; i++) {
         var check = _selectableCol.checked?.call(i, data[i]) ?? false;
         _checkedList[i] = check;
@@ -527,8 +532,7 @@ class TTableState extends State<TTable> {
   }
 
   /// 生成固定列的表头单元格
-  List<Widget> _getFixedHeaderCells(
-      List<TTableCol> cols, double cellWidth) {
+  List<Widget> _getFixedHeaderCells(List<TTableCol> cols, double cellWidth) {
     var headers = <Widget>[];
     for (var i = 0; i < cols.length; i++) {
       var col = cols[i];
@@ -539,19 +543,17 @@ class TTableState extends State<TTable> {
   }
 
   /// 生成固定列的数据单元格（按列组织，每列一个Column，无height时使用）
-  List<Widget> _getFixedDataCols(
-      List<TTableCol> cols, double cellWidth) {
+  List<Widget> _getFixedDataCols(List<TTableCol> cols, double cellWidth) {
     var colWidgets = <Widget>[];
     for (var i = 0; i < cols.length; i++) {
       var col = cols[i];
       var cells = <Widget>[];
-      for (var j = 0; j < (widget.data?.length ?? 0); j++) {
-        var cell = _getCell(
-            col, false, widget.data?[j], j, i == cols.length - 1);
+      for (var j = 0; j < _displayData.length; j++) {
+        var cell =
+            _getCell(col, false, _displayData[j], j, i == cols.length - 1);
         cells.add(SizedBox(width: col.width ?? cellWidth, child: cell));
       }
-      colWidgets
-          .add(Column(mainAxisSize: MainAxisSize.min, children: cells));
+      colWidgets.add(Column(mainAxisSize: MainAxisSize.min, children: cells));
     }
     return colWidgets;
   }
@@ -583,8 +585,7 @@ class TTableState extends State<TTable> {
     }
 
     // 是否需要横向滚动
-    var needHorizontalScroll =
-        (width - fixedCellsWidth) < fixedNonCellsWidth;
+    var needHorizontalScroll = (width - fixedCellsWidth) < fixedNonCellsWidth;
 
     // 生成表头
     var headerLeftCells = _getFixedHeaderCells(fixedLeftCol, cellWidth);
@@ -626,8 +627,8 @@ class TTableState extends State<TTable> {
         alignment: Alignment.center,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 32),
-          child: widget.loadingWidget ??
-              const TLoading(size: TLoadingSize.large),
+          child:
+              widget.loadingWidget ?? const TLoading(size: TLoadingSize.large),
         ),
       );
     } else if (widget.data == null || widget.data!.isEmpty) {

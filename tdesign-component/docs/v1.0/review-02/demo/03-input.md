@@ -31,6 +31,31 @@ Review 建议：
 - 输入示例里只保留必要的 `setState` 范围，避免每次输入都重建整页。
 - 验证码示例右侧图片应显式约束宽高，右侧按钮区也应收窄成稳定尺寸。
 
+### 1.1 `TTextarea` demo 也需要纳入唤起输入法卡顿排查
+
+定位：
+
+- `tdesign-component/example/lib/config.dart:203`
+- `tdesign-component/example/lib/page/t_textarea_page.dart`
+- `tdesign-component/lib/src/components/textarea/t_textarea.dart`
+
+证据：
+
+- `Textarea 多行输入 (V1.0)` 是输入类独立 demo 入口，和 `Input 输入框 (V1.0)` 同属输入框系列。
+- `TTextarea` 与 `TInput` 共用输入类主题与输入视图能力，用户实测反馈的“input，textarea 系列的唤起输入框卡顿”不应只记录到 `TInput`。
+- `review-02` 原文只明确记录了 `TInput` 页面，遗漏了 `textarea` 系列需要同口径复测。
+
+诊断：
+
+- 这是 review 记录覆盖不完整问题。
+- `TTextarea` 需要和 `TInput` 一起按真机输入法唤起、连续输入、焦点切换、清除/计数刷新做体验复核。
+
+Review 建议：
+
+- 需要补入 demo review，并和 `TInput` 卡顿问题一起处理。
+- 排查 `TTextareaPage` 是否存在过度 `setState`、controller / focusNode 生命周期、输入视图重建范围过大的问题。
+- 修复后分别记录 `TInput` 与 `TTextarea` 的 Android 真机复测结果。
+
 ### 2. `TStepper` demo 的禁用态展示与组件语义不一致，且 `disabled` 不能完全封住输入
 
 定位：

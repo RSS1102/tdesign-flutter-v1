@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/scheduler/binding.dart';
 
@@ -139,6 +141,9 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
   double totalWidth = 343;
   AnimationController? animationController;
   bool _isAnimationRunning = false;
+  Timer? _durationTimer;
+  Timer? _closeTimer;
+  Timer? _marqueeDelayTimer;
 
   @override
   void initState() {
@@ -146,6 +151,7 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
     _topOffset = (widget.offset?[1] ?? initTopOffset) - 30;
     animationController = AnimationController(
       vsync: this,
+      duration: Duration(milliseconds: widget.marquee?.speed ?? 10000),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -156,24 +162,55 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
       }
     });
 
-    if (widget.duration != null && widget.duration! > 0) {
-      Future.delayed(Duration(milliseconds: widget.duration!), _closeMessage);
-    }
+    _scheduleDurationClose();
+    _scheduleMarqueeStart();
+  }
 
-    if (widget.marquee != null) {
-      animationController = AnimationController(
-        vsync: this,
-        duration: Duration(milliseconds: widget.marquee!.speed ?? 10000),
-      );
+  @override
+  void didUpdateWidget(covariant TMessage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.marquee?.speed != widget.marquee?.speed) {
+      animationController?.duration =
+          Duration(milliseconds: widget.marquee?.speed ?? 10000);
+    }
+    if (oldWidget.duration != widget.duration) {
+      _scheduleDurationClose();
+    }
+    if (oldWidget.marquee != widget.marquee) {
+      _scheduleMarqueeStart();
     }
   }
 
   @override
   void dispose() {
+    _durationTimer?.cancel();
+    _closeTimer?.cancel();
+    _marqueeDelayTimer?.cancel();
     animationController?.stop();
     animationController?.dispose();
     animationController = null;
     super.dispose();
+  }
+
+  void _scheduleDurationClose() {
+    _durationTimer?.cancel();
+    if (widget.duration != null && widget.duration! > 0) {
+      _durationTimer =
+          Timer(Duration(milliseconds: widget.duration!), _closeMessage);
+    }
+  }
+
+  void _scheduleMarqueeStart() {
+    _marqueeDelayTimer?.cancel();
+    if (widget.marquee == null) {
+      return;
+    }
+    final delay = widget.marquee!.delay ?? 0;
+    if (delay > 0) {
+      _marqueeDelayTimer = Timer(Duration(milliseconds: delay), startAnimation);
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) => startAnimation());
+    }
   }
 
   void _closeMessage() {
@@ -183,7 +220,8 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
         _topOffset = (widget.offset?[1] ?? initTopOffset) - 30;
         _isAnimationRunning = false;
       });
-      Future.delayed(const Duration(milliseconds: 300), () {
+      _closeTimer?.cancel();
+      _closeTimer = Timer(const Duration(milliseconds: 300), () {
         if (mounted) {
           setState(() {
             _isVisible = false;
@@ -238,21 +276,10 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
 
         final containerWidth = calculateTextWidth();
 
-        final animationDuration =
-            Duration(milliseconds: (widget.marquee!.speed ?? 10000));
-        animationController!.duration = animationDuration;
-
         final tween = Tween<Offset>(
           begin: Offset.zero,
           end: Offset(-textWidth, 0),
         );
-
-        if (widget.marquee!.delay != null && widget.marquee!.delay! > 0) {
-          Future.delayed( // coverage:ignore-line
-              Duration(milliseconds: widget.marquee!.delay!), startAnimation); // coverage:ignore-line
-        } else {
-          startAnimation();
-        }
 
         return Align(
             alignment: Alignment.center,
@@ -356,13 +383,13 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
       if (widget.link is TMessageLink) {
         final linkColor = widget.link.color;
         final linkWidget = TLink(
-              child: Text(widget.link.name),
-              colorScheme: TLinkColorScheme.primary,
-              variant: TLinkVariant.basic,
-              uri: widget.link.uri,
-              size: TLinkSize.medium,
-              onPressed: clickLink,
-            );
+          child: Text(widget.link.name),
+          colorScheme: TLinkColorScheme.primary,
+          variant: TLinkVariant.basic,
+          uri: widget.link.uri,
+          size: TLinkSize.medium,
+          onPressed: clickLink,
+        );
         // 自定义链接颜色通过 TLinkThemeData 注入
         if (linkColor != null) {
           return Align(
@@ -410,8 +437,8 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
                 padding: const EdgeInsets.fromLTRB(16, 13, 16, 13),
                 decoration: BoxDecoration(
                     color: context.tTheme.bgColorContainer,
-                    borderRadius: BorderRadius.circular(
-                        context.tTheme.radiusDefault),
+                    borderRadius:
+                        BorderRadius.circular(context.tTheme.radiusDefault),
                     boxShadow: context.tTheme.shadowsMiddle),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

@@ -24,7 +24,7 @@ flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/
 # back_top
 flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/backtop/t_backtop.dart" --name TBackTop --folder-name back-top --output "$PARENT_DIR/example/assets/api/" --only-api
 # drawer
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/drawer" --name TDrawer,TDrawerWidget,TDrawerItem --folder-name drawer --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/drawer" --name TDrawer,TDrawerItem --folder-name drawer --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # indexes
 flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/indexes" --name TIndexes,TIndexesAnchor,TIndexesList --folder-name indexes --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # navbar
@@ -34,9 +34,9 @@ flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/sr
 # steps
 flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/steps" --name TSteps,TStepsItemData --folder-name steps --output "$PARENT_DIR/example/assets/api/" --only-api
 # tabbar
-flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/tabbar/t_bottom_tab_bar.dart" --name TBottomTabBar,BadgeConfig,TBottomTabBarTabConfig,TBottomTabBarPopUpBtnConfig,TBottomTabBarPopUpShapeConfig,PopUpMenuItem --folder-name tab-bar --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/tabbar/t_tab_bar.dart" --name TTabBar,TTabBarBadgeConfig,TTabBarItemConfig,TTabBarPopUpBtnConfig,TTabBarPopUpShapeConfig,TTabBarMenuItem --folder-name tab-bar --output "$PARENT_DIR/example/assets/api/" --only-api
 # tabs
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/tabs" --name TTabBar,TTab,TTabBarView --folder-name tabs --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/tabs" --name TTabsBar,TTab,TTabsBarView --folder-name tabs --output "$PARENT_DIR/example/assets/api/" --only-api
 
 
 # 输入

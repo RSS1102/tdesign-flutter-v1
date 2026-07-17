@@ -129,7 +129,7 @@ Widget _buildTitleSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          title: '标题',
+          title: const Text('标题'),
           placement: TDrawerPlacement.left,
           items: List.generate(drawerItemLength,
               (index) => TDrawerItem(title: '菜单${index + 1}')),
@@ -151,7 +151,7 @@ Widget _buildBottomSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          title: '标题',
+          title: const Text('标题'),
           placement: TDrawerPlacement.left,
           items: List.generate(drawerItemLength,
               (index) => TDrawerItem(title: '菜单${index + 1}')),
@@ -175,24 +175,32 @@ Widget _buildColorSimple(BuildContext context) {
   var tCellStyle = TCellThemeData.cellStyle(context);
   tCellStyle.backgroundColor = context.tTheme.brandNormalColor;
 
-  return SizedBox(
-    width: double.infinity,
-    child: TButton(
-      child: const Text('自定义背景色'),
-      variant: TButtonVariant.outline,
-      colorScheme: TButtonColorScheme.primary,
-      size: TButtonSize.large,
-      onPressed: () {
-        TDrawer(
-          context,
-          title: '标题',
-          backgroundColor: context.tTheme.bgColorSecondaryContainer,
-          style: tCellStyle,
-          placement: TDrawerPlacement.right,
-          items: List.generate(drawerItemLength,
-              (index) => TDrawerItem(title: '菜单${index + 1}')),
-        ).show();
-      },
+  return Theme(
+    data: Theme.of(context).mergeExtension(
+      TDrawerThemeData(
+        backgroundColor: context.tTheme.bgColorSecondaryContainer,
+        style: tCellStyle,
+      ),
+    ),
+    child: Builder(
+      builder: (drawerContext) => SizedBox(
+        width: double.infinity,
+        child: TButton(
+          child: const Text('自定义背景色'),
+          variant: TButtonVariant.outline,
+          colorScheme: TButtonColorScheme.primary,
+          size: TButtonSize.large,
+          onPressed: () {
+            TDrawer(
+              drawerContext,
+              title: const Text('标题'),
+              placement: TDrawerPlacement.right,
+              items: List.generate(drawerItemLength,
+                  (index) => TDrawerItem(title: '菜单${index + 1}')),
+            ).show();
+          },
+        ),
+      ),
     ),
   );
 }
@@ -209,7 +217,7 @@ Widget _buildChildSimple(BuildContext context) {
       onPressed: () {
         TDrawer(
           context,
-          title: '标题',
+          title: const Text('标题'),
           child: Container(
             padding: const EdgeInsets.all(16),
             child: const Text('这是通过 child 传入的自定义内容'),

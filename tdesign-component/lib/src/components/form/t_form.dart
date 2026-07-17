@@ -111,18 +111,42 @@ class _TFormState extends State<TForm> {
   void initState() {
     super.initState();
     _formData = widget.data;
-    if (widget.controller != null) {
-      widget.controller?.addListener(() {
-        if (widget.controller?.eventType == 'submit') {
-          onSubmit();
-        } else if (widget.controller?.eventType == 'reset') {
-          onReset();
-        }
-      });
+    widget.controller?.addListener(_handleControllerEvent);
+  }
+
+  @override
+  void didUpdateWidget(covariant TForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?.removeListener(_handleControllerEvent);
+      widget.controller?.addListener(_handleControllerEvent);
+    }
+    if (oldWidget.data != widget.data) {
+      _formData = widget.data;
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.removeListener(_handleControllerEvent);
+    super.dispose();
+  }
+
+  void _handleControllerEvent() {
+    if (!mounted) {
+      return;
+    }
+    if (widget.controller?.eventType == 'submit') {
+      onSubmit();
+    } else if (widget.controller?.eventType == 'reset') {
+      onReset();
     }
   }
 
   onReset() {
+    if (widget.controller == null) {
+      return;
+    }
     _updateCount += 1;
     setState(() {
       _formData = widget.controller!.formData;

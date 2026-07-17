@@ -19,7 +19,6 @@ class TDrawerWidget extends StatelessWidget {
     this.items,
     this.child,
     this.title,
-    this.titleWidget,
     this.onItemClick,
     this.width = 280,
     this.style,
@@ -38,11 +37,8 @@ class TDrawerWidget extends StatelessWidget {
   /// 自定义内容，优先级高于[items]/[footer]/[title]
   final Widget? child;
 
-  /// 抽屉的标题
-  final String? title;
-
   /// 抽屉的标题组件
-  final Widget? titleWidget;
+  final Widget? title;
 
   /// 点击抽屉里的列表项触发
   final TDrawerItemClickCallback? onItemClick;
@@ -99,8 +95,7 @@ class TDrawerWidget extends StatelessWidget {
         children: [
           Expanded(
             child: TCellGroup(
-              title: title,
-              titleWidget: titleWidget,
+              titleWidget: title,
               style: cellStyle,
               scrollable: true,
               isShowLastBordered: isShowLastBordered,

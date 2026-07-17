@@ -8,8 +8,8 @@ import 't_horizontal_tab_bar.dart';
 /// 标签栏
 ///
 /// 支持滚动、指示器自定义、胶囊/填充/卡片样式等。
-class TTabBar extends StatefulWidget {
-  const TTabBar({
+class TTabsBar extends StatefulWidget {
+  const TTabsBar({
     Key? key,
     required this.tabs,
     this.controller,
@@ -30,7 +30,7 @@ class TTabBar extends StatefulWidget {
     this.indicator,
     this.physics,
     this.onTap,
-    this.variant = TTabBarVariant.filled,
+    this.variant = TTabsBarVariant.filled,
     this.showIndicator = false,
     this.dividerColor,
     this.dividerHeight = 0.5,
@@ -105,7 +105,7 @@ class TTabBar extends StatefulWidget {
   final EdgeInsetsGeometry? labelPadding;
 
   /// 选项卡样式（可覆盖 Theme）
-  final TTabBarVariant variant;
+  final TTabsBarVariant variant;
 
   /// 分割线颜色（可覆盖 Theme）
   final Color? dividerColor;
@@ -123,16 +123,16 @@ class TTabBar extends StatefulWidget {
   final TabAlignment? tabAlignment;
 
   @override
-  State<StatefulWidget> createState() => _TTabBarState();
+  State<StatefulWidget> createState() => _TTabsBarState();
 }
 
-class _TTabBarState extends State<TTabBar> {
+class _TTabsBarState extends State<TTabsBar> {
   /// 默认高度
   static const double _defaultHeight = 48;
 
-  TTabBarThemeData get _themeData =>
-      Theme.of(context).extension<TTabBarThemeData>() ??
-      const TTabBarThemeData();
+  TTabsBarThemeData get _themeData =>
+      Theme.of(context).extension<TTabsBarThemeData>() ??
+      const TTabsBarThemeData();
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,7 @@ class _TTabBarState extends State<TTabBar> {
       height: widget.height ?? _themeData.height ?? _defaultHeight,
       decoration: widget.decoration ??
           _themeData.decoration ??
-          (widget.variant == TTabBarVariant.card
+          (widget.variant == TTabsBarVariant.card
               ? BoxDecoration(
                   color: widget.backgroundColor ??
                       _themeData.backgroundColor ??
@@ -206,21 +206,18 @@ class _TTabBarState extends State<TTabBar> {
 
   Decoration _getIndicator() {
     return widget.showIndicator
-        ? TTabBarIndicator(
-            context: context,
+        ? TTabsBarIndicator(
             indicatorHeight: widget.indicatorHeight,
             indicatorWidth: widget.indicatorWidth,
-            indicatorColor: widget.indicatorColor,
+            indicatorColor:
+                widget.indicatorColor ?? context.tTheme.brandNormalColor,
           )
         : TNoneIndicator();
   }
 }
 
 /// TDesign自定义下标
-class TTabBarIndicator extends Decoration {
-  /// 上下文（用于读取主题色）
-  final BuildContext? context;
-
+class TTabsBarIndicator extends Decoration {
   /// 指示器宽度
   final double? indicatorWidth;
 
@@ -228,30 +225,28 @@ class TTabBarIndicator extends Decoration {
   final double? indicatorHeight;
 
   /// 指示器颜色
-  final Color? indicatorColor;
+  final Color indicatorColor;
 
-  const TTabBarIndicator({
-    this.context,
+  const TTabsBarIndicator({
+    required this.indicatorColor,
     this.indicatorWidth,
     this.indicatorHeight,
-    this.indicatorColor,
   });
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) =>
-      _TTabBarIndicatorPainter(this, onChanged);
+      _TTabsBarIndicatorPainter(this, onChanged);
 }
 
-class _TTabBarIndicatorPainter extends BoxPainter {
+class _TTabsBarIndicatorPainter extends BoxPainter {
   static const double _defaultIndicatorWidth = 16;
   static const double _defaultIndicatorHeight = 3;
 
-  final TTabBarIndicator decoration;
+  final TTabsBarIndicator decoration;
   final _paint = Paint();
 
-  _TTabBarIndicatorPainter(this.decoration, VoidCallback? onChanged) {
-    _paint.color = decoration.indicatorColor ??
-        decoration.context!.tTheme.brandNormalColor;
+  _TTabsBarIndicatorPainter(this.decoration, VoidCallback? onChanged) {
+    _paint.color = decoration.indicatorColor;
     _paint.strokeCap = StrokeCap.round;
   }
 
@@ -273,36 +268,36 @@ class _TTabBarIndicatorPainter extends BoxPainter {
 }
 
 /// 垂直方向指示器
-class TTabBarVerticalIndicator extends Decoration {
-  /// 上下文（用于读取主题色）
-  final BuildContext? context;
-
+class TTabsBarVerticalIndicator extends Decoration {
   /// 指示器宽度
   final double? indicatorWidth;
 
   /// 指示器高度
   final double? indicatorHeight;
 
-  const TTabBarVerticalIndicator({
-    this.context,
+  /// 指示器颜色
+  final Color indicatorColor;
+
+  const TTabsBarVerticalIndicator({
+    required this.indicatorColor,
     this.indicatorWidth,
     this.indicatorHeight,
   });
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) =>
-      _TTabBarVerticalIndicatorPainter(this, onChanged);
+      _TTabsBarVerticalIndicatorPainter(this, onChanged);
 }
 
-class _TTabBarVerticalIndicatorPainter extends BoxPainter {
+class _TTabsBarVerticalIndicatorPainter extends BoxPainter {
   static const double _defaultIndicatorWidth = 1.5;
   static const double _defaultIndicatorHeight = 54;
 
-  final TTabBarVerticalIndicator decoration;
+  final TTabsBarVerticalIndicator decoration;
   final _paint = Paint();
 
-  _TTabBarVerticalIndicatorPainter(this.decoration, VoidCallback? onChanged) {
-    _paint.color = decoration.context!.tTheme.brandNormalColor;
+  _TTabsBarVerticalIndicatorPainter(this.decoration, VoidCallback? onChanged) {
+    _paint.color = decoration.indicatorColor;
     _paint.strokeCap = StrokeCap.round;
   }
 

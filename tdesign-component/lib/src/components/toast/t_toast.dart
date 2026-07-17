@@ -22,20 +22,36 @@ enum IconTextDirection {
 class _ToastInstance {
   final OverlayEntry overlayEntry;
   final Timer? timer;
-  final Timer? disposeTimer;
+  Timer? disposeTimer;
+  final bool loading;
   bool showing = true;
+  bool removed = false;
 
   _ToastInstance({
     required this.overlayEntry,
     this.timer,
-    this.disposeTimer,
+    this.loading = false,
   });
 
   void cancel() {
     timer?.cancel();
     disposeTimer?.cancel();
-    overlayEntry.remove();
+    if (!removed) {
+      overlayEntry.remove();
+      removed = true;
+    }
     showing = false;
+  }
+
+  void scheduleDispose(String toastId) {
+    disposeTimer?.cancel();
+    disposeTimer = Timer(const Duration(milliseconds: 200), () {
+      if (!removed) {
+        overlayEntry.remove();
+        removed = true;
+      }
+      TToast._toastInstances.remove(toastId);
+    });
   }
 }
 
@@ -246,6 +262,7 @@ class TToast {
       duration: duration,
       preventTap: preventTap,
       toastId: id,
+      loading: true,
     );
     return id;
   }
@@ -275,6 +292,7 @@ class TToast {
       duration: duration,
       preventTap: preventTap,
       toastId: id,
+      loading: true,
     );
     return id;
   }
@@ -296,29 +314,17 @@ class TToast {
     _toastInstances.clear();
   }
 
-  /// 关闭加载Toast（向后兼容）
-  static void dismissLoading() {
-    // 关闭所有类型为loading的Toast
-    final loadingIds = _toastInstances.entries
-        .where((entry) => entry.key.startsWith('toast_'))
-        .map((entry) => entry.key)
-        .toList();
-    
-    for (final id in loadingIds) {
-      dismissToast(id);
-    }
-  }
-
   static void _showOverlay(
     Widget? widget, {
     required BuildContext context,
     Duration duration = const Duration(milliseconds: 3000),
     bool? preventTap,
     required String toastId,
+    bool loading = false,
   }) {
     // 不自动关闭之前的Toast，支持多个Toast同时显示
     final overlayState = Overlay.of(context);
-    
+
     OverlayEntry overlayEntry;
     if (preventTap ?? false) {
       overlayEntry = OverlayEntry(
@@ -347,7 +353,6 @@ class TToast {
     overlayState.insert(overlayEntry);
 
     Timer? timer;
-    Timer? disposeTimer;
 
     if (duration != const Duration(seconds: 99999999)) {
       timer = Timer(duration, () {
@@ -355,11 +360,7 @@ class TToast {
         if (instance != null && instance.showing) {
           instance.showing = false;
           overlayEntry.markNeedsBuild();
-          
-          disposeTimer = Timer(const Duration(milliseconds: 200), () {
-            overlayEntry.remove();
-            _toastInstances.remove(toastId);
-          });
+          instance.scheduleDispose(toastId);
         }
       });
     }
@@ -367,7 +368,7 @@ class TToast {
     _toastInstances[toastId] = _ToastInstance(
       overlayEntry: overlayEntry,
       timer: timer,
-      disposeTimer: disposeTimer,
+      loading: loading,
     );
   }
 }

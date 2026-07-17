@@ -3,13 +3,22 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 import '../../base/example_widget.dart';
 import '../annotation/demo.dart';
 
-class TTagPage extends StatelessWidget {
+class TTagPage extends StatefulWidget {
   const TTagPage({Key? key}) : super(key: key);
+
+  @override
+  State<TTagPage> createState() => _TTagPageState();
+}
+
+class _TTagPageState extends State<TTagPage> {
+  bool _selected1 = false;
+  bool _selected2 = true;
+  bool _selected3 = false;
 
   @override
   Widget build(BuildContext context) {
     return ExamplePage(
-        title: tTitle(context),
+        title: tTitle(),
         desc: '用于表明主体的类目，属性或状态',
         exampleCodeGroup: 'tag',
         children: [
@@ -129,6 +138,11 @@ class TTagPage extends StatelessWidget {
                     ]),
                   );
                 })
+          ]),
+          ExampleModule(title: '可选标签', children: [
+            ExampleItem(desc: '默认形态', builder: _buildSelectDefault),
+            ExampleItem(desc: '不同语义色', builder: _buildSelectColorSchemes),
+            ExampleItem(desc: '禁用状态', builder: _buildSelectDisabled),
           ]),
         ],
         test: [
@@ -328,6 +342,54 @@ class TTagPage extends StatelessWidget {
         TTag('小型标签', size: TTagSize.small),
       ],
     );
+  }
+
+  @Demo(group: 'tag')
+  Widget _buildSelectDefault(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      children: [
+        TSelectTag('标签一',
+            value: _selected1,
+            onChanged: (v) => setState(() => _selected1 = v)),
+        TSelectTag('标签二',
+            value: _selected2,
+            onChanged: (v) => setState(() => _selected2 = v)),
+        TSelectTag('标签三',
+            value: _selected3,
+            onChanged: (v) => setState(() => _selected3 = v)),
+      ],
+    );
+  }
+
+  @Demo(group: 'tag')
+  Widget _buildSelectColorSchemes(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      children: [
+        TSelectTag('主要',
+            colorScheme: TTagColorScheme.primary,
+            value: true,
+            onChanged: (_) {}),
+        TSelectTag('成功',
+            colorScheme: TTagColorScheme.success,
+            value: true,
+            onChanged: (_) {}),
+        TSelectTag('警告',
+            colorScheme: TTagColorScheme.warning,
+            value: true,
+            onChanged: (_) {}),
+        TSelectTag('危险',
+            colorScheme: TTagColorScheme.danger,
+            value: true,
+            onChanged: (_) {}),
+      ],
+    );
+  }
+
+  @Demo(group: 'tag')
+  Widget _buildSelectDisabled(BuildContext context) {
+    return const TSelectTag('禁用标签', value: false, onChanged: null);
   }
 
   // ============ 测试 ============

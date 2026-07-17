@@ -314,7 +314,7 @@ class THorizontalTabBar extends StatefulWidget implements PreferredSizeWidget {
   final ScrollPhysics? physics;
 
   /// 选项卡样式
-  final TTabBarVariant? outlineType;
+  final TTabsBarVariant? outlineType;
 
   /// tabBar背景色
   final Color? backgroundColor;
@@ -785,7 +785,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   }
 
   BoxDecoration? _getContentDecorateInner(int index) {
-    if (widget.outlineType == TTabBarVariant.capsule) {
+    if (widget.outlineType == TTabsBarVariant.capsule) {
       return BoxDecoration(
           color: index == _currentIndex
               ? (widget.selectedBgColor ?? context.tTheme.brandColor1)
@@ -796,11 +796,11 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   }
 
   BoxDecoration? _getContentDecorateOuter(int index) {
-    if (widget.outlineType == TTabBarVariant.capsule) {
+    if (widget.outlineType == TTabsBarVariant.capsule) {
       return BoxDecoration(
         color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
       );
-    } else if (widget.outlineType == TTabBarVariant.card) {
+    } else if (widget.outlineType == TTabsBarVariant.card) {
       if (index == _currentIndex) {
         return BoxDecoration(
             color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
@@ -826,7 +826,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   }
 
   Color? _getBackgroundColor(int index) {
-    if (widget.outlineType == TTabBarVariant.card) {
+    if (widget.outlineType == TTabsBarVariant.card) {
       if (index == _currentIndex) {
         return context.tTheme.bgColorSecondaryContainer;
       }
@@ -896,7 +896,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
       }
       // tab.size=20;
       EdgeInsetsGeometry? capsuleDefaultPadding;
-      if (widget.outlineType == TTabBarVariant.capsule) {
+      if (widget.outlineType == TTabsBarVariant.capsule) {
         capsuleDefaultPadding = const EdgeInsets.all(4);
       }
       return Container(
@@ -979,7 +979,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
             enableFeedback: widget.enableFeedback ?? true,
             overlayColor: widget.overlayColor,
             child: Container(
-              padding: widget.outlineType == TTabBarVariant.filled
+              padding: widget.outlineType == TTabsBarVariant.filled
                   ? EdgeInsets.only(bottom: widget.indicatorWeight)
                   : EdgeInsets.zero,
               child: Stack(

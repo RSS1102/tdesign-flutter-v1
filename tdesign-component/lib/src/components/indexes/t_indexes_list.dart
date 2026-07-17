@@ -102,9 +102,13 @@ class _TIndexesListState extends State<TIndexesList> {
                       (e) {
                         final isActive = value == e;
                         if (widget.builderIndex != null) {
-                          return Container(
+                          return SizedBox(
                             key: _containerKeys[e],
-                            child: widget.builderIndex!(context, e, isActive),
+                            width: _indexSize + context.tTheme.spacer8,
+                            height: _indexSize,
+                            child: Center(
+                              child: widget.builderIndex!(context, e, isActive),
+                            ),
                           );
                         }
                         return Stack(
@@ -127,8 +131,7 @@ class _TIndexesListState extends State<TIndexesList> {
                                     child: TText(
                                       e,
                                       forceVerticalCenter: true,
-                                      font: context.tTheme
-                                          .fontTitleExtraLarge,
+                                      font: context.tTheme.fontTitleExtraLarge,
                                       textColor:
                                           context.tTheme.brandNormalColor,
                                     ),
@@ -137,29 +140,32 @@ class _TIndexesListState extends State<TIndexesList> {
                               ),
                             Container(
                               key: _containerKeys[e],
-                              padding: EdgeInsets.only(
-                                  left: context.tTheme.spacer8),
-                              child: Container(
+                              width: _indexSize + context.tTheme.spacer8,
+                              height: _indexSize,
+                              alignment: Alignment.center,
+                              child: SizedBox(
                                 width: _indexSize,
                                 height: _indexSize,
-                                decoration: isActive
-                                    ? BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                            context.tTheme.radiusCircle),
-                                        color: context.tTheme
-                                            .brandNormalColor,
-                                      )
-                                    : null,
-                                child: Center(
-                                  child: TText(
-                                    e,
-                                    forceVerticalCenter: true,
-                                    font: isActive
-                                        ? context.tTheme.fontMarkSmall
-                                        : context.tTheme.fontLinkSmall,
-                                    textColor: isActive
-                                        ? context.tTheme.textColorAnti
-                                        : context.tTheme.textColorPrimary,
+                                child: DecoratedBox(
+                                  decoration: isActive
+                                      ? BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              context.tTheme.radiusCircle),
+                                          color:
+                                              context.tTheme.brandNormalColor,
+                                        )
+                                      : const BoxDecoration(),
+                                  child: Center(
+                                    child: TText(
+                                      e,
+                                      forceVerticalCenter: true,
+                                      font: isActive
+                                          ? context.tTheme.fontMarkSmall
+                                          : context.tTheme.fontLinkSmall,
+                                      textColor: isActive
+                                          ? context.tTheme.textColorAnti
+                                          : context.tTheme.textColorPrimary,
+                                    ),
                                   ),
                                 ),
                               ),

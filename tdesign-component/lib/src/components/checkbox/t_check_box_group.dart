@@ -72,21 +72,21 @@ class TCheckboxGroupController {
 ///
 ///
 class TCheckboxGroup extends StatefulWidget {
-
   const TCheckboxGroup(
       {required this.child,
-        Key? key,
-        this.onChanged,
-        this.controller,
-        this.value,
-        this.maxChecked,
-        this.titleMaxLine,
-        this.customContentBuilder,
-        this.contentDirection,
-        this.style,
-        this.spacing,
-        this.customIconBuilder,
-        this.onOverloadChecked}) : super(key: key);
+      Key? key,
+      this.onChanged,
+      this.controller,
+      this.value,
+      this.maxChecked,
+      this.titleMaxLine,
+      this.customContentBuilder,
+      this.contentDirection,
+      this.style,
+      this.spacing,
+      this.customIconBuilder,
+      this.onOverloadChecked})
+      : super(key: key);
 
   ///
   /// 可以是任意包含TCheckBox的容器，比如：
@@ -120,7 +120,6 @@ class TCheckboxGroup extends StatefulWidget {
   /// CheckBox标题的行数
   final int? titleMaxLine;
 
-
   /// CheckBox完全自定义内容
   final ContentBuilder? customContentBuilder;
 
@@ -142,7 +141,6 @@ class TCheckboxGroup extends StatefulWidget {
   }
 }
 
-
 class TCheckboxGroupState extends State<TCheckboxGroup> {
   ///
   /// 管理所有子CheckBox的状态
@@ -153,9 +151,19 @@ class TCheckboxGroupState extends State<TCheckboxGroup> {
   void initState() {
     super.initState();
     // 如果有controller的话，把state设置给controller
-    widget.controller?._state = this;
+    _attachController(widget.controller);
 
     _syncCheckState(widget.value);
+  }
+
+  void _attachController(TCheckboxGroupController? controller) {
+    controller?._state = this;
+  }
+
+  void _detachController(TCheckboxGroupController? controller) {
+    if (controller?._state == this) {
+      controller?._state = null;
+    }
   }
 
   /// 把group中配置的默认选中id，同步到状态中
@@ -166,10 +174,13 @@ class TCheckboxGroupState extends State<TCheckboxGroup> {
     });
   }
 
-
   @override
   void didUpdateWidget(TCheckboxGroup oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      _detachController(oldWidget.controller);
+      _attachController(widget.controller);
+    }
     final oldCheckIds = oldWidget.value;
     final newCheckIds = widget.value;
     if (oldCheckIds != newCheckIds) {
@@ -177,6 +188,11 @@ class TCheckboxGroupState extends State<TCheckboxGroup> {
     }
   }
 
+  @override
+  void dispose() {
+    _detachController(widget.controller);
+    super.dispose();
+  }
 
   ///
   /// 根据id获取CheckBox的勾选状态
@@ -232,7 +248,7 @@ class TCheckboxGroupState extends State<TCheckboxGroup> {
   /// 反选
   void _reverseAll() {
     final reverseValue =
-    checkBoxStates.map((key, value) => MapEntry(key, !value));
+        checkBoxStates.map((key, value) => MapEntry(key, !value));
     checkBoxStates.forEach((key, value) {
       checkBoxStates[key] = false;
     });
@@ -265,10 +281,12 @@ class TCheckboxGroupInherited extends InheritedWidget {
   /// 获取树上的Group节点
   ///
   static TCheckboxGroupInherited? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<TCheckboxGroupInherited>();
+    return context
+        .dependOnInheritedWidgetOfExactType<TCheckboxGroupInherited>();
   }
 
-  const TCheckboxGroupInherited(this.state, Widget child, {Key? key}) : super(child: child, key: key);
+  const TCheckboxGroupInherited(this.state, Widget child, {Key? key})
+      : super(child: child, key: key);
 
   @override
   bool updateShouldNotify(covariant TCheckboxGroupInherited oldWidget) {
@@ -276,9 +294,7 @@ class TCheckboxGroupInherited extends InheritedWidget {
   }
 }
 
-
 class TCheckboxGroupContainer extends TCheckboxGroup {
-
   TCheckboxGroupContainer({
     Key? key,
     Widget? child, // 使用child 则请勿设置direction
@@ -289,7 +305,7 @@ class TCheckboxGroupContainer extends TCheckboxGroup {
     bool cardMode = false,
     int? titleMaxLine, // item的行数
     int? maxSelected, // 最大勾选数
-    TCheckboxVariant? style,// 勾选样式
+    TCheckboxVariant? style, // 勾选样式
     TCheckboxGroupController? controller,
     IconBuilder? customIconBuilder,
     ContentBuilder? customContentBuilder,
@@ -299,175 +315,180 @@ class TCheckboxGroupContainer extends TCheckboxGroup {
     VoidCallback? onOverloadChecked,
     int? rowCount,
   })  : assert(() {
-    // 使用direction属性则必须配合directionalTdCheckboxes，child字段无效
-    if (direction != null && directionalTdCheckboxes == null) {
-      throw FlutterError(
-          '[TCheckboxGroupContainer] direction and directionalTdCheckboxes must set at the same time');
-    }
-    // 未使用direction则必须设置child
-    if (direction == null && child == null) {
-      throw FlutterError(
-          '[TCheckboxGroupContainer] direction means use child as the exact one, but child is null');
-    }
-    // 横向单选框 每个选项有字数限制
-    if (direction == Axis.horizontal && directionalTdCheckboxes != null) {
-      directionalTdCheckboxes.forEach((element) {
-        if (element.subTitle != null) {
-          throw FlutterError(
-              'horizontal checkbox style should not have subTilte, '
-                  'because there left no room for it');
-        }
-      });
-      var maxWordCount = 2;
-      var tips =
-          '[TCheckboxGroupContainer] checkbox title please not exceed $maxWordCount words.\n'
-          '2tabs: 7words maximum\n'
-          '3tabs: 4words maximum\n'
-          '4tabs: 2words maximum';
-      var length = directionalTdCheckboxes.length;
-      if (rowCount != null && rowCount > 1) {
-        length = rowCount;
-      }
-      if (length == 2) {
-        maxWordCount = 7;
-      }
-      if (length == 3) {
-        maxWordCount = 4;
-      }
-      if (length == 4) {
-        maxWordCount = 2;
-      }
-      directionalTdCheckboxes.forEach((checkbox) {
-        if ((checkbox.title?.length ?? 0) > maxWordCount) {
-          throw FlutterError(tips);
-        }
-      });
-    }
-    // 卡片模式要求每个TRadio必须设置cardMode属性为true，且不能有子标题（空间不够）
-    if (cardMode == true) {
-      assert(direction != null && directionalTdCheckboxes != null);
-      directionalTdCheckboxes!.forEach((element) {
-        // if use cardMode at TRadioGroup, then every TRadio should
-        // set it's own carMode to true.
-        if (element.cardMode == false) {
-          throw FlutterError(
-              'if use cardMode at TCheckboxGroupContainer, then every '
-                  'TCheckbox should set it\'s own carMode to true.');
-        }
-        if (element.subTitle != null && direction == Axis.horizontal) {
-          throw FlutterError(
-              'horizontal card style should not have subTilte, '
-                  'because there left no room for it');
-        }
-      });
-    }
-    return true;
-  }()),
-        super(
-        child: Container(
-          clipBehavior: (passThrough ?? false) && direction != Axis.horizontal
-              ? Clip.hardEdge
-              : Clip.none,
-          decoration: (passThrough ?? false) && direction != Axis.horizontal
-              ? BoxDecoration(borderRadius: BorderRadius.circular(10))
-              : null,
-          margin: (passThrough ?? false) && direction != Axis.horizontal
-              ? const EdgeInsets.symmetric(horizontal: 16)
-              : null,
-          child: direction == null
-              ? child!
-              : (direction == Axis.vertical
-              ? ListView.separated(
-            padding: const EdgeInsets.all(0),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                margin: cardMode
-                    ? const EdgeInsets.symmetric(horizontal: 16)
-                    : null,
-                height: cardMode ? 82 : null,
-                child: directionalTdCheckboxes[index],
-              );
-            },
-            itemCount: directionalTdCheckboxes!.length,
-            separatorBuilder: (BuildContext context, int index) {
-              if (cardMode) {
-                return const SizedBox(
-                  height: 12,
-                );
+          // 使用direction属性则必须配合directionalTdCheckboxes，child字段无效
+          if (direction != null && directionalTdCheckboxes == null) {
+            throw FlutterError(
+                '[TCheckboxGroupContainer] direction and directionalTdCheckboxes must set at the same time');
+          }
+          // 未使用direction则必须设置child
+          if (direction == null && child == null) {
+            throw FlutterError(
+                '[TCheckboxGroupContainer] direction means use child as the exact one, but child is null');
+          }
+          // 横向单选框 每个选项有字数限制
+          if (direction == Axis.horizontal && directionalTdCheckboxes != null) {
+            directionalTdCheckboxes.forEach((element) {
+              if (element.subTitle != null) {
+                throw FlutterError(
+                    'horizontal checkbox style should not have subTilte, '
+                    'because there left no room for it');
               }
-              return const SizedBox.shrink();
-            },
-          )
-              : Container(
-            margin: cardMode
-                ? EdgeInsets.symmetric(horizontal: 16.scale)
+            });
+            var maxWordCount = 2;
+            var tips =
+                '[TCheckboxGroupContainer] checkbox title please not exceed $maxWordCount words.\n'
+                '2tabs: 7words maximum\n'
+                '3tabs: 4words maximum\n'
+                '4tabs: 2words maximum';
+            var length = directionalTdCheckboxes.length;
+            if (rowCount != null && rowCount > 1) {
+              length = rowCount;
+            }
+            if (length == 2) {
+              maxWordCount = 7;
+            }
+            if (length == 3) {
+              maxWordCount = 4;
+            }
+            if (length == 4) {
+              maxWordCount = 2;
+            }
+            directionalTdCheckboxes.forEach((checkbox) {
+              if ((checkbox.title?.length ?? 0) > maxWordCount) {
+                throw FlutterError(tips);
+              }
+            });
+          }
+          // 卡片模式要求每个TRadio必须设置cardMode属性为true，且不能有子标题（空间不够）
+          if (cardMode == true) {
+            assert(direction != null && directionalTdCheckboxes != null);
+            directionalTdCheckboxes!.forEach((element) {
+              // if use cardMode at TRadioGroup, then every TRadio should
+              // set it's own carMode to true.
+              if (element.cardMode == false) {
+                throw FlutterError(
+                    'if use cardMode at TCheckboxGroupContainer, then every '
+                    'TCheckbox should set it\'s own carMode to true.');
+              }
+              if (element.subTitle != null && direction == Axis.horizontal) {
+                throw FlutterError(
+                    'horizontal card style should not have subTilte, '
+                    'because there left no room for it');
+              }
+            });
+          }
+          return true;
+        }()),
+        super(
+          child: Container(
+            clipBehavior: (passThrough ?? false) && direction != Axis.horizontal
+                ? Clip.hardEdge
+                : Clip.none,
+            decoration: (passThrough ?? false) && direction != Axis.horizontal
+                ? BoxDecoration(borderRadius: BorderRadius.circular(10))
                 : null,
-            alignment: cardMode ? Alignment.topLeft : null,
-            child: cardMode
-                ? Wrap(
-              spacing: 12.scale,
-              runSpacing: 12,
-              runAlignment: WrapAlignment.spaceEvenly,
-              children: directionalTdCheckboxes!.map((element) {
-                return SizedBox(
-                  width: 106.3.scale,
-                  height: 56,
-                  child: element,
-                );
-              }).toList(),
-            )
-                : rowCount != null && rowCount > 1
-                    ? Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(
-                            (directionalTdCheckboxes!.length / rowCount).ceil(),
-                            (index) {
-                          var start = index * rowCount;
-                          var end = (index + 1) * rowCount;
-                          if (end > directionalTdCheckboxes.length) {
-                            end = directionalTdCheckboxes.length;
-                          }
-                          var subList =
-                              directionalTdCheckboxes.sublist(start, end);
-                          return Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ...subList.map((e) => Expanded(child: e)),
-                              if (subList.length < rowCount)
-                                ...List.generate(
-                                    rowCount - subList.length,
-                                    (index) =>
-                                        const Expanded(child: SizedBox()))
-                            ],
+            margin: (passThrough ?? false) && direction != Axis.horizontal
+                ? const EdgeInsets.symmetric(horizontal: 16)
+                : null,
+            child: direction == null
+                ? child!
+                : (direction == Axis.vertical
+                    ? ListView.separated(
+                        padding: const EdgeInsets.all(0),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Container(
+                            margin: cardMode
+                                ? const EdgeInsets.symmetric(horizontal: 16)
+                                : null,
+                            height: cardMode ? 82 : null,
+                            child: directionalTdCheckboxes[index],
                           );
-                        }))
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: directionalTdCheckboxes!
-                            .map((e) => Expanded(child: e))
-                            .toList(),
-                      ),
-          )),
-        ),
-        key: key,
-        onChanged: (ids) {
-          selectIds = ids;
-          onCheckBoxGroupChange?.call(ids);
-        },
-        onOverloadChecked: onOverloadChecked,
-        controller: controller,
-        value: selectIds,
-        maxChecked: maxSelected,
-        titleMaxLine: titleMaxLine,
-        contentDirection: contentDirection,
-        customIconBuilder: customIconBuilder,
-        customContentBuilder: customContentBuilder,
-        style: style,
-        spacing: spacing,
-      );
+                        },
+                        itemCount: directionalTdCheckboxes!.length,
+                        separatorBuilder: (BuildContext context, int index) {
+                          if (cardMode) {
+                            return const SizedBox(
+                              height: 12,
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      )
+                    : Container(
+                        margin: cardMode
+                            ? EdgeInsets.symmetric(horizontal: 16.scale)
+                            : null,
+                        alignment: cardMode ? Alignment.topLeft : null,
+                        child: cardMode
+                            ? Wrap(
+                                spacing: 12.scale,
+                                runSpacing: 12,
+                                runAlignment: WrapAlignment.spaceEvenly,
+                                children:
+                                    directionalTdCheckboxes!.map((element) {
+                                  return SizedBox(
+                                    width: 106.3.scale,
+                                    height: 56,
+                                    child: element,
+                                  );
+                                }).toList(),
+                              )
+                            : rowCount != null && rowCount > 1
+                                ? Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: List.generate(
+                                        (directionalTdCheckboxes!.length /
+                                                rowCount)
+                                            .ceil(), (index) {
+                                      var start = index * rowCount;
+                                      var end = (index + 1) * rowCount;
+                                      if (end >
+                                          directionalTdCheckboxes.length) {
+                                        end = directionalTdCheckboxes.length;
+                                      }
+                                      var subList = directionalTdCheckboxes
+                                          .sublist(start, end);
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          ...subList
+                                              .map((e) => Expanded(child: e)),
+                                          if (subList.length < rowCount)
+                                            ...List.generate(
+                                                rowCount - subList.length,
+                                                (index) => const Expanded(
+                                                    child: SizedBox()))
+                                        ],
+                                      );
+                                    }))
+                                : Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: directionalTdCheckboxes!
+                                        .map((e) => Expanded(child: e))
+                                        .toList(),
+                                  ),
+                      )),
+          ),
+          key: key,
+          onChanged: (ids) {
+            selectIds = ids;
+            onCheckBoxGroupChange?.call(ids);
+          },
+          onOverloadChecked: onOverloadChecked,
+          controller: controller,
+          value: selectIds,
+          maxChecked: maxSelected,
+          titleMaxLine: titleMaxLine,
+          contentDirection: contentDirection,
+          customIconBuilder: customIconBuilder,
+          customContentBuilder: customContentBuilder,
+          style: style,
+          spacing: spacing,
+        );
 
   @override
   State<StatefulWidget> createState() {
@@ -475,7 +496,4 @@ class TCheckboxGroupContainer extends TCheckboxGroup {
   }
 }
 
-class TCheckboxGroupContainerState extends TCheckboxGroupState {
-
-}
-
+class TCheckboxGroupContainerState extends TCheckboxGroupState {}

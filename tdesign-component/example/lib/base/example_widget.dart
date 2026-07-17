@@ -114,7 +114,7 @@ class _ExamplePageState extends State<ExamplePage> {
                         ? _singleChild()
                         : MediaQuery(
                             // 去掉底部安全区域,保证示例展示正常
-                            data: MediaQuery.of(context)
+                            data: MediaQueryData.fromView(View.of(context))
                                 .copyWith(padding: EdgeInsets.zero),
                             child: ListView.builder(
                               controller: widget.scrollController,

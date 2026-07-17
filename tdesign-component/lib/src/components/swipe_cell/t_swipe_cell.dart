@@ -53,7 +53,7 @@ class TSwipeCell extends StatefulWidget {
   /// 获取生效的 Theme（实例 themeData > Theme Extension > 默认值）
   TSwipeCellThemeData _effectiveTheme(BuildContext context) {
     return (Theme.of(context).extension<TSwipeCellThemeData>() ??
-            const TSwipeCellThemeData());
+        const TSwipeCellThemeData());
   }
 
   /// 获取滑动动画时长
@@ -72,8 +72,10 @@ class TSwipeCell extends StatefulWidget {
         _controllers[tag]!.remove(controller); // coverage:ignore-line
       }
     } else {
-      if (_controllers.keys.contains(tag)) { // coverage:ignore-line
-        if (!_controllers[tag]!.contains(controller)) { // coverage:ignore-line
+      if (_controllers.keys.contains(tag)) {
+        // coverage:ignore-line
+        if (!_controllers[tag]!.contains(controller)) {
+          // coverage:ignore-line
           _controllers[tag]!.add(controller); // coverage:ignore-line
         }
       } else {
@@ -89,15 +91,18 @@ class TSwipeCell extends StatefulWidget {
     if (tag == null || !_controllers.keys.contains(tag)) {
       return;
     }
-    _controllers[tag]!.forEach((element) { // coverage:ignore-line
-      if (element != current) { // coverage:ignore-line
+    _controllers[tag]!.forEach((element) {
+      // coverage:ignore-line
+      if (element != current) {
+        // coverage:ignore-line
         element.close(); // coverage:ignore-line
       }
     });
   }
 
   /// 获取上下文最近的[controller]
-  static SlidableController? of(BuildContext context) { // coverage:ignore-line
+  static SlidableController? of(BuildContext context) {
+    // coverage:ignore-line
     return Slidable.of(context); // coverage:ignore-line
   }
 
@@ -105,9 +110,9 @@ class TSwipeCell extends StatefulWidget {
   _TSwipeCellState createState() => _TSwipeCellState();
 }
 
-class _TSwipeCellState extends State<TSwipeCell>
-    with TickerProviderStateMixin {
-  late final SlidableController controller;
+class _TSwipeCellState extends State<TSwipeCell> with TickerProviderStateMixin {
+  late SlidableController controller;
+  bool _ownsController = false;
   final confirmListenable = ValueNotifier<TSwipeCellAction?>(null);
   TSwipeDirection? openDirection;
 
@@ -117,11 +122,7 @@ class _TSwipeCellState extends State<TSwipeCell>
   @override
   void initState() {
     super.initState();
-    controller = (widget.controller ?? SlidableController(this))
-      ..actionPaneType.addListener(_handleActionPanelTypeChanged)
-      ..animation.addStatusListener((status) {
-        confirmListenable.value = null;
-      });
+    _bindController(widget.controller);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final theme = widget._effectiveTheme(context);
       final opened = theme.opened;
@@ -144,23 +145,43 @@ class _TSwipeCellState extends State<TSwipeCell>
   @override // coverage:ignore-line
   void didUpdateWidget(covariant TSwipeCell oldWidget) {
     super.didUpdateWidget(oldWidget); // coverage:ignore-line
-    if (oldWidget.controller != widget.controller) { // coverage:ignore-line
+    if (oldWidget.controller != widget.controller) {
+      // coverage:ignore-line
       final theme = widget._effectiveTheme(context); // coverage:ignore-line
-      controller.actionPaneType.removeListener(_handleActionPanelTypeChanged); // coverage:ignore-line
-      TSwipeCell._pushController(controller, theme.groupTag, del: true); // coverage:ignore-line
-      controller = (widget.controller ?? SlidableController(this)) // coverage:ignore-line
-        ..actionPaneType.addListener(_handleActionPanelTypeChanged); // coverage:ignore-line
-      TSwipeCell._pushController(controller, theme.groupTag); // coverage:ignore-line
+      TSwipeCell._pushController(controller, theme.groupTag,
+          del: true); // coverage:ignore-line
+      _unbindController(); // coverage:ignore-line
+      _bindController(widget.controller); // coverage:ignore-line
+      TSwipeCell._pushController(
+          controller, theme.groupTag); // coverage:ignore-line
     }
   }
 
   @override
   void dispose() {
-    controller.actionPaneType.removeListener(_handleActionPanelTypeChanged);
-    controller.dispose();
     // 使用缓存的 groupTag，避免在 dispose 中访问 InheritedWidget 祖先
     TSwipeCell._pushController(controller, _groupTag, del: true);
+    _unbindController();
     super.dispose();
+  }
+
+  void _bindController(SlidableController? externalController) {
+    _ownsController = externalController == null;
+    controller = externalController ?? SlidableController(this);
+    controller.actionPaneType.addListener(_handleActionPanelTypeChanged);
+    controller.animation.addStatusListener(_handleAnimationStatusChanged);
+  }
+
+  void _unbindController() {
+    controller.actionPaneType.removeListener(_handleActionPanelTypeChanged);
+    controller.animation.removeStatusListener(_handleAnimationStatusChanged);
+    if (_ownsController) {
+      controller.dispose();
+    }
+  }
+
+  void _handleAnimationStatusChanged(AnimationStatus status) {
+    confirmListenable.value = null;
   }
 
   @override
@@ -178,15 +199,16 @@ class _TSwipeCellState extends State<TSwipeCell>
       groupTag: theme.groupTag,
       startActionPane: widget.left?.build(context),
       endActionPane: widget.right?.build(context),
-      dragStartBehavior:
-          theme.dragStartBehavior ?? DragStartBehavior.start,
+      dragStartBehavior: theme.dragStartBehavior ?? DragStartBehavior.start,
       direction: widget.direction ?? Axis.horizontal,
     );
     return TSwipeCellInherited(
       duration: widget.getDuration(context),
       controller: controller,
-      cellClick: () { // coverage:ignore-line
-        if (theme.closeWhenTapped == true) { // coverage:ignore-line
+      cellClick: () {
+        // coverage:ignore-line
+        if (theme.closeWhenTapped == true) {
+          // coverage:ignore-line
           TSwipeCell.close(theme.groupTag); // coverage:ignore-line
         }
       },

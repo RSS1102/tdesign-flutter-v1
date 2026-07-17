@@ -151,7 +151,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
 
   @Demo(group: 'tabs')
   Widget _buildItemWithSplit1(BuildContext context) {
-    return TTabBar(
+    return TTabsBar(
       tabs: subList(2),
       controller: _tabController1,
       showIndicator: true,
@@ -160,7 +160,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
 
   @Demo(group: 'tabs')
   Widget _buildItemWithSplit2(BuildContext context) {
-    return TTabBar(
+    return TTabsBar(
       tabs: subList(3),
       controller: _tabController2,
       showIndicator: true,
@@ -169,7 +169,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
 
   @Demo(group: 'tabs')
   Widget _buildItemWithSplit3(BuildContext context) {
-    return TTabBar(
+    return TTabsBar(
       tabs: subList(4),
       controller: _tabController3,
       showIndicator: true,
@@ -178,7 +178,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
 
   @Demo(group: 'tabs')
   Widget _buildItemWithSplit4(BuildContext context) {
-    return TTabBar(
+    return TTabsBar(
       tabs: subList(5),
       controller: _tabController4,
       showIndicator: true,
@@ -187,7 +187,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
 
   @Demo(group: 'tabs')
   Widget _buildItemWithSpace(BuildContext context) {
-    return TTabBar(
+    return TTabsBar(
       tabs: subList(16),
       controller: _demoController('space', 16),
       labelPadding: const EdgeInsets.all(10),
@@ -205,7 +205,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
         icon: const Icon(TIcons.app, size: 18),
       );
     });
-    return TTabBar(
+    return TTabsBar(
       tabs: tabs,
       controller: _demoController('icon', tabs.length),
       showIndicator: true,
@@ -232,7 +232,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
         icon: Icon(TIcons.app, size: 18),
       ),
     ];
-    return TTabBar(
+    return TTabsBar(
       tabs: tabs,
       controller: _demoController('logo', tabs.length),
       showIndicator: true,
@@ -246,7 +246,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
       height: 120 + 48,
       child: Column(
         children: [
-          TTabBar(
+          TTabsBar(
             tabs: subList(3),
             controller: tabController,
             showIndicator: true,
@@ -255,7 +255,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
           Expanded(
             child: Container(
               color: context.tTheme.bgColorContainer,
-              child: TTabBarView(
+              child: TTabsBarView(
                 children: _getTabViews(),
                 controller: tabController,
               ),
@@ -273,7 +273,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
       const TTab(text: '默认'),
       const TTab(text: '禁用', enabled: false),
     ];
-    return TTabBar(
+    return TTabsBar(
       tabs: tabs,
       controller: _demoController('status', tabs.length),
       showIndicator: true,
@@ -288,7 +288,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
       const TTab(text: '选项3'),
       const TTab(text: '选项4'),
     ];
-    return TTabBar(
+    return TTabsBar(
       tabs: tabs,
       controller: _demoController('sizeSmall', tabs.length),
       showIndicator: true,
@@ -303,7 +303,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
       const TTab(text: '选项3', size: TTabSize.large),
       const TTab(text: '选项4', size: TTabSize.large),
     ];
-    return TTabBar(
+    return TTabsBar(
       tabs: tabs,
       controller: _demoController('sizeLarge', tabs.length),
       showIndicator: true,
@@ -318,9 +318,9 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
       const TTab(text: '选项3'),
       const TTab(text: '选项4'),
     ];
-    return TTabBar(
+    return TTabsBar(
       tabs: tabs,
-      variant: TTabBarVariant.capsule,
+      variant: TTabsBarVariant.capsule,
       controller: _demoController('outlineNormal', tabs.length),
       showIndicator: false,
     );
@@ -334,9 +334,9 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
       const TTab(text: '选项3'),
       const TTab(text: '选项4'),
     ];
-    return TTabBar(
+    return TTabsBar(
       tabs: tabs,
-      variant: TTabBarVariant.card,
+      variant: TTabsBarVariant.card,
       controller: _demoController('outlineCard', tabs.length),
       showIndicator: false,
     );
@@ -344,7 +344,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
 
   @Demo(group: 'tabs')
   Widget _customIndicatorStyle(BuildContext context) {
-    return TTabBar(
+    return TTabsBar(
       tabs: subList(2),
       controller: _tabController1,
       showIndicator: true,
@@ -357,7 +357,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
 
   @Demo(group: 'tabs')
   Widget _customDividerStyle(BuildContext context) {
-    return TTabBar(
+    return TTabsBar(
       tabs: subList(2),
       controller: _tabController1,
       showIndicator: true,
@@ -368,7 +368,7 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
 
   @Demo(group: 'tabs')
   Widget _hideBottomDivider(BuildContext context) {
-    return TTabBar(
+    return TTabsBar(
       tabs: subList(2),
       controller: _tabController1,
       showIndicator: true,
@@ -379,10 +379,10 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
 
   @Demo(group: 'tabs')
   Widget _capsuleBackgroundColor(BuildContext context) {
-    return TTabBar(
+    return TTabsBar(
       tabs: subList(2),
       controller: _tabController1,
-      variant: TTabBarVariant.capsule,
+      variant: TTabsBarVariant.capsule,
     );
   }
 }

@@ -67,27 +67,9 @@ class TBadge extends StatefulWidget {
 }
 
 class _TBadgeState extends State<TBadge> {
-  String badgeNum = '';
-
   /// 从 Theme 子树读取 L4 默认值
   TBadgeThemeData? _theme(BuildContext context) =>
       Theme.of(context).extension<TBadgeThemeData>();
-
-  void updateBadgeNum(String? newCount) {
-    if (newCount == null) {
-      return;
-    }
-    setState(() {
-      // 如果 newCount 超过了 maxCount，则显示 `${maxCount}+`
-      final countValue = int.tryParse(newCount) ?? 0;
-      final maxCountValue = int.tryParse(widget.maxCount ?? '') ?? 0;
-      if (maxCountValue > 0 && countValue > maxCountValue) {
-        badgeNum = '${maxCountValue}+';
-      } else {
-        badgeNum = newCount;
-      }
-    });
-  }
 
   double getBadgeSize() {
     switch (widget.size) {
@@ -119,7 +101,19 @@ class _TBadgeState extends State<TBadge> {
   String get value {
     final theme = _theme(context);
     final message = theme?.message;
-    return message ?? widget.count ?? context.resource.badgeZero;
+    if (message != null) {
+      return message;
+    }
+    final count = widget.count ?? context.resource.badgeZero;
+    final countValue = int.tryParse(count);
+    final maxCountValue = int.tryParse(widget.maxCount ?? '');
+    if (countValue != null &&
+        maxCountValue != null &&
+        maxCountValue > 0 &&
+        countValue > maxCountValue) {
+      return '$maxCountValue+';
+    }
+    return count;
   }
 
   Color _resolveColor(BuildContext context) {
@@ -153,21 +147,8 @@ class _TBadgeState extends State<TBadge> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    updateBadgeNum(widget.count);
-  }
-
-  @override
-  void didUpdateWidget(covariant TBadge oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.count != widget.count) {
-      updateBadgeNum(widget.count);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final displayValue = value;
     switch (widget.variant) {
       case TBadgeVariant.redPoint:
         return Container(
@@ -181,7 +162,7 @@ class _TBadgeState extends State<TBadge> {
       case TBadgeVariant.message:
         return Visibility(
             visible: visible,
-            child: badgeNum.length == 1
+            child: displayValue.length == 1
                 ? Container(
                     height: getBadgeSize(),
                     width: getBadgeSize(),

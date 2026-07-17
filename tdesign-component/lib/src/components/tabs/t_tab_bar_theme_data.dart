@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../theme/basic.dart';
 
-/// TabBar 形态枚举（替代 0.2.x TTabBarOutlineType / TTabOutlineType）
-enum TTabBarVariant {
+/// TabBar 形态枚举（替代 0.2.x TTabsBarOutlineType / TTabOutlineType）
+enum TTabsBarVariant {
   /// 填充样式
   filled,
 
@@ -27,9 +27,9 @@ enum TTabSize {
 
 /// TabBar 组件 ThemeExtension
 ///
-/// 管理 TTabBar / TTab / TTabBarView 的子树级默认样式。
-class TTabBarThemeData extends ThemeExtension<TTabBarThemeData> {
-  // ---- TTabBar 级 ----
+/// 管理 TTabsBar / TTab / TTabsBarView 的子树级默认样式。
+class TTabsBarThemeData extends ThemeExtension<TTabsBarThemeData> {
+  // ---- TTabsBar 级 ----
   final Decoration? decoration;
   final Color? backgroundColor;
   final Color? indicatorColor;
@@ -46,7 +46,7 @@ class TTabBarThemeData extends ThemeExtension<TTabBarThemeData> {
   final Decoration? indicator;
   final bool? showIndicator;
   final ScrollPhysics? physics;
-  final TTabBarVariant? variant;
+  final TTabsBarVariant? variant;
   final Color? dividerColor;
   final double? dividerHeight;
   final Color? selectedBgColor;
@@ -58,10 +58,10 @@ class TTabBarThemeData extends ThemeExtension<TTabBarThemeData> {
   final EdgeInsetsGeometry? textMargin;
   final double? contentHeight;
 
-  // ---- TTabBarView 级 ----
+  // ---- TTabsBarView 级 ----
   final ScrollPhysics? defaultPhysics;
 
-  const TTabBarThemeData({
+  const TTabsBarThemeData({
     this.decoration,
     this.backgroundColor,
     this.indicatorColor,
@@ -91,7 +91,7 @@ class TTabBarThemeData extends ThemeExtension<TTabBarThemeData> {
   });
 
   @override
-  TTabBarThemeData copyWith({
+  TTabsBarThemeData copyWith({
     Decoration? decoration,
     Color? backgroundColor,
     Color? indicatorColor,
@@ -108,7 +108,7 @@ class TTabBarThemeData extends ThemeExtension<TTabBarThemeData> {
     Decoration? indicator,
     bool? showIndicator,
     ScrollPhysics? physics,
-    TTabBarVariant? variant,
+    TTabsBarVariant? variant,
     Color? dividerColor,
     double? dividerHeight,
     Color? selectedBgColor,
@@ -119,7 +119,7 @@ class TTabBarThemeData extends ThemeExtension<TTabBarThemeData> {
     double? contentHeight,
     ScrollPhysics? defaultPhysics,
   }) {
-    return TTabBarThemeData(
+    return TTabsBarThemeData(
       decoration: decoration ?? this.decoration,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       indicatorColor: indicatorColor ?? this.indicatorColor,
@@ -150,11 +150,11 @@ class TTabBarThemeData extends ThemeExtension<TTabBarThemeData> {
   }
 
   @override
-  TTabBarThemeData lerp(ThemeExtension<TTabBarThemeData>? other, double t) {
-    if (other is! TTabBarThemeData) {
+  TTabsBarThemeData lerp(ThemeExtension<TTabsBarThemeData>? other, double t) {
+    if (other is! TTabsBarThemeData) {
       return this;
     }
-    return TTabBarThemeData(
+    return TTabsBarThemeData(
       decoration: t < 0.5 ? decoration : other.decoration,
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
       indicatorColor: Color.lerp(indicatorColor, other.indicatorColor, t),

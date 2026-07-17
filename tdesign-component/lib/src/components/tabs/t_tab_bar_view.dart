@@ -6,7 +6,7 @@ import 't_tab_bar_theme_data.dart';
 ///
 /// Material TabBarView 薄包装。
 /// `physics` 可覆盖 Theme 默认值（默认 `NeverScrollableScrollPhysics`）。
-class TTabBarView extends StatefulWidget {
+class TTabsBarView extends StatefulWidget {
   /// 子widget列表
   final List<Widget> children;
 
@@ -16,7 +16,7 @@ class TTabBarView extends StatefulWidget {
   /// 滑动物理特性；未传时取 Theme `defaultPhysics`，Theme 也未配时默认不可滑动
   final ScrollPhysics? physics;
 
-  const TTabBarView({
+  const TTabsBarView({
     Key? key,
     required this.children,
     this.controller,
@@ -24,13 +24,13 @@ class TTabBarView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<TTabBarView> createState() => _TTabBarViewState();
+  State<TTabsBarView> createState() => _TTabsBarViewState();
 }
 
-class _TTabBarViewState extends State<TTabBarView> {
-  TTabBarThemeData get _themeData =>
-      Theme.of(context).extension<TTabBarThemeData>() ??
-      const TTabBarThemeData();
+class _TTabsBarViewState extends State<TTabsBarView> {
+  TTabsBarThemeData get _themeData =>
+      Theme.of(context).extension<TTabsBarThemeData>() ??
+      const TTabsBarThemeData();
 
   ScrollPhysics get _effectivePhysics =>
       widget.physics ??

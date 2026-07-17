@@ -32,7 +32,7 @@ class TPopupPage extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: TButton(
-        child: const Text('底部弹出'),
+        child: const TText('底部弹出'),
         size: TButtonSize.large,
         variant: TButtonVariant.outline,
         colorScheme: TButtonColorScheme.primary,
@@ -40,8 +40,8 @@ class TPopupPage extends StatelessWidget {
           TPopup.show(
             context,
             options: TPopupOptions.bottom(
-              titleWidget: const Text('底部弹出层'),
-              child: const Center(child: Text('弹出层内容区域')),
+              titleWidget: const TText('底部弹出层'),
+              child: const Center(child: TText('弹出层内容区域')),
             ),
           );
         },
@@ -54,7 +54,7 @@ class TPopupPage extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: TButton(
-        child: const Text('顶部弹出'),
+        child: const TText('顶部弹出'),
         size: TButtonSize.large,
         variant: TButtonVariant.outline,
         colorScheme: TButtonColorScheme.primary,
@@ -65,7 +65,7 @@ class TPopupPage extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.only(top: 40),
                 alignment: Alignment.center,
-                child: const Text('顶部弹出层内容'),
+                child: const TText('顶部弹出层内容'),
               ),
             ),
           );
@@ -79,7 +79,7 @@ class TPopupPage extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: TButton(
-        child: const Text('左侧弹出'),
+        child: const TText('左侧弹出'),
         size: TButtonSize.large,
         variant: TButtonVariant.outline,
         colorScheme: TButtonColorScheme.primary,
@@ -89,7 +89,7 @@ class TPopupPage extends StatelessWidget {
             options: TPopupOptions.left(
               child: Container(
                 alignment: Alignment.center,
-                child: const Text('左侧弹出层内容'),
+                child: const TText('左侧弹出层内容'),
               ),
             ),
           );
@@ -103,7 +103,7 @@ class TPopupPage extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: TButton(
-        child: const Text('右侧弹出'),
+        child: const TText('右侧弹出'),
         size: TButtonSize.large,
         variant: TButtonVariant.outline,
         colorScheme: TButtonColorScheme.primary,
@@ -113,7 +113,7 @@ class TPopupPage extends StatelessWidget {
             options: TPopupOptions.right(
               child: Container(
                 alignment: Alignment.center,
-                child: const Text('右侧弹出层内容'),
+                child: const TText('右侧弹出层内容'),
               ),
             ),
           );
@@ -127,7 +127,7 @@ class TPopupPage extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: TButton(
-        child: const Text('中间弹出'),
+        child: const TText('中间弹出'),
         size: TButtonSize.large,
         variant: TButtonVariant.outline,
         colorScheme: TButtonColorScheme.primary,
@@ -140,7 +140,7 @@ class TPopupPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Center(child: Text('中间弹出层内容')),
+                child: const Center(child: TText('中间弹出层内容')),
               ),
             ),
           );

@@ -57,11 +57,6 @@ class TSideBarController extends ChangeNotifier {
     }
   }
 
-  /// 兼容旧命名：设置加载态
-  void closeLoading(bool load, {bool needNotify = true}) {
-    setLoading(load, needNotify: needNotify);
-  }
-
   @override
   void dispose() {
     _currentValue = 0;

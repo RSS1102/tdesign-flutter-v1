@@ -32,7 +32,7 @@ void main() async {
               // appBar: _buildAppBar(context),
               // body: StudyDetail(),
               body: body(context),
-              bottomNavigationBar: _buildBottomTabBar(),
+              bottomNavigationBar: _buildTabBar(),
             );
           },
         ),
@@ -135,16 +135,15 @@ PreferredSizeWidget _buildAppBar(BuildContext context) {
       ]);
 }
 
-TBottomTabBar _buildBottomTabBar() {
+TTabBar _buildTabBar() {
   var iconSize = 39 * 60 / 98;
   var textSize = 8.0;
-  return TBottomTabBar(
-    TBottomTabBarBasicType.iconText,
-    componentType: TBottomTabBarComponentType.normal,
+  return TTabBar(
+    variant: TTabBarVariant.weakIconText,
     useVerticalDivider: false,
     barHeight: 98 * 60 / 98,
     navigationTabs: [
-      TBottomTabBarTabConfig(
+      TTabBarItemConfig(
         selectedIcon: Icon(TIcons.home, size: iconSize, color: Colors.red),
         unselectedIcon: Icon(
           TIcons.home,
@@ -160,7 +159,7 @@ TBottomTabBar _buildBottomTabBar() {
           // context.read<CurrentIndexProvider>().changeIndex(0);
         },
       ),
-      TBottomTabBarTabConfig(
+      TTabBarItemConfig(
         selectedIcon: Icon(TIcons.app, size: iconSize, color: Colors.red),
         unselectedIcon: Icon(
           TIcons.app,
@@ -175,7 +174,7 @@ TBottomTabBar _buildBottomTabBar() {
           // context.read<CurrentIndexProvider>().changeIndex(1);
         },
       ),
-      TBottomTabBarTabConfig(
+      TTabBarItemConfig(
         selectedIcon: Icon(TIcons.user, size: iconSize, color: Colors.red),
         unselectedIcon: Icon(
           TIcons.user,

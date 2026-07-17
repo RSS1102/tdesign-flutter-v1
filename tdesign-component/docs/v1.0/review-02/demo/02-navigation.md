@@ -82,7 +82,7 @@ Review 建议：
 - 对仅用于静态展示的示例，优先使用 `DefaultTabController` 包裹局部 demo，避免手动创建无释放 controller。
 - TabBar 页面修复后再复测“十几秒后卡死”现象。
 
-### 4. `BottomTabBar` demo 布局异常导致页面崩溃，且入口名称需要区分 `Tabs` 与 `BottomTabBar`
+### 4. `BottomTabBar` demo 布局异常导致页面崩溃，且入口名称需要区分 `TabBar` 与 `BottomTabBar`
 
 定位：
 
@@ -96,6 +96,7 @@ Review 建议：
 - 配置中 TabBar 所在页面入口文本是 `Tabs 选项卡 (V1.0)`，路由名是 `tabs`。
 - `BottomTabBar` 独立入口文本是 `BottomTabBar 底部标签栏 (V1.0)`，路由名是 `bottomTabBar`。
 - 当前源码未发现 `bootomTabBar` 拼写。
+- 用户补充确认：TabBar 的 demo 名称应该直接叫 `TabBar`，不应该被理解或展示成 `BottomTabBar`；该问题和源码实现/导出命名有关。
 - `_setValueToTabBar` 示例返回 `SizedBox(child: Column(mainAxisSize: MainAxisSize.min, children: [Expanded(child: PageView(...)), TBottomTabBar(...)]))`。
 - 该示例位于 `ExamplePage` 的滚动示例列表中，外层会给列表项不定高约束；在不定高列表项中使用 `Expanded(PageView)` 会导致子节点无法完成尺寸计算。
 - 用户实测该异常发生在底部标签栏页面，而不是 Indexes 页面：
@@ -106,7 +107,7 @@ Review 建议：
 诊断：
 
 - 从源码看，入口命名不是 `bootomTabBar` 拼写错误。
-- 但组件命名上，`TTabBar` 被放在 `Tabs` 页面下，用户实测时可能会把页面入口与组件名混淆。
+- 但组件命名上，`TTabBar` 被放在 `Tabs` 页面下，用户实测时可能会把页面入口与组件名混淆；如果源码公开面也仍沿用 Tabs 口径，需要同步收敛。
 - 页面崩溃应归因于 `BottomTabBar` demo 的 `_setValueToTabBar` 布局写法；当前不应记录到 Indexes 或 Drawer。
 - `PageView` 必须有明确高度；不能直接放在滚动列表项内的 `Expanded` 中，除非外层提供确定高度约束。
 
@@ -115,7 +116,7 @@ Review 建议：
 - 需要进入 demo review，崩溃问题优先级高。
 - `_setValueToTabBar` 应为 `PageView` 外层提供明确高度，例如 `SizedBox(height: 240, child: PageView(...))`，或把整个示例改为固定高度容器内的 `Column`。
 - 避免在 `ExamplePage` 的滚动列表项中直接使用 `Expanded` / `Flexible` 包裹 `PageView`。
-- 如果 v1.0 文档组件名统一叫 `TabBar`，入口文案建议改为 `TabBar 选项卡 (V1.0)` 或 `Tabs / TabBar 选项卡 (V1.0)`。
+- 如果 v1.0 文档组件名统一叫 `TabBar`，入口文案应改为 `TabBar 选项卡 (V1.0)`；同时检查路由名、demo 标题、文档标题和公开导出命名。
 - 保留 `BottomTabBar` 作为底部标签栏入口，避免两者混淆。
 
 ### 5. `TDrawer` demo 默认示例不应全部传 `drawerTop`，底部操作按钮未绑定事件
@@ -156,7 +157,7 @@ Review 建议：
 - 修正“带标题抽屉”按钮文案。
 - 示例中的 `print(...)` 建议替换为统一反馈方式或删除。
 
-### 6. `TIndexes` demo 不应默认传顶部 inset，自定义索引缺少布局约束
+### 6. `TIndexes` demo 不应默认传顶部 inset，自定义索引缺少布局约束，右侧索引文字未居中
 
 定位：
 
@@ -170,12 +171,13 @@ Review 建议：
 - 基础、胶囊、自定义索引三个 demo 都通过 `navBarkey.currentContext?.findRenderObject()` 获取 NavBar 高度，并传给 `TPopupRightInset(top: renderBox?.size.height ?? 0)`。
 - 这和 Drawer demo 的 `drawerTop` 问题类似：顶部偏移适合单独演示，不适合成为默认索引示例的共同写法。
 - 自定义索引 demo 的 `builderIndex` 直接返回 `TText('自定义 $index')`，没有固定宽高或居中约束。
+- 用户补充确认：右侧索引图标/文字存在未居中的视觉问题，需要按默认索引、胶囊索引、自定义索引同口径复核。
 - 用户提到的 `child.hasSize` / `!_debugDoingThisLayout` 崩溃已确认发生在底部标签栏页面，本条不记录该异常。
 
 诊断：
 
 - 默认 Indexes 示例应展示不传顶部 inset 的常规弹层效果；顶部避让应拆成独立 demo，专门说明 Popup inset / 顶部偏移能力。
-- 自定义索引“不居中”是 demo builder 未提供布局约束，组件也没有对自定义 builder 做居中包裹。
+- 自定义索引“不居中”是 demo builder 未提供布局约束，组件也没有对自定义 builder 做居中包裹；默认索引如也出现偏移，则需要进入组件层修复。
 
 Review 建议：
 
@@ -183,8 +185,9 @@ Review 建议：
 - 将基础、胶囊、自定义索引默认示例中的 `TPopupRightInset(top: renderBox?.size.height ?? 0)` 移除。
 - 若需要展示顶部避让能力，应新增或保留一个单独示例，例如“指定顶部偏移索引”。
 - 自定义 `builderIndex` 应返回固定宽高且居中的 widget，或明确 builder 负责完整布局。
+- 默认右侧索引项应保证触控区域和视觉内容居中，修复后复测普通索引、胶囊索引、自定义索引三类状态。
 
-### 7. `TSideBar` 进入 demo 白屏：入口路由未见缺失，但子页面存在生命周期隐患
+### 7. `TSideBar` 进入 demo 白屏 / 切页用法不可点击：入口路由未见缺失，但子页面存在生命周期隐患
 
 定位：
 
@@ -199,15 +202,17 @@ Review 建议：
 - 主入口 `sidebar` 已注册，主页面按钮也有 `onPressed` 跳转子路由。
 - `sideBarExamplePage` 中子路由也已注册。
 - `TSideBarPaginationPage` 和 `TSideBarCustomPage` 创建了 `PageController`，但未见 `dispose`。
+- 用户补充确认：`SideBar 切页` 用法不能点击操作，需要把点击切页交互作为独立复核点，而不只记录“进入白屏”。
 - 源码层未发现“入口未注册”导致白屏的直接证据。
 
 诊断：
 
-- 当前白屏现象不能仅凭源码确认为入口配置问题。
+- 当前白屏现象不能仅凭源码确认为入口配置问题；切页不可点击则更可能落在 demo 的 `TSideBarController`、`PageController`、`onSelected` / 点击回调联动。
 - 已确认存在子页面 controller 生命周期缺口；是否就是白屏根因，需要配合真机 logcat/Flutter error overlay 复核。
 
 Review 建议：
 
 - 需要进入 demo review，标记为“需真机日志复核”。
 - 先补齐 sidebar 子页面 `PageController.dispose()`。
+- 检查点击侧边栏项后页面内容是否同步切换，并确认 `SideBar 切页` 示例可以实际操作。
 - 若白屏仍复现，应抓取进入 `sidebar` 页面时的 Flutter exception / logcat，并再判断是否为布局约束或组件运行问题。

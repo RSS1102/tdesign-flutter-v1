@@ -9,6 +9,18 @@ enum Position {
   end,
 }
 
+double _clampSliderValue(double value, TSliderThemeData theme) {
+  final min = theme.min <= theme.max ? theme.min : theme.max;
+  final max = theme.min <= theme.max ? theme.max : theme.min;
+  return value.clamp(min, max).toDouble();
+}
+
+RangeValues _clampRangeSliderValue(RangeValues value, TSliderThemeData theme) {
+  final start = _clampSliderValue(value.start, theme);
+  final end = _clampSliderValue(value.end, theme);
+  return start <= end ? RangeValues(start, end) : RangeValues(end, start);
+}
+
 /// 单滑动选择器
 class TSlider extends StatefulWidget {
   /// 默认值
@@ -100,6 +112,7 @@ class TSliderState extends State<TSlider> {
     // v1.0：从 Theme.of(context).extension 读取组件 Theme，copyWith 隔离运行时测量数据
     final baseTheme = Theme.of(context).extension<TSliderThemeData>();
     var tSliderThemeData = (baseTheme ?? TSliderThemeData()).copyWith();
+    value = _clampSliderValue(value, tSliderThemeData);
 
     final showValue =
         tSliderThemeData.showScaleValue || tSliderThemeData.showThumbValue;
@@ -118,7 +131,8 @@ class TSliderState extends State<TSlider> {
           final textRect = tSliderThemeData.sliderMeasureData.thumbTextRect;
 
           if (textRect != null && textRect.contains(localOffset)) {
-            widget.onThumbTextTap?.call(localOffset, value); // coverage:ignore-line
+            widget.onThumbTextTap
+                ?.call(localOffset, value); // coverage:ignore-line
           }
         },
         child: Container(
@@ -238,7 +252,7 @@ class TRangeSlider extends StatefulWidget {
 }
 
 class _TRangeSliderState extends State<TRangeSlider> {
-  RangeValues rangeValues = const RangeValues(0, 100);
+  RangeValues rangeValues = const RangeValues(0, 1);
   final GlobalKey _sliderRangeKey = GlobalKey();
 
   @override
@@ -280,6 +294,7 @@ class _TRangeSliderState extends State<TRangeSlider> {
     // v1.0：从 Theme.of(context).extension 读取组件 Theme，copyWith 隔离运行时测量数据
     final baseTheme = Theme.of(context).extension<TSliderThemeData>();
     var tSliderThemeData = (baseTheme ?? TSliderThemeData()).copyWith();
+    rangeValues = _clampRangeSliderValue(rangeValues, tSliderThemeData);
     final showValue =
         tSliderThemeData.showScaleValue || tSliderThemeData.showThumbValue;
 
@@ -298,15 +313,18 @@ class _TRangeSliderState extends State<TRangeSlider> {
 
         final startTextRect =
             tSliderThemeData.sliderMeasureData.startRangeThumbTextRect;
-        final endTextRect = tSliderThemeData.sliderMeasureData.endRangeThumbTextRect;
+        final endTextRect =
+            tSliderThemeData.sliderMeasureData.endRangeThumbTextRect;
 
         if (startTextRect?.contains(localOffset) ?? false) {
           widget.onThumbTextTap // coverage:ignore-line
-              ?.call(Position.start, localOffset, rangeValues.start); // coverage:ignore-line
+              ?.call(Position.start, localOffset,
+                  rangeValues.start); // coverage:ignore-line
         }
         if (endTextRect?.contains(localOffset) ?? false) {
           widget.onThumbTextTap // coverage:ignore-line
-              ?.call(Position.end, localOffset, rangeValues.end); // coverage:ignore-line
+              ?.call(Position.end, localOffset,
+                  rangeValues.end); // coverage:ignore-line
         }
       },
       child: Container(
@@ -341,9 +359,11 @@ class _TRangeSliderState extends State<TRangeSlider> {
 
                   final sliderTheme = SliderTheme.of(context);
                   final thumbShape = sliderTheme.rangeThumbShape;
-                  final thumbSize = thumbShape?.getPreferredSize( // coverage:ignore-line
+                  final thumbSize = thumbShape?.getPreferredSize(
+                        // coverage:ignore-line
                         _enabled, // coverage:ignore-line
-                        tSliderThemeData.divisions != null, // coverage:ignore-line
+                        tSliderThemeData.divisions !=
+                            null, // coverage:ignore-line
                       ) ??
                       const Size(20, 20);
 
@@ -363,10 +383,12 @@ class _TRangeSliderState extends State<TRangeSlider> {
                   // 检测点击区域
                   final isStartTap =
                       (tapOffset.dx - startCenterX).abs() <= thumbRadius &&
-                          (tapOffset.dy - verticalCenter).abs() <= thumbRadius; // coverage:ignore-line
+                          (tapOffset.dy - verticalCenter).abs() <=
+                              thumbRadius; // coverage:ignore-line
                   final isEndTap =
                       (tapOffset.dx - endCenterX).abs() <= thumbRadius &&
-                          (tapOffset.dy - verticalCenter).abs() <= thumbRadius; // coverage:ignore-line
+                          (tapOffset.dy - verticalCenter).abs() <=
+                              thumbRadius; // coverage:ignore-line
 
                   Position position;
                   double tappedValue;

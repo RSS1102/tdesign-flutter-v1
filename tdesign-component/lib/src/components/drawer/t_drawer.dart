@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/t_colors.dart';
-import '../../theme/t_spacers.dart';
-import '../../theme/t_theme.dart';
-import '../cell/t_cell.dart';
-import '../cell/t_cell_group.dart';
-import '../cell/t_cell_theme_data.dart';
 import '../popup/t_popup.dart';
 import 't_drawer_theme_data.dart';
 import 't_drawer_widget.dart';
@@ -23,16 +17,10 @@ class TDrawer {
     this.placement = TDrawerPlacement.right,
     this.showOverlay = true,
     this.title,
-    this.titleWidget,
     this.onClose,
     this.onItemClick,
     this.width,
     this.drawerTop,
-    this.style,
-    this.hover,
-    this.backgroundColor,
-    this.bordered,
-    this.isShowLastBordered,
     this.child,
   });
 
@@ -57,11 +45,8 @@ class TDrawer {
   /// 是否显示遮罩层
   final bool? showOverlay;
 
-  /// 抽屉的标题
-  final String? title;
-
   /// 抽屉的标题组件
-  final Widget? titleWidget;
+  final Widget? title;
 
   /// 关闭时触发
   final VoidCallback? onClose;
@@ -75,23 +60,6 @@ class TDrawer {
   /// 距离顶部的距离
   final double? drawerTop;
 
-  /// 列表自定义样式（优先级高于 ThemeData）
-  final TCellThemeData? style;
-
-  /// 是否开启点击反馈（优先级高于 ThemeData）
-  final bool? hover;
-
-  /// 组件背景颜色（优先级高于 ThemeData）
-  final Color? backgroundColor;
-
-  /// 是否显示边框（优先级高于 ThemeData）
-  final bool? bordered;
-
-  /// 是否显示最后一行分割线（优先级高于 ThemeData）
-  final bool? isShowLastBordered;
-
-  /// 子树级主题数据
-
   TPopupHandle? _drawerHandle;
 
   /// 从 ThemeData 解析有效值
@@ -101,9 +69,9 @@ class TDrawer {
     return theme;
   }
 
-  void show() {
+  TDrawerHandle show() {
     if (_drawerHandle?.isShowing == true) {
-      return;
+      return TDrawerHandle._(_drawerHandle);
     }
 
     final theme = _resolveTheme();
@@ -113,8 +81,8 @@ class TDrawer {
         ? TPopupPlacement.right
         : TPopupPlacement.left;
     final popupInset = placement == TDrawerPlacement.right
-        ? TPopupRightInset(top: drawerTop ?? 0)
-        : TPopupLeftInset(top: drawerTop ?? 0);
+        ? TPopupRightInset(top: drawerTop ?? theme.drawerTop ?? 0)
+        : TPopupLeftInset(top: drawerTop ?? theme.drawerTop ?? 0);
 
     _drawerHandle = TPopup.show(
       context,
@@ -132,31 +100,33 @@ class TDrawer {
           items: items,
           child: child,
           title: title,
-          titleWidget: titleWidget,
           onItemClick: onItemClick,
           width: width ?? theme.width ?? 280,
-          style: style ?? theme.style,
-          hover: hover ?? theme.hover ?? true,
-          backgroundColor: backgroundColor ?? theme.backgroundColor,
-          bordered: bordered ?? theme.bordered ?? true,
-          isShowLastBordered:
-              isShowLastBordered ?? theme.isShowLastBordered ?? true,
+          style: theme.style,
+          hover: theme.hover ?? true,
+          backgroundColor: theme.backgroundColor,
+          bordered: theme.bordered ?? true,
+          isShowLastBordered: theme.isShowLastBordered ?? true,
         ),
       ),
     );
-  }
-
-  void open() {
-    show();
-  }
-
-  @mustCallSuper
-  void close() {
-    _drawerHandle?.close();
+    return TDrawerHandle._(_drawerHandle);
   }
 
   void _deleteRouter() {
     _drawerHandle = null;
     onClose?.call();
+  }
+}
+
+class TDrawerHandle {
+  const TDrawerHandle._(this._handle);
+
+  final TPopupHandle? _handle;
+
+  bool get isShowing => _handle?.isShowing ?? false;
+
+  void close() {
+    _handle?.close();
   }
 }

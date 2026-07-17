@@ -75,6 +75,9 @@ class _TBackTopPageState extends State<TBackTopPage> {
         ExampleModule(title: '组件类型', children: [
           ExampleItem(desc: '圆形返回顶部', builder: _buildCircleBackTop),
           ExampleItem(desc: '半圆形返回顶部', builder: _buildHalfCircleBackTop),
+        ]),
+        ExampleModule(title: '滚动内容', children: [
+          ExampleItem(desc: '自然滚动内容', builder: _buildScrollableContent),
         ])
       ],
     );
@@ -107,6 +110,18 @@ class _TBackTopPageState extends State<TBackTopPage> {
           ),
         ),
       ],
+    );
+  }
+
+  @Demo(group: 'backtop')
+  Widget _buildScrollableContent(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Wrap(
+        spacing: 16,
+        runSpacing: 24,
+        children: List.generate(12, (_) => getDemoBox(context)),
+      ),
     );
   }
 
