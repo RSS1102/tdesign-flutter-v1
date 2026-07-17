@@ -151,6 +151,9 @@ class _TTimeCounterState extends State<TTimeCounter>
     }
     _tempMilliseconds = 0;
     _ticker ??= createTicker((Duration elapsed) {
+      if (!mounted) {
+        return;
+      }
       if ((widget.direction == TTimeCounterDirection.down && _time > 0) ||
           widget.direction == TTimeCounterDirection.up && _time < _maxTime) {
         setState(() {
@@ -193,10 +196,15 @@ class _TTimeCounterState extends State<TTimeCounter>
       _maxTime = time ?? widget.time;
     }
     if (update) {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
     if (widget.autoStart) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        if (!mounted) {
+          return;
+        }
         startTimer();
       });
     }

@@ -437,12 +437,27 @@ class TTableState extends State<TTable> {
                       }
                     }
                     _sortKey = col.colKey;
-                    _displayData.sort((a, b) {
+                    final rows = List.generate(
+                      _displayData.length,
+                      (rowIndex) => _TTableSortRow(
+                        data: _displayData[rowIndex],
+                        checked: _checkedList[rowIndex],
+                        originalIndex: rowIndex,
+                      ),
+                    );
+                    rows.sort((a, b) {
+                      var result =
+                          a.data[col.colKey].compareTo(b.data[col.colKey]);
                       if (_sortable == false) {
-                        return b[col.colKey].compareTo(a[col.colKey]);
+                        result = -result;
                       }
-                      return a[col.colKey].compareTo(b[col.colKey]);
+                      if (result != 0) {
+                        return result;
+                      }
+                      return a.originalIndex.compareTo(b.originalIndex);
                     });
+                    _displayData = [for (final row in rows) row.data];
+                    _checkedList = [for (final row in rows) row.checked];
                   });
                 },
                 // 绘制双向箭头
@@ -837,6 +852,18 @@ class TTableState extends State<TTable> {
       ),
     );
   }
+}
+
+class _TTableSortRow {
+  const _TTableSortRow({
+    required this.data,
+    required this.checked,
+    required this.originalIndex,
+  });
+
+  final dynamic data;
+  final bool checked;
+  final int originalIndex;
 }
 
 class ChevronPainter extends CustomPainter {

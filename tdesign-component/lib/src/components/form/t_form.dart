@@ -106,7 +106,7 @@ class _TFormState extends State<TForm> {
   @override
   void initState() {
     super.initState();
-    _formData = widget.data;
+    _formData = Map<String, dynamic>.from(widget.data);
     widget.controller?.addListener(_handleControllerEvent);
   }
 
@@ -118,7 +118,7 @@ class _TFormState extends State<TForm> {
       widget.controller?.addListener(_handleControllerEvent);
     }
     if (oldWidget.data != widget.data) {
-      _formData = widget.data;
+      _formData = Map<String, dynamic>.from(widget.data);
     }
   }
 
@@ -145,7 +145,7 @@ class _TFormState extends State<TForm> {
     }
     _updateCount += 1;
     setState(() {
-      _formData = widget.controller!.formData;
+      _formData = Map<String, dynamic>.from(widget.controller!.formData);
       _isReset = true;
     });
   }
@@ -188,7 +188,7 @@ class _TFormState extends State<TForm> {
       _formItems.addAll(widget.btnGroup ?? []);
     }
     return TFormInherited(
-      formData: widget.data,
+      formData: _formData,
       labelWidth: widget.labelWidth,
       layout: widget.layout,
       isValidate: _isValidate,
@@ -199,7 +199,7 @@ class _TFormState extends State<TForm> {
       updateCount: _updateCount,
       onFormDataChange: (value) {
         ///监听表单数据变化
-        _formData = value;
+        _formData = Map<String, dynamic>.from(value as Map<String, dynamic>);
       },
       isReset: _isReset,
       onSubmit: onSubmit,

@@ -111,6 +111,16 @@ class TMessage extends StatefulWidget {
   }) {
     final overlay = Overlay.of(context);
     late OverlayEntry overlayEntry;
+    var dismissed = false;
+
+    void dismissOverlay() {
+      if (dismissed) {
+        return;
+      }
+      dismissed = true;
+      overlayEntry.remove();
+    }
+
     overlayEntry = OverlayEntry(
       builder: (context) => TMessage(
         content: content,
@@ -124,9 +134,12 @@ class TMessage extends StatefulWidget {
         variant: theme,
         onDurationEnd: () {
           onDurationEnd?.call(); // coverage:ignore-line
-          overlayEntry.remove(); // coverage:ignore-line
+          dismissOverlay(); // coverage:ignore-line
         },
-        onCloseBtnClick: onCloseBtnClick,
+        onCloseBtnClick: () {
+          onCloseBtnClick?.call(); // coverage:ignore-line
+          dismissOverlay(); // coverage:ignore-line
+        },
         onLinkClick: onLinkClick,
       ),
     );

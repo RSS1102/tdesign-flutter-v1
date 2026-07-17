@@ -71,11 +71,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
     _content = widget.content;
     super.initState();
     _scrollController = ScrollController();
-    WidgetsBinding.instance.addPostFrameCallback((time) {
-      if (_effectiveMarquee == true) {
-        _startTimer();
-      }
-    });
+    _scheduleMarqueeStart();
   }
 
   TNoticeBarThemeData get _theme {
@@ -112,6 +108,28 @@ class _TNoticeBarState extends State<TNoticeBar> {
     if (oldWidget.content != widget.content) {
       _content = widget.content;
     }
+    if (oldWidget.content != widget.content ||
+        oldWidget.direction != widget.direction ||
+        oldWidget.maxLines != widget.maxLines) {
+      _restartMarquee();
+    }
+  }
+
+  void _scheduleMarqueeStart() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_effectiveMarquee == true) {
+        _startTimer();
+      }
+    });
+  }
+
+  void _restartMarquee() {
+    _timer?.cancel();
+    _timer = null;
+    if (!mounted) {
+      return;
+    }
+    _scheduleMarqueeStart();
   }
 
   void _startTimer() {
@@ -123,18 +141,30 @@ class _TNoticeBarState extends State<TNoticeBar> {
   }
 
   void _scroll() {
+    final controller = _scrollController;
+    if (!mounted || controller == null || !controller.hasClients) {
+      return;
+    }
     var scrollDistance =
         _getContextWidth() + (_size!.width - _effectivePadding.horizontal);
     var remainder = scrollDistance % _effectiveSpeed;
-    _scrollController!.jumpTo(0);
+    controller.jumpTo(0);
     var offset = 0.0 + _effectiveSpeed;
-    _scrollController!.animateTo(offset,
+    controller.animateTo(offset,
         duration: const Duration(seconds: 1), curve: Curves.linear);
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      if (!mounted || _scrollController == null || !_scrollController!.hasClients) {
+        timer.cancel();
+        return;
+      }
       if (offset < scrollDistance - remainder) {
         offset += _effectiveSpeed;
         await _scrollController!.animateTo(offset,
             duration: const Duration(seconds: 1), curve: Curves.linear);
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
       } else {
         var time = (remainder / _effectiveSpeed * 1000)
             .round(); // coverage:ignore-line
@@ -142,6 +172,10 @@ class _TNoticeBarState extends State<TNoticeBar> {
             .animateTo(scrollDistance, // coverage:ignore-line
                 duration: Duration(milliseconds: time),
                 curve: Curves.linear); // coverage:ignore-line
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
         _scrollController!.jumpTo(0); // coverage:ignore-line
         offset = _effectiveSpeed - remainder; // coverage:ignore-line
         remainder =
@@ -150,6 +184,10 @@ class _TNoticeBarState extends State<TNoticeBar> {
             duration:
                 Duration(milliseconds: 1000 - time), // coverage:ignore-line
             curve: Curves.linear);
+        if (!mounted) {
+          timer.cancel();
+          return;
+        }
       }
     });
   }

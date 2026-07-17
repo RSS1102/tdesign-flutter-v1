@@ -252,6 +252,9 @@ class _TCellState extends State<TCell> {
       return;
     }
     Future.delayed(Duration(milliseconds: milliseconds), () {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _status = status;
       });

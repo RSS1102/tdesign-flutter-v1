@@ -71,6 +71,33 @@ class _TBadgeState extends State<TBadge> {
   TBadgeThemeData? _theme(BuildContext context) =>
       Theme.of(context).extension<TBadgeThemeData>();
 
+  _TBadgeResolved _resolveBadge(BuildContext context) {
+    final theme = _theme(context);
+    final message = theme?.message;
+    if (message != null) {
+      return _TBadgeResolved(
+        text: message,
+        visible: message.isNotEmpty,
+      );
+    }
+
+    final count = widget.count ?? context.resource.badgeZero;
+    final countValue = int.tryParse(count);
+    final maxCountValue = int.tryParse(widget.maxCount ?? '');
+    final displayText = countValue != null &&
+            maxCountValue != null &&
+            maxCountValue > 0 &&
+            countValue > maxCountValue
+        ? '$maxCountValue+'
+        : count;
+    final showZero = theme?.showZero ?? true;
+    return _TBadgeResolved(
+      text: displayText,
+      visible:
+          showZero || (countValue != null && countValue != 0) || countValue == null,
+    );
+  }
+
   double getBadgeSize() {
     switch (widget.size) {
       case TBadgeSize.large:
@@ -90,30 +117,11 @@ class _TBadgeState extends State<TBadge> {
   }
 
   bool get visible {
-    final theme = _theme(context);
-    final showZero = theme?.showZero ?? true;
-    final parsedValue = double.tryParse(value);
-    return showZero ||
-        (parsedValue != null && parsedValue != 0) ||
-        parsedValue == null;
+    return _resolveBadge(context).visible;
   }
 
   String get value {
-    final theme = _theme(context);
-    final message = theme?.message;
-    if (message != null) {
-      return message;
-    }
-    final count = widget.count ?? context.resource.badgeZero;
-    final countValue = int.tryParse(count);
-    final maxCountValue = int.tryParse(widget.maxCount ?? '');
-    if (countValue != null &&
-        maxCountValue != null &&
-        maxCountValue > 0 &&
-        countValue > maxCountValue) {
-      return '$maxCountValue+';
-    }
-    return count;
+    return _resolveBadge(context).text;
   }
 
   Color _resolveColor(BuildContext context) {
@@ -148,7 +156,8 @@ class _TBadgeState extends State<TBadge> {
 
   @override
   Widget build(BuildContext context) {
-    final displayValue = value;
+    final resolved = _resolveBadge(context);
+    final displayValue = resolved.text;
     switch (widget.variant) {
       case TBadgeVariant.redPoint:
         return Container(
@@ -161,43 +170,45 @@ class _TBadgeState extends State<TBadge> {
         );
       case TBadgeVariant.message:
         return Visibility(
-            visible: visible,
-            child: displayValue.length == 1
-                ? Container(
-                    height: getBadgeSize(),
-                    width: getBadgeSize(),
-                    decoration: BoxDecoration(
-                      color: _resolveColor(context),
-                      borderRadius: BorderRadius.circular(getBadgeSize() / 2),
+          visible: resolved.visible,
+          child: resolved.isCompact
+              ? Container(
+                  height: getBadgeSize(),
+                  width: getBadgeSize(),
+                  decoration: BoxDecoration(
+                    color: _resolveColor(context),
+                    borderRadius: BorderRadius.circular(getBadgeSize() / 2),
+                  ),
+                  child: Center(
+                    child: TText(
+                      displayValue,
+                      forceVerticalCenter: true,
+                      font: getBadgeFont(context),
+                      fontWeight: FontWeight.w500,
+                      textColor: _resolveTextColor(context),
+                      textAlign: TextAlign.center,
                     ),
-                    child: Center(
-                      child: TText(
-                        value,
-                        forceVerticalCenter: true,
-                        font: getBadgeFont(context),
-                        fontWeight: FontWeight.w500,
-                        textColor: _resolveTextColor(context),
-                        textAlign: TextAlign.center,
-                      ),
-                    ))
-                : Container(
-                    height: getBadgeSize(),
-                    padding: const EdgeInsets.only(left: 5, right: 5),
-                    decoration: BoxDecoration(
-                      color: _resolveColor(context),
-                      borderRadius: BorderRadius.circular(getBadgeSize() / 2),
+                  ),
+                )
+              : Container(
+                  height: getBadgeSize(),
+                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  decoration: BoxDecoration(
+                    color: _resolveColor(context),
+                    borderRadius: BorderRadius.circular(getBadgeSize() / 2),
+                  ),
+                  child: Center(
+                    child: TText(
+                      displayValue,
+                      forceVerticalCenter: true,
+                      font: getBadgeFont(context),
+                      fontWeight: FontWeight.w500,
+                      textColor: _resolveTextColor(context),
+                      textAlign: TextAlign.center,
                     ),
-                    child: Center(
-                      child: TText(
-                        value,
-                        forceVerticalCenter: true,
-                        font: getBadgeFont(context),
-                        fontWeight: FontWeight.w500,
-                        textColor: _resolveTextColor(context),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ));
+                  ),
+                ),
+        );
       case TBadgeVariant.subscript:
         return ClipPath(
           clipper: TrapezoidPath(
@@ -223,7 +234,7 @@ class _TBadgeState extends State<TBadge> {
         );
       case TBadgeVariant.bubble:
         return Visibility(
-            visible: visible,
+            visible: resolved.visible,
             child: Container(
               height: 16,
               padding: const EdgeInsets.only(left: 4, right: 4),
@@ -237,7 +248,7 @@ class _TBadgeState extends State<TBadge> {
               ),
               child: Center(
                 child: TText(
-                  value,
+                  displayValue,
                   forceVerticalCenter: true,
                   font: getBadgeFont(context),
                   fontWeight: FontWeight.w500,
@@ -248,7 +259,7 @@ class _TBadgeState extends State<TBadge> {
             ));
       case TBadgeVariant.square:
         return Visibility(
-            visible: visible,
+            visible: resolved.visible,
             child: IntrinsicWidth(
                 child: Container(
               height: getBadgeSize(),
@@ -261,7 +272,7 @@ class _TBadgeState extends State<TBadge> {
               ),
               child: Center(
                 child: TText(
-                  value,
+                  displayValue,
                   forceVerticalCenter: true,
                   font: getBadgeFont(context),
                   fontWeight: FontWeight.w500,
@@ -272,6 +283,18 @@ class _TBadgeState extends State<TBadge> {
             )));
     }
   }
+}
+
+class _TBadgeResolved {
+  const _TBadgeResolved({
+    required this.text,
+    required this.visible,
+  });
+
+  final String text;
+  final bool visible;
+
+  bool get isCompact => text.length == 1;
 }
 
 class TrapezoidPath extends CustomClipper<Path> {

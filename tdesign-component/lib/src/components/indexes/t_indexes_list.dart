@@ -215,6 +215,9 @@ class _TIndexesListState extends State<TIndexesList> {
     _hideTipTimer = Timer(
       const Duration(seconds: 1),
       () {
+        if (!mounted) {
+          return;
+        }
         setState(() {
           _showTip = false;
         });

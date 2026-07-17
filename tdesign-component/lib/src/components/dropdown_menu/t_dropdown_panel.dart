@@ -102,6 +102,9 @@ class _TDropdownPanelState extends State<TDropdownPanel> with SingleTickerProvid
       return;
     }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!mounted) {
+        return;
+      }
       var renderBox = itemContext.findRenderObject() as RenderBox;
       var size = renderBox.size;
       if (widget.directionListenable.value == TDropdownPopupDirection.auto) {
@@ -137,6 +140,9 @@ class _TDropdownPanelState extends State<TDropdownPanel> with SingleTickerProvid
       }
       setState(() {});
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
         if (_controller.status == AnimationStatus.dismissed) {
           widget.colorAlphaListenable.value = true;
           _controller.duration = widget.duration;

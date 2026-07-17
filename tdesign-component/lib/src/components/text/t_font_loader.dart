@@ -58,6 +58,8 @@ class TFontLoaderWidget extends StatefulWidget {
 }
 
 class _TFontLoaderWidgetState extends State<TFontLoaderWidget> {
+  var _fontFamilyLoaded = false;
+
   @override // coverage:ignore-line
 
   void initState() {
@@ -77,6 +79,7 @@ class _TFontLoaderWidgetState extends State<TFontLoaderWidget> {
             name: widget
                 .textWidget.fontFamily!.fontFamily, // coverage:ignore-line
             fontFamilyUrl: widget.fontFamilyUrl)) {
+          _fontFamilyLoaded = true;
           // coverage:ignore-start
           if (!mounted) {
             return;
@@ -120,7 +123,7 @@ class _TFontLoaderWidgetState extends State<TFontLoaderWidget> {
       semanticsLabel: textWidget.semanticsLabel, // coverage:ignore-line
       textWidthBasis: textWidget.textWidthBasis, // coverage:ignore-line
       textHeightBehavior: textWidget.textHeightBehavior, // coverage:ignore-line
-      isInFontLoader: true,
+      isInFontLoader: !_fontFamilyLoaded,
     );
   }
 }

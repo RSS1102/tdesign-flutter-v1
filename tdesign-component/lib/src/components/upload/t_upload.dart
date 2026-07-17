@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -226,7 +227,7 @@ class _TUploadState extends State<TUpload> {
   @override
   void didUpdateWidget(covariant TUpload oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.files != widget.files) {
+    if (!listEquals(oldWidget.files, widget.files)) {
       fileList = List<TUploadFile>.of(widget.files);
     }
   }

@@ -305,12 +305,12 @@ class _TTabsBarVerticalIndicatorPainter extends BoxPainter {
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
     canvas.drawLine(
         Offset(
-          0 + _indicatorWidth() / 2,
-          offset.dx + (configuration.size!.width - _indicatorHeight()) / 2,
+          offset.dx + _indicatorWidth() / 2,
+          offset.dy + (configuration.size!.height - _indicatorHeight()) / 2,
         ),
         Offset(
-          0 + _indicatorWidth() / 2,
-          offset.dx + (configuration.size!.width + _indicatorHeight()) / 2,
+          offset.dx + _indicatorWidth() / 2,
+          offset.dy + (configuration.size!.height + _indicatorHeight()) / 2,
         ),
         _paint..strokeWidth = _indicatorWidth());
   }

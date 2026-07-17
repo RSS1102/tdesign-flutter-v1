@@ -13,6 +13,9 @@ class TRateOverlay {
 
   void show() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) {
+        return;
+      }
       _overlayEntry = OverlayEntry(
         builder: builder,
       );

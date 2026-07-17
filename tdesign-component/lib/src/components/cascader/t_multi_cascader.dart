@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
 import '../../util/context_extension.dart';
@@ -93,6 +95,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
   List<MultiCascaderListModel> _selectListData = [];
 
   final ScrollController _scrollListController = ScrollController();
+  Timer? _initialScrollTimer;
 
   @override
   void initState() {
@@ -172,7 +175,11 @@ class _TMultiCascaderState extends State<TMultiCascader>
   void didChangeDependencies() {
     /// 该方法在开始处必须调用父类的方法
     super.didChangeDependencies();
-    Future.delayed(const Duration(seconds: 1), () {
+    _initialScrollTimer?.cancel();
+    _initialScrollTimer = Timer(const Duration(seconds: 1), () {
+      if (!mounted) {
+        return;
+      }
       List.generate(_selectListData.length, (index) {
         if (_selectListData[index].value == _selectTabValue) {
           _scrollToListIndex(index);
@@ -183,6 +190,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
 
   @override
   void dispose() {
+    _initialScrollTimer?.cancel();
     _scrollListController.dispose();
     super.dispose();
   }

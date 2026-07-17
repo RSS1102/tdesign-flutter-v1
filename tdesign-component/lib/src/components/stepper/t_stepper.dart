@@ -29,7 +29,7 @@ class TStepperController {
     _state?.updateUI();
   }
 
-  void _bindState(_TStepperState _tdStepperState) {
+  void _bindState(_TStepperState? _tdStepperState) {
     _state = _tdStepperState;
   }
 }
@@ -106,23 +106,14 @@ class _TStepperState extends State<TStepper> {
   late TStepperController _controller;
   late TextEditingController _textController;
   final FocusNode _focusNode = FocusNode();
+  StreamSubscription<TStepperEventType>? _eventSubscription;
 
   @override
   void initState() {
     super.initState();
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-    } else {
-      _controller = TStepperController()..value = widget.value ?? 0;
-    }
+    _bindController(widget.controller);
     _controller._bindState(this);
-    if (widget.eventController != null) {
-      widget.eventController?.stream.listen((TStepperEventType event) {
-        if (event == TStepperEventType.cleanValue) {
-          cleanValue();
-        }
-      });
-    }
+    _bindEventController(widget.eventController);
     _textController =
         TextEditingController(text: _controller._value.toString());
 
@@ -137,9 +128,33 @@ class _TStepperState extends State<TStepper> {
 
   @override
   void dispose() {
+    _controller._bindState(null);
+    _eventSubscription?.cancel();
     _textController.dispose();
     _focusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant TStepper oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      _controller._bindState(null);
+      _bindController(widget.controller);
+      _controller._bindState(this);
+      _textController.value = TextEditingValue(
+        text: _controller._value.toString(),
+        selection: TextSelection.fromPosition(TextPosition(
+          affinity: TextAffinity.downstream,
+          offset: _controller._value.toString().length,
+        )),
+      );
+    } else if (widget.controller == null && oldWidget.value != widget.value) {
+      _controller.value = widget.value ?? 0;
+    }
+    if (oldWidget.eventController != widget.eventController) {
+      _bindEventController(widget.eventController);
+    }
   }
 
   double _getWidth() {
@@ -414,6 +429,27 @@ class _TStepperState extends State<TStepper> {
             offset: _controller._value.toString().length,
           )));
     }
+  }
+
+  void _bindEventController(
+      StreamController<TStepperEventType>? eventController) {
+    _eventSubscription?.cancel();
+    _eventSubscription = null;
+    if (eventController == null) {
+      return;
+    }
+    _eventSubscription = eventController.stream.listen((event) {
+      if (!mounted) {
+        return;
+      }
+      if (event == TStepperEventType.cleanValue) {
+        cleanValue();
+      }
+    });
+  }
+
+  void _bindController(TStepperController? controller) {
+    _controller = controller ?? TStepperController()..value = widget.value ?? 0;
   }
 }
 

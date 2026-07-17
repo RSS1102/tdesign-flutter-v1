@@ -16,9 +16,6 @@ class TSideBarController extends ChangeNotifier {
   /// 是否加载中
   bool get loading => _loading;
 
-  /// 更新加载态
-  set loading(bool value) => setLoading(value);
-
   /// 更新动态选项数据
   set children(List<SideItemProps> value) => setChildren(value);
 

@@ -194,11 +194,16 @@ class _ExamplePageState extends State<ExamplePage> with WidgetsBindingObserver {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildNavBar(),
+                SafeArea(bottom: false, child: _buildNavBar()),
                 Expanded(
-                    child: widget.showSingleChild && widget.singleChild != null
-                        ? _singleChild()
-                        : _buildExampleList()),
+                  child: SafeArea(
+                    top: false,
+                    child:
+                        widget.showSingleChild && widget.singleChild != null
+                            ? _singleChild()
+                            : _buildExampleList(),
+                  ),
+                ),
               ],
             )));
   }

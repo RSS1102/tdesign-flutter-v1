@@ -31,6 +31,9 @@ class TRateTips extends StatelessWidget {
   Widget build(BuildContext context) {
     final _tipKey = GlobalKey();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) {
+        return;
+      }
       final renderBox =
           _tipKey.currentContext?.findRenderObject() as RenderBox?;
       sizeCall(renderBox?.size ?? Size.zero);

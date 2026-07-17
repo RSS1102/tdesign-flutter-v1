@@ -23,6 +23,7 @@ class TRate extends StatefulWidget {
     this.allowHalf = false,
     this.color,
     this.count = 5,
+    this.disabled = false,
     this.gap,
     this.icon,
     this.placement = PlacementEnum.top,
@@ -48,6 +49,9 @@ class TRate extends StatefulWidget {
 
   /// 评分的数量
   final int? count;
+
+  /// 是否禁用
+  final bool? disabled;
 
   /// 评分图标的间距，默认：context.tTheme.spacer8
   final double? gap;
@@ -103,8 +107,8 @@ class TRate extends StatefulWidget {
 }
 
 class _TRateState extends State<TRate> with TickerProviderStateMixin {
-  /// onChanged 为 null 时禁用
-  bool get _isDisabled => widget.onChanged == null;
+  /// disabled 或 onChanged 为 null 时禁用
+  bool get _isDisabled => widget.disabled == true || widget.onChanged == null;
 
   /// 节流
   final _throttle = Throttle(delay: const Duration(milliseconds: 100));
@@ -356,6 +360,9 @@ class _TRateState extends State<TRate> with TickerProviderStateMixin {
       Duration(
           milliseconds: _isClick && widget.allowHalf == true ? 3000 : 1000),
       () {
+        if (!mounted) {
+          return;
+        }
         _showTip = false;
         _isClick = true;
         _reverse();

@@ -179,7 +179,7 @@ class _TButtonState extends State<TButton> {
           );
       final side = resolvedStyle.side?.resolve(states);
       final effectiveShape = side == null ? shape : shape.copyWith(side: side);
-      final backgroundColor = widget.style?.backgroundColor?.resolve(states);
+      final backgroundColor = resolvedStyle.backgroundColor?.resolve(states);
       final foregroundColor = resolvedStyle.foregroundColor?.resolve(states);
 
       final textStyle = resolvedStyle.textStyle?.resolve(states) ??

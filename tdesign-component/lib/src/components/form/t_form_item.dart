@@ -112,24 +112,45 @@ class TFormItem extends StatefulWidget {
 }
 
 class _TFormItemState extends State<TFormItem> {
+  VoidCallback? _itemNotifierListener;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    if (!(widget.itemNotifier?.isDisposed ?? true)) {
-      widget.itemNotifier?.addListener(() { // coverage:ignore-line
-        updateformData(widget.itemNotifier?.formVal); // coverage:ignore-line
-      });
+    _bindItemNotifier(widget.itemNotifier);
+  }
+
+  @override
+  void didUpdateWidget(covariant TFormItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.itemNotifier != widget.itemNotifier) {
+      _unbindItemNotifier(oldWidget.itemNotifier);
+      _bindItemNotifier(widget.itemNotifier);
     }
   }
 
   @override
   void dispose() {
+    _unbindItemNotifier(widget.itemNotifier);
     super.dispose();
-    if (widget.itemNotifier != null &&
-        !widget.itemNotifier!.isDisposed) { // coverage:ignore-line
-      widget.itemNotifier?.dispose(); // coverage:ignore-line
+  }
+
+  void _bindItemNotifier(FormItemNotifier? notifier) {
+    if (notifier == null || notifier.isDisposed) {
+      return;
     }
+    _itemNotifierListener = () {
+      updateformData(notifier.formVal);
+    };
+    notifier.addListener(_itemNotifierListener!);
+  }
+
+  void _unbindItemNotifier(FormItemNotifier? notifier) {
+    if (notifier == null || _itemNotifierListener == null) {
+      return;
+    }
+    notifier.removeListener(_itemNotifierListener!);
+    _itemNotifierListener = null;
   }
 
   @override
@@ -251,7 +272,7 @@ class _TFormItemState extends State<TFormItem> {
   void updateformData(value) { // coverage:ignore-line
     if (widget.name != null) { // coverage:ignore-line
       var name = widget.name!; // coverage:ignore-line
-      var _formData = formData; // coverage:ignore-line
+      var _formData = Map<String, dynamic>.from(formData); // coverage:ignore-line
       _formData[name] = value; // coverage:ignore-line
       TFormInherited.of(context)!.onFormDataChange(_formData); // coverage:ignore-line
       startValidation(); // coverage:ignore-line

@@ -467,6 +467,9 @@ class _TDropdownItemState extends State<TDropdownItem> {
     if (widget.multiple != true || (widget.optionsColumns ?? 1) > 1) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
+    if (!mounted) {
+      return;
+    }
     await Navigator.maybePop(context);
   }
 

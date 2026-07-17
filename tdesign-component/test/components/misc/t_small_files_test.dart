@@ -10,7 +10,7 @@ import 'package:tdesign_flutter/src/components/sidebar/t_sidebar_controller.dart
 import 'package:tdesign_flutter/src/components/swipe_cell/t_swipe_cell_inherited.dart';
 
 /// 覆盖多个小文件的未覆盖行：TCellInherited updateShouldNotify、TFabBounds 构造器、
-/// DateTimePickerSteps operator==、TSideBarController dispose/closeLoading
+/// DateTimePickerSteps operator==、TSideBarController dispose/setLoading
 void main() {
   group('TCellInherited.updateShouldNotify', () {
     test('始终返回 true', () {
@@ -83,19 +83,19 @@ void main() {
   });
 
   group('TSideBarController', () {
-    test('closeLoading needNotify=true 触发通知', () {
+    test('setLoading needNotify=true 触发通知', () {
       final controller = TSideBarController();
       var notifyCount = 0;
       controller.addListener(() => notifyCount++);
-      controller.closeLoading(true);
+      controller.setLoading(true);
       expect(notifyCount, greaterThan(0));
     });
 
-    test('closeLoading needNotify=false 不触发通知', () {
+    test('setLoading needNotify=false 不触发通知', () {
       final controller = TSideBarController();
       var notifyCount = 0;
       controller.addListener(() => notifyCount++);
-      controller.closeLoading(false, needNotify: false);
+      controller.setLoading(false, needNotify: false);
       expect(notifyCount, 0);
     });
 
