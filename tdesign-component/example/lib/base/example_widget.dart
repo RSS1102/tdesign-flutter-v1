@@ -26,7 +26,7 @@ class ExamplePage extends StatefulWidget {
     this.desc = '',
     this.children = const [],
     this.padding,
-    @deprecated this.backgroundColor,
+    this.backgroundColor,
     required this.exampleCodeGroup,
     this.test = const [],
     this.showSingleChild = false,
@@ -683,7 +683,7 @@ class _CodeWrapperState extends State<CodeWrapper> {
       }
     }
     if (methodName.isNotEmpty && exampleCodeGroup.isNotEmpty) {
-      print('example code methodName: $methodName');
+      debugPrint('example code methodName: $methodName');
       return 'assets/code/${exampleCodeGroup}.$methodName.txt';
     }
     return '';
@@ -709,7 +709,7 @@ class _CodeWrapperState extends State<CodeWrapper> {
           }
 
           var lines = codeString!.split('\n');
-          print('lines: ${lines.length}');
+          debugPrint('lines: ${lines.length}');
           double height = min(max(300, lines.length * 17 + 32),
               MediaQuery.of(context).size.height - 150);
           var mdText = '''
@@ -752,7 +752,7 @@ ${codeString}
       try {
         codeString = await rootBundle.loadString(assetsPath);
       } catch (e) {
-        print(e);
+        debugPrint('$e');
       }
     }
     return codeString;

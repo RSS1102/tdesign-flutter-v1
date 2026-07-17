@@ -14,12 +14,12 @@
 | [ ] | TInput | [input.md](./input.md) | S2 |
 | [ ] | TTextarea | [textarea.md](./textarea.md) | S2 |
 | [ ] | TSwitch | [switch.md](./switch.md) | S2 |
-| [ ] | TCheckbox | [checkbox.md](./checkbox.md) | S2 |
-| [ ] | TRadio | [radio.md](./radio.md) | S2 |
+| [x] | TCheckbox | [checkbox.md](./checkbox.md) | S2 |
+| [x] | TRadio | [radio.md](./radio.md) | S2 |
 | [ ] | TSlider | [slider.md](./slider.md) | S2 |
-| [ ] | TCheckboxGroup | [checkbox-group.md](./checkbox-group.md) | S2 |
-| [ ] | TSearchBar | [search-bar.md](./search-bar.md) | S2 |
-| [ ] | TStepper | [stepper.md](./stepper.md) | S2 |
+| [x] | TCheckboxGroup | [checkbox-group.md](./checkbox-group.md) | S2 |
+| [x] | TSearchBar | [search-bar.md](./search-bar.md) | S2 |
+| [x] | TStepper | [stepper.md](./stepper.md) | S2 |
 | [ ] | TForm | [form.md](./form.md) | S3 |
 | [ ] | TFormItem | [form-item.md](./form-item.md) | S3 |
 | [ ] | TRate | [rate.md](./rate.md) | S3 |

@@ -96,7 +96,7 @@ class _ApiWidgetState extends State<ApiWidget> {
       result = await rootBundle.loadString('assets/api/${apiName}_api.md');
       lastApiName = widget.apiName;
     } catch (e) {
-      print('getApiData error: $e');
+      debugPrint('getApiData error: $e');
     }
     return result ?? defaultResult;
   }
