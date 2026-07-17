@@ -140,6 +140,8 @@ TTabBar _buildTabBar() {
   var textSize = 8.0;
   return TTabBar(
     variant: TTabBarVariant.weakIconText,
+    value: 0,
+    onChanged: (_) {},
     useVerticalDivider: false,
     barHeight: 98 * 60 / 98,
     navigationTabs: [

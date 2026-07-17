@@ -100,7 +100,7 @@ Widget _buildIconSimple(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: const Text('带图标抽屉'),
+      child: const Text('带标题抽屉'),
       variant: TButtonVariant.outline,
       colorScheme: TButtonColorScheme.primary,
       size: TButtonSize.large,

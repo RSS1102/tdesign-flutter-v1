@@ -264,77 +264,85 @@ class TTableState extends State<TTable> {
       // 行选择框
       if (_notEmptyData() && !isHeader) {
         var enable = col.selectable?.call(index, _displayData[index]) ?? true;
-        checkBox = TCheckbox(
-          id: 'index:$index',
-          value: _checkedList[index],
-          enabled: enable,
-          customIconBuilder: (context, checked) {
-            if (checked) {
-              return Icon(TIcons.check_rectangle_filled,
-                  size: 16, color: context.tTheme.brandNormalColor);
-            }
-            return Icon(TIcons.rectangle,
-                size: 16,
-                color: enable
-                    ? context.tTheme.textColorPrimary
-                    : context.tTheme.textColorPlaceholder);
-          },
-          onChanged: (checked) {
-            setState(() {
-              _checkedList[index] = checked;
-              if (checked) {
-                _hasChecked += 1;
-              } else {
-                _hasChecked -= 1;
+        checkBox = _compactCheckbox(
+          TCheckbox(
+            value: _checkedList[index],
+            customIconBuilder: (context, checked, disabled) {
+              if (checked == true) {
+                return Icon(TIcons.check_rectangle_filled,
+                    size: 16,
+                    color: disabled
+                        ? context.tTheme.brandDisabledColor
+                        : context.tTheme.brandNormalColor);
               }
-              _checkAll = _hasChecked == _totalSelectable;
-              var selectList = [];
-              for (var i = 0; i < _checkedList.length; i++) {
-                if (_checkedList[i]) {
-                  selectList.add(_displayData[i]);
-                }
-              }
-              widget.onSelect?.call(selectList);
-              widget.onRowSelect?.call(index, checked);
-            });
-          },
+              return Icon(TIcons.rectangle,
+                  size: 16,
+                  color: !disabled
+                      ? context.tTheme.textColorPrimary
+                      : context.tTheme.textColorPlaceholder);
+            },
+            onChanged: !enable
+                ? null
+                : (checked) {
+                    final isChecked = checked == true;
+                    setState(() {
+                      _checkedList[index] = isChecked;
+                      if (isChecked) {
+                        _hasChecked += 1;
+                      } else {
+                        _hasChecked -= 1;
+                      }
+                      _checkAll = _hasChecked == _totalSelectable;
+                      var selectList = [];
+                      for (var i = 0; i < _checkedList.length; i++) {
+                        if (_checkedList[i]) {
+                          selectList.add(_displayData[i]);
+                        }
+                      }
+                      widget.onSelect?.call(selectList);
+                      widget.onRowSelect?.call(index, isChecked);
+                    });
+                  },
+          ),
         );
       }
 
       // 表头选择框
       if (isHeader) {
-        checkBox = TCheckbox(
-          id: 'header',
-          value: _checkAll,
-          customIconBuilder: (context, checked) {
-            if (_hasChecked == 0) {
-              return Icon(
-                TIcons.rectangle,
-                size: 16,
-                color: context.tTheme.textColorPlaceholder,
-              );
-            }
-            var allCheck = _hasChecked >= _totalSelectable;
-            var halfSelected =
-                _hasChecked > 0 && _hasChecked < _totalSelectable;
-            return getAllIcon(allCheck, halfSelected);
-          },
-          onChanged: (checked) {
-            setState(() {
-              if (!_notEmptyData() && checked) {
-                _hasChecked = _totalSelectable = 1;
+        checkBox = _compactCheckbox(
+          TCheckbox(
+            value: _checkAll,
+            customIconBuilder: (context, checked, disabled) {
+              if (_hasChecked == 0) {
+                return Icon(
+                  TIcons.rectangle,
+                  size: 16,
+                  color: context.tTheme.textColorPlaceholder,
+                );
               }
-              _checkAll = checked;
-              _hasChecked = checked ? _totalSelectable : 0;
-              for (var i = 0; i < _displayData.length; i++) {
-                // 不选中selectable == false的行
-                if (_selectableCol.selectable!(i, _displayData[i])) {
-                  _checkedList[i] = checked;
+              var allCheck = _hasChecked >= _totalSelectable;
+              var halfSelected =
+                  _hasChecked > 0 && _hasChecked < _totalSelectable;
+              return getAllIcon(allCheck, halfSelected);
+            },
+            onChanged: (checked) {
+              final isChecked = checked == true;
+              setState(() {
+                if (!_notEmptyData() && isChecked) {
+                  _hasChecked = _totalSelectable = 1;
                 }
-              }
-              widget.onSelect?.call(checked ? _displayData : []);
-            });
-          },
+                _checkAll = isChecked;
+                _hasChecked = isChecked ? _totalSelectable : 0;
+                for (var i = 0; i < _displayData.length; i++) {
+                  // 不选中selectable == false的行
+                  if (_selectableCol.selectable!(i, _displayData[i])) {
+                    _checkedList[i] = isChecked;
+                  }
+                }
+                widget.onSelect?.call(isChecked ? _displayData : []);
+              });
+            },
+          ),
         );
       }
 
@@ -374,6 +382,17 @@ class TTableState extends State<TTable> {
           )),
     );
     return cell;
+  }
+
+  Widget _compactCheckbox(Widget child) {
+    final checkboxTheme = CheckboxTheme.of(context).copyWith(
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+    return Theme(
+      data: Theme.of(context).copyWith(checkboxTheme: checkboxTheme),
+      child: child,
+    );
   }
 
   /// 获取单元格内容

@@ -121,7 +121,6 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '禁用状态',
       noteWidget: TSwitch(
-        enabled: false,
         value: false,
       ),
     );
@@ -132,7 +131,6 @@ class TSwitchPageState extends State<TSwitchPage> {
     return const TCell(
       title: '禁用状态',
       noteWidget: TSwitch(
-        enabled: false,
         value: true,
       ),
     );

@@ -206,14 +206,7 @@ class _TNavBarState extends State<TNavBar> {
       icon: TIcons.chevron_left,
       iconSize: 28.0,
       iconColor: iconColor,
-      action: () {
-        final onBack = widget.onBack;
-        if (onBack != null) {
-          onBack();
-          return;
-        }
-        Navigator.maybePop(context);
-      },
+      action: widget.onBack,
     ).toWidget(context);
   }
 
@@ -353,21 +346,29 @@ class TNavBarItem {
     this.customWidget,
   });
 
-  Widget toWidget(BuildContext context, {bool isLeading = true}) =>
-      GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: action,
-        child: Padding(
-          padding: padding ??
-              (isLeading
-                  ? EdgeInsets.only(right: context.tTheme.spacer8)
-                  : EdgeInsets.only(left: context.tTheme.spacer8)),
-          child: customWidget ??
-              Icon(
-                icon,
-                size: iconSize,
-                color: iconColor,
-              ),
-        ),
-      );
+  Widget toWidget(BuildContext context, {bool isLeading = true}) {
+    final isDisabled = action == null;
+    final item = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: action,
+      child: Padding(
+        padding: padding ??
+            (isLeading
+                ? EdgeInsets.only(right: context.tTheme.spacer8)
+                : EdgeInsets.only(left: context.tTheme.spacer8)),
+        child: customWidget ??
+            Icon(
+              icon,
+              size: iconSize,
+              color: isDisabled ? context.tTheme.textDisabledColor : iconColor,
+            ),
+      ),
+    );
+    return Semantics(
+      enabled: !isDisabled,
+      child: isDisabled && customWidget != null
+          ? Opacity(opacity: 0.4, child: item)
+          : item,
+    );
+  }
 }

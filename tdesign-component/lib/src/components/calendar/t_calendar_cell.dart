@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
+import '../../../tdesign_flutter.dart' hide TCalendarStyle;
 import '../../util/iterable_ext.dart';
 import 't_calendar_style.dart';
 
@@ -161,8 +161,7 @@ class _TCalendarCellState extends State<TCalendarCell> {
 
   bool _checkIsToday() {
     final today = DateTime.now();
-    return widget.cell?.date ==
-        DateTime(today.year, today.month, today.day);
+    return widget.cell?.date == DateTime(today.year, today.month, today.day);
   }
 
   @override
@@ -172,10 +171,9 @@ class _TCalendarCellState extends State<TCalendarCell> {
       return const SizedBox.shrink();
     }
 
-    final themedStyle =
-        TCalendarStyle.generateStyle(context: context).forSelectType(context, cell.selectType);
-    final decoration =
-        themedStyle.cellDecoration;
+    final themedStyle = TCalendarStyle.generateStyle(context: context)
+        .forSelectType(context, cell.selectType);
+    final decoration = themedStyle.cellDecoration;
     final positionColor = _rangeBridgeColor(context, themedStyle, decoration);
 
     final content = widget.cellBuilder?.call(context, cell) ??
@@ -225,8 +223,7 @@ class _TCalendarCellState extends State<TCalendarCell> {
     BoxDecoration? decoration,
   ) {
     _positionOffset = 0;
-    final bridgeColor =
-        cellStyle.centreColor ?? context.tTheme.brandLightColor;
+    final bridgeColor = cellStyle.centreColor ?? context.tTheme.brandLightColor;
     final next = _nextDay();
     if (widget.cell?.selectType == DateSelectType.start) {
       if (widget.cell?.isLastDayOfMonth == true) {

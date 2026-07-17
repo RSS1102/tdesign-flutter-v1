@@ -176,6 +176,7 @@ void _showCalendarPickerSheet({
   DateTime? anchorDate,
   bool animateTo = false,
   Widget Function(List<DateTime> selected)? footer,
+  VoidCallback? onClear,
   DateTime? minDate,
   DateTime? maxDate,
   TCalendarSubtitleBuilder? subtitleBuilder,
@@ -186,7 +187,7 @@ void _showCalendarPickerSheet({
     initialValue != null ? List<DateTime>.from(initialValue) : <DateTime>[],
   );
   final showHeaderConfirm =
-      type != TCalendarVariant.single || !autoPopOnSingleSelect;
+      type != TCalendarVariant.single || !autoPopOnSingleSelect || onClear != null;
   final sheetHeight = MediaQuery.sizeOf(context).height * 0.6;
 
   final popupHandles = <TPopupHandle>[];
@@ -221,7 +222,27 @@ void _showCalendarPickerSheet({
     }
   }
 
-  final handle = showHeaderConfirm
+  final handle = onClear != null
+      ? TPopup.show(
+          context,
+          options: TPopupOptions.bottom(
+            height: sheetHeight,
+            titleWidget: TText(title),
+            confirmBuilder: (context, close) => TButton(
+              size: TButtonSize.small,
+              colorScheme: TButtonColorScheme.light,
+              child: const Text('清除已选'),
+              onPressed: () {
+                pending.value = const <DateTime>[];
+                onClear();
+                close();
+              },
+            ),
+            onVisibleChange: onVisibleChange,
+            child: panel,
+          ),
+        )
+      : showHeaderConfirm
       ? TPopup.show(
           context,
           options: TPopupOptions.bottom(
@@ -383,6 +404,7 @@ class _AnchorCalendarCellState extends State<_AnchorCalendarCell> {
       anchorDate: hasInitial ? null : _AnchorDemoData.anchorMonth,
       animateTo: !hasInitial,
       onConfirm: (value) => setState(() => _selected = value),
+      onClear: _clearSelected,
       footer: (_) => _AnchorPickerHint(
         anchorMonth: _AnchorDemoData.anchorMonth,
         hasInitialValue: hasInitial,
@@ -402,15 +424,6 @@ class _AnchorCalendarCellState extends State<_AnchorCalendarCell> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: TButton(
-            child: const Text('清除已选'),
-            size: TButtonSize.small,
-            colorScheme: TButtonColorScheme.light,
-            onPressed: hasInitial ? _clearSelected : null,
-          ),
-        ),
-        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           child: Align(
             alignment: Alignment.centerLeft,
@@ -426,11 +439,14 @@ class _AnchorCalendarCellState extends State<_AnchorCalendarCell> {
           ),
         ),
         TCell(
-          title: '锚点',
+          titleWidget: const SizedBox(
+            width: 72,
+            child: TText('锚点'),
+          ),
           arrow: true,
           note: hasInitial
-              ? '已选 $selectedNote，打开显示该日所在月'
-              : '未选日期，打开显示 $anchorLabel',
+              ? '已选 ${_formatMd(_selected.first)}'
+              : '锚点 ${_formatMd(_AnchorDemoData.anchorMonth)}',
           onTap: _openPicker,
         ),
       ],
@@ -532,27 +548,6 @@ BoxDecoration _bottomCardDecoration(BuildContext context) => BoxDecoration(
     );
 
 // ===== 拆分出的私有 widget =====
-
-/// 自定义单元格容器：统一圆角 + 填充色 + 撑满约束
-class _CustomCellContainer extends StatelessWidget {
-  const _CustomCellContainer({required this.color, required this.child});
-
-  final Color color;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: const BorderRadius.all(Radius.circular(6)),
-      ),
-      constraints: const BoxConstraints.expand(),
-      alignment: Alignment.center,
-      child: child,
-    );
-  }
-}
 
 class _MultipleSummary extends StatelessWidget {
   const _MultipleSummary({required this.selected});
@@ -730,45 +725,27 @@ class _StyleDemoState extends State<_StyleDemo> {
     );
   }
 
-  /// 自定义单元格 demo：通过 cellBuilder 整格绘制今天 / 已选 / 默认样式。
+  /// 自定义单元格 demo：保留组件默认选中背景和状态文字色，只替换内容。
   Widget? _buildCustomDayCell(BuildContext context, TCalendarCellModel cell) {
     final today = DateTime.now();
     final isToday = cell.date == DateTime(today.year, today.month, today.day);
 
-    if (isToday && cell.selectType != DateSelectType.selected) {
-      return _CustomCellContainer(
-        color: context.tTheme.brandColor4,
-        child: const Text(
-          '今天',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
-    }
-    if (cell.selectType == DateSelectType.selected) {
-      return _CustomCellContainer(
-        color: context.tTheme.successColor8,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '${cell.date.day}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Text(
-              '已选',
-              style: TextStyle(fontSize: 10, color: Colors.white),
-            ),
-          ],
-        ),
-      );
-    }
-    return null;
+    final style = TCalendarStyle.generateStyle(context: context)
+        .forSelectType(context, cell.selectType);
+    final dayStyle = isToday && cell.selectType != DateSelectType.selected
+        ? style.todayDayStyle
+        : style.dayStyle;
+    final subtitle = isToday && cell.selectType != DateSelectType.selected
+        ? '今天'
+        : (cell.selectType == DateSelectType.selected ? '已选' : '自定义');
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TText('${cell.date.day}', style: dayStyle),
+        TText(subtitle, style: style.subtitleStyle),
+      ],
+    );
   }
 
   @override

@@ -222,8 +222,8 @@ Map<String, List<ExamplePageModel>> exampleMap = {
         name: 'slider',
         pageBuilder: _wrapInheritedTheme((context) => const TSliderPage())),
     ExamplePageModel(
-        text: 'SearchBar 搜索框 (V1.0)',
-        name: 'searchBar',
+        text: 'Search 搜索框 (V1.0)',
+        name: 'search',
         pageBuilder: _wrapInheritedTheme((context) => const TSearchBarPage())),
     ExamplePageModel(
         text: 'Stepper 步进器 (V1.0)',

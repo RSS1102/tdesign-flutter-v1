@@ -29,6 +29,7 @@ class TTextarea extends StatefulWidget {
     this.maxLengthEnforcement,
     this.allowInputOverMax = false,
     this.autofocus = false,
+    this.enabled = true,
     this.readOnly = false,
     this.inputFormatters,
     this.textAlign,
@@ -146,6 +147,9 @@ class TTextarea extends StatefulWidget {
   /// 是否只读
   final bool? readOnly;
 
+  /// 是否可用；false 时输入和附属操作均不可交互
+  final bool enabled;
+
   /// 是否自动获取焦点
   final bool? autofocus;
 
@@ -222,28 +226,36 @@ class _TTextareaState extends State<TTextarea> {
     final theme = Theme.of(context).extension<TInputThemeData>();
     final effectiveSize = widget.size ?? TInputSize.large;
     final padding = _getInputPadding(context, effectiveSize);
-    final textareaView =
-        _getTextareaView(context, _getInputView(context, theme, effectiveSize),
-            _getIndicatorView(context));
-    final container =
-        _getContainer(context, _getLabelView(context, effectiveSize), textareaView);
-    if (widget.bordered == true || widget.decoration != null) {
-      return container;
-    }
-    return Stack(
-      children: [
-        container,
-        if (widget.showBottomDivider == true)
-          Positioned(
-            bottom: 0,
-            left: padding,
-            right: 0,
-            child: Divider(
-              height: 0.5,
-              color: context.tTheme.componentStrokeColor,
-            ),
-          ),
-      ],
+    final textareaView = _getTextareaView(
+        context,
+        _getInputView(context, theme, effectiveSize),
+        _getIndicatorView(context));
+    final container = _getContainer(
+        context, _getLabelView(context, effectiveSize), textareaView);
+    final content = widget.bordered == true || widget.decoration != null
+        ? container
+        : Stack(
+            children: [
+              container,
+              if (widget.showBottomDivider == true)
+                Positioned(
+                  bottom: 0,
+                  left: padding,
+                  right: 0,
+                  child: Divider(
+                    height: 0.5,
+                    color: context.tTheme.componentStrokeColor,
+                  ),
+                ),
+            ],
+          );
+    return Semantics(
+      enabled: widget.enabled,
+      child: AnimatedOpacity(
+        opacity: widget.enabled ? 1 : 0.6,
+        duration: const Duration(milliseconds: 150),
+        child: AbsorbPointer(absorbing: !widget.enabled, child: content),
+      ),
     );
   }
 
@@ -281,8 +293,8 @@ class _TTextareaState extends State<TTextarea> {
                       style: TInputResolve.resolveLabelStyle(
                         context: context,
                         theme: Theme.of(context).extension<TInputThemeData>(),
-                        instanceStyle: widget.labelStyle ??
-                            TextStyle(fontSize: fontSize),
+                        instanceStyle:
+                            widget.labelStyle ?? TextStyle(fontSize: fontSize),
                       ),
                     ),
                   ),
@@ -291,8 +303,7 @@ class _TTextareaState extends State<TTextarea> {
           widget.labelWidget ?? const SizedBox.shrink(),
           widget.required == true
               ? Padding(
-                  padding:
-                      EdgeInsets.only(left: context.tTheme.spacer4),
+                  padding: EdgeInsets.only(left: context.tTheme.spacer4),
                   child: TText(
                     '*',
                     style: TextStyle(
@@ -321,6 +332,7 @@ class _TTextareaState extends State<TTextarea> {
         constraints: const BoxConstraints(minHeight: 24),
         child: TInputView(
           textStyle: textStyle,
+          enabled: widget.enabled,
           readOnly: widget.readOnly ?? false,
           autofocus: widget.autofocus ?? false,
           onEditingComplete: widget.onEditingComplete,
@@ -336,8 +348,7 @@ class _TTextareaState extends State<TTextarea> {
           },
           inputFormatters: [
             ...(widget.inputFormatters ?? []),
-            ...(widget.maxLength != null &&
-                    !(widget.allowInputOverMax ?? false)
+            ...(widget.maxLength != null && !(widget.allowInputOverMax ?? false)
                 ? [
                     LengthLimitingTextInputFormatter(
                       widget.maxLength,
@@ -355,8 +366,9 @@ class _TTextareaState extends State<TTextarea> {
               ? TextStyle(color: context.tTheme.textDisabledColor)
               : hintTextStyle,
           cursorColor: cursorColor,
-          textInputBackgroundColor: TInputResolve.resolveTextInputBackgroundColor(
-              theme: theme, instanceColor: widget.textInputBackgroundColor),
+          textInputBackgroundColor:
+              TInputResolve.resolveTextInputBackgroundColor(
+                  theme: theme, instanceColor: widget.textInputBackgroundColor),
           controller: widget.controller,
           contentPadding: EdgeInsets.zero,
         ),
@@ -366,10 +378,9 @@ class _TTextareaState extends State<TTextarea> {
 
   Widget _getIndicatorView(BuildContext context) {
     final pad = _getInputPadding(context, widget.size ?? TInputSize.large);
-    final showAdditionInfo = widget.additionInfo != null &&
-        widget.additionInfo!.isNotEmpty;
-    final showIndicator =
-        widget.indicator == true && widget.maxLength != null;
+    final showAdditionInfo =
+        widget.additionInfo != null && widget.additionInfo!.isNotEmpty;
+    final showIndicator = widget.indicator == true && widget.maxLength != null;
     final widgetList = <Widget>[];
     if (showAdditionInfo) {
       widgetList.add(
@@ -431,8 +442,8 @@ class _TTextareaState extends State<TTextarea> {
                           context.tTheme.bgColorContainer),
                   borderRadius:
                       BorderRadius.circular(context.tTheme.radiusDefault),
-                  border: Border.all(
-                      color: context.tTheme.componentBorderColor),
+                  border:
+                      Border.all(color: context.tTheme.componentBorderColor),
                 )
               : null),
       padding: widget.bordered == true ? EdgeInsets.all(padding) : null,

@@ -82,9 +82,7 @@ class _TTextareaPageState extends State<TTextareaPage> {
       hintText: '请输入文字',
       maxLines: 4,
       minLines: 4,
-      onChanged: (value) {
-        setState(() {});
-      },
+      onChanged: (value) {},
     );
   }
 
@@ -164,12 +162,10 @@ class _TTextareaPageState extends State<TTextareaPage> {
       indicator: true,
       decoration: BoxDecoration(
         color: context.tTheme.bgColorContainer,
-        borderRadius:
-            BorderRadius.circular(context.tTheme.radiusExtraLarge),
+        borderRadius: BorderRadius.circular(context.tTheme.radiusExtraLarge),
       ),
       margin: EdgeInsets.only(
-          right: context.tTheme.spacer16,
-          left: context.tTheme.spacer16),
+          right: context.tTheme.spacer16, left: context.tTheme.spacer16),
       onChanged: (value) {},
     );
   }

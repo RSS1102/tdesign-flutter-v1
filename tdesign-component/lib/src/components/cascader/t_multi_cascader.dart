@@ -120,20 +120,23 @@ class _TMultiCascaderState extends State<TMultiCascader>
     if (widget.initialIndexes != null && widget.initialIndexes!.isNotEmpty) {
       initValue = _initLocationByIndexes(widget.initialIndexes!);
     } else {
-      _initLocation(widget.initialData??'');
+      _initLocation(widget.initialData ?? '');
     }
-    
+
     _currentTabIndex = _tabListData.length - 1;
-    _level = _currentTabIndex>0?_currentTabIndex:0;
-    if(_currentTabIndex>=0){
+    _level = _currentTabIndex > 0 ? _currentTabIndex : 0;
+    if (_currentTabIndex >= 0) {
       _tabListData = _tabListData.reversed.toList();
       _selectTabValue = initValue ?? widget.initialData;
+      _selectListData = _listData
+          .where((element) =>
+              element.parentValue == _tabListData[_currentTabIndex].parentValue)
+          .toList();
+    } else {
       _selectListData =
-          _listData.where((element) => element.parentValue == _tabListData[_currentTabIndex].parentValue).toList();
-    }else{
-      _selectListData = _listData.where((element) => element.level == 0).toList();
+          _listData.where((element) => element.level == 0).toList();
       _tabListData.add(MultiCascaderListModel(
-        labelFun: ()=>context.resource.cascadeLabel,
+        labelFun: () => context.resource.cascadeLabel,
       ));
     }
   }
@@ -185,8 +188,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
   }
 
   void _initLocation(String value) {
-    var list =
-        _listData.where((element) => element.value == value).toList();
+    var list = _listData.where((element) => element.value == value).toList();
     if (list.isNotEmpty) {
       _tabListData.add(list[0]);
       if (list[0].parentValue != null) {
@@ -200,33 +202,36 @@ class _TMultiCascaderState extends State<TMultiCascader>
     if (indexes.isEmpty) {
       return null;
     }
-    
+
     var lastValue = _getValueByIndexes(indexes);
-    
+
     if (lastValue != null) {
       _initLocation(lastValue);
     }
 
     return lastValue;
   }
-  
+
   /// 根据索引列表获取对应的值
   String? _getValueByIndexes(List<int> indexes) {
     if (indexes.isEmpty) {
       return null;
     }
-    
+
     List<dynamic> currentLevel = widget.data;
     String? value;
-    
+
     for (var i = 0; i < indexes.length; i++) {
       var index = indexes[i];
-      
+
       if (index >= 0 && index < currentLevel.length) {
         Map item = currentLevel[index];
         value = item['value'];
-        
-        if (i < indexes.length - 1 && item.containsKey('children') && item['children'] is List && item['children'].isNotEmpty) {
+
+        if (i < indexes.length - 1 &&
+            item.containsKey('children') &&
+            item['children'] is List &&
+            item['children'].isNotEmpty) {
           currentLevel = item['children'];
         } else {
           break;
@@ -235,7 +240,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
         return null;
       }
     }
-    
+
     return value;
   }
 
@@ -259,6 +264,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
         parentValue: parentValue,
         segmentValue: data[index]['segmentValue'],
         level: depth,
+        disabled: data[index]['disabled'] == true,
       );
       _listData.add(item);
       if (data[index]['children'] != null &&
@@ -319,11 +325,9 @@ class _TMultiCascaderState extends State<TMultiCascader>
                               : TText(
                                   widget.closeText,
                                   style: TextStyle(
-                                      fontSize: context.tTheme
-                                          .fontTitleMedium!
-                                          .size,
-                                      color:
-                                          context.tTheme.textColorPrimary),
+                                      fontSize:
+                                          context.tTheme.fontTitleMedium!.size,
+                                      color: context.tTheme.textColorPrimary),
                                 )),
                     ),
                   ))),
@@ -343,8 +347,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
         decoration: BoxDecoration(
             border: Border(
                 bottom: BorderSide(
-                    color: context.tTheme.componentStrokeColor,
-                    width: 0.5))),
+                    color: context.tTheme.componentStrokeColor, width: 0.5))),
         width: maxWidth,
         child: ListView(
             shrinkWrap: true,
@@ -404,8 +407,7 @@ class _TMultiCascaderState extends State<TMultiCascader>
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-                  color: context.tTheme.componentStrokeColor,
-                  width: 0.5))),
+                  color: context.tTheme.componentStrokeColor, width: 0.5))),
       width: maxWidth,
       child: TCustomTab(
         tabs: List.generate(_tabListData.length, (index) {
@@ -433,8 +435,8 @@ class _TMultiCascaderState extends State<TMultiCascader>
                   ),
                   child: TText(
                     widget.subTitles![_level],
-                    style: TextStyle(
-                        color: context.tTheme.textColorPlaceholder),
+                    style:
+                        TextStyle(color: context.tTheme.textColorPlaceholder),
                     font: context.tTheme.fontTitleSmall,
                   ) //,
                   ),
@@ -452,36 +454,39 @@ class _TMultiCascaderState extends State<TMultiCascader>
                     var preItem = index == 0
                         ? MultiCascaderListModel()
                         : _selectListData[index - 1];
-                    return GestureDetector(
-                      onTap: () {
-                        var level = 0;
-                        if (item.level == 0 && _currentTabIndex == 0) {
-                          _tabListData.clear();
-                          _tabListData.add(MultiCascaderListModel(
-                            labelFun: () => context.resource.cascadeLabel,
-                          ));
-                        }
-                        if (item.level != null) {
-                          level = item.level!;
-                        }
+                    final option = GestureDetector(
+                      onTap: item.disabled
+                          ? null
+                          : () {
+                              var level = 0;
+                              if (item.level == 0 && _currentTabIndex == 0) {
+                                _tabListData.clear();
+                                _tabListData.add(MultiCascaderListModel(
+                                  labelFun: () => context.resource.cascadeLabel,
+                                ));
+                              }
+                              if (item.level != null) {
+                                level = item.level!;
+                              }
 
-                        if (widget.subTitles != null &&
-                            widget.subTitles!.length - 1 > _level) {
-                          _level = level + 1;
-                        }
-                        List isList = _tabListData
-                            .where((element) => element.level == item.level)
-                            .toList();
-                        if (isList.isNotEmpty) {
-                          _tabListData.removeAt(level);
-                        }
-                        setState(() {
-                          _tabListData.insert(level, item);
-                          _selectTabValue = item.value;
-                          //下一级查询
-                          _getChildrenListData(level + 1, item.value!);
-                        });
-                      },
+                              if (widget.subTitles != null &&
+                                  widget.subTitles!.length - 1 > _level) {
+                                _level = level + 1;
+                              }
+                              List isList = _tabListData
+                                  .where(
+                                      (element) => element.level == item.level)
+                                  .toList();
+                              if (isList.isNotEmpty) {
+                                _tabListData.removeAt(level);
+                              }
+                              setState(() {
+                                _tabListData.insert(level, item);
+                                _selectTabValue = item.value;
+                                //下一级查询
+                                _getChildrenListData(level + 1, item.value!);
+                              });
+                            },
                       child: Container(
                           height: 56,
                           decoration: BoxDecoration(
@@ -508,6 +513,9 @@ class _TMultiCascaderState extends State<TMultiCascader>
                                   TText(
                                     '${item.label}',
                                     font: Font(size: 16, lineHeight: 24),
+                                    textColor: item.disabled
+                                        ? context.tTheme.textDisabledColor
+                                        : context.tTheme.textColorPrimary,
                                   ),
                                 ],
                               ),
@@ -518,6 +526,13 @@ class _TMultiCascaderState extends State<TMultiCascader>
                                 )
                             ],
                           )),
+                    );
+                    return Semantics(
+                      enabled: !item.disabled,
+                      child: Opacity(
+                        opacity: item.disabled ? 0.5 : 1,
+                        child: option,
+                      ),
                     );
                   },
                 );
@@ -692,10 +707,13 @@ class MultiCascaderListModel {
 
   int? level;
 
+  bool disabled;
+
   MultiCascaderListModel(
       {this.labelFun,
       this.value,
       this.parentValue,
       this.level,
-      this.segmentValue});
+      this.segmentValue,
+      this.disabled = false});
 }

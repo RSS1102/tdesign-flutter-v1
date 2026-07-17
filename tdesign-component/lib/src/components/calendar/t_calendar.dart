@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../../../tdesign_flutter.dart';
 import '../../util/context_extension.dart';
 import '../../util/iterable_ext.dart';
@@ -14,7 +14,8 @@ export 't_calendar_cell.dart'
         TCalendarSubtitleContext,
         TCalendarSubtitleBuilder,
         TCalendarCellBuilder,
-        TCalendarMonthTitleBuilder;
+        TCalendarMonthTitleBuilder,
+        TCalendarStyle;
 
 // ---------------------------------------------------------------------------
 // TCalendar — 纯日历组件
@@ -59,7 +60,7 @@ class TCalendar extends StatefulWidget {
     this.type = TCalendarVariant.single,
     this.initialValue,
     this.height,
-    required this.onChanged,
+    this.onChanged,
     this.onMonthChanged,
     TCalendarMonthTitleBuilder? monthTitleBuilder,
     this.cellBuilder,
@@ -106,7 +107,7 @@ class TCalendar extends StatefulWidget {
   ///
   /// 用于同步业务侧 State 或 [ValueNotifier]；勿依赖运行期回写 [initialValue] 驱动 UI。
   /// 组件挂载时不会调用本回调。点击禁用格或单选重复点已选格时不触发。
-  final ValueChanged<List<DateTime>> onChanged;
+  final ValueChanged<List<DateTime>>? onChanged;
 
   /// 可见月份变化时触发（用户滑动或程序化滚动结束后），参数为当月 1 日。
   ///
@@ -271,7 +272,7 @@ class _TCalendarState extends State<TCalendar> {
   Widget build(BuildContext context) {
     final verticalGap = _style.verticalGap ?? context.tTheme.spacer8;
 
-    return Container(
+    final calendar = Container(
       height: widget.height ?? _calcInlineDefaultHeight(verticalGap),
       width: double.infinity,
       decoration: _style.decoration,
@@ -289,6 +290,15 @@ class _TCalendarState extends State<TCalendar> {
             child: _buildCalendarBody(verticalGap),
           ),
         ],
+      ),
+    );
+    final isDisabled = widget.onChanged == null;
+    return Semantics(
+      enabled: !isDisabled,
+      child: AnimatedOpacity(
+        opacity: isDisabled ? 0.5 : 1,
+        duration: const Duration(milliseconds: 150),
+        child: AbsorbPointer(absorbing: isDisabled, child: calendar),
       ),
     );
   }
@@ -333,7 +343,8 @@ class _TCalendarState extends State<TCalendar> {
 
   /// 月份单元格列表新生成时被 body 调用：登记 selected 引用，
   /// 让 state 不依赖 body 内部缓存即可定位当前选中的 cell 实例。
-  void _handleCellGenerated(DateTime monthDate, List<TCalendarCellModel?> cells) {
+  void _handleCellGenerated(
+      DateTime monthDate, List<TCalendarCellModel?> cells) {
     if (widget.type == TCalendarVariant.range) {
       return;
     }
@@ -361,6 +372,9 @@ class _TCalendarState extends State<TCalendar> {
 
   /// 三种模式统一入口：cell 仅上抛被点击的模型，由本方法做所有决策。
   void _handleCellTap(TCalendarCellModel cell) {
+    if (widget.onChanged == null) {
+      return;
+    }
     final selectType = cell.typeNotifier.value;
     final curDate = cell.date;
 
@@ -402,7 +416,7 @@ class _TCalendarState extends State<TCalendar> {
   void _emitSelection(List<DateTime> value, {required bool rebuild}) {
     final normalized = TCalendar._normalizeDateList(value);
     _cachedValueDates = normalized;
-    widget.onChanged(List<DateTime>.from(normalized));
+    widget.onChanged?.call(List<DateTime>.from(normalized));
     if (rebuild && mounted) {
       setState(() {});
     }

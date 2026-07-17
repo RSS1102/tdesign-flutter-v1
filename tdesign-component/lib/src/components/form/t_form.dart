@@ -13,7 +13,6 @@ class TForm extends StatefulWidget {
       this.colon = false,
       this.formContentAlign = TextAlign.left,
       this.layout = true,
-      this.disabled = false,
       this.errorMessage,
       this.formLabelAlign = TextAlign.left,
       this.labelWidth = 20.0,
@@ -45,9 +44,6 @@ class TForm extends StatefulWidget {
 
   /// 表单排列方式是否为 水平方向
   final bool layout;
-
-  /// 是否禁用整个表单
-  final bool disabled;
 
   /// 表单信息错误信息配置
   final Object? errorMessage;

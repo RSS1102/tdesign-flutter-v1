@@ -39,7 +39,7 @@ class TActionSheetItemWidget extends StatelessWidget {
       _offsetValue = ValueNotifier(const [0.0, 0.0]);
       _offsetKey = GlobalKey();
     }
-    return GestureDetector(
+    final content = GestureDetector(
       onTap: item!.disabled
           ? null
           : () {
@@ -87,6 +87,13 @@ class TActionSheetItemWidget extends StatelessWidget {
         ],
       ),
     );
+    if (!item!.disabled) {
+      return content;
+    }
+    return Semantics(
+      enabled: false,
+      child: Opacity(opacity: 0.4, child: content),
+    );
   }
 
   void _setOffsetValue(GlobalKey<State<StatefulWidget>> offsetKey,
@@ -128,9 +135,7 @@ Widget buildCancelButton(
 ) {
   return Padding(
     padding: EdgeInsets.only(
-        top: showPagination
-            ? context.tTheme.spacer16
-            : context.tTheme.spacer8),
+        top: showPagination ? context.tTheme.spacer16 : context.tTheme.spacer8),
     child: GestureDetector(
       onTap: () {
         onCancel?.call();

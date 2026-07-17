@@ -385,17 +385,21 @@ class _TUploadState extends State<TUpload> {
     final children = fileList.map((f) => _buildImageBox(context, f)).toList();
     if (canUpload) {
       children.add(
-        _buildUploadBox(context, shouldDisplay: canUpload, onTap: () async {
-          if (_isDisabled) {
-            return;
-          }
-          if (widget.onUploadTap != null) {
-            widget.onUploadTap!();
-          } else {
-            final files = await getMediaFromPicker(widget.multiple);
-            extractImageList(files);
-          }
-        }),
+        _buildUploadBox(
+          context,
+          shouldDisplay: canUpload,
+          disabled: _isDisabled,
+          onTap: _isDisabled
+              ? null
+              : () async {
+                  if (widget.onUploadTap != null) {
+                    widget.onUploadTap!();
+                  } else {
+                    final files = await getMediaFromPicker(widget.multiple);
+                    extractImageList(files);
+                  }
+                },
+        ),
       );
     }
     return SizedBox(
@@ -410,7 +414,15 @@ class _TUploadState extends State<TUpload> {
   }
 
   Widget _buildUploadBox(BuildContext context,
-      {void Function()? onTap, bool shouldDisplay = true}) {
+      {void Function()? onTap,
+      bool shouldDisplay = true,
+      bool disabled = false}) {
+    final backgroundColor = disabled
+        ? context.tTheme.bgColorComponentDisabled
+        : context.tTheme.bgColorSecondaryContainer;
+    final iconColor = disabled
+        ? context.tTheme.textDisabledColor
+        : context.tTheme.textColorPlaceholder;
     return Visibility(
         visible: shouldDisplay,
         child: GestureDetector(
@@ -421,16 +433,16 @@ class _TUploadState extends State<TUpload> {
               decoration: widget.type == TUploadVariant.circle
                   ? BoxDecoration(
                       shape: BoxShape.circle,
-                      color: context.tTheme.bgColorSecondaryContainer,
+                      color: backgroundColor,
                     )
                   : BoxDecoration(
-                      color: context.tTheme.bgColorSecondaryContainer,
+                      color: backgroundColor,
                       borderRadius:
                           BorderRadius.circular(context.tTheme.radiusDefault)),
               child: Center(
                   child: Icon(
                 TIcons.add,
-                color: context.tTheme.textColorPlaceholder,
+                color: iconColor,
                 size: 28,
               )),
             )));
@@ -438,16 +450,18 @@ class _TUploadState extends State<TUpload> {
 
   Widget _buildImageBox(BuildContext context, TUploadFile file) {
     return GestureDetector(
-      onTap: () async {
-        if (widget.onPressed != null) {
-          widget.onPressed!(file.key);
-        }
-        // 替换资源
-        if (widget.enabledReplaceType ?? false) {
-          final files = await getMediaFromPicker(false);
-          replaceMedia(files, file);
-        }
-      },
+      onTap: _isDisabled
+          ? null
+          : () async {
+              if (widget.onPressed != null) {
+                widget.onPressed!(file.key);
+              }
+              // 替换资源
+              if (widget.enabledReplaceType ?? false) {
+                final files = await getMediaFromPicker(false);
+                replaceMedia(files, file);
+              }
+            },
       child: Stack(
         children: [
           TImage(
@@ -461,7 +475,7 @@ class _TUploadState extends State<TUpload> {
               visible: file.status != TUploadFileStatus.success,
               child: _buildShadowBox(context, file)),
           Visibility(
-              visible: file.canDelete,
+              visible: !_isDisabled && file.canDelete,
               child: Positioned(
                   right: 0,
                   top: 0,

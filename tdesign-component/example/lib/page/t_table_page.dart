@@ -62,6 +62,26 @@ class TTablePage extends StatelessWidget {
     return data;
   }
 
+  Widget _buildOperationActions(BuildContext context) {
+    final textStyle = TextStyle(
+      color: context.tTheme.brandNormalColor,
+      fontSize: 14,
+    );
+    return Center(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TText('修改', style: textStyle),
+            const SizedBox(width: 12),
+            TText('通过', style: textStyle),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExamplePage(
@@ -140,21 +160,7 @@ class TTablePage extends StatelessWidget {
           title: '标题',
           colKey: 'title4',
           cellBuilder: (BuildContext context, int index) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TText(
-                  '修改',
-                  style: TextStyle(
-                      color: context.tTheme.brandNormalColor, fontSize: 14),
-                ),
-                TText(
-                  '通过',
-                  style: TextStyle(
-                      color: context.tTheme.brandNormalColor, fontSize: 14),
-                ),
-              ],
-            );
+            return _buildOperationActions(context);
           },
         )
       ],
@@ -225,25 +231,7 @@ class TTablePage extends StatelessWidget {
           fixed: TTableColFixed.right,
           width: 120,
           cellBuilder: (BuildContext context, int index) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TText(
-                  '修改',
-                  style: TextStyle(
-                    color: context.tTheme.brandNormalColor,
-                    fontSize: 14,
-                  ),
-                ),
-                TText(
-                  '通过',
-                  style: TextStyle(
-                    color: context.tTheme.brandNormalColor,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            );
+            return _buildOperationActions(context);
           },
         ),
       ],
@@ -318,25 +306,7 @@ class TTablePage extends StatelessWidget {
           fixed: TTableColFixed.right,
           width: 120,
           cellBuilder: (BuildContext context, int index) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TText(
-                  '修改',
-                  style: TextStyle(
-                    color: context.tTheme.brandNormalColor,
-                    fontSize: 14,
-                  ),
-                ),
-                TText(
-                  '通过',
-                  style: TextStyle(
-                    color: context.tTheme.brandNormalColor,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            );
+            return _buildOperationActions(context);
           },
         ),
       ],

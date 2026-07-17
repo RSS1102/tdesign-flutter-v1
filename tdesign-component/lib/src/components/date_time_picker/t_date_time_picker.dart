@@ -211,7 +211,7 @@ class _TDateTimePickerState extends State<TDateTimePicker> {
     final labels = DateTimePickerLabels.fromResource(context.resource);
     final start = _resolveBound(widget.start);
     final end = _resolveBound(widget.end);
-    return DateTimePickerWheel(
+    final picker = DateTimePickerWheel(
       key: ValueKey<Object>(
         Object.hash(
           _wheelGeneration,
@@ -235,6 +235,15 @@ class _TDateTimePickerState extends State<TDateTimePicker> {
       height: widget.height ?? 200,
       itemCount: widget.itemCount ?? 5,
       onChanged: _handleWheelChanged,
+    );
+    final isDisabled = widget.onChanged == null;
+    return Semantics(
+      enabled: !isDisabled,
+      child: AnimatedOpacity(
+        opacity: isDisabled ? 0.5 : 1,
+        duration: const Duration(milliseconds: 150),
+        child: AbsorbPointer(absorbing: isDisabled, child: picker),
+      ),
     );
   }
 }

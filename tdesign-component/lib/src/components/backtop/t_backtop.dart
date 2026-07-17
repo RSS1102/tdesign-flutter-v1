@@ -183,11 +183,18 @@ class _TBackTopState extends State<TBackTop> {
         : _buildHalfCircleWidget(context);
 
     // 始终包裹 Tooltip（含默认 resource 文案）以支持无障碍
-    return Tooltip(
-      message: _resolveTooltip(context),
-      child: GestureDetector(
-        onTap: isDisabled ? null : _handleTap,
-        child: child,
+    return Semantics(
+      enabled: !isDisabled,
+      child: Tooltip(
+        message: _resolveTooltip(context),
+        child: GestureDetector(
+          onTap: isDisabled ? null : _handleTap,
+          child: AnimatedOpacity(
+            opacity: isDisabled ? 0.4 : 1,
+            duration: const Duration(milliseconds: 150),
+            child: child,
+          ),
+        ),
       ),
     );
   }

@@ -22,6 +22,7 @@ class TInput extends StatelessWidget {
     this.maxLength,
     this.autofocus = false,
     this.obscureText = false,
+    this.enabled = true,
     this.readOnly = false,
     this.inputFormatters,
     this.textAlign,
@@ -159,6 +160,9 @@ class TInput extends StatelessWidget {
   /// 是否只读
   final bool readOnly;
 
+  /// 是否可用；false 时输入和附属操作均不可交互
+  final bool enabled;
+
   /// 是否自动获取焦点
   final bool autofocus;
 
@@ -224,11 +228,19 @@ class TInput extends StatelessWidget {
     final theme = Theme.of(context).extension<TInputThemeData>();
     final resolvedSpacer =
         TInputResolve.resolveSpacer(theme: theme, instanceSpacer: spacer);
-    return _TInputControllerListener(
+    final input = _TInputControllerListener(
       controller: controller,
       builder: (context) => SizedBox(
-        width: width ?? MediaQuery.sizeOf(context).width,
+        width: width ?? double.infinity,
         child: buildInputView(context, theme, resolvedSpacer),
+      ),
+    );
+    return Semantics(
+      enabled: enabled,
+      child: AnimatedOpacity(
+        opacity: enabled ? 1 : 0.6,
+        duration: const Duration(milliseconds: 150),
+        child: AbsorbPointer(absorbing: !enabled, child: input),
       ),
     );
   }
@@ -419,6 +431,7 @@ class TInput extends StatelessWidget {
                   children: [
                     TInputView(
                       textStyle: textStyle,
+                      enabled: enabled,
                       readOnly: readOnly,
                       autofocus: autofocus,
                       obscureText: obscureText,
@@ -644,6 +657,7 @@ class TInput extends StatelessWidget {
                       flex: 1,
                       child: TInputView(
                         textStyle: textStyle,
+                        enabled: enabled,
                         readOnly: readOnly,
                         autofocus: autofocus,
                         obscureText: obscureText,
@@ -790,6 +804,7 @@ class TInput extends StatelessWidget {
             flex: 1,
             child: TInputView(
               textStyle: textStyle,
+              enabled: enabled,
               readOnly: readOnly,
               autofocus: autofocus,
               obscureText: obscureText,
@@ -899,6 +914,7 @@ class TInput extends StatelessWidget {
                   padding: EdgeInsets.only(left: spacer.labelInputSpace ?? 16),
                   child: TInputView(
                     textStyle: textStyle,
+                    enabled: enabled,
                     readOnly: readOnly,
                     autofocus: autofocus,
                     obscureText: obscureText,
@@ -1011,9 +1027,12 @@ class _TInputControllerListener extends StatefulWidget {
 }
 
 class _TInputControllerListenerState extends State<_TInputControllerListener> {
+  String? _text;
+
   @override
   void initState() {
     super.initState();
+    _text = widget.controller?.text;
     widget.controller?.addListener(_handleControllerChanged);
   }
 
@@ -1024,6 +1043,7 @@ class _TInputControllerListenerState extends State<_TInputControllerListener> {
       return;
     }
     oldWidget.controller?.removeListener(_handleControllerChanged);
+    _text = widget.controller?.text;
     widget.controller?.addListener(_handleControllerChanged);
   }
 
@@ -1034,9 +1054,11 @@ class _TInputControllerListenerState extends State<_TInputControllerListener> {
   }
 
   void _handleControllerChanged() {
-    if (mounted) {
-      setState(() {});
+    final text = widget.controller?.text;
+    if (!mounted || text == _text) {
+      return;
     }
+    setState(() => _text = text);
   }
 
   @override

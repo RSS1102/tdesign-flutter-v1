@@ -162,9 +162,9 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
   }
 
   Widget displayImageItem(String title) {
-    return Expanded(
+    return SizedBox(
+      width: 72,
       child: Column(
-        // spacing: 8,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const TImage(
@@ -172,7 +172,7 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
             variant: TImageVariant.roundedSquare,
           ),
           const SizedBox(height: 4),
-          TText('$title', style: const TextStyle(fontSize: 12))
+          TText(title, style: const TextStyle(fontSize: 12))
         ],
       ),
     );

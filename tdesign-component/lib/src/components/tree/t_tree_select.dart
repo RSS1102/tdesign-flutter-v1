@@ -16,6 +16,7 @@ class TSelectOption {
     required this.value,
     this.children = const [],
     this.multiple = false,
+    this.disabled = false,
     this.maxLines = 1,
     this.columnWidth,
   }) : assert(maxLines > 0, 'maxLines must be greater than 0');
@@ -31,6 +32,9 @@ class TSelectOption {
 
   /// 当前子项支持多选
   final bool multiple;
+
+  /// 是否禁用当前选项
+  final bool disabled;
 
   /// 最大显示行数
   final int maxLines;
@@ -123,13 +127,15 @@ class _TTreeSelectState extends State<TTreeSelect> {
     super.initState();
 
     // 深拷贝一层，避免外部传入 const/不可修改列表时，内部对 values[1] 等子列表的增删报错
-    values = widget.value
-        .map((e) => e is List ? List.from(e) : e)
-        .toList();
+    values = widget.value.map((e) => e is List ? List.from(e) : e).toList();
     if (values.isEmpty && widget.options.isNotEmpty) {
-      final option = widget.options[0];
-      values.add(
-          (widget.multiple || option.multiple) ? [option.value] : option.value);
+      final enabledOptions = widget.options.where((option) => !option.disabled);
+      if (enabledOptions.isNotEmpty) {
+        final option = enabledOptions.first;
+        values.add((widget.multiple || option.multiple)
+            ? [option.value]
+            : option.value);
+      }
     }
   }
 
@@ -146,9 +152,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
     // 外部传入的 defaultValue 发生变化时，更新 values
     if (widget.value != oldWidget.value) {
       // 深拷贝一层，与 initState 保持一致
-      values = widget.value
-          .map((e) => e is List ? List.from(e) : e)
-          .toList();
+      values = widget.value.map((e) => e is List ? List.from(e) : e).toList();
     }
   }
 
@@ -175,10 +179,12 @@ class _TTreeSelectState extends State<TTreeSelect> {
     // P1: 组件级 ThemeExtension
     final theme = Theme.of(context).extension<TTreeSelectThemeData>();
     final effectiveHeight = widget.height ?? theme?.height ?? 336;
-    final effectiveStyle = widget.style ?? theme?.style ?? TTreeSelectStyle.normal;
-    final effectiveOutwardCornerRadius = widget.outwardCornerRadius ?? theme?.outwardCornerRadius ?? 9;
+    final effectiveStyle =
+        widget.style ?? theme?.style ?? TTreeSelectStyle.normal;
+    final effectiveOutwardCornerRadius =
+        widget.outwardCornerRadius ?? theme?.outwardCornerRadius ?? 9;
 
-    return Container(
+    final tree = Container(
         color: context.tTheme.bgColorContainer,
         height: effectiveHeight,
         child: Row(
@@ -195,25 +201,26 @@ class _TTreeSelectState extends State<TTreeSelect> {
                   // 判断上一个和下一个选项是否被选中
                   final isPrevSelected = index > 0 &&
                       firstValue == widget.options[index - 1].value;
-                  final isNextSelected =
-                      index < widget.options.length - 1 &&
-                          firstValue == widget.options[index + 1].value;
+                  final isNextSelected = index < widget.options.length - 1 &&
+                      firstValue == widget.options[index + 1].value;
 
-                  return GestureDetector(
-                    onTap: () {
-                      // todo 点击一级菜单时直接重置整个 values 数组可能导致二级或三级选择的数据丢失
-                      setState(() {
-                        if (values.isEmpty) {
-                          values.add(option.value);
-                        } else {
-                          values = [option.value];
-                          if (controller2.hasClients) {
-                            controller2.jumpTo(0);
-                          }
-                        }
-                        widget.onChanged?.call(values, 1);
-                      });
-                    },
+                  final item = GestureDetector(
+                    onTap: option.disabled
+                        ? null
+                        : () {
+                            // todo 点击一级菜单时直接重置整个 values 数组可能导致二级或三级选择的数据丢失
+                            setState(() {
+                              if (values.isEmpty) {
+                                values.add(option.value);
+                              } else {
+                                values = [option.value];
+                                if (controller2.hasClients) {
+                                  controller2.jumpTo(0);
+                                }
+                              }
+                              widget.onChanged?.call(values, 1);
+                            });
+                          },
                     child: Stack(
                       children: [
                         Container(
@@ -227,8 +234,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
                                     effectiveStyle == TTreeSelectStyle.outline
                                 ? Border(
                                     left: BorderSide(
-                                      color:
-                                          context.tTheme.brandNormalColor,
+                                      color: context.tTheme.brandNormalColor,
                                       width: 3,
                                     ),
                                   )
@@ -256,10 +262,10 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             top: 0,
                             right: 0,
                             child: CustomPaint(
-                              size: Size(effectiveOutwardCornerRadius, effectiveOutwardCornerRadius),
+                              size: Size(effectiveOutwardCornerRadius,
+                                  effectiveOutwardCornerRadius),
                               painter: _OutwardCornerPainter(
-                                color:
-                                    context.tTheme.bgColorContainer,
+                                color: context.tTheme.bgColorContainer,
                                 corner: _Corner.topRight,
                               ),
                             ),
@@ -270,15 +276,22 @@ class _TTreeSelectState extends State<TTreeSelect> {
                             bottom: 0,
                             right: 0,
                             child: CustomPaint(
-                              size: Size(effectiveOutwardCornerRadius, effectiveOutwardCornerRadius),
+                              size: Size(effectiveOutwardCornerRadius,
+                                  effectiveOutwardCornerRadius),
                               painter: _OutwardCornerPainter(
-                                color:
-                                    context.tTheme.bgColorContainer,
+                                color: context.tTheme.bgColorContainer,
                                 corner: _Corner.bottomRight,
                               ),
                             ),
                           ),
                       ],
+                    ),
+                  );
+                  return Semantics(
+                    enabled: !option.disabled,
+                    child: Opacity(
+                      opacity: option.disabled ? 0.4 : 1,
+                      child: item,
                     ),
                   );
                 },
@@ -289,6 +302,15 @@ class _TTreeSelectState extends State<TTreeSelect> {
             Expanded(child: _buildRightParts(context))
           ],
         ));
+    final isDisabled = widget.onChanged == null;
+    return Semantics(
+      enabled: !isDisabled,
+      child: AnimatedOpacity(
+        opacity: isDisabled ? 0.5 : 1,
+        duration: const Duration(milliseconds: 150),
+        child: AbsorbPointer(absorbing: isDisabled, child: tree),
+      ),
+    );
   }
 
   Widget _buildRightParts(BuildContext context) {
@@ -369,69 +391,80 @@ class _TTreeSelectState extends State<TTreeSelect> {
                     (level == 2 ? secondValue : thirdValue) == currentValue;
               }
 
-              return Container(
+              final option = displayOptions[index];
+              final item = Container(
                 constraints: BoxConstraints(
                   minHeight: 56,
                   maxWidth: constraints.maxWidth,
                 ),
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    /// todo 逻辑过于冗余，待优化
-                    setState(() {
-                      if (level == 2) {
-                        switch (values.length) {
-                          case 1:
-                            values.add(
-                                isMultiple ? [currentValue] : currentValue);
-                            break;
-                          case 2:
-                            if (isMultiple) {
-                              var hasContains = (values[1] as List<dynamic>)
-                                  .contains(currentValue);
-                              if (hasContains) {
-                                (values[1] as List<dynamic>).remove(currentValue);
-                              } else {
-                                (values[1] as List<dynamic>).add(currentValue);
+                  onTap: option.disabled
+                      ? null
+                      : () {
+                          /// todo 逻辑过于冗余，待优化
+                          setState(() {
+                            if (level == 2) {
+                              switch (values.length) {
+                                case 1:
+                                  values.add(isMultiple
+                                      ? [currentValue]
+                                      : currentValue);
+                                  break;
+                                case 2:
+                                  if (isMultiple) {
+                                    var hasContains =
+                                        (values[1] as List<dynamic>)
+                                            .contains(currentValue);
+                                    if (hasContains) {
+                                      (values[1] as List<dynamic>)
+                                          .remove(currentValue);
+                                    } else {
+                                      (values[1] as List<dynamic>)
+                                          .add(currentValue);
+                                    }
+                                  } else {
+                                    values[1] = currentValue;
+                                  }
+                                  if (controller3.hasClients) {
+                                    controller3.jumpTo(0);
+                                  }
+                                  break;
+                                default:
+                                  values[1] = currentValue;
+                                  values.removeLast();
+                                  if (controller3.hasClients) {
+                                    controller3.jumpTo(0);
+                                  }
                               }
                             } else {
-                              values[1] = currentValue;
-                            }
-                            if (controller3.hasClients) {
-                              controller3.jumpTo(0);
-                            }
-                            break;
-                          default:
-                            values[1] = currentValue;
-                            values.removeLast();
-                            if (controller3.hasClients) {
-                              controller3.jumpTo(0);
-                            }
-                        }
-                      } else {
-                        switch (values.length) {
-                          case 1:
-                          case 2:
-                            values.add(
-                                isMultiple ? [currentValue] : currentValue);
-                            break;
-                          default:
-                            if (isMultiple) {
-                              var hasContains = (values[2] as List<dynamic>)
-                                  .contains(currentValue);
-                              if (hasContains) {
-                                (values[2] as List<dynamic>).remove(currentValue);
-                              } else {
-                                (values[2] as List<dynamic>).add(currentValue);
+                              switch (values.length) {
+                                case 1:
+                                case 2:
+                                  values.add(isMultiple
+                                      ? [currentValue]
+                                      : currentValue);
+                                  break;
+                                default:
+                                  if (isMultiple) {
+                                    var hasContains =
+                                        (values[2] as List<dynamic>)
+                                            .contains(currentValue);
+                                    if (hasContains) {
+                                      (values[2] as List<dynamic>)
+                                          .remove(currentValue);
+                                    } else {
+                                      (values[2] as List<dynamic>)
+                                          .add(currentValue);
+                                    }
+                                  } else {
+                                    values[2] = currentValue;
+                                  }
                               }
-                            } else {
-                              values[2] = currentValue;
                             }
-                        }
-                      }
-                      widget.onChanged?.call(values, level);
-                    });
-                  },
+                            widget.onChanged?.call(values, level);
+                          });
+                        },
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       minWidth: constraints.maxWidth,
@@ -476,6 +509,13 @@ class _TTreeSelectState extends State<TTreeSelect> {
                       ],
                     ),
                   ),
+                ),
+              );
+              return Semantics(
+                enabled: !option.disabled,
+                child: Opacity(
+                  opacity: option.disabled ? 0.4 : 1,
+                  child: item,
                 ),
               );
             },

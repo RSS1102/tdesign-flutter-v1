@@ -28,9 +28,6 @@ class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
   /// icon和文字的距离
   final double? spacing;
 
-  /// 选项框左侧间距
-  final double? checkBoxLeftSpace;
-
   /// 文字和非图标侧的距离
   final double? insetSpacing;
 
@@ -45,7 +42,6 @@ class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
     this.subTitleColor,
     this.backgroundColor,
     this.spacing,
-    this.checkBoxLeftSpace,
     this.insetSpacing,
     this.customSpace,
   });
@@ -59,7 +55,6 @@ class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
     Color? subTitleColor,
     Color? backgroundColor,
     double? spacing,
-    double? checkBoxLeftSpace,
     double? insetSpacing,
     EdgeInsetsGeometry? customSpace,
   }) {
@@ -71,15 +66,13 @@ class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
       subTitleColor: subTitleColor ?? this.subTitleColor,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       spacing: spacing ?? this.spacing,
-      checkBoxLeftSpace: checkBoxLeftSpace ?? this.checkBoxLeftSpace,
       insetSpacing: insetSpacing ?? this.insetSpacing,
       customSpace: customSpace ?? this.customSpace,
     );
   }
 
   @override
-  TCheckboxThemeData lerp(
-      ThemeExtension<TCheckboxThemeData>? other, double t) {
+  TCheckboxThemeData lerp(ThemeExtension<TCheckboxThemeData>? other, double t) {
     if (other is! TCheckboxThemeData) {
       return this;
     }
@@ -95,11 +88,8 @@ class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
       disableColor: Color.lerp(disableColor, other.disableColor, t),
       titleColor: Color.lerp(titleColor, other.titleColor, t),
       subTitleColor: Color.lerp(subTitleColor, other.subTitleColor, t),
-      backgroundColor:
-          Color.lerp(backgroundColor, other.backgroundColor, t),
+      backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
       spacing: lerpDouble(spacing, other.spacing, t),
-      checkBoxLeftSpace:
-          lerpDouble(checkBoxLeftSpace, other.checkBoxLeftSpace, t),
       insetSpacing: lerpDouble(insetSpacing, other.insetSpacing, t),
     );
   }

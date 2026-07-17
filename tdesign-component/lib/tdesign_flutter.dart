@@ -127,8 +127,7 @@ export 'src/components/progress/t_progress.dart';
 export 'src/components/progress/t_progress_theme_data.dart'
     show TProgressThemeData;
 export 'src/components/radio/t_radio.dart';
-export 'src/components/radio/t_radio_theme_data.dart'
-    show TRadioThemeData, TRadioVariant;
+export 'src/components/radio/t_radio_theme_data.dart' show TRadioThemeData;
 export 'src/components/rate/t_rate.dart';
 export 'src/components/rate/t_rate_theme_data.dart' show TRateThemeData;
 export 'src/components/refresh/t_refresh_header.dart';

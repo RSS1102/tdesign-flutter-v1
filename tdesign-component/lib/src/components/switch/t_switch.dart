@@ -7,11 +7,10 @@ import 't_cupertino_switch.dart';
 /// TSwitch 开关组件
 ///
 /// 基于 Material [Switch.adaptive] 薄包装。
-/// B 类禁用：`enabled: false`。
+/// B 类禁用：`onChanged: null`。
 class TSwitch extends StatefulWidget {
   const TSwitch({
     Key? key,
-    this.enabled = true,
     this.value = false,
     this.size,
     this.variant,
@@ -25,9 +24,6 @@ class TSwitch extends StatefulWidget {
     this.openText,
     this.closeText,
   }) : super(key: key);
-
-  /// 是否可用
-  final bool enabled;
 
   /// 是否打开
   final bool value;
@@ -74,8 +70,10 @@ class _TSwitchState extends State<TSwitch> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<TSwitchThemeData>();
     final size = widget.size ?? theme?.defaultSize ?? TSwitchSize.medium;
-    final variant = widget.variant ?? theme?.defaultVariant ?? TSwitchVariant.fill;
-    final switchEnabled = widget.enabled && variant != TSwitchVariant.loading;
+    final variant =
+        widget.variant ?? theme?.defaultVariant ?? TSwitchVariant.fill;
+    final switchEnabled =
+        widget.onChanged != null && variant != TSwitchVariant.loading;
 
     final trackOnColor = TSwitchResolve.resolveTrackOnColor(
       context: context,
@@ -164,11 +162,8 @@ class _TSwitchState extends State<TSwitch> {
               alignment: Alignment.center,
               width: 16,
               child: TText(
-                widget.value
-                    ? (openText ?? '开')
-                    : (closeText ?? '关'),
-                textColor:
-                    widget.value ? thumbOnColor : thumbOffColor,
+                widget.value ? (openText ?? '开') : (closeText ?? '关'),
+                textColor: widget.value ? thumbOnColor : thumbOffColor,
                 forceVerticalCenter: true,
                 maxLines: 1,
                 style: widget.value ? thumbOnFont : thumbOffFont,

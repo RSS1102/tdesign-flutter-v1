@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../tdesign_flutter.dart';
+
 class TInputView extends StatelessWidget {
+  /// 是否可用
+  final bool enabled;
+
   /// 是否只读
   final bool readOnly;
 
@@ -22,7 +27,7 @@ class TInputView extends StatelessWidget {
 
   /// 最大输入行数
   final int? maxLines;
-  
+
   /// 最小输入行数
   final int? minLines;
 
@@ -85,6 +90,7 @@ class TInputView extends StatelessWidget {
   const TInputView(
       {Key? key,
       required this.textStyle,
+      this.enabled = true,
       this.readOnly = false,
       this.autofocus = false,
       this.obscureText = false,
@@ -118,6 +124,7 @@ class TInputView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      enabled: enabled,
       inputFormatters: inputFormatters,
       readOnly: readOnly,
       keyboardType: inputType,
@@ -137,13 +144,18 @@ class TInputView extends StatelessWidget {
       onTapOutside: onTapOutside,
       selectionControls: selectionControls,
       contextMenuBuilder: contextMenuBuilder,
-      style: textStyle,
+      style: enabled
+          ? textStyle
+          : textStyle.copyWith(color: context.tTheme.textDisabledColor),
       textAlign: textAlign ?? TextAlign.start,
       buildCounter: _buildCounter,
       decoration: inputDecoration ??
           InputDecoration(
             hintText: hintText,
-            hintStyle: hintTextStyle ?? textStyle,
+            hintStyle: enabled
+                ? (hintTextStyle ?? textStyle)
+                : (hintTextStyle ?? textStyle)
+                    .copyWith(color: context.tTheme.textDisabledColor),
             floatingLabelBehavior: FloatingLabelBehavior.never,
             filled: textInputBackgroundColor != null,
             fillColor: textInputBackgroundColor,
@@ -168,7 +180,10 @@ class TInputView extends StatelessWidget {
     );
   }
 
-  Widget? _buildCounter(BuildContext context, {required int currentLength, required bool isFocused, required int? maxLength}) {
+  Widget? _buildCounter(BuildContext context,
+      {required int currentLength,
+      required bool isFocused,
+      required int? maxLength}) {
     return null;
   }
 }

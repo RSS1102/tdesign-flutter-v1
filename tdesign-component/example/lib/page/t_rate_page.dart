@@ -52,13 +52,17 @@ class TRatePageState extends State<TRatePage> {
 
   @Demo(group: 'rate')
   Widget _buildFilledRate(BuildContext context) {
-    return const TCell(title: '实心评分', noteWidget: TRate(value: 3));
+    return const TCell(
+      title: '实心评分',
+      noteWidget: TRate(value: 3, onChanged: print),
+    );
   }
 
   @Demo(group: 'rate')
   Widget _buildCusRate(BuildContext context) {
     return const TCell(
-        title: '自定义评分', noteWidget: TRate(value: 3, icon: [TIcons.thumb_up]));
+        title: '自定义评分',
+        noteWidget: TRate(value: 3, icon: [TIcons.thumb_up], onChanged: print));
   }
 
   @Demo(group: 'rate')
@@ -68,6 +72,7 @@ class TRatePageState extends State<TRatePage> {
         noteWidget: TRate(
           value: 2,
           count: 3,
+          onChanged: print,
         ));
   }
 
@@ -77,24 +82,41 @@ class TRatePageState extends State<TRatePage> {
       TCell(
           title: '带描述评分',
           noteWidget: TRate(
-              value: 3, showText: true, texts: ['1分', '2分', '3分', '4分', '5分'])),
-      TCell(title: '带描述评分', noteWidget: TRate(value: 3, showText: true))
+              value: 3,
+              showText: true,
+              texts: ['1分', '2分', '3分', '4分', '5分'],
+              onChanged: print)),
+      TCell(
+        title: '带描述评分',
+        noteWidget: TRate(value: 3, showText: true, onChanged: print),
+      )
     ]);
   }
 
   @Demo(group: 'rate')
   Widget _buildDRate(BuildContext context) {
     return const TCellGroup(cells: [
-      TCell(title: '顶部显示', noteWidget: TRate(placement: PlacementEnum.top)),
-      TCell(title: '不显示', noteWidget: TRate(placement: PlacementEnum.none)),
       TCell(
-          title: '底部显示', noteWidget: TRate(placement: PlacementEnum.bottom)),
+        title: '顶部显示',
+        noteWidget: TRate(placement: PlacementEnum.top, onChanged: print),
+      ),
+      TCell(
+        title: '不显示',
+        noteWidget: TRate(placement: PlacementEnum.none, onChanged: print),
+      ),
+      TCell(
+        title: '底部显示',
+        noteWidget: TRate(placement: PlacementEnum.bottom, onChanged: print),
+      ),
     ]);
   }
 
   @Demo(group: 'rate')
   Widget _buildFullRate(BuildContext context) {
-    return const TCell(title: '点击活滑动', noteWidget: TRate(value: 3));
+    return const TCell(
+      title: '点击活滑动',
+      noteWidget: TRate(value: 3, onChanged: print),
+    );
   }
 
   @Demo(group: 'rate')
@@ -111,8 +133,14 @@ class TRatePageState extends State<TRatePage> {
   @Demo(group: 'rate')
   Widget _buildSizeRate(BuildContext context) {
     return const TCellGroup(cells: [
-      TCell(title: '默认尺寸24', noteWidget: TRate(value: 3)),
-      TCell(title: '小尺寸20', noteWidget: TRate(value: 3, size: 20)),
+      TCell(
+        title: '默认尺寸24',
+        noteWidget: TRate(value: 3, onChanged: print),
+      ),
+      TCell(
+        title: '小尺寸20',
+        noteWidget: TRate(value: 3, size: 20, onChanged: print),
+      ),
     ]);
   }
 
@@ -125,11 +153,17 @@ class TRatePageState extends State<TRatePage> {
             value: 2.5,
             allowHalf: true,
             color: [Color(0xFFFFC51C), Color(0xFFE8E8E8)],
+            onChanged: print,
           )),
       TCell(
           title: '线描评分',
           noteWidget:
-              TRate(value: 2.5, allowHalf: true, color: [Color(0xFF00A870)])),
+              TRate(
+                value: 2.5,
+                allowHalf: true,
+                color: [Color(0xFF00A870)],
+                onChanged: print,
+              )),
     ]);
   }
 

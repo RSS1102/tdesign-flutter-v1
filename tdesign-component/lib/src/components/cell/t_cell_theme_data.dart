@@ -9,7 +9,6 @@ enum TCellGroupVariant { defaultTheme, cardTheme }
 ///
 /// 通过 Theme 子树注入，控制子树的默认样式。
 /// 构造器参数优先于 Theme。
-/// 兼容旧 TCellStyle 的字段与 defaultStyle 逻辑。
 class TCellThemeData extends ThemeExtension<TCellThemeData> {
   /// 左侧图标颜色
   Color? leftIconColor;
@@ -59,10 +58,6 @@ class TCellThemeData extends ThemeExtension<TCellThemeData> {
   /// 单元格组标题内边距
   EdgeInsets? titlePadding;
 
-  /// 单元格组标题背景颜色
-  @deprecated
-  Color? titleBackgroundColor;
-
   /// 内容对齐方式（L4 默认）
   TCellAlign? align;
 
@@ -95,7 +90,6 @@ class TCellThemeData extends ThemeExtension<TCellThemeData> {
     this.cardBorderRadius,
     this.cardPadding,
     this.titlePadding,
-    this.titleBackgroundColor,
     this.align,
     this.hover,
     this.showBottomBorder,
@@ -138,22 +132,19 @@ class TCellThemeData extends ThemeExtension<TCellThemeData> {
       color: context.tTheme.textColorPrimary,
       fontSize: context.tTheme.fontTitleLarge?.size ?? 18,
       height: context.tTheme.fontTitleLarge?.height ?? 26,
-      fontWeight:
-          context.tTheme.fontTitleLarge?.fontWeight ?? FontWeight.w600,
+      fontWeight: context.tTheme.fontTitleLarge?.fontWeight ?? FontWeight.w600,
     );
 
     padding = EdgeInsets.all(context.tTheme.spacer16);
     cardBorderRadius =
         BorderRadius.all(Radius.circular(context.tTheme.radiusLarge));
-    cardPadding =
-        EdgeInsets.symmetric(horizontal: context.tTheme.spacer16);
+    cardPadding = EdgeInsets.symmetric(horizontal: context.tTheme.spacer16);
     titlePadding = EdgeInsets.only(
       left: context.tTheme.spacer16,
       right: context.tTheme.spacer16,
       top: context.tTheme.spacer24,
       bottom: context.tTheme.spacer8,
     );
-    titleBackgroundColor = Colors.transparent;
   }
 
   @override
@@ -174,7 +165,6 @@ class TCellThemeData extends ThemeExtension<TCellThemeData> {
     BorderRadius? cardBorderRadius,
     EdgeInsets? cardPadding,
     EdgeInsets? titlePadding,
-    Color? titleBackgroundColor,
     TCellAlign? align,
     bool? hover,
     bool? showBottomBorder,
@@ -198,7 +188,6 @@ class TCellThemeData extends ThemeExtension<TCellThemeData> {
       cardBorderRadius: cardBorderRadius ?? this.cardBorderRadius,
       cardPadding: cardPadding ?? this.cardPadding,
       titlePadding: titlePadding ?? this.titlePadding,
-      titleBackgroundColor: titleBackgroundColor ?? this.titleBackgroundColor,
       align: align ?? this.align,
       hover: hover ?? this.hover,
       showBottomBorder: showBottomBorder ?? this.showBottomBorder,
@@ -217,18 +206,26 @@ class TCellThemeData extends ThemeExtension<TCellThemeData> {
       rightIconColor: Color.lerp(rightIconColor, other.rightIconColor, t),
       titleStyle: TextStyle.lerp(titleStyle, other.titleStyle, t),
       requiredStyle: TextStyle.lerp(requiredStyle, other.requiredStyle, t),
-      descriptionStyle: TextStyle.lerp(descriptionStyle, other.descriptionStyle, t),
+      descriptionStyle:
+          TextStyle.lerp(descriptionStyle, other.descriptionStyle, t),
       noteStyle: TextStyle.lerp(noteStyle, other.noteStyle, t),
       arrowColor: Color.lerp(arrowColor, other.arrowColor, t),
       borderedColor: Color.lerp(borderedColor, other.borderedColor, t),
-      groupBorderedColor: Color.lerp(groupBorderedColor, other.groupBorderedColor, t),
+      groupBorderedColor:
+          Color.lerp(groupBorderedColor, other.groupBorderedColor, t),
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
-      clickBackgroundColor: Color.lerp(clickBackgroundColor, other.clickBackgroundColor, t),
-      groupTitleStyle: TextStyle.lerp(groupTitleStyle, other.groupTitleStyle, t),
-      padding: EdgeInsetsGeometry.lerp(padding, other.padding, t) as EdgeInsets?,
-      cardBorderRadius: BorderRadius.lerp(cardBorderRadius, other.cardBorderRadius, t),
-      cardPadding: EdgeInsetsGeometry.lerp(cardPadding, other.cardPadding, t) as EdgeInsets?,
-      titlePadding: EdgeInsetsGeometry.lerp(titlePadding, other.titlePadding, t) as EdgeInsets?,
+      clickBackgroundColor:
+          Color.lerp(clickBackgroundColor, other.clickBackgroundColor, t),
+      groupTitleStyle:
+          TextStyle.lerp(groupTitleStyle, other.groupTitleStyle, t),
+      padding:
+          EdgeInsetsGeometry.lerp(padding, other.padding, t) as EdgeInsets?,
+      cardBorderRadius:
+          BorderRadius.lerp(cardBorderRadius, other.cardBorderRadius, t),
+      cardPadding: EdgeInsetsGeometry.lerp(cardPadding, other.cardPadding, t)
+          as EdgeInsets?,
+      titlePadding: EdgeInsetsGeometry.lerp(titlePadding, other.titlePadding, t)
+          as EdgeInsets?,
       align: t < 0.5 ? align : other.align,
       hover: t < 0.5 ? hover : other.hover,
       showBottomBorder: t < 0.5 ? showBottomBorder : other.showBottomBorder,

@@ -15,9 +15,10 @@
 
 | 项 | v1.0 |
 |---|---|
-| 实现 | Material 选择控件薄包装 |
-| Material | Radio / RadioListTile / RadioGroup |
+| 实现 | T2 自绘标准 Radio 指示器与内容布局 |
+| Material | `RadioThemeData`（点击热区与交互状态参考） |
 | Theme | `TRadioThemeData` |
+| 默认指示器 | 圆环；选中时显示实心圆点 |
 | 禁用 | `onChanged: null`（自动应用 TDesign Token 禁用色） |
 | L4 | 构造器 L4 → **`TRadioThemeData`** |
 
@@ -40,7 +41,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | 决策 | 参数 | 类型 | 层级 | 默认值 | 说明 |
 |------|------|------|------|--------|------|
 | | `value` | `T` | L1 | — | 本选项标识 |
-| | `groupValue` | `T?` | L1 | — | Group 当前选中值（Group 内部维护） |
+| | `groupValue` | `T?` | L1 | — | 父组件传入的当前选中值 |
 | | `onChanged` | `ValueChanged<T>?` | L3 | — | 选中变更 |
 | | `title` | `String?` | L2 | — | 主标题文案 |
 | | `subTitle` | `String?` | L2 | — | 副标题文案 |
@@ -48,15 +49,36 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | ✨ | `cardMode` | `bool` | L1 | `false` | 卡片模式 |
 | ✨ | `showDivider` | `bool` | L1 | `false` | 列表项底部分割线 |
 | ✨ | `contentDirection` | `TContentDirection` | L1 | `right` | 控件与文案排列方向 |
+| ✨ | `customIconBuilder` | `TRadioIconBuilder?` | L2 | — | 自定义非标准指示器 |
+
+#### TRadioGroup
+
+| 决策 | 参数 | 类型 | 层级 | 默认值 | 说明 |
+|------|------|------|------|--------|------|
+| | `value` | `T?` | L1 | — | 外部受控选中值 |
+| | `options` | `List<TRadioOption<T>>` | L2 | — | 数据项；含 value/label/subTitle/disabled |
+| | `onChanged` | `ValueChanged<T>?` | L3 | — | 选中值变化；null 时整组禁用 |
+| ✨ | `direction` | `Axis` | L1 | `vertical` | 排列方向 |
+| ✨ | `columns` | `int` | L1 | `1` | 横向或多列排列的列数 |
+| ✨ | `itemBuilder` | `TRadioOptionBuilder<T>?` | L2 | — | 自定义数据项视觉；Group 统一持有交互与语义 |
 
 > **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
+
+Radio 只提供圆环加实心圆点这一种标准指示器，不提供方形、勾选或 check-circle 公开变体。特殊视觉通过 `customIconBuilder` 实现，不进入全局 Radio 形态枚举。
+
+#### 卡片与禁用视觉
+
+- 普通列表项禁用时只切换指示器和文案禁用色，不改变整项背景。
+- `cardMode` 隐藏默认 Radio 指示器，选中态使用 1.5px 品牌色边框和左上角勾选角标，未选边框透明；禁用且选中时使用禁用色。
+- 纵向卡片无副标题时项高 56px、有副标题时 82px，混合内容逐项解析；横向卡片同组等高，任一项有副标题时整组 82px，否则 56px。两种方向均使用 12px 间距和 16px 水平外边距，横向由 `columns` 控制列数。
+- Radio 与 Checkbox 共用卡片视觉和排列实现，状态仍由 `value + onChanged` 严格受控。
 
 ### 1.2 类型定义
 
 | 决策 | 类型 | 成员 | 用于 |
 |------|------|------|------|
-| ✨ | `TRadioVariant` | `circle` · `check` · `hollowCircle` | `variant` 形态 |
 | ✨ | `TRadioSize` | `large` · `medium` · `small` | `size` 参数 |
+| ✨ | `TRadioOption<T>` | `value` · `label` · `subTitle` · `disabled` | Group 数据项与单项禁用 |
 | ✨ | `TContentDirection` | `left` · `right` | `contentDirection` 参数 |
 | ✨ | `TRadioThemeData` | ThemeExtension | §3 主题配置 |
 
@@ -65,9 +87,11 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | 决策 | 移除符号 | 替代 |
 |------|---------|------|
 | 🚫 | `TRadioStyle` | 内部实现，不公开 |
+| 🚫 | `TRadioVariant` | 删除；Radio 固定为圆环加实心圆点 |
+| 🗑️ | `radioStyle` / `radioCheckStyle` | `customIconBuilder` |
 | 🚫 | `TRadioGroupController` | 移出 export；组值由父 `value` + `onChanged` |
 | 🗑️ | `id` | `value`（B 类受控） |
-| 🗑️ | `selectId` | `groupValue` |
+| 🗑️ | `selectId` | Group 的 `value` |
 | 🗑️ | `enable` | `onChanged: null` |
 | 🗑️ | `onRadioGroupChange` | `onChanged` |
 
@@ -80,7 +104,7 @@ Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写�
 | 从（0.2.x） | 到（v1.0） | 怎么改 |
 |------------|-----------|--------|
 | `id` | `value` | 命名对齐 v1.0 |
-| `selectId` | `groupValue` | 对齐 Material |
+| `selectId` | Group 的 `value` | 统一严格受控命名 |
 | `onRadioGroupChange` | `onChanged` | 命名对齐 v1.0 |
 | `enable` | `onChanged: null` | Material 禁用 |
 
@@ -98,6 +122,7 @@ _无_
 |------------|---------|--------|
 | `TRadioGroupController` | 父 `setState` 改 `value` | 单轨原则 |
 | `Group` 构造器 `controller` | 删除 |
+| `TRadioVariant` / `radioStyle` / `radioCheckStyle` | `customIconBuilder` | 标准 Radio 不提供多形态 |
 
 ### 📦 迁入 Theme
 
@@ -138,7 +163,6 @@ _无_
 
 | 决策 | 字段 | 管什么 | 0.2.x 构造参数 |
 |------|------|--------|---------------|
-| 📦 | `variant` | 形态枚举（circle / check / hollowCircle） | `radioStyle` / `radioCheckStyle` |
 | 📦 | `selectColor` | 选中态颜色 | `selectColor` |
 | 📦 | `disableColor` | 禁用态颜色 | `disableColor` |
 | 📦 | `titleColor` | 标题文字颜色 | `titleColor` |
@@ -159,7 +183,8 @@ _无_
   - `t_radio_resolve.dart` — **唯一**样式合并入口
   - `t_radio_theme_data.dart` — `TRadioThemeData` ThemeExtension
 
-- **底层实现**：包装 Material `Radio` / `RadioListTile`
+- **底层实现**：自绘圆环与实心圆点；列表组合是否复用 `TCell` 待 Cell v1.0 定稿后决定。
+- **形态约束**：Radio 无公开形态枚举；不得增加方形、勾选或 check-circle 默认变体。
 
 ### 4.2 必测场景
 
@@ -192,9 +217,9 @@ TRadioGroup<String>(
   onChanged: (value) {
     setState(() => _selected = value);
   },
-  children: [
-    TRadio<String>(value: 'a', title: '选项A'),
-    TRadio<String>(value: 'b', title: '选项B'),
+  options: const [
+    TRadioOption(value: 'a', label: '选项A'),
+    TRadioOption(value: 'b', label: '选项B'),
   ],
 )
 ```
@@ -203,7 +228,7 @@ TRadioGroup<String>(
 
 ### export
 
-- **保留**：`TRadio`、`TRadioGroup`、`TRadioThemeData`、`TRadioVariant`、`TRadioSize`、`TContentDirection`
+- **保留**：`TRadio`、`TRadioGroup`、`TRadioOption`、`TRadioThemeData`、`TRadioSize`、`TContentDirection`
 - **移出**：`TRadioStyle`、`HollowCircle` 等内部绘制类、`TRadioGroupController`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 ---
@@ -217,11 +242,11 @@ TRadioGroup<String>(
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
 | `value`（单颗） | Material **`Radio.value`** | 本选项标识 |
-| `value`（Group） | Material **`RadioGroup.groupValue`** | v1.0 统一命名 `groupValue` |
+| `value`（Group） | Material **`RadioGroup.groupValue`** | 外部受控的组选中值 |
 | `onChanged` | Material **`Radio.onChanged`** / **`RadioGroup.onChanged`** | `null` 禁用 |
 | `title` / `subTitle` | Material **`RadioListTile`** | 映射 title / subTitle |
 | `fillColor` / `overlayColor` / `splashRadius` / `visualDensity` / `materialTapTargetSize` | Material **`RadioThemeData`** | 三态（`WidgetStateProperty`） |
-| `variant` | **`TRadioThemeData`** | TDesign 多形态（circle/check/hollowCircle） |
+| 标准指示器 | **TRadio 内部绘制** | 圆环加实心圆点；无公开 variant |
 | `disableColor` / `selectColor` / 文案色 / `spacing` | **`TRadioThemeData`** | 0.2.x 构造器 L4 迁入 |
 | `cardMode` | **TDesign 扩展** | 布局 |
 

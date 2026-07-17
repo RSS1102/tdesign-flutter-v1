@@ -265,7 +265,7 @@ class _TSideBarState extends State<TSideBar> {
         ),
       );
     }
-    return ConstrainedBox(
+    final sideBar = ConstrainedBox(
         key: globalKey,
         constraints: BoxConstraints(
             minWidth: 106,
@@ -314,12 +314,23 @@ class _TSideBarState extends State<TSideBar> {
                             theme.unSelectedBgColor ??
                             context.tTheme.bgColorSecondaryContainer,
                         onTap: () {
-                          if (!(ele.disabled ?? false)) {
+                          if (!(ele.disabled ?? false) &&
+                              (widget.onChanged != null ||
+                                  widget.onSelected != null)) {
                             onSelect(ele, isController: false);
                           }
                         },
                       );
                     }))));
+    final isDisabled = widget.onChanged == null && widget.onSelected == null;
+    return Semantics(
+      enabled: !isDisabled,
+      child: AnimatedOpacity(
+        opacity: isDisabled ? 0.4 : 1,
+        duration: const Duration(milliseconds: 150),
+        child: AbsorbPointer(absorbing: isDisabled, child: sideBar),
+      ),
+    );
   }
 
   @override

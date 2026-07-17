@@ -125,6 +125,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildRedPointMessageBadge(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           TText(
@@ -145,6 +146,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildRedPointIconBadge(BuildContext context) {
     return const SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           Icon(TIcons.notification),
@@ -162,6 +164,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildRedPointButtonBadge(BuildContext context) {
     return const SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           SizedBox(
@@ -185,6 +188,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildMessageNumberBadge(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           TText('消息', font: context.tTheme.fontBodyLarge),
@@ -202,6 +206,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildIconNumberBadge(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           const Icon(TIcons.notification),
@@ -219,6 +224,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildButtonNumberBadge(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           const SizedBox(
@@ -241,6 +247,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildCustomBadgeShowingNumber(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           Container(
@@ -264,6 +271,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildCustomBadgeShowingNumberZero(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           Container(
@@ -287,6 +295,7 @@ class _TBadgePageState extends State<TBadgePage> {
   Widget _buildCustomBadgeWithoutShowingNumberZero(BuildContext context) {
     return SizedBox(
       child: Stack(
+        clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
           Container(

@@ -147,7 +147,13 @@ class TFab extends StatelessWidget {
 
     // 禁用时包 IgnorePointer（仅 child 模式，TButton 内部已处理禁用）
     if (isChildMode && onPressed == null) {
-      actionChild = IgnorePointer(child: actionChild);
+      actionChild = Semantics(
+        enabled: false,
+        child: Opacity(
+          opacity: 0.4,
+          child: IgnorePointer(child: actionChild),
+        ),
+      );
     }
 
     // Tooltip / Semantics

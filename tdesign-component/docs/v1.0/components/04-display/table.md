@@ -25,6 +25,15 @@
 
 控制类 **—**（纯展示/布局）：无受控 value；按子交互控件控制类处理。
 
+### 选择列 Checkbox 密度
+
+Table 的选择列是明确的紧凑型 Checkbox 消费者。Table 单元格负责外围布局，内部 Checkbox 通过局部 Material `CheckboxThemeData` 显式使用：
+
+- `visualDensity: VisualDensity.compact`
+- `materialTapTargetSize: MaterialTapTargetSize.shrinkWrap`
+
+该配置只能作用于选择列子树，不得修改应用全局 Checkbox 密度，也不得依赖 `TCheckbox.title == null` 自动进入紧凑模式。Checkbox 指示器尺寸、点击热区和 Table 行高分别归各自组件所有。
+
 ---
 
 ## §1 v1.0 定稿 API
@@ -166,6 +175,7 @@ _无_
   - `t_table_theme_data.dart` — `TTableThemeData` ThemeExtension
 
 - **底层实现**：自绘表格组件（无 Material 同名控件）
+- **选择列**：内部 `TCheckbox` 使用局部 Material compact Theme；禁止 Checkbox 父组件特判或无标题隐式 compact。
 
 ### 4.2 必测场景
 
@@ -177,6 +187,7 @@ _无_
 | 加载态 | ✅ | `loading` / `loadingWidget` |
 | 空态 | ✅ | `empty` 参数 |
 | 边框/斑马纹 | ✅ | Theme `bordered` / `stripe` |
+| 选择列密度 | ✅ | compact + shrinkWrap 不撑大行高，且只影响选择列子树 |
 
 ### 4.3 Example 契约
 

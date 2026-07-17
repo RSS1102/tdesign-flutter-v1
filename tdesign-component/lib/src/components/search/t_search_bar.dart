@@ -233,8 +233,9 @@ class _TSearchBarState extends State<TSearchBar> with TickerProviderStateMixin {
         theme?.backgroundColor ??
         context.tTheme.bgColorContainer;
     final effectiveCursorHeight = widget.cursorHeight ?? theme?.cursorHeight;
+    final isEnabled = widget.enabled ?? true;
 
-    return Container(
+    final searchBar = Container(
       padding: widget.padding,
       height: widget.autoHeight ? double.infinity : 56,
       color: effectiveBgColor,
@@ -246,7 +247,9 @@ class _TSearchBarState extends State<TSearchBar> with TickerProviderStateMixin {
               child: Container(
                 height: double.infinity,
                 decoration: BoxDecoration(
-                    color: context.tTheme.bgColorSecondaryContainer,
+                    color: isEnabled
+                        ? context.tTheme.bgColorSecondaryContainer
+                        : context.tTheme.bgColorComponentDisabled,
                     borderRadius: BorderRadius.circular(
                         effectiveStyle == TSearchBarVariant.square ? 4 : 28)),
                 child: Row(
@@ -284,12 +287,16 @@ class _TSearchBarState extends State<TSearchBar> with TickerProviderStateMixin {
                           style: TextStyle(
                               textBaseline: TextBaseline.ideographic,
                               fontSize: getSize(context)?.size,
-                              color: context.tTheme.textColorPrimary),
+                              color: isEnabled
+                                  ? context.tTheme.textColorPrimary
+                                  : context.tTheme.textDisabledColor),
                           decoration: InputDecoration(
                             hintText: widget.hintText,
                             hintStyle: TextStyle(
                               fontSize: getSize(context)?.size,
-                              color: context.tTheme.textColorPlaceholder,
+                              color: isEnabled
+                                  ? context.tTheme.textColorPlaceholder
+                                  : context.tTheme.textDisabledColor,
                               textBaseline: TextBaseline.ideographic,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -305,7 +312,7 @@ class _TSearchBarState extends State<TSearchBar> with TickerProviderStateMixin {
                           maxLines: 1,
                           textInputAction: widget.inputAction,
                           readOnly: widget.readOnly ?? false,
-                          enabled: widget.enabled,
+                          enabled: isEnabled,
                           cursorOpacityAnimates: false,
                         ),
                       ),
@@ -360,6 +367,14 @@ class _TSearchBarState extends State<TSearchBar> with TickerProviderStateMixin {
           ],
         ),
       ]),
+    );
+    return Semantics(
+      enabled: isEnabled,
+      child: AnimatedOpacity(
+        opacity: isEnabled ? 1 : 0.6,
+        duration: const Duration(milliseconds: 150),
+        child: AbsorbPointer(absorbing: !isEnabled, child: searchBar),
+      ),
     );
   }
 }

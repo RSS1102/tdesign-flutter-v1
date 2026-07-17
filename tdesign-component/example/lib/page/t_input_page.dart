@@ -140,13 +140,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           label: 'Label Text',
           controller: controller[0],
           hintText: 'Please enter text',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[0].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -162,13 +156,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           required: true,
           controller: controller[1],
           hintText: '请输入文字',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[1].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -183,13 +171,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           label: '标签文字',
           controller: controller[2],
           hintText: '请输入文字(选填)',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[2].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -203,13 +185,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
         TInput(
           controller: controller[3],
           hintText: '请输入文字',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[3].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -224,13 +200,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
       controller: controller[4],
       hintText: '请输入文字',
       additionInfo: '辅助说明',
-      onChanged: (text) {
-        setState(() {});
-      },
-      onClearTap: () {
-        controller[4].clear();
-        setState(() {});
-      },
+      onChanged: (text) {},
     );
   }
 
@@ -245,13 +215,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           hintText: '请输入文字',
           maxLength: 10,
           additionInfo: '最大输入10个字符',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[5].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -267,13 +231,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
       hintText: '请输入文字',
       inputFormatters: [Chinese2Formatter(10)],
       additionInfo: '最大输入10个字符，汉字算两个',
-      onChanged: (text) {
-        setState(() {});
-      },
-      onClearTap: () {
-        controller[6].clear();
-        setState(() {});
-      },
+      onChanged: (text) {},
     );
   }
 
@@ -292,13 +250,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           onBtnTap: () {
             TToast.showText('点击右侧按钮', context: context);
           },
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[7].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -348,13 +300,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
       onBtnTap: () {
         TToast.showText('点击操作按钮', context: context);
       },
-      onChanged: (text) {
-        setState(() {});
-      },
-      onClearTap: () {
-        controller[9].clear();
-        setState(() {});
-      },
+      onChanged: (text) {},
     );
   }
 
@@ -367,13 +313,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           label: '标签文字',
           controller: controller[10],
           hintText: '请输入文字',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[10].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -388,13 +328,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           prefix: const Icon(TIcons.app),
           controller: controller[11],
           hintText: '请输入文字',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[11].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -607,13 +541,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           hintText: '请输入文字',
           additionInfo: '错误提示说明',
           additionInfoColor: context.tTheme.errorColor6,
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[17].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -640,13 +568,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           label: '标签超长时最多十个字',
           controller: controller[18],
           hintText: '请输入文字',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[18].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -682,13 +604,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
       onBtnTap: () {
         TToast.showText('点击右侧按钮', context: context);
       },
-      onChanged: (text) {
-        setState(() {});
-      },
-      onClearTap: () {
-        controller[20].clear();
-        setState(() {});
-      },
+      onChanged: (text) {},
     );
   }
 
@@ -700,13 +616,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
       label: '标签文字',
       controller: controller[21],
       hintText: '请输入文字',
-      onChanged: (text) {
-        setState(() {});
-      },
-      onClearTap: () {
-        controller[21].clear();
-        setState(() {});
-      },
+      onChanged: (text) {},
     );
   }
 
@@ -729,13 +639,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
         onBtnTap: () {
           TToast.showText('点击右侧按钮', context: context);
         },
-        onChanged: (text) {
-          setState(() {});
-        },
-        onClearTap: () {
-          controller[22].clear();
-          setState(() {});
-        },
+        onChanged: (text) {},
       ),
     );
   }
@@ -748,13 +652,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           label: '左对齐',
           controller: controller[23],
           hintText: '请输入文字',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[23].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -770,13 +668,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           controller: controller[24],
           contentAlignment: TextAlign.center,
           hintText: '请输入文字',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[24].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -792,13 +684,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           controller: controller[25],
           contentAlignment: TextAlign.end,
           hintText: '请输入文字',
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[25].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],
@@ -815,14 +701,8 @@ class _TInputViewPageState extends State<TInputViewPage> {
       textStyle: TextStyle(color: context.tTheme.fontWhColor1),
       hintText: '请输入文字',
       hintTextStyle: TextStyle(color: context.tTheme.fontWhColor3),
-      onChanged: (text) {
-        setState(() {});
-      },
+      onChanged: (text) {},
       clearBtnColor: context.tTheme.fontWhColor3,
-      onClearTap: () {
-        controller[26].clear();
-        setState(() {});
-      },
     );
   }
 
@@ -934,13 +814,7 @@ class _TInputViewPageState extends State<TInputViewPage> {
           controller: controller[27],
           hintText: '请输入地址，高度自适应',
           maxLines: null,
-          onChanged: (text) {
-            setState(() {});
-          },
-          onClearTap: () {
-            controller[27].clear();
-            setState(() {});
-          },
+          onChanged: (text) {},
         ),
         const SizedBox()
       ],

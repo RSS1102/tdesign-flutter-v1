@@ -52,6 +52,7 @@ class _TStepperPageState extends State<TStepperPage> {
     return _buildRow(context, [
       const TStepper(
         theme: TStepperColorScheme.filled,
+        onChanged: print,
       )
     ]);
   }
@@ -59,8 +60,18 @@ class _TStepperPageState extends State<TStepperPage> {
   @Demo(group: 'stepper')
   Widget _buildStepperWithMaxMinStatus(BuildContext context) {
     return _buildRow(context, [
-      const TStepper(theme: TStepperColorScheme.filled, value: 0, min: 0),
-      const TStepper(theme: TStepperColorScheme.filled, value: 999, max: 999),
+      const TStepper(
+        theme: TStepperColorScheme.filled,
+        value: 0,
+        min: 0,
+        onChanged: print,
+      ),
+      const TStepper(
+        theme: TStepperColorScheme.filled,
+        value: 999,
+        max: 999,
+        onChanged: print,
+      ),
     ]);
   }
 
@@ -82,9 +93,21 @@ class _TStepperPageState extends State<TStepperPage> {
   @Demo(group: 'stepper')
   Widget _buildStepperWithTheme(BuildContext context) {
     return _buildRow(context, [
-      const TStepper(theme: TStepperColorScheme.filled, value: 3),
-      const TStepper(theme: TStepperColorScheme.outline, value: 3),
-      const TStepper(theme: TStepperColorScheme.normal, value: 3),
+      const TStepper(
+        theme: TStepperColorScheme.filled,
+        value: 3,
+        onChanged: print,
+      ),
+      const TStepper(
+        theme: TStepperColorScheme.outline,
+        value: 3,
+        onChanged: print,
+      ),
+      const TStepper(
+        theme: TStepperColorScheme.normal,
+        value: 3,
+        onChanged: print,
+      ),
     ]);
   }
 
@@ -92,11 +115,23 @@ class _TStepperPageState extends State<TStepperPage> {
   Widget _buildStepperWithSize(BuildContext context) {
     return _buildRow(context, [
       const TStepper(
-          size: TStepperSize.large, theme: TStepperColorScheme.filled, value: 3),
+        size: TStepperSize.large,
+        theme: TStepperColorScheme.filled,
+        value: 3,
+        onChanged: print,
+      ),
       const TStepper(
-          size: TStepperSize.medium, theme: TStepperColorScheme.filled, value: 3),
+        size: TStepperSize.medium,
+        theme: TStepperColorScheme.filled,
+        value: 3,
+        onChanged: print,
+      ),
       const TStepper(
-          size: TStepperSize.small, theme: TStepperColorScheme.filled, value: 3),
+        size: TStepperSize.small,
+        theme: TStepperColorScheme.filled,
+        value: 3,
+        onChanged: print,
+      ),
     ]);
   }
 

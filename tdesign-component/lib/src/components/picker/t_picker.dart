@@ -20,7 +20,6 @@ class TPicker extends StatefulWidget {
     this.onColumnScrollEnd,
     this.height = 200,
     this.itemCount = 5,
-    this.disabled = false,
     this.itemBuilder,
   });
 
@@ -42,9 +41,6 @@ class TPicker extends StatefulWidget {
   /// 每屏显示项数（奇数更利于中央高亮），默认 5
   final int itemCount;
 
-  /// 是否禁用整个选择器（禁止滚动与无障碍操作），默认 false
-  final bool disabled;
-
   /// 自定义子项构建器 `(context, content, colIndex, index, itemDistanceCalculator, distance) => Widget?`；`distance` 为 0 表示选中项，返回 null 用默认样式，disabled 项不走此 builder。
   final ItemBuilderType? itemBuilder;
 
@@ -53,6 +49,8 @@ class TPicker extends StatefulWidget {
 }
 
 class _TPickerState extends State<TPicker> {
+  bool get _isDisabled => widget.onChanged == null;
+
   late bool _isLinked;
   late List<List<TPickerOption>> _columns;
   late List<FixedExtentScrollController> _controllers;
@@ -142,14 +140,17 @@ class _TPickerState extends State<TPicker> {
       return false;
     }
 
-    setState(() { // coverage:ignore-line
-      for (var i = 0; i < newCols.length; i++) { // coverage:ignore-line
+    setState(() {
+      // coverage:ignore-line
+      for (var i = 0; i < newCols.length; i++) {
+        // coverage:ignore-line
         _columns[i] = newCols[i]; // coverage:ignore-line
         _columnLengths[i] = newCols[i].length; // coverage:ignore-line
-        _columnKeys[i].currentState?.applyColumnUpdate( // coverage:ignore-line
-          options: newCols[i], // coverage:ignore-line
-          controller: _controllers[i], // coverage:ignore-line
-        );
+        _columnKeys[i].currentState?.applyColumnUpdate(
+              // coverage:ignore-line
+              options: newCols[i], // coverage:ignore-line
+              controller: _controllers[i], // coverage:ignore-line
+            );
       }
     });
     return true;
@@ -189,18 +190,17 @@ class _TPickerState extends State<TPicker> {
     }
 
     // 始终保留旧 controller 位置，clamp 到新列范围
-    final targetIndex = _controllers[changedCol]
-        .selectedItem
-        .clamp(0, newCol.length - 1);
+    final targetIndex =
+        _controllers[changedCol].selectedItem.clamp(0, newCol.length - 1);
 
     final jumpIndex = targetIndex;
     setState(() {
       _columns[changedCol] = newCol;
       _columnLengths[changedCol] = newCol.length;
       _columnKeys[changedCol].currentState?.applyColumnUpdate(
-        options: newCol,
-        controller: _controllers[changedCol],
-      );
+            options: newCol,
+            controller: _controllers[changedCol],
+          );
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -298,12 +298,12 @@ class _TPickerState extends State<TPicker> {
       // 否则单列场景下 "选择器" 与 "第 1 列" 会被合并成同一 label。
       container: true,
       explicitChildNodes: true,
-      enabled: !widget.disabled,
+      enabled: !_isDisabled,
       label: context.resource.picker,
       child: Opacity(
-        opacity: widget.disabled ? _kDisabledOpacity : 1.0,
+        opacity: _isDisabled ? _kDisabledOpacity : 1.0,
         child: AbsorbPointer(
-          absorbing: widget.disabled,
+          absorbing: _isDisabled,
           child: MultiWheelLayout(
             height: widget.height,
             itemHeight: _itemHeight,
@@ -336,14 +336,14 @@ class _TPickerState extends State<TPicker> {
           // label 合并；excludeSemantics 屏蔽列内 TText 节点。
           container: true,
           explicitChildNodes: true,
-          enabled: !widget.disabled,
+          enabled: !_isDisabled,
           label: context.resource.pickerColumn(colIndex + 1),
           value: value,
-          onIncrease: !widget.disabled && inc != null
+          onIncrease: !_isDisabled && inc != null
               ? () => _nudgeColumn(colIndex, 1)
               : null,
           increasedValue: inc ?? '',
-          onDecrease: !widget.disabled && dec != null
+          onDecrease: !_isDisabled && dec != null
               ? () => _nudgeColumn(colIndex, -1) // coverage:ignore-line
               : null,
           decreasedValue: dec ?? '',
@@ -354,12 +354,14 @@ class _TPickerState extends State<TPicker> {
               options: data,
               controller: _controllers[colIndex],
               itemHeight: _itemHeight,
-              disabled: widget.disabled,
+              disabled: _isDisabled,
               itemBuilder: widget.itemBuilder,
-              onItemSelected: (col, index, _) => _onColumnItemSelected(col, index),
+              onItemSelected: (col, index, _) =>
+                  _onColumnItemSelected(col, index),
               onScrollEnd: _onColumnScrollEnd,
               onAnimationComplete: (col, index, _) => // coverage:ignore-line
-                  _onColumnAnimationComplete(col, index), // coverage:ignore-line
+                  _onColumnAnimationComplete(
+                      col, index), // coverage:ignore-line
             ),
           ),
         );
@@ -369,7 +371,7 @@ class _TPickerState extends State<TPicker> {
 
   // 无障碍手势：严格 ±1 步进，委托 WheelColumnState.nudge
   void _nudgeColumn(int col, int delta) {
-    if (widget.disabled) {
+    if (_isDisabled) {
       return;
     }
     if (col < 0 || col >= _columnKeys.length) {
@@ -389,9 +391,7 @@ class _TPickerState extends State<TPicker> {
       return '';
     }
     final c = _controllers[colIndex];
-    final idx = c.hasClients
-        ? c.selectedItem.clamp(0, data.length - 1)
-        : 0;
+    final idx = c.hasClients ? c.selectedItem.clamp(0, data.length - 1) : 0;
     if (!data[idx].disabled) {
       return data[idx].label;
     }
@@ -409,9 +409,7 @@ class _TPickerState extends State<TPicker> {
       return null;
     }
     final c = _controllers[colIndex];
-    final idx = c.hasClients
-        ? c.selectedItem.clamp(0, data.length - 1)
-        : 0;
+    final idx = c.hasClients ? c.selectedItem.clamp(0, data.length - 1) : 0;
     final next = idx + delta;
     if (next < 0 || next >= data.length) {
       return null;
@@ -424,7 +422,7 @@ class _TPickerState extends State<TPicker> {
     int col,
     List<TPickerOption> data,
   ) {
-    if (notification is ScrollEndNotification && !widget.disabled) {
+    if (notification is ScrollEndNotification && !_isDisabled) {
       widget.onColumnScrollEnd?.call(col, _buildValue());
     }
     return false;
@@ -469,10 +467,12 @@ class _TPickerState extends State<TPicker> {
     });
   }
 
-  void _onColumnAnimationComplete(int col, int index) { // coverage:ignore-line
+  void _onColumnAnimationComplete(int col, int index) {
+    // coverage:ignore-line
     if (_isLinked && // coverage:ignore-line
         _linkedNotifyOriginCol != null && // coverage:ignore-line
-        col > _linkedNotifyOriginCol!) { // coverage:ignore-line
+        col > _linkedNotifyOriginCol!) {
+      // coverage:ignore-line
       return;
     }
     // 动画完成后触发 onChanged
@@ -583,8 +583,10 @@ class _TPickerState extends State<TPicker> {
       var idx = _controllers[i].selectedItem.clamp(0, column.length - 1);
       // disabled 项就地修正到最近 enabled（找不到则保持原位）
       if (column[idx].disabled) {
-        final fixed = WheelColumnState.nearestEnabledIndex(column, idx); // coverage:ignore-line
-        if (fixed >= 0) { // coverage:ignore-line
+        final fixed = WheelColumnState.nearestEnabledIndex(
+            column, idx); // coverage:ignore-line
+        if (fixed >= 0) {
+          // coverage:ignore-line
           idx = fixed;
         }
       }

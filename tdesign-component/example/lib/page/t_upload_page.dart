@@ -122,6 +122,7 @@ class TUploadState extends State<TUploadPage> {
             ExampleItem(desc: '加载状态', builder: _uploadLoading),
             ExampleItem(desc: '重新上传', builder: _uploadRetry),
             ExampleItem(desc: '上传失败', builder: _uploadError),
+            ExampleItem(desc: '禁用状态', builder: _uploadDisabled),
           ],
         ),
       ],
@@ -256,6 +257,20 @@ class TUploadState extends State<TUploadPage> {
           onError: print,
           onValidate: print,
           onChanged: ((files, type) => onValueChanged(files5, files, type)),
+        ));
+  }
+
+  @Demo(group: 'upload')
+  Widget _uploadDisabled(BuildContext context) {
+    return wrapDemoContainer('禁用状态',
+        child: TUpload(
+          files: files1,
+          multiple: true,
+          max: 9,
+          onPressed: onClick,
+          onCancel: onCancel,
+          onError: print,
+          onValidate: print,
         ));
   }
 

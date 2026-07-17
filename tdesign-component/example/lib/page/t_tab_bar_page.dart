@@ -8,6 +8,80 @@ Widget? _selectedIcon;
 
 Widget? _unSelectedIcon;
 
+class _ExampleTabBar extends StatefulWidget {
+  const _ExampleTabBar({
+    required this.variant,
+    required this.navigationTabs,
+    this.value,
+    this.onChanged,
+    this.barHeight,
+    this.useVerticalDivider,
+    this.topBorder,
+    this.selectedBgColor,
+    this.unselectedBgColor,
+    this.backgroundColor,
+    this.needInkWell = false,
+    this.indicatorAnimation = TTabBarIndicatorAnimation.none,
+  });
+
+  final TTabBarVariant variant;
+  final List<TTabBarItemConfig> navigationTabs;
+  final int? value;
+  final ValueChanged<int>? onChanged;
+  final double? barHeight;
+  final bool? useVerticalDivider;
+  final BorderSide? topBorder;
+  final Color? selectedBgColor;
+  final Color? unselectedBgColor;
+  final Color? backgroundColor;
+  final bool needInkWell;
+  final TTabBarIndicatorAnimation indicatorAnimation;
+
+  @override
+  State<_ExampleTabBar> createState() => _ExampleTabBarState();
+}
+
+class _ExampleTabBarState extends State<_ExampleTabBar> {
+  late int _value;
+
+  @override
+  void initState() {
+    super.initState();
+    _value = widget.value ?? 0;
+  }
+
+  @override
+  void didUpdateWidget(covariant _ExampleTabBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.value != null && widget.value != oldWidget.value) {
+      _value = widget.value!;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TTabBar(
+      variant: widget.variant,
+      navigationTabs: widget.navigationTabs,
+      value: widget.value ?? _value,
+      onChanged: (value) {
+        widget.onChanged?.call(value);
+        if (widget.value == null) {
+          setState(() => _value = value);
+        }
+      },
+      barHeight: widget.barHeight,
+      useVerticalDivider: widget.useVerticalDivider,
+      topBorder: widget.topBorder,
+      selectedBgColor: widget.selectedBgColor,
+      unselectedBgColor: widget.unselectedBgColor,
+      backgroundColor: widget.backgroundColor,
+      needInkWell: widget.needInkWell,
+      indicatorAnimation: widget.indicatorAnimation,
+    );
+  }
+}
+
 class TTabBarPage extends StatefulWidget {
   const TTabBarPage({Key? key}) : super(key: key);
 
@@ -67,6 +141,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
         ]),
         ExampleModule(title: '组件事件', children: [
           ExampleItem(desc: '长按触发', builder: _capsuleTabBarOnLongPress),
+          ExampleItem(desc: '禁用状态', builder: _disabledTabBar),
         ]),
       ],
       test: [
@@ -86,7 +161,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _textTypeTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.text,
       useVerticalDivider: false,
       navigationTabs: List.generate(2, (index) {
@@ -103,7 +178,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _textTypeTabBar3tabs(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.text,
       indicatorAnimation: TTabBarIndicatorAnimation.elastic,
       useVerticalDivider: false,
@@ -121,7 +196,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _textTypeTabBar4tabs(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.text,
       useVerticalDivider: false,
       navigationTabs: List.generate(4, (index) {
@@ -138,7 +213,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _textTypeTabBar5tabs(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.text,
       useVerticalDivider: false,
       navigationTabs: List.generate(5, (index) {
@@ -155,7 +230,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _iconTextTypeTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.iconText,
       useVerticalDivider: false,
       navigationTabs: List.generate(2, (index) {
@@ -174,7 +249,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _iconTextTypeTabBar3tabs(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.iconText,
       useVerticalDivider: false,
       navigationTabs: List.generate(3, (index) {
@@ -193,7 +268,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _iconTextTypeTabBar4tabs(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.iconText,
       useVerticalDivider: false,
       navigationTabs: List.generate(4, (index) {
@@ -212,7 +287,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _iconTextTypeTabBar5tabs(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.iconText,
       useVerticalDivider: false,
       navigationTabs: List.generate(5, (index) {
@@ -231,7 +306,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _iconTypeTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.icon,
       useVerticalDivider: true,
       navigationTabs: List.generate(2, (index) {
@@ -248,7 +323,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _iconTypeTabBar3tabs(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.icon,
       useVerticalDivider: true,
       navigationTabs: List.generate(3, (index) {
@@ -265,7 +340,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _iconTypeTabBar4tabs(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.icon,
       useVerticalDivider: true,
       navigationTabs: List.generate(4, (index) {
@@ -282,7 +357,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _iconTypeTabBar5tabs(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.icon,
       useVerticalDivider: true,
       navigationTabs: List.generate(5, (index) {
@@ -299,7 +374,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _expansionPanelTypeTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.expansionPanel,
       useVerticalDivider: true,
       navigationTabs: [
@@ -348,7 +423,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _weakSelectTextTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.weakText,
       useVerticalDivider: true,
       navigationTabs: [
@@ -382,7 +457,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _weakSelectIconTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.weakIcon,
       useVerticalDivider: false,
       navigationTabs: [
@@ -422,7 +497,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _weakSelectIconTextTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
       variant: TTabBarVariant.weakIconText,
       useVerticalDivider: false,
       navigationTabs: [
@@ -462,7 +537,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _capsuleTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
         variant: TTabBarVariant.capsule,
         useVerticalDivider: true,
         navigationTabs: List.generate(3, (index) {
@@ -480,7 +555,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _capsuleTabBarOnLongPress(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
         variant: TTabBarVariant.capsule,
         useVerticalDivider: true,
         navigationTabs: List.generate(3, (index) {
@@ -501,8 +576,24 @@ class _TTabBarPageState extends State<TTabBarPage> {
   }
 
   @Demo(group: 'tabBar')
-  Widget _buildCustomTopStyle(BuildContext context) {
+  Widget _disabledTabBar(BuildContext context) {
     return TTabBar(
+      variant: TTabBarVariant.iconText,
+      value: 0,
+      navigationTabs: List.generate(3, (index) {
+        return TTabBarItemConfig(
+          tabText: '标签${index + 1}',
+          selectedIcon: _selectedIcon,
+          unselectedIcon: _unSelectedIcon,
+          onTap: () => onTapTab(context, '标签${index + 1}'),
+        );
+      }),
+    );
+  }
+
+  @Demo(group: 'tabBar')
+  Widget _buildCustomTopStyle(BuildContext context) {
+    return _ExampleTabBar(
       variant: TTabBarVariant.weakIconText,
       topBorder: const BorderSide(color: Colors.red, width: 5),
       barHeight: 61,
@@ -544,7 +635,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _customBgColor(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
         variant: TTabBarVariant.iconText,
         useVerticalDivider: false,
         selectedBgColor: context.tTheme.errorColor3,
@@ -564,7 +655,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _customBgTypeTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
         variant: TTabBarVariant.text,
         backgroundColor: context.tTheme.successNormalColor,
         selectedBgColor: context.tTheme.errorLightColor,
@@ -608,9 +699,12 @@ class _TTabBarPageState extends State<TTabBarPage> {
               });
             },
           )),
-          TTabBar(
+          _ExampleTabBar(
               variant: TTabBarVariant.icon, // 设置选中索引
               value: _tabBarValue,
+              onChanged: (value) {
+                setState(() => _tabBarValue = value);
+              },
               useVerticalDivider: true,
               navigationTabs: List.generate(2, (index) {
                 final label = '标签${index + 1}';
@@ -628,7 +722,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _allowMultipleTaps(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
         variant: TTabBarVariant.text,
         useVerticalDivider: false,
         navigationTabs: [
@@ -650,7 +744,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _needInkWellTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
         variant: TTabBarVariant.iconText,
         needInkWell: true,
         navigationTabs: [
@@ -683,7 +777,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _indicatorLinearAnimationTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
         variant: TTabBarVariant.text,
         indicatorAnimation: TTabBarIndicatorAnimation.linear,
         navigationTabs: [
@@ -716,7 +810,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
 
   @Demo(group: 'tabBar')
   Widget _indicatorElasticAnimationTabBar(BuildContext context) {
-    return TTabBar(
+    return _ExampleTabBar(
         variant: TTabBarVariant.text,
         indicatorAnimation: TTabBarIndicatorAnimation.elastic,
         navigationTabs: [

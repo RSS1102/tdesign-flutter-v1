@@ -23,6 +23,15 @@ const double _kDefaultTabBarHeight = 56;
 /// 展开项弹窗弹出动画时间
 const Duration _kPopupMenuDuration = Duration(milliseconds: 10);
 
+/// 展开项弹窗距离触发按钮的间距
+const double _kPopupButtonPadding = 8.0;
+
+/// 展开项弹窗箭头和触发按钮的间距
+const double _kPopupArrowGap = 4.0;
+
+/// 展开项弹窗距离视口边界的安全距离
+const double _kPopupViewportPadding = 8.0;
+
 /// 底部标签栏形态
 enum TTabBarVariant {
   /// 单层级纯文本标签栏
@@ -237,7 +246,8 @@ class TTabBar extends StatefulWidget {
     this.indicatorAnimation = TTabBarIndicatorAnimation.none,
     this.animationDuration = const Duration(milliseconds: 300),
     this.animationCurve = Curves.easeInOutCubic,
-    this.value,
+    required this.value,
+    this.onChanged,
   })  : assert(() {
           if (navigationTabs.isEmpty) {
             throw FlutterError('[TTabBar] please set at least one tab!');
@@ -269,7 +279,7 @@ class TTabBar extends StatefulWidget {
               }
             }
           }
-          if (value != null && (value < 0 || value >= navigationTabs.length)) {
+          if (value < 0 || value >= navigationTabs.length) {
             throw FlutterError(
                 '[TTabBar] value must in [0,navigationTabs.length)');
           }
@@ -341,7 +351,10 @@ class TTabBar extends StatefulWidget {
   final Curve animationCurve;
 
   /// 选中的 index
-  final int? value;
+  final int value;
+
+  /// 选中项变化；null 时整栏禁用
+  final ValueChanged<int>? onChanged;
 
   @override
   State<TTabBar> createState() => _TTabBarState();
@@ -369,7 +382,7 @@ class _TTabBarState extends State<TTabBar> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = widget.value ?? 0;
+    _selectedIndex = widget.value;
 
     // 初始化动画控制器
     _animationController = AnimationController(
@@ -390,9 +403,8 @@ class _TTabBarState extends State<TTabBar> with SingleTickerProviderStateMixin {
   @override
   void didUpdateWidget(covariant TTabBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final effectiveValue = widget.value;
-    if (effectiveValue != null && effectiveValue != _selectedIndex) {
-      _animateToIndex(effectiveValue);
+    if (widget.value != _selectedIndex) {
+      _animateToIndex(widget.value);
     }
 
     // 更新动画时长和曲线
@@ -505,7 +517,15 @@ class _TTabBarState extends State<TTabBar> with SingleTickerProviderStateMixin {
                 result = SafeArea(child: result);
               }
             }
-            return result;
+            final isDisabled = widget.onChanged == null;
+            return Semantics(
+              enabled: !isDisabled,
+              child: AnimatedOpacity(
+                opacity: isDisabled ? 0.4 : 1,
+                duration: const Duration(milliseconds: 150),
+                child: AbsorbPointer(absorbing: isDisabled, child: result),
+              ),
+            );
           },
         );
       },
@@ -513,15 +533,18 @@ class _TTabBarState extends State<TTabBar> with SingleTickerProviderStateMixin {
   }
 
   void _onTap(int index) {
-    setState(() {
-      if (_selectedIndex != index ||
-          widget.navigationTabs[index].allowMultipleTaps) {
+    final onChanged = widget.onChanged;
+    if (onChanged == null) {
+      return;
+    }
+    if (_selectedIndex == index) {
+      if (widget.navigationTabs[index].allowMultipleTaps) {
         widget.navigationTabs[index].onTap?.call();
       }
-      if (_selectedIndex != index) {
-        _animateToIndex(index);
-      }
-    });
+      return;
+    }
+    widget.navigationTabs[index].onTap?.call();
+    onChanged(index);
   }
 
   /// 动画切换到指定索引
@@ -1201,18 +1224,17 @@ class PopupDialogState extends State<PopupDialog> {
         (widget.config?.arrowHeight ?? _kArrowHeight);
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    const popupButtonPadding = 8.0;
-    const popupArrowGap = 4.0;
-    const popupViewportPadding = 8.0;
-    final rawTop =
-        position!.top - popUpPanelHeight - popupButtonPadding - popupArrowGap;
-    final maxTop = screenHeight - popUpPanelHeight - popupViewportPadding;
-    final safeTop = rawTop.clamp(popupViewportPadding,
-        maxTop < popupViewportPadding ? popupViewportPadding : maxTop);
+    final rawTop = position!.top -
+        popUpPanelHeight -
+        _kPopupButtonPadding -
+        _kPopupArrowGap;
+    final maxTop = screenHeight - popUpPanelHeight - _kPopupViewportPadding;
+    final safeTop = rawTop.clamp(_kPopupViewportPadding,
+        maxTop < _kPopupViewportPadding ? _kPopupViewportPadding : maxTop);
     final rawLeft = position!.left + (size!.width - popUpItemWidth) / 2;
-    final maxLeft = screenWidth - popUpItemWidth - popupViewportPadding;
-    final safeLeft = rawLeft.clamp(popupViewportPadding,
-        maxLeft < popupViewportPadding ? popupViewportPadding : maxLeft);
+    final maxLeft = screenWidth - popUpItemWidth - _kPopupViewportPadding;
+    final safeLeft = rawLeft.clamp(_kPopupViewportPadding,
+        maxLeft < _kPopupViewportPadding ? _kPopupViewportPadding : maxLeft);
 
     return Material(
       type: MaterialType.transparency,

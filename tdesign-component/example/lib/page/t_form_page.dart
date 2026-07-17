@@ -29,7 +29,8 @@ class _TFormPageState extends State<TFormPage> {
   bool _isFormHorizontal = true;
 
   /// 展示日期选择器弹窗
-  void _showDatePicker(BuildContext context, {
+  void _showDatePicker(
+    BuildContext context, {
     required Function(List selected) onConfirm,
     List<int>? initialDate,
   }) {
@@ -38,10 +39,14 @@ class _TFormPageState extends State<TFormPage> {
     final month = initialDate?[1] ?? 1;
     final day = initialDate?[2] ?? 1;
 
-    final yearItems = List.generate(52, (i) => TPickerOption(label: '${1999 + i}年', value: 1999 + i));
-    final monthItems = List.generate(12, (i) => TPickerOption(label: '${i + 1}月', value: i + 1));
-    final daysInMonth = DateTime(year, month + 1).subtract(const Duration(days: 1)).day;
-    final dayItems = List.generate(daysInMonth, (i) => TPickerOption(label: '${i + 1}日', value: i + 1));
+    final yearItems = List.generate(
+        52, (i) => TPickerOption(label: '${1999 + i}年', value: 1999 + i));
+    final monthItems = List.generate(
+        12, (i) => TPickerOption(label: '${i + 1}月', value: i + 1));
+    final daysInMonth =
+        DateTime(year, month + 1).subtract(const Duration(days: 1)).day;
+    final dayItems = List.generate(
+        daysInMonth, (i) => TPickerOption(label: '${i + 1}日', value: i + 1));
 
     showModalBottomSheet(
       context: context,
@@ -201,8 +206,7 @@ class _TFormPageState extends State<TFormPage> {
 
   ///密码是否浏览
   bool browseOn = false;
-  final TCheckboxGroupController _genderCheckboxGroupController =
-      TCheckboxGroupController();
+  String? _genderValue;
 
   /// 整个表单存放的数据
   Map<String, dynamic> _formData = {
@@ -358,7 +362,6 @@ class _TFormPageState extends State<TFormPage> {
   Widget _buildForm(BuildContext context) {
     return TForm(
         controller: _formController,
-        disabled: _formDisableState,
         data: _formData,
         layout: _isFormHorizontal,
         rules: _validationRules,
@@ -384,8 +387,7 @@ class _TFormPageState extends State<TFormPage> {
                 inputDecoration: const InputDecoration(
                   hintText: '请输入用户名',
                   border: InputBorder.none,
-                  hintStyle: TextStyle(
-                  ),
+                  hintStyle: TextStyle(),
                 ),
                 controller: _textControllers[0],
                 additionInfoColor: context.tTheme.errorColor6,
@@ -410,8 +412,7 @@ class _TFormPageState extends State<TFormPage> {
                 inputDecoration: const InputDecoration(
                   hintText: '请输入密码',
                   border: InputBorder.none,
-                  hintStyle: TextStyle(
-                  ),
+                  hintStyle: TextStyle(),
                 ),
                 layout: TInputLayout.normal,
                 controller: _textControllers[1],
@@ -434,25 +435,20 @@ class _TFormPageState extends State<TFormPage> {
             labelWidth: 82.0,
             showErrorMessage: true,
             itemNotifier: _itemNotifier['gender'],
-            child: TRadioGroup(
-              spacing: 0,
+            child: TRadioGroup<String>(
+              value: _genderValue,
+              options: [
+                for (final entry in _radios.entries)
+                  TRadioOption(value: entry.key, label: entry.value),
+              ],
               direction: Axis.horizontal,
-              controller: _genderCheckboxGroupController,
-              directionalTdRadios: _radios.entries.map((entry) {
-                return TRadio(
-                  id: entry.key,
-                  title: entry.value,
-                  radioStyle: TRadioVariant.circle,
-                  showDivider: false,
-                  spacing: 4,
-                  checkBoxLeftSpace: 0,
-                  customSpace: const EdgeInsets.all(0),
-                  enabled: !_formDisableState,
-                );
-              }).toList(),
-              onRadioGroupChange: (selectedId) {
-                _itemNotifier['gender']?.upDataForm(selectedId);
-              },
+              columns: _radios.length,
+              onChanged: _formDisableState
+                  ? null
+                  : (selectedId) {
+                      setState(() => _genderValue = selectedId);
+                      _itemNotifier['gender']?.upDataForm(selectedId);
+                    },
             ),
           ),
           TFormItem(
@@ -529,9 +525,11 @@ class _TFormPageState extends State<TFormPage> {
                   theme: TStepperColorScheme.filled,
                   eventController: _stepController,
                   value: int.parse(_formData['age']),
-                  onChanged: _formDisableState ? null : (value) {
-                    _itemNotifier['age']?.upDataForm('$value');
-                  },
+                  onChanged: _formDisableState
+                      ? null
+                      : (value) {
+                          _itemNotifier['age']?.upDataForm('$value');
+                        },
                 ),
               )),
           TFormItem(
@@ -549,12 +547,14 @@ class _TFormPageState extends State<TFormPage> {
                     count: 5,
                     value: double.parse(_formData['description']),
                     allowHalf: false,
-                    onChanged: _formDisableState ? null : (value) {
-                      setState(() {
-                        _formData['description'] = '$value';
-                      });
-                      _itemNotifier['description']?.upDataForm('$value');
-                    },
+                    onChanged: _formDisableState
+                        ? null
+                        : (value) {
+                            setState(() {
+                              _formData['description'] = '$value';
+                            });
+                            _itemNotifier['description']?.upDataForm('$value');
+                          },
                   )),
             ),
           ),
@@ -594,14 +594,17 @@ class _TFormPageState extends State<TFormPage> {
                   max: 6,
                   onError: print,
                   onValidate: print,
-                  onChanged: _formDisableState ? null : ((imgList, type) {
-                    files = _onValueChanged(files, imgList, type);
-                    List imgs =
-                        files.map((e) => e.remotePath ?? e.assetPath).toList();
-                    setState(() {
-                      _itemNotifier['photo'].upDataForm(imgs.join(','));
-                    });
-                  }),
+                  onChanged: _formDisableState
+                      ? null
+                      : ((imgList, type) {
+                          files = _onValueChanged(files, imgList, type);
+                          List imgs = files
+                              .map((e) => e.remotePath ?? e.assetPath)
+                              .toList();
+                          setState(() {
+                            _itemNotifier['photo'].upDataForm(imgs.join(','));
+                          });
+                        }),
                 ),
               ))
         ],
@@ -624,7 +627,7 @@ class _TFormPageState extends State<TFormPage> {
                             //密码
                             _textControllers[1].clear();
                             // 性别
-                            _genderCheckboxGroupController.toggle('', false);
+                            _genderValue = null;
                             //个人简介
                             _textControllers[2].clear();
                             //生日
@@ -653,8 +656,7 @@ class _TFormPageState extends State<TFormPage> {
                             setState(() {});
                           },
                   )),
-                  const SizedBox(
-                  ),
+                  const SizedBox(),
                   Expanded(
                       child: TButton(
                           child: const Text('提交'),
@@ -671,7 +673,6 @@ class _TFormPageState extends State<TFormPage> {
   Widget _buildCustomForm(BuildContext context) {
     return TForm(
         controller: _formController,
-        disabled: _formDisableState,
         data: _formData,
         layout: _isFormHorizontal,
         rules: _validationRules,
@@ -700,8 +701,8 @@ class _TFormPageState extends State<TFormPage> {
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.all(0),
                     hintStyle: TextStyle(
-                        color:
-                            context.tTheme.fontGyColor3.withValues(alpha: 0.4))),
+                        color: context.tTheme.fontGyColor3
+                            .withValues(alpha: 0.4))),
                 controller: _textControllers[0],
                 backgroundColor: context.tTheme.brandNormalColor,
                 additionInfoColor: context.tTheme.errorColor6,
@@ -728,8 +729,8 @@ class _TFormPageState extends State<TFormPage> {
                     hintText: '请输入密码',
                     border: InputBorder.none,
                     hintStyle: TextStyle(
-                        color:
-                            context.tTheme.fontGyColor3.withValues(alpha: 0.4))),
+                        color: context.tTheme.fontGyColor3
+                            .withValues(alpha: 0.4))),
                 layout: TInputLayout.normal,
                 controller: _textControllers[1],
                 obscureText: !browseOn,
@@ -753,27 +754,26 @@ class _TFormPageState extends State<TFormPage> {
             labelWidth: 82.0,
             showErrorMessage: true,
             itemNotifier: _itemNotifier['gender'],
-            child: TRadioGroup(
-              spacing: 0,
-              direction: Axis.horizontal,
-              controller: _genderCheckboxGroupController,
-              directionalTdRadios: _radios.entries.map((entry) {
-                return TRadio(
-                  id: entry.key,
-                  title: entry.value,
-                  backgroundColor: context.tTheme.brandNormalColor,
-                  selectColor: context.tTheme.brandFocusColor,
-                  radioStyle: TRadioVariant.circle,
-                  showDivider: false,
-                  spacing: 4,
-                  checkBoxLeftSpace: 0,
-                  customSpace: const EdgeInsets.all(0),
-                  enabled: !_formDisableState,
-                );
-              }).toList(),
-              onRadioGroupChange: (selectedId) {
-                _itemNotifier['gender']?.upDataForm(selectedId);
-              },
+            child: Theme(
+              data: Theme.of(context).mergeExtension(TRadioThemeData(
+                backgroundColor: context.tTheme.brandNormalColor,
+                selectColor: context.tTheme.brandFocusColor,
+              )),
+              child: TRadioGroup<String>(
+                value: _genderValue,
+                options: [
+                  for (final entry in _radios.entries)
+                    TRadioOption(value: entry.key, label: entry.value),
+                ],
+                direction: Axis.horizontal,
+                columns: _radios.length,
+                onChanged: _formDisableState
+                    ? null
+                    : (selectedId) {
+                        setState(() => _genderValue = selectedId);
+                        _itemNotifier['gender']?.upDataForm(selectedId);
+                      },
+              ),
             ),
           ),
           TFormItem(
@@ -817,9 +817,11 @@ class _TFormPageState extends State<TFormPage> {
                   theme: TStepperColorScheme.filled,
                   eventController: _stepController,
                   value: int.parse(_formData['age']),
-                  onChanged: _formDisableState ? null : (value) {
-                    _itemNotifier['age']?.upDataForm('$value');
-                  },
+                  onChanged: _formDisableState
+                      ? null
+                      : (value) {
+                          _itemNotifier['age']?.upDataForm('$value');
+                        },
                 ),
               )),
           TFormItem(
@@ -838,12 +840,14 @@ class _TFormPageState extends State<TFormPage> {
                     count: 5,
                     value: double.parse(_formData['description']),
                     allowHalf: false,
-                    onChanged: _formDisableState ? null : (value) {
-                      setState(() {
-                        _formData['description'] = '$value';
-                      });
-                      _itemNotifier['description']?.upDataForm('$value');
-                    },
+                    onChanged: _formDisableState
+                        ? null
+                        : (value) {
+                            setState(() {
+                              _formData['description'] = '$value';
+                            });
+                            _itemNotifier['description']?.upDataForm('$value');
+                          },
                   )),
             ),
           ),
@@ -886,14 +890,17 @@ class _TFormPageState extends State<TFormPage> {
                   max: 6,
                   onError: print,
                   onValidate: print,
-                  onChanged: _formDisableState ? null : ((imgList, type) {
-                    files = _onValueChanged(files, imgList, type);
-                    List imgs =
-                        files.map((e) => e.remotePath ?? e.assetPath).toList();
-                    setState(() {
-                      _itemNotifier['photo'].upDataForm(imgs.join(','));
-                    });
-                  }),
+                  onChanged: _formDisableState
+                      ? null
+                      : ((imgList, type) {
+                          files = _onValueChanged(files, imgList, type);
+                          List imgs = files
+                              .map((e) => e.remotePath ?? e.assetPath)
+                              .toList();
+                          setState(() {
+                            _itemNotifier['photo'].upDataForm(imgs.join(','));
+                          });
+                        }),
                 ),
               ))
         ],
@@ -932,7 +939,8 @@ class _TFormPageState extends State<TFormPage> {
               child: TButton(
                 child: const Text('水平排布'),
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(horizontalButtonColor),
+                  backgroundColor:
+                      WidgetStateProperty.all(horizontalButtonColor),
                 ),
                 onPressed: () {
                   setState(() {

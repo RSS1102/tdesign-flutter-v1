@@ -39,7 +39,6 @@ class TStepper extends StatefulWidget {
   const TStepper({
     Key? key,
     this.disableInput = false,
-    this.disabled = false,
     this.inputWidth,
     this.eventController,
     this.max = 100,
@@ -56,9 +55,6 @@ class TStepper extends StatefulWidget {
 
   /// 禁用输入框
   final bool disableInput;
-
-  /// 禁用全部操作
-  final bool disabled;
 
   /// 禁用全部操作
   final double? inputWidth;
@@ -101,8 +97,8 @@ class TStepper extends StatefulWidget {
 }
 
 class _TStepperState extends State<TStepper> {
-  /// disabled 或 onChanged 为 null 时禁用全部操作
-  bool get _isDisabled => widget.disabled || widget.onChanged == null;
+  /// onChanged 为 null 时禁用全部操作
+  bool get _isDisabled => widget.onChanged == null;
 
   /// disableInput 仅额外禁用输入框，不影响左右按钮
   bool get _isInputDisabled => _isDisabled || widget.disableInput;
@@ -180,7 +176,7 @@ class _TStepperState extends State<TStepper> {
   Color? _getBackgroundColor(BuildContext context) {
     switch (widget.theme) {
       case TStepperColorScheme.filled:
-        return widget.disabled
+        return _isInputDisabled
             ? context.tTheme.bgColorComponentDisabled
             : context.tTheme.bgColorSecondaryContainer;
       case TStepperColorScheme.outline:
@@ -319,7 +315,7 @@ class _TStepperState extends State<TStepper> {
                       focusNode: _focusNode,
                       style: TextStyle(
                           fontSize: _getFontSize(),
-                          color: _isDisabled
+                          color: _isInputDisabled
                               ? context.tTheme.textDisabledColor
                               : context.tTheme.textColorPrimary),
                       textAlign: TextAlign.center,

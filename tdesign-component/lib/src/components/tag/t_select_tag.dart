@@ -5,7 +5,8 @@ import '../../../tdesign_flutter.dart';
 /// 点击型标签组件，点击时内部更改自身状态
 /// 支持样式：方形/圆角/半圆/带关闭图标
 class TSelectTag extends StatefulWidget {
-  const TSelectTag( // coverage:ignore-line
+  const TSelectTag(
+    // coverage:ignore-line
     this.text, {
     this.colorScheme,
     this.icon,
@@ -40,21 +41,44 @@ class TSelectTag extends StatefulWidget {
 class _TSelectTagState extends State<TSelectTag> {
   @override // coverage:ignore-line
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).extension<TTagThemeData>(); // coverage:ignore-line
+    final theme =
+        Theme.of(context).extension<TTagThemeData>(); // coverage:ignore-line
     final effectiveColorScheme = widget.value // coverage:ignore-line
-        ? (widget.colorScheme ?? theme?.colorScheme ?? TTagColorScheme.primary) // coverage:ignore-line
+        ? (widget.colorScheme ??
+            theme?.colorScheme ??
+            TTagColorScheme.primary) // coverage:ignore-line
         : TTagColorScheme.defaultTheme;
 
-    Widget result = TTag( // coverage:ignore-line
+    Widget result = TTag(
+      // coverage:ignore-line
       widget.text, // coverage:ignore-line
       colorScheme: effectiveColorScheme,
       icon: widget.icon, // coverage:ignore-line
       size: widget.size, // coverage:ignore-line
     );
 
-    if (widget.onChanged != null) { // coverage:ignore-line
-      result = GestureDetector( // coverage:ignore-line
-        onTap: () { // coverage:ignore-line
+    if (widget.onChanged == null) {
+      // coverage:ignore-line
+      final disabledTheme = (theme ?? const TTagThemeData())
+          .copyWith(disable: true); // coverage:ignore-line
+      result = Semantics(
+        // coverage:ignore-line
+        enabled: false, // coverage:ignore-line
+        child: Theme(
+          // coverage:ignore-line
+          data: Theme.of(context)
+              .mergeExtension(disabledTheme), // coverage:ignore-line
+          child: result, // coverage:ignore-line
+        ),
+      );
+    }
+
+    if (widget.onChanged != null) {
+      // coverage:ignore-line
+      result = GestureDetector(
+        // coverage:ignore-line
+        onTap: () {
+          // coverage:ignore-line
           widget.onChanged!(!widget.value); // coverage:ignore-line
         },
         child: result,

@@ -260,7 +260,7 @@ class _TDropdownMenuState extends State<TDropdownMenu>
   }
 
   bool _disabled(int index) {
-    return _items![index].disabled == true;
+    return _items![index].disabled == true || _items![index].onChanged == null;
   }
 
   /// 打开指定索引的菜单

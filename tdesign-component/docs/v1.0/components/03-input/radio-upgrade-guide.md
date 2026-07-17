@@ -1,60 +1,67 @@
-# TRadio 组件 v1.0 升级指南
+# TRadio v1.0 升级指南
 
 ## 变更概览
 
 | 变更类型 | 说明 |
 |---------|------|
-| Rename | `enable` → `enabled` |
-| Delete | 删除 `OnRadioGroupChange` typedef |
-| Delete | 删除旧 `TRadioStyle` 枚举（迁入 Theme） |
-| New | 新增 `TRadioThemeData` ThemeExtension |
-| Keep | 保留 `TRadio extends TCheckbox` 继承架构 |
-| Migrate | L4 样式字段迁入 `TRadioThemeData` |
+| Refactor | `TRadio<T>` 改为严格受控的独立组件，不再继承 `TCheckbox` |
+| Refactor | `TRadioGroup<T>` 使用外部 `value + onChanged`，删除 Controller |
+| Delete | 删除 `TRadioVariant`、`radioStyle`、`radioCheckStyle` |
+| Delete | 删除 `enabled`，统一使用 `onChanged: null` 禁用 |
+| Visual | 标准指示器固定为圆环加实心圆点 |
+| Theme | 颜色、文案和间距由 `TRadioThemeData` 管理 |
 
-> **关键决策**：TRadio 与 TCheckboxGroup 深度耦合，保留 `extends TCheckbox` 继承架构，未重构为包装 Material Radio。
+## 迁移方式
 
-## 迁移清单
+### 单颗 Radio
 
-### 1. 参数重命名
-
-**0.2.x:**
 ```dart
-TRadio(
-  enable: false,
-  radioStyle: TRadioStyle.circle,
-);
+TRadio<String>(
+  value: 'a',
+  groupValue: selected,
+  onChanged: (value) => setState(() => selected = value),
+  title: '选项 A',
+)
 ```
 
-**v1.0:**
+`onChanged: null` 同时表达行为禁用和视觉禁用。
+
+### Radio Group
+
 ```dart
-TRadio(
-  enabled: false,
-  radioStyle: TRadioStyle.circle,
-);
+TRadioGroup<String>(
+  value: selected,
+  options: const [
+    TRadioOption(value: 'a', label: '选项 A'),
+    TRadioOption(value: 'b', label: '选项 B', disabled: true),
+  ],
+  onChanged: (value) => setState(() => selected = value),
+)
 ```
 
-| 0.2.x | v1.0 | 说明 |
-|-------|------|------|
-| `enable` | `enabled` | 禁用参数 |
+### 自定义指示器
 
-### 2. 删除 typedef
+v1.0 不再提供方形、勾选、check-circle 或 hollowCircle 变体。确有非标准视觉需求时使用 `customIconBuilder`：
 
-删除 `OnRadioGroupChange`，改用 Flutter 内置 `ValueChanged<T>?`。
+```dart
+TRadio<String>(
+  value: 'a',
+  groupValue: selected,
+  onChanged: onChanged,
+  customIconBuilder: (context, selected, disabled) {
+    return MyRadioIndicator(selected: selected, disabled: disabled);
+  },
+)
+```
 
-### 3. TRadioGroup 回调
+## 删除项
 
-`TRadioGroup` 构造函数使用 `onRadioGroupChange: void Function(String? selectedId)?`（非父类 `onChanged`）。
+- `TRadioVariant`
+- `TRadioStyle`
+- `radioStyle`
+- `radioCheckStyle`
+- `TRadioGroupController`
+- `OnRadioGroupChange`
+- `enabled`
 
-### 4. L4 样式字段迁入 `TRadioThemeData`
-
-`TRadioStyle` 枚举 / `radioStyle` / `radioCheckStyle` / `selectColor` / `disableColor` / `titleColor` / `subTitleColor` / `backgroundColor` / `titleFont` / `subTitleFont` / `spacing` / `checkBoxLeftSpace` / `insetSpacing` / `customSpace`
-
-> **注意**：`TRadioStyle` 枚举（circle/square/check/hollowCircle）原在 `t_radio.dart` 中定义，v1.0 迁入 `t_radio_theme_data.dart`，旧定义已删除以避免类型冲突。
-
-## 文件清单
-
-| 文件 | 变更 |
-|------|------|
-| `lib/src/components/radio/t_radio_theme_data.dart` | 新增（TRadioThemeData + TRadioStyle 枚举） |
-| `lib/src/components/radio/t_radio.dart` | 参数重命名 + 删除旧 TRadioStyle 枚举 + 删除 typedef |
-| `lib/tdesign_flutter.dart` | 新增 export |
+不提供兼容别名。
