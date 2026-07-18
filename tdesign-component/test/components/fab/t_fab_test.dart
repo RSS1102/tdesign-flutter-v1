@@ -175,6 +175,13 @@ void main() {
     });
   });
 
+  group('TFabDefaults', () {
+    test('shapeForText 根据文本存在性推导默认 shape', () {
+      expect(TFabDefaults.shapeForText(false), 'circle');
+      expect(TFabDefaults.shapeForText(true), 'round');
+    });
+  });
+
   group('TFabThemeData', () {
     test('默认构造全 null', () {
       const theme = TFabThemeData();

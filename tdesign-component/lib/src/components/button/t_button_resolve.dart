@@ -11,20 +11,45 @@ class TButtonResolve {
 
   /// 解析最终的 [ButtonStyle]
   ///
-  /// [variant] 为按钮形态，[colorScheme] 为语义色方案，[size] 为尺寸规格。
-  /// [icon] 与 [iconPosition] 用于计算图标间距，[theme] 为 P1 组件主题，
-  /// [instanceStyle] 为 P0 实例样式，[context] 用于读取全局 Token，
-  /// [hasGradient] 表示启用渐变背景时需要清理 Material 默认背景。
+  /// [variant] 按钮形态，决定 fill / outline / text / ghost 的基础样式链路。
+  /// [colorScheme] 语义色方案；为 null 时使用默认色方案。
+  /// [size] 尺寸规格，用于推导最小尺寸、内边距和默认字号。
+  /// [icon] 图标内容；与 [hasChild]、[iconPosition] 一起决定图标间距和尺寸。
+  /// [hasChild] 是否存在文本或自定义内容，用于区分纯图标按钮与图文按钮。
+  /// [iconPosition] 图标位置，用于计算图标和内容之间的间距。
+  /// [theme] P1 组件主题，提供默认形态、色板、间距、渐变等配置。
+  /// [instanceStyle] P0 实例样式，优先级最高，会覆盖所有 resolve 结果。
+  /// [context] 当前构建上下文，用于读取 TDesign 全局 Token。
+  /// [hasGradient] 是否启用渐变背景；启用时会清理 Material 默认背景和阴影污染。
   static ButtonStyle resolve({
+    /// 按钮形态，决定 fill / outline / text / ghost 的基础样式链路。
     required TButtonVariant variant,
+
+    /// 语义色方案；为 null 时使用默认色方案。
     required TButtonColorScheme? colorScheme,
+
+    /// 尺寸规格，用于推导最小尺寸、内边距和默认字号。
     required TButtonSize size,
+
+    /// 图标内容；与 [hasChild]、[iconPosition] 一起决定图标间距和尺寸。
     required Widget? icon,
+
+    /// 是否存在文本或自定义内容，用于区分纯图标按钮与图文按钮。
     required bool hasChild,
+
+    /// 图标位置，用于计算图标和内容之间的间距。
     required TButtonIconPosition iconPosition,
+
+    /// P1 组件主题，提供默认形态、色板、间距、渐变等配置。
     required TButtonThemeData? theme,
+
+    /// P0 实例样式，优先级最高，会覆盖所有 resolve 结果。
     required ButtonStyle? instanceStyle,
+
+    /// 当前构建上下文，用于读取 TDesign 全局 Token。
     required BuildContext context,
+
+    /// 是否启用渐变背景；启用时会清理 Material 默认背景和阴影污染。
     required bool hasGradient,
   }) {
     final tTheme = context.tTheme;

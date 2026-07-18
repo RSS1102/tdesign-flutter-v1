@@ -77,22 +77,22 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| children | List<InlineSpan>? | - | - |
-| context | BuildContext? | - | - |
-| font | Font? | - | - |
-| fontFamily | FontFamily? | - | - |
-| fontWeight | FontWeight? | - | - |
-| isTextThrough | bool? | false | - |
-| lineThroughColor | Color? | - | - |
-| mouseCursor | MouseCursor? | - | - |
-| onEnter | PointerEnterEventListener? | - | - |
-| onExit | PointerExitEventListener? | - | - |
-| package | String? | - | - |
-| recognizer | GestureRecognizer? | - | - |
-| semanticsLabel | String? | - | - |
-| style | TextStyle? | - | - |
-| text | String? | - | - |
-| textColor | Color? | - | - |
+| children | List<InlineSpan>? | - | 子富文本片段，透传至系统 `TextSpan.children` |
+| context | BuildContext? | - | 当前构建上下文；提供 Theme 和 Token 以解析默认字体样式 |
+| font | Font? | - | 字体尺寸，包含 size 和 lineHeight |
+| fontFamily | FontFamily? | - | 字体族 |
+| fontWeight | FontWeight? | - | 字体粗细 |
+| isTextThrough | bool? | false | 是否应用删除线样式 |
+| lineThroughColor | Color? | - | 删除线颜色，对应 `TextStyle.decorationColor` |
+| mouseCursor | MouseCursor? | - | 鼠标指针样式，透传至系统 `TextSpan.mouseCursor` |
+| onEnter | PointerEnterEventListener? | - | 鼠标进入回调，透传至系统 `TextSpan.onEnter` |
+| onExit | PointerExitEventListener? | - | 鼠标离开回调，透传至系统 `TextSpan.onExit` |
+| package | String? | - | 字体资源包名 |
+| recognizer | GestureRecognizer? | - | 手势识别器，透传至系统 `TextSpan.recognizer` |
+| semanticsLabel | String? | - | 无障碍标签，透传至系统 `TextSpan.semanticsLabel` |
+| style | TextStyle? | - | 自定义文本样式；其中指定的属性优先于扁平化参数 |
+| text | String? | - | 文本内容，透传至系统 `TextSpan.text` |
+| textColor | Color? | - | 文本颜色 |
 
 
 ### TTextConfiguration
@@ -100,7 +100,7 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| child | Widget | - | - |
+| child | Widget | - | 子树内容，配置会作用于该子树内的 TText |
 | globalFontFamily | FontFamily? | - | 全局字体族，设置后子树中所有 TText 将默认使用此字体 v1.0 变更：始终启用（删除 v0.2.x 的 kTextNeedGlobalFontFamily 全局开关）。 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | paddingConfig | TTextPaddingConfig? | - | forceVerticalCenter=true 时，内置 padding 配置 |

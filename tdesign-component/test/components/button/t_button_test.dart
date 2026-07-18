@@ -499,6 +499,77 @@ void main() {
       );
     });
 
+    testWidgets('渐变分支复用 fixed/max/elevation 等 P0 style 字段', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(
+          child: const Text('渐变尺寸'),
+          style: const ButtonStyle(
+            fixedSize: WidgetStatePropertyAll<Size>(Size(140, 52)),
+            maximumSize: WidgetStatePropertyAll<Size>(Size(160, 60)),
+            elevation: WidgetStatePropertyAll<double>(6),
+            shadowColor: WidgetStatePropertyAll<Color>(Colors.black),
+            surfaceTintColor: WidgetStatePropertyAll<Color>(Colors.white),
+          ),
+          onPressed: () {},
+        ),
+        buttonTheme: const TButtonThemeData(
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      expect(find.byType(ElevatedButton), findsNothing);
+      expect(
+        tester.widgetList<SizedBox>(find.byType(SizedBox)).any(
+              (box) => box.width == 140 && box.height == 52,
+            ),
+        isTrue,
+      );
+      expect(
+        tester.widgetList<ConstrainedBox>(find.byType(ConstrainedBox)).any(
+              (box) =>
+                  box.constraints.maxWidth == 160 &&
+                  box.constraints.maxHeight == 60,
+            ),
+        isTrue,
+      );
+
+      final material = tester
+          .widgetList<Material>(find.byType(Material))
+          .firstWhere((m) => m.type == MaterialType.transparency);
+      expect(material.elevation, 6);
+      expect(material.shadowColor, Colors.black);
+      expect(material.surfaceTintColor, Colors.white);
+    });
+
+    testWidgets('渐变启用态响应点击，禁用态不响应点击', (tester) async {
+      var taps = 0;
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(
+          child: const Text('渐变可点'),
+          onPressed: () => taps += 1,
+        ),
+        buttonTheme: const TButtonThemeData(
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      await tester.tap(find.text('渐变可点'));
+      expect(taps, 1);
+
+      await tester.pumpWidget(wrapWithTheme(
+        const TButton(
+          child: Text('渐变禁用'),
+          onPressed: null,
+        ),
+        buttonTheme: const TButtonThemeData(
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      await tester.tap(find.text('渐变禁用'));
+      expect(taps, 1);
+    });
+
     testWidgets('渐变时背景色为透明', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TButton(
@@ -537,6 +608,33 @@ void main() {
       // 渐变模式不使用 ElevatedButton，margin 外包 Container
       expect(find.byType(ElevatedButton), findsNothing);
       expect(find.byType(Container), findsWidgets);
+    });
+
+    testWidgets('渐变纯图标 small 和 extraSmall 默认布局可构建', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        Column(
+          children: [
+            TButton(
+              icon: const Icon(Icons.add),
+              size: TButtonSize.small,
+              onPressed: () {},
+            ),
+            TButton(
+              icon: const Icon(Icons.remove),
+              size: TButtonSize.extraSmall,
+              onPressed: () {},
+            ),
+          ],
+        ),
+        buttonTheme: const TButtonThemeData(
+          shape: TButtonShape.circle,
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      expect(find.byType(ElevatedButton), findsNothing);
+      expect(find.byIcon(Icons.add), findsOneWidget);
+      expect(find.byIcon(Icons.remove), findsOneWidget);
     });
 
     testWidgets('无渐变时不额外包裹 Container', (tester) async {

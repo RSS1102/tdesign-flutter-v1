@@ -14,7 +14,7 @@
 | maxDate | DateTime? | - | 最大可选的日期，默认 2100-12-31 |
 | minDate | DateTime? | - | 最小可选的日期，默认 1970-01-01 |
 | monthTitleBuilder | TCalendarMonthTitleBuilder? | - | 月标题构建器，参数 `DateTime` 为当月 1 日（仅年月有效）。 |
-| onChanged | ValueChanged<List<DateTime>> | - | 选中结果变化时触发（单选立即触发；多选每次切换；区间在端点变化时触发）。 用于同步业务侧 State 或 `ValueNotifier`；勿依赖运行期回写 `initialValue` 驱动 UI。 组件挂载时不会调用本回调。点击禁用格或单选重复点已选格时不触发。 |
+| onChanged | ValueChanged<List<DateTime>>? | - | 选中结果变化时触发（单选立即触发；多选每次切换；区间在端点变化时触发）。 用于同步业务侧 State 或 `ValueNotifier`；勿依赖运行期回写 `initialValue` 驱动 UI。 组件挂载时不会调用本回调。点击禁用格或单选重复点已选格时不触发。 |
 | onMonthChanged | ValueChanged<DateTime>? | - | 可见月份变化时触发（用户滑动或程序化滚动结束后），参数为当月 1 日。 外置控制栏可只更新自身文案，避免为同步月份对 `TCalendar` 整组件 `setState`。 |
 | subtitleBuilder | TCalendarSubtitleBuilder? | - | 副标题构建器，在日期主数字下方渲染自定义内容。 `TCalendarSubtitleContext.date` 为当前格日期； `TCalendarSubtitleContext.selectType` 为选中/区间/禁用等态。返回 null 不显示副标题行。 |
 | type | TCalendarVariant | TCalendarVariant.single | 日历的选择模式，决定点击日期后的选中行为： - `TCalendarVariant.single`：单选，点击新日期取消旧选中 - `TCalendarVariant.multiple`：多选，点击切换选中/取消 - `TCalendarVariant.range`：区间选择，依次选起止日期 |
@@ -53,6 +53,15 @@
 | weekdayStyle | TextStyle? | - | 星期文字样式 |
 
 
+### TCalendarSubtitleContext
+#### 默认构造方法
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| date | DateTime | - | 当前格子的阳历日期（仅年月日，无时分秒）。 |
+| selectType | DateSelectType | - | 当前格的选中/区间/禁用等展示状态，便于按态设置副标题样式。 |
+
+
 ### TCalendarCellModel
 #### 默认构造方法
 
@@ -61,15 +70,6 @@
 | date | DateTime | - | - |
 | isLastDayOfMonth | bool | - | - |
 | typeNotifier | DateSelectTypeNotifier | - | - |
-
-
-### TCalendarSubtitleContext
-#### 默认构造方法
-
-| 参数 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| date | DateTime | - | 当前格子的阳历日期（仅年月日，无时分秒）。 |
-| selectType | DateSelectType | - | 当前格的选中/区间/禁用等展示状态，便于按态设置副标题样式。 |
 
 
 ### DateSelectType

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'package:tdesign_flutter/src/components/link/t_link_resolve.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// 覆盖 [TLinkResolve] 的全部静态解析方法与颜色映射分支。
 void main() {
@@ -15,12 +15,12 @@ void main() {
   // ============================================================
   group('TLinkResolve 字号/图标/间距解析', () {
     test('resolveFontSize 各 size 默认值', () {
-      expect(TLinkResolve.resolveFontSize(size: TLinkSize.small, theme: null),
-          12);
+      expect(
+          TLinkResolve.resolveFontSize(size: TLinkSize.small, theme: null), 12);
       expect(TLinkResolve.resolveFontSize(size: TLinkSize.medium, theme: null),
           14);
-      expect(TLinkResolve.resolveFontSize(size: TLinkSize.large, theme: null),
-          16);
+      expect(
+          TLinkResolve.resolveFontSize(size: TLinkSize.large, theme: null), 16);
     });
 
     test('resolveFontSize 优先级：instance > theme > 默认', () {
@@ -38,8 +38,7 @@ void main() {
     test('resolveIconSize 各 size 默认值与 theme 优先级', () {
       expect(
           TLinkResolve.resolveIconSize(size: TLinkSize.small, theme: null), 14);
-      expect(
-          TLinkResolve.resolveIconSize(size: TLinkSize.medium, theme: null),
+      expect(TLinkResolve.resolveIconSize(size: TLinkSize.medium, theme: null),
           16);
       expect(
           TLinkResolve.resolveIconSize(size: TLinkSize.large, theme: null), 18);
@@ -51,16 +50,14 @@ void main() {
     });
 
     test('resolveGap 各 size 默认值与 theme 优先级', () {
-      final small =
-          TLinkResolve.resolveGap(size: TLinkSize.small, theme: null);
+      final small = TLinkResolve.resolveGap(size: TLinkSize.small, theme: null);
       expect(small.$1, 6.05);
       expect(small.$2, 6.63);
       final medium =
           TLinkResolve.resolveGap(size: TLinkSize.medium, theme: null);
       expect(medium.$1, 6.34);
       expect(medium.$2, 7);
-      final large =
-          TLinkResolve.resolveGap(size: TLinkSize.large, theme: null);
+      final large = TLinkResolve.resolveGap(size: TLinkSize.large, theme: null);
       expect(large.$1, 8);
       expect(large.$2, 8);
       final themed = TLinkResolve.resolveGap(
@@ -107,8 +104,7 @@ void main() {
       }
     });
 
-    testWidgets('resolveColor 优先级：instance > theme > scheme',
-        (tester) async {
+    testWidgets('resolveColor 优先级：instance > theme > scheme', (tester) async {
       final context = await _context(tester);
       // instance 优先
       expect(

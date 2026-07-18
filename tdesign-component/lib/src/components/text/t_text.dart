@@ -305,24 +305,71 @@ class TText extends StatelessWidget {
 
 /// TextSpan 的 TDesign 扩展，将部分 TextStyle 中的参数扁平化。
 class TTextSpan extends TextSpan {
-  /// 构造参数，扩展参数释义可参考[TText]中字段注释
+  /// 构造 TDesign 扩展富文本片段。
+  ///
+  /// [context] 当前构建上下文；提供 Theme 和 Token 以解析默认字体样式。
+  /// [font] 字体尺寸，包含 size 和 lineHeight。
+  /// [fontWeight] 字体粗细。
+  /// [fontFamily] 字体族。
+  /// [textColor] 文本颜色。
+  /// [isTextThrough] 是否应用删除线样式。
+  /// [lineThroughColor] 删除线颜色，对应 [TextStyle.decorationColor]。
+  /// [package] 字体资源包名。
+  /// [text] 文本内容，透传至系统 [TextSpan.text]。
+  /// [children] 子富文本片段，透传至系统 [TextSpan.children]。
+  /// [style] 自定义文本样式；其中指定的属性优先于扁平化参数。
+  /// [recognizer] 手势识别器，透传至系统 [TextSpan.recognizer]。
+  /// [mouseCursor] 鼠标指针样式，透传至系统 [TextSpan.mouseCursor]。
+  /// [onEnter] 鼠标进入回调，透传至系统 [TextSpan.onEnter]。
+  /// [onExit] 鼠标离开回调，透传至系统 [TextSpan.onExit]。
+  /// [semanticsLabel] 无障碍标签，透传至系统 [TextSpan.semanticsLabel]。
   TTextSpan({
-    BuildContext?
-        context, // 如果未设置font，且不想使用默认的 fontBodyLarge 尺寸时，需设置context，否则可省略
+    /// 当前构建上下文；提供 Theme 和 Token 以解析默认字体样式。
+    BuildContext? context,
+
+    /// 字体尺寸，包含 size 和 lineHeight。
     Font? font,
+
+    /// 字体粗细。
     FontWeight? fontWeight,
+
+    /// 字体族。
     FontFamily? fontFamily,
+
+    /// 文本颜色。
     Color? textColor,
+
+    /// 是否应用删除线样式。
     bool? isTextThrough = false,
+
+    /// 删除线颜色，对应 [TextStyle.decorationColor]。
     Color? lineThroughColor,
+
+    /// 字体资源包名。
     String? package,
+
+    /// 文本内容，透传至系统 [TextSpan.text]。
     String? text,
+
+    /// 子富文本片段，透传至系统 [TextSpan.children]。
     List<InlineSpan>? children,
+
+    /// 自定义文本样式；其中指定的属性优先于扁平化参数。
     TextStyle? style,
+
+    /// 手势识别器，透传至系统 [TextSpan.recognizer]。
     GestureRecognizer? recognizer,
+
+    /// 鼠标指针样式，透传至系统 [TextSpan.mouseCursor]。
     MouseCursor? mouseCursor,
+
+    /// 鼠标进入回调，透传至系统 [TextSpan.onEnter]。
     PointerEnterEventListener? onEnter,
+
+    /// 鼠标离开回调，透传至系统 [TextSpan.onExit]。
     PointerExitEventListener? onExit,
+
+    /// 无障碍标签，透传至系统 [TextSpan.semanticsLabel]。
     String? semanticsLabel,
   }) : super(
           text: text,
@@ -371,12 +418,23 @@ class TTextConfiguration extends InheritedWidget {
   /// v1.0 变更：始终启用（删除 v0.2.x 的 kTextNeedGlobalFontFamily 全局开关）。
   final FontFamily? globalFontFamily;
 
-  const TTextConfiguration(
-      {Key? key,
-      required Widget child,
-      this.paddingConfig,
-      this.globalFontFamily})
-      : super(key: key, child: child);
+  /// 构造 TText 子树配置。
+  ///
+  /// [child] 子树内容，配置会作用于该子树内的 TText。
+  /// [paddingConfig] forceVerticalCenter=true 时，内置 padding 配置。
+  /// [globalFontFamily] 全局字体族，设置后子树中所有 TText 将默认使用此字体。
+  const TTextConfiguration({
+    Key? key,
+
+    /// 子树内容，配置会作用于该子树内的 TText。
+    required Widget child,
+
+    /// forceVerticalCenter=true 时，内置 padding 配置。
+    this.paddingConfig,
+
+    /// 全局字体族，设置后子树中所有 TText 将默认使用此字体。
+    this.globalFontFamily,
+  }) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(covariant TTextConfiguration oldWidget) {

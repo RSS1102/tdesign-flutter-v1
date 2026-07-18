@@ -124,10 +124,12 @@ class TCalendarThemeData extends ThemeExtension<TCalendarThemeData> {
       height: lerpDouble(height, other.height, t),
       decoration: BoxDecoration.lerp(decoration, other.decoration, t),
       weekdayStyle: TextStyle.lerp(weekdayStyle, other.weekdayStyle, t),
-      monthTitleStyle: TextStyle.lerp(monthTitleStyle, other.monthTitleStyle, t),
+      monthTitleStyle:
+          TextStyle.lerp(monthTitleStyle, other.monthTitleStyle, t),
       dayStyle: TextStyle.lerp(dayStyle, other.dayStyle, t),
       todayDayStyle: TextStyle.lerp(todayDayStyle, other.todayDayStyle, t),
-      cellDecoration: BoxDecoration.lerp(cellDecoration, other.cellDecoration, t),
+      cellDecoration:
+          BoxDecoration.lerp(cellDecoration, other.cellDecoration, t),
       subtitleStyle: TextStyle.lerp(subtitleStyle, other.subtitleStyle, t),
       cellHeight: lerpDouble(cellHeight, other.cellHeight, t),
       monthTitleHeight: lerpDouble(monthTitleHeight, other.monthTitleHeight, t),
@@ -140,4 +142,13 @@ class TCalendarThemeData extends ThemeExtension<TCalendarThemeData> {
 }
 
 /// 日历选择形态
-enum TCalendarVariant { single, multiple, range }
+enum TCalendarVariant {
+  /// 单选日期
+  single,
+
+  /// 多选日期
+  multiple,
+
+  /// 选择日期区间
+  range,
+}

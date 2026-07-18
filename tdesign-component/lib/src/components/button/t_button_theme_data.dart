@@ -5,7 +5,22 @@ import 'package:flutter/material.dart';
 import 't_button.dart';
 
 /// 按钮形状
-enum TButtonShape { rectangle, round, square, circle, filled }
+enum TButtonShape {
+  /// 矩形按钮
+  rectangle,
+
+  /// 圆角按钮
+  round,
+
+  /// 方形按钮
+  square,
+
+  /// 圆形按钮
+  circle,
+
+  /// 填满容器的按钮
+  filled,
+}
 
 /// TButton 组件级 ThemeExtension
 ///

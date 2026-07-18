@@ -15,7 +15,10 @@ export 't_confirm_dialog.dart';
 /// 用于在 Dialog 层面配置按钮样式
 /// Dialog 内支持配置每个按钮的样式
 enum TDialogButtonStyle {
+  /// 常规按钮样式
   normal,
+
+  /// 文字按钮样式
   text,
 }
 

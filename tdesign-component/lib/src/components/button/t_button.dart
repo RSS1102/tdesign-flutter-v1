@@ -6,16 +6,58 @@ import 't_button_resolve.dart';
 // ============ 枚举定义 ============
 
 /// 按钮尺寸
-enum TButtonSize { large, medium, small, extraSmall }
+enum TButtonSize {
+  /// 大尺寸按钮
+  large,
+
+  /// 中尺寸按钮
+  medium,
+
+  /// 小尺寸按钮
+  small,
+
+  /// 超小尺寸按钮
+  extraSmall,
+}
 
 /// 按钮变体（fill / outline / text / ghost）
-enum TButtonVariant { fill, outline, text, ghost }
+enum TButtonVariant {
+  /// 填充按钮
+  fill,
+
+  /// 描边按钮
+  outline,
+
+  /// 文字按钮
+  text,
+
+  /// 幽灵按钮
+  ghost,
+}
 
 /// 按钮配色方案
-enum TButtonColorScheme { defaultTheme, primary, danger, light }
+enum TButtonColorScheme {
+  /// 默认配色
+  defaultTheme,
+
+  /// 品牌主色
+  primary,
+
+  /// 危险操作配色
+  danger,
+
+  /// 浅色配色
+  light,
+}
 
 /// 图标位置
-enum TButtonIconPosition { left, right }
+enum TButtonIconPosition {
+  /// 图标在文本左侧
+  left,
+
+  /// 图标在文本右侧
+  right,
+}
 
 // ============ TButton Widget ============
 

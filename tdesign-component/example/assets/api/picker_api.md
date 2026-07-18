@@ -1,13 +1,9 @@
 ## API
 ### TPicker
-#### 简介
-纯滚轮选择器。数据用 `TPickerColumns`（多列独立）或 `TPickerLinked`（联动）。
-选中变化通过 `onChanged`；列底分页建议用 `onColumnScrollEnd`。弹窗确认请配合 `TPopup`。
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| disabled | bool | false | 是否禁用整个选择器（禁止滚动与无障碍操作），默认 false |
 | height | double | 200 | 滚轮视窗高度（像素），默认 200 |
 | initialValue | List<dynamic>? | - | 初始选中（按各列 `value` 匹配），仅首次构建生效；运行期请用 `onChanged` 维护选中态。 |
 | itemBuilder | ItemBuilderType? | - | 自定义子项构建器 `(context, content, colIndex, index, itemDistanceCalculator, distance) => Widget?`；`distance` 为 0 表示选中项，返回 null 用默认样式，disabled 项不走此 builder。 |
@@ -19,8 +15,6 @@
 
 
 ### TPickerOption
-#### 简介
-选择器选项。`label` 用于展示，`value` 用于 onChange 回传。
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -31,8 +25,6 @@
 
 
 ### TPickerValue
-#### 简介
-onChange 回传的各列选中快照
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -49,8 +41,6 @@ onChange 回传的各列选中快照
 
 
 ### TPickerColumns
-#### 简介
-多列独立数据源，各列互不影响。松散数据（String/Map 等）用 `fromRaw`；已全是 `TPickerOption` 时用 `TPickerColumns([...])`。
 
 #### 工厂构造方法
 
@@ -71,8 +61,6 @@ onChange 回传的各列选中快照
 
 
 ### TPickerLinked
-#### 简介
-联动树数据源，改上游会刷新下游列。整树在内存时用（如省市区）；远程分页请改用 `TPickerColumns`。
 
 #### 工厂构造方法
 
@@ -93,8 +81,6 @@ onChange 回传的各列选中快照
 
 
 ### TPickerKeys
-#### 简介
-`fromRaw` 字段名映射；接口字段非默认 label/value/disabled/children 时使用。
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
