@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/basic.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
+import '../../util/platform_util.dart';
+import 't_text.dart' show TText, TTextConfiguration, TTextSpan;
+import 't_text_theme_data.dart';
 
 /// Text 样式解析器
 ///
-/// 将 v0.2.x 中 [TText.getTextStyle] 与 [TTextSpan._getTextStyle] 两套独立逻辑
+/// 将 v0.2.x 中 [TText.getTextStyle] 与 TTextSpan 内部样式逻辑
 /// 合并为唯一入口，确保纯文本与富文本样式一致性。
 ///
 /// 优先级链：
@@ -56,8 +62,10 @@ class TTextResolve {
     final resolvedHeight = overrideHeight ?? style?.height ?? textFont.height;
 
     // 4. fontWeight：P0 style > 构造器糖 > Theme > Token
-    final resolvedFontWeight =
-        style?.fontWeight ?? fontWeight ?? themeExtension?.defaultFontWeight ?? textFont.fontWeight;
+    final resolvedFontWeight = style?.fontWeight ??
+        fontWeight ??
+        themeExtension?.defaultFontWeight ??
+        textFont.fontWeight;
 
     // 5. 字体族解析（含 globalFontFamily 注入 + iOS PingFang 回退 + Theme 回退）
     final resolvedFontFamily = _resolveFontFamily(
@@ -139,7 +147,8 @@ class TTextResolve {
     String? package,
   }) {
     // Token 默认值（context 可能为 null，此时用硬编码回退）
-    final tTheme = context != null ? context.tTheme : null; // coverage:ignore-line
+    final tTheme =
+        context != null ? context.tTheme : null; // coverage:ignore-line
     final themeExtension = context != null
         ? Theme.of(context).extension<TTextThemeData>() // coverage:ignore-line
         : null;
@@ -151,8 +160,10 @@ class TTextResolve {
         Font(size: 16, lineHeight: 24);
 
     final fontSize = style?.fontSize ?? textFont.size;
-    final resolvedFontWeight =
-        style?.fontWeight ?? fontWeight ?? themeExtension?.defaultFontWeight ?? textFont.fontWeight;
+    final resolvedFontWeight = style?.fontWeight ??
+        fontWeight ??
+        themeExtension?.defaultFontWeight ??
+        textFont.fontWeight;
 
     // Span 不注入 globalFontFamily（无 TTextConfiguration 上下文）
     final resolvedFontFamily = _resolveSpanFontFamily(
@@ -167,7 +178,9 @@ class TTextResolve {
         tTheme?.textColorPrimary; // coverage:ignore-line
 
     final decoration = style?.decoration ??
-        ((isTextThrough || (themeExtension?.isTextThrough ?? false)) // coverage:ignore-line
+        ((isTextThrough ||
+                (themeExtension?.isTextThrough ??
+                    false)) // coverage:ignore-line
             ? TextDecoration.lineThrough
             : TextDecoration.none);
     final decorationColor = style?.decorationColor ??
@@ -213,7 +226,9 @@ class TTextResolve {
     TTextConfiguration? configuration,
     required FontWeight? resolvedFontWeight,
   }) {
-    var styleFontFamily = style?.fontFamily ?? fontFamily?.fontFamily ?? themeFontFamily?.fontFamily;
+    var styleFontFamily = style?.fontFamily ??
+        fontFamily?.fontFamily ??
+        themeFontFamily?.fontFamily;
 
     // globalFontFamily 注入（替代 v0.2.x 的 kTextNeedGlobalFontFamily 全局变量）
     final globalFontFamily = configuration?.globalFontFamily;
@@ -221,9 +236,12 @@ class TTextResolve {
 
     // iOS FontWeight≤w500 且无 fontFamily → 回退 PingFang SC
     if (PlatformUtil.isIOS &&
-        (styleFontFamily == null || styleFontFamily.isEmpty) && // coverage:ignore-line
+        (styleFontFamily == null ||
+            styleFontFamily.isEmpty) && // coverage:ignore-line
         resolvedFontWeight != null &&
-        resolvedFontWeight.value <= FontWeight.w500.value) { // coverage:ignore-line
+        resolvedFontWeight.value <= FontWeight.w500.value) {
+      // coverage:ignore-line
+      // coverage:ignore-line
       return 'PingFang SC';
     }
 
@@ -240,9 +258,12 @@ class TTextResolve {
 
     // iOS PingFang 回退
     if (PlatformUtil.isIOS &&
-        (styleFontFamily == null || styleFontFamily.isEmpty) && // coverage:ignore-line
+        (styleFontFamily == null ||
+            styleFontFamily.isEmpty) && // coverage:ignore-line
         resolvedFontWeight != null &&
-        resolvedFontWeight.value <= FontWeight.w500.value) { // coverage:ignore-line
+        resolvedFontWeight.value <= FontWeight.w500.value) {
+      // coverage:ignore-line
+      // coverage:ignore-line
       return 'PingFang SC';
     }
 

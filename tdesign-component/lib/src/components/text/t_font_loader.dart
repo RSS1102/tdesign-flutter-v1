@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../tdesign_flutter.dart';
+import 't_text.dart';
 
 /// 线上字体加载工具
 class TFontLoader {
@@ -79,8 +79,8 @@ class _TFontLoaderWidgetState extends State<TFontLoaderWidget> {
             name: widget
                 .textWidget.fontFamily!.fontFamily, // coverage:ignore-line
             fontFamilyUrl: widget.fontFamilyUrl)) {
-          _fontFamilyLoaded = true;
           // coverage:ignore-start
+          _fontFamilyLoaded = true;
           if (!mounted) {
             return;
           }

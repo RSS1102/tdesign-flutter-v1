@@ -167,7 +167,7 @@ backgroundColor?     → Container(color) → Text
 
 | 0.2 | v1.0 | 动机 |
 | --- | --- | --- |
-| 样式默认散落 + `TTheme.of` 直读 | `TTextThemeData` | 对齐全库 ThemeExtension 体系 |
+| 样式默认散落 + 旧 Theme 直读 | `TTextThemeData` | 对齐全库 ThemeExtension 体系 |
 | `kTextForceVerticalCenterEnable` · `kTextNeedGlobalFontFamily` | **删除** | 去掉模块全局 var，行为可预测、可测 |
 | 双份 `getTextStyle` | `t_text_resolve.dart` 单路径 | Text / Span 样式一致 |
 | `updateShouldNotify` 仅监听 padding | 同时监听 `globalFontFamily` | 换字体子树正确重建 |

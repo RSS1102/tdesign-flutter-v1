@@ -1,35 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart';
 
-import '../../../tdesign_flutter.dart';
 import 't_link_resolve.dart';
-
-/// 链接形态
-enum TLinkVariant {
-  /// 纯文本链接
-  basic,
-
-  /// 下划线链接
-  underline,
-
-  /// 带图标链接（通过 prefixIcon / suffixIcon 区分前后）
-  icon,
-}
-
-/// 语义颜色方案（对齐 Button colorScheme）
-enum TLinkColorScheme {
-  primary,
-  defaultTheme,
-  danger,
-  warning,
-  success,
-}
-
-/// 链接尺寸
-enum TLinkSize {
-  small,
-  medium,
-  large,
-}
+import 't_link_theme_data.dart';
+import 't_link_types.dart';
 
 /// 文字超链接用于跳转一个新页面，如当前项目跳转、友情链接等。
 ///

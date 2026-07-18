@@ -152,8 +152,8 @@ class TFabDragDetails {
 
 | 决策 | 符号 | 说明 |
 | --- | --- | --- |
-| 🚫 | `TFabTheme`（enum） | → `buttonProps.colorScheme` / `TButtonThemeData` |
-| 🚫 | `TFabShape` / `TFabSize` | → `buttonProps` + `text` 推导 |
+| 🚫 | `旧主题枚举` | → `buttonProps.colorScheme` / `TButtonThemeData` |
+| 🚫 | `旧形状/尺寸枚举` | → `buttonProps` + `text` 推导 |
 | 🚫 | `TFabLayout` | 内部模型 |
 
 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) · 替换细节 §2
@@ -169,9 +169,9 @@ class TFabDragDetails {
 | 0.2.x | v1.0 | 怎么改 |
 | --- | --- | --- |
 | `onClick` | `onPressed` | 换名 |
-| `theme` / `TFabTheme` | `buttonProps.colorScheme` | 迁入 `TButton` |
-| `shape` / `TFabShape` | `buttonProps` + `text` | circle/round 推导 |
-| `size` / `TFabSize` | `buttonProps.size` | 迁入 `TButton` |
+| `theme` / 旧主题枚举 | `buttonProps.colorScheme` | 迁入 `TButton` |
+| `shape` / 旧形状枚举 | `buttonProps` + `text` | circle/round 推导 |
+| `size` / 旧尺寸枚举 | `buttonProps.size` | 迁入 `TButton` |
 
 ### 🗑️ 移除
 
@@ -226,7 +226,7 @@ class TFabDragDetails {
 1. `不传 draggable`：固定 `right`/`bottom`。
 2. `draggable: TFabDragAxis.all` / `all`：全向；`vertical` / `horizontal` 单轴。
 3. `xBounds` / `yBounds`：`TFabBounds` 限制范围。
-4. `magnet`：拖拽结束吸附；`true` 为左右均可。
+4. `magnet`：拖拽结束吸附；仅支持 `TFabMagnet.left/right`，不传则不吸附；不兼容 `bool`。
 5. 位移 ≤ `dragTapSlop` → `onPressed`；否则 `onDragStart` → `onDragEnd`。
 
 **resolve**：`resolveLayout`（安全区 + 偏移 + 拖拽）→ `resolveButton`（`buttonProps` > `TButtonThemeData` > Token）

@@ -4,8 +4,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/basic.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
+import '../../util/platform_util.dart';
+import 't_font_loader.dart';
 import 't_text_resolve.dart';
+import 't_text_theme_data.dart';
 
 /// 文本控件
 /// 设计原则：

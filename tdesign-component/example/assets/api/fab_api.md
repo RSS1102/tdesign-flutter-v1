@@ -22,13 +22,17 @@
 | yBounds | TFabBounds? | - | 垂直拖拽边界限制 |
 
 
-### TFabBounds
+### TFabThemeData
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| end | double | - | 终点留白（水平：right，垂直：bottom） |
-| start | double | - | 起点留白（水平：left，垂直：top） |
+| defaultBottom | double? | - | 默认距屏幕底部偏移（逻辑像素） |
+| defaultRight | double? | - | 默认距屏幕右侧偏移（逻辑像素） |
+| defaultXBounds | TFabBounds? | - | 默认水平拖拽边界限制 |
+| defaultYBounds | TFabBounds? | - | 默认垂直拖拽边界限制 |
+| dragTapSlop | double? | - | 点击 vs 拖拽判定阈值（位移逻辑像素） |
+| magnetAnimationDuration | Duration? | - | 吸附动画时长 |
 
 
 ### TButtonProps
@@ -41,6 +45,15 @@
 | size | TButtonSize? | - | 按钮尺寸 |
 | style | ButtonStyle? | - | P0 按钮样式覆盖 |
 | variant | TButtonVariant? | - | 按钮变体 |
+
+
+### TFabBounds
+#### 默认构造方法
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| end | double | - | 终点留白（水平：right，垂直：bottom） |
+| start | double | - | 起点留白（水平：left，垂直：top） |
 
 
 ### TFabDragDetails

@@ -64,7 +64,8 @@ void main() {
     expect(text.style?.decoration, TextDecoration.lineThrough);
   });
 
-  testWidgets('T02d - 构造器糖：forceVerticalCenter 触发 Container 包装', (tester) async {
+  testWidgets('T02d - 构造器糖：forceVerticalCenter 触发 Container 包装',
+      (tester) async {
     await tester.pumpWidget(wrapWithTheme(
       const TText('居中文本', forceVerticalCenter: true),
     ));
@@ -289,7 +290,9 @@ void main() {
   // ============================================================
   // T09 – forceVerticalCenter height 语义统一
   // ============================================================
-  testWidgets('T09 - forceVerticalCenter 使用统一 height（非 min(heightRate, height)）', (tester) async {
+  testWidgets(
+      'T09 - forceVerticalCenter 使用统一 height（非 min(heightRate, height)）',
+      (tester) async {
     // v1.0 修复：Container 和 TextStyle 使用相同 height
     await tester.pumpWidget(wrapWithTheme(
       TText(

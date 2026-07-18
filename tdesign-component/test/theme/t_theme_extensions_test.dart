@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
-import 'package:tdesign_flutter/src/theme/basic.dart';
-import 'package:tdesign_flutter/src/theme/t_shadows.dart';
-import 'package:tdesign_flutter/src/theme/t_spacers.dart';
-import 'package:tdesign_flutter/src/theme/t_fonts.dart';
 
 /// 覆盖 theme 扩展 getter 和 Font.withSize 方法
 void main() {

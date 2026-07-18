@@ -2,35 +2,17 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import 't_button.dart';
-
-/// 按钮形状
-enum TButtonShape {
-  /// 矩形按钮
-  rectangle,
-
-  /// 圆角按钮
-  round,
-
-  /// 方形按钮
-  square,
-
-  /// 圆形按钮
-  circle,
-
-  /// 填满容器的按钮
-  filled,
-}
+import 't_button_types.dart';
 
 /// TButton 组件级 ThemeExtension
 ///
 /// 通过 Theme 子树注入，控制子树的默认形态。
 /// 构造器参数优先于 Theme，P0 [ButtonStyle] 实例优先于 Theme。
 class TButtonThemeData extends ThemeExtension<TButtonThemeData> {
-  /// 未传 [TButton.variant] 时的默认变体
+  /// 未传按钮 variant 时的默认变体
   final TButtonVariant defaultVariant;
 
-  /// 未传 [TButton.size] 时的默认尺寸
+  /// 未传按钮 size 时的默认尺寸
   final TButtonSize defaultSize;
 
   /// P2 色板：fill 变体的 [ButtonStyle]（仅颜色相关字段，不含 shape）

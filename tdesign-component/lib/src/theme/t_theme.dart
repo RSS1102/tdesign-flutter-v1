@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '../../tdesign_flutter.dart';
 import '../util/log.dart';
 import '../util/string_util.dart';
+import 'basic.dart';
+import 'resource_delegate.dart';
+import 't_colors.dart';
+import 't_component_theme_data.dart';
 import 't_default_theme.dart';
+import 't_fonts.dart';
 
 // ============================================================
 // L2: 全局 theme.of 基础设施（v1.0 新增）
@@ -63,13 +67,11 @@ class TStyleResolver {
   final BuildContext _context;
 
   /// 创建解析器实例
-  static TStyleResolver of(BuildContext context) =>
-      TStyleResolver._(context);
+  static TStyleResolver of(BuildContext context) => TStyleResolver._(context);
 
   /// P4: 全局设计 Token（色板 / 间距原始值）
   TThemeData get token =>
-      Theme.of(_context).extension<TThemeData>() ??
-      TThemeData.defaultData();
+      Theme.of(_context).extension<TThemeData>() ?? TThemeData.defaultData();
 
   /// P3: Material ColorScheme
   ColorScheme get colorScheme => Theme.of(_context).colorScheme;
@@ -124,12 +126,263 @@ class TMaterialThemeBuilder {
     required ColorScheme colorScheme,
     required Brightness brightness,
   }) {
+    final textTheme = _textTheme(extensionData).apply(
+      bodyColor: colorScheme.onSurface,
+      displayColor: colorScheme.onSurface,
+    );
+    final buttonStyle = _materialButtonStyle(extensionData, colorScheme);
     return ThemeData(
-      extensions: [extensionData],
+      extensions: _themeExtensions(extensionData),
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colorScheme.surface,
       iconTheme: IconThemeData(color: colorScheme.primary),
+      textTheme: textTheme,
+      dividerTheme: DividerThemeData(
+        color: extensionData.componentStrokeColor,
+        thickness: 0.5,
+      ),
+      filledButtonTheme: FilledButtonThemeData(style: buttonStyle),
+      elevatedButtonTheme: ElevatedButtonThemeData(style: buttonStyle),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: buttonStyle.copyWith(
+          backgroundColor:
+              const WidgetStatePropertyAll<Color>(Colors.transparent),
+          foregroundColor: WidgetStatePropertyAll<Color>(colorScheme.primary),
+          side: WidgetStatePropertyAll<BorderSide>(
+            BorderSide(color: colorScheme.primary),
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: buttonStyle.copyWith(
+          backgroundColor:
+              const WidgetStatePropertyAll<Color>(Colors.transparent),
+          foregroundColor: WidgetStatePropertyAll<Color>(colorScheme.primary),
+          side: const WidgetStatePropertyAll<BorderSide>(BorderSide.none),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: extensionData.bgColorComponent,
+        hintStyle: textTheme.bodyMedium?.copyWith(
+          color: extensionData.textColorPlaceholder,
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: extensionData.componentBorderColor),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: colorScheme.primary),
+        ),
+        disabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: extensionData.componentStrokeColor),
+        ),
+      ),
       useMaterial3: true,
+    );
+  }
+
+  List<ThemeExtension<dynamic>> _themeExtensions(TThemeData token) {
+    return <ThemeExtension<dynamic>>[
+      token,
+      _buttonTheme(token),
+      _textExtension(token),
+      _iconTheme(token),
+      _dividerTheme(token),
+      _linkTheme(token),
+      const TFabThemeData(),
+      const TActionSheetThemeData(),
+      const TAvatarThemeData(),
+      const TBackTopThemeData(),
+      const TBadgeThemeData(),
+      const TCalendarThemeData(),
+      const TCascaderThemeData(),
+      TCellThemeData(),
+      const TCheckboxThemeData(),
+      const TCollapseThemeData(),
+      const TDialogThemeData(),
+      const TDrawerThemeData(),
+      const TDropdownThemeData(),
+      const TEmptyThemeData(),
+      const TFooterThemeData(),
+      const TFormThemeData(),
+      const TImageThemeData(),
+      const TImageViewerThemeData(),
+      const TIndexesThemeData(),
+      const TInputThemeData(),
+      const TLoadingThemeData(),
+      const TMessageThemeData(),
+      const TNavBarThemeData(),
+      const TNoticeBarThemeData(),
+      const TPickerThemeData(),
+      const TPopoverThemeData(),
+      const TPopupThemeData(),
+      const TProgressThemeData(),
+      const TRadioThemeData(),
+      const TRateThemeData(),
+      const TRefreshThemeData(),
+      const TResultThemeData(),
+      const TSearchBarThemeData(),
+      const TSideBarThemeData(),
+      const TSkeletonThemeData(),
+      TSliderThemeData(),
+      const TStepperThemeData(),
+      const TStepsThemeData(),
+      const TSwipeCellThemeData(),
+      const TSwiperThemeData(),
+      const TSwitchThemeData(),
+      const TTabBarThemeData(),
+      const TTableThemeData(),
+      const TTabsBarThemeData(),
+      const TTagThemeData(),
+      const TTimeCounterThemeData(),
+      const TToastThemeData(),
+      const TTreeSelectThemeData(),
+      const TUploadThemeData(),
+    ];
+  }
+
+  TextTheme _textTheme(TThemeData token) {
+    return TextTheme(
+      displayLarge: _textStyle(token.fontDisplayLarge),
+      displayMedium: _textStyle(token.fontDisplayMedium),
+      headlineLarge: _textStyle(token.fontHeadlineLarge),
+      headlineMedium: _textStyle(token.fontHeadlineMedium),
+      headlineSmall: _textStyle(token.fontHeadlineSmall),
+      titleLarge: _textStyle(token.fontTitleLarge),
+      titleMedium: _textStyle(token.fontTitleMedium),
+      titleSmall: _textStyle(token.fontTitleSmall),
+      bodyLarge: _textStyle(token.fontBodyLarge),
+      bodyMedium: _textStyle(token.fontBodyMedium),
+      bodySmall: _textStyle(token.fontBodySmall),
+      labelLarge: _textStyle(token.fontLinkLarge),
+      labelMedium: _textStyle(token.fontLinkMedium),
+      labelSmall: _textStyle(token.fontLinkSmall),
+    );
+  }
+
+  TextStyle? _textStyle(Font? font) {
+    if (font == null) {
+      return null;
+    }
+    return TextStyle(
+      fontSize: font.size,
+      height: font.height,
+      fontWeight: font.fontWeight,
+    );
+  }
+
+  TButtonThemeData _buttonTheme(TThemeData token) {
+    return TButtonThemeData(
+      filledStyle: _buttonStyle(
+        backgroundColor: token.brandNormalColor,
+        foregroundColor: token.textColorAnti,
+        disabledBackgroundColor: token.bgColorComponentDisabled,
+        disabledForegroundColor: token.textDisabledColor,
+      ),
+      outlinedStyle: _buttonStyle(
+        backgroundColor: Colors.transparent,
+        foregroundColor: token.brandNormalColor,
+        disabledBackgroundColor: Colors.transparent,
+        disabledForegroundColor: token.textDisabledColor,
+        sideColor: token.brandNormalColor,
+        disabledSideColor: token.componentBorderColor,
+      ),
+      textButtonStyle: _buttonStyle(
+        backgroundColor: Colors.transparent,
+        foregroundColor: token.brandNormalColor,
+        disabledBackgroundColor: Colors.transparent,
+        disabledForegroundColor: token.textDisabledColor,
+        sideColor: Colors.transparent,
+      ),
+      ghostStyle: _buttonStyle(
+        backgroundColor: Colors.transparent,
+        foregroundColor: token.brandNormalColor,
+        disabledBackgroundColor: Colors.transparent,
+        disabledForegroundColor: token.textDisabledColor,
+        sideColor: token.brandNormalColor,
+        disabledSideColor: token.componentBorderColor,
+      ),
+    );
+  }
+
+  ButtonStyle _materialButtonStyle(
+    TThemeData token,
+    ColorScheme colorScheme,
+  ) {
+    return _buttonStyle(
+      backgroundColor: colorScheme.primary,
+      foregroundColor: colorScheme.onPrimary,
+      disabledBackgroundColor: token.bgColorComponentDisabled,
+      disabledForegroundColor: token.textDisabledColor,
+      textStyle: _textStyle(token.fontLinkMedium),
+    );
+  }
+
+  ButtonStyle _buttonStyle({
+    required Color backgroundColor,
+    required Color foregroundColor,
+    required Color disabledBackgroundColor,
+    required Color disabledForegroundColor,
+    Color? sideColor,
+    Color? disabledSideColor,
+    TextStyle? textStyle,
+  }) {
+    return ButtonStyle(
+      backgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.disabled)) {
+          return disabledBackgroundColor;
+        }
+        return backgroundColor;
+      }),
+      foregroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.disabled)) {
+          return disabledForegroundColor;
+        }
+        return foregroundColor;
+      }),
+      side: sideColor == null
+          ? null
+          : WidgetStateProperty.resolveWith((states) {
+              final color = states.contains(WidgetState.disabled)
+                  ? (disabledSideColor ?? sideColor)
+                  : sideColor;
+              return BorderSide(color: color);
+            }),
+      textStyle: textStyle == null
+          ? null
+          : WidgetStatePropertyAll<TextStyle>(textStyle),
+      overlayColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      surfaceTintColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      shadowColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
+      elevation: const WidgetStatePropertyAll<double>(0),
+    );
+  }
+
+  TTextThemeData _textExtension(TThemeData token) {
+    return TTextThemeData(
+      defaultFont: token.fontBodyLarge,
+      defaultTextColor: token.textColorPrimary,
+      defaultFontFamily: token.fontFamilyMap['numberFontFamily'],
+    );
+  }
+
+  TIconThemeData _iconTheme(TThemeData token) {
+    return TIconThemeData(color: token.textColorPrimary);
+  }
+
+  TDividerThemeData _dividerTheme(TThemeData token) {
+    return TDividerThemeData(
+      color: token.componentStrokeColor,
+      textStyle: _textStyle(token.fontBodyMedium)?.copyWith(
+        color: token.textColorSecondary,
+      ),
+    );
+  }
+
+  TLinkThemeData _linkTheme(TThemeData token) {
+    return TLinkThemeData(
+      color: token.textColorLink,
+      fontSize: token.fontLinkMedium?.size,
     );
   }
 
@@ -305,19 +558,21 @@ class TThemeData extends ThemeExtension<TThemeData> {
     required this.spacerMap,
     required this.refMap,
     this.extraThemeData,
-  });
+  }) {
+    light = this;
+  }
 
   /// 获取默认Data，一个App里只有一个，用于没有context的地方
-  static TThemeData defaultData({
-    TExtraThemeData? extraThemeData
-  }) {
-    _defaultThemeData ??= fromJson(_defaultThemeName,
-          TDefaultTheme.defaultThemeConfig,
-          darkName: _defaultDartThemeName,
-          extraThemeData: extraThemeData,
-        );
-    if(_defaultThemeData == null){
-      var emptyData = _emptyData(_defaultThemeName, extraThemeData: extraThemeData);
+  static TThemeData defaultData({TExtraThemeData? extraThemeData}) {
+    _defaultThemeData ??= fromJson(
+      _defaultThemeName,
+      TDefaultTheme.defaultThemeConfig,
+      darkName: _defaultDartThemeName,
+      extraThemeData: extraThemeData,
+    );
+    if (_defaultThemeData == null) {
+      var emptyData =
+          _emptyData(_defaultThemeName, extraThemeData: extraThemeData);
       emptyData.light = emptyData;
       _defaultThemeData = emptyData;
     }
@@ -438,7 +693,7 @@ class TThemeData extends ThemeExtension<TThemeData> {
           theme.dark = darkTheme;
           // 填充暗色模式缺失数据
           theme.refMap.forEach((key, value) {
-            darkTheme.refMap.putIfAbsent(key, ()=> value);
+            darkTheme.refMap.putIfAbsent(key, () => value);
           });
         }
         if (recoverDefault) {
@@ -456,7 +711,8 @@ class TThemeData extends ThemeExtension<TThemeData> {
     }
   }
 
-  static TThemeData parseThemeData(String name, themeConfig, TExtraThemeData? extraThemeData) {
+  static TThemeData parseThemeData(
+      String name, themeConfig, TExtraThemeData? extraThemeData) {
     var theme = _emptyData(name);
     Map<String, dynamic>? curThemeMap = themeConfig['$name'];
     if (curThemeMap?.isEmpty ?? true) {

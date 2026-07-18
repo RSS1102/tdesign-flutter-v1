@@ -107,7 +107,7 @@ TButton(child: Text('确定'), onPressed: _submit)
 // 特例：单颗按钮改字形
 TButton(
   onPressed: _submit,
-  child: TText('删除', font: TTheme.of(context).fontTitleSmall),
+  child: TText('删除', font: context.tTheme.fontTitleSmall),
 )
 
 // 禁用：仅 onPressed: null，文案自动走 disabled 前景色
@@ -128,7 +128,7 @@ TButton(child: TText('提交'), onPressed: null)
 
 | 决策 | 符号 | 说明 |
 | --- | --- | --- |
-| 🚫 | `TButtonStyle` | 📦 迁入 `TButtonThemeData` |
+| 🚫 | `旧样式类` | 📦 迁入 `TButtonThemeData` |
 | 🚫 | `TButtonType` | ✏️ → `TButtonVariant` |
 | 🚫 | `TButtonTheme`（enum） | ✏️ → `TButtonColorScheme` |
 | 🚫 | `TButtonEvent` | ✏️ → `VoidCallback?` |
@@ -212,8 +212,8 @@ Padding(
 
 ### 📦 迁入 Theme · ✨ 新增
 
-- **📦** `shape`、`style` 三态、`padding`、`margin`、`gradient` 等 → `TButtonThemeData`（字段见 **§3**，`shape` 见 **§3.5**）；`TButtonShape` 🚫、`TButtonStyle` 🚫
-- **✨** P0 `ButtonStyle? style`、`TButtonThemeData` — 见 §1（`style` 与 0.2 `TButtonStyle` **同名不同型**）
+- **📦** `shape`、`style` 三态、`padding`、`margin`、`gradient` 等 → `TButtonThemeData`（字段见 **§3**，`shape` 见 **§3.5**）；`TButtonShape` 🚫、`旧样式类` 🚫
+- **✨** P0 `ButtonStyle? style`、`TButtonThemeData` — 见 §1（`style` 与 0.2 旧样式类 **同名不同型**）
 
 ---
 

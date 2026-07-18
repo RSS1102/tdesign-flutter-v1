@@ -15,15 +15,14 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 Widget wrapWithTheme(
   Widget child, {
   TThemeData? tThemeData,
-  List<ThemeExtension> componentThemes = const [],
+  TButtonThemeData? buttonTheme,
 }) {
+  var theme = TThemeBuilder.light(tThemeData ?? TThemeData.defaultData());
+  if (buttonTheme != null) {
+    theme = theme.mergeExtension(buttonTheme);
+  }
   return MaterialApp(
-    theme: ThemeData(
-      extensions: [
-        tThemeData ?? TThemeData.defaultData(),
-        ...componentThemes,
-      ],
-    ),
+    theme: theme,
     home: Scaffold(body: Center(child: child)),
   );
 }
@@ -52,6 +51,9 @@ void main() {
       final tThemeData = Theme.of(element).extension<TThemeData>();
       expect(tThemeData, isNotNull);
       expect(tThemeData!.brandNormalColor, isNotNull);
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.style?.backgroundColor?.resolve({}),
+          tThemeData.brandNormalColor);
     });
 
     testWidgets('TTag 颜色取自 Token 主题', (tester) async {
@@ -85,13 +87,15 @@ void main() {
           variant: TButtonVariant.fill,
           colorScheme: TButtonColorScheme.primary,
         ),
-        componentThemes: [
-          const TButtonThemeData(defaultVariant: TButtonVariant.outline),
-        ],
+        buttonTheme:
+            const TButtonThemeData(defaultVariant: TButtonVariant.outline),
       ));
 
-      // 验证按钮正常渲染
       expect(find.byType(TButton), findsOneWidget);
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.style?.backgroundColor?.resolve({}),
+          TThemeData.defaultData().brandNormalColor);
+      expect(button.style?.side?.resolve({}), isNull);
     });
 
     testWidgets('P1 组件 Theme 覆盖 P4 Token 默认', (tester) async {
@@ -102,12 +106,14 @@ void main() {
           child: Text('Theme覆盖'),
           colorScheme: TButtonColorScheme.primary,
         ),
-        componentThemes: [
-          const TButtonThemeData(defaultVariant: TButtonVariant.outline),
-        ],
+        buttonTheme:
+            const TButtonThemeData(defaultVariant: TButtonVariant.outline),
       ));
 
       expect(find.byType(TButton), findsOneWidget);
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.style?.side?.resolve({})?.color,
+          TThemeData.defaultData().brandNormalColor);
     });
 
     testWidgets('P4 Token 作为最终默认值', (tester) async {
@@ -125,6 +131,9 @@ void main() {
       final element = tester.element(find.byType(TButton));
       final tThemeData = Theme.of(element).extension<TThemeData>();
       expect(tThemeData, isNotNull);
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.style?.backgroundColor?.resolve({}),
+          tThemeData!.brandNormalColor);
     });
   });
 
@@ -139,9 +148,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [TThemeData.defaultData()],
-          ),
+          theme: TThemeBuilder.light(TThemeData.defaultData()),
           home: Scaffold(
             body: Center(
               child: Builder(
@@ -168,6 +175,8 @@ void main() {
       // 验证按钮正常渲染
       expect(find.byType(TButton), findsOneWidget);
       expect(find.text('merge'), findsOneWidget);
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.style?.shape?.resolve({}), isA<CircleBorder>());
     });
 
     testWidgets('mergeExtension 不覆盖已传实例参数', (tester) async {
@@ -175,9 +184,7 @@ void main() {
       // 实例应胜出
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(
-            extensions: [TThemeData.defaultData()],
-          ),
+          theme: TThemeBuilder.light(TThemeData.defaultData()),
           home: Scaffold(
             body: Center(
               child: Builder(
@@ -202,6 +209,8 @@ void main() {
 
       expect(find.byType(TButton), findsOneWidget);
       expect(find.text('实例优先'), findsOneWidget);
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.style?.side?.resolve({}), isNull);
     });
   });
 
@@ -241,6 +250,8 @@ void main() {
       final element = tester.element(find.byType(TButton));
       final tThemeData = Theme.of(element).extension<TThemeData>();
       expect(tThemeData!.brandNormalColor, Colors.purple);
+      final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+      expect(button.style?.backgroundColor?.resolve({}), Colors.purple);
     });
   });
 }

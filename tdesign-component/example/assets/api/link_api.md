@@ -34,11 +34,11 @@
 
 | 名称 | 说明 |
 | --- | --- |
-| primary | - |
-| defaultTheme | - |
-| danger | - |
-| warning | - |
-| success | - |
+| primary | 品牌主色链接 |
+| defaultTheme | 默认文本色链接 |
+| danger | 危险操作链接 |
+| warning | 警告提示链接 |
+| success | 成功状态链接 |
 
 
 ### TLinkSize
@@ -47,6 +47,6 @@
 
 | 名称 | 说明 |
 | --- | --- |
-| small | - |
-| medium | - |
-| large | - |
+| small | 小尺寸链接 |
+| medium | 中尺寸链接 |
+| large | 大尺寸链接 |

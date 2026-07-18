@@ -54,6 +54,7 @@ class TIcon extends StatelessWidget {
   ///
   /// 如果名称不存在，抛出 [ArgumentError]。
   factory TIcon.fromName(
+    /// 图标名称，对应 [TIcons.allIconsMap] 中的 key。
     String name, {
     Key? key,
     double? size,
@@ -80,8 +81,7 @@ class TIcon extends StatelessWidget {
 
     // 优先级合并：构造器 > TIconThemeData > IconTheme
     final effectiveSize = size ?? theme?.size ?? IconTheme.of(context).size;
-    final effectiveColor =
-        color ?? theme?.color ?? IconTheme.of(context).color;
+    final effectiveColor = color ?? theme?.color ?? IconTheme.of(context).color;
 
     return Icon(
       icon,

@@ -10,7 +10,7 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| name | String | - | - |
+| name | String | - | 图标名称，对应 `TIcons.allIconsMap` 中的 key。 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | size | double? | - | 图标尺寸（优先于 `TIconThemeData.size` 和 `IconTheme.of`） |
 | color | Color? | - | 图标颜色（优先于 `TIconThemeData.color` 和 `IconTheme.of`） |

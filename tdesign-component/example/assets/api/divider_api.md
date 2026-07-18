@@ -17,8 +17,8 @@
 
 | 名称 | 说明 |
 | --- | --- |
-| horizontal | - |
-| vertical | - |
+| horizontal | 水平分割线 |
+| vertical | 垂直分割线 |
 
 
 ### TDividerAlign
@@ -27,6 +27,6 @@
 
 | 名称 | 说明 |
 | --- | --- |
-| left | - |
-| center | - |
-| right | - |
+| left | 内容靠左 |
+| center | 内容居中 |
+| right | 内容靠右 |

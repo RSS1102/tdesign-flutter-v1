@@ -8,13 +8,25 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// 说明：iOS PingFang SC 回退分支（PlatformUtil.isIOS）属平台相关，
 /// 在非 iOS 测试环境不可达，标记为已知例外。
 void main() {
-  Widget wrap(Widget child) => Theme(
-        data: ThemeData(extensions: [TThemeData.defaultData()]),
-        child: MaterialApp(home: Scaffold(body: child)),
+  Widget wrap(Widget child) => MaterialApp(
+        theme: ThemeData(extensions: [TThemeData.defaultData()]),
+        home: Scaffold(body: child),
+      );
+
+  Widget wrapWithTextTheme(Widget child, TTextThemeData textTheme) =>
+      MaterialApp(
+        theme: ThemeData(extensions: [TThemeData.defaultData(), textTheme]),
+        home: Scaffold(body: child),
       );
 
   Future<BuildContext> _ctx(WidgetTester tester) async {
     await tester.pumpWidget(wrap(const SizedBox()));
+    return tester.element(find.byType(SizedBox));
+  }
+
+  Future<BuildContext> _ctxWithTextTheme(
+      WidgetTester tester, TTextThemeData textTheme) async {
+    await tester.pumpWidget(wrapWithTextTheme(const SizedBox(), textTheme));
     return tester.element(find.byType(SizedBox));
   }
 
@@ -44,6 +56,17 @@ void main() {
       expect(style.fontSize, isNotNull);
     });
 
+    testWidgets('resolve 读取 Theme 默认字体族', (tester) async {
+      final context = await _ctxWithTextTheme(
+        tester,
+        TTextThemeData(
+          defaultFontFamily: FontFamily(fontFamily: 'ThemeFont'),
+        ),
+      );
+      final style = TTextResolve.resolve(context: context);
+      expect(style.fontFamily, 'ThemeFont');
+    });
+
     testWidgets('resolveSpan（含 Theme 与 decoration 分支）', (tester) async {
       final context = await _ctx(tester);
       final style = TTextResolve.resolveSpan(
@@ -56,6 +79,19 @@ void main() {
       );
       expect(style.fontSize, 22);
       expect(style.color, Colors.purple);
+      expect(style.decoration, TextDecoration.lineThrough);
+    });
+
+    testWidgets('resolveSpan 读取 Theme 默认字重和删除线', (tester) async {
+      final context = await _ctxWithTextTheme(
+        tester,
+        const TTextThemeData(
+          defaultFontWeight: FontWeight.w700,
+          isTextThrough: true,
+        ),
+      );
+      final style = TTextResolve.resolveSpan(context: context);
+      expect(style.fontWeight, FontWeight.w700);
       expect(style.decoration, TextDecoration.lineThrough);
     });
 

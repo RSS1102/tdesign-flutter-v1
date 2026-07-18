@@ -12,8 +12,14 @@ export 'src/components/backtop/t_backtop_theme_data.dart'
 export 'src/components/badge/t_badge.dart';
 export 'src/components/badge/t_badge_theme_data.dart' show TBadgeThemeData;
 export 'src/components/button/t_button.dart';
-export 'src/components/button/t_button_theme_data.dart'
-    show TButtonThemeData, TButtonShape;
+export 'src/components/button/t_button_theme_data.dart' show TButtonThemeData;
+export 'src/components/button/t_button_types.dart'
+    show
+        TButtonColorScheme,
+        TButtonIconPosition,
+        TButtonShape,
+        TButtonSize,
+        TButtonVariant;
 export 'src/components/calendar/t_calendar.dart';
 export 'src/components/calendar/t_calendar_theme_data.dart'
     show TCalendarThemeData, TCalendarVariant;
@@ -82,6 +88,8 @@ export 'src/components/input/t_input_theme_data.dart'
         TInputSpacer;
 export 'src/components/link/t_link.dart';
 export 'src/components/link/t_link_theme_data.dart' show TLinkThemeData;
+export 'src/components/link/t_link_types.dart'
+    show TLinkColorScheme, TLinkSize, TLinkVariant;
 export 'src/components/loading/t_loading.dart';
 export 'src/components/loading/t_loading_controller.dart';
 export 'src/components/loading/t_loading_theme_data.dart'

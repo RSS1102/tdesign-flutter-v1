@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../components/button/t_button.dart';
 import '../../components/button/t_button_theme_data.dart';
+import '../../components/button/t_button_types.dart';
 import '../../theme/t_theme.dart';
 import 't_fab_defaults.dart';
 import 't_fab_layout.dart';

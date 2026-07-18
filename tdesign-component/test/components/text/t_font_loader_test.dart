@@ -31,6 +31,46 @@ void main() {
       expect(find.byType(TText), findsWidgets);
     });
 
+    testWidgets('空 fontFamilyUrl 跳过加载并保持回退渲染', (tester) async {
+      await tester.pumpWidget(wrap(
+        TFontLoaderWidget(
+          textWidget: TText(
+            '空地址',
+            fontFamily: FontFamily(fontFamily: 'NoLoadFont'),
+          ),
+          fontFamilyUrl: '',
+        ),
+      ));
+      await tester.pump();
+
+      expect(find.text('空地址'), findsOneWidget);
+      expect(
+        tester.widgetList<TText>(find.byType(TText)).any(
+              (text) => text.data == '空地址' && text.isInFontLoader,
+            ),
+        isTrue,
+      );
+    });
+
+    testWidgets('空 fontFamily 跳过加载并保持回退渲染', (tester) async {
+      await tester.pumpWidget(wrap(
+        TText(
+          '空字体名',
+          fontFamily: FontFamily(fontFamily: ''),
+          fontFamilyUrl: 'http://example.com/font.ttf',
+        ),
+      ));
+      await tester.pump();
+
+      expect(find.text('空字体名'), findsOneWidget);
+      expect(
+        tester.widgetList<TText>(find.byType(TText)).any(
+              (text) => text.data == '空字体名' && text.isInFontLoader,
+            ),
+        isTrue,
+      );
+    });
+
     testWidgets('fontFamily + 非空 URL 进入加载失败回退分支', (tester) async {
       await tester.pumpWidget(wrap(
         TText(
