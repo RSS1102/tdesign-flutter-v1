@@ -20,3 +20,63 @@
 | tooltip | String? | - | 纯图标 Fab 的 tooltip 提示 |
 | xBounds | TFabBounds? | - | 水平拖拽边界限制 |
 | yBounds | TFabBounds? | - | 垂直拖拽边界限制 |
+
+
+### TFabBounds
+#### 默认构造方法
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| end | double | - | 终点留白（水平：right，垂直：bottom） |
+| start | double | - | 起点留白（水平：left，垂直：top） |
+
+
+### TButtonProps
+#### 默认构造方法
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| colorScheme | TButtonColorScheme? | - | 按钮配色方案 |
+| shape | TButtonShape? | - | 按钮形状 |
+| size | TButtonSize? | - | 按钮尺寸 |
+| style | ButtonStyle? | - | P0 按钮样式覆盖 |
+| variant | TButtonVariant? | - | 按钮变体 |
+
+
+### TFabDragDetails
+#### 默认构造方法
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| end | DragEndDetails? | - | 拖拽结束详情 |
+| position | Offset | - | 当前位置（相对父 Stack 内容区） |
+| start | DragStartDetails? | - | 拖拽开始详情 |
+
+
+### TFabDragAxis
+#### 枚举值
+
+
+| 名称 | 说明 |
+| --- | --- |
+| all | 允许水平和垂直方向拖拽 |
+| vertical | 仅允许垂直方向拖拽 |
+| horizontal | 仅允许水平方向拖拽 |
+
+
+### TFabMagnet
+#### 枚举值
+
+
+| 名称 | 说明 |
+| --- | --- |
+| left | 拖拽结束后吸附到左侧边界 |
+| right | 拖拽结束后吸附到右侧边界 |
+
+
+### TFabDragCallback
+#### 类型定义
+
+```dart
+typedef TFabDragCallback = void Function(TFabDragDetails details);
+```

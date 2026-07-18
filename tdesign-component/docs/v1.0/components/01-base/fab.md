@@ -58,8 +58,8 @@
 | ✨ | `semanticLabel` | L2 | `String?` | — | 读屏标签；未传且纯图标时可回退 `tooltip` |
 | ✨ | `right` | L1 | `double?` | Theme `defaultRight`（16） | 距屏幕右侧；与 `bottom` 共同定位 |
 | ✨ | `bottom` | L1 | `double?` | Theme `defaultBottom`（32） | 距屏幕底部 |
-| ✨ | `draggable` | L1 | `bool` \| `TFabDragAxis` | `false` | `all` · `vertical` · `horizontal`；见 **§3.5** |
-| ✨ | `magnet` | L1 | `bool` \| `TFabMagnet` | `false` | 拖拽结束左右吸附：`left` · `right` |
+| ✨ | `draggable` | L1 | `TFabDragAxis?` | `null` | `all` · `vertical` · `horizontal`；见 **§3.5** |
+| ✨ | `magnet` | L1 | `TFabMagnet?` | `null` | 拖拽结束左右吸附：`left` · `right` |
 | ✨ | `xBounds` | L1 | `TFabBounds?` | Theme | 水平边界；见 **§1.4** |
 | ✨ | `yBounds` | L1 | `TFabBounds?` | Theme | 垂直边界 |
 | ✨ | `onDragStart` | L3 | `TFabDragCallback?` | — | 开始拖拽；见 **§1.3** |

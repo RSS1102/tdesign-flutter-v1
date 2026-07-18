@@ -8,6 +8,40 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// 覆盖：默认渲染、buttonProps merge、text 推导、onPressed 禁用、
 /// child 模式、拖拽阈值、resolveLayout + 安全区。
 void main() {
+  Finder fabTapTarget() {
+    return find.byWidgetPredicate(
+      (Widget widget) =>
+          widget is GestureDetector &&
+          widget.onTap != null &&
+          widget.onPanStart == null,
+    );
+  }
+
+  Finder fabTapOnlyTarget() {
+    return find.byWidgetPredicate(
+      (Widget widget) =>
+          widget is GestureDetector &&
+          widget.onTap != null &&
+          widget.onPanStart == null &&
+          widget.child is! GestureDetector,
+    );
+  }
+
+  Finder fabDragTarget() {
+    return find.byWidgetPredicate(
+      (Widget widget) => widget is GestureDetector && widget.onPanStart != null,
+    );
+  }
+
+  Positioned fabPositioned(WidgetTester tester) {
+    return tester.widget<Positioned>(
+      find.byWidgetPredicate(
+        (Widget widget) =>
+            widget is Positioned && widget.child is GestureDetector,
+      ),
+    );
+  }
+
   /// 用 TTheme 包裹以提供基础 Token
   Widget wrapWithTheme(Widget child, {TFabThemeData? fabTheme}) {
     final themeExtensions = <ThemeExtension>[
@@ -64,7 +98,7 @@ void main() {
           onPressed: () => tapped = true,
         ),
       ));
-      await tester.tap(find.byType(TFab));
+      await tester.tap(fabTapOnlyTarget());
       expect(tapped, true);
     });
   });
@@ -124,7 +158,7 @@ void main() {
           onPressed: null,
         ),
       ));
-      await tester.tap(find.byType(TFab));
+      await tester.tap(fabTapTarget(), warnIfMissed: false);
       expect(tapped, false);
     });
   });
@@ -457,7 +491,7 @@ void main() {
       ));
       // 大幅度拖拽以超过 dragTapSlop（默认 18）
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(-50, -50),
         const Duration(milliseconds: 200),
       );
@@ -476,7 +510,7 @@ void main() {
       ));
       // 极小位移（1px < dragTapSlop 18）应识别为点击
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(1, 1),
         const Duration(milliseconds: 50),
       );
@@ -489,14 +523,15 @@ void main() {
         const TFab(draggable: TFabDragAxis.all, magnet: TFabMagnet.right),
       ));
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(-100, 0),
         const Duration(milliseconds: 200),
       );
       // 磁吸使用 Future.delayed，需推进时间冲刷定时器
       await tester.pump(const Duration(milliseconds: 250));
       await tester.pumpAndSettle();
-      expect(find.byType(TFab), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, 16);
     });
 
     testWidgets('拖拽 + magnet=TFabMagnet.left 吸附', (tester) async {
@@ -504,13 +539,14 @@ void main() {
         const TFab(draggable: TFabDragAxis.all, magnet: TFabMagnet.left),
       ));
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(-100, 0),
         const Duration(milliseconds: 200),
       );
       await tester.pump(const Duration(milliseconds: 250));
       await tester.pumpAndSettle();
-      expect(find.byType(TFab), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, greaterThan(16));
     });
 
     testWidgets('拖拽 + magnet=TFabMagnet.right 吸附', (tester) async {
@@ -518,13 +554,14 @@ void main() {
         const TFab(draggable: TFabDragAxis.all, magnet: TFabMagnet.right),
       ));
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(50, 0),
         const Duration(milliseconds: 200),
       );
       await tester.pump(const Duration(milliseconds: 250));
       await tester.pumpAndSettle();
-      expect(find.byType(TFab), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, 16);
     });
 
     testWidgets('拖拽 + xBounds/yBounds 边界限制', (tester) async {
@@ -536,12 +573,89 @@ void main() {
         ),
       ));
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(-200, -200),
         const Duration(milliseconds: 200),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(TFab), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, greaterThanOrEqualTo(8));
+      expect(positioned.bottom, greaterThanOrEqualTo(4));
+    });
+
+    testWidgets('自定义 child 尺寸参与拖拽边界计算', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TFab(
+          draggable: TFabDragAxis.all,
+          onPressed: () {},
+          child: const SizedBox(
+            width: 96,
+            height: 96,
+            child: ColoredBox(color: Colors.red),
+          ),
+        ),
+      ));
+      await tester.timedDrag(
+        fabDragTarget(),
+        const Offset(-1000, 0),
+        const Duration(milliseconds: 200),
+      );
+      await tester.pumpAndSettle();
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, 688);
+      expect(positioned.bottom, 32);
+    });
+
+    testWidgets('布局 right/bottom 更新后同步拖拽位置', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TFab(draggable: TFabDragAxis.all),
+      ));
+      await tester.timedDrag(
+        fabDragTarget(),
+        const Offset(-100, -100),
+        const Duration(milliseconds: 200),
+      );
+      await tester.pumpAndSettle();
+      var positioned = fabPositioned(tester);
+      expect(positioned.right, 116);
+      expect(positioned.bottom, 132);
+
+      await tester.pumpWidget(wrapWithTheme(
+        const TFab(
+          draggable: TFabDragAxis.all,
+          right: 40,
+          bottom: 60,
+        ),
+      ));
+      await tester.pump();
+      positioned = fabPositioned(tester);
+      expect(positioned.right, 40);
+      expect(positioned.bottom, 60);
+    });
+
+    testWidgets('边界更新后钳制已有拖拽位置', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TFab(draggable: TFabDragAxis.all),
+      ));
+      await tester.timedDrag(
+        fabDragTarget(),
+        const Offset(-300, 0),
+        const Duration(milliseconds: 200),
+      );
+      await tester.pumpAndSettle();
+      var positioned = fabPositioned(tester);
+      expect(positioned.right, 316);
+
+      await tester.pumpWidget(wrapWithTheme(
+        const TFab(
+          draggable: TFabDragAxis.all,
+          xBounds: TFabBounds(start: 8, end: 600),
+        ),
+      ));
+      await tester.pump();
+      positioned = fabPositioned(tester);
+      expect(positioned.right, 152);
+      expect(positioned.bottom, 32);
     });
 
     testWidgets('拖拽 vertical 轴仅垂直移动', (tester) async {
@@ -549,12 +663,14 @@ void main() {
         const TFab(draggable: TFabDragAxis.vertical),
       ));
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(-50, -50),
         const Duration(milliseconds: 200),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(TFab), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, 16);
+      expect(positioned.bottom, isNot(32));
     });
 
     testWidgets('拖拽 horizontal 轴仅水平移动', (tester) async {
@@ -562,29 +678,33 @@ void main() {
         const TFab(draggable: TFabDragAxis.horizontal),
       ));
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(-50, -50),
         const Duration(milliseconds: 200),
       );
       await tester.pumpAndSettle();
-      expect(find.byType(TFab), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.bottom, 32);
+      expect(positioned.right, isNot(16));
     });
 
     testWidgets('拖拽 + onDragStart 回调', (tester) async {
+      TFabDragDetails? startDetails;
       await tester.pumpWidget(wrapWithTheme(
         TFab(
           draggable: TFabDragAxis.all,
-          onDragStart: (_) {},
+          onDragStart: (details) => startDetails = details,
         ),
       ));
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(-50, -50),
         const Duration(milliseconds: 200),
       );
       await tester.pumpAndSettle();
-      // onDragStart 当前未在 _onPanStart 调用，但确保不崩溃
-      expect(find.byType(TFab), findsOneWidget);
+      expect(startDetails, isNotNull);
+      expect(startDetails!.start, isNotNull);
+      expect(startDetails!.position, const Offset(16, 32));
     });
 
     testWidgets('child 模式 + 拖拽 + onPressed 点击', (tester) async {
@@ -597,7 +717,7 @@ void main() {
         ),
       ));
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(1, 1),
         const Duration(milliseconds: 50),
       );
@@ -611,15 +731,18 @@ void main() {
           child: Container(width: 56, height: 56, color: Colors.red),
           draggable: TFabDragAxis.all,
           magnet: TFabMagnet.right,
+          onPressed: () {},
         ),
       ));
       await tester.timedDrag(
-        find.byType(TFab),
+        fabDragTarget(),
         const Offset(-100, 0),
         const Duration(milliseconds: 200),
       );
+      await tester.pump(const Duration(milliseconds: 250));
       await tester.pumpAndSettle();
-      expect(find.byType(TFab), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, 16);
     });
   });
 
