@@ -62,7 +62,7 @@
 | animationDuration | Duration? | - | 打开/关闭动画时长。 |
 | backgroundColor | Color? | - | 内容区背景色，默认主题容器色。 |
 | child | Widget | - | 浮层主体内容（必填）。 |
-| closeOnOverlayClick | bool? | - | - |
+| closeOnOverlayClick | bool? | - | 点击蒙层时是否关闭浮层；未传时跟随 `showOverlay`。 |
 | destroyOnClose | bool | false | 为 true 时路由 `maintainState` 为 false，关闭后不保留路由内 State。 |
 | modal | bool | true | 是否以模态方式展示；为 true 时阻断背景交互与底层语义/焦点。 结合 `showOverlay` 可表达三种模式： * `modal=true, showOverlay=true`：标准模态弹层 * `modal=true, showOverlay=false`：透明模态弹层 * `modal=false, showOverlay=false`：非模态浮层 |
 | onClose | VoidCallback? | - | 开始关闭（与 `onVisibleChange` 的 `visible: false` 同期）。 |
@@ -157,7 +157,7 @@
 | cancelBuilder | TPopupSlotBuilder? | _kPopupDefaultCancel | bottom 左侧操作槽；仅 `headerBuilder` 为内置默认时生效。 内置默认为「取消」，点击触发 `TPopupTrigger.cancel`。 |
 | child | Widget | - | 浮层主体内容（必填）。 |
 | closeBuilder | TPopupSlotBuilder? | _kPopupDefaultClose | center 面板外下方关闭区；仅 `TPopupPlacement.center` 生效。三态见类文档「Builder 三态」。 内置默认点击触发 `TPopupTrigger.close`。 |
-| closeOnOverlayClick | bool? | - | - |
+| closeOnOverlayClick | bool? | - | 点击蒙层时是否关闭浮层；未传时跟随 `showOverlay`。 |
 | confirmBuilder | TPopupSlotBuilder? | _kPopupDefaultConfirm | bottom 右侧操作槽；仅 `headerBuilder` 为内置默认时生效。 内置默认为「确定」，点击触发 `TPopupTrigger.confirm`。 |
 | destroyOnClose | bool | false | 为 true 时路由 `maintainState` 为 false，关闭后不保留路由内 State。 |
 | headerBuilder | TPopupHeaderBuilder? | _kPopupDefaultHeader | bottom 头部；仅 `TPopupPlacement.bottom` 生效。三态见类文档「Builder 三态」。 自定义时忽略 `titleWidget`、`cancelBuilder`、`confirmBuilder`。 |
@@ -206,9 +206,9 @@ TPopup 组件级 ThemeExtension
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| a | double? | - | - |
-| b | double? | - | - |
-| t | double | - | - |
+| a | double? | - | 起始值。 |
+| b | double? | - | 目标值。 |
+| t | double | - | 插值进度。 |
 
 #### 默认构造方法
 

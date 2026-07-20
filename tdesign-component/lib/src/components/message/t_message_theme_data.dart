@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// TMessage 语义色（原 TMessageVariant）
+/// TMessage 语义色
 enum TMessageVariant {
   /// 信息
   info,

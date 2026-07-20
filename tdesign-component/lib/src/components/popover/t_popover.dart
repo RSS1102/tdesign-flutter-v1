@@ -12,18 +12,38 @@ class TPopover {
     required BuildContext context,
     String? content,
     Widget? contentWidget,
+
+    /// 弹层与触发元素的间距。
     double offset = 4,
+
+    /// 气泡语义色。
     TPopoverColorScheme? colorScheme,
+
+    /// 点击气泡外部区域时是否关闭弹层。
     bool closeOnClickOutside = true,
     TPopoverPlacement? placement,
+
+    /// 是否显示气泡箭头。
     bool? showArrow = true,
+
+    /// 箭头尺寸。
     double arrowSize = 8,
+
+    /// 内容内边距。
     EdgeInsetsGeometry? padding,
+
+    /// 内容宽度。
     double? width,
+
+    /// 内容高度。
     double? height,
+
+    /// 蒙层颜色。
     Color? overlayColor = Colors.transparent,
     TPopoverTapCallback? onTap,
     TPopoverLongPressCallback? onLongTap,
+
+    /// 气泡圆角。
     BorderRadius? radius,
   }) {
     final theme = Theme.of(context).extension<TPopoverThemeData>() ??
@@ -47,9 +67,10 @@ class TPopover {
         height: height ?? theme.maxHeight,
         onTap: onTap,
         onLongTap: onLongTap,
-        radius: radius ?? (theme.borderRadius == null
-            ? null
-            : BorderRadius.circular(theme.borderRadius!)),
+        radius: radius ??
+            (theme.borderRadius == null
+                ? null
+                : BorderRadius.circular(theme.borderRadius!)),
       ),
     );
   }

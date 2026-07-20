@@ -17,19 +17,19 @@
 | context | BuildContext | - | 上下文 |
 | content | String? | - | 显示内容 |
 | contentWidget | Widget? | - | 自定义内容 |
-| offset | double | 4 | - |
-| colorScheme | TPopoverColorScheme? | - | - |
-| closeOnClickOutside | bool | true | - |
+| offset | double | 4 | 弹层与触发元素的间距。 |
+| colorScheme | TPopoverColorScheme? | - | 气泡语义色。 |
+| closeOnClickOutside | bool | true | 点击气泡外部区域时是否关闭弹层。 |
 | placement | TPopoverPlacement? | - | 浮层出现位置 |
-| showArrow | bool? | true | - |
-| arrowSize | double | 8 | - |
-| padding | EdgeInsetsGeometry? | - | - |
-| width | double? | - | - |
-| height | double? | - | - |
-| overlayColor | Color? | Colors.transparent | - |
+| showArrow | bool? | true | 是否显示气泡箭头。 |
+| arrowSize | double | 8 | 箭头尺寸。 |
+| padding | EdgeInsetsGeometry? | - | 内容内边距。 |
+| width | double? | - | 内容宽度。 |
+| height | double? | - | 内容高度。 |
+| overlayColor | Color? | Colors.transparent | 蒙层颜色。 |
 | onTap | TPopoverTapCallback? | - | 点击事件 |
 | onLongTap | TPopoverLongPressCallback? | - | 长按事件 |
-| radius | BorderRadius? | - | - |
+| radius | BorderRadius? | - | 气泡圆角。 |
 
 
 ### TPopoverWidget
@@ -69,9 +69,9 @@ TPopover 组件级 ThemeExtension
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| a | double? | - | - |
-| b | double? | - | - |
-| t | double | - | - |
+| a | double? | - | 起始值。 |
+| b | double? | - | 目标值。 |
+| t | double | - | 插值进度。 |
 
 #### 默认构造方法
 
@@ -91,7 +91,7 @@ TPopover 组件级 ThemeExtension
 
 ### TPopoverColorScheme
 #### 简介
-TPopover 语义色（原 TPopoverColorScheme）
+TPopover 语义色
 #### 枚举值
 
 

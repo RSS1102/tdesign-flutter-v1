@@ -1,4 +1,4 @@
-﻿part of 't_popup.dart';
+part of 't_popup.dart';
 
 /// 用于 [TPopupOptions.copyWith] 区分"不传"与"显式 null"。
 const Object _unset = Object();
@@ -51,6 +51,8 @@ class TPopupOptions {
     this.radius,
     this.backgroundColor,
     this.showOverlay = true,
+
+    /// 点击蒙层时是否关闭浮层；未传时跟随 [showOverlay]。
     bool? closeOnOverlayClick,
     this.overlayColor,
     this.overlayOpacity,
@@ -86,6 +88,8 @@ class TPopupOptions {
     double? radius,
     Color? backgroundColor,
     bool showOverlay = true,
+
+    /// 点击蒙层时是否关闭浮层；未传时跟随 [showOverlay]。
     bool? closeOnOverlayClick,
     Color? overlayColor,
     double? overlayOpacity,
@@ -138,6 +142,8 @@ class TPopupOptions {
     double? radius,
     Color? backgroundColor,
     bool showOverlay = true,
+
+    /// 点击蒙层时是否关闭浮层；未传时跟随 [showOverlay]。
     bool? closeOnOverlayClick,
     Color? overlayColor,
     double? overlayOpacity,
@@ -186,6 +192,8 @@ class TPopupOptions {
     double? radius,
     Color? backgroundColor,
     bool showOverlay = true,
+
+    /// 点击蒙层时是否关闭浮层；未传时跟随 [showOverlay]。
     bool? closeOnOverlayClick,
     Color? overlayColor,
     double? overlayOpacity,
@@ -233,6 +241,8 @@ class TPopupOptions {
     double? radius,
     Color? backgroundColor,
     bool showOverlay = true,
+
+    /// 点击蒙层时是否关闭浮层；未传时跟随 [showOverlay]。
     bool? closeOnOverlayClick,
     Color? overlayColor,
     double? overlayOpacity,
@@ -280,6 +290,8 @@ class TPopupOptions {
     double? radius,
     Color? backgroundColor,
     bool showOverlay = true,
+
+    /// 点击蒙层时是否关闭浮层；未传时跟随 [showOverlay]。
     bool? closeOnOverlayClick,
     Color? overlayColor,
     double? overlayOpacity,

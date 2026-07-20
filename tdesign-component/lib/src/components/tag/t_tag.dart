@@ -152,7 +152,7 @@ class TTag extends StatelessWidget {
     );
   }
 
-  /// 解析颜色（原 TTagStyle 的 generateFillStyleByTheme/generateOutlineStyleByTheme/generateDisableSelectStyle 逻辑）
+  /// 解析标签颜色。
   _TagColors _resolveColors(
     BuildContext context,
     TTagColorScheme colorScheme,

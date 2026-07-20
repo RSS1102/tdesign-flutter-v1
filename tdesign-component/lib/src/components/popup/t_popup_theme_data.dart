@@ -75,7 +75,16 @@ class TPopupThemeData extends ThemeExtension<TPopupThemeData> {
     );
   }
 
-  static double? lerpDouble(double? a, double? b, double t) {
+  static double? lerpDouble(
+    /// 起始值。
+    double? a,
+
+    /// 目标值。
+    double? b,
+
+    /// 插值进度。
+    double t,
+  ) {
     if (a == null && b == null) {
       return null;
     }

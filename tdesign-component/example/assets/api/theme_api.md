@@ -24,8 +24,8 @@
 | --- | --- | --- | --- |
 | name | String | - | 主题名称，目前只支持一级键 |
 | themeJson | String | - | 主题json字符串，要求json配置必须正确 |
-| darkName | String? | - | - |
-| recoverDefault | - | false | 是否恢复为默认主题数据 |
+| darkName | String? | - | 暗色主题名称；为空时使用 `${name}Dark`。 |
+| recoverDefault | bool | false | 是否恢复为默认主题数据 |
 | extraThemeData | TExtraThemeData? | - | 额外扩展的主题数据 |
 
 
@@ -36,7 +36,7 @@
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | name | String | - | 名称 |
-| themeConfig | - | - | - |
+| themeConfig | dynamic | - | 已解析的主题 JSON 配置。 |
 | extraThemeData | TExtraThemeData? | - | 额外定义的结构 |
 
 #### 默认构造方法

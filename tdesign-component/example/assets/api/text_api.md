@@ -39,7 +39,7 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| data | - | - | 透传至系统 `Text.data` 的文本内容 |
+| data | String? | - | 透传至系统 `Text.data` 的文本内容 |
 | backgroundColor | Color? | - | 背景颜色 |
 | font | Font? | - | 字体尺寸，包含 大小size 和 行高height |
 | fontFamily | FontFamily? | - | 字体ttf |

@@ -54,7 +54,7 @@ TNoticeBar 组件级 ThemeExtension
 
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| defaultPadding | - | - | 默认内边距 |
+| defaultPadding | EdgeInsets | - | 默认内边距 |
 
 
 ### TNoticeBarTapTarget
@@ -72,7 +72,7 @@ TNoticeBar 组件级 ThemeExtension
 
 ### TNoticeBarVariant
 #### 简介
-公告栏语义色（原 TNoticeBarTheme）
+公告栏语义色
 #### 枚举值
 
 

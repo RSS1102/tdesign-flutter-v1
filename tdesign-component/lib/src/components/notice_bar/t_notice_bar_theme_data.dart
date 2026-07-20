@@ -4,7 +4,7 @@ import '../../theme/t_colors.dart';
 import '../../theme/t_fonts.dart';
 import '../../theme/t_theme.dart';
 
-/// 公告栏语义色（原 TNoticeBarTheme）
+/// 公告栏语义色
 enum TNoticeBarVariant {
   /// 信息（默认）
   info,
@@ -63,7 +63,7 @@ class TNoticeBarThemeData extends ThemeExtension<TNoticeBarThemeData> {
   });
 
   /// 默认内边距
-  static const defaultPadding =
+  static const EdgeInsets defaultPadding =
       EdgeInsets.only(top: 13, bottom: 13, left: 16, right: 12);
 
   /// 合并两个 ThemeExtension，[other] 优先于 this

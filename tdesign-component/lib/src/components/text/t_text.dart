@@ -123,7 +123,7 @@ class TText extends StatelessWidget {
   final TextStyle? style;
 
   /// 透传至系统 [Text.data] 的文本内容
-  final data;
+  final String? data;
 
   /// 透传至系统 [Text.strutStyle] 的段落支柱样式
   final StrutStyle? strutStyle;
@@ -184,7 +184,7 @@ class TText extends StatelessWidget {
       );
     }
 
-    // v1.0 变更：TTextThemeData.forceVerticalCenter 作为子树级默认，实例参数可覆盖
+    // TTextThemeData.forceVerticalCenter 作为子树级默认，实例参数可覆盖。
     final effectiveVC =
         forceVerticalCenter || (themeExtension?.forceVerticalCenter ?? false);
     if (effectiveVC) {
@@ -270,7 +270,7 @@ class TText extends StatelessWidget {
       Color? textStyleBackgroundColor}) {
     return textSpan == null
         ? Text(
-            data,
+            data ?? '',
             key: key,
             style: textStyle ??
                 getTextStyle(context,
@@ -451,9 +451,7 @@ class TTextConfiguration extends InheritedWidget {
 class TTextPaddingConfig {
   static TTextPaddingConfig? _defaultConfig;
 
-  /// v1.0 变更：缓存 key 从 (fontSize, height) 扩容为
-  /// (fontSize, height, fontFamily, fontWeightIndex, textScale, paddingConfigHashCode)，
-  /// 解决字体切换、缩放变化后命中过期缓存的问题。
+  /// 缓存 key 包含字体、字重、缩放和配置，避免字体切换或缩放变化后命中过期缓存。
   static final Map<(double, double, String?, int?, double, int),
       EdgeInsetsGeometry> _cacheMap = {};
 
@@ -465,8 +463,7 @@ class TTextPaddingConfig {
 
   /// 获取 padding
   ///
-  /// v1.0 变更：新增 [fontFamily]、[fontWeight]、[textScale]、[paddingConfig] 参数
-  /// 以参与缓存 key 计算。
+  /// [fontFamily]、[fontWeight]、[textScale]、[paddingConfig] 参与缓存 key 计算。
   EdgeInsetsGeometry getPadding(String? data, double fontSize, double height,
       {String? fontFamily,
       FontWeight? fontWeight,
@@ -496,8 +493,7 @@ class TTextPaddingConfig {
       // 计算垂直居中需要的 top padding
       final webPaddingTop =
           (totalHeight - textActualHeight) / 2; // coverage:ignore-line
-      // v1.0 变更：移除 Dart SDK 版本代理，固定使用当前系数。
-      // 当前 Flutter 版本（≥3.41）使用固定系数。
+      // 当前 Flutter 版本使用固定系数。
       const adjustRate = -0.05;
       final finalTop =
           webPaddingTop + (fontSize * adjustRate); // coverage:ignore-line
@@ -532,8 +528,7 @@ class TTextPaddingConfig {
 
   /// 以多个汉字测量计算的平均值，Android为Pixel 4 模拟器，iOS 为 iphone 8 plus 模拟器
   ///
-  /// v1.0 变更：移除 Dart SDK 版本代理（原 VersionUtil.isAfterThen），
-  /// 当前 Flutter ≥3.41 使用 Dart 3.2.0+ 系数。
+  /// 当前 Flutter 版本使用 Dart 3.2.0+ 系数。
   double get paddingRate {
     return PlatformUtil.isWeb
         ? 0.0 // Web 端单独逻辑处理

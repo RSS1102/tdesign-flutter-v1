@@ -671,8 +671,9 @@ class TThemeData extends ThemeExtension<TThemeData> {
   static TThemeData? fromJson(
     String name,
     String themeJson, {
+    /// 暗色主题名称；为空时使用 `${name}Dark`。
     String? darkName,
-    var recoverDefault = false,
+    bool recoverDefault = false,
     TExtraThemeData? extraThemeData,
   }) {
     if (themeJson.isEmpty) {
@@ -712,7 +713,12 @@ class TThemeData extends ThemeExtension<TThemeData> {
   }
 
   static TThemeData parseThemeData(
-      String name, themeConfig, TExtraThemeData? extraThemeData) {
+    String name,
+
+    /// 已解析的主题 JSON 配置。
+    dynamic themeConfig,
+    TExtraThemeData? extraThemeData,
+  ) {
     var theme = _emptyData(name);
     Map<String, dynamic>? curThemeMap = themeConfig['$name'];
     if (curThemeMap?.isEmpty ?? true) {
