@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tdesign_flutter/src/components/drawer/t_drawer_widget.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
@@ -55,6 +56,39 @@ void main() {
       expect(copied.bordered, null);
     });
 
+    test('copyWith and lerp cover remaining fields', () {
+      const base = TDrawerThemeData(
+        width: 280,
+        drawerTop: 12,
+        backgroundColor: Colors.red,
+        bordered: true,
+        isShowLastBordered: true,
+        hover: true,
+      );
+      final copied = base.copyWith(
+        drawerTop: 24,
+        bordered: false,
+        hover: false,
+      );
+      expect(copied.drawerTop, 24);
+      expect(copied.bordered, false);
+      expect(copied.hover, false);
+
+      const other = TDrawerThemeData(
+        width: 320,
+        drawerTop: 20,
+        backgroundColor: Colors.blue,
+        bordered: false,
+        isShowLastBordered: false,
+        hover: false,
+      );
+      final lerped = base.lerp(other, 0.5);
+      expect(lerped.width, 300);
+      expect(lerped.drawerTop, 16);
+      expect(lerped.bordered, false);
+      expect(lerped.hover, false);
+    });
+
     test('lerp', () {
       const data1 = TDrawerThemeData(width: 280, backgroundColor: Colors.red);
       const data2 = TDrawerThemeData(width: 320, backgroundColor: Colors.blue);
@@ -106,7 +140,7 @@ void main() {
     testWidgets('使用 title 渲染标题', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TDrawerWidget(
-          title: '标题',
+          title: const Text('标题'),
           items: [TDrawerItem(title: '菜单1')],
         ),
       ));
@@ -200,8 +234,8 @@ void main() {
       expect(find.text('菜单1'), findsOneWidget);
     });
 
-    testWidgets('open 方法打开抽屉', (tester) async {
-      TDrawer? drawer;
+    testWidgets('show 返回 handle 并可关闭抽屉', (tester) async {
+      TDrawerHandle? drawerHandle;
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -210,11 +244,11 @@ void main() {
                 return TButton(
                   child: const Text('打开'),
                   onPressed: () {
-                    drawer = TDrawer(
+                    final drawer = TDrawer(
                       context,
                       items: [TDrawerItem(title: '菜单1')],
                     );
-                    drawer?.open();
+                    drawerHandle = drawer.show();
                   },
                 );
               },
@@ -226,8 +260,39 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('菜单1'), findsOneWidget);
       // 关闭
-      drawer?.close();
+      drawerHandle?.close();
       await tester.pumpAndSettle();
+      expect(find.text('菜单1'), findsNothing);
+    });
+
+    testWidgets('show 二次调用复用 handle 且 isShowing 可读', (tester) async {
+      TDrawerHandle? first;
+      TDrawerHandle? second;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Builder(
+              builder: (context) {
+                return TButton(
+                  child: const Text('打开'),
+                  onPressed: () {
+                    final drawer = TDrawer(
+                      context,
+                      items: [TDrawerItem(title: '菜单1')],
+                    );
+                    first ??= drawer.show();
+                    second = drawer.show();
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('打开'));
+      await tester.pumpAndSettle();
+      expect(first?.isShowing, isTrue);
+      expect(second?.isShowing, isTrue);
     });
 
     testWidgets('使用 child 自定义内容', (tester) async {

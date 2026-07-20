@@ -1,47 +1,115 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
+import '../divider/t_divider.dart';
+import 't_checkbox_theme_data.dart';
 import 't_selection_card.dart';
 
-enum TContentDirection { left, right }
+/// 选择控件相对于文案的排列方向。
+enum TContentDirection {
+  /// 控件位于文案右侧。
+  left,
 
-enum TCheckboxSize { small, medium, large }
+  /// 控件位于文案左侧。
+  right,
+}
 
+/// 复选框指示器尺寸。
+enum TCheckboxSize {
+  /// 小尺寸。
+  small,
+
+  /// 中尺寸。
+  medium,
+
+  /// 大尺寸。
+  large,
+}
+
+/// 自定义复选框指示器构建器。
 typedef TCheckboxIconBuilder = Widget Function(
   BuildContext context,
   bool? value,
   bool disabled,
 );
 
-/// Strictly controlled checkbox. A null [onChanged] means disabled.
+/// 严格受控的复选框；[onChanged] 为 null 时禁用。
 class TCheckbox extends StatelessWidget {
   const TCheckbox({
     super.key,
+
+    /// 受控选中态；null 表示半选。
     required this.value,
+
+    /// 选中态变更回调；为 null 时禁用。
     this.onChanged,
+
+    /// 主标题文案。
     this.title,
+
+    /// 副标题文案。
     this.subTitle,
+
+    /// 复选框尺寸。
     this.size = TCheckboxSize.medium,
+
+    /// 是否使用卡片模式。
     this.cardMode = false,
+
+    /// 是否显示底部分割线。
     this.showDivider = false,
+
+    /// 控件与文案排列方向。
     this.contentDirection = TContentDirection.right,
+
+    /// 主标题最大行数。
     this.titleMaxLines = 1,
+
+    /// 副标题最大行数。
     this.subTitleMaxLines = 1,
+
+    /// 自定义复选框指示器。
     this.customIconBuilder,
   });
 
+  /// 受控选中态；null 表示半选。
   final bool? value;
+
+  /// 选中态变更回调；为 null 时禁用。
   final ValueChanged<bool?>? onChanged;
+
+  /// 主标题文案。
   final String? title;
+
+  /// 副标题文案。
   final String? subTitle;
+
+  /// 复选框尺寸。
   final TCheckboxSize size;
+
+  /// 是否使用卡片模式。
   final bool cardMode;
+
+  /// 是否显示底部分割线。
   final bool showDivider;
+
+  /// 控件与文案排列方向。
   final TContentDirection contentDirection;
+
+  /// 主标题最大行数。
   final int titleMaxLines;
+
+  /// 副标题最大行数。
   final int subTitleMaxLines;
+
+  /// 自定义复选框指示器。
   final TCheckboxIconBuilder? customIconBuilder;
 
   bool get _disabled => onChanged == null;
@@ -158,7 +226,7 @@ class TCheckbox extends StatelessWidget {
   }
 
   Widget _buildIndicator(BuildContext context, TCheckboxThemeData? theme) {
-    final variant = theme?.style ?? TCheckboxVariant.square;
+    final variant = theme?.variant ?? TCheckboxVariant.square;
     final selected = value == true;
     final indeterminate = value == null;
     final icon = switch (variant) {

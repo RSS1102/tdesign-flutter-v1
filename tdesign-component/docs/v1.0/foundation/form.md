@@ -1,70 +1,34 @@
-# Form 方案（v1.0）
+# Form 基础方案
 
-> **已定稿（2025-06）** · 组件 → [form.md](../components/03-input/form.md) · [form-item.md](../components/03-input/form-item.md)
+v1 表单以 Flutter `Form`、`FormState` 和 `FormField` 为唯一校验与生命周期基础。
 
-**Material 对照**：校验与生命周期跟 `Form` / `FormState` / `FormField`；`TFormField<T>` 对标 `TextFormField` 桥接模式；**废弃**自研 `TFormValidation` / `TFormItemType`。
+## 分层
 
----
-
-## 1. 三层
-
-| 层 | v1.0 |
+| 层 | 职责 |
 |---|---|
-| A 校验 | Material `Form` + `FormState` + `FormField` |
-| B UI | `TForm` + `TFormItem`（label / help / error 布局） |
-| C 桥接 | **`TFormField<T>`** 挂接各字段 Widget |
+| Flutter Form | 字段注册、校验、保存和重置生命周期 |
+| TForm | 字段值快照、提交入口和错误显示策略 |
+| TFormField<T> | 将严格受控组件接入 FormField |
+| TFormItem | 标签、必填标记、帮助和错误文案布局 |
+| TFormThemeData | 表单项视觉与布局默认值 |
 
-**废弃**：`TFormValidation.check()`、`TFormItemType`、`FormItemNotifier`、`data`/`items` 集中式 API。
+## 约束
 
----
+- 表单容器不持有字段业务状态。
+- 字段的 `value` 始终由业务侧持有。
+- `TFormField.onChanged == null` 表示字段禁用，并向 builder 传入 null 回调。
+- 校验只使用 `FormFieldValidator<T>`。
+- `TFormItem` 不根据字段类型创建或分发组件。
+- `TFormController` 只代理当前 `TFormState`，不复制字段状态。
 
-## 2. 字段桥接（控制类 → Form 写法）
+## 提交
 
-| 类 | 字段 | Form 内 |
-|---|---|---|
-| D | Input、Textarea、SearchBar | `TFormField` + `controller` + `enabled` |
-| B/C | Switch、Checkbox、Slider、Rate | `value` + `onChanged` → `field.didChange` |
-| F | Picker、Calendar、Cascader | 同 B/C |
-| B 组 | CheckboxGroup | `TFormField<List<T>>`；`maxChecked` 留组件实例 |
+`TFormState.submit()` 或 `TFormController.submit()` 先调用 Material `validate()`。校验成功后调用 `save()`，并把当前注册字段的只读快照传给 `TForm.onSubmit`。
 
-禁用：`TFormField.enabled == false` → B/C/F 传 `onChanged: null`；D 传 `enabled: false`。
+## 重置
 
----
+`reset()` 重置 Material 字段的校验状态。严格受控值仍由业务侧负责恢复，然后通过 rebuild 同步到 `TFormField.value`。
 
-## 3. 0.2.x → v1.0
+## 主题
 
-| 0.2.x | v1.0 |
-|---|---|
-| `data: Map` / `items` | `child` + `TFormField(name:)` |
-| `TFormItem(type: stepper, …)` | `TFormItem(child: TFormField<int>(…))` |
-| `formController` | `controller: TFormController` |
-| `TForm(disabled: true)` | 各 `TFormField(enabled: false)` |
-| `submitWithWarningMessage` | 废弃；用 `validator` |
-
-```dart
-// 0.2.x
-TForm(disabled: true, items: [...])
-
-// v1.0：逐字段
-TFormField<bool>(
-  builder: (field) => TSwitch(
-    value: field.value ?? false,
-    onChanged: field.enabled ? field.didChange : null,
-  ),
-)
-// 或 TFormField(enabled: false, ...)
-```
-
-更多禁用对照 → [disabled-evolution.md §6](./disabled-evolution.md#6-代码示例0.2x--v10)
-
----
-
-## 4. Theme
-
-`TFormThemeData`：label 宽、对齐、help/error 样式、项间距。字段 L4 仍用各自 `T{Xxx}ThemeData`。
-
----
-
-## 5. 测试
-
-Form 容器：`submit` / `reset` / `validate` · 字段 + Form：至少一条 `rules` 失败态 → [testing.md](../guide/testing.md)
+表单项布局通过 `TFormThemeData` 配置。各输入组件的视觉仍由对应的 Material Theme 或 `T{Component}ThemeData` 管理，Form 不覆盖子组件主题。

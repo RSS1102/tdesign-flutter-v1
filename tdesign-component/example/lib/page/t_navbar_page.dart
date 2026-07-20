@@ -88,16 +88,21 @@ class TNavBarPage extends StatelessWidget {
       useDefaultBack: false,
       centerTitle: false,
       titleMargin: 0,
-      titleWidget: TSearchBar(
-        needCancel: false,
-        autoHeight: true,
-        padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-        hintText: '搜索预设文案',
-        mediumStyle: true,
-        style: TSearchBarVariant.round,
-        onChanged: (String text) {
-          print('input：$text');
-        },
+      titleWidget: Theme(
+        data: Theme.of(context).mergeExtension(
+          const TSearchBarThemeData(
+            variant: TSearchBarVariant.round,
+            padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+            autoHeight: true,
+          ),
+        ),
+        child: TSearchBar(
+          needCancel: false,
+          hintText: '搜索预设文案',
+          onChanged: (String text) {
+            print('input：$text');
+          },
+        ),
       ),
       actions: [
         TNavBarItem(icon: TIcons.home, iconSize: 24),

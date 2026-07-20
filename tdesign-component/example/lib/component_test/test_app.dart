@@ -74,18 +74,8 @@ Padding body(BuildContext context) {
         //   ),
         // ),
         const TInput(
-          // label: '标签文字',
-          // controller: controller[0],
-          layout: TInputLayout.cardStyle,
+          label: '标签文字',
           hintText: '请输入文字',
-          cardStyleTopText: '标签文字',
-          // onChanged: (text) {
-          //   setState(() {});
-          // },
-          // onClearTap: () {
-          //   controller[0].clear();
-          //   setState(() {});
-          // },
         ),
         const SizedBox(height: 16),
         const TTextarea(
@@ -94,12 +84,7 @@ Padding body(BuildContext context) {
           maxLines: 4,
           minLines: 4,
           maxLength: 500,
-          padding: EdgeInsets.zero,
-          indicator: true,
-          // backgroundColor: Colors.white,
-          // textInputBackgroundColor: Colors.white,
-          layout: TTextareaLayout.vertical,
-          bordered: true,
+          decoration: InputDecoration(border: OutlineInputBorder()),
         )
       ],
     ),
@@ -118,16 +103,21 @@ PreferredSizeWidget _buildAppBar(BuildContext context) {
       // opacity: 0,
       centerTitle: false,
       titleMargin: 0,
-      titleWidget: TSearchBar(
-        needCancel: false,
-        autoHeight: true,
-        padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-        hintText: '搜索预设文案',
-        mediumStyle: true,
-        style: TSearchBarVariant.round,
-        onChanged: (String text) {
-          print('input：$text');
-        },
+      titleWidget: Theme(
+        data: Theme.of(context).mergeExtension(
+          const TSearchBarThemeData(
+            variant: TSearchBarVariant.round,
+            padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+            autoHeight: true,
+          ),
+        ),
+        child: TSearchBar(
+          needCancel: false,
+          hintText: '搜索预设文案',
+          onChanged: (String text) {
+            print('input：$text');
+          },
+        ),
       ),
       actions: [
         TNavBarItem(icon: TIcons.home, iconSize: 24),

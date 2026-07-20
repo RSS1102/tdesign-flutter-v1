@@ -1,586 +1,304 @@
-import 'dart:math' as math;
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
+import 't_tree_select_theme_data.dart';
 
-/// 树形选择变更事件回调
-///
-/// values 选中值列表，[level] 变更层级（1/2/3）
-typedef TTreeSelectChangeEvent = void Function(List<dynamic>, int level);
-
-/// 树形选择选项数据模型
-class TSelectOption {
-  TSelectOption({
+/// 不可变的树形选择选项。
+@immutable
+class TTreeSelectOption {
+  const TTreeSelectOption({
+    /// 展示文案。
     required this.label,
-    required this.value,
-    this.children = const [],
-    this.multiple = false,
-    this.disabled = false,
-    this.maxLines = 1,
-    this.columnWidth,
-  }) : assert(maxLines > 0, 'maxLines must be greater than 0');
 
-  /// 标签
+    /// 业务值。
+    required this.value,
+
+    /// 子选项。
+    this.children = const [],
+
+    /// 是否禁用。
+    this.disabled = false,
+  });
+
+  /// 展示文案。
   final String label;
 
-  /// 值
-  final dynamic value;
+  /// 业务值。
+  final Object? value;
 
-  /// 子选项
-  List<TSelectOption> children;
+  /// 子选项。
+  final List<TTreeSelectOption> children;
 
-  /// 当前子项支持多选
-  final bool multiple;
-
-  /// 是否禁用当前选项
+  /// 是否禁用。
   final bool disabled;
-
-  /// 最大显示行数
-  final int maxLines;
-
-  /// 自定义宽度，允许用户指定每个选项的宽度
-  final double? columnWidth;
 }
 
-/// 一级菜单样式
-enum TTreeSelectStyle {
-  /// 普通样式
-  normal,
-
-  /// 描边样式（选中项左侧有蓝色边框）
-  outline,
-}
-
-/// 树形选择器
+/// 严格受控的树形选择器。
 ///
-/// 支持单选/多选，最多三级菜单。
+/// [value] 中每一项都是从根到叶子的完整路径。单选模式最多保留一条路径，
+/// 多选模式可同时保留多条路径。
 class TTreeSelect extends StatefulWidget {
   const TTreeSelect({
-    Key? key,
-    this.options = const [],
-    this.value = const [],
+    super.key,
+
+    /// 根选项。
+    required this.options,
+
+    /// 受控选中路径。
+    required this.value,
+
+    /// 选中路径变化回调；为 null 时禁用。
     this.onChanged,
+
+    /// 是否允许选择多个叶子节点。
     this.multiple = false,
-    this.style,
-    this.height,
-    this.outwardCornerRadius,
-  }) : super(key: key);
+  });
 
-  /// 展示的选项列表
-  final List<TSelectOption> options;
+  /// 根选项。
+  final List<TTreeSelectOption> options;
 
-  /// 初始值，对应options中的value值
-  final List<dynamic> value;
+  /// 受控选中路径。
+  final List<List<Object?>> value;
 
-  /// 选中值发生变化
-  final TTreeSelectChangeEvent? onChanged;
+  /// 选中路径变化回调；为 null 时禁用。
+  final ValueChanged<List<List<Object?>>>? onChanged;
 
-  /// 高度
-  final double? height;
-
-  /// 支持多选
+  /// 是否允许选择多个叶子节点。
   final bool multiple;
-
-  /// 一级菜单样式
-  final TTreeSelectStyle? style;
-
-  /// 一级菜单选中项的外弯折圆角半径，默认为 9
-  final double? outwardCornerRadius;
 
   @override
   State<TTreeSelect> createState() => _TTreeSelectState();
 }
 
 class _TTreeSelectState extends State<TTreeSelect> {
-  ScrollController controller2 = ScrollController();
-  ScrollController controller3 = ScrollController();
+  late List<Object?> _activePath;
 
-  List<dynamic> values = [];
-
-  int get currentLevel => values.length + 1;
-
-  dynamic get firstValue => values.isNotEmpty ? values[0] : null;
-
-  dynamic get secondValue => values.length >= 2 ? values[1] : null;
-
-  dynamic get thirdValue => values.length >= 3 ? values[2] : null;
-
-  List<TSelectOption> get firstOptions => widget.options;
-
-  List<TSelectOption> get secondOptions => maxLevel() <= 1 || values.isEmpty
-      ? []
-      : firstOptions
-          .firstWhere((opt) => opt.value == firstValue,
-              orElse: () => TSelectOption(value: -1, label: '', children: []))
-          .children;
-
-  List<TSelectOption> get thirdOptions => maxLevel() <= 2 || currentLevel < 3
-      ? []
-      : secondOptions
-          .firstWhere((opt) => opt.value == secondValue,
-              orElse: () => TSelectOption(value: -1, label: '', children: []))
-          .children;
+  bool get _enabled => widget.onChanged != null;
 
   @override
   void initState() {
     super.initState();
-
-    // 深拷贝一层，避免外部传入 const/不可修改列表时，内部对 values[1] 等子列表的增删报错
-    values = widget.value.map((e) => e is List ? List.from(e) : e).toList();
-    if (values.isEmpty && widget.options.isNotEmpty) {
-      final enabledOptions = widget.options.where((option) => !option.disabled);
-      if (enabledOptions.isNotEmpty) {
-        final option = enabledOptions.first;
-        values.add((widget.multiple || option.multiple)
-            ? [option.value]
-            : option.value);
-      }
-    }
+    _activePath = _initialActivePath();
   }
 
   @override
-  void dispose() {
-    controller2.dispose();
-    controller3.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(TTreeSelect oldWidget) {
+  void didUpdateWidget(covariant TTreeSelect oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // 外部传入的 defaultValue 发生变化时，更新 values
-    if (widget.value != oldWidget.value) {
-      // 深拷贝一层，与 initState 保持一致
-      values = widget.value.map((e) => e is List ? List.from(e) : e).toList();
+    if (oldWidget.options != widget.options ||
+        !_pathsEqual(oldWidget.value, widget.value)) {
+      _activePath = _initialActivePath();
     }
   }
 
-  int maxLevel() {
-    if (widget.options.isEmpty) {
-      return 1;
+  List<Object?> _initialActivePath() {
+    if (widget.value.isEmpty) {
+      return const [];
     }
-    var secondLevelOptions = widget.options
-        .where((element) => element.children.isNotEmpty)
-        .map((ele) => ele.children)
-        .toList();
-    if (secondLevelOptions.isEmpty) {
-      return 1;
+    final active = <Object?>[];
+    var options = widget.options;
+    for (final value in widget.value.first) {
+      final index = options.indexWhere((option) => option.value == value);
+      if (index < 0) {
+        break;
+      }
+      final option = options[index];
+      if (option.children.isEmpty) {
+        break;
+      }
+      active.add(option.value);
+      options = option.children;
     }
+    return active;
+  }
 
-    var hasThirdLevel = secondLevelOptions
-        .any((list) => list.any((element) => element.children.isNotEmpty));
-
-    return hasThirdLevel ? 3 : 2;
+  List<List<TTreeSelectOption>> _visibleColumns() {
+    final columns = <List<TTreeSelectOption>>[];
+    var options = widget.options;
+    var level = 0;
+    while (options.isNotEmpty) {
+      columns.add(options);
+      if (level >= _activePath.length) {
+        break;
+      }
+      final index = options.indexWhere(
+        (option) => option.value == _activePath[level],
+      );
+      if (index < 0 || options[index].children.isEmpty) {
+        break;
+      }
+      options = options[index].children;
+      level += 1;
+    }
+    return columns;
   }
 
   @override
   Widget build(BuildContext context) {
-    // P1: 组件级 ThemeExtension
     final theme = Theme.of(context).extension<TTreeSelectThemeData>();
-    final effectiveHeight = widget.height ?? theme?.height ?? 336;
-    final effectiveStyle =
-        widget.style ?? theme?.style ?? TTreeSelectStyle.normal;
-    final effectiveOutwardCornerRadius =
-        widget.outwardCornerRadius ?? theme?.outwardCornerRadius ?? 9;
-
-    final tree = Container(
-        color: context.tTheme.bgColorContainer,
-        height: effectiveHeight,
+    final columns = _visibleColumns();
+    final panel = Container(
+      height: theme?.height ?? 336,
+      color: theme?.backgroundColor ?? context.tTheme.bgColorContainer,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            /// 一级菜单
-            Container(
-              width: _getLevelWidth(widget.options, 1) ?? 106,
-              color: context.tTheme.bgColorSecondaryContainer,
-              child: ListView.builder(
-                itemCount: widget.options.length,
-                itemBuilder: (context, index) {
-                  final option = widget.options[index];
-                  final isSelected = firstValue == option.value;
-                  // 判断上一个和下一个选项是否被选中
-                  final isPrevSelected = index > 0 &&
-                      firstValue == widget.options[index - 1].value;
-                  final isNextSelected = index < widget.options.length - 1 &&
-                      firstValue == widget.options[index + 1].value;
-
-                  final item = GestureDetector(
-                    onTap: option.disabled
-                        ? null
-                        : () {
-                            // todo 点击一级菜单时直接重置整个 values 数组可能导致二级或三级选择的数据丢失
-                            setState(() {
-                              if (values.isEmpty) {
-                                values.add(option.value);
-                              } else {
-                                values = [option.value];
-                                if (controller2.hasClients) {
-                                  controller2.jumpTo(0);
-                                }
-                              }
-                              widget.onChanged?.call(values, 1);
-                            });
-                          },
-                    child: Stack(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? context.tTheme.bgColorContainer
-                                : null,
-                            border: isSelected &&
-                                    effectiveStyle == TTreeSelectStyle.outline
-                                ? Border(
-                                    left: BorderSide(
-                                      color: context.tTheme.brandNormalColor,
-                                      width: 3,
-                                    ),
-                                  )
-                                : null,
-                          ),
-                          child: Text(
-                            option.label,
-                            maxLines: option.maxLines,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize:
-                                  context.tTheme.fontBodyLarge?.size ?? 16,
-                              color: isSelected
-                                  ? context.tTheme.brandNormalColor
-                                  : context.tTheme.textColorPrimary,
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                        // 未选中项：如果上一个是选中项，在右上角画向外弯折圆角
-                        if (!isSelected && isPrevSelected)
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: CustomPaint(
-                              size: Size(effectiveOutwardCornerRadius,
-                                  effectiveOutwardCornerRadius),
-                              painter: _OutwardCornerPainter(
-                                color: context.tTheme.bgColorContainer,
-                                corner: _Corner.topRight,
-                              ),
-                            ),
-                          ),
-                        // 未选中项：如果下一个是选中项，在右下角画向外弯折圆角
-                        if (!isSelected && isNextSelected)
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: CustomPaint(
-                              size: Size(effectiveOutwardCornerRadius,
-                                  effectiveOutwardCornerRadius),
-                              painter: _OutwardCornerPainter(
-                                color: context.tTheme.bgColorContainer,
-                                corner: _Corner.bottomRight,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                  return Semantics(
-                    enabled: !option.disabled,
-                    child: Opacity(
-                      opacity: option.disabled ? 0.4 : 1,
-                      child: item,
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            /// 右侧 二、三级菜单
-            Expanded(child: _buildRightParts(context))
+            for (var level = 0; level < columns.length; level++)
+              _buildColumn(context, columns[level], level, theme),
           ],
-        ));
-    final isDisabled = widget.onChanged == null;
+        ),
+      ),
+    );
     return Semantics(
-      enabled: !isDisabled,
+      enabled: _enabled,
       child: AnimatedOpacity(
-        opacity: isDisabled ? 0.5 : 1,
+        opacity: _enabled ? 1 : 0.5,
         duration: const Duration(milliseconds: 150),
-        child: AbsorbPointer(absorbing: isDisabled, child: tree),
+        child: AbsorbPointer(absorbing: !_enabled, child: panel),
       ),
     );
   }
 
-  Widget _buildRightParts(BuildContext context) {
-    // 判断是否应该显示三级菜单
-    final showThirdLevel = values.length >= 2 &&
-        secondOptions
-            .any((opt) => opt.value == secondValue && opt.children.isNotEmpty);
-
-    return Row(
-      children: [
-        showThirdLevel
-            ? SizedBox(
-                width: _getLevelWidth(secondOptions, 2) ?? 103,
-                child: _buildNextColumn(context, level: 2, lastColumn: false),
-              )
-            : Expanded(
-                child: _buildNextColumn(context, level: 2),
-              ),
-        if (showThirdLevel)
-          // 三级菜单
-          _getLevelWidth(thirdOptions, 3) != null
-              ? SizedBox(
-                  width: _getLevelWidth(thirdOptions, 3),
-                  child: _buildNextColumn(context, level: 3),
-                )
-              : Expanded(
-                  child: _buildNextColumn(context, level: 3),
-                ),
-      ],
+  Widget _buildColumn(
+    BuildContext context,
+    List<TTreeSelectOption> options,
+    int level,
+    TTreeSelectThemeData? theme,
+  ) {
+    final width =
+        level == 0 ? theme?.rootColumnWidth ?? 112 : theme?.columnWidth ?? 184;
+    final backgroundColor = level == 0
+        ? theme?.rootBackgroundColor ?? context.tTheme.bgColorSecondaryContainer
+        : theme?.backgroundColor ?? context.tTheme.bgColorContainer;
+    return Container(
+      width: width,
+      color: backgroundColor,
+      child: ListView.builder(
+        itemCount: options.length,
+        itemBuilder: (context, index) {
+          final option = options[index];
+          final path = <Object?>[
+            ..._activePath.take(level),
+            option.value,
+          ];
+          final isBranch = option.children.isNotEmpty;
+          final selected = isBranch
+              ? level < _activePath.length && _activePath[level] == option.value
+              : widget.value.any((value) => listEquals(value, path));
+          return _buildOption(
+            context,
+            option: option,
+            path: path,
+            level: level,
+            selected: selected,
+            isBranch: isBranch,
+            theme: theme,
+          );
+        },
+      ),
     );
   }
 
-  double? _getLevelWidth(List<TSelectOption> options, int level) {
-    for (final option in options) {
-      if (option.columnWidth != null) {
-        return option.columnWidth;
+  Widget _buildOption(
+    BuildContext context, {
+    required TTreeSelectOption option,
+    required List<Object?> path,
+    required int level,
+    required bool selected,
+    required bool isBranch,
+    required TTreeSelectThemeData? theme,
+  }) {
+    final defaultStyle = TextStyle(
+      color: context.tTheme.textColorPrimary,
+      fontSize: context.tTheme.fontBodyMedium?.size ?? 14,
+    );
+    final selectedStyle = defaultStyle.copyWith(
+      color: context.tTheme.brandNormalColor,
+      fontWeight: FontWeight.w600,
+    );
+    return Semantics(
+      selected: selected,
+      enabled: !option.disabled,
+      child: Opacity(
+        opacity: option.disabled ? 0.4 : 1,
+        child: ListTile(
+          key: ValueKey((level, option.value)),
+          minTileHeight: theme?.itemHeight ?? 56,
+          selected: selected,
+          selectedTileColor:
+              theme?.selectedBackgroundColor ?? context.tTheme.bgColorContainer,
+          title: Text(
+            option.label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: option.disabled
+                ? theme?.disabledTextStyle ??
+                    defaultStyle.copyWith(
+                      color: context.tTheme.textDisabledColor,
+                    )
+                : selected
+                    ? theme?.selectedTextStyle ?? selectedStyle
+                    : theme?.textStyle ?? defaultStyle,
+          ),
+          trailing: isBranch
+              ? const Icon(TIcons.chevron_right)
+              : selected
+                  ? Icon(
+                      TIcons.check,
+                      color: theme?.indicatorColor ??
+                          context.tTheme.brandNormalColor,
+                    )
+                  : null,
+          onTap: option.disabled
+              ? null
+              : () => isBranch
+                  ? _openBranch(path)
+                  : _toggleLeaf(List.unmodifiable(path)),
+        ),
+      ),
+    );
+  }
+
+  void _openBranch(List<Object?> path) {
+    setState(() => _activePath = List.unmodifiable(path));
+  }
+
+  void _toggleLeaf(List<Object?> path) {
+    if (!widget.multiple) {
+      widget.onChanged?.call(List.unmodifiable([path]));
+      return;
+    }
+    final next = [
+      for (final selected in widget.value)
+        if (!listEquals(selected, path)) selected,
+    ];
+    if (next.length == widget.value.length) {
+      next.add(path);
+    }
+    widget.onChanged?.call(
+      List.unmodifiable(
+        next.map(List<Object?>.unmodifiable),
+      ),
+    );
+  }
+
+  static bool _pathsEqual(
+    List<List<Object?>> first,
+    List<List<Object?>> second,
+  ) {
+    if (first.length != second.length) {
+      return false;
+    }
+    for (var index = 0; index < first.length; index++) {
+      if (!listEquals(first[index], second[index])) {
+        return false;
       }
     }
-    return null;
-  }
-
-  Widget _buildNextColumn(BuildContext context,
-      {int level = 2, bool lastColumn = true}) {
-    var displayOptions = level == 2 ? secondOptions : thirdOptions;
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          removeBottom: true,
-          child: ListView.builder(
-            controller: level == 2 ? controller2 : controller3,
-            itemCount: displayOptions.length,
-            itemBuilder: (BuildContext ctx, int index) {
-              var currentValue = displayOptions[index].value;
-              final isMultiple = widget.multiple
-                  ? widget.multiple
-                  : displayOptions[index].multiple;
-              final maxLines = displayOptions[index].maxLines;
-              var selected = false;
-              if (isMultiple) {
-                if (level == 2) {
-                  if (maxLevel() == 2) {
-                    selected = secondValue != null
-                        ? (secondValue as List<dynamic>).contains(currentValue)
-                        : false;
-                  } else {
-                    selected = secondValue == currentValue;
-                  }
-                } else {
-                  selected = thirdValue != null
-                      ? (thirdValue as List<dynamic>).contains(currentValue)
-                      : false;
-                }
-              } else {
-                selected =
-                    (level == 2 ? secondValue : thirdValue) == currentValue;
-              }
-
-              final option = displayOptions[index];
-              final item = Container(
-                constraints: BoxConstraints(
-                  minHeight: 56,
-                  maxWidth: constraints.maxWidth,
-                ),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: option.disabled
-                      ? null
-                      : () {
-                          /// todo 逻辑过于冗余，待优化
-                          setState(() {
-                            if (level == 2) {
-                              switch (values.length) {
-                                case 1:
-                                  values.add(isMultiple
-                                      ? [currentValue]
-                                      : currentValue);
-                                  break;
-                                case 2:
-                                  if (isMultiple) {
-                                    var hasContains =
-                                        (values[1] as List<dynamic>)
-                                            .contains(currentValue);
-                                    if (hasContains) {
-                                      (values[1] as List<dynamic>)
-                                          .remove(currentValue);
-                                    } else {
-                                      (values[1] as List<dynamic>)
-                                          .add(currentValue);
-                                    }
-                                  } else {
-                                    values[1] = currentValue;
-                                  }
-                                  if (controller3.hasClients) {
-                                    controller3.jumpTo(0);
-                                  }
-                                  break;
-                                default:
-                                  values[1] = currentValue;
-                                  values.removeLast();
-                                  if (controller3.hasClients) {
-                                    controller3.jumpTo(0);
-                                  }
-                              }
-                            } else {
-                              switch (values.length) {
-                                case 1:
-                                case 2:
-                                  values.add(isMultiple
-                                      ? [currentValue]
-                                      : currentValue);
-                                  break;
-                                default:
-                                  if (isMultiple) {
-                                    var hasContains =
-                                        (values[2] as List<dynamic>)
-                                            .contains(currentValue);
-                                    if (hasContains) {
-                                      (values[2] as List<dynamic>)
-                                          .remove(currentValue);
-                                    } else {
-                                      (values[2] as List<dynamic>)
-                                          .add(currentValue);
-                                    }
-                                  } else {
-                                    values[2] = currentValue;
-                                  }
-                              }
-                            }
-                            widget.onChanged?.call(values, level);
-                          });
-                        },
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: constraints.maxWidth,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 16, left: 16, bottom: 16),
-                            child: Text(
-                              displayOptions[index].label,
-                              maxLines: maxLines,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: (!lastColumn && selected)
-                                    ? context.tTheme.brandNormalColor
-                                    : context.tTheme.textColorPrimary,
-                                fontWeight: (!lastColumn && selected)
-                                    ? FontWeight.w600
-                                    : FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Visibility(
-                          visible: lastColumn && selected,
-                          child: SizedBox(
-                            width: 56,
-                            height: 56,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Icon(
-                                TIcons.check,
-                                color: context.tTheme.brandNormalColor,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              );
-              return Semantics(
-                enabled: !option.disabled,
-                child: Opacity(
-                  opacity: option.disabled ? 0.4 : 1,
-                  child: item,
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-}
-
-/// 向外弯折圆角的位置枚举
-enum _Corner {
-  topRight,
-  bottomRight,
-}
-
-/// 自定义画笔：绘制向外弯折的圆角效果
-/// 原理：在选中项的右上角/右下角绘制一个填充色的矩形，然后用白色圆弧挖出一个反向圆角
-class _OutwardCornerPainter extends CustomPainter {
-  final Color color;
-  final _Corner corner;
-
-  _OutwardCornerPainter({required this.color, required this.corner});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-
-    final path = Path();
-    final r = size.width;
-
-    switch (corner) {
-      case _Corner.topRight:
-        // 从右上角开始，画一个矩形区域，然后用圆弧挖出向外弯折的效果
-        path.moveTo(0, 0);
-        path.lineTo(r, 0);
-        path.lineTo(r, r);
-        path.arcToPoint(
-          const Offset(0, 0),
-          radius: Radius.circular(r),
-          clockwise: false,
-        );
-        path.close();
-        break;
-      case _Corner.bottomRight:
-        // 从右下角开始，画一个矩形区域，然后用圆弧挖出向外弯折的效果
-        path.moveTo(r, 0);
-        path.lineTo(r, r);
-        path.lineTo(0, r);
-        path.arcToPoint(
-          Offset(r, 0),
-          radius: Radius.circular(r),
-          clockwise: false,
-        );
-        path.close();
-        break;
-    }
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _OutwardCornerPainter oldDelegate) {
-    return oldDelegate.color != color || oldDelegate.corner != corner;
+    return true;
   }
 }

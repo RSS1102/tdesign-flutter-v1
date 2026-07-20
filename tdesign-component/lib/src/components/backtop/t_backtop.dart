@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
+import '../text/t_text.dart';
+import 't_backtop_theme_data.dart';
 
 /// 返回顶部组件 v1.0
 ///

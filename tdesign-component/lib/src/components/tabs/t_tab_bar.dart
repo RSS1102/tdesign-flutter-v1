@@ -2,8 +2,11 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_theme.dart';
 import 't_horizontal_tab_bar.dart';
+import 't_tab.dart';
+import 't_tab_bar_theme_data.dart';
 
 /// 标签栏
 ///
@@ -179,7 +182,7 @@ class _TTabsBarState extends State<TTabsBar> {
         indicatorPadding: widget.indicatorPadding ??
             _themeData.indicatorPadding ??
             EdgeInsets.zero,
-        outlineType: widget.variant,
+        variant: widget.variant,
         controller: widget.controller,
         backgroundColor: widget.backgroundColor ?? _themeData.backgroundColor,
         selectedBgColor: widget.selectedBgColor ?? _themeData.selectedBgColor,

@@ -22,7 +22,6 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
   var currentValue = 1;
   var itemHeight = 278.5;
   final _demoScroller = ScrollController(initialScrollOffset: 278.5);
-  final _sideBarController = TSideBarController();
   static const threshold = 50;
   var lock = false;
 
@@ -40,13 +39,13 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
 
       if (currentValue != index) {
         setState(() {
-          _sideBarController.selectTo(index);
+          currentValue = index;
         });
       }
     });
   }
 
-  Future<void> onSelected(int value) async {
+  Future<void> handleSidebarChange(int value) async {
     if (currentValue != value) {
       setState(() {
         currentValue = value;
@@ -82,15 +81,14 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
         ));
   }
 
-  List<SideItemProps> list = <SideItemProps>[];
+  List<TSideBarItem> list = <TSideBarItem>[];
   List<Widget> pages = <Widget>[];
 
   void _initData() {
     list = [];
     pages = [];
     for (var i = 0; i < 20; i++) {
-      list.add(SideItemProps(
-        index: i,
+      list.add(TSideBarItem(
         label: '选项 $i',
         value: i,
       ));
@@ -102,18 +100,27 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
       decoration: BoxDecoration(color: context.tTheme.bgColorContainer),
     ));
 
-    list[1].badge = const TBadge(TBadgeVariant.redPoint);
-    list[2].badge = const TBadge(
-      TBadgeVariant.message,
-      count: '8',
+    list[1] = TSideBarItem(
+      label: list[1].label,
+      value: list[1].value,
+      icon: list[1].icon,
+      textStyle: list[1].textStyle,
+      badge: const TBadge(TBadgeVariant.redPoint),
     );
-    if (_sideBarController.loading) {
-      _sideBarController.init(list);
-      _sideBarController.selectTo(currentValue);
-      // 初始化时避免右侧内容与左侧item不匹配
-      _demoScroller.animateTo(currentValue.toDouble() * itemHeight,
-          duration: const Duration(milliseconds: 1), curve: Curves.easeIn);
+    list[2] = TSideBarItem(
+      label: list[2].label,
+      value: list[2].value,
+      icon: list[2].icon,
+      textStyle: list[2].textStyle,
+      badge: const TBadge(TBadgeVariant.message, count: '8'),
+    );
+    if (!mounted) {
+      return;
     }
+    setState(() {});
+    // 初始化时避免右侧内容与左侧 item 不匹配
+    _demoScroller.animateTo(currentValue.toDouble() * itemHeight,
+        duration: const Duration(milliseconds: 1), curve: Curves.easeIn);
   }
 
   @Demo(group: 'sideBar')
@@ -129,17 +136,15 @@ class TSideBarLoadingPageState extends State<TSideBarLoadingPage> {
           child: TSideBar(
             style: TSideBarVariant.normal,
             value: currentValue,
-            controller: _sideBarController,
             loading: true,
             children: list
                 .map((ele) => TSideBarItem(
-                    label: ele.label ?? '',
+                    label: ele.label,
                     badge: ele.badge,
                     value: ele.value,
                     icon: ele.icon))
                 .toList(),
-            onChanged: onChanged,
-            onSelected: onSelected,
+            onChanged: handleSidebarChange,
           ),
         ),
         Expanded(

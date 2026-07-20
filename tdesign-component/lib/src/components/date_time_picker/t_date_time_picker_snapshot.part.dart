@@ -5,12 +5,9 @@ part of 't_date_time_picker_internal.dart';
 
 /// `TDateTimePicker` 内部的**不可变状态快照**（@internal，业务侧无需关心）。
 ///
-/// 替代旧设计中并行存在的 `_current` / `_initialValue` / `_pickerColumns` /
-/// `_lastValues` 四字段——它们之间任何一个落后/超前都会引发 bug。新设计把
-/// 「列结构 + 当前选中 DateTime」收敛到一个 immutable value object 内：
+/// 列结构、当前选中值和派生选项由同一个不可变对象维护：
 ///
-/// - 任何中间派生值（picker initial values / picker columns / 回调结果）
-///   都是 snapshot 的派生方法，单一真相源；
+/// - 中间值、滚轮列和回调结果都是 snapshot 的派生方法；
 /// - 用户选了新值时，调用 `applySelection` 得到一个**新的** snapshot；
 ///   旧 snapshot 与新 snapshot 之间用 `==` 比较即可决定是否需要 setState。
 @internal
@@ -271,7 +268,9 @@ class DateTimePickerSnapshot {
     DateTime? end,
   }) {
     if (!listEquals(columns, other.columns)) {
-      return {for (var i = 0; i < columns.length; i++) i}; // coverage:ignore-line
+      return {
+        for (var i = 0; i < columns.length; i++) i
+      }; // coverage:ignore-line
     }
     final safeEnd = _safeEnd(start, end);
     final changed = <int>{};
@@ -418,9 +417,12 @@ class DateTimePickerSnapshot {
         columns: columns,
       );
       if (!bounds.isValid) {
-        return [ // coverage:ignore-line
-          TPickerOption( // coverage:ignore-line
-            label: _resolveColumnLabel( // coverage:ignore-line
+        return [
+          // coverage:ignore-line
+          TPickerOption(
+            // coverage:ignore-line
+            label: _resolveColumnLabel(
+              // coverage:ignore-line
               col,
               current.day, // coverage:ignore-line
               labels,
@@ -458,9 +460,12 @@ class DateTimePickerSnapshot {
         DateTimeColumn.second => current.second, // coverage:ignore-line
         DateTimeColumn.day => current.day, // coverage:ignore-line
       };
-      return [ // coverage:ignore-line
-        TPickerOption( // coverage:ignore-line
-          label: _resolveColumnLabel(col, v, labels, renderLabel: renderLabel), // coverage:ignore-line
+      return [
+        // coverage:ignore-line
+        TPickerOption(
+          // coverage:ignore-line
+          label: _resolveColumnLabel(col, v, labels,
+              renderLabel: renderLabel), // coverage:ignore-line
           value: v,
         ),
       ];
@@ -519,9 +524,12 @@ class DateTimePickerSnapshot {
     final first = _firstStepValue(min, step);
     if (first > max) {
       final only = min.clamp(min, max); // coverage:ignore-line
-      return [ // coverage:ignore-line
-        TPickerOption( // coverage:ignore-line
-          label: _resolveColumnLabel( // coverage:ignore-line
+      return [
+        // coverage:ignore-line
+        TPickerOption(
+          // coverage:ignore-line
+          label: _resolveColumnLabel(
+            // coverage:ignore-line
             column,
             only,
             labels,
@@ -564,9 +572,12 @@ class DateTimePickerSnapshot {
     final first = step <= 1 ? startDay : _firstStepValue(startDay, step);
     if (first > endDay) {
       final only = startDay;
-      return [ // coverage:ignore-line
-        TPickerOption( // coverage:ignore-line
-          label: _dayOptionLabel( // coverage:ignore-line
+      return [
+        // coverage:ignore-line
+        TPickerOption(
+          // coverage:ignore-line
+          label: _dayOptionLabel(
+            // coverage:ignore-line
             current.year, // coverage:ignore-line
             current.month, // coverage:ignore-line
             only,

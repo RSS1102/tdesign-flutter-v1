@@ -11,9 +11,9 @@
 
 | 实现 | 组件 | 文档 | Sprint |
 |---|---|---|---|
-| [ ] | TButton | [button.md](./button.md) | S1 |
+| [x] | TButton | [button.md](./button.md) | S1 |
 | [x] | TIcon | [icon.md](./icon.md) | S2 |
-| [ ] | TFab | [fab.md](./fab.md) | S2 |
-| [ ] | TDivider | [divider.md](./divider.md) | S2 |
-| [ ] | TLink | [link.md](./link.md) | S2 |
-| [ ] | TText | [text.md](./text.md) | S2 |
+| [x] | TFab | [fab.md](./fab.md) | S2 |
+| [x] | TDivider | [divider.md](./divider.md) | S2 |
+| [x] | TLink | [link.md](./link.md) | S2 |
+| [x] | TText | [text.md](./text.md) | S2 |

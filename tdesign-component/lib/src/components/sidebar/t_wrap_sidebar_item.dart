@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
+import '../badge/t_badge.dart';
+import '../text/t_text.dart';
+import 't_sidebar_theme_data.dart';
 
 class TWrapSideBarItem extends StatelessWidget {
   const TWrapSideBarItem({

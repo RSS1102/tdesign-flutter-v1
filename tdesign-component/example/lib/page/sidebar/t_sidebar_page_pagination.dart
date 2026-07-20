@@ -19,12 +19,10 @@ class TSideBarPaginationPage extends StatefulWidget {
 class TSideBarPaginationPageState extends State<TSideBarPaginationPage> {
   var currentValue = 1;
   final _pageController = PageController(initialPage: 1);
-  final _sideBarController = TSideBarController();
 
   @override
   void dispose() {
     _pageController.dispose();
-    _sideBarController.dispose();
     super.dispose();
   }
 
@@ -48,22 +46,30 @@ class TSideBarPaginationPageState extends State<TSideBarPaginationPage> {
   @Demo(group: 'sideBar')
   Widget _buildPaginationSideBar(BuildContext context) {
     // 切页用法
-    final list = <SideItemProps>[];
+    final list = <TSideBarItem>[];
     final pages = <Widget>[];
 
     for (var i = 0; i < 100; i++) {
-      list.add(SideItemProps(
-        index: i,
+      list.add(TSideBarItem(
         label: '选项 ${i}',
         value: i,
       ));
       pages.add(getPageDemo(i));
     }
 
-    list[1].badge = const TBadge(TBadgeVariant.redPoint);
-    list[2].badge = const TBadge(
-      TBadgeVariant.message,
-      count: '8',
+    list[1] = TSideBarItem(
+      label: list[1].label,
+      value: list[1].value,
+      icon: list[1].icon,
+      textStyle: list[1].textStyle,
+      badge: const TBadge(TBadgeVariant.redPoint),
+    );
+    list[2] = TSideBarItem(
+      label: list[2].label,
+      value: list[2].value,
+      icon: list[2].icon,
+      textStyle: list[2].textStyle,
+      badge: const TBadge(TBadgeVariant.message, count: '8'),
     );
 
     void setCurrentValue(int value) {
@@ -82,15 +88,14 @@ class TSideBarPaginationPageState extends State<TSideBarPaginationPage> {
           child: TSideBar(
             style: TSideBarVariant.normal,
             value: currentValue,
-            controller: _sideBarController,
             children: list
                 .map((ele) => TSideBarItem(
-                    label: ele.label ?? '',
+                    label: ele.label,
                     badge: ele.badge,
                     value: ele.value,
                     icon: ele.icon))
                 .toList(),
-            onSelected: setCurrentValue,
+            onChanged: setCurrentValue,
           ),
         ),
         Expanded(

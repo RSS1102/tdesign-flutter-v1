@@ -25,6 +25,19 @@ void main() {
       expect(copied.colorScheme, TBackTopColorScheme.light);
     });
 
+    test('copyWith cover remaining fields', () {
+      final copied = theme.copyWith(
+        colorScheme: TBackTopColorScheme.dark,
+        defaultRight: 24,
+        defaultBottom: 36,
+        halfCircleRightInset: -12,
+      );
+      expect(copied.colorScheme, TBackTopColorScheme.dark);
+      expect(copied.defaultRight, 24);
+      expect(copied.defaultBottom, 36);
+      expect(copied.halfCircleRightInset, -12);
+    });
+
     test('lerp 在 t=0 / 0.5 / 1 返回 TBackTopThemeData', () {
       const other = TBackTopThemeData(
         shape: TBackTopShape.halfCircle,
@@ -43,6 +56,21 @@ void main() {
 
     test('lerp other 非同类型时返回 this', () {
       expect(theme.lerp(null, 0.5), theme);
+    });
+
+    test('lerp cover remaining fields', () {
+      const other = TBackTopThemeData(
+        shape: TBackTopShape.halfCircle,
+        colorScheme: TBackTopColorScheme.dark,
+        defaultRight: 40,
+        defaultBottom: 50,
+        halfCircleRightInset: -8,
+      );
+      final lerped = theme.lerp(other, 0.5);
+      expect(lerped.colorScheme, TBackTopColorScheme.dark);
+      expect(lerped.defaultRight, 30);
+      expect(lerped.defaultBottom, 45);
+      expect(lerped.halfCircleRightInset, -12);
     });
   });
 }

@@ -11,21 +11,21 @@
 
 | 实现 | 组件 | 文档 | Sprint |
 |---|---|---|---|
-| [ ] | TInput | [input.md](./input.md) | S2 |
-| [ ] | TTextarea | [textarea.md](./textarea.md) | S2 |
-| [ ] | TSwitch | [switch.md](./switch.md) | S2 |
+| [x] | TInput | [input.md](./input.md) | S2 |
+| [x] | TTextarea | [textarea.md](./textarea.md) | S2 |
+| [x] | TSwitch | [switch.md](./switch.md) | S2 |
 | [x] | TCheckbox | [checkbox.md](./checkbox.md) | S2 |
 | [x] | TRadio | [radio.md](./radio.md) | S2 |
-| [ ] | TSlider | [slider.md](./slider.md) | S2 |
-| [x] | TCheckboxGroup | [checkbox-group.md](./checkbox-group.md) | S2 |
+| [x] | TSlider | [slider.md](./slider.md) | S2 |
+| [x] | TCheckboxGroup | [checkbox.md](./checkbox.md#tcheckboxgroup复选框组) | S2 |
 | [x] | TSearchBar | [search-bar.md](./search-bar.md) | S2 |
 | [x] | TStepper | [stepper.md](./stepper.md) | S2 |
-| [ ] | TForm | [form.md](./form.md) | S3 |
-| [ ] | TFormItem | [form-item.md](./form-item.md) | S3 |
-| [ ] | TRate | [rate.md](./rate.md) | S3 |
-| [ ] | TUpload | [upload.md](./upload.md) | S3 |
-| [ ] | TPicker | [picker.md](./picker.md) | S4 |
-| [ ] | TDateTimePicker | [date-time-picker.md](./date-time-picker.md) | S4 |
-| [ ] | TCalendar | [calendar.md](./calendar.md) | S4 |
-| [ ] | TCascader | [cascader.md](./cascader.md) | S4 |
-| [ ] | TTreeSelect | [tree-select.md](./tree-select.md) | S4 |
+| [x] | TForm | [form.md](./form.md) | S3 |
+| [x] | TFormItem / TFormField | [form.md](./form.md) | S3 |
+| [x] | TRate | [rate.md](./rate.md) | S3 |
+| [x] | TUpload | [upload.md](./upload.md) | S3 |
+| [x] | TPicker | [picker.md](./picker.md) | S4 |
+| [x] | TDateTimePicker | [date-time-picker.md](./date-time-picker.md) | S4 |
+| [x] | TCalendar | [calendar.md](./calendar.md) | S4 |
+| [x] | TCascader | [cascader.md](./cascader.md) | S4 |
+| [x] | TTreeSelect | [tree-select.md](./tree-select.md) | S4 |

@@ -1,1066 +1,321 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
-import '../../../tdesign_flutter.dart';
+import 't_input_resolve.dart';
+import 't_input_theme_data.dart';
 
-/// TInput 输入框组件
+/// 基于 Material [TextField] 的 v1 文本输入框。
 ///
-/// 基于 Material [TextField] 薄包装，提供六种布局形态。
-/// D 类禁用：`enabled: false` / `readOnly: true`。
-class TInput extends StatelessWidget {
+/// [controller] 是主控制路径；未传时由组件创建内部 controller，并使用
+/// [initialValue] 初始化一次。两者不能同时传入。
+class TInput extends StatefulWidget {
   const TInput({
     super.key,
-    this.width,
+
+    /// 文本控制器。
     this.controller,
-    this.focusNode,
+
+    /// 内部控制器的初始文本，仅初始化一次。
+    this.initialValue,
+
+    /// 文本变化通知。
     this.onChanged,
+
+    /// 提交回调。
     this.onSubmitted,
+
+    /// 编辑完成回调。
     this.onEditingComplete,
-    this.hintText,
-    this.inputType,
-    this.maxLines = 1,
-    this.maxLength,
-    this.autofocus = false,
-    this.obscureText = false,
+
+    /// 是否可交互。
     this.enabled = true,
+
+    /// 是否只读。
     this.readOnly = false,
-    this.inputFormatters,
-    this.textAlign,
+
+    /// 标签文案。
     this.label,
+
+    /// 占位提示文案。
+    this.hintText,
+
+    /// 前缀组件。
     this.prefix,
+
+    /// 后缀组件；传入后不显示内置清除按钮。
     this.suffix,
-    this.onBtnTap,
-    this.rightBtn,
-    this.onClearTap,
+
+    /// 最大行数。
+    this.maxLines = 1,
+
+    /// 最小行数。
+    this.minLines,
+
+    /// 最大字符数。
+    this.maxLength,
+
+    /// 是否自动聚焦。
+    this.autofocus = false,
+
+    /// 焦点节点。
+    this.focusNode,
+
+    /// 键盘类型。
+    this.inputType = TextInputType.text,
+
+    /// 键盘动作。
     this.inputAction,
-    this.required,
-    this.labelWidget,
+
+    /// 文本对齐方式。
+    this.textAlign = TextAlign.start,
+
+    /// 是否隐藏输入文本。
+    this.obscureText = false,
+
+    /// 输入格式化器。
+    this.inputFormatters,
+
+    /// Material 输入装饰逃逸口。
     this.decoration,
-    this.inputDecoration,
-    this.additionInfo,
-    this.onTapOutside,
-    this.selectionControls,
-    this.contextMenuBuilder,
-    this.enableInteractiveSelection,
-    // L4 参数（P0 优先级，覆盖 Theme）
-    this.textStyle,
-    this.hintTextStyle,
-    this.labelStyle,
-    this.backgroundColor,
-    this.textInputBackgroundColor,
-    this.cursorColor,
-    this.clearBtnColor,
-    this.additionInfoColor,
-    this.contentPadding,
-    this.layout = TInputLayout.normal,
-    this.size = TInputSize.large,
-    this.contentAlignment = TextAlign.start,
-    this.cardStyleTopText,
-    this.cardStyleBottomText,
-    this.showBottomDivider,
-    this.showClearButton,
-    this.clearIconSize,
-    this.leftInfoWidth,
-    this.spacer,
-  });
+  })  : _multiline = false,
+        assert(controller == null || initialValue == null),
+        assert(!obscureText || maxLines == 1);
 
-  // ---- L1 语义属性 ----
+  /// 创建多行输入框。
+  const TInput.multiline({
+    super.key,
 
-  /// 输入框布局形态
-  final TInputLayout layout;
+    /// 文本控制器。
+    this.controller,
 
-  /// 输入框尺寸
-  final TInputSize size;
+    /// 内部控制器的初始文本，仅初始化一次。
+    this.initialValue,
 
-  // ---- L2 内容属性 ----
+    /// 文本变化通知。
+    this.onChanged,
 
-  /// 输入框宽度
-  final double? width;
+    /// 提交回调。
+    this.onSubmitted,
 
-  /// 左侧标签文案
-  final String? label;
+    /// 编辑完成回调。
+    this.onEditingComplete,
 
-  /// 左侧图标
-  final Widget? prefix;
+    /// 是否可交互。
+    this.enabled = true,
 
-  /// 右侧自定义组件
-  final Widget? suffix;
+    /// 是否只读。
+    this.readOnly = false,
 
-  /// label右侧组件，支持自定义
-  final Widget? labelWidget;
+    /// 标签文案。
+    this.label,
 
-  /// 标签文本样式
-  final TextStyle? labelStyle;
+    /// 占位提示文案。
+    this.hintText,
 
-  /// 文本样式
-  final TextStyle? textStyle;
+    /// 前缀组件。
+    this.prefix,
 
-  /// 提示文本样式
-  final TextStyle? hintTextStyle;
+    /// 后缀组件；传入后不显示内置清除按钮。
+    this.suffix,
 
-  /// 右侧按钮
-  final Widget? rightBtn;
+    /// 最大行数；null 表示不限制。
+    this.maxLines,
 
-  /// 提示文案
-  final String? hintText;
+    /// 最小行数；未传时读取 Theme 默认值。
+    this.minLines,
 
-  /// 是否必填标志（红色*）
-  final bool? required;
+    /// 最大字符数。
+    this.maxLength,
 
-  /// 错误提示信息
-  final String? additionInfo;
+    /// 是否自动聚焦。
+    this.autofocus = false,
 
-  /// 输入框背景色
-  final Color? backgroundColor;
+    /// 焦点节点。
+    this.focusNode,
 
-  /// 文本框背景色
-  final Color? textInputBackgroundColor;
+    /// 键盘类型。
+    this.inputType = TextInputType.multiline,
 
-  /// 游标颜色
-  final Color? cursorColor;
+    /// 键盘动作。
+    this.inputAction,
 
-  /// 清除按钮颜色
-  final Color? clearBtnColor;
+    /// 文本对齐方式。
+    this.textAlign = TextAlign.start,
 
-  /// 附加信息颜色
-  final Color? additionInfoColor;
+    /// 输入格式化器。
+    this.inputFormatters,
 
-  /// 文本对齐方向
-  final TextAlign? textAlign;
+    /// Material 输入装饰逃逸口。
+    this.decoration,
+  })  : _multiline = true,
+        obscureText = false,
+        assert(controller == null || initialValue == null);
 
-  /// 内容对齐方向
-  final TextAlign contentAlignment;
+  /// 文本控制器。
+  final TextEditingController? controller;
 
-  /// 清除图标大小
-  final double? clearIconSize;
+  /// 内部控制器的初始文本，仅初始化一次。
+  final String? initialValue;
 
-  /// 是否显示清除按钮
-  final bool? showClearButton;
-
-  /// 输入框左侧的宽度
-  final double? leftInfoWidth;
-
-  /// 卡片模式上方文字
-  final String? cardStyleTopText;
-
-  /// 卡片模式下方文字
-  final String? cardStyleBottomText;
-
-  /// 是否展示底部分割线
-  final bool? showBottomDivider;
-
-  /// 内边距
-  final EdgeInsetsGeometry? contentPadding;
-
-  /// 组件各模块间间距
-  final TInputSpacer? spacer;
-
-  // ---- L3 行为属性 ----
-
-  /// 是否只读
-  final bool readOnly;
-
-  /// 是否可用；false 时输入和附属操作均不可交互
-  final bool enabled;
-
-  /// 是否自动获取焦点
-  final bool autofocus;
-
-  /// 是否隐藏输入的文字
-  final bool obscureText;
-
-  /// 点击键盘完成按钮时触发的回调
-  final VoidCallback? onEditingComplete;
-
-  /// 点击键盘完成按钮时触发的回调, 参数值为输入的内容
-  final ValueChanged<String>? onSubmitted;
-
-  /// 输入文本变化时回调
+  /// 文本变化通知。
   final ValueChanged<String>? onChanged;
 
-  /// 键盘类型
-  final TextInputType? inputType;
+  /// 提交回调。
+  final ValueChanged<String>? onSubmitted;
 
-  /// 键盘动作类型
-  final TextInputAction? inputAction;
+  /// 编辑完成回调。
+  final VoidCallback? onEditingComplete;
 
-  /// 最大输入行数
+  /// 是否可交互。
+  final bool enabled;
+
+  /// 是否只读。
+  final bool readOnly;
+
+  /// 标签文案。
+  final String? label;
+
+  /// 占位提示文案。
+  final String? hintText;
+
+  /// 前缀组件。
+  final Widget? prefix;
+
+  /// 后缀组件。
+  final Widget? suffix;
+
+  /// 最大行数。
   final int? maxLines;
 
-  /// 最大字数限制
+  /// 最小行数。
+  final int? minLines;
+
+  /// 最大字符数。
   final int? maxLength;
 
-  /// 输入格式化器
-  final List<TextInputFormatter>? inputFormatters;
+  /// 是否自动聚焦。
+  final bool autofocus;
 
-  /// 右侧按钮点击
-  final GestureTapCallback? onBtnTap;
-
-  /// 右侧删除点击
-  final GestureTapCallback? onClearTap;
-
-  /// controller
-  final TextEditingController? controller;
-
-  /// focusNode
+  /// 焦点节点。
   final FocusNode? focusNode;
 
-  /// 自定义输入框样式
-  final InputDecoration? inputDecoration;
+  /// 键盘类型。
+  final TextInputType inputType;
 
-  /// 自定义容器装饰（P0 逃逸舱）
-  final Decoration? decoration;
+  /// 键盘动作。
+  final TextInputAction? inputAction;
 
-  /// 点击输入框外部区域回调
-  final TapRegionCallback? onTapOutside;
+  /// 文本对齐方式。
+  final TextAlign textAlign;
 
-  /// 自定义选择控制器
-  final TextSelectionControls? selectionControls;
+  /// 是否隐藏输入文本。
+  final bool obscureText;
 
-  /// 自定义上下文菜单构建器
-  final EditableTextContextMenuBuilder? contextMenuBuilder;
+  /// 输入格式化器。
+  final List<TextInputFormatter>? inputFormatters;
 
-  /// 是否启用交互式选择
-  final bool? enableInteractiveSelection;
+  /// Material 输入装饰逃逸口。
+  final InputDecoration? decoration;
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context).extension<TInputThemeData>();
-    final resolvedSpacer =
-        TInputResolve.resolveSpacer(theme: theme, instanceSpacer: spacer);
-    final input = _TInputControllerListener(
-      controller: controller,
-      builder: (context) => SizedBox(
-        width: width ?? double.infinity,
-        child: buildInputView(context, theme, resolvedSpacer),
-      ),
-    );
-    return Semantics(
-      enabled: enabled,
-      child: AnimatedOpacity(
-        opacity: enabled ? 1 : 0.6,
-        duration: const Duration(milliseconds: 150),
-        child: AbsorbPointer(absorbing: !enabled, child: input),
-      ),
-    );
-  }
-
-  Widget buildInputView(
-      BuildContext context, TInputThemeData? theme, TInputSpacer spacer) {
-    final leftLabelWidth = _calculateLeftInfoWidth(context, theme, spacer);
-    switch (layout) {
-      case TInputLayout.normal:
-        return buildNormalInput(context, leftLabelWidth, theme, spacer);
-      case TInputLayout.twoLine:
-        return buildTwoLineInput(context, leftLabelWidth, theme, spacer);
-      case TInputLayout.special:
-        return buildSpecialInput(context, leftLabelWidth, theme, spacer);
-      case TInputLayout.longText:
-        return buildLongTextInput(context, theme, spacer);
-      case TInputLayout.normalMaxTwoLine:
-        return buildNormalInput(context, leftLabelWidth, theme, spacer);
-      case TInputLayout.cardStyle:
-        return buildCardStyleInput(context, leftLabelWidth, theme, spacer);
-    }
-  }
-
-  /// 计算文本渲染宽度
-  double _measureTextWidth(
-      String? text, TextStyle? style, BuildContext context) {
-    if (text == null || text.isEmpty) {
-      return 0;
-    }
-    final effectiveStyle = (style ?? const TextStyle()).copyWith(
-      fontSize: context.tTheme.fontBodyLarge?.size,
-      letterSpacing: 0,
-      height: 1.0,
-    );
-    final textPainter = TextPainter(
-      text: TextSpan(text: text, style: effectiveStyle),
-      textDirection: TextDirection.ltr,
-      maxLines: 1,
-    )..layout();
-    return textPainter.width + 2;
-  }
-
-  /// 计算输入框左侧信息总宽度
-  double _calculateLeftInfoWidth(
-      BuildContext context, TInputThemeData? theme, TInputSpacer spacer) {
-    final iconSpace = prefix != null ? (spacer.iconLabelSpace ?? 4) : 0;
-    final iconWidth = prefix != null ? 24 + iconSpace : 0;
-    final labelWidth = _measureTextWidth(label, labelStyle, context);
-    final requiredWidth = (required ?? false) ? 14 : 0;
-    return iconWidth + labelWidth + requiredWidth + (leftInfoWidth ?? 4);
-  }
-
-  double _getBottomDividerMarginLeft(
-      double leftLabelWidth, TInputSpacer spacer) {
-    switch (layout) {
-      case TInputLayout.normal:
-      case TInputLayout.twoLine:
-      case TInputLayout.normalMaxTwoLine:
-      case TInputLayout.cardStyle:
-        if (contentPadding != null && contentPadding is EdgeInsets) {
-          return (contentPadding as EdgeInsets).left;
-        }
-        return spacer.labelInputSpace ?? 16;
-      case TInputLayout.special:
-      case TInputLayout.longText:
-        if (contentPadding != null && contentPadding is EdgeInsets) {
-          return (contentPadding as EdgeInsets).left;
-        }
-        return 16;
-    }
-  }
-
-  Widget buildNormalInput(BuildContext context, double leftLabelWidth,
-      TInputThemeData? theme, TInputSpacer spacer) {
-    final cardStyleDecoration = TInputResolve.resolveCardStyleDecoration(
-      context: context,
-      layout: layout,
-      theme: theme,
-      cardStyle: layout == TInputLayout.cardStyle ? theme?.cardStyle : null,
-      instanceDecoration: decoration,
-    );
-    final hasLeftWidget =
-        label != null || prefix != null || (required ?? false);
-    final padding = TInputResolve.resolveContentPadding(
-      context: context,
-      layout: layout,
-      size: size,
-      theme: theme,
-      instancePadding: contentPadding,
-      additionInfo: additionInfo,
-      spacer: spacer,
-    );
-    final textStyle = TInputResolve.resolveTextStyle(
-        context: context, theme: theme, instanceStyle: this.textStyle);
-    final hintTextStyle = TInputResolve.resolveHintTextStyle(
-        context: context, theme: theme, instanceStyle: this.hintTextStyle);
-    final cursorColor = TInputResolve.resolveCursorColor(
-        context: context, theme: theme, instanceColor: this.cursorColor);
-    final clearBtnColor = TInputResolve.resolveClearBtnColor(
-        context: context, theme: theme, instanceColor: this.clearBtnColor);
-    final additionInfoColor = TInputResolve.resolveAdditionInfoColor(
-        context: context, theme: theme, instanceColor: this.additionInfoColor);
-    final bgColor = TInputResolve.resolveBackgroundColor(
-        context: context, theme: theme, instanceColor: backgroundColor);
-    final showDivider = showBottomDivider ?? theme?.showBottomDivider ?? true;
-    final showClear = showClearButton ?? theme?.showClearButton ?? true;
-    final clearSize = clearIconSize ?? theme?.clearIconSize;
-
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          color: (cardStyleDecoration != null || decoration != null)
-              ? null
-              : (bgColor ?? context.tTheme.bgColorContainer),
-          decoration: cardStyleDecoration ?? decoration,
-          child: Row(
-            crossAxisAlignment: additionInfo != null && additionInfo!.isNotEmpty
-                ? CrossAxisAlignment.start
-                : CrossAxisAlignment.center,
-            children: <Widget>[
-              Visibility(
-                visible: hasLeftWidget,
-                child: SizedBox(width: spacer.labelInputSpace ?? 16),
-              ),
-              SizedBox(
-                width: leftLabelWidth,
-                child: GestureDetector(
-                  child: Row(
-                    children: [
-                      Visibility(
-                        visible: prefix != null,
-                        child: SizedBox(
-                          width: 24,
-                          child: prefix ?? const SizedBox.shrink(),
-                        ),
-                      ),
-                      Visibility(
-                        visible: label != null,
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            left: prefix != null
-                                ? (spacer.iconLabelSpace ?? 4)
-                                : 0,
-                            top: TInputResolve.getInputPadding(size),
-                            bottom: TInputResolve.getInputPadding(size),
-                          ),
-                          child: TText(
-                            label,
-                            maxLines: 1,
-                            overflow: TextOverflow.visible,
-                            style: TInputResolve.resolveLabelStyle(
-                              context: context,
-                              theme: theme,
-                              instanceStyle: labelStyle,
-                            ),
-                            font: context.tTheme.fontBodyLarge,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      Visibility(
-                        visible: labelWidget != null,
-                        child: labelWidget ?? const SizedBox.shrink(),
-                      ),
-                      Visibility(
-                        visible: required ?? false,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 4.0),
-                          child: TText(
-                            '*',
-                            maxLines: 1,
-                            style: TextStyle(color: context.tTheme.errorColor6),
-                            font: context.tTheme.fontBodyLarge,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TInputView(
-                      textStyle: textStyle,
-                      enabled: enabled,
-                      readOnly: readOnly,
-                      autofocus: autofocus,
-                      obscureText: obscureText,
-                      onEditingComplete: onEditingComplete,
-                      onSubmitted: onSubmitted,
-                      hintText: hintText,
-                      inputType: inputType,
-                      onChanged: onChanged,
-                      onTapOutside: onTapOutside,
-                      inputFormatters: inputFormatters,
-                      inputDecoration: inputDecoration,
-                      maxLines: maxLines,
-                      maxLength: maxLength,
-                      focusNode: focusNode,
-                      isCollapsed: true,
-                      textAlign: contentAlignment,
-                      hintTextStyle: hintTextStyle,
-                      cursorColor: cursorColor,
-                      textInputBackgroundColor:
-                          TInputResolve.resolveTextInputBackgroundColor(
-                              theme: theme,
-                              instanceColor: textInputBackgroundColor),
-                      controller: controller,
-                      contentPadding: padding,
-                      inputAction: inputAction,
-                      selectionControls: selectionControls,
-                      contextMenuBuilder: contextMenuBuilder,
-                      enableInteractiveSelection: enableInteractiveSelection,
-                    ),
-                    Visibility(
-                      child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.only(
-                            left: spacer.additionInfoSpace ?? 16,
-                            right: TextAlign.end == contentAlignment ? 8 : 0,
-                            bottom: TInputResolve.getInputPadding(size)),
-                        child: TText(
-                          additionInfo,
-                          font: context.tTheme.fontBodySmall,
-                          textAlign: contentAlignment != TextAlign.center
-                              ? contentAlignment
-                              : TextAlign.start,
-                          textColor: additionInfoColor,
-                        ),
-                      ),
-                      visible: additionInfo != null && additionInfo!.isNotEmpty,
-                    )
-                  ],
-                ),
-              ),
-              Visibility(
-                visible: suffix != null,
-                child: Container(
-                  margin: EdgeInsets.only(
-                      top: TInputResolve.getInputPadding(size),
-                      bottom: TInputResolve.getInputPadding(size),
-                      right: 16),
-                  child: suffix,
-                ),
-              ),
-              Visibility(
-                visible: controller != null &&
-                    controller!.text.isNotEmpty &&
-                    showClear &&
-                    suffix == null,
-                child: GestureDetector(
-                  child: Container(
-                    margin: EdgeInsets.only(
-                      left: spacer.inputRightSpace != null
-                          ? spacer.inputRightSpace! / 2
-                          : 8,
-                      right: spacer.rightSpace ?? 16,
-                      top: additionInfo != null && additionInfo!.isNotEmpty
-                          ? TInputResolve.getInputPadding(size)
-                          : 0,
-                    ),
-                    child: Icon(
-                      size: clearSize,
-                      TIcons.close_circle_filled,
-                      color: clearBtnColor,
-                    ),
-                  ),
-                  onTap: onClearTap ??
-                      () {
-                        controller?.clear();
-                        onChanged?.call('');
-                      },
-                ),
-                replacement: Visibility(
-                  visible: rightBtn != null,
-                  child: GestureDetector(
-                    onTap: onBtnTap,
-                    child: Container(
-                      margin: EdgeInsets.only(
-                        left: spacer.inputRightSpace != null
-                            ? spacer.inputRightSpace! / 2
-                            : 8,
-                        right: spacer.rightSpace ?? 16,
-                        top: additionInfo != null && additionInfo!.isNotEmpty
-                            ? TInputResolve.getInputPadding(size)
-                            : 0,
-                      ),
-                      child: rightBtn,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (showDivider)
-          Visibility(
-            visible: layout != TInputLayout.cardStyle,
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: _getBottomDividerMarginLeft(leftLabelWidth, spacer),
-              ),
-              child: const TDivider(),
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget buildTwoLineInput(BuildContext context, double leftLabelWidth,
-      TInputThemeData? theme, TInputSpacer spacer) {
-    final textStyle = TInputResolve.resolveTextStyle(
-        context: context, theme: theme, instanceStyle: this.textStyle);
-    final hintTextStyle = TInputResolve.resolveHintTextStyle(
-        context: context, theme: theme, instanceStyle: this.hintTextStyle);
-    final cursorColor = TInputResolve.resolveCursorColor(
-        context: context, theme: theme, instanceColor: this.cursorColor);
-    final clearBtnColor = TInputResolve.resolveClearBtnColor(
-        context: context, theme: theme, instanceColor: this.clearBtnColor);
-    final bgColor = TInputResolve.resolveBackgroundColor(
-        context: context, theme: theme, instanceColor: backgroundColor);
-    final showDivider = showBottomDivider ?? theme?.showBottomDivider ?? true;
-    final showClear = showClearButton ?? theme?.showClearButton ?? true;
-    final clearSize = clearIconSize ?? theme?.clearIconSize;
-    final padding = TInputResolve.resolveContentPadding(
-      context: context,
-      layout: layout,
-      size: size,
-      theme: theme,
-      instancePadding: contentPadding,
-      additionInfo: additionInfo,
-      spacer: spacer,
-    );
-
-    return Container(
-      alignment: Alignment.centerLeft,
-      color: decoration != null
-          ? null
-          : (bgColor ?? context.tTheme.bgColorContainer),
-      decoration: decoration,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Visibility(
-                visible: label != null,
-                child: Row(
-                  children: [
-                    Visibility(
-                      visible: label != null,
-                      child: Container(
-                        constraints: BoxConstraints(
-                            maxWidth: leftLabelWidth +
-                                (spacer.labelInputSpace ?? 12)),
-                        padding: EdgeInsets.only(
-                            left: spacer.labelInputSpace ?? 12.0, top: 10.0),
-                        child: Column(
-                          children: [
-                            TText(
-                              label,
-                              maxLines: 2,
-                              style: TInputResolve.resolveLabelStyle(
-                                context: context,
-                                theme: theme,
-                                instanceStyle: labelStyle,
-                              ),
-                              font: context.tTheme.fontBodyLarge,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: labelWidget != null,
-                      child: labelWidget ?? const SizedBox.shrink(),
-                    ),
-                    Visibility(
-                      visible: required ?? false,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 1.0),
-                        child: TText(
-                          '*',
-                          maxLines: 1,
-                          style: TextStyle(color: context.tTheme.errorColor6),
-                          font: context.tTheme.fontBodyLarge,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(bottom: 12, top: 7),
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Visibility(
-                      visible: labelWidget != null,
-                      child: labelWidget ?? const SizedBox.shrink(),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: TInputView(
-                        textStyle: textStyle,
-                        enabled: enabled,
-                        readOnly: readOnly,
-                        autofocus: autofocus,
-                        obscureText: obscureText,
-                        onEditingComplete: onEditingComplete,
-                        onSubmitted: onSubmitted,
-                        hintText: hintText,
-                        inputType: inputType,
-                        onChanged: onChanged,
-                        textAlign: textAlign,
-                        inputFormatters: inputFormatters,
-                        inputDecoration: inputDecoration,
-                        isCollapsed: true,
-                        maxLines: maxLines,
-                        focusNode: focusNode,
-                        hintTextStyle: hintTextStyle,
-                        cursorColor: cursorColor,
-                        textInputBackgroundColor:
-                            TInputResolve.resolveTextInputBackgroundColor(
-                                theme: theme,
-                                instanceColor: textInputBackgroundColor),
-                        controller: controller,
-                        contentPadding: padding,
-                        inputAction: inputAction,
-                        selectionControls: selectionControls,
-                        contextMenuBuilder: contextMenuBuilder,
-                        enableInteractiveSelection: enableInteractiveSelection,
-                      ),
-                    ),
-                    Visibility(
-                      visible: controller != null &&
-                          controller!.text.isNotEmpty &&
-                          showClear,
-                      child: GestureDetector(
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            left: spacer.inputRightSpace != null
-                                ? spacer.inputRightSpace! / 2
-                                : 8,
-                            right: spacer.rightSpace ?? 16,
-                          ),
-                          child: Icon(
-                            size: clearSize,
-                            TIcons.close_circle_filled,
-                            color: clearBtnColor,
-                          ),
-                        ),
-                        onTap: onClearTap ??
-                            () {
-                              controller?.clear();
-                              onChanged?.call('');
-                            },
-                      ),
-                      replacement: Visibility(
-                        visible: rightBtn != null,
-                        child: GestureDetector(
-                          onTap: onBtnTap,
-                          child: Container(
-                            margin: EdgeInsets.only(
-                              left: spacer.inputRightSpace != null
-                                  ? spacer.inputRightSpace! / 2
-                                  : 8,
-                              right: spacer.rightSpace ?? 16,
-                            ),
-                            child: rightBtn,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          if (showDivider)
-            Padding(
-              padding: EdgeInsets.only(
-                left: _getBottomDividerMarginLeft(leftLabelWidth, spacer),
-              ),
-              child: const TDivider(),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildLongTextInput(
-      BuildContext context, TInputThemeData? theme, TInputSpacer spacer) {
-    final textStyle = TInputResolve.resolveTextStyle(
-        context: context, theme: theme, instanceStyle: this.textStyle);
-    final hintTextStyle = TInputResolve.resolveHintTextStyle(
-        context: context, theme: theme, instanceStyle: this.hintTextStyle);
-    final cursorColor = TInputResolve.resolveCursorColor(
-        context: context, theme: theme, instanceColor: this.cursorColor);
-    final bgColor = TInputResolve.resolveBackgroundColor(
-        context: context, theme: theme, instanceColor: backgroundColor);
-    final showDivider = showBottomDivider ?? theme?.showBottomDivider ?? true;
-    final padding = TInputResolve.resolveContentPadding(
-      context: context,
-      layout: layout,
-      size: size,
-      theme: theme,
-      instancePadding: contentPadding,
-      additionInfo: additionInfo,
-      spacer: spacer,
-    );
-
-    return Container(
-      alignment: Alignment.centerLeft,
-      color: decoration != null
-          ? null
-          : (bgColor ?? context.tTheme.bgColorContainer),
-      decoration: decoration,
-      height: label != null ? 197 : 148,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Visibility(
-            visible: label != null,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: 16,
-                      top: TInputResolve.getInputPadding(size),
-                      bottom: TInputResolve.getInputPadding(size)),
-                  child: TText(
-                    label,
-                    maxLines: 2,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                if (showDivider)
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: _getBottomDividerMarginLeft(0, spacer),
-                    ),
-                    child: const TDivider(),
-                  ),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: TInputView(
-              textStyle: textStyle,
-              enabled: enabled,
-              readOnly: readOnly,
-              autofocus: autofocus,
-              obscureText: obscureText,
-              onEditingComplete: onEditingComplete,
-              onSubmitted: onSubmitted,
-              hintText: hintText,
-              inputType: inputType,
-              textAlign: textAlign,
-              onChanged: onChanged,
-              inputFormatters: inputFormatters ??
-                  [LengthLimitingTextInputFormatter(maxLength)],
-              inputDecoration: inputDecoration,
-              maxLines: maxLines,
-              focusNode: focusNode,
-              hintTextStyle: hintTextStyle,
-              cursorColor: cursorColor,
-              textInputBackgroundColor:
-                  TInputResolve.resolveTextInputBackgroundColor(
-                      theme: theme, instanceColor: textInputBackgroundColor),
-              controller: controller,
-              contentPadding: padding,
-              inputAction: inputAction,
-              selectionControls: selectionControls,
-              contextMenuBuilder: contextMenuBuilder,
-              enableInteractiveSelection: enableInteractiveSelection,
-            ),
-          ),
-          Container(
-            alignment: Alignment.bottomRight,
-            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
-            child: TText(
-              '${controller?.text.length}/${maxLength}',
-              font: context.tTheme.fontBodySmall,
-              textColor: context.tTheme.textColorPlaceholder,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildSpecialInput(BuildContext context, double leftLabelWidth,
-      TInputThemeData? theme, TInputSpacer spacer) {
-    final textStyle = TInputResolve.resolveTextStyle(
-        context: context, theme: theme, instanceStyle: this.textStyle);
-    final hintTextStyle = TInputResolve.resolveHintTextStyle(
-        context: context, theme: theme, instanceStyle: this.hintTextStyle);
-    final cursorColor = TInputResolve.resolveCursorColor(
-        context: context, theme: theme, instanceColor: this.cursorColor);
-    final bgColor = TInputResolve.resolveBackgroundColor(
-        context: context, theme: theme, instanceColor: backgroundColor);
-    final showDivider = showBottomDivider ?? theme?.showBottomDivider ?? true;
-    final padding = TInputResolve.resolveContentPadding(
-      context: context,
-      layout: layout,
-      size: size,
-      theme: theme,
-      instancePadding: contentPadding,
-      additionInfo: additionInfo,
-      spacer: spacer,
-    );
-
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          color: decoration != null
-              ? null
-              : (bgColor ?? context.tTheme.bgColorContainer),
-          decoration: decoration,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Visibility(
-                visible: label != null,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      left: spacer.labelInputSpace ?? 16,
-                      top: TInputResolve.getInputPadding(size),
-                      bottom: TInputResolve.getInputPadding(size)),
-                  child: leftInfoWidth != null
-                      ? SizedBox(
-                          width: leftLabelWidth,
-                          child: TText(
-                            label,
-                            maxLines: 1,
-                            font: context.tTheme.fontBodyLarge,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        )
-                      : TText(
-                          label,
-                          maxLines: 1,
-                          font: context.tTheme.fontBodyLarge,
-                          fontWeight: FontWeight.w400,
-                        ),
-                ),
-              ),
-              Visibility(
-                visible: labelWidget != null,
-                child: labelWidget ?? const SizedBox.shrink(),
-              ),
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: EdgeInsets.only(left: spacer.labelInputSpace ?? 16),
-                  child: TInputView(
-                    textStyle: textStyle,
-                    enabled: enabled,
-                    readOnly: readOnly,
-                    autofocus: autofocus,
-                    obscureText: obscureText,
-                    onEditingComplete: onEditingComplete,
-                    onSubmitted: onSubmitted,
-                    hintText: hintText,
-                    inputType: inputType,
-                    onChanged: onChanged,
-                    inputFormatters: inputFormatters,
-                    inputDecoration: inputDecoration,
-                    maxLines: maxLines,
-                    focusNode: focusNode,
-                    isCollapsed: true,
-                    hintTextStyle: hintTextStyle,
-                    cursorColor: cursorColor,
-                    textInputBackgroundColor:
-                        TInputResolve.resolveTextInputBackgroundColor(
-                            theme: theme,
-                            instanceColor: textInputBackgroundColor),
-                    controller: controller,
-                    textAlign: textAlign,
-                    contentPadding: padding,
-                    inputAction: inputAction,
-                    selectionControls: selectionControls,
-                    contextMenuBuilder: contextMenuBuilder,
-                    enableInteractiveSelection: enableInteractiveSelection,
-                  ),
-                ),
-              ),
-              Visibility(
-                visible: suffix != null,
-                child: Container(
-                  margin: EdgeInsets.only(
-                      top: TInputResolve.getInputPadding(size),
-                      bottom: TInputResolve.getInputPadding(size),
-                      right: spacer.rightSpace ?? 16),
-                  child: suffix,
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (showDivider)
-          Visibility(
-            child: Padding(
-              padding: EdgeInsets.only(
-                left: _getBottomDividerMarginLeft(leftLabelWidth, spacer),
-              ),
-              child: const TDivider(),
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget buildCardStyleInput(BuildContext context, double leftLabelWidth,
-      TInputThemeData? theme, TInputSpacer spacer) {
-    final topText = cardStyleTopText ?? theme?.cardStyleTopText;
-    final bottomText = cardStyleBottomText ?? theme?.cardStyleBottomText;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Visibility(
-          visible: topText != null,
-          child: Column(
-            children: [
-              Text(
-                topText ?? '',
-                style: TextStyle(
-                    fontSize: context.tTheme.fontBodyMedium!.size,
-                    height: context.tTheme.fontBodyMedium!.height),
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
-        ),
-        buildNormalInput(context, leftLabelWidth, theme, spacer),
-        Visibility(
-          visible: bottomText != null,
-          child: Column(
-            children: [
-              const SizedBox(height: 8),
-              Text(
-                bottomText ?? '',
-                style: TextStyle(
-                    color: context.tTheme.errorColor6,
-                    fontSize: context.tTheme.fontBodySmall!.size,
-                    height: context.tTheme.fontBodySmall!.height),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _TInputControllerListener extends StatefulWidget {
-  const _TInputControllerListener({
-    required this.controller,
-    required this.builder,
-  });
-
-  final TextEditingController? controller;
-  final WidgetBuilder builder;
+  final bool _multiline;
 
   @override
-  State<_TInputControllerListener> createState() =>
-      _TInputControllerListenerState();
+  State<TInput> createState() => _TInputState();
 }
 
-class _TInputControllerListenerState extends State<_TInputControllerListener> {
-  String? _text;
+class _TInputState extends State<TInput> {
+  late final TextEditingController _internalController;
+  late TextEditingController _controller;
+  bool _hasText = false;
+
+  TextEditingController get _effectiveController =>
+      widget.controller ?? _internalController;
 
   @override
   void initState() {
     super.initState();
-    _text = widget.controller?.text;
-    widget.controller?.addListener(_handleControllerChanged);
+    _internalController = TextEditingController(text: widget.initialValue);
+    _controller = _effectiveController;
+    _hasText = _controller.text.isNotEmpty;
+    _controller.addListener(_handleControllerChanged);
   }
 
   @override
-  void didUpdateWidget(covariant _TInputControllerListener oldWidget) {
+  void didUpdateWidget(covariant TInput oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.controller == widget.controller) {
+    final next = _effectiveController;
+    if (_controller == next) {
       return;
     }
-    oldWidget.controller?.removeListener(_handleControllerChanged);
-    _text = widget.controller?.text;
-    widget.controller?.addListener(_handleControllerChanged);
+    _controller.removeListener(_handleControllerChanged);
+    _controller = next;
+    _controller.addListener(_handleControllerChanged);
+    _setHasText(_controller.text.isNotEmpty);
   }
 
   @override
   void dispose() {
-    widget.controller?.removeListener(_handleControllerChanged);
+    _controller.removeListener(_handleControllerChanged);
+    _internalController.dispose();
     super.dispose();
   }
 
-  void _handleControllerChanged() {
-    final text = widget.controller?.text;
-    if (!mounted || text == _text) {
-      return;
-    }
-    setState(() => _text = text);
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<TInputThemeData>();
+    final showClearButton = theme?.showClearButton ?? true;
+    final clearButton = widget.suffix == null && showClearButton && _hasText
+        ? IconButton(
+            tooltip: '清除',
+            onPressed: widget.enabled && !widget.readOnly ? _clear : null,
+            iconSize: theme?.clearIconSize ?? 20,
+            icon: const Icon(TIcons.close_circle_filled),
+          )
+        : null;
+    final decoration = TInputResolve.resolveDecoration(
+      base: widget.decoration,
+      label: widget.label,
+      hintText: widget.hintText,
+      prefix: widget.prefix,
+      suffix: widget.suffix ?? clearButton,
+    );
+
+    return TextField(
+      controller: _controller,
+      focusNode: widget.focusNode,
+      onChanged: widget.onChanged,
+      onSubmitted: widget.onSubmitted,
+      onEditingComplete: widget.onEditingComplete,
+      enabled: widget.enabled,
+      readOnly: widget.readOnly,
+      maxLines: widget.maxLines,
+      minLines: widget.minLines ??
+          (widget._multiline ? theme?.multilineMinLines ?? 4 : null),
+      maxLength: widget.maxLength,
+      autofocus: widget.autofocus,
+      keyboardType: widget.inputType,
+      textInputAction: widget.inputAction,
+      textAlign: widget.textAlign,
+      obscureText: widget.obscureText,
+      inputFormatters: widget.inputFormatters,
+      decoration: decoration,
+    );
   }
 
-  @override
-  Widget build(BuildContext context) => widget.builder(context);
+  void _handleControllerChanged() {
+    _setHasText(_controller.text.isNotEmpty);
+  }
+
+  void _setHasText(bool value) {
+    if (_hasText == value) {
+      return;
+    }
+    setState(() => _hasText = value);
+  }
+
+  void _clear() {
+    _controller.clear();
+    widget.onChanged?.call('');
+  }
 }

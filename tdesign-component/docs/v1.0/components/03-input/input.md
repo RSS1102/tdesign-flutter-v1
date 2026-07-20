@@ -1,219 +1,73 @@
-# TInput — v1.0 定稿
+# TInput - v1.0 定稿
 
-> **状态**：规划中 | **控制类**：D | **Sprint**：S2
-
-- [§1 v1.0 定稿 API](#1-v10-定稿-api)（新组件从零开始看这里）
-- [§2 0.2.x → v1.0](#2-02x--v10)（从旧版升级看这里）
-- [§3 Theme 主题配置](#3-theme-主题配置)
-- [§4 实现约定 · 测试与 Example 契约](#4-实现约定--测试与-example-契约)
+> **状态**：已实现 | **控制类**：D | **Sprint**：S2
 
 **源码路径**：`lib/src/components/input`
-
----
 
 ## 架构
 
 | 项 | v1.0 |
 |---|---|
 | 实现 | Material `TextField` 薄包装 |
-| Material | TextField |
-| Theme | `TInputThemeData` |
-| 禁用 | `enabled: false` / `readOnly: true` |
-| L4 | 构造器 L4 → **`TInputThemeData`** |
+| 控制 | `controller` 主路径 / `initialValue` 辅路径，二者互斥 |
+| 禁用 | `enabled: false`；只读使用 `readOnly: true` |
+| Material Theme | `InputDecorationTheme` 负责边框、颜色、内边距与文本样式 |
+| TDesign Theme | `TInputThemeData` 只保留清除按钮和多行最小行数默认值 |
+| P0 | `InputDecoration? decoration` |
 
-## 控制方案
+## API
 
-控制类 **D**：`controller` 主路径 / `initialValue` 辅（init 一次）；无 `defaultValue`；初值父 State 或 controller。
+### TInput / TInput.multiline
 
-禁用：`enabled: false`（完全禁用）/ `readOnly: true`（只读可聚焦）。
+| 参数 | 类型 | 默认值 | 说明 |
+|---|---|---|---|
+| `controller` | `TextEditingController?` | - | 主控制路径 |
+| `initialValue` | `String?` | - | 内部 controller 初值，仅初始化一次 |
+| `onChanged` | `ValueChanged<String>?` | - | 文本变化通知 |
+| `onSubmitted` | `ValueChanged<String>?` | - | 提交回调 |
+| `onEditingComplete` | `VoidCallback?` | - | 编辑完成回调 |
+| `enabled` | `bool` | `true` | 是否可交互 |
+| `readOnly` | `bool` | `false` | 是否只读 |
+| `label` | `String?` | - | 标签文案 |
+| `hintText` | `String?` | - | 占位提示 |
+| `prefix` | `Widget?` | - | 前缀组件 |
+| `suffix` | `Widget?` | - | 后缀组件；优先于内置清除按钮 |
+| `maxLines` | `int?` | 单行 `1` / 多行 `null` | 最大行数 |
+| `minLines` | `int?` | - | 最小行数 |
+| `maxLength` | `int?` | - | 最大字符数 |
+| `autofocus` | `bool` | `false` | 是否自动聚焦 |
+| `focusNode` | `FocusNode?` | - | 焦点节点 |
+| `inputType` | `TextInputType` | 单行 `text` / 多行 `multiline` | 键盘类型 |
+| `inputAction` | `TextInputAction?` | - | 键盘动作 |
+| `textAlign` | `TextAlign` | `start` | 文本对齐 |
+| `obscureText` | `bool` | `false` | 单行输入是否隐藏文本 |
+| `inputFormatters` | `List<TextInputFormatter>?` | - | 输入格式化器 |
+| `decoration` | `InputDecoration?` | - | Material P0 逃逸口 |
 
-Form → [form.md §2](../foundation/form.md#2-字段桥接控制类--form-写法)
+`TInput.multiline` 不提供 `obscureText`，默认 `maxLines: null`，默认最小行数读取 `TInputThemeData.multilineMinLines`。
 
----
+## Theme
 
-## §1 v1.0 定稿 API
+| 字段 | 说明 |
+|---|---|
+| `showClearButton` | 有文本且无 suffix 时是否显示清除按钮 |
+| `clearIconSize` | 清除图标尺寸 |
+| `multilineMinLines` | 多行输入默认最小行数 |
 
-> 与 0.2.x API 对照参见 §2。无图例项 = 与 0.2.x 同名同义保留。
+Theme 注入使用 `Theme.of(context).mergeExtension(...)`。实例 `decoration` 中已有的 label、hint、prefixIcon、suffixIcon 优先于快捷参数。
 
-### 1.1 构造器参数
+## 实现约束
 
-| 决策 | 参数 | 类型 | 层级 | 默认值 | 说明 |
-|------|------|------|------|--------|------|
-| | `controller` | `TextEditingController?` | D | — | 主路径受控（推荐） |
-| | `initialValue` | `String?` | D | — | 辅路径（init 一次，与 controller 互斥） |
-| | `onChanged` | `ValueChanged<String>?` | L3 | — | 文本变更通知 |
-| | `onSubmitted` | `ValueChanged<String>?` | L3 | — | 提交回调 |
-| ✨ | `enabled` | `bool` | L1 | `true` | 完全禁用 |
-| ✨ | `readOnly` | `bool` | L1 | `false` | 只读可聚焦 |
-| ✨ | `label` | `String?` | L2 | — | 标签文案 |
-| ✨ | `hintText` | `String?` | L2 | — | 占位提示文案 |
-| ✨ | `prefix` | `Widget?` | L2 | — | 前缀 Widget |
-| ✨ | `suffix` | `Widget?` | L2 | — | 后缀 Widget |
-| ✨ | `maxLines` | `int?` | L1 | `1` | 最大行数 |
-| ✨ | `maxLength` | `int?` | L1 | — | 最大字数 |
-| ✨ | `autofocus` | `bool` | L1 | `false` | 自动聚焦 |
-| ✨ | `focusNode` | `FocusNode?` | L1 | — | 焦点管理 |
-| ✨ | `inputType` | `TextInputType` | L1 | `text` | 键盘类型 |
-| ✨ | `textAlign` | `TextAlign` | L1 | `left` | 对齐方式 |
-| ✨ | `decoration` | `InputDecoration?` | L4 | — | P0 逃逸舱（Material 同名） |
+- 不公开业务 Controller、布局枚举、尺寸枚举、卡片样式、间距对象或兼容 formatter。
+- `TextInputType.visiblePassword` 只控制键盘，不能替代 `obscureText`。
+- 清除操作更新当前 controller，并通过 `onChanged('')` 通知。
+- `TInputResolve` 为内部装饰解析入口，不从公共总出口导出。
 
-> **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
-> **D** = 控制类 D 专有（controller/initialValue/enabled/readOnly）
+## 验收
 
-### 1.2 类型定义
-
-_无（复用 Material 类型）_
-
-### 1.3 移除的导出符号
-
-| 决策 | 移除符号 | 替代 |
-|------|---------|------|
-| 🚫 | `TInputStyle` | 内部实现，不公开 |
-| 🚫 | `TCardStyle` | 迁入 `TInputThemeData` |
-| 🗑️ | `leftLabel` | `label`（命名对齐 v1.0） |
-| 🗑️ | `leftIcon` | `prefix`（命名对齐 v1.0） |
-| 🗑️ | `type` | `decoration`（通过 P0 逃逸舱实现） |
-| 🗑️ | `cardStyle` | `TInputThemeData` |
-| 🗑️ | `rightWidget` | `suffix`（命名对齐 v1.0） |
-| 🗑️ | `layout` | `decoration`（通过 P0 逃逸舱实现） |
-| 🗑️ | `obscureText` | `TextInputType.visiblePassword` |
-
----
-
-## §2 0.2.x → v1.0
-
-### ✏️ 改名
-
-| 从（0.2.x） | 到（v1.0） | 怎么改 |
-|------------|-----------|--------|
-| `TInputType` | `TInputLayout` | 命名对齐 v1.0 |
-| `leftLabel` | `label` | 命名对齐 v1.0 |
-| `leftIcon` | `prefix` | 命名对齐 v1.0 |
-| `type` | `layout` | 命名对齐 v1.0 |
-| `cardStyle` | `TInputThemeData` | L4 → Theme |
-| `rightWidget` | `suffix` | 命名对齐 v1.0 |
-
-### ✨ 新增
-
-_无_
-
-### 🔀 合并
-
-_无_
-
-### 🗑️ 移除
-
-| 从（0.2.x） | 替代方案 | 怎么改 |
-|------------|---------|--------|
-| `leftLabelSpace` | `TInputThemeData` | 间距合并 |
-| `leftContentSpace` | `TInputThemeData` | 间距合并 |
-| `clearIconSize` | `TInputThemeData` | 迁入 Theme |
-| `needClear` | `TInputThemeData.showClearButton` | 默认值 |
-| `spacer` | 删除 | 与 `contentPadding` 重复 |
-
-### 📦 迁入 Theme
-
-_无（所有 L4 参数通过 `decoration` P0 逃逸舱实现）_
-
-> 注：Material `InputDecorationTheme` 的 `border`/`enabledBorder`/`errorBorder`/`focusedBorder`/`disabledBorder`/`fillColor`/`filled`/`contentPadding`/`isDense`/`hintStyle`/`labelStyle`/`helperStyle`/`errorStyle`/`prefixIconColor`/`suffixIconColor`/`iconColor` 由 Material 子主题处理，TDesign 扩展字段在 `TInputThemeData` 中。
-
-> 子组件内部使用的 `TInput` 也需同步升级，**不借用构造器参数**。
-
----
-
-## §3 Theme 主题配置
-
-### 3.1 配置方式
-
-| 范围 | 配置方法 |
-|------|---------|
-| 单组件 | 构造器 L1 参数 |
-| 子树 | `Theme.of(context).mergeExtension(TInputThemeData(...))` |
-| 全应用 | `MaterialApp.theme` 扩展 `TInputThemeData` |
-
-### 3.2 覆盖顺序
-
-`resolve（全量合并）` **>** Token
-
-### 3.3 TInputThemeData 字段
-
-_无（所有 L4 参数通过 `decoration` P0 逃逸舱实现）_
-
----
-
-## §4 实现约定 · 测试与 Example 契约
-
-### 4.1 实现约束
-
-- **文件划分**：单一 resolve 入口
-  - `t_input.dart` — Widget 本体
-  - `t_input_resolve.dart` — **唯一**样式合并入口
-  - `t_input_theme_data.dart` — `TInputThemeData` ThemeExtension
-
-- **底层实现**：包装 Material `TextField`
-
-### 4.2 必测场景
-
-> 控制类通用必测见 [testing.md](../guide/testing.md) §3，此处仅列组件专项。
-
-| 测试项 | Golden | 说明 |
-|--------|--------|------|
-| 基础渲染 | ✅ | 默认参数正常渲染 |
-| 文本输入 | ✅ | `controller` + `onChanged` |
-| 提交 | ✅ | `onSubmitted` 回调 |
-| 密码模式 | ✅ | `TextInputType.visiblePassword` |
-| 只读模式 | ✅ | `readOnly: true` |
-| 禁用模式 | ✅ | `enabled: false` |
-| Form 桥接 | ✅ | `TFormField<String>(...)` |
-
-### 4.3 Example 契约
-
-- 覆盖 `TextInputType.visiblePassword` 密码模式
-- 提供 Form 桥接示例
-
----
-
-### 1.1 构造器参数（续）
-
-#### TInput.multiline() — 多行 factory
-
-> 推荐的多行输入入口；底层复用 `TextField` `maxLines: null`。
-
-```dart
-TInput.multiline(
-  controller: _controller,
-  hintText: '请输入多行内容',
-  maxLines: null,
-  onChanged: (value) { ... },
-)
-```
-
----
-
-### export
-
-- **保留**：`TInput`、`TInputThemeData`、`TInput.multiline()`、`TFormField`
-- **移出**：`TInputController`、`TInputLayout`、`TInputStyle` / `TCardStyle`、内部 `input_view.dart`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
-
----
-
-## 2. Theme
-
-`TInputThemeData` · Material: **TextField** · [theme.md](../foundation/theme.md)
-
-### Material vs TDesign
-
-| 字段 | 来源 | 说明 |
-| --- | --- | --- |
-| `controller` / `initialValue` / `onChanged` / `onSubmitted` | **D 类 Widget API** | 文本受控；Form → `TFormField` |
-| `enabled` / `readOnly` / `label` / `hintText` / `prefix` / `suffix` | **D 类 Widget API** | 控制类 D 专有参数 |
-| `maxLines` / `maxLength` / `autofocus` / `focusNode` / `inputType` / `textAlign` | **D 类 Widget API** | 语义级参数 |
-| `decoration` | **P0 逃逸舱** | Material `TextField.decoration` 同名（四问①通过） |
-| `border` / `enabledBorder` / `errorBorder` / `focusedBorder` / `disabledBorder` | Material **`InputDecorationTheme`** | 边框三态 |
-| `fillColor` / `filled` / `contentPadding` / `isDense` | Material **`InputDecorationTheme`** | 背景与内边距 |
-| `hintStyle` / `labelStyle` / `helperStyle` / `errorStyle` | Material **`InputDecorationTheme`** | 文案样式 |
-| `prefixIconColor` / `suffixIconColor` / `iconColor` | Material **`InputDecorationTheme`** | 图标色 |
-
----
-
-> **文档参考**：[api.md](../foundation/api.md) · [controlled.md](../foundation/controlled.md) · [theme.md](../foundation/theme.md) · [disabled-evolution.md](../foundation/disabled-evolution.md)
+| 项 | 要求 |
+|---|---|
+| 测试 | 覆盖控制器生命周期、initialValue、提交、禁用、只读、密码、格式化、清除和多行 |
+| 文档 | tools 生成 API 说明列不得为 `-` |
+| 覆盖率 | 组件源码总覆盖率及各文件不低于 95% |
+| 残留 | 不出现旧布局、卡片样式、重复 decoration 或兼容 formatter |

@@ -224,7 +224,7 @@ class TMaterialThemeBuilder {
       const TSearchBarThemeData(),
       const TSideBarThemeData(),
       const TSkeletonThemeData(),
-      TSliderThemeData(),
+      const TSliderThemeData(),
       const TStepperThemeData(),
       const TStepsThemeData(),
       const TSwipeCellThemeData(),

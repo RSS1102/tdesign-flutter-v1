@@ -166,7 +166,7 @@ class _TCheckboxPageState extends State<TCheckboxPage> {
         ])
           Theme(
             data: Theme.of(context).mergeExtension(
-              TCheckboxThemeData(style: entry.$1),
+              TCheckboxThemeData(variant: entry.$1),
             ),
             child: TCheckbox(
               value: _variantValues[entry.$1],

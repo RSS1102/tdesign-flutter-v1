@@ -4,14 +4,13 @@
 > **源码**：`lib/src/components/backtop/` · **类名**：`TBackTop`  
 > **官网**：[BackTop 返回顶部](https://tdesign.tencent.com/flutter/components/back-top) · [guide](../../guide/developer-guide.md)
 
-**读法**：新写 v1.0 → **§1**（配样式 + **§3**）；0.2.x 升级 → **§2**（L4 见 §3 末列）；落地与验收 → **§4**
+**读法**：按 **§1** 查看当前 v1 API，按 **§2** 配置主题，按 **§3** 落地测试与 Example。
 
 **图例** → [component-doc.md §4](../../guide/component-doc.md#4-决策图例固定-6-个不新增)（§1–§3「决策」列）
 
 - [§1 v1.0 定稿 API](#1-v10-定稿-api)
-- [§2 0.2.x → v1.0](#2-02x--v10)
-- [§3 Theme 主题配置](#3-theme-主题配置)
-- [§4 实现约定 · 测试与 Example 契约](#4-实现约定--测试与-example-契约)
+- [§2 Theme 主题配置](#2-theme-主题配置)
+- [§3 实现约定 · 测试与 Example 契约](#3-实现约定--测试与-example-契约)
 
 与 [TFab](../01-base/fab.md) 区分：BackTop 专用于滚动回顶。
 
@@ -23,9 +22,9 @@
 |---|---|
 | 实现 | T2 自绘（`GestureDetector` + `Container`） |
 | Material | 无等价薄包装 |
-| Theme | `TBackTopThemeData`（§3） |
+| Theme | `TBackTopThemeData`（§2） |
 | 禁用 | `onPressed: null` |
-| L4 | → `TBackTopThemeData`（§3） |
+| L4 | → `TBackTopThemeData`（§2） |
 
 ## 控制方案
 
@@ -37,7 +36,7 @@
 
 ## §1 v1.0 定稿 API
 
-> 以下为 v1.0 **当前制定**的公开 API；相对 0.2.x 的变更见 §2。无图例项 = 与 0.2.x 同名同义保留。`shape` 等 L4 默认走 §3，可实例覆盖。
+> 以下为 v1.0 当前公开 API。`shape` 等 L4 默认走 §2 Theme，可实例覆盖。
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
@@ -58,7 +57,7 @@
 
 #### tooltip 与无障碍
 
-BackTop 默认仅图标（`showText: false`），读屏（VoiceOver / TalkBack）无法从视觉推断用途。v1.0 **始终**外包 Flutter `Tooltip`，`tooltip` 提供控件语义名称（0.2.x 无此能力）。
+BackTop 默认仅图标（`showText: false`），读屏（VoiceOver / TalkBack）无法从视觉推断用途。v1.0 **始终**外包 Flutter `Tooltip`，`tooltip` 提供控件语义名称。
 
 | 场景 | 行为 |
 |------|------|
@@ -74,31 +73,18 @@ BackTop 默认仅图标（`showText: false`），读屏（VoiceOver / TalkBack�
 
 | 决策 | 类型 | 说明 |
 |------|------|------|
-| ✏️ | `TBackTopShape` | `circle` · `halfCircle`（原 `TBackTopStyle`） |
-| ✨ | `TBackTopThemeData` | ThemeExtension（§3） |
+| ✏️ | `TBackTopShape` | `circle` · `halfCircle` |
+| ✨ | `TBackTopThemeData` | ThemeExtension（§2） |
 
 ### 1.3 export
 
-**KEEP**：`TBackTop` · `TBackTopShape` · `TBackTopThemeData`。  
-**不 export**：内部定位辅助（可与 Fab 共用，不公开）· 0.2.x `TBackTopTheme` / `TBackTopColorScheme`（明/暗配色改由 `ThemeData.brightness` 驱动，见 §3）。
+**公开 export**：`TBackTop` · `TBackTopShape` · `TBackTopThemeData`。
+**不 export**：内部定位辅助（可与 Fab 共用，不公开）。
 
 ---
 
-## §2 0.2.x → v1.0
 
-**未改**（§1 无图例项）：`controller` · `showText` · `shape`（语义保留，枚举改名见下）
-
-| 从 | 到 |
-|---|---|
-| `onClick` | `onPressed` |
-| `style` / `TBackTopStyle` | Theme `shape` / `TBackTopShape` |
-| `theme` / `TBackTopTheme` | **删除**；明/暗配色跟随 `ThemeData.brightness` + Token（§3） |
-| 页面 `ScrollController.addListener` 控显隐 | `visibilityOffset` 内置监听 |
-| —（无无障碍） | `tooltip`（✨ 外包 `Tooltip` + resource 默认）· `TBackTopThemeData`（✨） |
-
----
-
-## §3 Theme 主题配置
+## §2 Theme 主题配置
 
 `TBackTopThemeData` · [theme.md](../../foundation/theme.md)
 
@@ -112,12 +98,12 @@ BackTop 默认仅图标（`showText: false`），读屏（VoiceOver / TalkBack�
 
 **配色**：不暴露 `colorScheme` / `theme` 构造器或 Theme 字段；背景/边框/文字色由 `Theme.of(context).brightness` 选 Token（亮模式灰阶浅底，暗模式灰阶深底）。
 
-| 决策 | 字段 | 管什么 | 0.2.x 来源 |
-|------|------|--------|-----------|
-| 📦 | `shape` | 外形 | `style` |
-| ✨ | `defaultVisibilityOffset` | 显隐阈值 | demo 硬编码 100 |
-| ✨ | `defaultRight` / `defaultBottom` | 定位 | — |
-| ✨ | `halfCircleRightInset` | 半圆贴边 | 0.2 `Positioned(right: -16)` |
+| 决策 | 字段 | 管什么 |
+|------|------|--------|
+| 📦 | `shape` | 外形 |
+| ✨ | `defaultVisibilityOffset` | 显隐阈值 |
+| ✨ | `defaultRight` / `defaultBottom` | 定位 |
+| ✨ | `halfCircleRightInset` | 半圆贴边 |
 
 #### 字段归类：进 Theme 与不进 Theme
 
@@ -131,7 +117,7 @@ BackTop 默认仅图标（`showText: false`），读屏（VoiceOver / TalkBack�
 
 ---
 
-## §4 实现约定 · 测试与 Example 契约
+## §3 实现约定 · 测试与 Example 契约
 
 **文件**：`t_backtop.dart` · `t_backtop_theme_data.dart` · `t_backtop_visibility.dart`（可选）。
 
@@ -139,4 +125,4 @@ BackTop 默认仅图标（`showText: false`），读屏（VoiceOver / TalkBack�
 
 **Example**：内置显隐为主路径；`halfCircle` 贴边示例；与 Fab 同页区分用途。
 
-> [api.md](../../foundation/api.md) · [controlled.md](../../foundation/controlled.md) · [testing.md](../../guide/testing.md) · [fab.md](../01-base/fab.md) · [backtop-upgrade-guide.md](./backtop-upgrade-guide.md)
+> [api.md](../../foundation/api.md) · [controlled.md](../../foundation/controlled.md) · [testing.md](../../guide/testing.md) · [fab.md](../01-base/fab.md)

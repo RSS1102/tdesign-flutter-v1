@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/basic.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_shadows.dart';
+import '../../theme/t_theme.dart';
+import '../badge/t_badge.dart';
+import '../text/t_text.dart';
+import 't_tab_bar_theme_data.dart';
 
 /// 展开项 向下箭头宽
 const double _kArrowWidth = 13.5;
@@ -83,8 +92,8 @@ enum _TTabBarComponentType {
   label
 }
 
-/// 底部标签栏轮廓样式
-enum _TTabBarOutlineType {
+/// 底部标签栏选中背景样式
+enum _TTabBarSelectionType {
   /// 填充样式
   filled,
 
@@ -137,10 +146,10 @@ extension _TTabBarVariantResolve on TTabBarVariant {
     }
   }
 
-  _TTabBarOutlineType get outlineType {
+  _TTabBarSelectionType get selectionType {
     return this == TTabBarVariant.capsule
-        ? _TTabBarOutlineType.capsule
-        : _TTabBarOutlineType.filled;
+        ? _TTabBarSelectionType.capsule
+        : _TTabBarSelectionType.filled;
   }
 }
 
@@ -294,7 +303,7 @@ class TTabBar extends StatefulWidget {
 
   _TTabBarComponentType get _componentType => variant.componentType;
 
-  _TTabBarOutlineType get _outlineType => variant.outlineType;
+  _TTabBarSelectionType get _selectionType => variant.selectionType;
 
   /// tabs配置
   final List<TTabBarItemConfig> navigationTabs;
@@ -454,7 +463,7 @@ class _TTabBarState extends State<TTabBar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     var isCapsuleOutlineType =
-        widget._outlineType == _TTabBarOutlineType.capsule;
+        widget._selectionType == _TTabBarSelectionType.capsule;
     var safeAreaBottomHeight = MediaQuery.of(context).padding.bottom;
 
     return AnimatedBuilder(
@@ -689,7 +698,7 @@ class _TTabBarState extends State<TTabBar> with SingleTickerProviderStateMixin {
         child: TTabBarItemWithBadge(
           basicType: widget._basicType,
           componentType: widget._componentType,
-          outlineType: widget._outlineType,
+          selectionType: widget._selectionType,
           itemConfig: tabItemConfig,
           isSelected: index == _selectedIndex,
           itemHeight: _effectiveBarHeight,
@@ -737,7 +746,7 @@ class TTabBarItemWithBadge extends StatelessWidget {
     Key? key,
     required this.basicType,
     required this.componentType,
-    required this.outlineType,
+    required this.selectionType,
     required this.itemConfig,
     required this.isSelected,
     required this.itemHeight,
@@ -758,8 +767,8 @@ class TTabBarItemWithBadge extends StatelessWidget {
   /// tab选中背景类型
   final _TTabBarComponentType componentType;
 
-  /// tab轮廓类型
-  final _TTabBarOutlineType outlineType;
+  /// tab 选中背景类型
+  final _TTabBarSelectionType selectionType;
 
   /// 单个tab的属性配置
   final TTabBarItemConfig itemConfig;
@@ -952,7 +961,7 @@ class TTabBarItemWithBadge extends StatelessWidget {
   _buildItem(BuildContext context) {
     var badgeConfig = itemConfig.badgeConfig;
     var isInOrOutCapsule = componentType == _TTabBarComponentType.label ||
-        outlineType == _TTabBarOutlineType.capsule;
+        selectionType == _TTabBarSelectionType.capsule;
 
     // centerDistance > 0 时进一步压缩顶部内边距，为图标与文本的间距腾出空间
     final reduceTopPad =

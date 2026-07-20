@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 /// 通过 Theme 子树注入，控制子树默认样式。
 /// 被 TCheckbox 和 TCheckboxGroup 共用。
 class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
-  /// 复选框样式
-  final TCheckboxVariant? style;
+  /// 复选框指示器的默认视觉变体。
+  final TCheckboxVariant? variant;
 
   /// 选择颜色
   final Color? selectColor;
@@ -35,20 +35,37 @@ class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
   final EdgeInsetsGeometry? customSpace;
 
   const TCheckboxThemeData({
-    this.style,
+    /// 复选框指示器的默认视觉变体。
+    this.variant,
+
+    /// 选中态颜色。
     this.selectColor,
+
+    /// 禁用态颜色。
     this.disableColor,
+
+    /// 主标题颜色。
     this.titleColor,
+
+    /// 副标题颜色。
     this.subTitleColor,
+
+    /// 卡片背景颜色。
     this.backgroundColor,
+
+    /// 指示器与文案间距。
     this.spacing,
+
+    /// 文案与非指示器侧的内边距。
     this.insetSpacing,
+
+    /// 内容区域内边距。
     this.customSpace,
   });
 
   @override
   TCheckboxThemeData copyWith({
-    TCheckboxVariant? style,
+    TCheckboxVariant? variant,
     Color? selectColor,
     Color? disableColor,
     Color? titleColor,
@@ -58,16 +75,25 @@ class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
     double? insetSpacing,
     EdgeInsetsGeometry? customSpace,
   }) {
+    final resolvedVariant = variant ?? this.variant;
+    final resolvedSelectColor = selectColor ?? this.selectColor;
+    final resolvedDisableColor = disableColor ?? this.disableColor;
+    final resolvedTitleColor = titleColor ?? this.titleColor;
+    final resolvedSubTitleColor = subTitleColor ?? this.subTitleColor;
+    final resolvedBackgroundColor = backgroundColor ?? this.backgroundColor;
+    final resolvedSpacing = spacing ?? this.spacing;
+    final resolvedInsetSpacing = insetSpacing ?? this.insetSpacing;
+    final resolvedCustomSpace = customSpace ?? this.customSpace;
     return TCheckboxThemeData(
-      style: style ?? this.style,
-      selectColor: selectColor ?? this.selectColor,
-      disableColor: disableColor ?? this.disableColor,
-      titleColor: titleColor ?? this.titleColor,
-      subTitleColor: subTitleColor ?? this.subTitleColor,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      spacing: spacing ?? this.spacing,
-      insetSpacing: insetSpacing ?? this.insetSpacing,
-      customSpace: customSpace ?? this.customSpace,
+      variant: resolvedVariant,
+      selectColor: resolvedSelectColor,
+      disableColor: resolvedDisableColor,
+      titleColor: resolvedTitleColor,
+      subTitleColor: resolvedSubTitleColor,
+      backgroundColor: resolvedBackgroundColor,
+      spacing: resolvedSpacing,
+      insetSpacing: resolvedInsetSpacing,
+      customSpace: resolvedCustomSpace,
     );
   }
 
@@ -83,7 +109,7 @@ class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
       return other;
     }
     return TCheckboxThemeData(
-      style: t <= 0.5 ? style : other.style,
+      variant: t <= 0.5 ? variant : other.variant,
       selectColor: Color.lerp(selectColor, other.selectColor, t),
       disableColor: Color.lerp(disableColor, other.disableColor, t),
       titleColor: Color.lerp(titleColor, other.titleColor, t),
@@ -95,5 +121,14 @@ class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
   }
 }
 
-/// 复选框样式
-enum TCheckboxVariant { circle, square, check }
+/// 复选框指示器的视觉变体。
+enum TCheckboxVariant {
+  /// 圆形指示器。
+  circle,
+
+  /// 方形指示器。
+  square,
+
+  /// 仅显示勾选或半选图标。
+  check,
+}

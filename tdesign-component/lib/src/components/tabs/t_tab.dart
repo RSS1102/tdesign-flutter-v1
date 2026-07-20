@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
+import '../badge/t_badge.dart';
+import 't_tab_bar_theme_data.dart';
 
 /// Tab 组件 v1.0
 ///
 /// Material Tab 薄包装。禁用：`enabled: false`。
-/// L4 样式（badge、iconMargin、height、contentHeight、textMargin、outlineType）→ [TTabsBarThemeData]。
+/// L4 样式（badge、iconMargin、height、contentHeight、textMargin、variant）→ [TTabsBarThemeData]。
 class TTab extends Tab {
   /// 文字内容
   @override

@@ -2,32 +2,67 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
+import '../checkbox/t_check_box.dart' show TContentDirection;
 import '../checkbox/t_selection_card.dart';
+import '../divider/t_divider.dart';
+import 't_radio_theme_data.dart';
 
+/// 自定义单选框指示器构建器。
 typedef TRadioIconBuilder = Widget Function(
   BuildContext context,
   bool selected,
   bool disabled,
 );
 
-enum TRadioSize { small, medium, large }
+/// 单选框指示器尺寸。
+enum TRadioSize {
+  /// 小尺寸。
+  small,
+
+  /// 中尺寸。
+  medium,
+
+  /// 大尺寸。
+  large,
+}
 
 @immutable
+
+/// 单选框组的数据项。
 class TRadioOption<T> {
   const TRadioOption({
+    /// 选项值。
     required this.value,
+
+    /// 主文案。
     required this.label,
+
+    /// 副文案。
     this.subTitle,
+
+    /// 是否禁用该项。
     this.disabled = false,
   });
 
+  /// 选项值。
   final T value;
+
+  /// 主文案。
   final String label;
+
+  /// 副文案。
   final String? subTitle;
+
+  /// 是否禁用该项。
   final bool disabled;
 }
 
+/// 自定义单选框组数据项构建器。
 typedef TRadioOptionBuilder<T> = Widget Function(
   BuildContext context,
   TRadioOption<T> option,
@@ -35,35 +70,82 @@ typedef TRadioOptionBuilder<T> = Widget Function(
   bool disabled,
 );
 
-/// Strictly controlled radio item following Material value/groupValue semantics.
+/// 遵循 Material value/groupValue 语义的严格受控单选框。
 class TRadio<T> extends StatelessWidget {
   const TRadio({
     super.key,
+
+    /// 当前选项值。
     required this.value,
+
+    /// 组内受控选中值。
     required this.groupValue,
+
+    /// 选中值变更回调；为 null 时禁用。
     this.onChanged,
+
+    /// 主标题文案。
     this.title,
+
+    /// 副标题文案。
     this.subTitle,
+
+    /// 单选框尺寸。
     this.size = TRadioSize.medium,
+
+    /// 是否使用卡片模式。
     this.cardMode = false,
+
+    /// 是否显示底部分割线。
     this.showDivider = false,
+
+    /// 控件与文案排列方向。
     this.contentDirection = TContentDirection.right,
+
+    /// 主标题最大行数。
     this.titleMaxLines = 1,
+
+    /// 副标题最大行数。
     this.subTitleMaxLines = 1,
+
+    /// 自定义单选框指示器。
     this.customIconBuilder,
   });
 
+  /// 当前选项值。
   final T value;
+
+  /// 组内受控选中值。
   final T? groupValue;
+
+  /// 选中值变更回调；为 null 时禁用。
   final ValueChanged<T>? onChanged;
+
+  /// 主标题文案。
   final String? title;
+
+  /// 副标题文案。
   final String? subTitle;
+
+  /// 单选框尺寸。
   final TRadioSize size;
+
+  /// 是否使用卡片模式。
   final bool cardMode;
+
+  /// 是否显示底部分割线。
   final bool showDivider;
+
+  /// 控件与文案排列方向。
   final TContentDirection contentDirection;
+
+  /// 主标题最大行数。
   final int titleMaxLines;
+
+  /// 副标题最大行数。
   final int subTitleMaxLines;
+
+  /// 自定义单选框指示器。
   final TRadioIconBuilder? customIconBuilder;
 
   bool get _selected => value == groupValue;
@@ -266,31 +348,70 @@ class _TRadioIndicatorPainter extends CustomPainter {
   }
 }
 
-/// Data-driven, strictly controlled radio group.
+/// 数据驱动且严格受控的单选框组。
 class TRadioGroup<T> extends StatelessWidget {
   const TRadioGroup({
     super.key,
+
+    /// 受控选中值。
     required this.value,
+
+    /// 单选框数据项。
     required this.options,
+
+    /// 选中值变更回调；为 null 时整组禁用。
     this.onChanged,
+
+    /// 排列方向。
     this.direction = Axis.vertical,
+
+    /// 每行列数，必须大于 0。
     this.columns = 1,
+
+    /// 是否使用卡片模式。
     this.cardMode = false,
+
+    /// 是否显示项间分割线。
     this.showDivider = false,
+
+    /// 控件与文案排列方向。
     this.contentDirection = TContentDirection.right,
+
+    /// 单选框尺寸。
     this.size = TRadioSize.medium,
+
+    /// 自定义数据项视觉；交互仍由组接管。
     this.itemBuilder,
   }) : assert(columns > 0);
 
+  /// 受控选中值。
   final T? value;
+
+  /// 单选框数据项。
   final List<TRadioOption<T>> options;
+
+  /// 选中值变更回调；为 null 时整组禁用。
   final ValueChanged<T>? onChanged;
+
+  /// 排列方向。
   final Axis direction;
+
+  /// 每行列数。
   final int columns;
+
+  /// 是否使用卡片模式。
   final bool cardMode;
+
+  /// 是否显示项间分割线。
   final bool showDivider;
+
+  /// 控件与文案排列方向。
   final TContentDirection contentDirection;
+
+  /// 单选框尺寸。
   final TRadioSize size;
+
+  /// 自定义数据项视觉；交互仍由组接管。
   final TRadioOptionBuilder<T>? itemBuilder;
 
   @override

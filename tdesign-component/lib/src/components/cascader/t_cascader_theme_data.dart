@@ -2,45 +2,87 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-/// TCascader 组件级 ThemeExtension
+/// 级联导航展示形态。
+enum TCascaderVariant {
+  /// 纵向步骤导航。
+  step,
+
+  /// 横向标签导航。
+  tab,
+}
+
+/// TCascader 组件级 ThemeExtension。
 class TCascaderThemeData extends ThemeExtension<TCascaderThemeData> {
-  /// 展示风格
-  final TCascaderVariant? variant;
-
-  /// 列视窗高度
-  final double? columnHeight;
-
-  /// 背景颜色
-  final Color? panelColor;
-
-  /// 面板圆角
-  final double? panelRadius;
-
-  /// 标题文案
-  final String? title;
-
   const TCascaderThemeData({
-    this.variant,
-    this.columnHeight,
-    this.panelColor,
-    this.panelRadius,
-    this.title,
+    /// 组件高度。
+    this.height,
+
+    /// 背景色。
+    this.backgroundColor,
+
+    /// 圆角。
+    this.borderRadius,
+
+    /// 普通文案样式。
+    this.textStyle,
+
+    /// 当前选中文案样式。
+    this.activeTextStyle,
+
+    /// 禁用文案样式。
+    this.disabledTextStyle,
+
+    /// 导航区域内边距。
+    this.navigationPadding,
+
+    /// 分隔线颜色。
+    this.dividerColor,
   });
+
+  /// 组件高度。
+  final double? height;
+
+  /// 背景色。
+  final Color? backgroundColor;
+
+  /// 圆角。
+  final double? borderRadius;
+
+  /// 普通文案样式。
+  final TextStyle? textStyle;
+
+  /// 当前选中文案样式。
+  final TextStyle? activeTextStyle;
+
+  /// 禁用文案样式。
+  final TextStyle? disabledTextStyle;
+
+  /// 导航区域内边距。
+  final EdgeInsetsGeometry? navigationPadding;
+
+  /// 分隔线颜色。
+  final Color? dividerColor;
 
   @override
   TCascaderThemeData copyWith({
-    TCascaderVariant? variant,
-    double? columnHeight,
-    Color? panelColor,
-    double? panelRadius,
-    String? title,
+    double? height,
+    Color? backgroundColor,
+    double? borderRadius,
+    TextStyle? textStyle,
+    TextStyle? activeTextStyle,
+    TextStyle? disabledTextStyle,
+    EdgeInsetsGeometry? navigationPadding,
+    Color? dividerColor,
   }) {
     return TCascaderThemeData(
-      variant: variant ?? this.variant,
-      columnHeight: columnHeight ?? this.columnHeight,
-      panelColor: panelColor ?? this.panelColor,
-      panelRadius: panelRadius ?? this.panelRadius,
-      title: title ?? this.title,
+      height: height ?? this.height,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      borderRadius: borderRadius ?? this.borderRadius,
+      textStyle: textStyle ?? this.textStyle,
+      activeTextStyle: activeTextStyle ?? this.activeTextStyle,
+      disabledTextStyle: disabledTextStyle ?? this.disabledTextStyle,
+      navigationPadding: navigationPadding ?? this.navigationPadding,
+      dividerColor: dividerColor ?? this.dividerColor,
     );
   }
 
@@ -50,14 +92,17 @@ class TCascaderThemeData extends ThemeExtension<TCascaderThemeData> {
       return this;
     }
     return TCascaderThemeData(
-      variant: t < 0.5 ? variant : other.variant,
-      columnHeight: lerpDouble(columnHeight, other.columnHeight, t),
-      panelColor: Color.lerp(panelColor, other.panelColor, t),
-      panelRadius: lerpDouble(panelRadius, other.panelRadius, t),
-      title: t < 0.5 ? title : other.title,
+      height: lerpDouble(height, other.height, t),
+      backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
+      borderRadius: lerpDouble(borderRadius, other.borderRadius, t),
+      textStyle: TextStyle.lerp(textStyle, other.textStyle, t),
+      activeTextStyle:
+          TextStyle.lerp(activeTextStyle, other.activeTextStyle, t),
+      disabledTextStyle:
+          TextStyle.lerp(disabledTextStyle, other.disabledTextStyle, t),
+      navigationPadding: EdgeInsetsGeometry.lerp(
+          navigationPadding, other.navigationPadding, t),
+      dividerColor: Color.lerp(dividerColor, other.dividerColor, t),
     );
   }
 }
-
-/// 级联选择器形态
-enum TCascaderVariant { step, tab }

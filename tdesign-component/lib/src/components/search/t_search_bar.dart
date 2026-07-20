@@ -1,380 +1,343 @@
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
-import '../../../tdesign_flutter.dart';
-import '../../util/context_extension.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
+import 't_search_bar_theme_data.dart';
 
-typedef TSearchBarClearEvent = bool? Function(String value);
-
+/// v1 搜索输入框。
+///
+/// 文本控制遵循 D 类：优先使用 [controller]，无 controller 时内部创建控制器；
+/// [initialValue] 仅用于初始化内部控制器。
 class TSearchBar extends StatefulWidget {
   const TSearchBar({
-    Key? key,
-    this.hintText,
-    this.style = TSearchBarVariant.square,
-    this.alignment = TSearchBarAlignment.left,
-    this.onChanged,
-    this.onSubmitted,
-    this.onEditComplete,
-    this.onTapOutside,
-    this.autoHeight = false,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-    this.autoFocus = false,
-    this.mediumStyle = false,
-    this.cursorHeight,
-    this.needCancel = false,
+    super.key,
+
+    /// 文本控制器。
     this.controller,
-    this.backgroundColor,
-    this.action = '',
-    this.onActionClick,
-    this.onClearClick,
+
+    /// 初始文本；仅在未传 [controller] 时初始化一次。
+    this.initialValue,
+
+    /// 文本变化通知。
+    this.onChanged,
+
+    /// 提交回调。
+    this.onSubmitted,
+
+    /// 是否可交互。
+    this.enabled = true,
+
+    /// 是否只读。
+    this.readOnly = false,
+
+    /// 占位提示。
+    this.hintText,
+
+    /// 是否显示取消按钮。
+    this.needCancel = false,
+
+    /// 取消按钮文案。
+    this.cancelText = '取消',
+
+    /// 取消按钮点击回调。
+    this.onCancelPressed,
+
+    /// 清除按钮点击回调。
+    this.onClearPressed,
+
+    /// 是否自动聚焦。
+    this.autoFocus = false,
+
+    /// 键盘动作。
+    this.inputAction = TextInputAction.search,
+
+    /// 输入框装饰逃逸口。
+    this.decoration,
+
+    /// 自定义焦点。
     this.focusNode,
-    this.inputAction,
-    this.enabled,
-    this.readOnly,
-  }) : super(key: key);
+  });
 
-  /// 预设文案
-  final String? hintText;
-
-  /// 样式
-  final TSearchBarVariant? style;
-
-  /// 对齐方式，居中或这头部对齐
-  final TSearchBarAlignment? alignment;
-
-  /// 背景颜色
-  final Color? backgroundColor;
-
-  /// 是否自动计算高度
-  final bool autoHeight;
-
-  /// 内部填充
-  final EdgeInsets padding;
-
-  /// 是否自动获取焦点
-  final bool autoFocus;
-
-  /// 是否在导航栏中的样式
-  final bool mediumStyle;
-
-  /// 光标的高
-  final double? cursorHeight;
-
-  /// 是否需要取消按钮
-  final bool needCancel;
-
-  /// 控制器
+  /// 文本控制器。
   final TextEditingController? controller;
 
-  /// 文字改变回调
+  /// 初始文本；仅在未传 [controller] 时初始化一次。
+  final String? initialValue;
+
+  /// 文本变化通知。
   final ValueChanged<String>? onChanged;
 
-  /// 提交回调
+  /// 提交回调。
   final ValueChanged<String>? onSubmitted;
 
-  /// 编辑完成回调
-  final VoidCallback? onEditComplete;
+  /// 是否可交互。
+  final bool enabled;
 
-  /// 点击输入框外部回调
-  final TapRegionCallback? onTapOutside;
+  /// 是否只读。
+  final bool readOnly;
 
-  /// 自定义操作文字
-  final String action;
+  /// 占位提示。
+  final String? hintText;
 
-  /// 自定义操作回调
-  final ValueChanged<String>? onActionClick;
+  /// 是否显示取消按钮。
+  final bool needCancel;
 
-  /// 自定义操作回调
-  final TSearchBarClearEvent? onClearClick;
+  /// 取消按钮文案。
+  final String cancelText;
 
-  /// 自定义焦点
+  /// 取消按钮点击回调。
+  final VoidCallback? onCancelPressed;
+
+  /// 清除按钮点击回调。
+  final VoidCallback? onClearPressed;
+
+  /// 是否自动聚焦。
+  final bool autoFocus;
+
+  /// 键盘动作。
+  final TextInputAction inputAction;
+
+  /// 输入框装饰逃逸口。
+  final InputDecoration? decoration;
+
+  /// 自定义焦点。
   final FocusNode? focusNode;
 
-  /// 键盘动作类型
-  final TextInputAction? inputAction;
-
-  /// 是否禁用
-  final bool? enabled;
-
-  /// 是否只读
-  final bool? readOnly;
-
   @override
-  State<StatefulWidget> createState() => _TSearchBarState();
+  State<TSearchBar> createState() => _TSearchBarState();
 }
 
-class _TSearchBarState extends State<TSearchBar> with TickerProviderStateMixin {
-  late FocusNode focusNode;
-  late TextEditingController controller;
-  final GlobalKey _textFieldKey = GlobalKey();
+class _TSearchBarState extends State<TSearchBar> {
   late final TextEditingController _internalController;
   late final FocusNode _internalFocusNode;
+  late TextEditingController _controller;
+  late FocusNode _focusNode;
 
-  bool clearBtnHide = true;
-  bool cancelBtnHide = true;
+  bool _hasText = false;
+  bool _hasFocus = false;
 
   TextEditingController get _effectiveController =>
       widget.controller ?? _internalController;
 
+  FocusNode get _effectiveFocusNode => widget.focusNode ?? _internalFocusNode;
+
   @override
   void initState() {
     super.initState();
-    _internalController = TextEditingController();
+    _internalController = TextEditingController(text: widget.initialValue);
     _internalFocusNode = FocusNode();
-    controller = _effectiveController;
-    controller.addListener(_handleControllerChanged);
-    _updateClearBtnVisible(controller.text.isNotEmpty, notify: false);
-
-    focusNode = widget.focusNode ?? _internalFocusNode;
-    focusNode.addListener(_handleFocusChanged);
-    cancelBtnHide = !focusNode.hasFocus;
-  }
-
-  void _handleControllerChanged() {
-    _updateClearBtnVisible(controller.text.isNotEmpty);
-  }
-
-  void _handleFocusChanged() {
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      cancelBtnHide = !focusNode.hasFocus;
-    });
-  }
-
-  void _bindControllerIfNeeded() {
-    final nextController = _effectiveController;
-    if (controller == nextController) {
-      return;
-    }
-    controller.removeListener(_handleControllerChanged);
-    controller = nextController;
-    controller.addListener(_handleControllerChanged);
-    _updateClearBtnVisible(controller.text.isNotEmpty, notify: false);
-  }
-
-  void _bindFocusNodeIfNeeded() {
-    final nextFocusNode = widget.focusNode ?? _internalFocusNode;
-    if (focusNode == nextFocusNode) {
-      return;
-    }
-    focusNode.removeListener(_handleFocusChanged);
-    focusNode = nextFocusNode;
-    focusNode.addListener(_handleFocusChanged);
-    cancelBtnHide = !focusNode.hasFocus;
+    _controller = _effectiveController;
+    _focusNode = _effectiveFocusNode;
+    _hasText = _controller.text.isNotEmpty;
+    _hasFocus = _focusNode.hasFocus;
+    _controller.addListener(_handleTextChanged);
+    _focusNode.addListener(_handleFocusChanged);
   }
 
   @override
   void didUpdateWidget(covariant TSearchBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _bindControllerIfNeeded();
-    _bindFocusNodeIfNeeded();
+    _syncController();
+    _syncFocusNode();
   }
 
   @override
   void dispose() {
-    controller.removeListener(_handleControllerChanged);
-    focusNode.removeListener(_handleFocusChanged);
+    _controller.removeListener(_handleTextChanged);
+    _focusNode.removeListener(_handleFocusChanged);
     _internalController.dispose();
     _internalFocusNode.dispose();
     super.dispose();
   }
 
-  void _updateClearBtnVisible(bool visible, {bool notify = true}) {
-    void update() {
-      clearBtnHide = !visible;
-    }
-
-    if (!notify || !mounted) {
-      update();
-      return;
-    }
-    setState(update);
-  }
-
-  void _cleanInputText() {
-    if (!(widget.onClearClick?.call(controller.text) ?? false)) {
-      // 如果外部没处理,则走默认清除逻辑
-      controller.clear();
-    }
-  }
-
-  Font? getSize(BuildContext context) {
-    return widget.mediumStyle
-        ? context.tTheme.fontBodyMedium
-        : context.tTheme.fontBodyLarge;
-  }
-
-  Widget actionBtn(BuildContext context, String? text,
-      {String? action, ValueChanged<String>? onActionClick}) {
-    return GestureDetector(
-      onTap: () {
-        onActionClick!(text ?? '');
-      },
-      child: Container(
-        padding: const EdgeInsets.only(left: 16),
-        child: Text(action!,
-            style: TextStyle(
-                fontSize: getSize(context)?.size,
-                color: context.tTheme.brandNormalColor)),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    // P1: 组件级 ThemeExtension
+    final token = context.tTheme;
     final theme = Theme.of(context).extension<TSearchBarThemeData>();
-    final effectiveStyle =
-        widget.style ?? theme?.defaultStyle ?? TSearchBarVariant.square;
-    final effectiveAlignment =
-        widget.alignment ?? theme?.defaultAlignment ?? TSearchBarAlignment.left;
-    final effectiveBgColor = widget.backgroundColor ??
-        theme?.backgroundColor ??
-        context.tTheme.bgColorContainer;
-    final effectiveCursorHeight = widget.cursorHeight ?? theme?.cursorHeight;
-    final isEnabled = widget.enabled ?? true;
+    final variant = theme?.variant ?? TSearchBarVariant.square;
+    final textAlignment = theme?.textAlignment ?? TSearchBarAlignment.left;
+    final padding = theme?.padding ??
+        const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+    final backgroundColor = theme?.backgroundColor ?? token.bgColorContainer;
+    final autoHeight = theme?.autoHeight ?? false;
+    final fieldHeight = autoHeight ? null : 40.0;
+    final inputDecoration = _buildDecoration(context);
+    final textStyle = TextStyle(
+      textBaseline: TextBaseline.ideographic,
+      fontSize: token.fontBodyLarge?.size,
+      color: widget.enabled ? token.textColorPrimary : token.textDisabledColor,
+    );
 
-    final searchBar = Container(
-      padding: widget.padding,
-      height: widget.autoHeight ? double.infinity : 56,
-      color: effectiveBgColor,
-      child: Stack(alignment: AlignmentDirectional.center, children: [
-        Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Container(
-                height: double.infinity,
-                decoration: BoxDecoration(
-                    color: isEnabled
-                        ? context.tTheme.bgColorSecondaryContainer
-                        : context.tTheme.bgColorComponentDisabled,
-                    borderRadius: BorderRadius.circular(
-                        effectiveStyle == TSearchBarVariant.square ? 4 : 28)),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      width: 12,
+    return Semantics(
+      enabled: widget.enabled,
+      textField: true,
+      child: AnimatedOpacity(
+        opacity: widget.enabled ? 1 : 0.6,
+        duration: const Duration(milliseconds: 150),
+        child: AbsorbPointer(
+          absorbing: !widget.enabled,
+          child: Container(
+            padding: padding,
+            height: autoHeight ? null : 56,
+            color: backgroundColor,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: fieldHeight,
+                    decoration: BoxDecoration(
+                      color: widget.enabled
+                          ? token.bgColorSecondaryContainer
+                          : token.bgColorComponentDisabled,
+                      borderRadius: BorderRadius.circular(
+                        variant == TSearchBarVariant.square ? 4 : 28,
+                      ),
                     ),
-                    Icon(
-                      TIcons.search,
-                      size: widget.mediumStyle ? 20 : 24,
-                      color: context.tTheme.textColorPlaceholder,
-                    ),
-                    const Padding(padding: EdgeInsets.only(left: 3)),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 1),
-                        // 为了适配TextField与Text的差异，后续需要做通用适配
-                        child: TextField(
-                          key: _textFieldKey,
-                          controller: controller,
-                          autofocus: widget.autoFocus,
-                          cursorColor: context.tTheme.brandNormalColor,
-                          cursorHeight: effectiveCursorHeight,
-                          textAlign:
-                              effectiveAlignment == TSearchBarAlignment.center
-                                  ? TextAlign.center
-                                  : TextAlign.left,
-                          focusNode: focusNode,
-                          onChanged: widget.onChanged,
-                          onSubmitted: widget.onSubmitted,
-                          onEditingComplete: widget.onEditComplete,
-                          onTapOutside: widget.onTapOutside,
-                          style: TextStyle(
-                              textBaseline: TextBaseline.ideographic,
-                              fontSize: getSize(context)?.size,
-                              color: isEnabled
-                                  ? context.tTheme.textColorPrimary
-                                  : context.tTheme.textDisabledColor),
-                          decoration: InputDecoration(
-                            hintText: widget.hintText,
-                            hintStyle: TextStyle(
-                              fontSize: getSize(context)?.size,
-                              color: isEnabled
-                                  ? context.tTheme.textColorPlaceholder
-                                  : context.tTheme.textDisabledColor,
-                              textBaseline: TextBaseline.ideographic,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            hintMaxLines: 1,
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            isCollapsed: true,
-                            // filled: true,
-                            // fillColor: context.tTheme.bgColorSecondaryContainer,
-                          ),
-                          maxLines: 1,
-                          textInputAction: widget.inputAction,
-                          readOnly: widget.readOnly ?? false,
-                          enabled: isEnabled,
-                          cursorOpacityAnimates: false,
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 12),
+                        Icon(
+                          TIcons.search,
+                          size: 22,
+                          color: widget.enabled
+                              ? token.textColorPlaceholder
+                              : token.textDisabledColor,
                         ),
-                      ),
-                    ),
-                    const Padding(padding: EdgeInsets.only(right: 9)),
-                    Offstage(
-                      offstage: clearBtnHide,
-                      child: GestureDetector(
-                          onTap: () {
-                            _cleanInputText();
-                            if (widget.onChanged != null) {
-                              widget.onChanged!('');
-                            }
-                          },
-                          child: Icon(
-                            TIcons.close_circle_filled,
-                            size: widget.mediumStyle ? 17 : 21,
-                            color: context.tTheme.textColorPlaceholder,
-                          )),
-                    ),
-                    const Padding(padding: EdgeInsets.only(right: 9)),
-                  ],
-                ),
-              ),
-            ),
-            widget.action.isNotEmpty
-                ? actionBtn(
-                    context,
-                    controller.text,
-                    action: widget.action,
-                    onActionClick: widget.onActionClick ?? (String text) {},
-                  )
-                : Offstage(
-                    offstage: cancelBtnHide || !widget.needCancel,
-                    child: GestureDetector(
-                      onTap: () {
-                        _cleanInputText();
-                        if (widget.onChanged != null) {
-                          widget.onChanged!('');
-                        }
-                        focusNode.unfocus();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 16),
-                        child: Text(context.resource.cancel,
-                            style: TextStyle(
-                                fontSize: getSize(context)?.size,
-                                color: context.tTheme.brandNormalColor)),
-                      ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: TextField(
+                            controller: _controller,
+                            focusNode: _focusNode,
+                            autofocus: widget.autoFocus,
+                            enabled: widget.enabled,
+                            readOnly: widget.readOnly,
+                            onChanged: widget.onChanged,
+                            onSubmitted: widget.onSubmitted,
+                            textInputAction: widget.inputAction,
+                            cursorColor: token.brandNormalColor,
+                            cursorHeight: theme?.cursorHeight,
+                            textAlign:
+                                textAlignment == TSearchBarAlignment.center
+                                    ? TextAlign.center
+                                    : TextAlign.left,
+                            style: textStyle,
+                            decoration: inputDecoration,
+                            maxLines: 1,
+                            cursorOpacityAnimates: false,
+                          ),
+                        ),
+                        if (_hasText)
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints.tightFor(
+                              width: 36,
+                              height: 36,
+                            ),
+                            iconSize: 21,
+                            color: widget.enabled
+                                ? token.textColorPlaceholder
+                                : token.textDisabledColor,
+                            onPressed: _handleClear,
+                            icon: const Icon(TIcons.close_circle_filled),
+                          )
+                        else
+                          const SizedBox(width: 12),
+                      ],
                     ),
                   ),
-          ],
+                ),
+                if (widget.needCancel && _hasFocus)
+                  TextButton(
+                    onPressed: _handleCancel,
+                    child: Text(widget.cancelText),
+                  ),
+              ],
+            ),
+          ),
         ),
-      ]),
-    );
-    return Semantics(
-      enabled: isEnabled,
-      child: AnimatedOpacity(
-        opacity: isEnabled ? 1 : 0.6,
-        duration: const Duration(milliseconds: 150),
-        child: AbsorbPointer(absorbing: !isEnabled, child: searchBar),
       ),
     );
+  }
+
+  InputDecoration _buildDecoration(BuildContext context) {
+    final token = context.tTheme;
+    final base = widget.decoration ?? const InputDecoration();
+    return base.copyWith(
+      hintText: base.hintText ?? widget.hintText,
+      hintStyle: base.hintStyle ??
+          TextStyle(
+            fontSize: token.fontBodyLarge?.size,
+            color: widget.enabled
+                ? token.textColorPlaceholder
+                : token.textDisabledColor,
+            textBaseline: TextBaseline.ideographic,
+            overflow: TextOverflow.ellipsis,
+          ),
+      border: base.border ?? InputBorder.none,
+      enabledBorder: base.enabledBorder ?? InputBorder.none,
+      focusedBorder: base.focusedBorder ?? InputBorder.none,
+      disabledBorder: base.disabledBorder ?? InputBorder.none,
+      isCollapsed: base.isCollapsed,
+      contentPadding: base.contentPadding ?? EdgeInsets.zero,
+    );
+  }
+
+  void _syncController() {
+    final next = _effectiveController;
+    if (_controller == next) {
+      return;
+    }
+    _controller.removeListener(_handleTextChanged);
+    _controller = next;
+    _controller.addListener(_handleTextChanged);
+    _setHasText(_controller.text.isNotEmpty);
+  }
+
+  void _syncFocusNode() {
+    final next = _effectiveFocusNode;
+    if (_focusNode == next) {
+      return;
+    }
+    _focusNode.removeListener(_handleFocusChanged);
+    _focusNode = next;
+    _focusNode.addListener(_handleFocusChanged);
+    _setHasFocus(_focusNode.hasFocus);
+  }
+
+  void _handleTextChanged() {
+    _setHasText(_controller.text.isNotEmpty);
+  }
+
+  void _handleFocusChanged() {
+    _setHasFocus(_focusNode.hasFocus);
+  }
+
+  void _setHasText(bool value) {
+    if (_hasText == value) {
+      return;
+    }
+    setState(() => _hasText = value);
+  }
+
+  void _setHasFocus(bool value) {
+    if (_hasFocus == value) {
+      return;
+    }
+    setState(() => _hasFocus = value);
+  }
+
+  void _handleClear() {
+    _controller.clear();
+    widget.onClearPressed?.call();
+    widget.onChanged?.call('');
+  }
+
+  void _handleCancel() {
+    _controller.clear();
+    widget.onCancelPressed?.call();
+    widget.onChanged?.call('');
+    _focusNode.unfocus();
   }
 }

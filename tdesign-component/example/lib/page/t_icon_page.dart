@@ -199,8 +199,8 @@ class _TIconPageState extends State<TIconPage> {
             ),
           ),
           TSearchBar(
-            action: '搜索',
-            onActionClick: (text) {
+            hintText: '搜索',
+            onSubmitted: (text) {
               setState(() {
                 iconList = [];
                 isLoading = true;
@@ -221,11 +221,10 @@ class _TIconPageState extends State<TIconPage> {
                 });
               });
             },
-            onClearClick: (_) {
+            onClearPressed: () {
               setState(() {
                 iconList = TIcons.allIconsMap.entries.toList();
               });
-              return null;
             },
           ),
           TCell(

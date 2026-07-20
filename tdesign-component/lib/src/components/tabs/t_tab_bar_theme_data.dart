@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/basic.dart';
 
-/// TabBar 形态枚举（替代 0.2.x TTabsBarOutlineType / TTabOutlineType）
+/// TabsBar 形态枚举。
 enum TTabsBarVariant {
   /// 填充样式
   filled,

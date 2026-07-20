@@ -28,7 +28,6 @@ v1.0 **不暴露** Widget 级统一 `disabled` / `enable`；按控制类映射�
 | `TInput` 不可编辑 | `enabled: false` |
 | `TInput` 只读 | `readOnly: true` |
 | `TStepper(disabled: true)` | `onChanged: null` |
-| `TStepper(disableInput: true)` | 中间框 `enabled: false` |
 | `TRate(disabled: true)` | `onChanged: null` |
 | `TPicker(disabled: true)` | `onChanged: null` |
 | `TCell(disabled: true)` | `onTap: null` |
@@ -65,7 +64,6 @@ Widget 级：`onChanged: null` · 数据项级：`*.disabled` **KEEP**。
 | `enabledReplaceType` | Upload 替换类型 |
 | `disableSelect` | SelectTag 样式模式 |
 | `disableTextStyle` | Button 禁用态样式 |
-| `disableInput` | Stepper 仅禁输入框 |
 | `readOnly`（Steps） | 步骤不可点击 |
 
 ---
@@ -77,7 +75,7 @@ Widget 级：`onChanged: null` · 数据项级：`*.disabled` **KEEP**。
 | TButton | `disabled` | `onPressed: null` |
 | TSwitch / TCheckbox / TRadio | `enable` | `onChanged: null` |
 | TInput / TTextarea | — | **新增** `enabled` |
-| TStepper | `disabled` / `disableInput` | `onChanged: null` / 输入框 `enabled: false` |
+| TStepper | `disabled` | `onChanged: null` |
 | TCell | `disabled` | `onTap: null` |
 | TRate | `disabled` | `onChanged: null` |
 | TTag | `disable` | Theme 灰态 |

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/src/components/date_time_picker/t_date_time_picker_wheel.dart';
 import 'package:tdesign_flutter/src/components/date_time_picker/t_date_time_picker_internal.dart';
-import 'package:tdesign_flutter/src/components/date_time_picker/t_date_time_picker_enums.dart';
-import 'package:tdesign_flutter/src/components/date_time_picker/t_date_time_picker_column.dart';
-import 'package:tdesign_flutter/src/components/date_time_picker/t_date_time_picker_model.dart';
+import 'package:tdesign_flutter/src/components/date_time_picker/t_date_time_picker_wheel.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 DateTimePickerSnapshot makeSnapshot([
@@ -81,7 +78,7 @@ void main() {
         start: DateTime(2020, 1, 1),
         end: DateTime(2030, 12, 31),
         showWeek: true,
-        steps: DateTimePickerSteps(
+        steps: const DateTimePickerSteps(
           year: 1,
           month: 1,
           day: 1,

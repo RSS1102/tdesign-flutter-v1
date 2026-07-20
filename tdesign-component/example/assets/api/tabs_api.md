@@ -1,5 +1,5 @@
 ## API
-### TTabBar
+### TTabsBar
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -29,7 +29,7 @@
 | unSelectedBgColor | Color? | - | 未选中背景色，只有 variant 为 capsule 时有效（可覆盖 Theme） |
 | unselectedLabelColor | Color? | - | tabBar未选标签颜色（可覆盖 Theme） |
 | unselectedLabelStyle | TextStyle? | - | unselectedLabel字体（可覆盖 Theme） |
-| variant | TTabBarVariant | TTabBarVariant.filled | 选项卡样式（可覆盖 Theme） |
+| variant | TTabsBarVariant | TTabsBarVariant.filled | 选项卡样式（可覆盖 Theme） |
 | width | double? | - | tabBar宽度 |
 
 
@@ -51,7 +51,7 @@
 | textMargin | EdgeInsetsGeometry? | - | 文本边距（可覆盖 Theme） |
 
 
-### TTabBarView
+### TTabsBarView
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |

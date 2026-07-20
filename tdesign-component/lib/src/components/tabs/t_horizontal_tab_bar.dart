@@ -10,7 +10,12 @@ import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
+import 't_tab.dart';
+import 't_tab_bar_theme_data.dart';
 
 const double _kTabHeight = 46.0;
 const double _kTextAndIconTabHeight = 72.0;
@@ -124,7 +129,7 @@ class THorizontalTabBar extends StatefulWidget implements PreferredSizeWidget {
     this.enableFeedback,
     this.onTap,
     this.physics,
-    this.outlineType,
+    this.variant,
     this.backgroundColor,
     this.selectedBgColor,
     this.unSelectedBgColor,
@@ -314,7 +319,7 @@ class THorizontalTabBar extends StatefulWidget implements PreferredSizeWidget {
   final ScrollPhysics? physics;
 
   /// 选项卡样式
-  final TTabsBarVariant? outlineType;
+  final TTabsBarVariant? variant;
 
   /// tabBar背景色
   final Color? backgroundColor;
@@ -558,9 +563,10 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
       return tabBarTheme.indicator!;
     }
 
-    // ignore: deprecated_member_use
-    var color = widget.indicatorColor ?? Theme.of(context).indicatorColor;
-    // ThemeData tries to avoid this by having indicatorColor avoid being the
+    var color = widget.indicatorColor ??
+        tabBarTheme.indicatorColor ??
+        Theme.of(context).colorScheme.primary;
+    // Flutter TabBar defaults try to avoid having indicatorColor match the
     // primaryColor. However, it's possible that the tab bar is on a
     // Material that isn't the primaryColor. In that case, if the indicator
     // color ends up matching the material's color, then this overrides it.
@@ -785,7 +791,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   }
 
   BoxDecoration? _getContentDecorateInner(int index) {
-    if (widget.outlineType == TTabsBarVariant.capsule) {
+    if (widget.variant == TTabsBarVariant.capsule) {
       return BoxDecoration(
           color: index == _currentIndex
               ? (widget.selectedBgColor ?? context.tTheme.brandColor1)
@@ -796,11 +802,11 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   }
 
   BoxDecoration? _getContentDecorateOuter(int index) {
-    if (widget.outlineType == TTabsBarVariant.capsule) {
+    if (widget.variant == TTabsBarVariant.capsule) {
       return BoxDecoration(
         color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
       );
-    } else if (widget.outlineType == TTabsBarVariant.card) {
+    } else if (widget.variant == TTabsBarVariant.card) {
       if (index == _currentIndex) {
         return BoxDecoration(
             color: widget.backgroundColor ?? context.tTheme.bgColorContainer,
@@ -826,7 +832,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
   }
 
   Color? _getBackgroundColor(int index) {
-    if (widget.outlineType == TTabsBarVariant.card) {
+    if (widget.variant == TTabsBarVariant.card) {
       if (index == _currentIndex) {
         return context.tTheme.bgColorSecondaryContainer;
       }
@@ -896,7 +902,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
       }
       // tab.size=20;
       EdgeInsetsGeometry? capsuleDefaultPadding;
-      if (widget.outlineType == TTabsBarVariant.capsule) {
+      if (widget.variant == TTabsBarVariant.capsule) {
         capsuleDefaultPadding = const EdgeInsets.all(4);
       }
       return Container(
@@ -979,7 +985,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
             enableFeedback: widget.enableFeedback ?? true,
             overlayColor: widget.overlayColor,
             child: Container(
-              padding: widget.outlineType == TTabsBarVariant.filled
+              padding: widget.variant == TTabsBarVariant.filled
                   ? EdgeInsets.only(bottom: widget.indicatorWeight)
                   : EdgeInsets.zero,
               child: Stack(

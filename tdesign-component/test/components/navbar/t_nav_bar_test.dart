@@ -252,9 +252,9 @@ void main() {
     testWidgets('belowTitleWidget 渲染', (tester) async {
       // 覆盖 284-286（belowTitleWidget 非空 → Column 渲染）
       await tester.pumpWidget(wrapWithTheme(
-        TNavBar(
+        const TNavBar(
           title: 'below',
-          belowTitleWidget: const Text('下方内容'),
+          belowTitleWidget: Text('下方内容'),
         ),
       ));
       expect(find.text('下方内容'), findsOneWidget);

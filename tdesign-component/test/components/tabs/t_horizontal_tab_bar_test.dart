@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart'
     hide TabPageSelector, TabPageSelectorIndicator;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'package:tdesign_flutter/src/components/tabs/t_horizontal_tab_bar.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// THorizontalTabBar / THorizontalTabBarView / TabPageSelector 测试。
 
@@ -14,7 +14,9 @@ Future<void> expectBuildFlutterError(
   try {
     await tester.pumpWidget(widget);
   } catch (e) {
-    if (e is FlutterError) err = e;
+    if (e is FlutterError) {
+      err = e;
+    }
   }
   err ??= tester.takeException() as FlutterError?;
   expect(err, isA<FlutterError>());
@@ -213,24 +215,24 @@ void main() {
       expect(find.byType(THorizontalTabBar), findsOneWidget);
     });
 
-    testWidgets('outlineType: capsule', (tester) async {
+    testWidgets('variant: capsule', (tester) async {
       final c = TabController(length: 3, vsync: const TestVSync());
       addTearDown(c.dispose);
       await tester.pumpWidget(wrapBar(THorizontalTabBar(
         tabs: buildTabs(3),
         controller: c,
-        outlineType: TTabBarVariant.capsule,
+        variant: TTabsBarVariant.capsule,
       )));
       expect(find.byType(THorizontalTabBar), findsOneWidget);
     });
 
-    testWidgets('outlineType: card（选中/未选中装饰分支）', (tester) async {
+    testWidgets('variant: card（选中/未选中装饰分支）', (tester) async {
       final c = TabController(length: 3, vsync: const TestVSync());
       addTearDown(c.dispose);
       await tester.pumpWidget(wrapBar(THorizontalTabBar(
         tabs: buildTabs(3),
         controller: c,
-        outlineType: TTabBarVariant.card,
+        variant: TTabsBarVariant.card,
         selectedBgColor: Colors.blue,
         unSelectedBgColor: Colors.grey,
         backgroundColor: Colors.white,
@@ -350,18 +352,18 @@ void main() {
       expect(find.byType(THorizontalTabBar), findsOneWidget);
     });
 
-    testWidgets('didUpdateWidget：切换 outlineType 重建', (tester) async {
+    testWidgets('didUpdateWidget：切换 variant 重建', (tester) async {
       final c = TabController(length: 3, vsync: const TestVSync());
       addTearDown(c.dispose);
       await tester.pumpWidget(wrapBar(THorizontalTabBar(
         tabs: buildTabs(3),
         controller: c,
-        outlineType: TTabBarVariant.filled,
+        variant: TTabsBarVariant.filled,
       )));
       await tester.pumpWidget(wrapBar(THorizontalTabBar(
         tabs: buildTabs(3),
         controller: c,
-        outlineType: TTabBarVariant.card,
+        variant: TTabsBarVariant.card,
       )));
       expect(find.byType(THorizontalTabBar), findsOneWidget);
     });
@@ -478,13 +480,13 @@ void main() {
       expect(find.byType(THorizontalTabBar), findsOneWidget);
     });
 
-    testWidgets('card outlineType 选中非首项时装饰分支（822）', (tester) async {
+    testWidgets('card variant 选中非首项时装饰分支（822）', (tester) async {
       final c = TabController(length: 3, vsync: const TestVSync());
       addTearDown(c.dispose);
       await tester.pumpWidget(wrapBar(THorizontalTabBar(
         tabs: buildTabs(3),
         controller: c,
-        outlineType: TTabBarVariant.card,
+        variant: TTabsBarVariant.card,
         selectedBgColor: Colors.blue,
         unSelectedBgColor: Colors.grey,
         backgroundColor: Colors.white,
@@ -686,8 +688,8 @@ void main() {
 
   group('TabPageSelector / TabPageSelectorIndicator', () {
     testWidgets('TabPageSelectorIndicator 直接渲染', (tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: const TabPageSelectorIndicator(
+      await tester.pumpWidget(const MaterialApp(
+        home: TabPageSelectorIndicator(
           backgroundColor: Colors.red,
           borderColor: Colors.blue,
           size: 12,

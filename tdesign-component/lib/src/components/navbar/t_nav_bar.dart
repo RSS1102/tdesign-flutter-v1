@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
+
+import '../../theme/basic.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
+import 't_nav_bar_theme_data.dart';
 
 /// NavBar 操作项回调类型
 typedef TBarItemAction = void Function();

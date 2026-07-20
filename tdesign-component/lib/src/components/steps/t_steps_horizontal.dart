@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import 't_steps.dart';
 import 't_steps_horizontal_item.dart';
 
 /// Steps步骤条，水平步骤

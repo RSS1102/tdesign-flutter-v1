@@ -9,8 +9,8 @@ void main() {
     testWidgets('single 模式可构建并渲染标题/单元格', (tester) async {
       await tester.pumpWidget(wrap(TCalendar(
         onChanged: (_) {},
-        type: TCalendarVariant.single,
-        initialValue: [DateTime(2026, 6, 15)],
+        variant: TCalendarVariant.single,
+        value: [DateTime(2026, 6, 15)],
       )));
       expect(find.byType(TCalendar), findsOneWidget);
       // 月标题构建器默认输出包含年份
@@ -20,8 +20,8 @@ void main() {
     testWidgets('multiple 模式可构建', (tester) async {
       await tester.pumpWidget(wrap(TCalendar(
         onChanged: (_) {},
-        type: TCalendarVariant.multiple,
-        initialValue: [DateTime(2026, 6, 15), DateTime(2026, 6, 16)],
+        variant: TCalendarVariant.multiple,
+        value: [DateTime(2026, 6, 15), DateTime(2026, 6, 16)],
       )));
       expect(find.byType(TCalendar), findsOneWidget);
     });
@@ -29,16 +29,17 @@ void main() {
     testWidgets('range 模式可构建', (tester) async {
       await tester.pumpWidget(wrap(TCalendar(
         onChanged: (_) {},
-        type: TCalendarVariant.range,
-        initialValue: [DateTime(2026, 6, 15), DateTime(2026, 6, 20)],
+        variant: TCalendarVariant.range,
+        value: [DateTime(2026, 6, 15), DateTime(2026, 6, 20)],
       )));
       expect(find.byType(TCalendar), findsOneWidget);
     });
 
     testWidgets('cellBuilder 自定义整格可构建', (tester) async {
       await tester.pumpWidget(wrap(TCalendar(
+        value: const [],
         onChanged: (_) {},
-        type: TCalendarVariant.single,
+        variant: TCalendarVariant.single,
         cellBuilder: (context, model) => Container(
           key: const Key('customCell'),
           child: Text('${model.date.day}'),
@@ -49,8 +50,9 @@ void main() {
 
     testWidgets('subtitleBuilder 副标题可构建', (tester) async {
       await tester.pumpWidget(wrap(TCalendar(
+        value: const [],
         onChanged: (_) {},
-        type: TCalendarVariant.single,
+        variant: TCalendarVariant.single,
         subtitleBuilder: (context, model) => const Text('节'),
       )));
       expect(find.text('节'), findsWidgets);
@@ -60,10 +62,9 @@ void main() {
       await tester.pumpWidget(wrap(TCalendar(
         onChanged: (_) {},
         firstDayOfWeek: 1,
-        height: 320,
         minDate: DateTime(2026, 1, 1),
         maxDate: DateTime(2026, 12, 31),
-        initialValue: [DateTime(2026, 6, 15)],
+        value: [DateTime(2026, 6, 15)],
       )));
       expect(find.byType(TCalendar), findsOneWidget);
     });
@@ -72,8 +73,8 @@ void main() {
       List<DateTime>? changed;
       await tester.pumpWidget(wrap(TCalendar(
         onChanged: (v) => changed = v,
-        type: TCalendarVariant.single,
-        initialValue: [DateTime(2026, 6, 15)],
+        variant: TCalendarVariant.single,
+        value: [DateTime(2026, 6, 15)],
       )));
       await tester.pumpAndSettle();
       // 日历为 1970-2100 的滚动列表，first 命中的 '15' 可能在视口外，

@@ -418,8 +418,10 @@ const double _kTDCupertinoSwitchDisabledOpacity = 0.5;
 // Same size as if there is a child widget on thumb.
 const double _kSwitchOnThumbRadius = 11;
 const double _kSwitchOffThumbRadius = 8;
-const double _kSwitchOnThumbMargin = (_kTrackHeight - _kSwitchOnThumbRadius * 2) / 2;
-const double _kSwitchOffThumbMargin = (_kTrackHeight - _kSwitchOffThumbRadius * 2) / 2;
+const double _kSwitchOnThumbMargin =
+    (_kTrackHeight - _kSwitchOnThumbRadius * 2) / 2;
+const double _kSwitchOffThumbMargin =
+    (_kTrackHeight - _kSwitchOffThumbRadius * 2) / 2;
 
 const Duration _kReactionDuration = Duration(milliseconds: 300);
 const Duration _kToggleDuration = Duration(milliseconds: 200);
@@ -524,14 +526,15 @@ class _RenderTDCupertinoSwitch extends RenderConstrainedBox {
   double get thumbRadius {
     if (child == null) {
       final value = _state.position.value;
-      return (_kSwitchOnThumbRadius - _kSwitchOffThumbRadius) * value + _kSwitchOffThumbRadius;
+      return (_kSwitchOnThumbRadius - _kSwitchOffThumbRadius) * value +
+          _kSwitchOffThumbRadius;
     }
     return _kSwitchOnThumbRadius;
   }
 
   double get thumbMargin {
     if (child == null) {
-      return value ? _kSwitchOffThumbMargin : _kSwitchOffThumbMargin;
+      return _kSwitchOffThumbMargin;
     }
     return _kSwitchOnThumbMargin;
   }

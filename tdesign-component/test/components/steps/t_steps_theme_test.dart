@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tdesign_flutter/src/components/steps/t_steps.dart' show TStepsStatus;
 import 'package:tdesign_flutter/src/components/steps/t_steps_theme_data.dart';
 
 /// TStepsThemeData 纯函数覆盖（copyWith / lerp），用于提升覆盖率。
@@ -19,6 +20,15 @@ void main() {
       expect(copied.verticalSelect, false);
     });
 
+    test('copyWith cover status and verticalSelect', () {
+      final copied = theme.copyWith(
+        status: TStepsStatus.error,
+        verticalSelect: true,
+      );
+      expect(copied.status, TStepsStatus.error);
+      expect(copied.verticalSelect, true);
+    });
+
     test('lerp 在 t=0 / 0.5 / 1 返回 TStepsThemeData', () {
       const other = TStepsThemeData(simple: true, readOnly: true, verticalSelect: true);
       final at0 = theme.lerp(other, 0);
@@ -33,6 +43,20 @@ void main() {
 
     test('lerp other 非同类型时返回 this', () {
       expect(theme.lerp(null, 0.5), theme);
+    });
+
+    test('lerp cover remaining fields', () {
+      const other = TStepsThemeData(
+        status: TStepsStatus.error,
+        simple: true,
+        readOnly: true,
+        verticalSelect: true,
+      );
+      final lerped = theme.lerp(other, 0.5);
+      expect(lerped.status, TStepsStatus.error);
+      expect(lerped.simple, true);
+      expect(lerped.readOnly, true);
+      expect(lerped.verticalSelect, true);
     });
   });
 }

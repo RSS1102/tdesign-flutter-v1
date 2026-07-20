@@ -1,114 +1,59 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_theme.dart';
+import 't_switch_theme_data.dart';
+import 't_switch_types.dart';
 
-/// TSwitch 样式解析器
+/// Switch 样式解析结果。
+@immutable
+class TSwitchResolvedStyle {
+  const TSwitchResolvedStyle({
+    required this.trackOnColor,
+    required this.trackOffColor,
+    required this.thumbContentOnColor,
+    required this.thumbContentOffColor,
+    required this.thumbContentOnFont,
+    required this.thumbContentOffFont,
+  });
+
+  final Color trackOnColor;
+  final Color trackOffColor;
+  final Color thumbContentOnColor;
+  final Color thumbContentOffColor;
+  final TextStyle thumbContentOnFont;
+  final TextStyle thumbContentOffFont;
+}
+
+/// Switch 的唯一样式解析入口。
 class TSwitchResolve {
-  TSwitchResolve._();
+  static double width(TSwitchSize size) => switch (size) {
+        TSwitchSize.large => 52,
+        TSwitchSize.medium => 45,
+        TSwitchSize.small => 39,
+      };
 
-  /// 解析开关宽度
-  static double getWidth(TSwitchSize size) {
-    switch (size) {
-      case TSwitchSize.large:
-        return 52;
-      case TSwitchSize.medium:
-        return 45;
-      case TSwitchSize.small:
-        return 39;
-    }
-  }
+  static double height(TSwitchSize size) => switch (size) {
+        TSwitchSize.large => 32,
+        TSwitchSize.medium => 28,
+        TSwitchSize.small => 24,
+      };
 
-  /// 解析开关高度
-  static double getHeight(TSwitchSize size) {
-    switch (size) {
-      case TSwitchSize.large:
-        return 32;
-      case TSwitchSize.medium:
-        return 28;
-      case TSwitchSize.small:
-        return 24;
-    }
-  }
-
-  /// 解析轨道开启颜色
-  static Color resolveTrackOnColor({
+  static TSwitchResolvedStyle resolve({
     required BuildContext context,
     TSwitchThemeData? theme,
-    Color? instanceColor,
   }) {
-    if (instanceColor != null) {
-      return instanceColor;
-    }
-    if (theme?.trackOnColor != null) {
-      return theme!.trackOnColor!;
-    }
-    return context.tTheme.brandNormalColor;
-  }
-
-  /// 解析轨道关闭颜色
-  static Color resolveTrackOffColor({
-    required BuildContext context,
-    TSwitchThemeData? theme,
-    Color? instanceColor,
-  }) {
-    if (instanceColor != null) {
-      return instanceColor;
-    }
-    if (theme?.trackOffColor != null) {
-      return theme!.trackOffColor!;
-    }
-    return context.tTheme.textDisabledColor;
-  }
-
-  /// 解析Thumb开启颜色
-  static Color resolveThumbOnColor({
-    required BuildContext context,
-    TSwitchThemeData? theme,
-    Color? instanceColor,
-  }) {
-    if (instanceColor != null) {
-      return instanceColor;
-    }
-    if (theme?.thumbContentOnColor != null) {
-      return theme!.thumbContentOnColor!;
-    }
-    return context.tTheme.brandNormalColor;
-  }
-
-  /// 解析Thumb关闭颜色
-  static Color resolveThumbOffColor({
-    required BuildContext context,
-    TSwitchThemeData? theme,
-    Color? instanceColor,
-  }) {
-    if (instanceColor != null) {
-      return instanceColor;
-    }
-    if (theme?.thumbContentOffColor != null) {
-      return theme!.thumbContentOffColor!;
-    }
-    return context.tTheme.textDisabledColor;
-  }
-
-  /// 解析Thumb开启字体样式
-  static TextStyle resolveThumbOnFont({
-    TSwitchThemeData? theme,
-    TextStyle? instanceFont,
-  }) {
-    if (instanceFont != null) {
-      return instanceFont;
-    }
-    return theme?.thumbContentOnFont ?? const TextStyle(fontSize: 14);
-  }
-
-  /// 解析Thumb关闭字体样式
-  static TextStyle resolveThumbOffFont({
-    TSwitchThemeData? theme,
-    TextStyle? instanceFont,
-  }) {
-    if (instanceFont != null) {
-      return instanceFont;
-    }
-    return theme?.thumbContentOffFont ?? const TextStyle(fontSize: 14);
+    final token = context.tTheme;
+    return TSwitchResolvedStyle(
+      trackOnColor: theme?.trackOnColor ?? token.brandNormalColor,
+      trackOffColor: theme?.trackOffColor ?? token.textDisabledColor,
+      thumbContentOnColor: theme?.thumbContentOnColor ?? token.brandNormalColor,
+      thumbContentOffColor:
+          theme?.thumbContentOffColor ?? token.textDisabledColor,
+      thumbContentOnFont:
+          theme?.thumbContentOnFont ?? const TextStyle(fontSize: 14),
+      thumbContentOffFont:
+          theme?.thumbContentOffFont ?? const TextStyle(fontSize: 14),
+    );
   }
 }

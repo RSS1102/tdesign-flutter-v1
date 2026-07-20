@@ -23,10 +23,9 @@ class TSideBarUnSelectedColorPageState
   var titleBarHeight = 44;
   var testButtonHeight = 80.0;
   final _demoScroller = ScrollController(initialScrollOffset: 278.5);
-  final _sideBarController = TSideBarController();
   static const threshold = 50;
   var lock = false;
-  var list = <SideItemProps>[];
+  var list = <TSideBarItem>[];
   final pages = <Widget>[];
 
   @override
@@ -43,7 +42,7 @@ class TSideBarUnSelectedColorPageState
 
       if (currentValue != index) {
         setState(() {
-          _sideBarController.selectTo(index);
+          currentValue = index;
         });
       }
     });
@@ -51,8 +50,7 @@ class TSideBarUnSelectedColorPageState
     // 锚点用法
 
     for (var i = 0; i < 20; i++) {
-      list.add(SideItemProps(
-        index: i,
+      list.add(TSideBarItem(
         label: '选项$i',
         value: i,
         icon: TIcons.app,
@@ -60,16 +58,24 @@ class TSideBarUnSelectedColorPageState
       pages.add(getAnchorDemo(i));
     }
 
-    list[1].badge = const TBadge(TBadgeVariant.redPoint);
-    list[2].badge = const TBadge(
-      TBadgeVariant.message,
-      count: '8',
+    list[1] = TSideBarItem(
+      label: list[1].label,
+      value: list[1].value,
+      icon: list[1].icon,
+      textStyle: list[1].textStyle,
+      badge: const TBadge(TBadgeVariant.redPoint),
+    );
+    list[2] = TSideBarItem(
+      label: list[2].label,
+      value: list[2].value,
+      icon: list[2].icon,
+      textStyle: list[2].textStyle,
+      badge: const TBadge(TBadgeVariant.message, count: '8'),
     );
 
-    _sideBarController.init(list);
   }
 
-  Future<void> onSelected(int value) async {
+  Future<void> handleSidebarChange(int value) async {
     if (currentValue != value) {
       setState(() {
         currentValue = value;
@@ -125,16 +131,17 @@ class TSideBarUnSelectedColorPageState
               child: const Text('更新children'),
               onPressed: () {
                 setState(() {
-                  var children = list
-                      .map((e) => SideItemProps(
-                          index: e.index,
-                          label: '变更${e.index}',
-                          badge: e.badge,
-                          value: e.value,
-                          icon: e.icon))
+                  final children = list
+                      .asMap()
+                      .entries
+                      .map((entry) => TSideBarItem(
+                            label: '变更${entry.key}',
+                            badge: entry.value.badge,
+                            value: entry.value.value,
+                            icon: entry.value.icon,
+                          ))
                       .toList();
-                  _sideBarController.children = children;
-                  setState(() {});
+                  list = children;
                 });
               },
             ),
@@ -149,9 +156,7 @@ class TSideBarUnSelectedColorPageState
                 unSelectedColor: Colors.red,
                 style: TSideBarVariant.normal,
                 value: currentValue,
-                controller: _sideBarController,
-                onChanged: onChanged,
-                onSelected: onSelected,
+                    onChanged: handleSidebarChange,
               ),
             ),
             Expanded(

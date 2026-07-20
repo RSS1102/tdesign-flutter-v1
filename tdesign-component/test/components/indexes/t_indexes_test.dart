@@ -44,6 +44,18 @@ void main() {
       expect(copied.capsuleTheme, true);
     });
 
+    test('copyWith cover remaining fields', () {
+      const data = TIndexesThemeData();
+      final copied = data.copyWith(
+        stickyOffset: 12,
+        reverse: true,
+        indexListMaxHeight: 0.6,
+      );
+      expect(copied.stickyOffset, 12);
+      expect(copied.reverse, true);
+      expect(copied.indexListMaxHeight, 0.6);
+    });
+
     test('lerp', () {
       const data1 = TIndexesThemeData(stickyOffset: 0);
       const data2 = TIndexesThemeData(stickyOffset: 10);
@@ -55,6 +67,22 @@ void main() {
       const data = TIndexesThemeData(stickyOffset: 0);
       final lerped = data.lerp(null, 0.5);
       expect(lerped, same(data));
+    });
+
+    test('lerp cover remaining fields', () {
+      const left = TIndexesThemeData(
+        stickyOffset: 0,
+        indexListMaxHeight: 0.4,
+      );
+      const right = TIndexesThemeData(
+        stickyOffset: 20,
+        indexListMaxHeight: 0.8,
+        reverse: true,
+      );
+      final lerped = left.lerp(right, 0.5);
+      expect(lerped.stickyOffset, 10);
+      expect(lerped.indexListMaxHeight, closeTo(0.6, 0.0001));
+      expect(lerped.reverse, isTrue);
     });
   });
 

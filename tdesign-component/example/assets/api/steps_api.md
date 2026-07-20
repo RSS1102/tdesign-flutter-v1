@@ -33,8 +33,8 @@
 
 | 名称 | 说明 |
 | --- | --- |
-| horizontal | - |
-| vertical | - |
+| horizontal | 水平方向 |
+| vertical | 垂直方向 |
 
 
 ### TStepsStatus
@@ -43,5 +43,5 @@
 
 | 名称 | 说明 |
 | --- | --- |
-| success | - |
-| error | - |
+| success | 成功状态 |
+| error | 错误状态 |

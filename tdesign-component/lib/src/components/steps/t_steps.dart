@@ -42,13 +42,19 @@ class TStepsItemData {
 
 /// Steps步骤条方向
 enum TStepsDirection {
+  /// 水平方向
   horizontal,
+
+  /// 垂直方向
   vertical,
 }
 
 /// steps步骤条状态
 enum TStepsStatus {
+  /// 成功状态
   success,
+
+  /// 错误状态
   error,
 }
 

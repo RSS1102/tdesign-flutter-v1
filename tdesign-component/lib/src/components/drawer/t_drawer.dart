@@ -5,7 +5,13 @@ import 't_drawer_theme_data.dart';
 import 't_drawer_widget.dart';
 
 /// 抽屉方向
-enum TDrawerPlacement { left, right }
+enum TDrawerPlacement {
+  /// 从左侧滑出
+  left,
+
+  /// 从右侧滑出
+  right,
+}
 
 /// 抽屉组件
 class TDrawer {

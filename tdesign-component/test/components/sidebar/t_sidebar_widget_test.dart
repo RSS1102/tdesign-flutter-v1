@@ -23,36 +23,38 @@ void main() {
       expect(find.text('选项三'), findsOneWidget);
     });
 
-    testWidgets('outline 样式 / selectedColor / contentPadding / height', (tester) async {
+    testWidgets('outline 样式 / selectedColor / contentPadding / height',
+        (tester) async {
       await tester.pumpWidget(wrap(TSideBar(
-        value: 2,
+        value: 1,
         style: TSideBarVariant.outline,
         selectedColor: Colors.red,
         unSelectedColor: Colors.grey,
         contentPadding: const EdgeInsets.all(8),
         height: 300,
         children: items,
-        onSelected: (_) {},
+        onChanged: (_) {},
       )));
       expect(find.byType(TSideBar), findsOneWidget);
     });
 
     testWidgets('loading 态可构建', (tester) async {
       await tester.pumpWidget(wrap(TSideBar(
+        value: 1,
         loading: true,
         children: items,
       )));
       expect(find.byType(TSideBar), findsOneWidget);
     });
 
-    testWidgets('点击选项触发 onSelected', (tester) async {
+    testWidgets('点击选项触发 onChanged', (tester) async {
       int? selected;
       await tester.pumpWidget(wrap(TSideBar(
+        value: 1,
         children: items,
-        onSelected: (v) => selected = v,
+        onChanged: (v) => selected = v,
       )));
-      final item = find.text('选项三');
-      await tester.tap(item);
+      await tester.tap(find.text('选项三'));
       await tester.pumpAndSettle();
       expect(selected, 3);
     });

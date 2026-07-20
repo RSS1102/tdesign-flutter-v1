@@ -12,25 +12,22 @@ class TPickerThemeData extends ThemeExtension<TPickerThemeData> {
   /// 每屏显示项数
   final int? itemCount;
 
-  /// 列滚动结束回调默认
-  final void Function(int col, dynamic value)? onColumnScrollEnd;
-
   const TPickerThemeData({
+    /// 滚轮视窗高度（像素）。
     this.height,
+
+    /// 每屏显示项数。
     this.itemCount,
-    this.onColumnScrollEnd,
   });
 
   @override
   TPickerThemeData copyWith({
     double? height,
     int? itemCount,
-    void Function(int col, dynamic value)? onColumnScrollEnd,
   }) {
     return TPickerThemeData(
       height: height ?? this.height,
       itemCount: itemCount ?? this.itemCount,
-      onColumnScrollEnd: onColumnScrollEnd ?? this.onColumnScrollEnd,
     );
   }
 

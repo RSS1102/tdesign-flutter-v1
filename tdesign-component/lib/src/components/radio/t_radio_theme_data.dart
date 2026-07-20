@@ -28,12 +28,25 @@ class TRadioThemeData extends ThemeExtension<TRadioThemeData> {
   final double? insetSpacing;
 
   const TRadioThemeData({
+    /// 选中态颜色。
     this.selectColor,
+
+    /// 禁用态颜色。
     this.disableColor,
+
+    /// 主标题颜色。
     this.titleColor,
+
+    /// 副标题颜色。
     this.subTitleColor,
+
+    /// 卡片背景颜色。
     this.backgroundColor,
+
+    /// 指示器与文案间距。
     this.spacing,
+
+    /// 文案与非指示器侧的内边距。
     this.insetSpacing,
   });
 
@@ -47,14 +60,21 @@ class TRadioThemeData extends ThemeExtension<TRadioThemeData> {
     double? spacing,
     double? insetSpacing,
   }) {
+    final resolvedSelectColor = selectColor ?? this.selectColor;
+    final resolvedDisableColor = disableColor ?? this.disableColor;
+    final resolvedTitleColor = titleColor ?? this.titleColor;
+    final resolvedSubTitleColor = subTitleColor ?? this.subTitleColor;
+    final resolvedBackgroundColor = backgroundColor ?? this.backgroundColor;
+    final resolvedSpacing = spacing ?? this.spacing;
+    final resolvedInsetSpacing = insetSpacing ?? this.insetSpacing;
     return TRadioThemeData(
-      selectColor: selectColor ?? this.selectColor,
-      disableColor: disableColor ?? this.disableColor,
-      titleColor: titleColor ?? this.titleColor,
-      subTitleColor: subTitleColor ?? this.subTitleColor,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      spacing: spacing ?? this.spacing,
-      insetSpacing: insetSpacing ?? this.insetSpacing,
+      selectColor: resolvedSelectColor,
+      disableColor: resolvedDisableColor,
+      titleColor: resolvedTitleColor,
+      subTitleColor: resolvedSubTitleColor,
+      backgroundColor: resolvedBackgroundColor,
+      spacing: resolvedSpacing,
+      insetSpacing: resolvedInsetSpacing,
     );
   }
 

@@ -41,18 +41,18 @@ flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/sr
 
 # 输入
 # calendar
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/calendar" --name TCalendar,TCalendarStyle,TCalendarCellModel,TCalendarSubtitleContext --folder-name calendar --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/calendar" --name TCalendar,TCalendarCellModel,TCalendarSubtitleContext,TCalendarThemeData --folder-name calendar --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # cascader
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/cascader" --name TMultiCascader --folder-name cascader --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/cascader" --name TCascader,TCascaderOption,TCascaderVariant,TCascaderThemeData --folder-name cascader --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 
 # checkbox
 flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/checkbox" --name TCheckbox,TCheckboxGroup --folder-name checkbox --output "$PARENT_DIR/example/assets/api/" --only-api
 # picker
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/picker" --name TPicker,TPickerOption,TPickerValue,TPickerColumns,TPickerLinked,TPickerKeys --folder-name picker --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/picker" --name TPicker,TPickerOption,TPickerValue,TPickerColumns,TPickerLinked,TPickerThemeData --folder-name picker --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # date-time-picker
 flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/date_time_picker" --name TDateTimePicker,DateTimePickerMode,TDateTimePickerValue,DateTimePickerSteps,DateMode,TimeMode,DateTimeColumn,DateTimePickerRenderLabel --folder-name date-time-picker --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # form
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/form" --name TForm,TFormItem,TFormItemType,TFormValidation --folder-name form --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/form" --name TForm,TFormState,TFormController,TFormField,TFormItem,TFormLayout --folder-name form --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # input
 flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/input/t_input.dart" --name TInput, TInputSpacer --folder-name input --output "$PARENT_DIR/example/assets/api/" --only-api
 # radio
@@ -70,7 +70,7 @@ flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/
 # textarea
 flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/textarea/t_textarea.dart" --name TTextarea --folder-name textarea --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # tree_select
-flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/tree/t_tree_select.dart" --name TTreeSelect,TSelectOption --folder-name tree-select --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/tree" --name TTreeSelect,TTreeSelectOption,TTreeSelectThemeData --folder-name tree-select --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 
 # upload
 flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/upload/t_upload.dart" --name TUpload --folder-name upload --output "$PARENT_DIR/example/assets/api/" --only-api

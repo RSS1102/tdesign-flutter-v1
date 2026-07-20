@@ -4,14 +4,13 @@
 > **源码**：`lib/src/components/drawer/` · **类名**：`TDrawer`  
 > **官网**：[Drawer 抽屉](https://tdesign.tencent.com/flutter/components/drawer) · [guide](../../guide/developer-guide.md)
 
-**读法**：新写 v1.0 → **§1**（命令式 `show` 见 §1.1 + **§3**）；0.2.x 升级 → **§2**（L4 见 §3）；落地与验收 → **§4**
+**读法**：按 **§1** 查看当前 v1 API，按 **§2** 配置主题，按 **§3** 落地测试与 Example。
 
 **图例** → [component-doc.md §4](../../guide/component-doc.md#4-决策图例固定-6-个不新增)（§1–§3「决策」列）
 
 - [§1 v1.0 定稿 API](#1-v10-定稿-api)
-- [§2 0.2.x → v1.0](#2-02x--v10)
-- [§3 Theme 主题配置](#3-theme-主题配置)
-- [§4 实现约定 · 测试与 Example 契约](#4-实现约定--测试与-example-契约)
+- [§2 Theme 主题配置](#2-theme-主题配置)
+- [§3 实现约定 · 测试与 Example 契约](#3-实现约定--测试与-example-契约)
 
 ---
 
@@ -35,7 +34,7 @@
 
 ## §1 v1.0 定稿 API
 
-> 以下为 v1.0 **当前制定**的公开 API；相对 0.2.x 的变更见 §2。无图例项 = 与 0.2.x 同名同义保留。L4 迁入 §3。
+> 以下为 v1.0 当前公开 API。L4 样式统一迁入 §2 Theme。
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
@@ -48,9 +47,9 @@ E 类入口：`TDrawer(context, ...)` → `show()` 返回 **`TDrawerHandle`** �
 | 决策 | 参数 | 类型 | 层级 | 默认 | 说明 |
 |------|------|------|------|------|------|
 | | `context` | `BuildContext` | E | — | 打开方上下文（首参）；`show()` 时用于 `Theme.of(context)` |
-| ✏️ | `child` | `Widget?` | L2 | — | 自定义主体（原 `contentWidget`）；优先于列表模式 |
+| ✏️ | `child` | `Widget?` | L2 | — | 自定义主体；传入后覆盖列表模式 |
 | | `items` | `List<TDrawerItem>?` | L2 | — | 菜单项列表 |
-| ✏️ | `title` | `Widget?` | L2 | — | 列表模式标题（合并 `String? title` + `titleWidget`） |
+| ✏️ | `title` | `Widget?` | L2 | — | 列表模式标题插槽 |
 | | `footer` | `Widget?` | L2 | — | 列表模式底部区 |
 | | `placement` | `TDrawerPlacement?` | L1 | `right` | `left` / `right` → 内部 `TPopupPlacement` |
 | | `width` | `double?` | L1 | Theme | 抽屉宽度；构造器可覆盖 Theme |
@@ -99,7 +98,7 @@ L4 内容样式（背景、边框、`hover` 等）不进构造器，统一 §3 `
 
 #### §1.1.1 点击菜单项（不默认关闭）
 
-v1.0 **裁决**：点击 `items` 某项**不**自动 `close()`，与 0.2.x 行为一致；**不提供** `closeOnItemClick`。
+点击 `items` 某项**不**自动 `close()`；**不提供** `closeOnItemClick`。
 
 | 场景 | 行为 |
 |------|------|
@@ -107,7 +106,7 @@ v1.0 **裁决**：点击 `items` 某项**不**自动 `close()`，与 0.2.x 行�
 | 选完需关抽屉 | 在 `onItemClick` 内显式 `handle.close()` |
 | 点击蒙层 | `closeOnOverlayClick` 控制；关闭后走 `onClose` |
 
-> 不采用「默认关」：避免破坏 0.2.x 迁移；多步操作 / 跳转前确认等场景由业务决定何时关。
+> 不采用「默认关」：多步操作 / 跳转前确认等场景由业务决定何时关。
 
 ### 1.2 类型定义
 
@@ -117,7 +116,7 @@ v1.0 **裁决**：点击 `items` 某项**不**自动 `close()`，与 0.2.x 行�
 |------|------|------|
 | `title` | `String?` | 项标题文案 |
 | `icon` | `Widget?` | 项图标 |
-| `content` | `Widget?` | 项完全自定义（优先于 `title`/`icon`；高级用法） |
+| `content` | `Widget?` | 项完全自定义；传入后覆盖 `title`/`icon` |
 
 #### 其他类型
 
@@ -126,7 +125,7 @@ v1.0 **裁决**：点击 `items` 某项**不**自动 `close()`，与 0.2.x 行�
 | ✨ | `TDrawerHandle` | `show()` 返回值；`close()` · `isShowing`；内部包装 `TPopupHandle` |
 | | `TDrawerPlacement` | `left` · `right` |
 | | `TDrawerItemClickCallback` | `void Function(int index, TDrawerItem item)` |
-| | `TDrawerThemeData` | 内容区 ThemeExtension（§3） |
+| | `TDrawerThemeData` | 内容区 ThemeExtension（§2） |
 
 #### `TDrawerHandle`
 
@@ -137,31 +136,13 @@ v1.0 **裁决**：点击 `items` 某项**不**自动 `close()`，与 0.2.x 行�
 
 ### 1.3 export
 
-**KEEP**：`TDrawer` · `TDrawerHandle` · `TDrawerItem` · `TDrawerPlacement` · `TDrawerItemClickCallback` · `TDrawerThemeData`。  
-**不 export**：`TDrawerWidget`（内部列表拼装；0.2.x 曾用于 `Scaffold.drawer`，v1.0 侧滑菜单统一 `TDrawer(...).show()`，不公开嵌入路径）。
+**公开 export**：`TDrawer` · `TDrawerHandle` · `TDrawerItem` · `TDrawerPlacement` · `TDrawerItemClickCallback` · `TDrawerThemeData`。
+**不 export**：`TDrawerWidget`（内部列表拼装；侧滑菜单统一 `TDrawer(...).show()`，不公开嵌入路径）。
 
 ---
 
-## §2 0.2.x → v1.0
 
-**语义保留**：`placement` · `footer` · `items` · `onClose` · `onItemClick`（点击项不自动关）· `closeOnOverlayClick` · `showOverlay`
-
-| 从 | 到 |
-|---|---|
-| `contentWidget` | `child` |
-| `title`（`String?`）/ `titleWidget` | `title: Widget?`（`title: 'x'` → `title: Text('x')`） |
-| `visible: true`（构造自动打开） | **删除** → `TDrawer(context, ...).show()` 返回 `TDrawerHandle` |
-| `drawer.close()` / `open()` | **删除** → `handle.close()`；`show()` 返回 `TDrawerHandle` |
-| `width`（构造器必传默认） | 默认走 `TDrawerThemeData`；构造器 `width` 仍可单次覆盖 |
-| `drawerTop` | 默认走 Theme；构造器 `drawerTop` 可单次覆盖（NavBar 避让） |
-| 构造器 L4（`backgroundColor` / `style` / `hover` 等） | `TDrawerThemeData`（§3） |
-| `onOverlayClick`（mobile-vue） | **不提供**；蒙层关闭统一 `onClose` |
-| 点击 `items` 自动关闭 | **不提供**；与 0.2.x 一致，业务在 `onItemClick` 内 `handle.close()` |
-| `TDrawerWidget` + `Scaffold.drawer` | **不公开**；统一命令式浮层 |
-
----
-
-## §3 Theme 主题配置 {#3-theme-主题配置}
+## §2 Theme 主题配置 {#3-theme-主题配置}
 
 `TDrawerThemeData` + `TPopupThemeData` · [theme.md](../../foundation/theme.md)
 
@@ -219,7 +200,7 @@ v1.0 **裁决**：点击 `items` 某项**不**自动 `close()`，与 0.2.x 行�
 
 ---
 
-## §4 实现约定 · 测试与 Example 契约
+## §3 实现约定 · 测试与 Example 契约
 
 **文件**：`t_drawer.dart` · `t_drawer_handle.dart` · `t_drawer_theme_data.dart` · `t_drawer_resolve.dart`（规划）；`t_drawer_widget.dart` 内部专用。
 
@@ -227,4 +208,4 @@ v1.0 **裁决**：点击 `items` 某项**不**自动 `close()`，与 0.2.x 行�
 
 **Example**：`visible: true` → `.show()` 接 `TDrawerHandle` · `title`+`titleWidget` → `title: Widget?` · `contentWidget` → `child` · NavBar 高度 → `drawerTop` · **列表项点击后 `handle.close()` 示范**。
 
-> [api.md](../../foundation/api.md) · [controlled.md](../../foundation/controlled.md) · [testing.md](../../guide/testing.md) · [popup.md](../05-feedback/popup.md) · [drawer-upgrade-guide.md](./drawer-upgrade-guide.md)
+> [api.md](../../foundation/api.md) · [controlled.md](../../foundation/controlled.md) · [testing.md](../../guide/testing.md) · [popup.md](../05-feedback/popup.md)

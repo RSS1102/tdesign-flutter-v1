@@ -106,34 +106,29 @@ void main() {
 
     test('TRadioThemeData 覆盖 copyWith 与 lerp', () {
       const base = TRadioThemeData(
-        radioStyle: TRadioVariant.circle,
         selectColor: Colors.blue,
         disableColor: Colors.grey,
         titleColor: Colors.black,
         subTitleColor: Colors.black54,
         backgroundColor: Colors.white,
         spacing: 8,
-        checkBoxLeftSpace: 12,
         insetSpacing: 16,
       );
       const other = TRadioThemeData(
-        radioStyle: TRadioVariant.square,
         selectColor: Colors.red,
         disableColor: Colors.black12,
         titleColor: Colors.white,
         subTitleColor: Colors.white70,
         backgroundColor: Colors.black,
         spacing: 16,
-        checkBoxLeftSpace: 20,
         insetSpacing: 24,
       );
 
-      expect(base.copyWith(radioStyle: TRadioVariant.check).radioStyle,
-          TRadioVariant.check);
+      expect(
+          base.copyWith(selectColor: Colors.green).selectColor, Colors.green);
       expect(base.lerp(null, 0.5), same(base));
-      expect(base.lerp(other, 0.25).radioStyle, TRadioVariant.circle);
-      expect(base.lerp(other, 0.75).radioStyle, TRadioVariant.square);
       expect(base.lerp(other, 0.5).spacing, 12);
+      expect(base.lerp(other, 0.5).insetSpacing, 20);
     });
 
     test('TImageViewerThemeData 覆盖 copyWith 与 lerp', () {
@@ -166,57 +161,51 @@ void main() {
 
     test('TSearchBarThemeData 覆盖 copyWith 与 lerp', () {
       const base = TSearchBarThemeData(
-        defaultStyle: TSearchBarVariant.square,
-        defaultAlignment: TSearchBarAlignment.left,
+        variant: TSearchBarVariant.square,
+        textAlignment: TSearchBarAlignment.left,
         backgroundColor: Colors.white,
         padding: EdgeInsets.all(8),
-        mediumStyle: false,
         cursorHeight: 18,
         autoHeight: false,
       );
       const other = TSearchBarThemeData(
-        defaultStyle: TSearchBarVariant.round,
-        defaultAlignment: TSearchBarAlignment.center,
+        variant: TSearchBarVariant.round,
+        textAlignment: TSearchBarAlignment.center,
         backgroundColor: Colors.black,
         padding: EdgeInsets.all(16),
-        mediumStyle: true,
         cursorHeight: 28,
         autoHeight: true,
       );
 
-      expect(base.copyWith(defaultStyle: TSearchBarVariant.round).defaultStyle,
+      expect(base.copyWith(variant: TSearchBarVariant.round).variant,
           TSearchBarVariant.round);
       expect(base.lerp(null, 0.5), same(base));
-      expect(base.lerp(other, 0.25).defaultAlignment,
-          TSearchBarAlignment.left);
-      expect(base.lerp(other, 0.75).defaultAlignment,
-          TSearchBarAlignment.center);
+      expect(base.lerp(other, 0.25).textAlignment, TSearchBarAlignment.left);
+      expect(base.lerp(other, 0.75).textAlignment, TSearchBarAlignment.center);
       expect(base.lerp(other, 0.5).cursorHeight, 23);
     });
 
     test('TUploadThemeData 覆盖 copyWith 与 lerp', () {
       const base = TUploadThemeData(
-        variant: TUploadVariant.roundedSquare,
-        width: 80,
-        height: 80,
-        wrapSpacing: 8,
-        wrapRunSpacing: 10,
-        wrapAlignment: WrapAlignment.start,
+        variant: TUploadVariant.square,
+        itemSize: 80,
+        spacing: 8,
+        runSpacing: 10,
+        alignment: WrapAlignment.start,
       );
       const other = TUploadThemeData(
         variant: TUploadVariant.circle,
-        width: 120,
-        height: 160,
-        wrapSpacing: 16,
-        wrapRunSpacing: 20,
-        wrapAlignment: WrapAlignment.end,
+        itemSize: 120,
+        spacing: 16,
+        runSpacing: 20,
+        alignment: WrapAlignment.end,
       );
 
-      expect(base.copyWith(width: 96).width, 96);
+      expect(base.copyWith(itemSize: 96).itemSize, 96);
       expect(base.lerp(null, 0.5), same(base));
-      expect(base.lerp(other, 0.25).variant, TUploadVariant.roundedSquare);
+      expect(base.lerp(other, 0.25).variant, TUploadVariant.square);
       expect(base.lerp(other, 0.75).variant, TUploadVariant.circle);
-      expect(base.lerp(other, 0.5).height, 120);
+      expect(base.lerp(other, 0.5).itemSize, 100);
     });
 
     test('TLoadingThemeData 覆盖 merge / copyWith / lerp', () {
@@ -249,20 +238,20 @@ void main() {
 
     test('TStepperThemeData 覆盖 copyWith 与 lerp', () {
       const base = TStepperThemeData(
-        defaultSize: TStepperSize.small,
-        defaultColorScheme: TStepperColorScheme.normal,
+        variant: TStepperVariant.normal,
         inputWidth: 80,
       );
       const other = TStepperThemeData(
-        defaultSize: TStepperSize.large,
-        defaultColorScheme: TStepperColorScheme.filled,
+        variant: TStepperVariant.filled,
         inputWidth: 120,
       );
 
       expect(base.copyWith(inputWidth: 100).inputWidth, 100);
+      expect(base.copyWith(variant: TStepperVariant.filled).variant,
+          TStepperVariant.filled);
       expect(base.lerp(null, 0.5), same(base));
-      expect(base.lerp(other, 0.25).defaultSize, TStepperSize.small);
-      expect(base.lerp(other, 0.75).defaultSize, TStepperSize.large);
+      expect(base.lerp(other, 0.25).variant, TStepperVariant.normal);
+      expect(base.lerp(other, 0.75).variant, TStepperVariant.filled);
       expect(base.lerp(other, 0.5).inputWidth, 100);
     });
 
@@ -300,25 +289,19 @@ void main() {
 
     test('TCascaderThemeData 覆盖 copyWith 与 lerp', () {
       const base = TCascaderThemeData(
-        variant: TCascaderVariant.step,
-        columnHeight: 280,
-        panelColor: Colors.white,
-        panelRadius: 8,
-        title: 'base',
+        height: 280,
+        backgroundColor: Colors.white,
+        borderRadius: 8,
       );
       const other = TCascaderThemeData(
-        variant: TCascaderVariant.tab,
-        columnHeight: 320,
-        panelColor: Colors.black,
-        panelRadius: 16,
-        title: 'other',
+        height: 320,
+        backgroundColor: Colors.black,
+        borderRadius: 16,
       );
 
-      expect(base.copyWith(title: 'next').title, 'next');
+      expect(base.copyWith(height: 300).height, 300);
       expect(base.lerp(null, 0.5), same(base));
-      expect(base.lerp(other, 0.25).variant, TCascaderVariant.step);
-      expect(base.lerp(other, 0.75).variant, TCascaderVariant.tab);
-      expect(base.lerp(other, 0.5).columnHeight, 300);
+      expect(base.lerp(other, 0.5).height, 300);
     });
 
     test('TTimeCounterThemeData 覆盖 copyWith 与 lerp', () {
@@ -337,28 +320,26 @@ void main() {
 
       expect(base.copyWith(millisecond: true).millisecond, isTrue);
       expect(base.lerp(null, 0.5), same(base));
-      expect(base.lerp(other, 0.25).theme,
-          TTimeCounterVariant.defaultTheme);
+      expect(base.lerp(other, 0.25).theme, TTimeCounterVariant.defaultTheme);
       expect(base.lerp(other, 0.75).theme, TTimeCounterVariant.round);
     });
 
     test('TTreeSelectThemeData 覆盖 copyWith 与 lerp', () {
       const base = TTreeSelectThemeData(
-        style: TTreeSelectStyle.normal,
         height: 320,
-        outwardCornerRadius: 8,
+        rootColumnWidth: 100,
+        columnWidth: 180,
       );
       const other = TTreeSelectThemeData(
-        style: TTreeSelectStyle.outline,
         height: 400,
-        outwardCornerRadius: 16,
+        rootColumnWidth: 140,
+        columnWidth: 220,
       );
 
       expect(base.copyWith(height: 360).height, 360);
       expect(base.lerp(null, 0.5), same(base));
-      expect(base.lerp(other, 0.25).style, TTreeSelectStyle.normal);
-      expect(base.lerp(other, 0.75).style, TTreeSelectStyle.outline);
-      expect(base.lerp(other, 0.5).outwardCornerRadius, 12);
+      expect(base.lerp(other, 0.5).rootColumnWidth, 120);
+      expect(base.lerp(other, 0.5).columnWidth, 200);
     });
 
     test('TDropdownThemeData 覆盖 merge / copyWith / lerp', () {
@@ -397,17 +378,15 @@ void main() {
       const base = TFormThemeData(
         showColon: true,
         labelWidth: 80,
-        layout: true,
+        layout: TFormLayout.horizontal,
         labelAlign: TextAlign.left,
-        contentAlign: TextAlign.right,
         backgroundColor: Colors.white,
       );
       const other = TFormThemeData(
         showColon: false,
         labelWidth: 120,
-        layout: false,
+        layout: TFormLayout.vertical,
         labelAlign: TextAlign.center,
-        contentAlign: TextAlign.left,
         backgroundColor: Colors.black,
       );
 

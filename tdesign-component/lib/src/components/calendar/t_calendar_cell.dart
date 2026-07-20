@@ -1,30 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart' hide TCalendarStyle;
+import '../../theme/t_colors.dart';
+import '../../theme/t_theme.dart';
 import '../../util/iterable_ext.dart';
+import '../text/t_text.dart';
 import 't_calendar_style.dart';
+import 't_calendar_types.dart';
 
-export 't_calendar_style.dart' show TCalendarStyle;
-
-/// 日期在日历格中的选中/展示状态
-enum DateSelectType {
-  /// 单选 / 多选下的选中
-  selected,
-
-  /// 不可选（超出 [TCalendar.minDate] / [TCalendar.maxDate]）
-  disabled,
-
-  /// 区间起点
-  start,
-
-  /// 区间中间日期
-  centre,
-
-  /// 区间终点
-  end,
-
-  /// 未选中且可选
-  empty,
-}
+export 't_calendar_types.dart' show DateSelectType;
 
 /// 副标题构建上下文：告知 [TCalendarSubtitleBuilder] 当前渲染哪一格。
 class TCalendarSubtitleContext {
@@ -76,8 +58,13 @@ class TCalendarCellModel {
     required this.isLastDayOfMonth,
   });
 
+  /// 当前日期。
   final DateTime date;
+
+  /// 日期选择状态通知器。
   final DateSelectTypeNotifier typeNotifier;
+
+  /// 是否为当月最后一天。
   final bool isLastDayOfMonth;
 
   DateSelectType get selectType => typeNotifier.value;
@@ -208,7 +195,6 @@ class _TCalendarCellState extends State<TCalendarCell> {
   }
 
   void _onSelectTypeChange() {
-    // 使用 addPostFrameCallback 避免在 build 期间调用 setState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
         return;

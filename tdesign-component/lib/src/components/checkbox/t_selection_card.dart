@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
 
 class TSelectionCard extends StatelessWidget {
   const TSelectionCard({

@@ -21,7 +21,8 @@ export '../components/dropdown_menu/t_dropdown_theme_data.dart'
 export '../components/empty/t_empty_theme_data.dart' show TEmptyThemeData;
 export '../components/fab/t_fab_theme_data.dart' show TFabThemeData;
 export '../components/footer/t_footer_theme_data.dart' show TFooterThemeData;
-export '../components/form/t_form_theme_data.dart' show TFormThemeData;
+export '../components/form/t_form_theme_data.dart'
+    show TFormLayout, TFormThemeData;
 export '../components/icon/t_icon_theme_data.dart' show TIconThemeData;
 export '../components/image/t_image_theme_data.dart' show TImageThemeData;
 export '../components/image_viewer/t_image_viewer_theme_data.dart'

@@ -2,8 +2,6 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart' show TBackTop;
-
 import 't_backtop.dart' show TBackTop;
 
 /// 返回顶部形状
@@ -44,7 +42,7 @@ class TBackTopThemeData extends ThemeExtension<TBackTopThemeData> {
   /// 默认距屏幕底部偏移（逻辑像素）
   final double? defaultBottom;
 
-  /// 半圆形态右侧负 inset（吸收 0.2.x `right: -16` 硬编码）
+  /// 半圆形态右侧负 inset，用于控制贴边视觉。
   final double? halfCircleRightInset;
 
   const TBackTopThemeData({

@@ -58,11 +58,10 @@
 | 符号 | 说明 |
 | --- | --- |
 | TLinkThemeData | L4 默认样式 |
-| TLinkConfiguration | T2 组合配置（保留） |
 
 ### export
 
-- **保留**：`TLink`、`TLinkVariant`、`TLinkSize`、`TLinkColorScheme`、`TLinkThemeData`、`TLinkConfiguration`
+- **保留**：`TLink`、`TLinkVariant`、`TLinkSize`、`TLinkColorScheme`、`TLinkThemeData`
 - **移出**：`TLinkStyle`、`TLinkState`、`LinkClick`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
 
 

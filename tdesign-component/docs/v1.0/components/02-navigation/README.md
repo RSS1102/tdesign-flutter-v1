@@ -8,22 +8,19 @@
 | 类型 | 规则 | 数量 |
 |---|---|---|
 | **定稿** | 一官网入口一文件 | 8 篇 |
-| **废弃** | 旧路径跳转，`-废弃` 后缀 | 4 篇 |
-| **升级指南** | `*-upgrade-guide.md`，不改动 | 8 篇 |
 
 ## 定稿写法（8 篇统一）
 
-- **四节**：§1 API · §2 迁移 · §3 Theme · §4 实现/测试/Example
+- **三节**：§1 API · §2 Theme · §3 实现/测试/Example
 - **文首**：元信息 + **读法** + **图例链** + TOC
 - **架构 + 控制方案**：`## 架构` 表 + `## 控制方案`（对齐 [controlled.md](../../foundation/controlled.md) · [api.md](../../foundation/api.md)）
 - **§1.1**：每个参数单独一行；子类型用独立表
-- **§1 脚注**：无图例 = KEEP；L4 迁入 §3
+- **§1 脚注**：L4 样式统一迁入 §2 Theme
 - **§1 P0 声明**：每篇 §1 显式写明「无 P0 逃逸舱（`style` / `decoration` 默认无）」（四问判定见 [theme.md §2.2](../../foundation/theme.md#22-p0-逃逸舱判定)）
 - **L2 槽位**：Widget 实例用语义名（`title`/`child`）；Builder 用 `{语义}Builder` → [api.md §2.1](../../foundation/api.md#21-l2-内容槽widget-实例-vs-builder-回调)
-- **§1.3**：KEEP / deprecated / 不 export 三行式
-- **§2**：「未改」一行 + 按图例分节
-- **§3**：配置选型三行 + 单张字段表（含决策列）+ **「字段归类：进 Theme 与不进 Theme」**（[theme.md §4](../../foundation/theme.md#4-material-vs-themeextension) 必填；小节顶部一行说明 Material 判定结论：能主题化者为 P1 TDesign 扩展 / P2 Material 子主题，并明确分区「进 Theme」与「不进 Theme（构造器 Lx）」）；覆盖顺序统一写 `P0` > `P1` > `P2` > `P3` > `P4` 记号
-- **§4**：链 [testing.md](../../guide/testing.md)
+- **§1.3**：公开 export / 不 export 两行式
+- **§2**：配置选型三行 + 单张字段表（含决策列）+ **「字段归类：进 Theme 与不进 Theme」**（[theme.md §4](../../foundation/theme.md#4-material-vs-themeextension) 必填；小节顶部一行说明 Material 判定结论：能主题化者为 P1 TDesign 扩展 / P2 Material 子主题，并明确分区「进 Theme」与「不进 Theme（构造器 Lx）」）；覆盖顺序统一写 `P0` > `P1` > `P2` > `P3` > `P4` 记号
+- **§3**：链 [testing.md](../../guide/testing.md)
 - **篇幅**：约 90–150 行；不写附录 C、不贴大段代码（E 类 `show` 用法除外）
 
 ## 官网对照
@@ -39,14 +36,6 @@
 | [indexes.md](./indexes.md) | — | **已定稿** | [Indexes](https://tdesign.tencent.com/flutter/components/indexes) |
 | [sidebar.md](./sidebar.md) | B | **已定稿** | [SideBar](https://tdesign.tencent.com/flutter/components/side-bar) |
 
-## 废弃跳转
-
-| 废弃文件 | 0.2.x | 合并为 |
-|---|---|---|
-| [tab-废弃.md](./tab-废弃.md) | `TTab` | [tabs.md](./tabs.md) |
-| [tab-bar-废弃-ttabbar.md](./tab-bar-废弃-ttabbar.md) | `TTabBar`（页内） | [tabs.md](./tabs.md) → `TTabsBar` |
-| [tab-bar-view-废弃.md](./tab-bar-view-废弃.md) | `TTabBarView` | [tabs.md](./tabs.md) → `TTabsBarView` |
-| [bottom-tab-bar-废弃.md](./bottom-tab-bar-废弃.md) | `TBottomTabBar` | [tab-bar.md](./tab-bar.md) → `TTabBar` |
 
 ## 组件清单
 
@@ -61,4 +50,4 @@
 | [ ] | TIndexes | [indexes.md](./indexes.md) | S3 |
 | [ ] | TSideBar | [sidebar.md](./sidebar.md) | S3 |
 
-> **文档**：上表 8 篇定稿 md 均已 **已定稿**；`[ ]` 表示 Dart 实现尚未按 §4 验收。
+> **文档**：上表 8 篇定稿 md 均已 **已定稿**；`[ ]` 表示 Dart 实现尚未按 §3 验收。

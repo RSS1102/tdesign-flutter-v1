@@ -20,7 +20,6 @@ class TSideBarIconPageState extends State<TSideBarIconPage> {
   var currentValue = 1;
   var itemHeight = 278.5;
   final _demoScroller = ScrollController(initialScrollOffset: 278.5);
-  final _sideBarController = TSideBarController();
   static const threshold = 50;
   var lock = false;
 
@@ -38,13 +37,13 @@ class TSideBarIconPageState extends State<TSideBarIconPage> {
 
       if (currentValue != index) {
         setState(() {
-          _sideBarController.selectTo(index);
+          currentValue = index;
         });
       }
     });
   }
 
-  Future<void> onSelected(int value) async {
+  Future<void> handleSidebarChange(int value) async {
     if (currentValue != value) {
       setState(() {
         currentValue = value;
@@ -82,12 +81,11 @@ class TSideBarIconPageState extends State<TSideBarIconPage> {
 
   @Demo(group: 'sideBar')
   Widget _buildIconSideBar(BuildContext context) {
-    final list = <SideItemProps>[];
+    final list = <TSideBarItem>[];
     final pages = <Widget>[];
 
     for (var i = 0; i < 20; i++) {
-      list.add(SideItemProps(
-        index: i,
+      list.add(TSideBarItem(
         label: '选项${i}',
         value: i,
         icon: TIcons.app,
@@ -100,10 +98,19 @@ class TSideBarIconPageState extends State<TSideBarIconPage> {
       decoration: BoxDecoration(color: context.tTheme.bgColorContainer),
     ));
 
-    list[1].badge = const TBadge(TBadgeVariant.redPoint);
-    list[2].badge = const TBadge(
-      TBadgeVariant.message,
-      count: '8',
+    list[1] = TSideBarItem(
+      label: list[1].label,
+      value: list[1].value,
+      icon: list[1].icon,
+      textStyle: list[1].textStyle,
+      badge: const TBadge(TBadgeVariant.redPoint),
+    );
+    list[2] = TSideBarItem(
+      label: list[2].label,
+      value: list[2].value,
+      icon: list[2].icon,
+      textStyle: list[2].textStyle,
+      badge: const TBadge(TBadgeVariant.message, count: '8'),
     );
 
     return Row(
@@ -113,16 +120,14 @@ class TSideBarIconPageState extends State<TSideBarIconPage> {
           child: TSideBar(
             style: TSideBarVariant.normal,
             value: currentValue,
-            controller: _sideBarController,
             children: list
                 .map((ele) => TSideBarItem(
-                    label: ele.label ?? '',
+                    label: ele.label,
                     badge: ele.badge,
                     value: ele.value,
                     icon: ele.icon))
                 .toList(),
-            onChanged: onChanged,
-            onSelected: onSelected,
+            onChanged: handleSidebarChange,
           ),
         ),
         Expanded(

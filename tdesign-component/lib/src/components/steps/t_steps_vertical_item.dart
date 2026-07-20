@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
+
+import '../../theme/t_colors.dart';
+import '../../theme/t_theme.dart';
+import '../text/t_text.dart';
+import 't_steps.dart';
 
 /// Steps步骤条，垂直步骤item
 class TStepsVerticalItem extends StatelessWidget {
