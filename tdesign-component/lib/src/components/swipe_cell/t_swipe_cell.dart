@@ -114,8 +114,12 @@ class TSwipeCell extends StatefulWidget {
 
   /// 根据groupTag关闭[TSwipeCell]
   ///
-  /// current：保留当前不关闭
-  static void close(Object? tag, {SlidableController? current}) {
+  static void close(
+    /// 要关闭的互斥滑动组标识。
+    Object? tag, {
+    /// 保留不关闭的当前控制器。
+    SlidableController? current,
+  }) {
     if (tag == null || !_controllers.keys.contains(tag)) {
       return;
     }
@@ -129,7 +133,10 @@ class TSwipeCell extends StatefulWidget {
   }
 
   /// 获取上下文最近的[controller]
-  static SlidableController? of(BuildContext context) {
+  static SlidableController? of(
+    /// 用于查找最近 [SlidableController] 的上下文。
+    BuildContext context,
+  ) {
     // coverage:ignore-line
     return Slidable.of(context); // coverage:ignore-line
   }
@@ -184,7 +191,8 @@ class _TSwipeCellState extends State<TSwipeCell> with TickerProviderStateMixin {
           del: true); // coverage:ignore-line
       _unbindController(); // coverage:ignore-line
       _bindController(widget.controller); // coverage:ignore-line
-      TSwipeCell._pushController(controller, widget.groupTag); // coverage:ignore-line
+      TSwipeCell._pushController(
+          controller, widget.groupTag); // coverage:ignore-line
     }
     if (oldWidget.groupTag != widget.groupTag) {
       TSwipeCell._pushController(controller, _groupTag, del: true);

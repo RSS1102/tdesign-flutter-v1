@@ -138,6 +138,7 @@ class TMessage extends StatefulWidget {
 
   /// 在 Overlay 中显示消息并返回控制句柄
   static TMessageHandle show({
+    /// 用于查找 Overlay 的上下文。
     required BuildContext context,
     String content = '',
     Duration? duration = const Duration(seconds: 3),
@@ -369,14 +370,22 @@ class _TMessageState extends State<TMessage>
       return widget.icon!;
     }
     final (icon, color) = switch (widget.variant) {
-      TMessageVariant.info =>
-        (TIcons.error_circle_filled, context.tTheme.brandNormalColor),
-      TMessageVariant.success =>
-        (TIcons.check_circle_filled, context.tTheme.successNormalColor),
-      TMessageVariant.warning =>
-        (TIcons.error_circle_filled, context.tTheme.warningNormalColor),
-      TMessageVariant.error =>
-        (TIcons.error_circle_filled, context.tTheme.errorNormalColor),
+      TMessageVariant.info => (
+          TIcons.error_circle_filled,
+          context.tTheme.brandNormalColor
+        ),
+      TMessageVariant.success => (
+          TIcons.check_circle_filled,
+          context.tTheme.successNormalColor
+        ),
+      TMessageVariant.warning => (
+          TIcons.error_circle_filled,
+          context.tTheme.warningNormalColor
+        ),
+      TMessageVariant.error => (
+          TIcons.error_circle_filled,
+          context.tTheme.errorNormalColor
+        ),
     };
     return Icon(icon, color: color);
   }
@@ -445,7 +454,8 @@ class _TMessageState extends State<TMessage>
                   child: Row(
                     children: [
                       if (widget.showIcon) ...[
-                        SizedBox(width: 20, height: 22, child: _buildIcon(context)),
+                        SizedBox(
+                            width: 20, height: 22, child: _buildIcon(context)),
                         const SizedBox(width: 10),
                       ],
                       Expanded(child: _buildText(context)),
@@ -456,7 +466,8 @@ class _TMessageState extends State<TMessage>
                           child: _buildLink(context),
                         ),
                       ],
-                      if (widget.showCloseButton || widget.closeButton != null) ...[
+                      if (widget.showCloseButton ||
+                          widget.closeButton != null) ...[
                         const SizedBox(width: 8),
                         SizedBox(
                           width: 22,

@@ -13,7 +13,7 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| context | BuildContext | - | - |
+| context | BuildContext | - | 用于查找 Overlay 的上下文。 |
 | content | String | '' | 通知内容 |
 | duration | Duration? | const Duration(seconds: 3) | 自动关闭时长，null 表示不自动关闭 |
 | showIcon | bool | true | 是否显示前置图标 |

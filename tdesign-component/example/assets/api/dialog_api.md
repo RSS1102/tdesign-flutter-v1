@@ -25,7 +25,7 @@
 | title | String? | - | 标题 |
 | titleAlignment | AlignmentGeometry? | - | 标题对齐模式 |
 | titleColor | Color? | - | 标题颜色 |
-| width | double? | - | - |
+| width | double? | - | 弹窗宽度。 |
 
 
 ### TDialogButtonOptions

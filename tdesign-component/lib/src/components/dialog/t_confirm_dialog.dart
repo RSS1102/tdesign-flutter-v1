@@ -93,6 +93,7 @@ class TConfirmDialog extends StatelessWidget {
   /// 按钮自定义样式
   final ButtonStyle? buttonStyleCustom;
 
+  /// 弹窗宽度。
   final double? width;
 
   Widget _buildButton(BuildContext context) {

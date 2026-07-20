@@ -32,9 +32,9 @@ TNoticeBar 组件级 ThemeExtension
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| a | double? | - | - |
-| b | double? | - | - |
-| t | double | - | - |
+| a | double? | - | 起始值。 |
+| b | double? | - | 目标值。 |
+| t | double | - | 插值进度。 |
 
 #### 默认构造方法
 

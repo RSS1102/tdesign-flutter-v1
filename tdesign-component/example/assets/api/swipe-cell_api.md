@@ -14,8 +14,8 @@ current：保留当前不关闭
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| tag | Object? | - | - |
-| current | SlidableController? | - | - |
+| tag | Object? | - | 要关闭的互斥滑动组标识。 |
+| current | SlidableController? | - | 保留不关闭的当前控制器。 |
 
 
 ##### TSwipeCell.of
@@ -26,7 +26,7 @@ current：保留当前不关闭
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| context | BuildContext | - | - |
+| context | BuildContext | - | 用于查找最近 `SlidableController` 的上下文。 |
 
 #### 默认构造方法
 
