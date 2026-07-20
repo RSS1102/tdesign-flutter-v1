@@ -62,5 +62,5 @@ class TDialogButtonOptions {
   final double? height;
 
   /// 点击操作
-  final Function()? onPressed;
+  final VoidCallback? onPressed;
 }

@@ -18,7 +18,7 @@
 | contentMaxHeight | double | 0 | 内容的最大高度，默认为0，也就是不限制高度 |
 | contentWidget | Widget? | - | 内容Widget |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| onPressed | Function()? | - | 点击 |
+| onPressed | VoidCallback? | - | 点击 |
 | padding | EdgeInsets? | const EdgeInsets.fromLTRB(24, 32, 24, 0) | 内容内边距 |
 | radius | double | 12.0 | 圆角 |
 | showCloseButton | bool? | - | 右上角关闭按钮 |
@@ -38,7 +38,7 @@
 | colorScheme | TButtonColorScheme? | - | 按钮配色方案 |
 | fontWeight | FontWeight? | - | 字体粗细 |
 | height | double? | - | 按钮高度 建议使用默认高度 |
-| onPressed | Function()? | - | 点击操作 |
+| onPressed | VoidCallback? | - | 点击操作 |
 | style | ButtonStyle? | - | 按钮样式 |
 | title | String | - | 标题内容 |
 | titleColor | Color? | - | 标题颜色 |
@@ -120,7 +120,7 @@ TDialog手脚架
 | height | double? | 40.0 | 按钮高度 |
 | isBlock | bool | true | 是否通栏 |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| onPressed | Function() | - | 点击回调 |
+| onPressed | VoidCallback | - | 点击回调 |
 | width | double? | - | 按钮宽度 |
 
 

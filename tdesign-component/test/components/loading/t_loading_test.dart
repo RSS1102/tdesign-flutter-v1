@@ -169,7 +169,7 @@ void main() {
       expect(find.text('加载中'), findsNothing);
     });
 
-    testWidgets('show 带 themeData', (tester) async {
+    testWidgets('show 带 theme', (tester) async {
       late BuildContext ctx;
       await tester.pumpWidget(wrapWithTheme(
         Builder(builder: (context) {
@@ -177,7 +177,7 @@ void main() {
           return const SizedBox();
         }),
       ));
-      TLoadingController.show(ctx, themeData: const TLoadingThemeData());
+      TLoadingController.show(ctx, theme: const TLoadingThemeData());
       await tester.pump();
       expect(find.byType(TLoading), findsOneWidget);
       TLoadingController.dismiss();

@@ -17,19 +17,19 @@
 | context | BuildContext | - | 上下文 |
 | content | String? | - | 显示内容 |
 | contentWidget | Widget? | - | 自定义内容 |
-| offset | double | 4 | 偏移 |
-| colorScheme | TPopoverColorScheme? | - | 弹出气泡主题 |
+| offset | double | 4 | - |
+| colorScheme | TPopoverColorScheme? | - | - |
 | closeOnClickOutside | bool | true | - |
 | placement | TPopoverPlacement? | - | 浮层出现位置 |
-| showArrow | bool? | true | 是否显示浮层箭头 |
-| arrowSize | double | 8 | 箭头大小 |
-| padding | EdgeInsetsGeometry? | - | 内容内边距 |
-| width | double? | - | 内容宽度（包含padding，实际高度：height - paddingLeft - paddingRight） |
-| height | double? | - | 内容高度（包含padding，实际高度：height - paddingTop - paddingBottom） |
+| showArrow | bool? | true | - |
+| arrowSize | double | 8 | - |
+| padding | EdgeInsetsGeometry? | - | - |
+| width | double? | - | - |
+| height | double? | - | - |
 | overlayColor | Color? | Colors.transparent | - |
-| onTap | OnTap? | - | 点击事件 |
-| onLongTap | OnLongTap? | - | 长按事件 |
-| radius | BorderRadius? | - | 圆角 |
+| onTap | TPopoverTapCallback? | - | 点击事件 |
+| onLongTap | TPopoverLongPressCallback? | - | 长按事件 |
+| radius | BorderRadius? | - | - |
 
 
 ### TPopoverWidget
@@ -47,8 +47,8 @@
 | height | double? | - | 内容高度（包含padding，实际高度：height - paddingTop - paddingBottom） |
 | key | Key? | - | 组件标识，用于区分或保留组件状态。 |
 | offset | double | 4 | 偏移 |
-| onLongTap | OnLongTap? | - | 长按事件 |
-| onTap | OnTap? | - | 点击事件 |
+| onLongTap | TPopoverLongPressCallback? | - | 长按事件 |
+| onTap | TPopoverTapCallback? | - | 点击事件 |
 | padding | EdgeInsetsGeometry? | - | 内容内边距 |
 | placement | TPopoverPlacement? | - | 浮层出现位置 |
 | radius | BorderRadius? | - | 圆角 |
@@ -84,7 +84,9 @@ TPopover 组件级 ThemeExtension
 | colorScheme | TPopoverColorScheme? | - | 语义色 |
 | maxHeight | double? | - | 最大高度 |
 | minWidth | double? | - | 最小宽度 |
+| offset | double? | - | 弹层与触发元素的间距 |
 | padding | EdgeInsetsGeometry? | - | 内边距 |
+| showArrow | bool? | - | 是否显示箭头 |
 
 
 ### TPopoverColorScheme
@@ -125,21 +127,21 @@ TPopover 语义色（原 TPopoverColorScheme）
 | leftTop | 左上 |
 
 
-### OnTap
+### TPopoverTapCallback
 #### 简介
 点击事件回调
 #### 类型定义
 
 ```dart
-typedef OnTap =  Function(String? content);
+typedef TPopoverTapCallback = void Function(String? content);
 ```
 
 
-### OnLongTap
+### TPopoverLongPressCallback
 #### 简介
 长按事件回调
 #### 类型定义
 
 ```dart
-typedef OnLongTap =  Function(String? content);
+typedef TPopoverLongPressCallback = void Function(String? content);
 ```

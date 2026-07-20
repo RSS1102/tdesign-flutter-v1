@@ -15,7 +15,7 @@ class TLoadingController {
       TLoadingSize size = TLoadingSize.medium,
       TLoadingIcon? icon = TLoadingIcon.circle,
       String? text,
-      TLoadingThemeData? themeData}) {
+      TLoadingThemeData? theme}) {
     if (_isShowing) {
       debugPrint('warn: TLoading is showing!');
       return;
@@ -28,13 +28,12 @@ class TLoadingController {
             icon: icon,
             text: text ?? context.resource.loading,
           );
-      // v1.0 按文档 §2.1：子树覆盖用 mergeExtension，禁止构造器 themeData
-      if (themeData == null) {
+      if (theme == null) {
         return Center(child: loadingWidget);
       }
       return Center(
         child: Theme(
-          data: Theme.of(context).mergeExtension(themeData),
+          data: Theme.of(context).mergeExtension(theme),
           child: loadingWidget,
         ),
       );

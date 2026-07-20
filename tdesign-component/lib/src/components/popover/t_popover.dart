@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import 't_popover_theme_data.dart';
+import 't_popover_widget.dart';
 
 /// 气泡弹层
 ///
@@ -21,30 +22,34 @@ class TPopover {
     double? width,
     double? height,
     Color? overlayColor = Colors.transparent,
-    OnTap? onTap,
-    OnLongTap? onLongTap,
+    TPopoverTapCallback? onTap,
+    TPopoverLongPressCallback? onLongTap,
     BorderRadius? radius,
   }) {
+    final theme = Theme.of(context).extension<TPopoverThemeData>() ??
+        const TPopoverThemeData();
     return showDialog(
       barrierDismissible: closeOnClickOutside,
-      barrierColor: overlayColor,
+      barrierColor: overlayColor ?? theme.barrierColor,
       useSafeArea: false,
       context: context,
       builder: (ctx) => TPopoverWidget(
         context: context,
         content: content,
         contentWidget: contentWidget,
-        offset: offset,
-        colorScheme: colorScheme,
+        offset: offset == 4 ? theme.offset ?? offset : offset,
+        colorScheme: colorScheme ?? theme.colorScheme,
         placement: placement,
-        showArrow: showArrow,
-        arrowSize: arrowSize,
-        padding: padding,
-        width: width,
-        height: height,
+        showArrow: showArrow ?? theme.showArrow,
+        arrowSize: arrowSize == 8 ? theme.arrowSize ?? arrowSize : arrowSize,
+        padding: padding ?? theme.padding,
+        width: width ?? theme.minWidth,
+        height: height ?? theme.maxHeight,
         onTap: onTap,
         onLongTap: onLongTap,
-        radius: radius,
+        radius: radius ?? (theme.borderRadius == null
+            ? null
+            : BorderRadius.circular(theme.borderRadius!)),
       ),
     );
   }

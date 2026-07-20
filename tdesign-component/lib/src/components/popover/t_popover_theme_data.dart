@@ -49,6 +49,12 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
   /// 箭头尺寸
   final double? arrowSize;
 
+  /// 是否显示箭头
+  final bool? showArrow;
+
+  /// 弹层与触发元素的间距
+  final double? offset;
+
   const TPopoverThemeData({
     this.colorScheme,
     this.backgroundColor,
@@ -58,6 +64,8 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
     this.borderRadius,
     this.barrierColor,
     this.arrowSize,
+    this.showArrow,
+    this.offset,
   });
 
   TPopoverThemeData merge(TPopoverThemeData? other) {
@@ -73,6 +81,8 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
       borderRadius: other.borderRadius ?? borderRadius,
       barrierColor: other.barrierColor ?? barrierColor,
       arrowSize: other.arrowSize ?? arrowSize,
+      showArrow: other.showArrow ?? showArrow,
+      offset: other.offset ?? offset,
     );
   }
 
@@ -86,6 +96,8 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
     double? borderRadius,
     Color? barrierColor,
     double? arrowSize,
+    bool? showArrow,
+    double? offset,
   }) {
     return TPopoverThemeData(
       colorScheme: colorScheme ?? this.colorScheme,
@@ -96,6 +108,8 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
       borderRadius: borderRadius ?? this.borderRadius,
       barrierColor: barrierColor ?? this.barrierColor,
       arrowSize: arrowSize ?? this.arrowSize,
+      showArrow: showArrow ?? this.showArrow,
+      offset: offset ?? this.offset,
     );
   }
 
@@ -113,6 +127,8 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
       borderRadius: lerpDouble(borderRadius, other.borderRadius, t),
       barrierColor: Color.lerp(barrierColor, other.barrierColor, t),
       arrowSize: lerpDouble(arrowSize, other.arrowSize, t),
+      showArrow: t < 0.5 ? showArrow : other.showArrow,
+      offset: lerpDouble(offset, other.offset, t),
     );
   }
 

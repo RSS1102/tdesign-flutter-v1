@@ -70,7 +70,7 @@ class TConfirmDialog extends StatelessWidget {
   final Color? buttonTextColor;
 
   /// 点击
-  final Function()? onPressed;
+  final VoidCallback? onPressed;
 
   /// 背景颜色
   final Color? backgroundColor;

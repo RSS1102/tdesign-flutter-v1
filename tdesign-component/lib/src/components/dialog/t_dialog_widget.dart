@@ -412,7 +412,7 @@ class TDialogButton extends StatelessWidget {
   final bool isBlock;
 
   /// 点击回调
-  final Function() onPressed;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
