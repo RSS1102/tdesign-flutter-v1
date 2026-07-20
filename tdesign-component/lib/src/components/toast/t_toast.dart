@@ -73,15 +73,33 @@ class TToast {
 
   /// 普通文本Toast
   static String showText(
+    /// 提示文案；为 null 时只展示自定义内容。
     String? text, {
+    /// 用于查找 Overlay 的上下文。
     required BuildContext context,
+
+    /// 自动关闭时长。
     Duration duration = const Duration(milliseconds: 3000),
+
+    /// 文案最大行数。
     int? maxLines,
+
+    /// Toast 内容约束。
     BoxConstraints? constraints,
+
+    /// 是否阻止 Toast 展示期间的背景点击。
     bool? preventTap,
+
+    /// 自定义内容；传入后优先展示。
     Widget? customWidget,
+
+    /// Toast 背景色。
     Color? backgroundColor,
+
+    /// Toast 文案样式。
     TextStyle? textStyle,
+
+    /// 指定实例 ID；不传时自动生成。
     String? toastId,
   }) {
     final id = toastId ?? _generateToastId();
@@ -106,17 +124,39 @@ class TToast {
 
   /// 带图标的Toast
   static String showIconText(
+    /// 提示文案。
     String? text, {
+    /// 左侧或上方图标。
     IconData? icon,
+
+    /// 图标与文案排列方向。
     IconTextDirection direction = IconTextDirection.horizontal,
+
+    /// 用于查找 Overlay 的上下文。
     required BuildContext context,
+
+    /// 自动关闭时长。
     Duration duration = const Duration(milliseconds: 3000),
+
+    /// 是否阻止 Toast 展示期间的背景点击。
     bool? preventTap,
+
+    /// Toast 背景色。
     Color? backgroundColor,
+
+    /// 文案最大行数。
     int? maxLines,
+
+    /// Toast 文案样式。
     TextStyle? textStyle,
+
+    /// 图标尺寸。
     double? iconSize,
+
+    /// 图标颜色。
     Color? iconColor,
+
+    /// 指定实例 ID；不传时自动生成。
     String? toastId,
   }) {
     final id = toastId ?? _generateToastId();
@@ -143,16 +183,36 @@ class TToast {
 
   /// 成功提示Toast
   static String showSuccess(
+    /// 提示文案。
     String? text, {
+    /// 图标与文案排列方向。
     IconTextDirection direction = IconTextDirection.horizontal,
+
+    /// 用于查找 Overlay 的上下文。
     required BuildContext context,
+
+    /// 自动关闭时长。
     Duration duration = const Duration(milliseconds: 3000),
+
+    /// 是否阻止 Toast 展示期间的背景点击。
     bool? preventTap,
+
+    /// Toast 背景色。
     Color? backgroundColor,
+
+    /// 文案最大行数。
     int? maxLines,
+
+    /// Toast 文案样式。
     TextStyle? textStyle,
+
+    /// 图标尺寸。
     double? iconSize,
+
+    /// 图标颜色。
     Color? iconColor,
+
+    /// 指定实例 ID；不传时自动生成。
     String? toastId,
   }) {
     return showIconText(
@@ -173,16 +233,36 @@ class TToast {
 
   /// 警告Toast
   static String showWarning(
+    /// 提示文案。
     String? text, {
+    /// 图标与文案排列方向。
     IconTextDirection direction = IconTextDirection.horizontal,
+
+    /// 用于查找 Overlay 的上下文。
     required BuildContext context,
+
+    /// 自动关闭时长。
     Duration duration = const Duration(milliseconds: 3000),
+
+    /// 是否阻止 Toast 展示期间的背景点击。
     bool? preventTap,
+
+    /// Toast 背景色。
     Color? backgroundColor,
+
+    /// 文案最大行数。
     int? maxLines,
+
+    /// Toast 文案样式。
     TextStyle? textStyle,
+
+    /// 图标尺寸。
     double? iconSize,
+
+    /// 图标颜色。
     Color? iconColor,
+
+    /// 指定实例 ID；不传时自动生成。
     String? toastId,
   }) {
     return showIconText(
@@ -203,16 +283,36 @@ class TToast {
 
   /// 失败提示Toast
   static String showFail(
+    /// 提示文案。
     String? text, {
+    /// 图标与文案排列方向。
     IconTextDirection direction = IconTextDirection.horizontal,
+
+    /// 用于查找 Overlay 的上下文。
     required BuildContext context,
+
+    /// 自动关闭时长。
     Duration duration = const Duration(milliseconds: 3000),
+
+    /// 是否阻止 Toast 展示期间的背景点击。
     bool? preventTap,
+
+    /// Toast 背景色。
     Color? backgroundColor,
+
+    /// 文案最大行数。
     int? maxLines,
+
+    /// Toast 文案样式。
     TextStyle? textStyle,
+
+    /// 图标尺寸。
     double? iconSize,
+
+    /// 图标颜色。
     Color? iconColor,
+
+    /// 指定实例 ID；不传时自动生成。
     String? toastId,
   }) {
     return showIconText(
@@ -233,15 +333,34 @@ class TToast {
 
   /// 带文案的加载Toast
   static String showLoading({
+    /// 用于查找 Overlay 的上下文。
     required BuildContext context,
+
+    /// 加载提示文案。
     String? text,
+
+    /// 自动关闭时长。
     Duration duration = const Duration(seconds: 99999999),
+
+    /// 是否阻止 Toast 展示期间的背景点击。
     bool? preventTap,
+
+    /// 自定义加载内容；传入后优先展示。
     Widget? customWidget,
+
+    /// Toast 背景色。
     Color? backgroundColor,
+
+    /// Toast 文案样式。
     TextStyle? textStyle,
+
+    /// 加载图标尺寸。
     double? iconSize,
+
+    /// 加载图标颜色。
     Color? iconColor,
+
+    /// 指定实例 ID；不传时自动生成。
     String? toastId,
   }) {
     final id = toastId ?? _generateToastId();
@@ -266,12 +385,25 @@ class TToast {
 
   /// 不带文案的加载Toast
   static String showLoadingWithoutText({
+    /// 用于查找 Overlay 的上下文。
     required BuildContext context,
+
+    /// 自动关闭时长。
     Duration duration = const Duration(seconds: 99999999),
+
+    /// 是否阻止 Toast 展示期间的背景点击。
     bool? preventTap,
+
+    /// Toast 背景色。
     Color? backgroundColor,
+
+    /// 加载图标尺寸。
     double? iconSize,
+
+    /// 加载图标颜色。
     Color? iconColor,
+
+    /// 指定实例 ID；不传时自动生成。
     String? toastId,
   }) {
     final id = toastId ?? _generateToastId();
@@ -292,7 +424,10 @@ class TToast {
   }
 
   /// 关闭指定的Toast
-  static void dismissToast(String toastId) {
+  static void dismissToast(
+    /// 要关闭的 Toast 实例 ID。
+    String toastId,
+  ) {
     final instance = _toastInstances[toastId];
     if (instance != null) {
       instance.cancel();

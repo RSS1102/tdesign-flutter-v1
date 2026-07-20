@@ -18,7 +18,7 @@ import 't_fonts.dart';
 
 /// BuildContext 扩展：便捷获取全局 TThemeData Token
 ///
-/// v1.0 统一走 Material 的 `Theme.of(context)`，不再使用旧 `TTheme.of`。
+/// v1.0 统一走 Material 的 `Theme.of(context)`。
 /// 全库读取全局 Token（色板/间距/圆角/字体）统一用 `context.tTheme`。
 extension TThemeContextExtension on BuildContext {
   /// 获取全局 TThemeData（P4 Token），取不到则回退默认值
@@ -493,7 +493,7 @@ class TThemeBuilder {
       TMaterialThemeBuilder(token).buildDark();
 }
 
-/// 设置资源代理（从旧 TTheme.setResourceBuilder 迁移为顶层函数）
+/// 设置全局资源代理。
 ///
 /// [needAlwaysBuild]=true: 每次都会走 build 方法；如果全局有多个 Delegate，
 /// 需要区分情况去获取，则可以设置 needAlwaysBuild 为 true，业务自己判断返回哪个 delegate。
