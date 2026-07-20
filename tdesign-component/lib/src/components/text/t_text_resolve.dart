@@ -10,8 +10,8 @@ import 't_text_theme_data.dart';
 
 /// Text 样式解析器
 ///
-/// 将 v0.2.x 中 [TText.getTextStyle] 与 TTextSpan 内部样式逻辑
-/// 合并为唯一入口，确保纯文本与富文本样式一致性。
+/// 统一 [TText.getTextStyle] 与 TTextSpan 内部样式逻辑，
+/// 确保纯文本与富文本样式一致性。
 ///
 /// 优先级链：
 /// P0 [TextStyle] style 实例
@@ -230,7 +230,7 @@ class TTextResolve {
         fontFamily?.fontFamily ??
         themeFontFamily?.fontFamily;
 
-    // globalFontFamily 注入（替代 v0.2.x 的 kTextNeedGlobalFontFamily 全局变量）
+    // globalFontFamily 注入。
     final globalFontFamily = configuration?.globalFontFamily;
     styleFontFamily ??= globalFontFamily?.fontFamily;
 

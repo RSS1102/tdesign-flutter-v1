@@ -58,7 +58,7 @@
 
 ## 实现约束
 
-- 不提供业务 Controller、`enabled`、`disabled` 或旧回调 typedef。
+- 不提供业务 Controller、`enabled`、`disabled` 或额外回调 typedef。
 - 构造器不暴露颜色、字体等 L4 样式字段。
 - `TSwitchResolve` 是内部唯一样式解析入口，不从公共总出口导出。
 - `TSwitchSize`、`TSwitchVariant` 位于独立类型文件，Theme 与 Widget 不通过公共总出口互相依赖。
@@ -70,4 +70,4 @@
 | 测试 | 覆盖受控切换、禁用、四种形态、三种尺寸、Theme、LTR/RTL 拖动 |
 | 文档 | tools 生成的公开 API 说明列不得为 `-` |
 | 覆盖率 | 组件源码总覆盖率不低于 95% |
-| 残留 | 源码、测试、示例、API 文档不得出现旧控制器、旧禁用入口或构造器 L4 字段 |
+| API 边界 | 源码、测试、示例、API 文档不得出现额外控制器、重复禁用入口或构造器 L4 字段 |

@@ -58,7 +58,7 @@ Theme 注入使用 `Theme.of(context).mergeExtension(...)`。实例 `decoration`
 
 ## 实现约束
 
-- 不公开业务 Controller、布局枚举、尺寸枚举、卡片样式、间距对象或兼容 formatter。
+- 不公开业务 Controller、布局枚举、尺寸枚举、卡片样式、间距对象或额外 formatter 包装。
 - `TextInputType.visiblePassword` 只控制键盘，不能替代 `obscureText`。
 - 清除操作更新当前 controller，并通过 `onChanged('')` 通知。
 - `TInputResolve` 为内部装饰解析入口，不从公共总出口导出。
@@ -70,4 +70,4 @@ Theme 注入使用 `Theme.of(context).mergeExtension(...)`。实例 `decoration`
 | 测试 | 覆盖控制器生命周期、initialValue、提交、禁用、只读、密码、格式化、清除和多行 |
 | 文档 | tools 生成 API 说明列不得为 `-` |
 | 覆盖率 | 组件源码总覆盖率及各文件不低于 95% |
-| 残留 | 不出现旧布局、卡片样式、重复 decoration 或兼容 formatter |
+| API 边界 | 不出现布局枚举、卡片样式、重复 decoration 或额外 formatter 包装 |

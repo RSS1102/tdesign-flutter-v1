@@ -68,7 +68,7 @@ Material `CheckboxThemeData` 只负责 Material density、tap target、overlay�
 
 ## 实现约束
 
-- `TCheckbox` 与 `TCheckboxGroup` 均严格受控，不保留命令式控制器。
+- `TCheckbox` 与 `TCheckboxGroup` 均严格受控，不提供命令式控制器。
 - 禁用只通过 `onChanged: null` 表达；数据项禁用使用 `TCheckboxOption.disabled`。
 - 纯控件、标题行、卡片模式的点击热区不得小于指示器本身。
 - `cardMode` 隐藏默认指示器，使用卡片边框和角标表达选中态。
@@ -80,4 +80,4 @@ Material `CheckboxThemeData` 只负责 Material density、tap target、overlay�
 | 测试 | 覆盖单项、三态、禁用、Group、多列/卡片、自定义 itemBuilder |
 | 文档 | 公开 API 说明列不得为 `-` |
 | 覆盖率 | 组件源码总覆盖率不低于 95% |
-| 残留 | 源码、测试、示例、API 文档不得出现旧控制器或旧回调入口 |
+| API 边界 | 源码、测试、示例、API 文档不得出现命令式控制器或重复回调入口 |

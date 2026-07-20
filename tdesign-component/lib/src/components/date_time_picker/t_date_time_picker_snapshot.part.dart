@@ -244,7 +244,7 @@ class DateTimePickerSnapshot {
 
   /// 判断从 `other` → `this`，picker 的列结构是否需要重建。
   ///
-  /// 等价于 `columnIndicesWithChangedOptions` 非空（保留旧 API 语义）。
+  /// 等价于 `columnIndicesWithChangedOptions` 非空。
   bool needsColumnRebuildFrom(
     DateTimePickerSnapshot other, {
     bool showWeek = false,

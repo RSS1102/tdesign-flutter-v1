@@ -14,7 +14,7 @@ import 't_text_theme_data.dart';
 
 /// 文本控件
 /// 设计原则：
-/// 1. 为了使用更方便，所以对系统组件进行的扩展，需兼容系统控件所有功能，不能让用户使用 TDesign 时，因不能满足系统功能而弃用。
+/// 1. 作为系统 Text 的扩展封装，保持系统文本能力可达。
 /// 2. 非系统已有属性，尽量添加注释
 ///
 /// 需求：把一部分在 TextStyle 中的属性扁平化，放到外层。
@@ -22,7 +22,7 @@ import 't_text_theme_data.dart';
 /// 2. 约束使用主题配置的几种字体
 /// 3. 提供转换为系统 Text 的方法，以使某些系统组件指定接收系统 Text 时可使用。（Image 组件同理）
 /// 4. 支持自定义 TextStyle
-/// 5. 兼容 TextSpan 形式
+/// 5. 支持 TextSpan 形式
 ///
 /// 技巧：
 /// 命名参数替换属性的正则：
@@ -238,8 +238,7 @@ class TText extends StatelessWidget {
 
   /// 获取最终的 [TextStyle]，委托 [TTextResolve.resolve] 统一处理
   ///
-  /// v1.0 变更：合并 v0.2.x 双份 getTextStyle 为单路径 Resolve，
-  /// 删除 kTextForceVerticalCenterEnable 和 kTextNeedGlobalFontFamily 全局变量。
+  /// TText 与 TTextSpan 统一走单路径 Resolve。
   TextStyle? getTextStyle(BuildContext context,
       {double? overrideHeight, Color? textStyleBackgroundColor}) {
     return TTextResolve.resolve(
@@ -420,7 +419,7 @@ class TTextConfiguration extends InheritedWidget {
 
   /// 全局字体族，设置后子树中所有 TText 将默认使用此字体
   ///
-  /// v1.0 变更：始终启用（删除 v0.2.x 的 kTextNeedGlobalFontFamily 全局开关）。
+  /// 始终作为子树配置参与样式 resolve。
   final FontFamily? globalFontFamily;
 
   /// 构造 TText 子树配置。

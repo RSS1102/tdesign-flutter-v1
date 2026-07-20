@@ -66,7 +66,7 @@
 
 ## 实现约束
 
-- `TRadio` 与 `TRadioGroup` 均严格受控，不保留命令式控制器。
+- `TRadio` 与 `TRadioGroup` 均严格受控，不提供命令式控制器。
 - Radio 标准视觉固定为圆环加实心圆点；特殊视觉通过 `customIconBuilder`。
 - 禁用只通过 `onChanged: null` 表达；数据项禁用使用 `TRadioOption.disabled`。
 - 卡片模式与 Checkbox 共用选择卡片视觉和布局规则。
@@ -78,4 +78,4 @@
 | 测试 | 覆盖单项、互斥 Group、禁用、卡片、自定义 itemBuilder |
 | 文档 | 公开 API 说明列不得为 `-` |
 | 覆盖率 | 组件源码总覆盖率不低于 95% |
-| 残留 | 源码、测试、示例、API 文档不得出现旧控制器、旧 variant 或旧回调入口 |
+| API 边界 | 源码、测试、示例、API 文档不得出现命令式控制器、重复 variant 或重复回调入口 |

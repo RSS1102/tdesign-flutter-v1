@@ -69,7 +69,7 @@ class TDivider extends StatelessWidget {
   /// 仅 [TDividerLayout.horizontal] 生效
   final bool? dashed;
 
-  /// 中间子元素（替代 0.2.x 的 text + widget 双通道）
+  /// 中间子元素
   /// 纯文案用 `child: Text('……')`
   final Widget? child;
 
