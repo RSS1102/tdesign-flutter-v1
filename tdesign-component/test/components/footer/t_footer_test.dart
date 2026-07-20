@@ -132,57 +132,25 @@ void main() {
       ));
       expect(find.byType(TImage), findsOneWidget);
     });
-
-    testWidgets('Theme.variant 不影响显式传入的 variant', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TFooter(TFooterVariant.text, text: '显式 text'),
-        footerTheme: const TFooterThemeData(variant: TFooterVariant.brand),
-      ));
-      // 显式 variant=text，即使 Theme.variant=brand 仍渲染文字
-      expect(find.text('显式 text'), findsOneWidget);
-      expect(find.byType(TImage), findsNothing);
-    });
   });
 
   group('TFooterThemeData copyWith 和 lerp', () {
     test('copyWith 部分覆盖', () {
-      const theme = TFooterThemeData(
-        variant: TFooterVariant.text,
-        height: 50,
-      );
+      const theme = TFooterThemeData(height: 50);
       final copied = theme.copyWith(height: 80);
-      expect(copied.variant, TFooterVariant.text);
       expect(copied.height, 80);
     });
 
     test('copyWith 不覆盖时保持原值', () {
-      const theme = TFooterThemeData(
-        variant: TFooterVariant.link,
-        height: 60,
-      );
+      const theme = TFooterThemeData(height: 60);
       final copied = theme.copyWith();
-      expect(copied.variant, TFooterVariant.link);
       expect(copied.height, 60);
     });
 
-    test('lerp 前半段取 a 的 variant', () {
-      const a = TFooterThemeData(variant: TFooterVariant.text);
-      const b = TFooterThemeData(variant: TFooterVariant.brand);
-      final result = a.lerp(b, 0.3);
-      expect(result.variant, TFooterVariant.text);
-    });
-
-    test('lerp 后半段取 b 的 variant', () {
-      const a = TFooterThemeData(variant: TFooterVariant.text);
-      const b = TFooterThemeData(variant: TFooterVariant.brand);
-      final result = a.lerp(b, 0.7);
-      expect(result.variant, TFooterVariant.brand);
-    });
-
     test('lerp 非 TFooterThemeData 返回自身', () {
-      const theme = TFooterThemeData(variant: TFooterVariant.link);
+      const theme = TFooterThemeData(height: 10);
       final result = theme.lerp(null, 0.5);
-      expect(result.variant, TFooterVariant.link);
+      expect(result, same(theme));
     });
 
     test('lerp height 插值', () {

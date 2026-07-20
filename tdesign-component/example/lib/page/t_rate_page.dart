@@ -42,8 +42,8 @@ class _TRatePageState extends State<TRatePage> {
   @Demo(group: 'rate')
   Widget _buildBasicRate(BuildContext context) {
     return TCell(
-      title: '基础评分',
-      noteWidget: TRate(
+      title: const Text('基础评分'),
+      note: TRate(
         value: _basicValue,
         onChanged: (value) => setState(() => _basicValue = value),
       ),
@@ -53,8 +53,8 @@ class _TRatePageState extends State<TRatePage> {
   @Demo(group: 'rate')
   Widget _buildHalfRate(BuildContext context) {
     return TCell(
-      title: '半星评分',
-      noteWidget: TRate(
+      title: const Text('半星评分'),
+      note: TRate(
         value: _halfValue,
         allowHalf: true,
         onChanged: (value) => setState(() => _halfValue = value),
@@ -65,8 +65,8 @@ class _TRatePageState extends State<TRatePage> {
   @Demo(group: 'rate')
   Widget _buildCustomRate(BuildContext context) {
     return TCell(
-      title: '自定义图标',
-      noteWidget: TRate(
+      title: const Text('自定义图标'),
+      note: TRate(
         value: _customValue,
         icon: (filled) => Icon(
           filled ? Icons.favorite : Icons.favorite_border,
@@ -84,8 +84,8 @@ class _TRatePageState extends State<TRatePage> {
         const TRateThemeData(showText: true, textWidth: 64),
       ),
       child: TCell(
-        title: '评分文案',
-        noteWidget: TRate(
+        title: const Text('评分文案'),
+        note: TRate(
           value: _textValue,
           texts: const ['很差', '较差', '一般', '满意', '惊喜'],
           onChanged: (value) => setState(() => _textValue = value),
@@ -97,8 +97,8 @@ class _TRatePageState extends State<TRatePage> {
   @Demo(group: 'rate')
   Widget _buildDisabledRate(BuildContext context) {
     return const TCell(
-      title: '禁用状态',
-      noteWidget: TRate(value: 3),
+      title: Text('禁用状态'),
+      note: TRate(value: 3),
     );
   }
 
@@ -114,8 +114,8 @@ class _TRatePageState extends State<TRatePage> {
         ),
       ),
       child: const TCell(
-        title: '主题定制',
-        noteWidget: TRate(value: 4),
+        title: Text('主题定制'),
+        note: TRate(value: 4),
       ),
     );
   }

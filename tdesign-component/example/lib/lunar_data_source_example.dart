@@ -7,7 +7,7 @@ import 'lunar_info.dart';
 /// 农历示例数据：为 [TCalendar.subtitleBuilder] 提供节日 / 节气 / 农历日副标题文案。
 ///
 /// 接入方式：`subtitleBuilder: lunarExample.buildSubtitle`。
-/// 控制栏切换月份请改 [TCalendar.anchorDate]，勿用 [TCalendar.initialValue] 驱动滚动。
+/// 控制栏通过 `anchorDate` 切换月份，`initialValue` 仅设置初始日期。
 class LunarDataSourceExample {
   static String convertToChineseNumber(int number) {
     const digits = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九'];

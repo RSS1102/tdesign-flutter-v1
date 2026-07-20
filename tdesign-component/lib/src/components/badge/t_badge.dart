@@ -1,322 +1,112 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
-import '../../util/context_extension.dart';
+import 't_badge_theme_data.dart';
 
-/// 徽标形态
+/// 徽标形态。
 enum TBadgeVariant {
-  /// 红点样式
-  redPoint,
+  /// 标准数字徽标。
+  normal,
 
-  /// 消息样式
-  message,
-
-  /// 气泡样式
-  bubble,
-
-  /// 方形样式
-  square,
-
-  /// 角标样式
-  subscript
-}
-
-/// 徽标圆角大小
-enum TBadgeBorder {
-  /// 大圆角 8px
-  large,
-
-  /// 小圆角 2px
-  small
-}
-
-/// 徽标尺寸
-enum TBadgeSize {
-  /// 宽 20px
-  large,
-
-  /// 宽 16px
+  /// 紧凑数字徽标。
   small,
+
+  /// 不显示数字的圆点徽标。
+  dot,
 }
 
-class TBadge extends StatefulWidget {
-  const TBadge(
-    this.variant, {
-    Key? key,
-    this.count,
-    this.maxCount = '99',
-    this.size = TBadgeSize.small,
-  }) : super(key: key);
+/// 在内容右上角展示数字或圆点状态。
+class TBadge extends StatelessWidget {
+  const TBadge({
+    super.key,
+    this.count = 0,
+    this.maxCount = 99,
+    this.variant = TBadgeVariant.normal,
+    this.border = false,
+    this.showZero = true,
+    this.child,
+    this.onTap,
+  })  : assert(count >= 0, 'count must not be negative'),
+        assert(maxCount > 0, 'maxCount must be greater than zero');
 
-  /// 红点数量
-  final String? count;
+  /// 当前数量。
+  final int count;
 
-  /// 最大红点数量
-  final String? maxCount;
+  /// 最大显示数量，超出后显示 `[maxCount]+`。
+  final int maxCount;
 
-  /// 红点形态
+  /// 徽标形态。
   final TBadgeVariant variant;
 
-  /// 红点尺寸
-  final TBadgeSize size;
+  /// 是否为徽标增加对比色描边。
+  final bool border;
 
-  @override
-  State<StatefulWidget> createState() => _TBadgeState();
-}
+  /// [count] 为 0 时是否显示徽标。
+  final bool showZero;
 
-class _TBadgeState extends State<TBadge> {
-  /// 从 Theme 子树读取 L4 默认值
-  TBadgeThemeData? _theme(BuildContext context) =>
-      Theme.of(context).extension<TBadgeThemeData>();
+  /// 被徽标标记的内容；为空时徽标可独立展示。
+  final Widget? child;
 
-  _TBadgeResolved _resolveBadge(BuildContext context) {
-    final theme = _theme(context);
-    final message = theme?.message;
-    if (message != null) {
-      return _TBadgeResolved(
-        text: message,
-        visible: message.isNotEmpty,
-      );
-    }
-
-    final count = widget.count ?? context.resource.badgeZero;
-    final countValue = int.tryParse(count);
-    final maxCountValue = int.tryParse(widget.maxCount ?? '');
-    final displayText = countValue != null &&
-            maxCountValue != null &&
-            maxCountValue > 0 &&
-            countValue > maxCountValue
-        ? '$maxCountValue+'
-        : count;
-    final showZero = theme?.showZero ?? true;
-    return _TBadgeResolved(
-      text: displayText,
-      visible:
-          showZero || (countValue != null && countValue != 0) || countValue == null,
-    );
-  }
-
-  double getBadgeSize() {
-    switch (widget.size) {
-      case TBadgeSize.large:
-        return 20;
-      case TBadgeSize.small:
-        return 16;
-    }
-  }
-
-  Font? getBadgeFont(BuildContext context) {
-    switch (widget.size) {
-      case TBadgeSize.large:
-        return context.tTheme.fontMarkSmall;
-      case TBadgeSize.small:
-        return context.tTheme.fontMarkExtraSmall;
-    }
-  }
-
-  bool get visible {
-    return _resolveBadge(context).visible;
-  }
-
-  String get value {
-    return _resolveBadge(context).text;
-  }
-
-  Color _resolveColor(BuildContext context) {
-    final theme = _theme(context);
-    return theme?.color ?? context.tTheme.errorNormalColor;
-  }
-
-  Color _resolveTextColor(BuildContext context) {
-    final theme = _theme(context);
-    return theme?.textColor ?? context.tTheme.textColorAnti;
-  }
-
-  TBadgeBorder _resolveBorder(BuildContext context) {
-    final theme = _theme(context);
-    return theme?.border ?? TBadgeBorder.large;
-  }
-
-  EdgeInsetsGeometry _resolvePadding(BuildContext context) {
-    final theme = _theme(context);
-    return theme?.padding ?? const EdgeInsets.only(left: 4, bottom: 8);
-  }
-
-  double _resolveWidthLarge(BuildContext context) {
-    final theme = _theme(context);
-    return theme?.widthLarge ?? 32;
-  }
-
-  double _resolveWidthSmall(BuildContext context) {
-    final theme = _theme(context);
-    return theme?.widthSmall ?? 12;
-  }
+  /// 点击回调；为空时不创建点击语义。
+  final GestureTapCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final resolved = _resolveBadge(context);
-    final displayValue = resolved.text;
-    switch (widget.variant) {
-      case TBadgeVariant.redPoint:
-        return Container(
-          alignment: Alignment.center,
-          height: getBadgeSize() / 2,
-          width: getBadgeSize() / 2,
-          decoration: BoxDecoration(
-              color: _resolveColor(context),
-              borderRadius: BorderRadius.circular(getBadgeSize() / 4)),
-        );
-      case TBadgeVariant.message:
-        return Visibility(
-          visible: resolved.visible,
-          child: resolved.isCompact
-              ? Container(
-                  height: getBadgeSize(),
-                  width: getBadgeSize(),
-                  decoration: BoxDecoration(
-                    color: _resolveColor(context),
-                    borderRadius: BorderRadius.circular(getBadgeSize() / 2),
-                  ),
-                  child: Center(
-                    child: TText(
-                      displayValue,
-                      forceVerticalCenter: true,
-                      font: getBadgeFont(context),
-                      fontWeight: FontWeight.w500,
-                      textColor: _resolveTextColor(context),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                )
-              : Container(
-                  height: getBadgeSize(),
-                  padding: const EdgeInsets.only(left: 5, right: 5),
-                  decoration: BoxDecoration(
-                    color: _resolveColor(context),
-                    borderRadius: BorderRadius.circular(getBadgeSize() / 2),
-                  ),
-                  child: Center(
-                    child: TText(
-                      displayValue,
-                      forceVerticalCenter: true,
-                      font: getBadgeFont(context),
-                      fontWeight: FontWeight.w500,
-                      textColor: _resolveTextColor(context),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-        );
-      case TBadgeVariant.subscript:
-        return ClipPath(
-          clipper: TrapezoidPath(
-              _resolveWidthLarge(context), _resolveWidthSmall(context)),
-          child: Container(
-            alignment: Alignment.topRight,
-            color: _resolveColor(context),
-            height: 32,
-            width: 32,
-            child: Transform.rotate(
-                angle: pi / 4,
-                child: Padding(
-                  padding: _resolvePadding(context),
-                  child: TText(
-                    value,
-                    font: getBadgeFont(context),
-                    fontWeight: FontWeight.w500,
-                    textColor: _resolveTextColor(context),
-                    textAlign: TextAlign.center,
-                  ),
-                )),
-          ),
-        );
-      case TBadgeVariant.bubble:
-        return Visibility(
-            visible: resolved.visible,
-            child: Container(
-              height: 16,
-              padding: const EdgeInsets.only(left: 4, right: 4),
-              decoration: BoxDecoration(
-                color: _resolveColor(context),
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                    bottomLeft: Radius.circular(1)),
-              ),
-              child: Center(
-                child: TText(
-                  displayValue,
-                  forceVerticalCenter: true,
-                  font: getBadgeFont(context),
-                  fontWeight: FontWeight.w500,
-                  textColor: _resolveTextColor(context),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ));
-      case TBadgeVariant.square:
-        return Visibility(
-            visible: resolved.visible,
-            child: IntrinsicWidth(
-                child: Container(
-              height: getBadgeSize(),
-              padding: const EdgeInsets.only(left: 5, right: 5),
-              decoration: BoxDecoration(
-                color: _resolveColor(context),
-                borderRadius: _resolveBorder(context) == TBadgeBorder.large
-                    ? BorderRadius.circular(8)
-                    : BorderRadius.circular(2),
-              ),
-              child: Center(
-                child: TText(
-                  displayValue,
-                  forceVerticalCenter: true,
-                  font: getBadgeFont(context),
-                  fontWeight: FontWeight.w500,
-                  textColor: _resolveTextColor(context),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            )));
+    final badgeTheme = BadgeTheme.of(context);
+    final tTheme = Theme.of(context).extension<TBadgeThemeData>();
+    final visible = variant == TBadgeVariant.dot || showZero || count != 0;
+    final standaloneSize = badgeTheme.largeSize ?? 16;
+    final content = child ?? SizedBox.square(dimension: standaloneSize);
+    final badge = Badge(
+      isLabelVisible: visible,
+      alignment: badgeTheme.alignment,
+      offset: badgeTheme.offset,
+      backgroundColor: border ? Colors.transparent : badgeTheme.backgroundColor,
+      textColor: badgeTheme.textColor,
+      textStyle: badgeTheme.textStyle,
+      padding: badgeTheme.padding,
+      largeSize: variant == TBadgeVariant.small
+          ? (badgeTheme.smallSize ?? 6) * 2
+          : badgeTheme.largeSize,
+      smallSize: badgeTheme.smallSize,
+      label: variant == TBadgeVariant.dot
+          ? null
+          : _buildLabel(context, badgeTheme, tTheme),
+      child: content,
+    );
+
+    if (onTap == null) {
+      return badge;
     }
-  }
-}
-
-class _TBadgeResolved {
-  const _TBadgeResolved({
-    required this.text,
-    required this.visible,
-  });
-
-  final String text;
-  final bool visible;
-
-  bool get isCompact => text.length == 1;
-}
-
-class TrapezoidPath extends CustomClipper<Path> {
-  final double widthLarge;
-  final double widthSmall;
-
-  TrapezoidPath(this.widthLarge, this.widthSmall);
-
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.moveTo(0, 0);
-    path.lineTo(widthLarge - widthSmall, 0);
-    path.lineTo(widthLarge, widthSmall);
-    path.lineTo(widthLarge, widthLarge);
-    path.lineTo(0, 0);
-    path.close();
-    return path;
+    return GestureDetector(onTap: onTap, child: badge);
   }
 
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return true;
+  Widget _buildLabel(
+    BuildContext context,
+    BadgeThemeData badgeTheme,
+    TBadgeThemeData? tTheme,
+  ) {
+    final text = count > maxCount ? '$maxCount+' : '$count';
+    if (!border) {
+      return Text(text);
+    }
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color:
+            badgeTheme.backgroundColor ?? Theme.of(context).colorScheme.error,
+        border: Border.all(
+          color: tTheme?.borderColor ?? Theme.of(context).colorScheme.surface,
+          width: tTheme?.borderWidth ?? 1,
+        ),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding:
+            badgeTheme.padding ?? const EdgeInsets.symmetric(horizontal: 4),
+        child: Text(
+          text,
+          style: badgeTheme.textStyle?.copyWith(color: badgeTheme.textColor),
+        ),
+      ),
+    );
   }
 }

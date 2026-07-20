@@ -2,69 +2,99 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import 't_avatar.dart' show TAvatarVariant, TAvatarShape, TAvatar;
+import 't_avatar_types.dart';
 
-/// 头像组件级 ThemeExtension
+/// 头像组件级 ThemeExtension。
+///
+/// 仅保存视觉默认值，不保存头像内容、回调或头像组成员。
 class TAvatarThemeData extends ThemeExtension<TAvatarThemeData> {
-  /// 未传 [TAvatar.variant] 时的默认形态
+  const TAvatarThemeData({
+    this.size,
+    this.variant,
+    this.dimension,
+    this.iconSize,
+    this.squareBorderRadius,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.groupSpacing,
+    this.groupBorderWidth,
+    this.groupBorderColor,
+  });
+
+  /// 默认头像尺寸档位。
+  final TAvatarSize? size;
+
+  /// 默认头像形状。
   final TAvatarVariant? variant;
 
-  /// 头像形状
-  final TAvatarShape? shape;
+  /// 自定义头像边长。
+  final double? dimension;
 
-  /// 自定义圆角
-  final double? radius;
+  /// 默认图标大小。
+  final double? iconSize;
 
-  /// 自定义头像大小
-  final double? avatarSize;
+  /// 方形头像圆角。
+  final double? squareBorderRadius;
 
-  /// 带操作展示的头像描边宽度
-  final double? avatarDisplayBorder;
-
-  /// 自定义文案时背景色
+  /// 默认背景色。
   final Color? backgroundColor;
 
-  const TAvatarThemeData({
-    this.variant,
-    this.shape,
-    this.radius,
-    this.avatarSize,
-    this.avatarDisplayBorder,
-    this.backgroundColor,
-  });
+  /// 默认前景色。
+  final Color? foregroundColor;
+
+  /// 头像组重叠宽度。
+  final double? groupSpacing;
+
+  /// 头像组成员描边宽度。
+  final double? groupBorderWidth;
+
+  /// 头像组成员描边颜色。
+  final Color? groupBorderColor;
 
   @override
   TAvatarThemeData copyWith({
+    TAvatarSize? size,
     TAvatarVariant? variant,
-    TAvatarShape? shape,
-    double? radius,
-    double? avatarSize,
-    double? avatarDisplayBorder,
+    double? dimension,
+    double? iconSize,
+    double? squareBorderRadius,
     Color? backgroundColor,
+    Color? foregroundColor,
+    double? groupSpacing,
+    double? groupBorderWidth,
+    Color? groupBorderColor,
   }) {
     return TAvatarThemeData(
+      size: size ?? this.size,
       variant: variant ?? this.variant,
-      shape: shape ?? this.shape,
-      radius: radius ?? this.radius,
-      avatarSize: avatarSize ?? this.avatarSize,
-      avatarDisplayBorder: avatarDisplayBorder ?? this.avatarDisplayBorder,
+      dimension: dimension ?? this.dimension,
+      iconSize: iconSize ?? this.iconSize,
+      squareBorderRadius: squareBorderRadius ?? this.squareBorderRadius,
       backgroundColor: backgroundColor ?? this.backgroundColor,
+      foregroundColor: foregroundColor ?? this.foregroundColor,
+      groupSpacing: groupSpacing ?? this.groupSpacing,
+      groupBorderWidth: groupBorderWidth ?? this.groupBorderWidth,
+      groupBorderColor: groupBorderColor ?? this.groupBorderColor,
     );
   }
 
   @override
-  TAvatarThemeData lerp(ThemeExtension<TAvatarThemeData>? other, double t) {
-    if (other is! TAvatarThemeData) {
+  TAvatarThemeData lerp(TAvatarThemeData? other, double t) {
+    if (other == null) {
       return this;
     }
     return TAvatarThemeData(
+      size: t < 0.5 ? size : other.size,
       variant: t < 0.5 ? variant : other.variant,
-      shape: t < 0.5 ? shape : other.shape,
-      radius: lerpDouble(radius, other.radius, t),
-      avatarSize: lerpDouble(avatarSize, other.avatarSize, t),
-      avatarDisplayBorder:
-          lerpDouble(avatarDisplayBorder, other.avatarDisplayBorder, t),
+      dimension: lerpDouble(dimension, other.dimension, t),
+      iconSize: lerpDouble(iconSize, other.iconSize, t),
+      squareBorderRadius:
+          lerpDouble(squareBorderRadius, other.squareBorderRadius, t),
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
+      foregroundColor: Color.lerp(foregroundColor, other.foregroundColor, t),
+      groupSpacing: lerpDouble(groupSpacing, other.groupSpacing, t),
+      groupBorderWidth: lerpDouble(groupBorderWidth, other.groupBorderWidth, t),
+      groupBorderColor: Color.lerp(groupBorderColor, other.groupBorderColor, t),
     );
   }
 }

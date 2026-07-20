@@ -169,7 +169,7 @@ Widget _buildSimple(BuildContext context) {
                         (element) => element['index'] == index)['children']
                     as List<String>;
                 return TCellGroup(
-                  cells: list.map((e) => TCell(title: e)).toList(),
+                  cells: list.map((e) => TCell(title: Text(e))).toList(),
                 );
               },
             ),
@@ -204,7 +204,7 @@ Widget _buildOther(BuildContext context) {
                         (element) => element['index'] == index)['children']
                     as List<String>;
                 return TCellGroup(
-                  cells: list.map((e) => TCell(title: e)).toList(),
+                  cells: list.map((e) => TCell(title: Text(e))).toList(),
                 );
               },
             ),
@@ -253,7 +253,7 @@ Widget _buildCustomIndexes(BuildContext context) {
                         (element) => element['index'] == index)['children']
                     as List<String>;
                 return TCellGroup(
-                  cells: list.map((e) => TCell(title: e)).toList(),
+                  cells: list.map((e) => TCell(title: Text(e))).toList(),
                 );
               },
             ),

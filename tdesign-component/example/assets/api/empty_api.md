@@ -14,11 +14,25 @@
 | variant | TEmptyVariant | TEmptyVariant.plain | 空态形态 |
 
 
+### TEmptyThemeData
+#### 简介
+空态组件级 ThemeExtension
+#### 默认构造方法
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| emptyTextColor | Color? | - | 描述文字颜色 |
+| emptyTextFont | Font? | - | 描述文字字号 |
+| operationTheme | TButtonColorScheme? | - | 操作按钮语义色 |
+
+
 ### TEmptyVariant
+#### 简介
+空态形态
 #### 枚举值
 
 
 | 名称 | 说明 |
 | --- | --- |
-| plain | - |
-| operation | - |
+| plain | 仅展示空态内容。 |
+| operation | 展示空态内容和操作入口。 |

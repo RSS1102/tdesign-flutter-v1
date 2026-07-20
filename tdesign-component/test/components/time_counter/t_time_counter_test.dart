@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'package:tdesign_flutter/src/components/time_counter/t_time_counter_style.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TTimeCounter V1.0 Widget 测试
 ///
@@ -140,7 +140,7 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         const TTimeCounter(
           time: 5000,
-          theme: TTimeCounterVariant.defaultTheme,
+          variant: TTimeCounterVariant.defaultTheme,
           autoStart: false,
         ),
       ));
@@ -151,7 +151,7 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         const TTimeCounter(
           time: 5000,
-          theme: TTimeCounterVariant.round,
+          variant: TTimeCounterVariant.round,
           autoStart: false,
         ),
       ));
@@ -162,7 +162,7 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         const TTimeCounter(
           time: 5000,
-          theme: TTimeCounterVariant.square,
+          variant: TTimeCounterVariant.square,
           autoStart: false,
         ),
       ));
@@ -181,8 +181,8 @@ void main() {
             TThemeData.defaultData(),
             const TTimeCounterThemeData(
               size: TTimeCounterSize.large,
-              theme: TTimeCounterVariant.round,
-              millisecond: false,
+              variant: TTimeCounterVariant.round,
+              showMillisecond: false,
               splitWithUnit: false,
             ),
           ]),
@@ -197,6 +197,28 @@ void main() {
         ),
       );
       expect(find.byType(TTimeCounter), findsOneWidget);
+    });
+
+    test('TTimeCounterThemeData copyWith and lerp', () {
+      const a = TTimeCounterThemeData(
+        variant: TTimeCounterVariant.round,
+        size: TTimeCounterSize.small,
+        showMillisecond: false,
+        splitWithUnit: false,
+      );
+      const b = TTimeCounterThemeData(
+        variant: TTimeCounterVariant.square,
+        size: TTimeCounterSize.large,
+        showMillisecond: true,
+        splitWithUnit: true,
+      );
+
+      expect(a.copyWith(size: TTimeCounterSize.medium).size,
+          TTimeCounterSize.medium);
+      expect(a.copyWith().variant, TTimeCounterVariant.round);
+      expect(a.lerp(b, 0.25).variant, TTimeCounterVariant.round);
+      expect(a.lerp(b, 0.75).showMillisecond, isTrue);
+      expect(a.lerp(null, 0.5), same(a));
     });
   });
 
@@ -222,7 +244,7 @@ void main() {
         const TTimeCounter(
           time: 1500,
           format: 'ss:SSS',
-          millisecond: true,
+          showMillisecond: true,
           autoStart: false,
         ),
       ));
@@ -235,12 +257,12 @@ void main() {
   // content 自定义
   // ============================================================
   group('TTimeCounter content 自定义', () {
-    testWidgets('content 为 Widget 时直接渲染', (tester) async {
+    testWidgets('content builder 渲染自定义内容', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTimeCounter(
+        TTimeCounter(
           time: 5000,
           autoStart: false,
-          content: Text('自定义内容'),
+          content: (_) => const Text('自定义内容'),
         ),
       ));
       expect(find.text('自定义内容'), findsOneWidget);
@@ -356,7 +378,7 @@ void main() {
           time: 5000,
           autoStart: false,
           size: TTimeCounterSize.large,
-          theme: TTimeCounterVariant.round,
+          variant: TTimeCounterVariant.round,
         ),
       ));
       expect(find.byType(TTimeCounter), findsOneWidget);
@@ -431,7 +453,8 @@ void main() {
       expect(find.byType(TTimeCounter), findsOneWidget);
     });
 
-    testWidgets('连续 reset 覆盖 if 分支（value==reset 时 _time+notifyListeners）', (tester) async {
+    testWidgets('连续 reset 覆盖 if 分支（value==reset 时 _time+notifyListeners）',
+        (tester) async {
       // 覆盖 t_time_counter_controller.dart 第 47-48 行
       final controller = TTimeCounterController();
       await tester.pumpWidget(wrapWithTheme(
@@ -450,7 +473,8 @@ void main() {
       expect(find.byType(TTimeCounter), findsOneWidget);
     });
 
-    testWidgets('generateStyle small+round 覆盖非 defaultTheme 分支', (tester) async {
+    testWidgets('generateStyle small+round 覆盖非 defaultTheme 分支',
+        (tester) async {
       // 覆盖 t_time_counter_style.dart 第 120-123 行
       late BuildContext ctx;
       await tester.pumpWidget(wrapWithTheme(
@@ -467,7 +491,8 @@ void main() {
       expect(style, isNotNull);
     });
 
-    testWidgets('generateStyle small+square 覆盖非 defaultTheme 分支', (tester) async {
+    testWidgets('generateStyle small+square 覆盖非 defaultTheme 分支',
+        (tester) async {
       late BuildContext ctx;
       await tester.pumpWidget(wrapWithTheme(
         Builder(builder: (context) {

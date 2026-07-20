@@ -1,54 +1,56 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart' show TTimeCounter;
-import 't_time_counter.dart' show TTimeCounter;
-import 't_time_counter_style.dart' show TTimeCounterVariant, TTimeCounterSize;
+import 't_time_counter_types.dart';
 
-/// 计时组件级 ThemeExtension
+/// 计时器组件的视觉和展示默认值。
+@immutable
 class TTimeCounterThemeData extends ThemeExtension<TTimeCounterThemeData> {
-  /// 未传 [TTimeCounter.theme] 时的默认风格
-  final TTimeCounterVariant? theme;
-
-  /// 尺寸
-  final TTimeCounterSize? size;
-
-  /// 是否开启毫秒级渲染
-  final bool? millisecond;
-
-  /// 使用时间单位分割
-  final bool? splitWithUnit;
-
   const TTimeCounterThemeData({
-    this.theme,
+    this.variant,
     this.size,
-    this.millisecond,
+    this.showMillisecond,
     this.splitWithUnit,
   });
 
+  /// 默认视觉形态。
+  final TTimeCounterVariant? variant;
+
+  /// 默认尺寸。
+  final TTimeCounterSize? size;
+
+  /// 默认是否显示毫秒。
+  final bool? showMillisecond;
+
+  /// 默认是否使用本地化时间单位分隔。
+  final bool? splitWithUnit;
+
   @override
   TTimeCounterThemeData copyWith({
-    TTimeCounterVariant? theme,
+    TTimeCounterVariant? variant,
     TTimeCounterSize? size,
-    bool? millisecond,
+    bool? showMillisecond,
     bool? splitWithUnit,
   }) {
     return TTimeCounterThemeData(
-      theme: theme ?? this.theme,
+      variant: variant ?? this.variant,
       size: size ?? this.size,
-      millisecond: millisecond ?? this.millisecond,
+      showMillisecond: showMillisecond ?? this.showMillisecond,
       splitWithUnit: splitWithUnit ?? this.splitWithUnit,
     );
   }
 
   @override
-  TTimeCounterThemeData lerp(ThemeExtension<TTimeCounterThemeData>? other, double t) {
+  TTimeCounterThemeData lerp(
+    ThemeExtension<TTimeCounterThemeData>? other,
+    double t,
+  ) {
     if (other is! TTimeCounterThemeData) {
       return this;
     }
     return TTimeCounterThemeData(
-      theme: t < 0.5 ? theme : other.theme,
+      variant: t < 0.5 ? variant : other.variant,
       size: t < 0.5 ? size : other.size,
-      millisecond: t < 0.5 ? millisecond : other.millisecond,
+      showMillisecond: t < 0.5 ? showMillisecond : other.showMillisecond,
       splitWithUnit: t < 0.5 ? splitWithUnit : other.splitWithUnit,
     );
   }

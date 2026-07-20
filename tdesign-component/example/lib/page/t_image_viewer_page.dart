@@ -29,10 +29,11 @@ class _TImageViewerPageState extends State<TImageViewerPage> {
   Widget _buildSingle(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        TImageViewer.showImageViewer(
+        TImageViewer.show(
           context: context,
-          images: ['https://tdesign.gtimg.com/site/avatar.jpg'],
-          closeBtn: true,
+          images: const [
+            NetworkImage('https://tdesign.gtimg.com/site/avatar.jpg'),
+          ],
         );
       },
       child: const TImage(
@@ -43,24 +44,25 @@ class _TImageViewerPageState extends State<TImageViewerPage> {
   }
 
   Widget _buildMultiple(BuildContext context) {
-    final images = [
+    const urls = [
       'https://tdesign.gtimg.com/site/avatar.jpg',
       'https://tdesign.gtimg.com/site/avatar.jpg',
     ];
+    final images = urls.map(NetworkImage.new).toList();
     return Wrap(
       spacing: 8,
       children: images.asMap().entries.map((entry) {
         return GestureDetector(
           onTap: () {
-            TImageViewer.showImageViewer(
+            TImageViewer.show(
               context: context,
               images: images,
-              defaultIndex: entry.key,
+              initialIndex: entry.key,
               showIndex: true,
             );
           },
           child: TImage(
-            src: entry.value,
+            src: urls[entry.key],
             variant: TImageVariant.roundedSquare,
           ),
         );

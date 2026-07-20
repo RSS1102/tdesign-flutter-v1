@@ -20,6 +20,7 @@ class TCollapsePageState extends State<TCollapsePage> {
   final List<CollapseDataItem> _cardStyleData = generateItems(5);
   final List<CollapseDataItem> _blockStyleWithOpText = generateItems(5);
   final List<CollapseDataItem> _accordionData = generateItems(5);
+  String? _accordionValue;
 
   @override
   Widget build(BuildContext context) {
@@ -140,12 +141,10 @@ class TCollapsePageState extends State<TCollapsePage> {
 
   @Demo(group: 'collapse')
   Widget _buildAccordionCollapse(BuildContext context) {
-    return TCollapse(mode: TCollapseMode.accordion, 
-      onExpansionChanged: (int index, bool isExpanded) {
-        setState(() {
-          _accordionData[index].isExpanded = !isExpanded;
-        });
-      },
+    return TCollapse<String>(
+      mode: TCollapseMode.accordion,
+      value: _accordionValue,
+      onChanged: (value) => setState(() => _accordionValue = value),
       children: _accordionData.map((CollapseDataItem item) {
         return TCollapsePanel(
           headerBuilder: (BuildContext context, bool isExpanded) {

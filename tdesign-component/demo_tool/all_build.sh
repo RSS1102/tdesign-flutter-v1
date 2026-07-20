@@ -78,40 +78,40 @@ flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/
 
 # 数据展示
 # avatar
-flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/avatar/t_avatar.dart" --name TAvatar --folder-name avatar --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/avatar" --name TAvatar,TAvatarGroup,TAvatarThemeData,TAvatarSize,TAvatarVariant --folder-name avatar --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # badge
-flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/badge/t_badge.dart" --name TBadge --folder-name badge --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/badge" --name TBadge,TBadgeThemeData --folder-name badge --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # cell
 flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/cell" --name TCell,TCellGroup,TCellStyle --folder-name cell --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # timeCounter
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/time_counter" --name TTimeCounter,TTimeCounterController,TTimeCounterStyle --folder-name time-counter --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/time_counter" --name TTimeCounter,TTimeCounterController,TTimeCounterThemeData,TTimeCounterDirection,TTimeCounterSize,TTimeCounterVariant --folder-name time-counter --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # collapse
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/collapse" --name TCollapse --folder-name collapse --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/collapse" --name TCollapse,TCollapsePanel,TCollapseMode,TCollapseVariant,TCollapseThemeData --folder-name collapse --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 
 # empty
-flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/empty/t_empty.dart" --name TEmpty --folder-name empty --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/empty" --name TEmpty,TEmptyThemeData,TEmptyVariant --folder-name empty --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # footer
-flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/footer/t_footer.dart" --name TFooter,TFooterType --folder-name footer --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/footer" --name TFooter,TFooterThemeData,TFooterVariant --folder-name footer --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 
 # grid
 # image
-flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/image/t_image.dart" --name TImage --folder-name image --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/image" --name TImage,TImageThemeData --folder-name image --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # imageViewer
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/image_viewer" --name TImageViewer,TImageViewerWidget, --folder-name image-viewer --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/image_viewer" --name TImageViewer,TImageViewerItemBuilder,TImageViewerThemeData --folder-name image-viewer --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # progress
-flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/progress/t_progress.dart" --name TProgress --folder-name progress --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/progress" --name TProgress,TProgressThemeData --folder-name progress --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # result
-flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/result/t_result.dart" --name TResult --folder-name result --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/result" --name TResult,TResultThemeData,TResultVariant --folder-name result --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # skeleton
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/skeleton" --name TSkeleton,TSkeletonRowColStyle,TSkeletonRowCol,TSkeletonRowColObjStyle,TSkeletonRowColObj --folder-name skeleton --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/skeleton" --name TSkeleton,TSkeletonAnimation,TSkeletonVariant,TSkeletonBlockShape,TSkeletonRowColStyle,TSkeletonRowCol,TSkeletonRowColObjStyle,TSkeletonRowColObj,TSkeletonThemeData --folder-name skeleton --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 
 # sticky
 # swiper
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/swiper" --name TSwiperPagination,TPageTransformer --folder-name swiper --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/swiper" --name TSwiper,TSwiperPaginationVariant,TSwiperPageEffect,TSwiperThemeData --folder-name swiper --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # table
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/table" --name TTable,TTableCol,TTableEmpty --folder-name table --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/table" --name TTable,TTableColumn,TTableColumnFixed,TTableColumnAlign,TTableSelectionMode,TTableSortDirection,TTableSort,TTableThemeData --folder-name table --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # tag
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/tag" --name TTag,TSelectTag,TTagStyle --folder-name tag --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/tag" --name TTag,TSelectTag,TTagThemeData,TTagSize,TTagShape,TTagColorScheme --folder-name tag --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 
 
 

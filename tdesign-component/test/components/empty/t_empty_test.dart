@@ -180,5 +180,26 @@ void main() {
       expect(find.text('主题文案'), findsOneWidget);
       expect(find.text('主题按钮'), findsOneWidget);
     });
+
+    test('TEmptyThemeData copyWith and lerp', () {
+      final font = Font(size: 14, lineHeight: 20);
+      final a = TEmptyThemeData(
+        emptyTextColor: Colors.red,
+        emptyTextFont: font,
+        operationTheme: TButtonColorScheme.primary,
+      );
+      final b = TEmptyThemeData(
+        emptyTextColor: Colors.blue,
+        emptyTextFont: Font(size: 16, lineHeight: 24),
+        operationTheme: TButtonColorScheme.danger,
+      );
+
+      expect(a.copyWith(emptyTextColor: Colors.green).emptyTextColor,
+          Colors.green);
+      expect(a.copyWith().emptyTextFont, same(font));
+      expect(a.lerp(b, 0.25).operationTheme, TButtonColorScheme.primary);
+      expect(a.lerp(b, 0.75).operationTheme, TButtonColorScheme.danger);
+      expect(a.lerp(null, 0.5), same(a));
+    });
   });
 }

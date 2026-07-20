@@ -1,540 +1,341 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/src/components/image_viewer/t_image_viewer_widget.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-/// TImageViewer V1.0 Widget 测试
-///
-/// 覆盖：
-/// - showImageViewer 静态方法调用
-/// - TImageViewerWidget 直接渲染
-/// - images/labels/defaultIndex 参数
-/// - closeBtn/deleteBtn/showIndex/loop/autoplay 参数
-/// - closeBtn 关闭回调
-/// - deleteBtn 删除回调
-/// - showIndex 页码显示
-/// - labels 标签显示
-/// - onIndexChange/onClose/onDelete/onTap/onLongPress 回调
-/// - leftItemBuilder/rightItemBuilder 自定义
-/// - width/height 参数
-/// - Theme 覆盖
-/// - 边界场景（空图片列表、defaultIndex 越界、labels 长度不匹配）
 void main() {
-  /// 用 TTheme 包裹以提供基础 Token
-  Widget wrapWithTheme(Widget child, {TImageViewerThemeData? viewerTheme}) {
-    final themeExtensions = <ThemeExtension>[
-      TThemeData.defaultData(),
-      if (viewerTheme != null) viewerTheme,
-    ];
-    return MaterialApp(
-      theme: ThemeData(extensions: themeExtensions),
-      home: Scaffold(body: child),
-    );
-  }
+  const images = <ImageProvider<Object>>[
+    AssetImage('missing-1.png'),
+    AssetImage('missing-2.png'),
+    AssetImage('missing-3.png'),
+  ];
 
-  /// 通过 showImageViewer 弹出预览
-  Widget buildShowViewerApp({
-    required List<dynamic> images,
-    List<String>? labels,
-    bool? closeBtn,
-    bool? deleteBtn,
-    bool? showIndex,
-    bool? loop,
-    bool? autoplay,
-    int? defaultIndex,
-    Color? bgColor,
-    Color? iconColor,
-    TextStyle? labelStyle,
-    TextStyle? indexStyle,
-    double? width,
-    double? height,
-    OnIndexChange? onIndexChange,
-    OnClose? onClose,
-    OnDelete? onDelete,
-    OnImageTap? onTap,
-    OnLongPress? onLongPress,
-    LeftItemBuilder? leftItemBuilder,
-    RightItemBuilder? rightItemBuilder,
+  Widget app({
     TImageViewerThemeData? viewerTheme,
+    required void Function(BuildContext) onShow,
   }) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (viewerTheme != null) {
+      theme = theme.mergeExtension(viewerTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: [
-        TThemeData.defaultData(),
-        if (viewerTheme != null) viewerTheme,
-      ]),
+      theme: theme,
       home: Scaffold(
         body: Builder(
-          builder: (context) {
-            return Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  TImageViewer.showImageViewer(
-                    context: context,
-                    images: images,
-                    labels: labels,
-                    closeBtn: closeBtn,
-                    deleteBtn: deleteBtn,
-                    showIndex: showIndex,
-                    loop: loop,
-                    autoplay: autoplay,
-                    defaultIndex: defaultIndex,
-                    bgColor: bgColor,
-                    iconColor: iconColor,
-                    labelStyle: labelStyle,
-                    indexStyle: indexStyle,
-                    width: width,
-                    height: height,
-                    onIndexChange: onIndexChange,
-                    onClose: onClose,
-                    onDelete: onDelete,
-                    onTap: onTap,
-                    onLongPress: onLongPress,
-                    leftItemBuilder: leftItemBuilder,
-                    rightItemBuilder: rightItemBuilder,
-                  );
-                },
-                child: const Text('显示预览'),
-              ),
-            );
-          },
+          builder: (context) => TextButton(
+            onPressed: () => onShow(context),
+            child: const Text('show'),
+          ),
         ),
       ),
     );
   }
 
-  // ============================================================
-  // showImageViewer 静态方法
-  // ============================================================
-  group('TImageViewer showImageViewer 方法', () {
-    testWidgets('点击按钮弹出预览', (tester) async {
-      await tester.pumpWidget(buildShowViewerApp(
-        images: ['https://example.com/test.png'],
-      ));
-      await tester.tap(find.text('显示预览'));
-      await tester.pumpAndSettle();
-      expect(find.byType(TImageViewerWidget), findsOneWidget);
-    });
+  Future<void> open(WidgetTester tester, Widget widget) async {
+    await tester.pumpWidget(widget);
+    await tester.tap(find.text('show'));
+    await tester.pumpAndSettle();
+  }
 
-    testWidgets('showImageViewer 方法存在', (tester) async {
-      expect(TImageViewer.showImageViewer, isNotNull);
-      expect(TImageViewer.showImageViewer, isA<Function>());
-    });
-
-    testWidgets('多张图片弹出预览', (tester) async {
-      await tester.pumpWidget(buildShowViewerApp(
-        images: [
-          'https://example.com/1.png',
-          'https://example.com/2.png',
-          'https://example.com/3.png',
-        ],
-      ));
-      await tester.tap(find.text('显示预览'));
-      await tester.pumpAndSettle();
-      expect(find.byType(TImageViewerWidget), findsOneWidget);
-    });
-  });
-
-  // ============================================================
-  // TImageViewerWidget 直接渲染
-  // ============================================================
-  group('TImageViewerWidget 直接渲染', () {
-    testWidgets('基本渲染', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/test.png'],
-        ),
-      ));
-      expect(find.byType(TImageViewerWidget), findsOneWidget);
-    });
-
-    testWidgets('showIndex=true 显示页码', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: [
-            'https://example.com/1.png',
-            'https://example.com/2.png',
-          ],
-          showIndex: true,
-        ),
-      ));
-      expect(find.text('1 / 2'), findsOneWidget);
-    });
-
-    testWidgets('showIndex=false 不显示页码', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          showIndex: false,
-        ),
-      ));
-      expect(find.text('1 / 1'), findsNothing);
-    });
-
-    testWidgets('labels 显示标签', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          labels: ['图片描述'],
-        ),
-      ));
-      expect(find.text('图片描述'), findsOneWidget);
-    });
-
-    testWidgets('labels + showIndex 同时显示标签和页码', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: [
-            'https://example.com/1.png',
-            'https://example.com/2.png',
-          ],
-          labels: ['图1', '图2'],
-          showIndex: true,
-        ),
-      ));
-      expect(find.text('图1'), findsOneWidget);
-      expect(find.text('1 / 2'), findsOneWidget);
-    });
-
-    testWidgets('defaultIndex 指定初始位置', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: [
-            'https://example.com/1.png',
-            'https://example.com/2.png',
-            'https://example.com/3.png',
-          ],
-          defaultIndex: 2,
-          showIndex: true,
-        ),
-      ));
-      // defaultIndex=2 从第3张开始，页码显示 3 / 3
-      expect(find.text('3 / 3'), findsOneWidget);
-    });
-  });
-
-  // ============================================================
-  // 按钮配置
-  // ============================================================
-  group('TImageViewerWidget 按钮配置', () {
-    testWidgets('closeBtn 默认显示关闭按钮', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-        ),
-      ));
-      // 默认 closeBtn=true，应有关闭图标
-      expect(find.byIcon(TIcons.close), findsOneWidget);
-    });
-
-    testWidgets('closeBtn=false 不显示关闭按钮', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          closeBtn: false,
-        ),
-      ));
-      // 虽然图标仍渲染但不可见——这里验证 close 图标仍存在
-      // 因为 closeBtn 控制的是 Visibility，实际上源码中 closeBtn 并未包裹 Visibility
-      // close 图标始终渲染，所以这里验证 close 存在
-      expect(find.byIcon(TIcons.close), findsOneWidget);
-    });
-
-    testWidgets('deleteBtn=true 显示删除按钮', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: [
-            'https://example.com/1.png',
-            'https://example.com/2.png',
-          ],
-          deleteBtn: true,
-        ),
-      ));
-      expect(find.byIcon(TIcons.delete), findsOneWidget);
-    });
-
-    testWidgets('deleteBtn=false 不显示删除按钮', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          deleteBtn: false,
-        ),
-      ));
-      expect(find.byIcon(TIcons.delete), findsNothing);
-    });
-  });
-
-  // ============================================================
-  // 回调测试
-  // ============================================================
-  group('TImageViewerWidget 回调', () {
-    testWidgets('onClose 回调被调用', (tester) async {
-      int? closedIndex;
-      await tester.pumpWidget(buildShowViewerApp(
-        images: ['https://example.com/1.png'],
-        onClose: (index) => closedIndex = index,
-      ));
-      await tester.tap(find.text('显示预览'));
-      await tester.pumpAndSettle();
-      // 关闭按钮在 SafeArea 内，精确定位
-      final closeInNavBar = find.descendant(
-        of: find.byType(SafeArea),
-        matching: find.byIcon(TIcons.close),
+  group('TImageViewer.show', () {
+    testWidgets('显示初始页、标签和页码', (tester) async {
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(
+            context: context,
+            images: images,
+            labels: const ['A', 'B', 'C'],
+            initialIndex: 1,
+          );
+        }),
       );
-      await tester.tap(closeInNavBar);
-      await tester.pumpAndSettle();
-      expect(closedIndex, isNotNull);
+
+      expect(find.byType(TSwiper), findsOneWidget);
+      expect(find.text('B'), findsOneWidget);
+      expect(find.text('2 / 3'), findsOneWidget);
     });
 
-    testWidgets('onDelete 回调被调用', (tester) async {
-      int? deletedIndex;
-      await tester.pumpWidget(buildShowViewerApp(
-        images: [
-          'https://example.com/1.png',
-          'https://example.com/2.png',
-        ],
-        deleteBtn: true,
-        onDelete: (index) => deletedIndex = index,
-      ));
-      await tester.tap(find.text('显示预览'));
+    testWidgets('关闭按钮通知并关闭 Dialog', (tester) async {
+      var closed = false;
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(
+            context: context,
+            images: images,
+            onClose: () => closed = true,
+          );
+        }),
+      );
+
+      await tester.tap(find.byTooltip('Close'));
       await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(TIcons.delete));
-      await tester.pumpAndSettle();
-      expect(deletedIndex, isNotNull);
+      expect(closed, isTrue);
+      expect(find.byType(TSwiper), findsNothing);
     });
 
-    testWidgets('onTap 回调被调用', (tester) async {
-      int? tappedIndex;
-      await tester.pumpWidget(buildShowViewerApp(
-        images: ['https://example.com/1.png'],
-        onTap: (index) => tappedIndex = index,
-      ));
-      await tester.tap(find.text('显示预览'));
-      await tester.pumpAndSettle();
-      // 点击图片区域
-      await tester.tap(find.byType(TImageViewerWidget));
-      await tester.pump();
-      expect(tappedIndex, isNotNull);
+    testWidgets('showClose=false 隐藏关闭按钮', (tester) async {
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(
+            context: context,
+            images: images,
+            showClose: false,
+          );
+        }),
+      );
+      expect(find.byTooltip('Close'), findsNothing);
     });
 
-    testWidgets('onIndexChange 回调存在', (tester) async {
-      int? changedIndex;
-      await tester.pumpWidget(buildShowViewerApp(
-        images: [
-          'https://example.com/1.png',
-          'https://example.com/2.png',
-        ],
-        showIndex: true,
-        onIndexChange: (index) => changedIndex = index,
-      ));
-      await tester.tap(find.text('显示预览'));
+    testWidgets('删除只通知索引且不修改图片列表', (tester) async {
+      int? deleted;
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(
+            context: context,
+            images: images,
+            initialIndex: 1,
+            showDelete: true,
+            onDelete: (index) => deleted = index,
+          );
+        }),
+      );
+
+      await tester.tap(find.byTooltip('Delete'));
+      expect(deleted, 1);
+      expect(
+          tester.widget<TSwiper>(find.byType(TSwiper)).children, hasLength(3));
+    });
+
+    testWidgets('没有 onDelete 时删除按钮禁用', (tester) async {
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(
+            context: context,
+            images: images,
+            showDelete: true,
+          );
+        }),
+      );
+      final button = find.ancestor(
+        of: find.byTooltip('Delete'),
+        matching: find.byType(IconButton),
+      );
+      expect(tester.widget<IconButton>(button).onPressed, isNull);
+    });
+
+    testWidgets('自定义导航栏槽位替代默认按钮', (tester) async {
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(
+            context: context,
+            images: images,
+            leadingBuilder: (_, index) => Text('L$index'),
+            trailingBuilder: (_, index) => Text('R$index'),
+          );
+        }),
+      );
+      expect(find.text('L0'), findsOneWidget);
+      expect(find.text('R0'), findsOneWidget);
+      expect(find.byTooltip('Close'), findsNothing);
+    });
+
+    testWidgets('showIndex=false 且无标签时标题为空', (tester) async {
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(
+            context: context,
+            images: images,
+            showIndex: false,
+          );
+        }),
+      );
+      expect(find.text('1 / 3'), findsNothing);
+    });
+
+    testWidgets('滑动更新临时索引并通知外部', (tester) async {
+      int? changed;
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(
+            context: context,
+            images: images,
+            onIndexChanged: (index) => changed = index,
+          );
+        }),
+      );
+      await tester.drag(find.byType(PageView), const Offset(-500, 0));
       await tester.pumpAndSettle();
-      // 初始时 onIndexChange 不会被调用，但方法签名存在
-      expect(changedIndex, isNull);
+      expect(changed, 1);
+      expect(find.text('2 / 3'), findsOneWidget);
+    });
+
+    testWidgets('图片点击和长按通知当前项', (tester) async {
+      int? tapped;
+      int? longPressed;
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(
+            context: context,
+            images: images,
+            onTap: (index) => tapped = index,
+            onLongPress: (index) => longPressed = index,
+          );
+        }),
+      );
+      final page = find.byKey(const ValueKey('image-viewer-page-0'));
+      await tester.tap(page);
+      await tester.longPress(page);
+      expect(tapped, 0);
+      expect(longPressed, 0);
+    });
+
+    testWidgets('Theme 控制颜色、尺寸和文字样式', (tester) async {
+      await open(
+        tester,
+        app(
+          viewerTheme: const TImageViewerThemeData(
+            backgroundColor: Colors.red,
+            appBarBackgroundColor: Colors.blue,
+            iconColor: Colors.green,
+            labelStyle: TextStyle(fontSize: 18),
+            indexStyle: TextStyle(fontSize: 14),
+            barrierColor: Colors.black,
+            viewerWidth: 120,
+            viewerHeight: 80,
+          ),
+          onShow: (context) {
+            TImageViewer.show(
+              context: context,
+              images: images,
+              labels: const ['A', 'B', 'C'],
+            );
+          },
+        ),
+      );
+      expect(tester.widget<Text>(find.text('A')).style?.fontSize, 18);
+      expect(tester.widget<Text>(find.text('1 / 3')).style?.fontSize, 14);
+      final constrained = tester.widgetList<ConstrainedBox>(
+        find.byType(ConstrainedBox),
+      );
+      expect(constrained.any((box) => box.constraints.maxWidth == 120), isTrue);
+    });
+
+    testWidgets('空标签不渲染标签文本', (tester) async {
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(
+            context: context,
+            images: images,
+            labels: const ['', '', ''],
+          );
+        }),
+      );
+      expect(find.text('1 / 3'), findsOneWidget);
     });
   });
 
-  // ============================================================
-  // 自定义构建器
-  // ============================================================
-  group('TImageViewerWidget 自定义构建器', () {
-    testWidgets('leftItemBuilder 自定义左侧', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        TImageViewerWidget(
-          images: const ['https://example.com/1.png'],
-          leftItemBuilder: (context, index) => const Text('自定义左'),
-        ),
+  group('contracts', () {
+    testWidgets('拒绝空图片、越界索引和标签长度不匹配', (tester) async {
+      late BuildContext context;
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(builder: (value) {
+          context = value;
+          return const SizedBox.shrink();
+        }),
       ));
-      expect(find.text('自定义左'), findsOneWidget);
-    });
-
-    testWidgets('rightItemBuilder 自定义右侧', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        TImageViewerWidget(
-          images: const ['https://example.com/1.png'],
-          rightItemBuilder: (context, index) => const Text('自定义右'),
+      expect(() => TImageViewer.show(context: context, images: const []),
+          throwsAssertionError);
+      expect(
+        () => TImageViewer.show(
+          context: context,
+          images: images,
+          initialIndex: 3,
         ),
-      ));
-      expect(find.text('自定义右'), findsOneWidget);
-    });
-  });
-
-  // ============================================================
-  // 颜色与样式
-  // ============================================================
-  group('TImageViewerWidget 颜色与样式', () {
-    testWidgets('bgColor 背景色生效', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          bgColor: Colors.red,
+        throwsAssertionError,
+      );
+      expect(
+        () => TImageViewer.show(
+          context: context,
+          images: images,
+          labels: const ['one'],
         ),
-      ));
-      expect(find.byType(TImageViewerWidget), findsOneWidget);
-    });
-
-    testWidgets('iconColor 图标颜色生效', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          iconColor: Colors.blue,
-        ),
-      ));
-      final icon = tester.widget<Icon>(find.byIcon(TIcons.close));
-      expect(icon.color, Colors.blue);
-    });
-
-    testWidgets('labelStyle 标签样式生效', (tester) async {
-      const labelStyle = TextStyle(fontSize: 20, color: Colors.green);
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          labels: ['测试标签'],
-          labelStyle: labelStyle,
-        ),
-      ));
-      final text = tester.widget<Text>(find.text('测试标签'));
-      expect(text.style?.fontSize, 20);
-    });
-
-    testWidgets('indexStyle 页码样式生效', (tester) async {
-      const indexStyle = TextStyle(fontSize: 14, color: Colors.red);
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          showIndex: true,
-          indexStyle: indexStyle,
-        ),
-      ));
-      final text = tester.widget<Text>(find.text('1 / 1'));
-      expect(text.style?.fontSize, 14);
-    });
-
-    testWidgets('width/height 参数不崩溃', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          width: 200,
-          height: 300,
-        ),
-      ));
-      expect(find.byType(TImageViewerWidget), findsOneWidget);
+        throwsAssertionError,
+      );
     });
   });
 
-  // ============================================================
-  // Theme 覆盖
-  // ============================================================
-  group('TImageViewerWidget Theme 覆盖', () {
-    testWidgets('TImageViewerThemeData 注入不崩溃', (tester) async {
-      await tester.pumpWidget(buildShowViewerApp(
-        images: ['https://example.com/1.png'],
-        viewerTheme: const TImageViewerThemeData(
-          backgroundColor: Colors.black,
-          appBarBackgroundColor: Colors.grey,
-          iconColor: Colors.white,
-          barrierColor: Colors.black54,
-          viewerWidth: 200,
-          viewerHeight: 200,
-        ),
-      ));
-      await tester.tap(find.text('显示预览'));
-      await tester.pumpAndSettle();
-      expect(find.byType(TImageViewerWidget), findsOneWidget);
-    });
-  });
+  group('TImageViewerThemeData', () {
+    const a = TImageViewerThemeData(
+      backgroundColor: Colors.white,
+      appBarBackgroundColor: Colors.red,
+      iconColor: Colors.green,
+      labelStyle: TextStyle(fontSize: 10),
+      indexStyle: TextStyle(fontSize: 11),
+      barrierColor: Colors.black,
+      viewerWidth: 100,
+      viewerHeight: 200,
+    );
+    const b = TImageViewerThemeData(
+      backgroundColor: Colors.black,
+      appBarBackgroundColor: Colors.blue,
+      iconColor: Colors.yellow,
+      labelStyle: TextStyle(fontSize: 20),
+      indexStyle: TextStyle(fontSize: 21),
+      barrierColor: Colors.white,
+      viewerWidth: 200,
+      viewerHeight: 400,
+    );
 
-  // ============================================================
-  // 边界场景
-  // ============================================================
-  group('TImageViewerWidget 边界场景', () {
-    testWidgets('空图片列表抛出异常', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(images: []),
-      ));
-      await tester.pump();
-      // initState 中 images.isEmpty 会抛出 FlutterError
-      expect(tester.takeException(), isA<FlutterError>());
-    });
-
-    testWidgets('defaultIndex 越界抛出异常', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          defaultIndex: 5,
-        ),
-      ));
-      await tester.pump();
-      expect(tester.takeException(), isA<FlutterError>());
-    });
-
-    testWidgets('labels 长度不匹配抛出异常', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: [
-            'https://example.com/1.png',
-            'https://example.com/2.png',
-          ],
-          labels: ['只有一个标签'],
-        ),
-      ));
-      await tester.pump();
-      expect(tester.takeException(), isA<FlutterError>());
+    test('copyWith 覆盖并保留全部字段', () {
+      final unchanged = a.copyWith();
+      expect(unchanged.backgroundColor, a.backgroundColor);
+      expect(unchanged.appBarBackgroundColor, a.appBarBackgroundColor);
+      expect(unchanged.iconColor, a.iconColor);
+      expect(unchanged.labelStyle, a.labelStyle);
+      expect(unchanged.indexStyle, a.indexStyle);
+      expect(unchanged.barrierColor, a.barrierColor);
+      expect(unchanged.viewerWidth, a.viewerWidth);
+      expect(unchanged.viewerHeight, a.viewerHeight);
+      final value = a.copyWith(
+        backgroundColor: Colors.red,
+        appBarBackgroundColor: Colors.green,
+        iconColor: Colors.blue,
+        labelStyle: const TextStyle(fontSize: 12),
+        indexStyle: const TextStyle(fontSize: 13),
+        barrierColor: Colors.yellow,
+        viewerWidth: 120,
+        viewerHeight: 220,
+      );
+      expect(value.backgroundColor, Colors.red);
+      expect(value.appBarBackgroundColor, Colors.green);
+      expect(value.iconColor, Colors.blue);
+      expect(value.labelStyle?.fontSize, 12);
+      expect(value.indexStyle?.fontSize, 13);
+      expect(value.barrierColor, Colors.yellow);
+      expect(value.viewerWidth, 120);
+      expect(value.viewerHeight, 220);
     });
 
-    testWidgets('单张图片删除时抛出异常（ignoreDeleteError=false）', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: ['https://example.com/1.png'],
-          deleteBtn: true,
-          ignoreDeleteError: false,
-        ),
-      ));
-      // 点击删除
-      await tester.tap(find.byIcon(TIcons.delete));
-      await tester.pump();
-      expect(tester.takeException(), isA<FlutterError>());
-    });
-
-    testWidgets('单张图片删除时 ignoreDeleteError=true 不抛异常', (tester) async {
-      int? deletedIndex;
-      await tester.pumpWidget(wrapWithTheme(
-        TImageViewerWidget(
-          images: const ['https://example.com/1.png'],
-          deleteBtn: true,
-          ignoreDeleteError: true,
-          onDelete: (index) => deletedIndex = index,
-        ),
-      ));
-      await tester.tap(find.byIcon(TIcons.delete));
-      await tester.pump();
-      expect(deletedIndex, isNotNull);
-    });
-
-    testWidgets('loop=false 渲染不崩溃', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: [
-            'https://example.com/1.png',
-            'https://example.com/2.png',
-          ],
-          loop: false,
-        ),
-      ));
-      expect(find.byType(TImageViewerWidget), findsOneWidget);
-    });
-
-    testWidgets('autoplay=true 渲染不崩溃', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TImageViewerWidget(
-          images: [
-            'https://example.com/1.png',
-            'https://example.com/2.png',
-          ],
-          autoplay: true,
-          duration: 1000,
-        ),
-      ));
-      expect(find.byType(TImageViewerWidget), findsOneWidget);
+    test('lerp 插值全部视觉字段', () {
+      final value = a.lerp(b, 0.5);
+      expect(value.backgroundColor, isNotNull);
+      expect(value.appBarBackgroundColor, isNotNull);
+      expect(value.iconColor, isNotNull);
+      expect(value.labelStyle?.fontSize, 15);
+      expect(value.indexStyle?.fontSize, 16);
+      expect(value.barrierColor, isNotNull);
+      expect(value.viewerWidth, 150);
+      expect(value.viewerHeight, 300);
+      expect(a.lerp(null, 0.5), same(a));
     });
   });
 }

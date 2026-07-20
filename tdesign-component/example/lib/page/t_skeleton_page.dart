@@ -182,8 +182,7 @@ class TSkeletonPage extends StatelessWidget {
                         height: constraints.maxWidth,
                         flex: null,
                         style: TSkeletonRowColObjStyle(
-                          borderRadius: (context) =>
-                              context.tTheme.radiusExtraLarge,
+                          borderRadius: context.tTheme.radiusExtraLarge,
                         ),
                       ),
                     ],

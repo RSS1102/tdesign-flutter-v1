@@ -65,21 +65,22 @@ class TDrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var content = child;
     if (content == null) {
-      var cellStyle = style;
-      if (cellStyle == null) {
-        cellStyle = TCellThemeData.cellStyle(context);
-        cellStyle.leftIconColor = context.tTheme.brandNormalColor;
-      }
+      final inheritedCellTheme = Theme.of(context).extension<TCellThemeData>();
+      final cellStyle =
+          (style ?? inheritedCellTheme ?? const TCellThemeData()).copyWith(
+        groupBordered: bordered,
+        showLastDivider: isShowLastBordered,
+      );
       var cells = items
           ?.asMap()
           .map(
             (index, item) => MapEntry(
               index,
               TCell(
-                titleWidget: item.content,
-                title: item.title,
-                prefixWidget: item.icon,
-                bordered: bordered,
+                title: item.content ??
+                    (item.title == null ? null : Text(item.title!)),
+                prefix: item.icon,
+                enableFeedback: hover ?? true,
                 onTap: () {
                   if (onItemClick == null) {
                     return;
@@ -94,12 +95,13 @@ class TDrawerWidget extends StatelessWidget {
       content = Column(
         children: [
           Expanded(
-            child: TCellGroup(
-              titleWidget: title,
-              style: cellStyle,
-              scrollable: true,
-              isShowLastBordered: isShowLastBordered,
-              cells: cells ?? [],
+            child: Theme(
+              data: Theme.of(context).mergeExtension(cellStyle),
+              child: TCellGroup(
+                title: title,
+                scrollable: true,
+                cells: cells ?? [],
+              ),
             ),
           ),
           if (footer != null)

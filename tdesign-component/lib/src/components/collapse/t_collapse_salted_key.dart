@@ -3,9 +3,6 @@
  */
 import 'package:flutter/cupertino.dart';
 
-import '../../../tdesign_flutter.dart';
-import '../../theme/t_theme.dart';
-
 class TCollapseSaltedKey<S, V> extends LocalKey {
   const TCollapseSaltedKey(this.salt, this.value);
 
@@ -25,7 +22,6 @@ class TCollapseSaltedKey<S, V> extends LocalKey {
 
   @override
   String toString() {
-
     final saltString = S == String ? '<\'$salt\'>' : '<$salt>';
     final valueString = V == String ? '<\'$value\'>' : '<$value>';
     return '[$saltString $valueString]';

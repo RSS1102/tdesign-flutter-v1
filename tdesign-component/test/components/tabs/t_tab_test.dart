@@ -37,7 +37,7 @@ void main() {
             tabs: [
               TTab(text: '文本'),
               TTab(text: '图文', icon: Icon(Icons.home)),
-              TTab(text: '徽标', badge: TBadge(TBadgeVariant.redPoint)),
+              TTab(text: '徽标', badge: TBadge(variant: TBadgeVariant.dot)),
               TTab(text: '禁用', enabled: false),
             ],
           ),

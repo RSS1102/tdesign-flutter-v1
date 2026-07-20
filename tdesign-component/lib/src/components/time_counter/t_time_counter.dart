@@ -2,12 +2,20 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import '../../../tdesign_flutter.dart';
+
+import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
 import '../../util/list_ext.dart';
+import '../text/t_text.dart';
+import 't_time_counter_controller.dart';
 import 't_time_counter_style.dart';
+import 't_time_counter_theme_data.dart';
+import 't_time_counter_types.dart';
 
-RegExp _timeReg = RegExp(r'D+|H+|m+|s+|S+');
+final RegExp _timeReg = RegExp(r'D+|H+|m+|s+|S+');
+
+/// 自定义计时内容构建器。
+typedef TTimeCounterBuilder = Widget Function(int time);
 
 String _toDigits(int n, int l) => n.toString().padLeft(l, '0');
 
@@ -22,51 +30,47 @@ String _getMark(String format, String? type) {
 /// 计时组件
 class TTimeCounter extends StatefulWidget {
   const TTimeCounter({
-    Key? key,
+    super.key,
     this.autoStart = true,
-    this.content = 'default',
+    this.content,
     this.format = 'HH:mm:ss',
-    this.millisecond,
+    this.showMillisecond,
     this.size,
     this.splitWithUnit,
-    this.theme,
+    this.variant,
     required this.time,
-    this.style,
     this.onChanged,
     this.onFinish,
     this.direction = TTimeCounterDirection.down,
     this.controller,
-  }) : super(key: key);
+  }) : assert(time >= 0, 'time must not be negative');
 
   /// 是否自动开始倒计时
   final bool autoStart;
 
-  /// 'default' / Widget Function(int time) / Widget
-  final dynamic content;
+  /// 自定义计时内容；为空时使用标准数字块。
+  final TTimeCounterBuilder? content;
 
   /// 时间格式，DD-日，HH-时，mm-分，ss-秒，SSS-毫秒（分隔符必须为长度为1的非空格的字符）
   final String format;
 
-  /// 是否开启毫秒级渲染
-  final bool? millisecond;
+  /// 是否显示毫秒；优先于组件 Theme。
+  final bool? showMillisecond;
 
-  /// 尺寸
+  /// 计时器尺寸；优先于组件 Theme。
   final TTimeCounterSize? size;
 
-  /// 使用时间单位分割
+  /// 是否使用本地化时间单位分隔；优先于组件 Theme。
   final bool? splitWithUnit;
 
-  /// 风格
-  final TTimeCounterVariant? theme;
+  /// 视觉形态；优先于组件 Theme。
+  final TTimeCounterVariant? variant;
 
   /// 必需；计时时长，单位毫秒
   final int time;
 
-  /// 自定义样式，有则优先用它，没有则根据size和theme选取
-  final TTimeCounterStyle? style;
-
   /// 时间变化时触发回调
-  final Function(int time)? onChanged;
+  final ValueChanged<int>? onChanged;
 
   /// 计时结束时触发回调
   final VoidCallback? onFinish;
@@ -85,6 +89,7 @@ class _TTimeCounterState extends State<TTimeCounter>
     with SingleTickerProviderStateMixin {
   late TTimeCounterStyle _style;
   late Map<String, String> timeUnitMap;
+
   /// P1 回退后的有效值
   late bool _effectiveMillisecond;
   late bool _effectiveSplitWithUnit;
@@ -105,17 +110,20 @@ class _TTimeCounterState extends State<TTimeCounter>
     super.didChangeDependencies();
     // P1: 组件级 ThemeExtension
     final tTheme = Theme.of(context).extension<TTimeCounterThemeData>();
-    final effectiveSize = widget.size ?? tTheme?.size ?? TTimeCounterSize.medium;
-    final effectiveTheme = widget.theme ?? tTheme?.theme ?? TTimeCounterVariant.defaultTheme;
-    _effectiveMillisecond = widget.millisecond ?? tTheme?.millisecond ?? false;
-    _effectiveSplitWithUnit = widget.splitWithUnit ?? tTheme?.splitWithUnit ?? false;
-    _style = widget.style ??
-        TTimeCounterStyle.generateStyle(
-          context,
-          size: effectiveSize,
-          theme: effectiveTheme,
-          splitWithUnit: _effectiveSplitWithUnit,
-        );
+    final effectiveSize =
+        widget.size ?? tTheme?.size ?? TTimeCounterSize.medium;
+    final effectiveVariant =
+        widget.variant ?? tTheme?.variant ?? TTimeCounterVariant.defaultTheme;
+    _effectiveMillisecond =
+        widget.showMillisecond ?? tTheme?.showMillisecond ?? false;
+    _effectiveSplitWithUnit =
+        widget.splitWithUnit ?? tTheme?.splitWithUnit ?? false;
+    _style = TTimeCounterStyle.generateStyle(
+      context,
+      size: effectiveSize,
+      theme: effectiveVariant,
+      splitWithUnit: _effectiveSplitWithUnit,
+    );
     timeUnitMap = {
       'D': context.resource.days,
       'H': context.resource.hours,
@@ -231,14 +239,11 @@ class _TTimeCounterState extends State<TTimeCounter>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.content == 'default') {
+    if (widget.content == null) {
       return Row(
           mainAxisSize: MainAxisSize.min, children: _buildTimeWidget(context));
     }
-    if (widget.content is Function) {
-      return widget.content(_time);
-    }
-    return widget.content;
+    return widget.content!(_time);
   }
 
   List<Widget> _buildTimeWidget(BuildContext context) {

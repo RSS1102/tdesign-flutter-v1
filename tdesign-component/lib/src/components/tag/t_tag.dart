@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
-/// 标签尺寸
-enum TTagSize { extraLarge, large, medium, small, custom }
-
-/// 标签形状
-enum TTagShape { square, round, mark }
+import '../../theme/basic.dart' show Font;
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
+import 't_tag_theme_data.dart';
+import 't_tag_types.dart';
 
 /// 展示型标签组件，仅展示，内部不可更改自身状态
 /// 支持样式：方形/圆角/半圆/带关闭图标
@@ -15,6 +17,9 @@ class TTag extends StatelessWidget {
     this.colorScheme,
     this.icon,
     this.size = TTagSize.medium,
+    this.needCloseIcon = false,
+    this.enabled = true,
+    this.onTap,
     this.onCloseTap,
     Key? key,
   }) : super(key: key);
@@ -31,6 +36,15 @@ class TTag extends StatelessWidget {
   /// 标签大小
   final TTagSize size;
 
+  /// 是否显示关闭图标。
+  final bool needCloseIcon;
+
+  /// 是否使用禁用视觉状态。
+  final bool enabled;
+
+  /// 标签点击回调；为空时不创建标签点击行为。
+  final GestureTapCallback? onTap;
+
   /// 关闭图标点击事件
   final GestureTapCallback? onCloseTap;
 
@@ -46,13 +60,10 @@ class TTag extends StatelessWidget {
     final isOutline = theme?.isOutline ?? false;
     final isLight = theme?.isLight ?? false;
     final shape = theme?.shape ?? TTagShape.square;
-    final disable = theme?.disable ?? false;
-    final needCloseIcon = theme?.needCloseIcon ?? false;
     final overflow = theme?.overflow;
 
     final fixedWidth = theme?.fixedWidth;
     final padding = theme?.padding;
-    final iconWidget = theme?.iconWidget;
     final textColor = theme?.textColor;
     final backgroundColor = theme?.backgroundColor;
     final font = theme?.font;
@@ -60,7 +71,7 @@ class TTag extends StatelessWidget {
 
     // 计算样式颜色
     final colors = _resolveColors(
-        context, resolvedColorScheme, isLight, isOutline, disable);
+        context, resolvedColorScheme, isLight, isOutline, !enabled);
     final borderRadius = _resolveBorderRadius(context, shape);
 
     var child = _buildLabel(
@@ -70,7 +81,7 @@ class TTag extends StatelessWidget {
       overflow: overflow ?? TextOverflow.ellipsis,
     );
 
-    var innerIcon = _getIcon(iconWidget, colors.textColor);
+    var innerIcon = _getIcon(colors.textColor);
     if (innerIcon != null || needCloseIcon) {
       var children = <Widget>[];
       if (innerIcon != null) {
@@ -83,19 +94,17 @@ class TTag extends StatelessWidget {
       }
       children.add(child);
       if (needCloseIcon) {
-        children.add(
-          GestureDetector(
-            onTap: onCloseTap,
-            child: Container(
-              margin: const EdgeInsets.only(left: 4),
-              child: Icon(
-                TIcons.close,
-                color: colors.closeIconColor ?? context.tTheme.textColorAnti,
-                size: 14,
-              ),
-            ),
+        final closeIcon = Container(
+          margin: const EdgeInsets.only(left: 4),
+          child: Icon(
+            TIcons.close,
+            color: colors.closeIconColor ?? context.tTheme.textColorAnti,
+            size: 14,
           ),
         );
+        children.add(onCloseTap == null
+            ? closeIcon
+            : GestureDetector(onTap: onCloseTap, child: closeIcon));
       }
       child = Row(
         mainAxisSize: MainAxisSize.min,
@@ -104,7 +113,7 @@ class TTag extends StatelessWidget {
     }
 
     final effectivePadding = padding ?? _getPadding(isOutline ? 1.0 : 0.0);
-    return Container(
+    final result = Container(
       width: fixedWidth,
       height: _getTagHeight(context, effectivePadding),
       padding: effectivePadding,
@@ -119,6 +128,10 @@ class TTag extends StatelessWidget {
         child: child,
       ),
     );
+    if (onTap == null) {
+      return result;
+    }
+    return GestureDetector(onTap: onTap, child: result);
   }
 
   /// 构建标签文本，参考按钮的文字居中方式：文本本身不额外设置行高，交给外层固定高度居中。
@@ -265,10 +278,7 @@ class TTag extends StatelessWidget {
     }
   }
 
-  Widget? _getIcon(Widget? iconWidget, Color textColor) {
-    if (iconWidget != null) {
-      return iconWidget;
-    }
+  Widget? _getIcon(Color textColor) {
     if (icon != null) {
       // 使用 Icon 组件渲染，保证可被 find.byIcon 命中且视觉一致
       return Icon(

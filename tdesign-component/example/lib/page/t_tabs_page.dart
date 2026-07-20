@@ -219,13 +219,13 @@ class _TTabsPageState extends State<TTabsPage> with TickerProviderStateMixin {
         text: '选项',
         contentHeight: 48,
         textMargin: EdgeInsets.only(right: 8),
-        badge: TBadge(TBadgeVariant.redPoint),
+        badge: TBadge(variant: TBadgeVariant.dot),
       ),
       const TTab(
         text: '选项',
         contentHeight: 42,
         textMargin: EdgeInsets.only(right: 16, top: 2, bottom: 2),
-        badge: TBadge(TBadgeVariant.message),
+        badge: TBadge(),
       ),
       const TTab(
         text: '选项',

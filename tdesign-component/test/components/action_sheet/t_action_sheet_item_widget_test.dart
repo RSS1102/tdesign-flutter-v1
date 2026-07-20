@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'package:tdesign_flutter/src/components/action_sheet/t_action_sheet_item_widget.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TActionSheetItemWidget 组件测试
 void main() {
@@ -50,7 +50,7 @@ void main() {
           item: TActionSheetItem(
             label: '带角标',
             icon: const Icon(Icons.star),
-            badge: TBadge(TBadgeVariant.bubble, count: '3'),
+            badge: const TBadge(count: 3),
           ),
           index: 0,
         ),
@@ -93,8 +93,8 @@ void main() {
     test('各 align 值', () {
       expect(getMainAxisAlignment(TActionSheetAlign.left),
           MainAxisAlignment.start);
-      expect(getMainAxisAlignment(TActionSheetAlign.right),
-          MainAxisAlignment.end);
+      expect(
+          getMainAxisAlignment(TActionSheetAlign.right), MainAxisAlignment.end);
       expect(getMainAxisAlignment(TActionSheetAlign.center),
           MainAxisAlignment.center);
     });

@@ -11,9 +11,7 @@ import 'l10n/app_localizations.dart';
 var _kShowTodoComponent = false;
 
 /// 切换主题的回调
-typedef OnThemeChange = Function(
-  TThemeData themeData
-);
+typedef OnThemeChange = Function(TThemeData themeData);
 
 /// 切换语言的回调
 typedef OnLocaleChange = Function(Locale locale);
@@ -65,7 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.only(
                       right: 16,
                     ),
-                    child: Icon(TIcons.setting, color: context.tTheme.whiteColor1,),
+                    child: Icon(
+                      TIcons.setting,
+                      color: context.tTheme.whiteColor1,
+                    ),
                   ),
                   onTap: () {
                     focusNode.unfocus();
@@ -92,11 +93,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         data: Theme.of(context)
                             .mergeExtension(TThemeData.defaultData()),
                         child: TButton(
-                          child: Text(AppLocalizations.of(context)?.defaultTheme ?? ''),
+                          child: Text(
+                              AppLocalizations.of(context)?.defaultTheme ?? ''),
                           colorScheme: TButtonColorScheme.primary,
                           onPressed: () async {
-                            widget.onThemeChange?.call(
-                                TThemeData.defaultData());
+                            widget.onThemeChange
+                                ?.call(TThemeData.defaultData());
                           },
                         ),
                       ),
@@ -106,13 +108,15 @@ class _MyHomePageState extends State<MyHomePage> {
                               TThemeData.defaultData(),
                         ),
                         child: TButton(
-                          child: Text(AppLocalizations.of(context)?.greenTheme ?? ''),
+                          child: Text(
+                              AppLocalizations.of(context)?.greenTheme ?? ''),
                           colorScheme: TButtonColorScheme.primary,
                           onPressed: () async {
                             var jsonString = await rootBundle
                                 .loadString('assets/theme.json');
                             var themeData = TThemeData.fromJson(
-                                    'green', jsonString, darkName: 'greenDark') ??
+                                    'green', jsonString,
+                                    darkName: 'greenDark') ??
                                 TThemeData.defaultData();
                             widget.onThemeChange?.call(
                               themeData,
@@ -126,14 +130,16 @@ class _MyHomePageState extends State<MyHomePage> {
                               TThemeData.defaultData(),
                         ),
                         child: TButton(
-                          child: Text(AppLocalizations.of(context)?.redTheme ?? ''),
+                          child: Text(
+                              AppLocalizations.of(context)?.redTheme ?? ''),
                           colorScheme: TButtonColorScheme.primary,
                           onPressed: () async {
                             var jsonString = await rootBundle
                                 .loadString('assets/theme.json');
-                            var themeData =
-                                TThemeData.fromJson('red', jsonString, darkName: 'redDark') ??
-                                    TThemeData.defaultData();
+                            var themeData = TThemeData.fromJson(
+                                    'red', jsonString,
+                                    darkName: 'redDark') ??
+                                TThemeData.defaultData();
                             widget.onThemeChange?.call(
                               themeData,
                             );
@@ -184,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (model.isTodo) {
           if (_kShowTodoComponent) {
             cells.add(TCell(
-              title: model.text,
+              title: Text(model.text),
               arrow: true,
               onTap: () {
                 Navigator.pushNamed(context, '${model.name}?showAction=1');
@@ -193,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         } else {
           cells.add(TCell(
-            title: model.text,
+            title: Text(model.text),
             arrow: true,
             onTap: () {
               focusNode.unfocus();
@@ -207,9 +213,8 @@ class _MyHomePageState extends State<MyHomePage> {
           Container(
             margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
             child: TCellGroup(
-              title: '$key(${cells.length})',
-              bordered: true,
-              groupVariant: TCellGroupVariant.cardTheme,
+              title: Text('$key(${cells.length})'),
+              variant: TCellGroupVariant.card,
               cells: cells,
             ),
           ),

@@ -16,7 +16,6 @@ dependencies:
   tdesign_icons: ^0.0.4
 
   # 轮播图组件
-  flutter_swiper_null_safety: ^1.0.2
 
   # 下拉刷新组件
   easy_refresh: ^3.4.0

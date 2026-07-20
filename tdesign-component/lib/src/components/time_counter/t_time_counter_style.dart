@@ -1,38 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
 
-/// 计时组件计时方向
-enum TTimeCounterDirection {
-  /// 倒计时
-  down,
-
-  /// 正向计时
-  up
-}
-
-/// 计时组件尺寸
-enum TTimeCounterSize {
-  /// 小
-  small,
-
-  /// 中等
-  medium,
-
-  /// 大
-  large,
-}
-
-/// 计时组件风格
-enum TTimeCounterVariant {
-  /// 默认
-  defaultTheme,
-
-  /// 圆形
-  round,
-
-  /// 方形
-  square,
-}
+import '../../theme/basic.dart' show Font, FontFamily;
+import '../../theme/t_colors.dart';
+import '../../theme/t_font_family.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
+import 't_time_counter_types.dart';
 
 /// 计时组件样式
 class TTimeCounterStyle {

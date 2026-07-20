@@ -246,7 +246,7 @@ ${api}
     if(title == 'Swiper 轮播图'){
       return '''
  
-import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';''';
+''';
     } else if(title == 'PullDownRefresh 下拉刷新'){
       return '''
  

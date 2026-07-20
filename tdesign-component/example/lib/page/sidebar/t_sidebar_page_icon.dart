@@ -103,14 +103,14 @@ class TSideBarIconPageState extends State<TSideBarIconPage> {
       value: list[1].value,
       icon: list[1].icon,
       textStyle: list[1].textStyle,
-      badge: const TBadge(TBadgeVariant.redPoint),
+      badge: const TBadge(variant: TBadgeVariant.dot),
     );
     list[2] = TSideBarItem(
       label: list[2].label,
       value: list[2].value,
       icon: list[2].icon,
       textStyle: list[2].textStyle,
-      badge: const TBadge(TBadgeVariant.message, count: '8'),
+      badge: const TBadge(count: 8),
     );
 
     return Row(

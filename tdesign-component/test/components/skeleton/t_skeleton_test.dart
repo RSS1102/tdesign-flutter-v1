@@ -259,28 +259,77 @@ void main() {
   group('TSkeleton Theme 注入', () {
     test('TSkeletonThemeData.copyWith 正确合并', () {
       const base = TSkeletonThemeData(
-        variant: TSkeletonVariant.text,
-        delay: 100,
+        blockColor: Colors.red,
+        borderRadius: 4,
       );
-      final merged = base.copyWith(animation: TSkeletonAnimation.flashed);
-      expect(merged.variant, TSkeletonVariant.text);
-      expect(merged.delay, 100);
-      expect(merged.animation, TSkeletonAnimation.flashed);
+      final merged = base.copyWith(
+        highlightColor: Colors.white,
+        rowSpacing: 12,
+      );
+      expect(merged.blockColor, Colors.red);
+      expect(merged.borderRadius, 4);
+      expect(merged.highlightColor, Colors.white);
+      expect(merged.rowSpacing, 12);
+      final all = base.copyWith(
+        blockColor: Colors.blue,
+        borderRadius: 8,
+      );
+      expect(all.blockColor, Colors.blue);
+      expect(all.borderRadius, 8);
     });
 
     test('TSkeletonThemeData.lerp 插值正确', () {
-      const a = TSkeletonThemeData(delay: 100, variant: TSkeletonVariant.text);
-      const b = TSkeletonThemeData(delay: 200, variant: TSkeletonVariant.paragraph);
+      const a = TSkeletonThemeData(
+        blockColor: Colors.black,
+        highlightColor: Colors.red,
+        borderRadius: 4,
+        rowSpacing: 8,
+      );
+      const b = TSkeletonThemeData(
+        blockColor: Colors.white,
+        highlightColor: Colors.blue,
+        borderRadius: 12,
+        rowSpacing: 16,
+      );
       final mid = a.lerp(b, 0.5);
-      expect(mid.delay, 200); // t>=0.5 取 b
-      expect(mid.variant, TSkeletonVariant.paragraph);
+      expect(mid.blockColor, isNotNull);
+      expect(mid.highlightColor, isNotNull);
+      expect(mid.borderRadius, 8);
+      expect(mid.rowSpacing, 12);
+      expect(a.lerp(null, 0.5), same(a));
+      const empty = TSkeletonThemeData();
+      expect(empty.lerp(empty, 0.5).borderRadius, isNull);
     });
 
     test('TSkeletonThemeData 默认构造所有字段为 null', () {
       const theme = TSkeletonThemeData();
-      expect(theme.variant, isNull);
-      expect(theme.animation, isNull);
-      expect(theme.delay, isNull);
+      expect(theme.blockColor, isNull);
+      expect(theme.highlightColor, isNull);
+      expect(theme.borderRadius, isNull);
+      expect(theme.rowSpacing, isNull);
+    });
+
+    testWidgets('Theme 视觉默认值进入渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(variant: TSkeletonVariant.paragraph),
+        skeletonTheme: const TSkeletonThemeData(
+          blockColor: Colors.red,
+          borderRadius: 7,
+          rowSpacing: 3,
+        ),
+      ));
+      await tester.pumpAndSettle();
+      final decorations = tester
+          .widgetList<Container>(find.byType(Container))
+          .map((container) => container.decoration)
+          .whereType<BoxDecoration>();
+      expect(decorations.any((value) => value.color == Colors.red), isTrue);
+      expect(
+        decorations.any(
+          (value) => value.borderRadius == BorderRadius.circular(7),
+        ),
+        isTrue,
+      );
     });
   });
 
@@ -315,16 +364,7 @@ void main() {
         [TSkeletonRowColObj.text(height: 16)],
         [TSkeletonRowColObj.text(height: 16)],
       ]);
-      late BuildContext context;
-      await tester.pumpWidget(wrapWithTheme(
-        Builder(
-          builder: (ctx) {
-            context = ctx;
-            return const SizedBox.shrink();
-          },
-        ),
-      ));
-      final height = rowCol.visualHeight(context);
+      final height = rowCol.visualHeight(16);
       // 2 行 height=16 + 行间距 spacer16
       expect(height, greaterThan(16));
     });

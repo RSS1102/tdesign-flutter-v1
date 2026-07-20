@@ -117,16 +117,12 @@ class TNavBarPage extends StatelessWidget {
       useDefaultBack: false,
       centerTitle: false,
       titleMargin: 0,
-      titleWidget: Theme(
-        data: Theme.of(context).mergeExtension(
-          const TImageThemeData(height: 32),
-        ),
-        child: const TImage(
-          src: 'assets/img/t_brand.png',
-          width: 120,
-          variant: TImageVariant.fitWidth,
-          fit: BoxFit.contain,
-        ),
+      titleWidget: const TImage(
+        src: 'assets/img/t_brand.png',
+        width: 120,
+        height: 32,
+        variant: TImageVariant.fitWidth,
+        fit: BoxFit.contain,
       ),
       actions: [
         TNavBarItem(icon: TIcons.home, iconSize: 24),

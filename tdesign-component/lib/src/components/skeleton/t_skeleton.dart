@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
+import 't_skeleton_rowcol.dart';
+import 't_skeleton_theme_data.dart';
 
 /// 骨架图动画
 enum TSkeletonAnimation {
@@ -27,6 +32,12 @@ enum TSkeletonVariant {
 }
 
 class TSkeleton extends StatefulWidget {
+  /// 使用预设形态创建骨架屏。
+  ///
+  /// [key] 用于区分或保留组件状态。
+  /// [animation] 设置动画效果。
+  /// [delay] 设置延迟显示的毫秒数。
+  /// [variant] 设置预设骨架图形态。
   factory TSkeleton({
     Key? key,
     TSkeletonAnimation? animation,
@@ -76,13 +87,22 @@ class TSkeleton extends StatefulWidget {
         break;
     }
 
-    return TSkeleton.fromRowCol(
+    return TSkeleton._(
       key: key,
       animation: animation,
       delay: delay,
       rowCol: TSkeletonRowCol(objects: objects),
+      variant: variant,
     );
   }
+
+  const TSkeleton._({
+    super.key,
+    this.animation,
+    required this.delay,
+    required this.rowCol,
+    required this.variant,
+  });
 
   /// 从行列框架创建骨架屏
   const TSkeleton.fromRowCol({
@@ -90,7 +110,8 @@ class TSkeleton extends StatefulWidget {
     this.animation,
     this.delay = 0,
     required this.rowCol,
-  }) : assert(delay >= 0);
+  })  : variant = null,
+        assert(delay >= 0);
 
   /// 动画效果
   final TSkeletonAnimation? animation;
@@ -100,6 +121,9 @@ class TSkeleton extends StatefulWidget {
 
   /// 自定义行列数量、宽度高度、间距等
   final TSkeletonRowCol rowCol;
+
+  /// 预设骨架图形态；自定义行列模式下为空。
+  final TSkeletonVariant? variant;
 
   @override
   _TSkeletonState createState() => _TSkeletonState();
@@ -123,11 +147,13 @@ class _TSkeletonState extends State<TSkeleton>
   static const _animationFlashed = .3;
 
   /// 静态渐变
-  static LinearGradient _animationGradient(BuildContext context) =>
+  static LinearGradient _animationGradient(
+          BuildContext context, TSkeletonThemeData? theme) =>
       LinearGradient(
         colors: [
           Colors.transparent,
-          context.tTheme.bgColorSecondaryContainerActive,
+          theme?.highlightColor ??
+              context.tTheme.bgColorSecondaryContainerActive,
           Colors.transparent,
         ],
         // 15 deg
@@ -182,15 +208,26 @@ class _TSkeletonState extends State<TSkeleton>
   Widget Function(TSkeletonRowColObj) _buildObj(BuildContext context,
           {bool allowFlex = true}) =>
       (TSkeletonRowColObj obj) {
+        final theme = Theme.of(context).extension<TSkeletonThemeData>();
+        final radius = obj.style.borderRadius ??
+            switch (obj.style.shape) {
+              TSkeletonBlockShape.circle => (obj.height ?? obj.width ?? 0) / 2,
+              TSkeletonBlockShape.square => 0,
+              TSkeletonBlockShape.rounded =>
+                theme?.borderRadius ?? context.tTheme.radiusSmall,
+            };
         // 骨架图对象
         Widget skeletonObj = Container(
           width: obj.width,
           height: obj.height,
           margin: obj.margin,
           decoration: BoxDecoration(
-            color: obj.style.background(context),
-            borderRadius:
-                BorderRadius.circular(obj.style.borderRadius(context)),
+            color: obj.isSpacer
+                ? Colors.transparent
+                : obj.style.backgroundColor ??
+                    theme?.blockColor ??
+                    context.tTheme.bgColorComponent,
+            borderRadius: BorderRadius.circular(radius),
           ),
         );
 
@@ -200,7 +237,7 @@ class _TSkeletonState extends State<TSkeleton>
             skeletonObj = ShaderMask(
               blendMode: BlendMode.srcATop,
               shaderCallback: (bounds) =>
-                  _animationGradient(context).createShader(
+                  _animationGradient(context, theme).createShader(
                 Rect.fromLTWH(
                   bounds.width * _animation!.value,
                   0,
@@ -250,7 +287,10 @@ class _TSkeletonState extends State<TSkeleton>
     List<Widget> skeletonRows = widget.rowCol.objects
         .map((row) => Row(children: row.map(_buildObj(context)).toList()))
         .toList();
-    final rowSpacing = widget.rowCol.style.rowSpacing(context);
+    final skeletonTheme = Theme.of(context).extension<TSkeletonThemeData>();
+    final rowSpacing = widget.rowCol.style.rowSpacing ??
+        skeletonTheme?.rowSpacing ??
+        context.tTheme.spacer16;
     if (rowSpacing > 0) {
       skeletonRows = skeletonRows
           .expand((row) => [row, SizedBox(height: rowSpacing)])
@@ -269,7 +309,7 @@ class _TSkeletonState extends State<TSkeleton>
         // 添加弹性布局
         ? Container(
             constraints: BoxConstraints(
-              maxHeight: widget.rowCol.visualHeight(context),
+              maxHeight: widget.rowCol.visualHeight(rowSpacing),
             ), // 限制最大高度
             child: skeletonRowCol,
           )

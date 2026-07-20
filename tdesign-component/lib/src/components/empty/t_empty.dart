@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
+
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
+import '../button/t_button.dart';
+import '../button/t_button_types.dart';
+import '../text/t_text.dart';
+import 't_empty_theme_data.dart';
 
 /// 空态形态
-enum TEmptyVariant { plain, operation }
+enum TEmptyVariant {
+  /// 仅展示空态内容。
+  plain,
+
+  /// 展示空态内容和操作入口。
+  operation,
+}
 
 class TEmpty extends StatelessWidget {
   const TEmpty({

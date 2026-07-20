@@ -8,23 +8,19 @@ void main() {
       final baseFont = Font(size: 14, lineHeight: 22);
       final nextFont = Font(size: 16, lineHeight: 24);
       final base = TEmptyThemeData(
-        variant: TEmptyVariant.plain,
         emptyTextColor: Colors.black,
         emptyTextFont: baseFont,
         operationTheme: TButtonColorScheme.primary,
       );
       final other = TEmptyThemeData(
-        variant: TEmptyVariant.operation,
         emptyTextColor: Colors.white,
         emptyTextFont: nextFont,
         operationTheme: TButtonColorScheme.danger,
       );
 
-      expect(base.copyWith(variant: TEmptyVariant.operation).variant,
-          TEmptyVariant.operation);
+      expect(
+          base.copyWith(emptyTextColor: Colors.red).emptyTextColor, Colors.red);
       expect(base.lerp(null, 0.5), same(base));
-      expect(base.lerp(other, 0.25).variant, TEmptyVariant.plain);
-      expect(base.lerp(other, 0.75).variant, TEmptyVariant.operation);
       expect(base.lerp(other, 0.75).emptyTextFont, same(nextFont));
       expect(base.lerp(other, 0.5).emptyTextColor,
           Color.lerp(Colors.black, Colors.white, 0.5));
@@ -256,28 +252,31 @@ void main() {
     });
 
     test('TTableThemeData 覆盖 copyWith 与 lerp', () {
-      const loading = Text('loading');
       const base = TTableThemeData(
         bordered: true,
         stripe: false,
         rowHeight: 40,
+        headerHeight: 44,
         height: 200,
         width: 300,
         backgroundColor: Colors.white,
-        defaultSort: 'name',
-        loadingWidget: loading,
-        loading: true,
+        headerColor: Colors.red,
+        stripeColor: Colors.green,
+        borderColor: Colors.black,
+        cellPadding: EdgeInsets.all(4),
       );
       const other = TTableThemeData(
         bordered: false,
         stripe: true,
         rowHeight: 60,
+        headerHeight: 64,
         height: 400,
         width: 500,
         backgroundColor: Colors.black,
-        defaultSort: 'age',
-        loadingWidget: SizedBox(),
-        loading: false,
+        headerColor: Colors.blue,
+        stripeColor: Colors.yellow,
+        borderColor: Colors.white,
+        cellPadding: EdgeInsets.all(8),
       );
 
       expect(base.copyWith(width: 360).width, 360);
@@ -306,22 +305,22 @@ void main() {
 
     test('TTimeCounterThemeData 覆盖 copyWith 与 lerp', () {
       const base = TTimeCounterThemeData(
-        theme: TTimeCounterVariant.defaultTheme,
+        variant: TTimeCounterVariant.defaultTheme,
         size: TTimeCounterSize.small,
-        millisecond: false,
+        showMillisecond: false,
         splitWithUnit: false,
       );
       const other = TTimeCounterThemeData(
-        theme: TTimeCounterVariant.round,
+        variant: TTimeCounterVariant.round,
         size: TTimeCounterSize.large,
-        millisecond: true,
+        showMillisecond: true,
         splitWithUnit: true,
       );
 
-      expect(base.copyWith(millisecond: true).millisecond, isTrue);
+      expect(base.copyWith(showMillisecond: true).showMillisecond, isTrue);
       expect(base.lerp(null, 0.5), same(base));
-      expect(base.lerp(other, 0.25).theme, TTimeCounterVariant.defaultTheme);
-      expect(base.lerp(other, 0.75).theme, TTimeCounterVariant.round);
+      expect(base.lerp(other, 0.25).variant, TTimeCounterVariant.defaultTheme);
+      expect(base.lerp(other, 0.75).variant, TTimeCounterVariant.round);
     });
 
     test('TTreeSelectThemeData 覆盖 copyWith 与 lerp', () {

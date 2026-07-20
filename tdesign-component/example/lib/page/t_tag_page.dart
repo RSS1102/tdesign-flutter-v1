@@ -237,20 +237,15 @@ class _TTagPageState extends State<TTagPage> {
 
   @Demo(group: 'tag')
   Widget _buildCloseFillTag(BuildContext context) {
-    // 可关闭的标签：通过 TTagThemeData(needCloseIcon: true) 注入 + onCloseTap 回调
-    return Theme(
-      data: Theme.of(context)
-          .mergeExtension(const TTagThemeData(needCloseIcon: true)),
-      child: TTag('标签文字', onCloseTap: () {}),
-    );
+    return TTag('标签文字', needCloseIcon: true, onCloseTap: () {});
   }
 
   @Demo(group: 'tag')
   Widget _buildCloseOutlineTag(BuildContext context) {
     return Theme(
-      data: Theme.of(context).mergeExtension(
-          const TTagThemeData(isOutline: true, needCloseIcon: true)),
-      child: TTag('标签文字', onCloseTap: () {}),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(isOutline: true)),
+      child: TTag('标签文字', needCloseIcon: true, onCloseTap: () {}),
     );
   }
 
@@ -395,18 +390,13 @@ class _TTagPageState extends State<TTagPage> {
   // ============ 测试 ============
 
   Widget _buildDisabledTag(BuildContext context) {
-    // 禁用状态：通过 TTagThemeData(disable: true) 注入
-    return Theme(
-      data:
-          Theme.of(context).mergeExtension(const TTagThemeData(disable: true)),
-      child: const Wrap(
-        spacing: 8,
-        children: [
-          TTag('禁用', colorScheme: TTagColorScheme.defaultTheme),
-          TTag('禁用', colorScheme: TTagColorScheme.primary),
-          TTag('禁用', colorScheme: TTagColorScheme.danger),
-        ],
-      ),
+    return const Wrap(
+      spacing: 8,
+      children: [
+        TTag('禁用', colorScheme: TTagColorScheme.defaultTheme, enabled: false),
+        TTag('禁用', colorScheme: TTagColorScheme.primary, enabled: false),
+        TTag('禁用', colorScheme: TTagColorScheme.danger, enabled: false),
+      ],
     );
   }
 }

@@ -1,90 +1,60 @@
 import 'package:flutter/material.dart';
 
-
-
-import '../../../tdesign_flutter.dart';
-
-import 't_skeleton.dart' show TSkeletonVariant, TSkeletonAnimation;
-
-
-
-/// 骨架屏组件级 ThemeExtension
-
+/// 骨架屏组件级 ThemeExtension。
+///
+/// 仅保存占位块的视觉默认值。布局、动画类型和延迟均由实例决定。
 class TSkeletonThemeData extends ThemeExtension<TSkeletonThemeData> {
-
-  /// 未传 TSkeleton.variant 时的默认形态
-  final TSkeletonVariant? variant;
-
-
-
-  /// 动画效果
-
-  final TSkeletonAnimation? animation;
-
-
-
-  /// 延迟显示加载时间（毫秒）
-
-  final int? delay;
-
-
-
   const TSkeletonThemeData({
-
-    this.variant,
-
-    this.animation,
-
-    this.delay,
-
+    this.blockColor,
+    this.highlightColor,
+    this.borderRadius,
+    this.rowSpacing,
   });
 
+  /// 占位块背景色。
+  final Color? blockColor;
 
+  /// 渐变动画高亮色。
+  final Color? highlightColor;
+
+  /// 普通占位块圆角。
+  final double? borderRadius;
+
+  /// 多行布局的默认行间距。
+  final double? rowSpacing;
 
   @override
-
   TSkeletonThemeData copyWith({
-
-    TSkeletonVariant? variant,
-
-    TSkeletonAnimation? animation,
-
-    int? delay,
-
+    Color? blockColor,
+    Color? highlightColor,
+    double? borderRadius,
+    double? rowSpacing,
   }) {
-
     return TSkeletonThemeData(
-
-      variant: variant ?? this.variant,
-
-      animation: animation ?? this.animation,
-
-      delay: delay ?? this.delay,
-
+      blockColor: blockColor ?? this.blockColor,
+      highlightColor: highlightColor ?? this.highlightColor,
+      borderRadius: borderRadius ?? this.borderRadius,
+      rowSpacing: rowSpacing ?? this.rowSpacing,
     );
-
   }
 
-
-
   @override
-
-  TSkeletonThemeData lerp(ThemeExtension<TSkeletonThemeData>? other, double t) {
-
-    if (other is! TSkeletonThemeData) {
+  TSkeletonThemeData lerp(TSkeletonThemeData? other, double t) {
+    if (other == null) {
       return this;
     }
     return TSkeletonThemeData(
-
-      variant: t < 0.5 ? variant : other.variant,
-
-      animation: t < 0.5 ? animation : other.animation,
-
-      delay: t < 0.5 ? delay : other.delay,
-
+      blockColor: Color.lerp(blockColor, other.blockColor, t),
+      highlightColor: Color.lerp(highlightColor, other.highlightColor, t),
+      borderRadius: _lerpDouble(borderRadius, other.borderRadius, t),
+      rowSpacing: _lerpDouble(rowSpacing, other.rowSpacing, t),
     );
-
   }
 
+  double? _lerpDouble(double? a, double? b, double t) {
+    if (a == null && b == null) {
+      return null;
+    }
+    return (a ?? 0) + ((b ?? 0) - (a ?? 0)) * t;
+  }
 }
-

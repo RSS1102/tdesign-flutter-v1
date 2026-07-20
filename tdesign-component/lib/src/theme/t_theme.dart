@@ -196,7 +196,7 @@ class TMaterialThemeBuilder {
       const TBadgeThemeData(),
       const TCalendarThemeData(),
       const TCascaderThemeData(),
-      TCellThemeData(),
+      const TCellThemeData(),
       const TCheckboxThemeData(),
       const TCollapseThemeData(),
       const TDialogThemeData(),

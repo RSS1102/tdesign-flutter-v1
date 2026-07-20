@@ -133,7 +133,7 @@ class _TBadgePageState extends State<TBadgePage> {
             font: context.tTheme.fontBodyLarge,
           ),
           const Positioned(
-            child: TBadge(TBadgeVariant.redPoint),
+            child: TBadge(variant: TBadgeVariant.dot),
             right: 0,
             top: 0,
           )
@@ -151,7 +151,7 @@ class _TBadgePageState extends State<TBadgePage> {
         children: [
           Icon(TIcons.notification),
           Positioned(
-            child: TBadge(TBadgeVariant.redPoint),
+            child: TBadge(variant: TBadgeVariant.dot),
             right: 0,
             top: 0,
           )
@@ -175,7 +175,7 @@ class _TBadgePageState extends State<TBadgePage> {
             ),
           ),
           Positioned(
-            child: TBadge(TBadgeVariant.redPoint),
+            child: TBadge(variant: TBadgeVariant.dot),
             right: 0,
             top: 0,
           )
@@ -193,7 +193,7 @@ class _TBadgePageState extends State<TBadgePage> {
         children: [
           TText('消息', font: context.tTheme.fontBodyLarge),
           Positioned(
-            child: TBadge(TBadgeVariant.message, count: num.toString()),
+            child: TBadge(count: num),
             left: 28,
             bottom: 18,
           )
@@ -211,7 +211,7 @@ class _TBadgePageState extends State<TBadgePage> {
         children: [
           const Icon(TIcons.notification),
           Positioned(
-            child: TBadge(TBadgeVariant.message, count: num.toString()),
+            child: TBadge(count: num),
             left: 18,
             bottom: 18,
           )
@@ -234,7 +234,7 @@ class _TBadgePageState extends State<TBadgePage> {
             ),
           ),
           Positioned(
-            child: TBadge(TBadgeVariant.message, count: num.toString()),
+            child: TBadge(count: num),
             right: 0,
             top: 0,
           )
@@ -258,7 +258,7 @@ class _TBadgePageState extends State<TBadgePage> {
                     BorderRadius.circular(context.tTheme.radiusDefault)),
           ),
           Positioned(
-            child: TBadge(TBadgeVariant.message, count: num.toString()),
+            child: TBadge(count: num),
             right: 0,
             top: 0,
           )
@@ -282,7 +282,7 @@ class _TBadgePageState extends State<TBadgePage> {
                     BorderRadius.circular(context.tTheme.radiusDefault)),
           ),
           const Positioned(
-            child: TBadge(TBadgeVariant.message, count: '0'),
+            child: TBadge(count: 0),
             right: 0,
             top: 0,
           )
@@ -307,7 +307,7 @@ class _TBadgePageState extends State<TBadgePage> {
           ),
           const Positioned(
             // 不显示 0
-            child: TBadge(TBadgeVariant.message, count: '0'),
+            child: TBadge(count: 0),
             right: 0,
             top: 0,
           )
@@ -325,7 +325,7 @@ class _TBadgePageState extends State<TBadgePage> {
         children: [
           const Icon(TIcons.notification),
           Positioned(
-            child: TBadge(TBadgeVariant.message, count: num.toString()),
+            child: TBadge(count: num),
             left: 18,
             bottom: 18,
           )
@@ -343,10 +343,7 @@ class _TBadgePageState extends State<TBadgePage> {
         children: [
           const Icon(TIcons.notification),
           Positioned(
-            child: TBadge(
-              TBadgeVariant.square,
-              count: num.toString(),
-            ),
+            child: TBadge(count: num, border: true),
             left: 20,
             bottom: 18,
           )
@@ -370,7 +367,7 @@ class _TBadgePageState extends State<TBadgePage> {
                     BorderRadius.circular(context.tTheme.radiusDefault)),
           ),
           const Positioned(
-            child: TBadge(TBadgeVariant.bubble, count: '领积分'),
+            child: TBadge(count: 1, variant: TBadgeVariant.small),
             right: 0,
             top: 0,
           )
@@ -385,8 +382,8 @@ class _TBadgePageState extends State<TBadgePage> {
       clipBehavior: Clip.none,
       alignment: Alignment.topRight,
       children: [
-        TCell(title: '单行标题'),
-        TBadge(TBadgeVariant.subscript),
+        TCell(title: Text('单行标题')),
+        TBadge(variant: TBadgeVariant.dot),
       ],
     );
   }
@@ -398,10 +395,9 @@ class _TBadgePageState extends State<TBadgePage> {
         clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
-          const TAvatar(size: TAvatarSize.large, variant: TAvatarVariant.icon),
+          const TAvatar(size: TAvatarSize.large),
           Positioned(
-            child: TBadge(TBadgeVariant.message,
-                size: TBadgeSize.large, count: num.toString()),
+            child: TBadge(count: num),
             left: 48,
             bottom: 48,
           )
@@ -417,9 +413,9 @@ class _TBadgePageState extends State<TBadgePage> {
         clipBehavior: Clip.none,
         alignment: Alignment.bottomLeft,
         children: [
-          const TAvatar(size: TAvatarSize.medium, variant: TAvatarVariant.icon),
+          const TAvatar(size: TAvatarSize.medium),
           Positioned(
-            child: TBadge(TBadgeVariant.message, count: num.toString()),
+            child: TBadge(count: num),
             left: 36,
             bottom: 36,
           )
@@ -440,12 +436,7 @@ class _TBadgePageState extends State<TBadgePage> {
             child: Icon(TIcons.notification),
           ),
           Positioned(
-            child: TBadge(
-              TBadgeVariant.square,
-              count: '8888',
-              maxCount: '9000',
-              size: TBadgeSize.large,
-            ),
+            child: TBadge(count: 8888, maxCount: 9000),
             left: 18,
             bottom: 18,
           ),
@@ -462,12 +453,7 @@ class _TBadgePageState extends State<TBadgePage> {
         children: [
           Positioned(left: 0, bottom: 0, child: Icon(TIcons.notification)),
           Positioned(
-            child: TBadge(
-              TBadgeVariant.square,
-              count: '888',
-              maxCount: '99',
-              size: TBadgeSize.large,
-            ),
+            child: TBadge(count: 888, maxCount: 99),
             left: 18,
             bottom: 18,
           ),

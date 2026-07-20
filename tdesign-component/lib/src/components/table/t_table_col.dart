@@ -1,70 +1,66 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-/// 固定列位置
-enum TTableColFixed { left, right, none }
+/// 固定列位置。
+enum TTableColumnFixed {
+  /// 固定在左侧。
+  left,
 
-/// 列内容对齐方式
-enum TTableColAlign { left, center, right }
+  /// 固定在右侧。
+  right,
 
-/// 行可选判断函数
-typedef SelectableFunc = bool Function(int index, dynamic row);
+  /// 跟随中间区域水平滚动。
+  none,
+}
 
-/// 行选中判断函数
-typedef RowCheckFunc = bool Function(int index, dynamic row);
+/// 列内容对齐方式。
+enum TTableColumnAlign {
+  /// 左对齐。
+  left,
 
-/// 表格列配置
-class TTableCol {
-  TTableCol({
-    this.title,
-    this.colKey,
-    this.width,
-    this.fixed = TTableColFixed.none,
-    this.ellipsis,
-    this.ellipsisTitle,
-    this.cellBuilder,
-    this.align = TTableColAlign.left,
-    this.sortable = false,
-    this.selection,
-    this.selectable,
-    this.checked,
-  });
+  /// 居中对齐。
+  center,
 
-  /// 行是否显示复选框，自定义列时无效
-  bool? selection;
+  /// 右对齐。
+  right,
+}
 
-  /// 表头标题
-  String? title;
+/// 单元格构建器。
+typedef TTableCellBuilder<T> = Widget Function(
+  BuildContext context,
+  T row,
+  int rowIndex,
+);
 
-  /// 列取值字段
-  String? colKey;
+/// 强类型表格列配置。
+class TTableColumn<T> {
+  const TTableColumn({
+    required this.id,
+    required this.header,
+    required this.cellBuilder,
+    this.width = 120,
+    this.fixed = TTableColumnFixed.none,
+    this.align = TTableColumnAlign.left,
+    this.comparator,
+  }) : assert(width > 0);
 
-  /// 列宽
-  double? width;
+  /// 列唯一标识，用于受控排序。
+  final String id;
 
-  /// 固定列
-  TTableColFixed? fixed;
+  /// 表头内容。
+  final Widget header;
 
-  /// 列内容超出时是否省略
-  bool? ellipsis;
+  /// 单元格构建器。
+  final TTableCellBuilder<T> cellBuilder;
 
-  /// 列标题超出时显示省略内容
-  bool? ellipsisTitle;
+  /// 列宽。
+  final double width;
 
-  /// 自定义列
-  IndexedWidgetBuilder? cellBuilder;
+  /// 固定位置。
+  final TTableColumnFixed fixed;
 
-  /// 列内容横向对齐方式
-  TTableColAlign? align;
+  /// 内容对齐方式。
+  final TTableColumnAlign align;
 
-  /// 是否可排序
-  bool? sortable;
-
-  /// 当前行CheckBox是否可选，仅selection：true有效
-  SelectableFunc? selectable;
-
-  /// 当前行是否选中
-  RowCheckFunc? checked;
-
-  /// 列宽（像素值）
-  double? get widthPx => width;
+  /// 排序比较器；为空时该列不可排序。
+  final Comparator<T>? comparator;
 }

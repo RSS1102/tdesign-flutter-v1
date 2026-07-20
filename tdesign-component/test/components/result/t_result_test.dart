@@ -122,45 +122,23 @@ void main() {
 
   group('TResultThemeData copyWith 和 lerp', () {
     test('copyWith 部分覆盖', () {
-      const theme = TResultThemeData(
-        variant: TResultVariant.success,
-        titleStyle: TextStyle(fontSize: 16),
-      );
+      const theme = TResultThemeData(titleStyle: TextStyle(fontSize: 16));
       final copied = theme.copyWith(
         titleStyle: const TextStyle(fontSize: 24),
       );
-      expect(copied.variant, TResultVariant.success);
       expect(copied.titleStyle?.fontSize, 24);
     });
 
     test('copyWith 不覆盖时保持原值', () {
-      const theme = TResultThemeData(
-        variant: TResultVariant.error,
-        titleStyle: TextStyle(color: Colors.blue),
-      );
+      const theme = TResultThemeData(titleStyle: TextStyle(color: Colors.blue));
       final copied = theme.copyWith();
-      expect(copied.variant, TResultVariant.error);
       expect(copied.titleStyle?.color, Colors.blue);
     });
 
-    test('lerp 前半段取 a 的 variant', () {
-      const a = TResultThemeData(variant: TResultVariant.success);
-      const b = TResultThemeData(variant: TResultVariant.error);
-      final result = a.lerp(b, 0.3);
-      expect(result.variant, TResultVariant.success);
-    });
-
-    test('lerp 后半段取 b 的 variant', () {
-      const a = TResultThemeData(variant: TResultVariant.success);
-      const b = TResultThemeData(variant: TResultVariant.error);
-      final result = a.lerp(b, 0.7);
-      expect(result.variant, TResultVariant.error);
-    });
-
     test('lerp 非 TResultThemeData 返回自身', () {
-      const theme = TResultThemeData(variant: TResultVariant.warning);
+      const theme = TResultThemeData(titleStyle: TextStyle(fontSize: 10));
       final result = theme.lerp(null, 0.5);
-      expect(result.variant, TResultVariant.warning);
+      expect(result, same(theme));
     });
 
     test('lerp titleStyle 插值', () {
@@ -191,11 +169,11 @@ void main() {
 
     testWidgets('构造器全部参数传入渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TResult(
+        const TResult(
           title: '标题',
           subtitle: '副标题',
           variant: TResultVariant.success,
-          icon: const Icon(Icons.check),
+          icon: Icon(Icons.check),
         ),
       ));
       expect(find.byType(TResult), findsOneWidget);

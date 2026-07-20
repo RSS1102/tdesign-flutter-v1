@@ -182,8 +182,8 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
   @Demo(group: 'date-time-picker')
   Widget _buildBase(BuildContext context) {
     return TCell(
-      title: '年月日选择器',
-      note: _formatResult(_baseSelected),
+      title: const Text('年月日选择器'),
+      note: Text(_formatResult(_baseSelected)),
       arrow: true,
       onTap: () {
         _showPickerPopup(
@@ -203,8 +203,8 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
   @Demo(group: 'date-time-picker')
   Widget _buildYearMonth(BuildContext context) {
     return TCell(
-      title: '选择年月',
-      note: _formatResult(_yearMonthSelected),
+      title: const Text('选择年月'),
+      note: Text(_formatResult(_yearMonthSelected)),
       arrow: true,
       onTap: () {
         _showPickerPopup(
@@ -224,8 +224,8 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
   @Demo(group: 'date-time-picker')
   Widget _buildTime(BuildContext context) {
     return TCell(
-      title: '选择时分',
-      note: _formatResult(_timeSelected),
+      title: const Text('选择时分'),
+      note: Text(_formatResult(_timeSelected)),
       arrow: true,
       onTap: () {
         _showPickerPopup(
@@ -245,8 +245,8 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
   @Demo(group: 'date-time-picker')
   Widget _buildCustomRange(BuildContext context) {
     return TCell(
-      title: '自定义选择范围',
-      note: _formatResult(_rangeSelected),
+      title: const Text('自定义选择范围'),
+      note: Text(_formatResult(_rangeSelected)),
       arrow: true,
       onTap: () {
         _showPickerPopup(
@@ -271,8 +271,8 @@ class _TDateTimePickerPageState extends State<TDateTimePickerPage> {
   @Demo(group: 'date-time-picker')
   Widget _buildWeek(BuildContext context) {
     return TCell(
-      title: '年月日 + 星期',
-      note: _formatWeekResult(context, _weekSelected),
+      title: const Text('年月日 + 星期'),
+      note: Text(_formatWeekResult(context, _weekSelected)),
       arrow: true,
       onTap: () {
         _showPickerPopup(

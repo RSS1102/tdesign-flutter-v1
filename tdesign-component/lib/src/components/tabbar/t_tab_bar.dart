@@ -160,7 +160,7 @@ class TTabBarBadgeConfig {
     TBadge? tBadge,
     this.badgeTopOffset,
     this.badgeRightOffset,
-  }) : tBadge = tBadge ?? const TBadge(TBadgeVariant.redPoint);
+  }) : tBadge = tBadge ?? const TBadge(variant: TBadgeVariant.dot);
 
   /// 是否展示消息
   final bool showBadge;

@@ -46,14 +46,14 @@ class TSwitchPage extends StatelessWidget {
 
   @Demo(group: 'switch')
   Widget _buildBasic(BuildContext context) => const TCell(
-        title: '基础开关',
-        noteWidget: _StatefulSwitch(),
+        title: Text('基础开关'),
+        note: _StatefulSwitch(),
       );
 
   @Demo(group: 'switch')
   Widget _buildText(BuildContext context) => const TCell(
-        title: '文字开关',
-        noteWidget: _StatefulSwitch(
+        title: Text('文字开关'),
+        note: _StatefulSwitch(
           initialValue: true,
           variant: TSwitchVariant.text,
           openText: '开',
@@ -63,8 +63,8 @@ class TSwitchPage extends StatelessWidget {
 
   @Demo(group: 'switch')
   Widget _buildIcon(BuildContext context) => const TCell(
-        title: '图标开关',
-        noteWidget: _StatefulSwitch(
+        title: Text('图标开关'),
+        note: _StatefulSwitch(
           initialValue: true,
           variant: TSwitchVariant.icon,
         ),
@@ -72,8 +72,8 @@ class TSwitchPage extends StatelessWidget {
 
   @Demo(group: 'switch')
   Widget _buildTheme(BuildContext context) => TCell(
-        title: '主题颜色',
-        noteWidget: Theme(
+        title: const Text('主题颜色'),
+        note: Theme(
           data: Theme.of(context).mergeExtension(
             const TSwitchThemeData(trackOnColor: Colors.green),
           ),
@@ -83,8 +83,8 @@ class TSwitchPage extends StatelessWidget {
 
   @Demo(group: 'switch')
   Widget _buildLoading(BuildContext context) => const TCell(
-        title: '加载状态',
-        noteWidget: TSwitch(
+        title: Text('加载状态'),
+        note: TSwitch(
           value: true,
           variant: TSwitchVariant.loading,
         ),
@@ -92,26 +92,26 @@ class TSwitchPage extends StatelessWidget {
 
   @Demo(group: 'switch')
   Widget _buildDisabled(BuildContext context) => const TCell(
-        title: '禁用状态',
-        noteWidget: TSwitch(value: false),
+        title: Text('禁用状态'),
+        note: TSwitch(value: false),
       );
 
   @Demo(group: 'switch')
   Widget _buildLarge(BuildContext context) => const TCell(
-        title: '大尺寸',
-        noteWidget: _StatefulSwitch(size: TSwitchSize.large),
+        title: Text('大尺寸'),
+        note: _StatefulSwitch(size: TSwitchSize.large),
       );
 
   @Demo(group: 'switch')
   Widget _buildMedium(BuildContext context) => const TCell(
-        title: '中尺寸',
-        noteWidget: _StatefulSwitch(size: TSwitchSize.medium),
+        title: Text('中尺寸'),
+        note: _StatefulSwitch(size: TSwitchSize.medium),
       );
 
   @Demo(group: 'switch')
   Widget _buildSmall(BuildContext context) => const TCell(
-        title: '小尺寸',
-        noteWidget: _StatefulSwitch(size: TSwitchSize.small),
+        title: Text('小尺寸'),
+        note: _StatefulSwitch(size: TSwitchSize.small),
       );
 }
 

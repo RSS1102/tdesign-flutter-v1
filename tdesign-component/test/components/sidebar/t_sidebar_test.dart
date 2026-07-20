@@ -252,7 +252,8 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         TSideBar(value: 0, children: buildItems()),
       ));
-      final opacity = tester.widget<AnimatedOpacity>(find.byType(AnimatedOpacity));
+      final opacity =
+          tester.widget<AnimatedOpacity>(find.byType(AnimatedOpacity));
       expect(opacity.opacity, 0.4);
     });
   });
@@ -314,7 +315,7 @@ void main() {
           label: '短',
           value: 3,
           disabled: false,
-          badge: TBadge(TBadgeVariant.message, count: '1'),
+          badge: TBadge(count: 1),
         ),
       ));
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
@@ -327,7 +328,7 @@ void main() {
           label: '很长很长的标签内容xxx',
           value: 4,
           disabled: false,
-          badge: TBadge(TBadgeVariant.message, count: '9'),
+          badge: TBadge(count: 9),
         ),
       ));
       expect(find.byType(TWrapSideBarItem), findsOneWidget);

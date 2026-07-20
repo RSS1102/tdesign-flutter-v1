@@ -179,8 +179,6 @@ void main() {
       }
     });
 
-
-
     testWidgets('updates value with none, linear and elastic animations',
         (tester) async {
       for (final animation in TTabBarIndicatorAnimation.values) {
@@ -293,7 +291,7 @@ void main() {
               unselectedIcon: const Icon(Icons.mail_outline),
               badgeConfig: TTabBarBadgeConfig(
                 showBadge: true,
-                tBadge: const TBadge(TBadgeVariant.message, count: '9'),
+                tBadge: const TBadge(count: 9),
                 badgeTopOffset: 1,
                 badgeRightOffset: 2,
               ),

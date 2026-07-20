@@ -228,8 +228,8 @@ class _TIconPageState extends State<TIconPage> {
             },
           ),
           TCell(
-            title: '显示边框',
-            noteWidget: TSwitch(
+            title: const Text('显示边框'),
+            note: TSwitch(
               value: showBorder,
               onChanged: (value) {
                 setState(() {

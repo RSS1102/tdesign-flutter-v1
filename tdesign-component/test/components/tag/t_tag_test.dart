@@ -215,16 +215,15 @@ void main() {
 
     testWidgets('disable 禁用状态渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('禁用'),
-        tagTheme: const TTagThemeData(disable: true),
+        const TTag('禁用', enabled: false),
       ));
       expect(find.text('禁用'), findsOneWidget);
     });
 
     testWidgets('disable + isOutline 禁用描边渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('禁用描边'),
-        tagTheme: const TTagThemeData(disable: true, isOutline: true),
+        const TTag('禁用描边', enabled: false),
+        tagTheme: const TTagThemeData(isOutline: true),
       ));
       expect(find.text('禁用描边'), findsOneWidget);
     });
@@ -236,8 +235,7 @@ void main() {
   group('TTag 关闭图标', () {
     testWidgets('needCloseIcon 显示关闭图标', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('可关闭'),
-        tagTheme: const TTagThemeData(needCloseIcon: true),
+        const TTag('可关闭', needCloseIcon: true),
       ));
       expect(find.byIcon(TIcons.close), findsOneWidget);
     });
@@ -247,9 +245,9 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         TTag(
           '可关闭',
+          needCloseIcon: true,
           onCloseTap: () => closed = true,
         ),
-        tagTheme: const TTagThemeData(needCloseIcon: true),
       ));
 
       await tester.tap(find.byIcon(TIcons.close));
@@ -259,8 +257,7 @@ void main() {
 
     testWidgets('onCloseTap 为 null 时点击不崩溃', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('无回调'),
-        tagTheme: const TTagThemeData(needCloseIcon: true),
+        const TTag('无回调', needCloseIcon: true),
       ));
 
       await tester.tap(find.byIcon(TIcons.close), warnIfMissed: false);
@@ -270,8 +267,7 @@ void main() {
 
     testWidgets('带图标 + 关闭图标同时显示', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('组合', icon: Icons.add),
-        tagTheme: const TTagThemeData(needCloseIcon: true),
+        const TTag('组合', icon: Icons.add, needCloseIcon: true),
       ));
       expect(find.byIcon(Icons.add), findsOneWidget);
       expect(find.byIcon(TIcons.close), findsOneWidget);
@@ -319,10 +315,7 @@ void main() {
 
     testWidgets('通过 TTagThemeData 设置自定义 iconWidget', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('自定义图标'),
-        tagTheme: const TTagThemeData(
-          iconWidget: Icon(Icons.favorite, size: 14),
-        ),
+        const TTag('自定义图标', icon: Icons.favorite),
       ));
       expect(find.byIcon(Icons.favorite), findsOneWidget);
     });
@@ -437,8 +430,7 @@ void main() {
 
     testWidgets('needCloseIcon', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('可关闭', onCloseTap: () {}),
-        tagTheme: const TTagThemeData(needCloseIcon: true),
+        TTag('可关闭', needCloseIcon: true, onCloseTap: () {}),
       ));
       expect(find.text('可关闭'), findsOneWidget);
     });
@@ -453,8 +445,7 @@ void main() {
 
     testWidgets('disable', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('禁用'),
-        tagTheme: const TTagThemeData(disable: true),
+        const TTag('禁用', enabled: false),
       ));
       expect(find.text('禁用'), findsOneWidget);
     });
@@ -468,8 +459,7 @@ void main() {
 
     testWidgets('iconWidget 自定义', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('自定义图标'),
-        tagTheme: const TTagThemeData(iconWidget: Icon(Icons.favorite)),
+        const TTag('自定义图标', icon: Icons.favorite),
       ));
       expect(find.byIcon(Icons.favorite), findsOneWidget);
     });
@@ -495,6 +485,26 @@ void main() {
         const TTag('med', icon: Icons.star, size: TTagSize.medium),
       ));
       expect(find.byIcon(Icons.star), findsOneWidget);
+    });
+
+    testWidgets('all semantic colors resolve light variants', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        Wrap(
+          children: TTagColorScheme.values
+              .map((scheme) => TTag('$scheme', colorScheme: scheme))
+              .toList(),
+        ),
+        tagTheme: const TTagThemeData(isLight: true),
+      ));
+      expect(find.byType(TTag), findsNWidgets(TTagColorScheme.values.length));
+    });
+
+    testWidgets('success outline resolves semantic border', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('success', colorScheme: TTagColorScheme.success),
+        tagTheme: const TTagThemeData(isOutline: true),
+      ));
+      expect(find.text('success'), findsOneWidget);
     });
   });
 }

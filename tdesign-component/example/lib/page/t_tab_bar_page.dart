@@ -430,7 +430,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
         TTabBarItemConfig(
           badgeConfig: TTabBarBadgeConfig(
             showBadge: true,
-            tBadge: const TBadge(TBadgeVariant.redPoint),
+            tBadge: const TBadge(variant: TBadgeVariant.dot),
             badgeTopOffset: -2,
             badgeRightOffset: -10,
           ),
@@ -466,7 +466,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
           unselectedIcon: _unSelectedIcon,
           badgeConfig: TTabBarBadgeConfig(
             showBadge: true,
-            tBadge: const TBadge(TBadgeVariant.redPoint),
+            tBadge: const TBadge(variant: TBadgeVariant.dot),
             badgeTopOffset: -2,
             badgeRightOffset: -10,
           ),
@@ -506,7 +506,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
           unselectedIcon: _unSelectedIcon,
           badgeConfig: TTabBarBadgeConfig(
             showBadge: true,
-            tBadge: const TBadge(TBadgeVariant.redPoint),
+            tBadge: const TBadge(variant: TBadgeVariant.dot),
             badgeTopOffset: -2,
             badgeRightOffset: -10,
           ),
@@ -604,7 +604,7 @@ class _TTabBarPageState extends State<TTabBarPage> {
           unselectedIcon: _unSelectedIcon,
           badgeConfig: TTabBarBadgeConfig(
             showBadge: true,
-            tBadge: const TBadge(TBadgeVariant.redPoint),
+            tBadge: const TBadge(variant: TBadgeVariant.dot),
             badgeTopOffset: -2,
             badgeRightOffset: -10,
           ),

@@ -232,19 +232,19 @@ Widget _buildBadgeListActionSheet(BuildContext context) {
         items: [
           TActionSheetItem(
             label: '选项一',
-            badge: const TBadge(TBadgeVariant.redPoint),
+            badge: const TBadge(variant: TBadgeVariant.dot),
           ),
           TActionSheetItem(
             label: '选项二',
-            badge: const TBadge(TBadgeVariant.message, count: '8'),
+            badge: const TBadge(count: 8),
           ),
           TActionSheetItem(
             label: '选项三',
-            badge: const TBadge(TBadgeVariant.message, count: '99'),
+            badge: const TBadge(count: 99),
           ),
           TActionSheetItem(
             label: '选项四',
-            badge: const TBadge(TBadgeVariant.message, count: '99+'),
+            badge: const TBadge(count: 100, maxCount: 99),
           ),
         ],
       );
@@ -263,7 +263,9 @@ Widget _buildItemDescriptionListActionSheet(BuildContext context) {
       TActionSheet(
         context,
         visible: true,
-        items: _nums.map((e) => TActionSheetItem(label: '选项$e',subtitle: '描述$e')).toList(),
+        items: _nums
+            .map((e) => TActionSheetItem(label: '选项$e', subtitle: '描述$e'))
+            .toList(),
       );
     },
   );
@@ -445,10 +447,9 @@ Widget _buildBadgeGridActionSheet(BuildContext context) {
         TActionSheetItem(
             label: '微信',
             icon: Image.asset('assets/img/t_action_sheet_1.png'),
-            badge: const TBadge(TBadgeVariant.message, count: 'NEW')),
+            badge: const TBadge(count: 1, variant: TBadgeVariant.small)),
         TActionSheetItem(
-            label: '朋友圈',
-            icon: Image.asset('assets/img/t_action_sheet_2.png')),
+            label: '朋友圈', icon: Image.asset('assets/img/t_action_sheet_2.png')),
         TActionSheetItem(
             label: 'QQ', icon: Image.asset('assets/img/t_action_sheet_3.png')),
         TActionSheetItem(
@@ -457,13 +458,13 @@ Widget _buildBadgeGridActionSheet(BuildContext context) {
         TActionSheetItem(
             label: '收藏',
             icon: const IconWithBackground(icon: TIcons.star),
-            badge: const TBadge(TBadgeVariant.redPoint)),
+            badge: const TBadge(variant: TBadgeVariant.dot)),
         TActionSheetItem(
             label: '刷新', icon: const IconWithBackground(icon: TIcons.refresh)),
         TActionSheetItem(
             label: '下载',
             icon: const IconWithBackground(icon: TIcons.download),
-            badge: const TBadge(TBadgeVariant.message, count: '8')),
+            badge: const TBadge(count: 8)),
         TActionSheetItem(
             label: '复制', icon: const IconWithBackground(icon: TIcons.queue)),
       ]);
@@ -497,8 +498,7 @@ Widget _buildBaseListStateActionSheet(BuildContext context) {
           ),
           TActionSheetItem(
             label: '警告选项',
-            textStyle: const TextStyle(
-            ),
+            textStyle: const TextStyle(),
           ),
         ],
         onChanged: (item, index) {
@@ -539,8 +539,7 @@ Widget _buildIconListStateActionSheet(BuildContext context) {
           TActionSheetItem(
             label: '警告选项',
             icon: const Icon(TIcons.app),
-            textStyle: const TextStyle(
-            ),
+            textStyle: const TextStyle(),
           ),
         ],
         onChanged: (item, index) {
@@ -566,21 +565,15 @@ Widget _buildBadgeListCenterActionSheet(BuildContext context) {
         items: [
           TActionSheetItem(
             label: '选项一',
-            badge: const TBadge(TBadgeVariant.redPoint),
+            badge: const TBadge(variant: TBadgeVariant.dot),
           ),
           TActionSheetItem(
             label: '选项二',
-            badge: const TBadge(
-              TBadgeVariant.message,
-              count: '8',
-            ),
+            badge: const TBadge(count: 8),
           ),
           TActionSheetItem(
             label: '选项三',
-            badge: const TBadge(
-              TBadgeVariant.message,
-              count: '99',
-            ),
+            badge: const TBadge(count: 99),
           ),
         ],
       );
@@ -627,7 +620,7 @@ Widget _buildBadgeListLeftActionSheet(BuildContext context) {
         items: _nums
             .map((e) => TActionSheetItem(
                   label: '选项$e',
-                  badge: const TBadge(TBadgeVariant.redPoint),
+                  badge: const TBadge(variant: TBadgeVariant.dot),
                 ))
             .toList(),
       );

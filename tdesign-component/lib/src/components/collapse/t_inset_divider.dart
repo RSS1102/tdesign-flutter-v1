@@ -3,7 +3,9 @@
  */
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
 
 class TInsetDivider extends StatelessWidget {
   const TInsetDivider({Key? key}) : super(key: key);

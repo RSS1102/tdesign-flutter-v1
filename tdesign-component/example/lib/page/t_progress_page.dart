@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
@@ -16,13 +14,9 @@ class TProgressPage extends StatefulWidget {
 }
 
 class _TProgressPageState extends State<TProgressPage> {
-  TLabelWidget buttonLabel = const TTextLabel('开始');
-  double progressValue = 0.0;
-  Timer? _timer;
-  bool isProgressing = false;
-  bool isPlaying = false;
-  double microProgressValue = 0.3;
-  Timer? _microTimer;
+  final Widget buttonLabel = const Text('进行中');
+  final double progressValue = 0.4;
+  final double microProgressValue = 0.3;
 
   double value = 0.1;
 
@@ -106,7 +100,6 @@ class _TProgressPageState extends State<TProgressPage> {
   Widget _buildButton(BuildContext context) {
     return TProgress(
       variant: TProgressVariant.button,
-      onPressed: _toggleProgress,
       value: progressValue,
       label: buttonLabel,
     );
@@ -117,9 +110,8 @@ class _TProgressPageState extends State<TProgressPage> {
     return TProgress(
       variant: TProgressVariant.micro,
       value: microProgressValue,
-      onPressed: _toggleMicroProgress,
-      label: TIconLabel(
-        isPlaying ? Icons.pause : Icons.play_arrow,
+      label: Icon(
+        Icons.play_arrow,
         color: context.tTheme.brandNormalColor,
       ),
     );
@@ -219,55 +211,5 @@ class _TProgressPageState extends State<TProgressPage> {
       variant: TProgressVariant.circular,
       value: 1,
     );
-  }
-
-  void _toggleProgress() {
-    if (isProgressing) {
-      // 暂停进度
-      _timer?.cancel();
-      setState(() {
-        buttonLabel = const TTextLabel('继续');
-        isProgressing = false;
-      });
-    } else {
-      // 开始或继续进度
-      _timer?.cancel();
-      _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-        setState(() {
-          if (progressValue < 1.0) {
-            progressValue += 0.01;
-            buttonLabel = TTextLabel('${(progressValue * 100).toInt()}%');
-          } else {
-            _timer?.cancel();
-            buttonLabel = const TTextLabel('完成');
-            isProgressing = false;
-          }
-        });
-      });
-      setState(() {
-        isProgressing = true;
-      });
-    }
-  }
-
-  void _toggleMicroProgress() {
-    setState(() {
-      isPlaying = !isPlaying;
-    });
-    if (isPlaying) {
-      _microTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-        setState(() {
-          if (microProgressValue < 1.0) {
-            microProgressValue += 0.01;
-          } else {
-            _microTimer?.cancel();
-            isPlaying = false;
-            microProgressValue = 0.0;
-          }
-        });
-      });
-    } else {
-      _microTimer?.cancel();
-    }
   }
 }

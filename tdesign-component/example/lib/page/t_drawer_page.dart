@@ -172,8 +172,8 @@ Widget _buildBottomSimple(BuildContext context) {
 
 @Demo(group: 'drawer')
 Widget _buildColorSimple(BuildContext context) {
-  var tCellStyle = TCellThemeData.cellStyle(context);
-  tCellStyle.backgroundColor = context.tTheme.brandNormalColor;
+  final tCellStyle =
+      TCellThemeData(backgroundColor: context.tTheme.brandNormalColor);
 
   return Theme(
     data: Theme.of(context).mergeExtension(

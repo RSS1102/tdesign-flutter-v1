@@ -1,25 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/src/components/cell/t_cell_inherited.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-/// 覆盖多个小文件的未覆盖行：TCellInherited updateShouldNotify、TFabBounds 构造器、
-/// DateTimePickerSteps operator==
+/// 覆盖多个小文件的未覆盖行：TFabBounds 构造器、DateTimePickerSteps operator==
 void main() {
-  group('TCellInherited.updateShouldNotify', () {
-    test('始终返回 true', () {
-      final w1 = TCellInherited(
-        style: TCellThemeData(),
-        child: const SizedBox(),
-      );
-      final w2 = TCellInherited(
-        style: TCellThemeData(),
-        child: const SizedBox(),
-      );
-      expect(w1.updateShouldNotify(w2), isTrue);
-    });
-  });
-
   group('TFabBounds', () {
     test('构造器正确赋值', () {
       const bounds = TFabBounds(start: 10, end: 20);
