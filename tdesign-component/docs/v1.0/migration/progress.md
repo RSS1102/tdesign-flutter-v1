@@ -25,7 +25,7 @@
 | PR 5 | Overlay / Popup 基础设施 | Ready for PR | Popup 路由、Options、Handle、布局和安全区测试已覆盖；必须先于依赖 Popup 的 Drawer 迁移 |
 | PR 6 | 03-input / Form 基础能力 | Ready for PR | 当前组件域测试通过；全量套件中的源码覆盖率 98.63%，DateTimePicker 根组件、快照和 Radio Theme 已补契约测试 |
 | PR 7 | Feedback 业务组件 | Ready for PR | 05-feedback 定向 302 项测试通过、隔离覆盖率 95.28%；全量套件覆盖率 97.75%，Popover Theme 与强类型回调已闭环 |
-| PR 8 | Display / Navigation 中低风险组件 | Ready for PR | 02-navigation 覆盖率 97.96%；04-display 最近定向测试 350 个通过、analyze 0 issues、覆盖率 99.05%；Drawer 必须在 PR 5 后迁移 |
+| PR 8 | Display / Navigation 中低风险组件 | Ready for PR | 02-navigation 最近定向测试 326 个通过、analyze 0 issues、覆盖率 97.96%；04-display 最近定向测试 350 个通过、analyze 0 issues、覆盖率 99.05%；Drawer 必须在 PR 5 后迁移 |
 | PR 9+ | picker/date-picker/dropdown/table/upload 等复杂组件 | Ready for component PR | v1 源码已完成统一验收，但迁移主仓时仍按单组件或依赖链拆分，避免复用当前大提交边界 |
 | Final PR | export、索引、CI、全量验收收口 | Not Started | 等主要组件迁移完成后执行 |
 
@@ -44,6 +44,8 @@
 | 01-base 源码总覆盖率 | 98.21% (932/949) |
 | 01-base 定向 analyze | 0 issues |
 | FAB tools validate | `ERROR=0, WARN=0` |
+| 02-navigation 定向测试 | 326 个测试通过 |
+| 02-navigation 定向 analyze | 0 issues |
 | 02-navigation 源码总覆盖率 | 97.96% (2741/2798) |
 | 03-input 源码总覆盖率 | 98.63% (3447/3495) |
 | 04-display 定向测试 | 350 个测试通过 |
