@@ -1,11 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
 import '../../util/auto_size.dart';
 import '../../util/context_extension.dart';
+import '../../util/t_toolbar_pressable.dart';
+import '../icon/t_icon.dart';
 import '../loading/t_circle_indicator.dart';
+import '../text/t_text.dart';
+import 't_toast_theme_data.dart';
 
 /// Toast 文案排列方向
 enum IconTextDirection {
@@ -16,21 +24,17 @@ enum IconTextDirection {
   vertical
 }
 
-/// Toast配置类，支持独立样式定制
-
 /// Toast实例管理类
 class _ToastInstance {
   final OverlayEntry overlayEntry;
   final Timer? timer;
   Timer? disposeTimer;
-  final bool loading;
   bool showing = true;
   bool removed = false;
 
   _ToastInstance({
     required this.overlayEntry,
     this.timer,
-    this.loading = false,
   });
 
   void cancel() {
@@ -90,8 +94,6 @@ class TToast {
         config: TToastThemeData(
           backgroundColor: backgroundColor,
           textStyle: textStyle,
-          duration: duration,
-          preventTap: preventTap ?? false,
         ),
       ),
       context: context,
@@ -129,8 +131,6 @@ class TToast {
           textStyle: textStyle,
           iconSize: iconSize,
           iconColor: iconColor,
-          duration: duration,
-          preventTap: preventTap ?? false,
         ),
       ),
       context: context,
@@ -254,15 +254,12 @@ class TToast {
           textStyle: textStyle,
           iconSize: iconSize,
           iconColor: iconColor,
-          duration: duration,
-          preventTap: preventTap ?? false,
         ),
       ),
       context: context,
       duration: duration,
       preventTap: preventTap,
       toastId: id,
-      loading: true,
     );
     return id;
   }
@@ -284,15 +281,12 @@ class TToast {
           backgroundColor: backgroundColor,
           iconSize: iconSize,
           iconColor: iconColor,
-          duration: duration,
-          preventTap: preventTap ?? false,
         ),
       ),
       context: context,
       duration: duration,
       preventTap: preventTap,
       toastId: id,
-      loading: true,
     );
     return id;
   }
@@ -320,7 +314,6 @@ class TToast {
     Duration duration = const Duration(milliseconds: 3000),
     bool? preventTap,
     required String toastId,
-    bool loading = false,
   }) {
     // 不自动关闭之前的Toast，支持多个Toast同时显示
     final overlayState = Overlay.of(context);
@@ -368,7 +361,6 @@ class TToast {
     _toastInstances[toastId] = _ToastInstance(
       overlayEntry: overlayEntry,
       timer: timer,
-      loading: loading,
     );
   }
 }

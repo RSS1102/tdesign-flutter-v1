@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'package:tdesign_flutter/src/components/action_sheet/t_action_sheet_grid.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TActionSheetGrid 宫格动作面板测试
 ///

@@ -14,19 +14,13 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
   final BoxDecoration? decoration;
 
   /// 箭头图标
-  final Widget? arrowIcon;
+  final IconData? arrowIcon;
 
   /// 箭头颜色
   final Color? arrowColor;
 
   /// 标签栏对齐
-  final TextAlign? tabBarAlign;
-
-  /// 动画时长
-  final Duration? duration;
-
-  /// 是否可滚动
-  final bool? isScrollable;
+  final MainAxisAlignment? tabBarAlign;
 
   const TDropdownThemeData({
     this.width,
@@ -35,8 +29,6 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
     this.arrowIcon,
     this.arrowColor,
     this.tabBarAlign,
-    this.duration,
-    this.isScrollable,
   });
 
   TDropdownThemeData merge(TDropdownThemeData? other) {
@@ -50,8 +42,6 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
       arrowIcon: other.arrowIcon ?? arrowIcon,
       arrowColor: other.arrowColor ?? arrowColor,
       tabBarAlign: other.tabBarAlign ?? tabBarAlign,
-      duration: other.duration ?? duration,
-      isScrollable: other.isScrollable ?? isScrollable,
     );
   }
 
@@ -60,11 +50,9 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
     double? width,
     double? height,
     BoxDecoration? decoration,
-    Widget? arrowIcon,
+    IconData? arrowIcon,
     Color? arrowColor,
-    TextAlign? tabBarAlign,
-    Duration? duration,
-    bool? isScrollable,
+    MainAxisAlignment? tabBarAlign,
   }) {
     return TDropdownThemeData(
       width: width ?? this.width,
@@ -73,8 +61,6 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
       arrowIcon: arrowIcon ?? this.arrowIcon,
       arrowColor: arrowColor ?? this.arrowColor,
       tabBarAlign: tabBarAlign ?? this.tabBarAlign,
-      duration: duration ?? this.duration,
-      isScrollable: isScrollable ?? this.isScrollable,
     );
   }
 
@@ -90,8 +76,6 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
       arrowIcon: t < 0.5 ? arrowIcon : other.arrowIcon,
       arrowColor: Color.lerp(arrowColor, other.arrowColor, t),
       tabBarAlign: t < 0.5 ? tabBarAlign : other.tabBarAlign,
-      duration: t < 0.5 ? duration : other.duration,
-      isScrollable: t < 0.5 ? isScrollable : other.isScrollable,
     );
   }
 

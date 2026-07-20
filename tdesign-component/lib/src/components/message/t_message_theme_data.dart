@@ -29,15 +29,11 @@ class TMessageThemeData extends ThemeExtension<TMessageThemeData> {
   /// 默认偏移
   final Offset? defaultOffset;
 
-  /// 默认跑马灯配置
-  final bool? defaultMarquee;
-
   const TMessageThemeData({
     this.backgroundColor,
     this.shape,
     this.elevation,
     this.defaultOffset,
-    this.defaultMarquee,
   });
 
   TMessageThemeData merge(TMessageThemeData? other) {
@@ -49,7 +45,6 @@ class TMessageThemeData extends ThemeExtension<TMessageThemeData> {
       shape: other.shape ?? shape,
       elevation: other.elevation ?? elevation,
       defaultOffset: other.defaultOffset ?? defaultOffset,
-      defaultMarquee: other.defaultMarquee ?? defaultMarquee,
     );
   }
 
@@ -59,14 +54,12 @@ class TMessageThemeData extends ThemeExtension<TMessageThemeData> {
     ShapeBorder? shape,
     double? elevation,
     Offset? defaultOffset,
-    bool? defaultMarquee,
   }) {
     return TMessageThemeData(
       backgroundColor: backgroundColor ?? this.backgroundColor,
       shape: shape ?? this.shape,
       elevation: elevation ?? this.elevation,
       defaultOffset: defaultOffset ?? this.defaultOffset,
-      defaultMarquee: defaultMarquee ?? this.defaultMarquee,
     );
   }
 
@@ -80,7 +73,6 @@ class TMessageThemeData extends ThemeExtension<TMessageThemeData> {
       shape: t < 0.5 ? shape : other.shape,
       elevation: lerpDouble(elevation, other.elevation, t),
       defaultOffset: Offset.lerp(defaultOffset, other.defaultOffset, t),
-      defaultMarquee: t < 0.5 ? defaultMarquee : other.defaultMarquee,
     );
   }
 

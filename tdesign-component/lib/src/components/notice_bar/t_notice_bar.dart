@@ -4,23 +4,44 @@ import 'dart:math' as math;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../util/context_extension.dart';
+import '../text/t_text.dart';
+import 't_notice_bar_theme_data.dart';
+
+/// 公告栏点击区域
+enum TNoticeBarTapTarget {
+  /// 左侧图标
+  prefix,
+
+  /// 公告内容
+  content,
+
+  /// 右侧图标
+  suffix,
+}
 
 /// 公告栏
 class TNoticeBar extends StatefulWidget {
   const TNoticeBar({
     super.key,
-    this.content,
+    this.content = '',
+    this.items = const <String>[],
     this.left,
     this.right,
     this.direction = Axis.horizontal,
     this.maxLines = 1,
+    this.marquee = false,
+    this.speed = 50,
+    this.interval = const Duration(seconds: 3),
     this.onPressed,
-  }) : assert(content == null || content is String || content is List<String>,
-            'content must be String or List<String>');
+  })  : assert(speed > 0, 'speed must be greater than zero'),
+        assert(maxLines > 0, 'maxLines must be greater than zero');
 
-  /// 文本内容（字符串或字符串数组等）
-  final dynamic content;
+  /// 单条公告内容
+  final String content;
+
+  /// 多条公告内容，主要用于垂直轮播
+  final List<String> items;
 
   /// 左侧内容（自定义左侧内容，优先级高于prefixIcon）
   final Widget? left;
@@ -29,15 +50,22 @@ class TNoticeBar extends StatefulWidget {
   final Widget? right;
 
   /// 滚动方向
-  final Axis? direction;
+  final Axis direction;
 
   /// 文本行数（仅静态有效）
-  final int? maxLines;
+  final int maxLines;
+
+  /// 是否启用滚动展示
+  final bool marquee;
+
+  /// 每秒滚动的逻辑像素
+  final double speed;
+
+  /// 垂直轮播的切换间隔
+  final Duration interval;
 
   /// 点击事件
-  final ValueChanged? onPressed;
-
-  /// 组件级主题配置，优先级高于 Theme Extension
+  final ValueChanged<TNoticeBarTapTarget>? onPressed;
 
   @override
   State<StatefulWidget> createState() => _TNoticeBarState();
@@ -53,22 +81,11 @@ class _TNoticeBarState extends State<TNoticeBar> {
   final GlobalKey _key = GlobalKey();
   final GlobalKey _contentKey = GlobalKey();
 
-  dynamic _content;
-
-  List<String> get _contentList {
-    final content = _content;
-    if (content is List<String>) {
-      return content;
-    }
-    if (content is String) {
-      return [content];
-    }
-    return const [];
-  }
+  List<String> get _contentList =>
+      widget.items.isNotEmpty ? widget.items : <String>[widget.content];
 
   @override
   void initState() {
-    _content = widget.content;
     super.initState();
     _scrollController = ScrollController();
     _scheduleMarqueeStart();
@@ -79,12 +96,11 @@ class _TNoticeBarState extends State<TNoticeBar> {
     return (ext ?? const TNoticeBarThemeData()).resolve(context);
   }
 
-  bool? get _effectiveMarquee =>
-      Theme.of(context).extension<TNoticeBarThemeData>()?.marquee ?? false;
+  bool get _effectiveMarquee => widget.marquee;
 
-  double get _effectiveSpeed => _theme.speed ?? 50;
+  double get _effectiveSpeed => widget.speed;
 
-  int get _effectiveInterval => _theme.interval ?? 3000;
+  Duration get _effectiveInterval => widget.interval;
 
   double get _effectiveHeight => _theme.height ?? 22;
 
@@ -97,27 +113,28 @@ class _TNoticeBarState extends State<TNoticeBar> {
 
   @override
   void dispose() {
-    super.dispose();
     _timer?.cancel();
     _scrollController?.dispose();
+    super.dispose();
   }
 
   @override
   void didUpdateWidget(covariant TNoticeBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.content != widget.content) {
-      _content = widget.content;
-    }
     if (oldWidget.content != widget.content ||
+        oldWidget.items != widget.items ||
         oldWidget.direction != widget.direction ||
-        oldWidget.maxLines != widget.maxLines) {
+        oldWidget.maxLines != widget.maxLines ||
+        oldWidget.marquee != widget.marquee ||
+        oldWidget.speed != widget.speed ||
+        oldWidget.interval != widget.interval) {
       _restartMarquee();
     }
   }
 
   void _scheduleMarqueeStart() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_effectiveMarquee == true) {
+      if (mounted && _effectiveMarquee) {
         _startTimer();
       }
     });
@@ -199,8 +216,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
     if (content.isEmpty) {
       return;
     }
-    _timer =
-        Timer.periodic(Duration(milliseconds: _effectiveInterval), (timer) {
+    _timer = Timer.periodic(_effectiveInterval, (timer) {
       if (!mounted) {
         timer.cancel();
         return;
@@ -220,10 +236,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
 
   /// 获取文本内容尺寸消息
   Size _getFontSize() {
-    var text = _content;
-    if (_content is List<String>) {
-      text = _content[0];
-    }
+    final text = _contentList.isEmpty ? '' : _contentList.first;
     final textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -231,7 +244,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
       ),
       locale: Localizations.localeOf(context),
       textDirection: TextDirection.ltr,
-      maxLines: _effectiveMarquee == true ? 1 : widget.maxLines,
+      maxLines: _effectiveMarquee ? 1 : widget.maxLines,
     )..layout(maxWidth: _size!.width);
     return textPainter.size;
   }
@@ -265,12 +278,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
   Widget _contentWidget() {
     Widget? textWidget;
 
-    String? displayText;
-    if (_content is String) {
-      displayText = _content as String;
-    } else if (_content is List<String> && _content.isNotEmpty) {
-      displayText = _content[0];
-    }
+    final displayText = _contentList.isEmpty ? null : _contentList.first;
 
     if (displayText != null) {
       textWidget = SizedBox(
@@ -280,7 +288,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
           child: TText(
             displayText,
             style: _resolved.textStyle,
-            maxLines: _effectiveMarquee == true ? 1 : widget.maxLines,
+            maxLines: _effectiveMarquee ? 1 : widget.maxLines,
             forceVerticalCenter: true,
           ),
         ),
@@ -289,7 +297,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
       textWidget = const SizedBox.shrink();
     }
 
-    if (_effectiveMarquee != true) {
+    if (!_effectiveMarquee) {
       return textWidget;
     }
 
@@ -366,18 +374,11 @@ class _TNoticeBarState extends State<TNoticeBar> {
           ),
         );
         break;
-      default:
-        child = textWidget;
-        break;
     }
     return child;
   }
 
-  void _onTap(trigger) {
-    if (widget.onPressed != null) {
-      widget.onPressed!(trigger);
-    }
-  }
+  void _onTap(TNoticeBarTapTarget target) => widget.onPressed?.call(target);
 
   @override
   Widget build(BuildContext context) {
@@ -397,7 +398,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
             widget.left!
           else if (prefixIcon != null)
             GestureDetector(
-              onTap: () => _onTap('prefix-icon'),
+              onTap: () => _onTap(TNoticeBarTapTarget.prefix),
               child: Container(
                 margin: const EdgeInsets.only(right: 8),
                 child: Icon(
@@ -412,7 +413,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
           Expanded(
             key: _contentKey,
             child: GestureDetector(
-              onTap: () => _onTap('context'),
+              onTap: () => _onTap(TNoticeBarTapTarget.content),
               child: _contentWidget(),
             ),
           ),
@@ -422,7 +423,7 @@ class _TNoticeBarState extends State<TNoticeBar> {
             widget.right!
           else if (suffixIcon != null)
             GestureDetector(
-                onTap: () => _onTap('suffix-icon'),
+                onTap: () => _onTap(TNoticeBarTapTarget.suffix),
                 child: Container(
                   margin: const EdgeInsets.only(left: 8),
                   child: Icon(

@@ -117,17 +117,17 @@ flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/sr
 
 # 反馈
 # action_sheet
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/action_sheet" --name TActionSheetItem,TActionSheet --folder-name action-sheet --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/action_sheet" --name TActionSheetItem,TActionSheet,TActionSheetAlign,TActionSheetOnChanged --folder-name action-sheet --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # dialog
 flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/dialog" --name TAlertDialog,TConfirmDialog,TDialogButtonOptions,TDialogButtonStyle,TDialogScaffold,TDialogTitle,TDialogContent,TDialogInfoWidget,HorizontalNormalButtons,HorizontalTextButtons,TDialogButton,TDialogImagePosition,TImageDialog,TInputDialog --folder-name dialog --output "$PARENT_DIR/example/assets/api/" --only-api
 # dropdown_menu
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/dropdown_menu" --name TDropdownMenu,TDropdownMenuDirection,TDropdownItem,TDropdownItemOption,TDropdownItemController --folder-name dropdown-menu --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/dropdown_menu" --name TDropdownMenu,TDropdownMenuDirection,TDropdownItem,TDropdownItemOption --folder-name dropdown-menu --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # loading
 flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/loading/t_loading.dart" --name TLoading --folder-name loading --output "$PARENT_DIR/example/assets/api/" --only-api
 # message
-flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/message/t_message.dart" --name TMessage,MessageTheme,MessageMarquee,MessageLink --folder-name message --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/message/t_message.dart" --name TMessage,TMessageHandle,TMessageLink,TMessageMarquee,TMessageThemeData,TMessageVariant --folder-name message --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # noticeBar
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/notice_bar" --name TNoticeBar,TNoticeBarStyle --folder-name notice-bar --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/notice_bar" --name TNoticeBar,TNoticeBarThemeData,TNoticeBarTapTarget,TNoticeBarVariant --folder-name notice-bar --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # overlay
 # popover
 flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/popover" --name TPopover,TPopoverWidget --folder-name popover --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments

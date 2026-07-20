@@ -5,9 +5,15 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
+import '../button/t_button.dart';
+import '../button/t_button_types.dart';
+import '../divider/t_divider.dart';
+import '../text/t_text.dart';
+import 't_dialog.dart';
 import 't_dialog_widget.dart';
 
 /// 只有一个按钮的弹窗控件
@@ -84,7 +90,7 @@ class TConfirmDialog extends StatelessWidget {
   /// 自定义按钮
   final Widget? buttonWidget;
 
-  /// 按钮自定义样式属性（V1.0: 改用 ButtonStyle）
+  /// 按钮自定义样式
   final ButtonStyle? buttonStyleCustom;
 
   final double? width;

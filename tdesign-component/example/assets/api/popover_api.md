@@ -56,6 +56,53 @@
 | width | double? | - | 内容宽度（包含padding，实际高度：height - paddingLeft - paddingRight） |
 
 
+### TPopoverThemeData
+#### 简介
+TPopover 组件级 ThemeExtension
+通过 Theme 子树注入，控制子树的默认气泡样式。
+
+#### 静态方法
+
+##### TPopoverThemeData.lerpDouble
+
+返回类型：`double?`
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| a | double? | - | - |
+| b | double? | - | - |
+| t | double | - | - |
+
+#### 默认构造方法
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| arrowSize | double? | - | 箭头尺寸 |
+| backgroundColor | Color? | - | 气泡背景色 |
+| barrierColor | Color? | - | 蒙层色 |
+| borderRadius | double? | - | 圆角 |
+| colorScheme | TPopoverColorScheme? | - | 语义色 |
+| maxHeight | double? | - | 最大高度 |
+| minWidth | double? | - | 最小宽度 |
+| padding | EdgeInsetsGeometry? | - | 内边距 |
+
+
+### TPopoverColorScheme
+#### 简介
+TPopover 语义色（原 TPopoverColorScheme）
+#### 枚举值
+
+
+| 名称 | 说明 |
+| --- | --- |
+| dark | 深色 |
+| light | 浅色 |
+| info | 信息 |
+| success | 成功 |
+| warning | 警告 |
+| error | 错误 |
+
+
 ### TPopoverPlacement
 #### 简介
 气泡弹层定位方向

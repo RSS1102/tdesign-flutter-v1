@@ -1,17 +1,14 @@
 ## API
 ### TToast
+#### 简介
+轻提示组件
+支持文本、图标、加载中等样式，支持多实例同时显示。
 
 #### 静态方法
 
 ##### TToast.dismissAll
 
 关闭所有Toast
-
-返回类型：`void`
-
-##### TToast.dismissLoading
-
-关闭加载Toast（向后兼容）
 
 返回类型：`void`
 
@@ -169,6 +166,8 @@
 
 
 ### IconTextDirection
+#### 简介
+Toast 文案排列方向
 #### 枚举值
 
 

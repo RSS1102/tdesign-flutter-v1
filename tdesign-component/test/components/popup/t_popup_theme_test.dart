@@ -11,19 +11,18 @@ void main() {
       transitionDuration: Duration(milliseconds: 300),
       panelRadius: 8,
       panelBackgroundColor: Colors.white,
-      useSafeArea: true,
-      cancelText: '取消',
-      confirmText: '确认',
     );
 
     test('merge other 优先', () {
-      const other = TPopupThemeData(barrierColor: Colors.black38, confirmText: 'OK');
+      const other = TPopupThemeData(
+        barrierColor: Colors.black38,
+        panelRadius: 12,
+      );
       final merged = theme.merge(other);
       expect(merged, isA<TPopupThemeData>());
       expect(merged.barrierColor, Colors.black38);
-      expect(merged.confirmText, 'OK');
-      // 未提供字段沿用 this
-      expect(merged.cancelText, '取消');
+      expect(merged.panelRadius, 12);
+      expect(merged.panelBackgroundColor, Colors.white);
     });
 
     test('merge null 返回 this', () {
@@ -31,11 +30,13 @@ void main() {
     });
 
     test('copyWith 覆盖字段', () {
-      final copied = theme.copyWith(barrierOpacity: 0.8, useSafeArea: false);
+      final copied = theme.copyWith(
+        barrierOpacity: 0.8,
+        panelBackgroundColor: Colors.blue,
+      );
       expect(copied, isA<TPopupThemeData>());
       expect(copied.barrierOpacity, 0.8);
-      expect(copied.useSafeArea, false);
-      expect(copied.cancelText, '取消');
+      expect(copied.panelBackgroundColor, Colors.blue);
     });
 
     test('lerp 在 t=0 / 0.5 / 1 返回 TPopupThemeData', () {
@@ -43,8 +44,7 @@ void main() {
         barrierColor: Colors.black12,
         barrierOpacity: 0.2,
         panelRadius: 16,
-        useSafeArea: false,
-        cancelText: 'Close',
+        panelBackgroundColor: Colors.blue,
       );
       final at0 = theme.lerp(other, 0);
       final atHalf = theme.lerp(other, 0.5);
@@ -52,8 +52,8 @@ void main() {
       expect(at0, isA<TPopupThemeData>());
       expect(atHalf, isA<TPopupThemeData>());
       expect(at1, isA<TPopupThemeData>());
-      expect(atHalf.useSafeArea, false); // t<0.5 取 this（t=0.5 边界归属 other 侧）
-      expect(at1.useSafeArea, false); // t>=0.5 取 other
+      expect(atHalf.panelRadius, 12);
+      expect(at1.panelRadius, 16);
     });
 
     test('lerp other 非同类型时返回 this', () {

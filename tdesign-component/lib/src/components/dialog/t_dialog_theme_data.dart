@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart' show TConfirmDialog;
-
-import 't_confirm_dialog.dart' show TConfirmDialog;
-
-import 't_dialog.dart' show TConfirmDialog;
-
 /// TDialog 组件级 ThemeExtension
 ///
 /// 通过 Theme 子树注入，控制子树的默认对话框样式。
-/// 实例 [TConfirmDialog] 等的对应字段优先于 Theme Extension。
+/// 实例组件的对应字段优先于 Theme Extension。
 class TDialogThemeData extends ThemeExtension<TDialogThemeData> {
   /// 背景色（对应 Material [DialogThemeData.backgroundColor]）
   final Color? backgroundColor;

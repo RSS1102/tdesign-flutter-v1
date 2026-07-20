@@ -1,12 +1,15 @@
 ## API
 ### TConfirmDialog
+#### 简介
+只有一个按钮的弹窗控件
+按钮样式支持普通和文字
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | backgroundColor | Color? | - | 背景颜色 |
 | buttonStyle | TDialogButtonStyle | TDialogButtonStyle.normal | 按钮样式 |
-| buttonStyleCustom | ButtonStyle? | - | 按钮自定义样式属性（V1.0: 改用 ButtonStyle） |
+| buttonStyleCustom | ButtonStyle? | - | 按钮自定义样式 |
 | buttonText | String? | - | 按钮文字 |
 | buttonTextColor | Color? | - | 按钮文字颜色 |
 | buttonWidget | Widget? | - | 自定义按钮 |
@@ -26,15 +29,17 @@
 
 
 ### TDialogButtonOptions
+#### 简介
+弹窗按钮配置
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| colorScheme | TButtonColorScheme? | - | 按钮配色方案（V1.0: 由 `theme` 改名） |
+| colorScheme | TButtonColorScheme? | - | 按钮配色方案 |
 | fontWeight | FontWeight? | - | 字体粗细 |
 | height | double? | - | 按钮高度 建议使用默认高度 |
 | onPressed | Function()? | - | 点击操作 |
-| style | ButtonStyle? | - | 按钮样式（V1.0: 改用 ButtonStyle 替代 TButtonStyle） |
+| style | ButtonStyle? | - | 按钮样式 |
 | title | String | - | 标题内容 |
 | titleColor | Color? | - | 标题颜色 |
 | titleSize | double? | - | 字体大小 |
@@ -42,6 +47,8 @@
 
 
 ### TDialogScaffold
+#### 简介
+TDialog手脚架
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -55,6 +62,8 @@
 
 
 ### TDialogTitle
+#### 简介
+弹窗标题
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -65,6 +74,8 @@
 
 
 ### TDialogContent
+#### 简介
+弹窗内容
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -75,6 +86,8 @@
 
 
 ### TDialogInfoWidget
+#### 简介
+弹窗信息
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -90,27 +103,9 @@
 | titleColor | Color? | - | 标题颜色 |
 
 
-### HorizontalNormalButtons
-#### 默认构造方法
-
-| 参数 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| leftBtn | TDialogButtonOptions | - | 左按钮 |
-| rightBtn | TDialogButtonOptions | - | 右按钮 |
-
-
-### HorizontalTextButtons
-#### 默认构造方法
-
-| 参数 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| key | Key? | - | 组件标识，用于区分或保留组件状态。 |
-| leftBtn | TDialogButtonOptions | - | 左按钮 |
-| rightBtn | TDialogButtonOptions | - | 右按钮 |
-
-
 ### TDialogButton
+#### 简介
+弹窗标题
 #### 默认构造方法
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -130,6 +125,10 @@
 
 
 ### TDialogButtonStyle
+#### 简介
+Dialog 按钮样式
+用于在 Dialog 层面配置按钮样式
+Dialog 内支持配置每个按钮的样式
 #### 枚举值
 
 

@@ -58,10 +58,7 @@ class TSwipeCellPage extends StatelessWidget {
           builder: (context, cell, index) {
             return Theme(
               data: Theme.of(context).mergeExtension(
-                TSwipeCellThemeData(
-                  slidableKey: ValueKey(list[index]['id']),
-                  groupTag: 'test',
-                ),
+                const TSwipeCellThemeData(),
               ),
               child: TSwipeCell(
                 onChanged: (direction, open) {
@@ -102,7 +99,7 @@ class TSwipeCellPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: Theme.of(context).mergeExtension(
-        const TSwipeCellThemeData(groupTag: 'test'),
+        const TSwipeCellThemeData(),
       ),
       child: TSwipeCell(
         right: TSwipeCellPanel(
@@ -128,7 +125,7 @@ class TSwipeCellPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: Theme.of(context).mergeExtension(
-        const TSwipeCellThemeData(groupTag: 'test'),
+        const TSwipeCellThemeData(),
       ),
       child: TSwipeCell(
         right: TSwipeCellPanel(
@@ -158,7 +155,7 @@ class TSwipeCellPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: Theme.of(context).mergeExtension(
-        const TSwipeCellThemeData(groupTag: 'test'),
+        const TSwipeCellThemeData(),
       ),
       child: TSwipeCell(
         left: TSwipeCellPanel(
@@ -180,7 +177,7 @@ class TSwipeCellPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: Theme.of(context).mergeExtension(
-        const TSwipeCellThemeData(groupTag: 'test'),
+        const TSwipeCellThemeData(),
       ),
       child: TSwipeCell(
         left: TSwipeCellPanel(
@@ -218,7 +215,7 @@ class TSwipeCellPage extends StatelessWidget {
       children: [
         Theme(
           data: Theme.of(context).mergeExtension(
-            const TSwipeCellThemeData(groupTag: 'test'),
+            const TSwipeCellThemeData(),
           ),
           child: TSwipeCell(
             right: TSwipeCellPanel(
@@ -242,7 +239,7 @@ class TSwipeCellPage extends StatelessWidget {
         const SizedBox(height: 16),
         Theme(
           data: Theme.of(context).mergeExtension(
-            const TSwipeCellThemeData(groupTag: 'test'),
+            const TSwipeCellThemeData(),
           ),
           child: TSwipeCell(
             right: TSwipeCellPanel(
@@ -264,7 +261,7 @@ class TSwipeCellPage extends StatelessWidget {
         const SizedBox(height: 16),
         Theme(
           data: Theme.of(context).mergeExtension(
-            const TSwipeCellThemeData(groupTag: 'test'),
+            const TSwipeCellThemeData(),
           ),
           child: TSwipeCell(
             right: TSwipeCellPanel(
@@ -302,7 +299,7 @@ class TSwipeCellPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: Theme.of(context).mergeExtension(
-        const TSwipeCellThemeData(groupTag: 'test'),
+        const TSwipeCellThemeData(),
       ),
       child: TSwipeCell(
         right: TSwipeCellPanel(

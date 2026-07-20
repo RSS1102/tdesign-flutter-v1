@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
+import '../../util/context_extension.dart';
+import '../text/t_text.dart';
+import 't_popover_theme_data.dart';
 
 /// 气泡弹层定位方向
 enum TPopoverPlacement {

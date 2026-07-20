@@ -38,7 +38,6 @@ TDesign刷新头部
 | secondaryVelocity | - | - | - |
 | spring | - | - | - |
 | springRebound | - | - | - |
-| themeData | TRefreshThemeData? | - | 组件级主题配置，优先级高于 Theme Extension |
 | triggerDistance | double? | - | - |
 | triggerWhenReach | - | - | - |
 | triggerWhenRelease | - | - | - |
@@ -48,10 +47,10 @@ TDesign刷新头部
 
 | 属性 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| finalBackgroundColor | Color? | - | 背景颜色（从 themeData 或参数合并后的最终值） |
-| finalCompleteDuration | Duration? | - | 完成延时（从 themeData 或参数合并后的最终值） |
-| finalExtent | double | - | Header容器高度（从 themeData 或参数合并后的最终值） |
-| finalFloat | bool | - | 是否悬浮（从 themeData 或参数合并后的最终值） |
-| finalLoadingIcon | TLoadingIcon | - | loading样式（从 themeData 或参数合并后的最终值） |
-| finalOverScroll | bool | - | 越界滚动（从 themeData 或参数合并后的最终值） |
-| finalTriggerDistance | double | - | 触发刷新任务的偏移量（从 themeData 或参数合并后的最终值） |
+| finalBackgroundColor | Color? | - | 背景颜色 |
+| finalCompleteDuration | Duration? | - | 完成延时 |
+| finalExtent | double | - | Header 容器高度 |
+| finalFloat | bool | - | 是否悬浮 |
+| finalLoadingIcon | TLoadingIcon? | - | loading 样式 |
+| finalOverScroll | bool | - | 越界滚动 |
+| finalTriggerDistance | double | - | 触发刷新任务的偏移量 |

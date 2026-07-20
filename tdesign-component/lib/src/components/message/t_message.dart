@@ -1,180 +1,233 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/scheduler/binding.dart';
+import 'package:tdesign_icons/tdesign_icons.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
+import '../link/t_link.dart';
+import '../link/t_link_theme_data.dart';
+import '../link/t_link_types.dart';
+import 't_message_theme_data.dart';
 
-/// 链接设置
+/// 消息中的链接配置
 class TMessageLink {
-  TMessageLink({
+  /// 创建消息链接
+  const TMessageLink({
     required this.name,
-    required this.uri,
+    this.uri,
     this.color,
   });
 
-  /// 名称
+  /// 链接文案
   final String name;
 
-  /// 资源链接
+  /// 链接地址
   final Uri? uri;
 
-  /// 颜色
+  /// 链接颜色
   final Color? color;
 }
 
 /// 跑马灯配置
 class TMessageMarquee {
-  TMessageMarquee({this.speed, this.loop, this.delay});
+  /// 创建跑马灯配置
+  const TMessageMarquee({
+    this.duration = const Duration(seconds: 10),
+    this.repeat = false,
+    this.delay = Duration.zero,
+  });
 
-  /// 速度
-  final int? speed;
+  /// 单次滚动时长
+  final Duration duration;
 
-  /// 循环次数
-  final int? loop;
+  /// 是否循环滚动
+  final bool repeat;
 
-  /// 延迟时间(毫秒)
-  final int? delay;
+  /// 开始滚动前的延迟
+  final Duration delay;
 }
 
-/// TMessage 组件
-class TMessage extends StatefulWidget {
-  const TMessage({
-    Key? key,
-    this.closeBtn,
-    this.content,
-    this.duration = 3000,
-    this.icon = true,
-    this.link,
-    this.marquee,
-    this.offset,
-    this.variant = TMessageVariant.info,
-    this.visible = true,
-    this.onCloseBtnClick,
-    this.onDurationEnd,
-    this.onLinkClick,
-  }) : super(key: key);
+/// 命令式消息句柄
+final class TMessageHandle {
+  TMessageHandle._();
 
-  /// 通知内容
-  final String? content;
+  OverlayEntry? _entry;
 
-  /// 消息内置计时器
-  final int? duration;
+  /// 消息是否仍在 Overlay 中
+  bool get isShowing => _entry?.mounted == true;
 
-  /// 是否显示
-  final bool? visible;
-
-  /// 自定义消息前面的图标
-  final dynamic icon;
-
-  /// 链接名称
-  final dynamic link;
-
-  /// 关闭按钮
-  final dynamic closeBtn;
-
-  /// 跑马灯效果
-  final TMessageMarquee? marquee;
-
-  /// 相对于 placement 的偏移量
-  final List<double>? offset;
-
-  /// 消息组件风格 info/success/warning/error
-  final TMessageVariant? variant;
-
-  /// 点击关闭按钮触发
-  final VoidCallback? onCloseBtnClick;
-
-  /// 计时结束后触发
-  final VoidCallback? onDurationEnd;
-
-  /// 点击链接文本时触发
-  final VoidCallback? onLinkClick;
-
-  @override
-  _TMessageState createState() => _TMessageState();
-
-  static void showMessage({
-    required BuildContext context,
-    String? content,
-    bool? visible,
-    int? duration,
-    dynamic closeBtn,
-    dynamic icon,
-    dynamic link,
-    TMessageMarquee? marquee,
-    List<double>? offset,
-    TMessageVariant? theme,
-    VoidCallback? onCloseBtnClick,
-    VoidCallback? onDurationEnd,
-    VoidCallback? onLinkClick,
-  }) {
-    final overlay = Overlay.of(context);
-    late OverlayEntry overlayEntry;
-    var dismissed = false;
-
-    void dismissOverlay() {
-      if (dismissed) {
-        return;
-      }
-      dismissed = true;
-      overlayEntry.remove();
+  /// 立即移除消息
+  void dismiss() {
+    final entry = _entry;
+    if (entry == null) {
+      return;
     }
-
-    overlayEntry = OverlayEntry(
-      builder: (context) => TMessage(
-        content: content,
-        visible: visible,
-        duration: duration,
-        closeBtn: closeBtn,
-        icon: icon,
-        link: link,
-        marquee: marquee,
-        offset: offset,
-        variant: theme,
-        onDurationEnd: () {
-          onDurationEnd?.call(); // coverage:ignore-line
-          dismissOverlay(); // coverage:ignore-line
-        },
-        onCloseBtnClick: () {
-          onCloseBtnClick?.call(); // coverage:ignore-line
-          dismissOverlay(); // coverage:ignore-line
-        },
-        onLinkClick: onLinkClick,
-      ),
-    );
-    overlay.insert(overlayEntry);
+    entry.remove();
+    _entry = null;
   }
 }
 
-class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
+/// 顶部消息组件
+class TMessage extends StatefulWidget {
+  /// 创建消息组件
+  const TMessage({
+    super.key,
+    this.content = '',
+    this.duration = const Duration(seconds: 3),
+    this.visible = true,
+    this.showIcon = true,
+    this.icon,
+    this.link,
+    this.showCloseButton = false,
+    this.closeButton,
+    this.marquee,
+    this.offset,
+    this.variant = TMessageVariant.info,
+    this.onCloseButtonPressed,
+    this.onDurationEnd,
+    this.onLinkPressed,
+    this.onDismissed,
+  });
+
+  /// 通知内容
+  final String content;
+
+  /// 自动关闭时长，null 表示不自动关闭
+  final Duration? duration;
+
+  /// 是否显示
+  final bool visible;
+
+  /// 是否显示前置图标
+  final bool showIcon;
+
+  /// 自定义前置图标
+  final Widget? icon;
+
+  /// 链接配置
+  final TMessageLink? link;
+
+  /// 是否显示关闭按钮
+  final bool showCloseButton;
+
+  /// 自定义关闭按钮
+  final Widget? closeButton;
+
+  /// 跑马灯配置
+  final TMessageMarquee? marquee;
+
+  /// 相对屏幕左上角的偏移
+  final Offset? offset;
+
+  /// 消息语义色
+  final TMessageVariant variant;
+
+  /// 点击关闭按钮时触发
+  final VoidCallback? onCloseButtonPressed;
+
+  /// 自动展示时长结束且关闭动画完成时触发
+  final VoidCallback? onDurationEnd;
+
+  /// 点击链接时触发
+  final VoidCallback? onLinkPressed;
+
+  /// 关闭动画完成时触发
+  final VoidCallback? onDismissed;
+
+  /// 在 Overlay 中显示消息并返回控制句柄
+  static TMessageHandle show({
+    required BuildContext context,
+    String content = '',
+    Duration? duration = const Duration(seconds: 3),
+    bool showIcon = true,
+    Widget? icon,
+    TMessageLink? link,
+    bool showCloseButton = false,
+    Widget? closeButton,
+    TMessageMarquee? marquee,
+    Offset? offset,
+    TMessageVariant variant = TMessageVariant.info,
+    VoidCallback? onCloseButtonPressed,
+    VoidCallback? onDurationEnd,
+    VoidCallback? onLinkPressed,
+    VoidCallback? onDismissed,
+  }) {
+    final handle = TMessageHandle._();
+    late OverlayEntry entry;
+
+    void removeEntry() {
+      if (handle._entry == null) {
+        return;
+      }
+      handle.dismiss();
+      onDismissed?.call();
+    }
+
+    entry = OverlayEntry(
+      builder: (context) => TMessage(
+        content: content,
+        duration: duration,
+        showIcon: showIcon,
+        icon: icon,
+        link: link,
+        showCloseButton: showCloseButton,
+        closeButton: closeButton,
+        marquee: marquee,
+        offset: offset,
+        variant: variant,
+        onCloseButtonPressed: onCloseButtonPressed,
+        onDurationEnd: onDurationEnd,
+        onLinkPressed: onLinkPressed,
+        onDismissed: removeEntry,
+      ),
+    );
+    handle._entry = entry;
+    Overlay.of(context).insert(entry);
+    return handle;
+  }
+
+  @override
+  State<TMessage> createState() => _TMessageState();
+}
+
+class _TMessageState extends State<TMessage>
+    with SingleTickerProviderStateMixin {
+  static const double _defaultTop = 80;
+  static const double _width = 343;
+
+  late final AnimationController _animationController;
   bool _isVisible = true;
-  double _topOffset = 0;
-  double initTopOffset = 80;
-  double totalWidth = 343;
-  AnimationController? animationController;
   bool _isAnimationRunning = false;
+  bool _closing = false;
+  double _top = _defaultTop - 30;
   Timer? _durationTimer;
   Timer? _closeTimer;
   Timer? _marqueeDelayTimer;
 
+  TMessageThemeData get _theme =>
+      Theme.of(context).extension<TMessageThemeData>() ??
+      const TMessageThemeData();
+
+  Offset get _effectiveOffset {
+    final configured = widget.offset ?? _theme.defaultOffset;
+    return configured ??
+        Offset((MediaQuery.sizeOf(context).width - _width) / 2, _defaultTop);
+  }
+
   @override
   void initState() {
     super.initState();
-    _topOffset = (widget.offset?[1] ?? initTopOffset) - 30;
-    animationController = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: widget.marquee?.speed ?? 10000),
+      duration: widget.marquee?.duration ?? const Duration(seconds: 10),
     );
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        setState(() {
-          _topOffset = widget.offset?[1] ?? initTopOffset;
-        });
+        setState(() => _top = _effectiveOffset.dy);
       }
     });
-
     _scheduleDurationClose();
     _scheduleMarqueeStart();
   }
@@ -182,15 +235,22 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
   @override
   void didUpdateWidget(covariant TMessage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.marquee?.speed != widget.marquee?.speed) {
-      animationController?.duration =
-          Duration(milliseconds: widget.marquee?.speed ?? 10000);
+    if (oldWidget.marquee?.duration != widget.marquee?.duration) {
+      _animationController.duration =
+          widget.marquee?.duration ?? const Duration(seconds: 10);
     }
     if (oldWidget.duration != widget.duration) {
       _scheduleDurationClose();
     }
     if (oldWidget.marquee != widget.marquee) {
+      _animationController.reset();
+      _isAnimationRunning = false;
       _scheduleMarqueeStart();
+    }
+    if (!oldWidget.visible && widget.visible) {
+      _closing = false;
+      _isVisible = true;
+      _scheduleDurationClose();
     }
   }
 
@@ -199,302 +259,213 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
     _durationTimer?.cancel();
     _closeTimer?.cancel();
     _marqueeDelayTimer?.cancel();
-    animationController?.stop();
-    animationController?.dispose();
-    animationController = null;
+    _animationController.dispose();
     super.dispose();
   }
 
   void _scheduleDurationClose() {
     _durationTimer?.cancel();
-    if (widget.duration != null && widget.duration! > 0) {
-      _durationTimer =
-          Timer(Duration(milliseconds: widget.duration!), _closeMessage);
+    final duration = widget.duration;
+    if (duration != null && duration > Duration.zero) {
+      _durationTimer = Timer(duration, () => _close(durationEnded: true));
     }
   }
 
   void _scheduleMarqueeStart() {
     _marqueeDelayTimer?.cancel();
-    if (widget.marquee == null) {
+    final marquee = widget.marquee;
+    if (marquee == null) {
       return;
     }
-    final delay = widget.marquee!.delay ?? 0;
-    if (delay > 0) {
-      _marqueeDelayTimer = Timer(Duration(milliseconds: delay), startAnimation);
+    if (marquee.delay > Duration.zero) {
+      _marqueeDelayTimer = Timer(marquee.delay, _startAnimation);
     } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) => startAnimation());
+      WidgetsBinding.instance.addPostFrameCallback((_) => _startAnimation());
     }
   }
 
-  void _closeMessage() {
-    if (mounted) {
-      animationController?.stop();
-      setState(() {
-        _topOffset = (widget.offset?[1] ?? initTopOffset) - 30;
-        _isAnimationRunning = false;
-      });
-      _closeTimer?.cancel();
-      _closeTimer = Timer(const Duration(milliseconds: 300), () {
-        if (mounted) {
-          setState(() {
-            _isVisible = false;
-          });
-          widget.onDurationEnd?.call();
-        }
-      });
+  void _startAnimation() {
+    final marquee = widget.marquee;
+    if (!mounted || marquee == null || _isAnimationRunning || _closing) {
+      return;
+    }
+    setState(() => _isAnimationRunning = true);
+    if (marquee.repeat) {
+      _animationController.repeat();
+    } else {
+      _animationController.forward();
     }
   }
 
-  void startAnimation() {
-    if (mounted && animationController != null && !_isAnimationRunning) {
-      setState(() {
-        _isAnimationRunning = true;
-      });
-      if (widget.marquee!.loop == 0) {
-        animationController!.forward(); // coverage:ignore-line
-      } else if (widget.marquee!.loop == 1) {
-        animationController!.repeat(); // coverage:ignore-line
+  void _close({bool durationEnded = false}) {
+    if (_closing || !mounted) {
+      return;
+    }
+    _closing = true;
+    _durationTimer?.cancel();
+    _marqueeDelayTimer?.cancel();
+    _animationController.stop();
+    setState(() {
+      _top = _effectiveOffset.dy - 30;
+      _isAnimationRunning = false;
+    });
+    _closeTimer = Timer(const Duration(milliseconds: 300), () {
+      if (!mounted) {
+        return;
       }
+      setState(() => _isVisible = false);
+      if (durationEnded) {
+        widget.onDurationEnd?.call();
+      }
+      widget.onDismissed?.call();
+    });
+  }
+
+  Widget _buildText(BuildContext context) {
+    final style = TextStyle(color: context.tTheme.textColorPrimary);
+    if (widget.marquee == null) {
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          widget.content,
+          style: style,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
     }
+
+    final textPainter = TextPainter(
+      text: TextSpan(text: widget.content, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+    final tween = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset(-textPainter.width, 0),
+    );
+    return ClipRect(
+      child: SizedBox(
+        width: _calculateTextWidth(),
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) => Transform.translate(
+            offset: tween.evaluate(_animationController),
+            child: OverflowBox(
+              minWidth: 0,
+              maxWidth: double.infinity,
+              alignment: Alignment.centerLeft,
+              child: child,
+            ),
+          ),
+          child: Text(widget.content, style: style, maxLines: 1),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIcon(BuildContext context) {
+    if (widget.icon != null) {
+      return widget.icon!;
+    }
+    final (icon, color) = switch (widget.variant) {
+      TMessageVariant.info =>
+        (TIcons.error_circle_filled, context.tTheme.brandNormalColor),
+      TMessageVariant.success =>
+        (TIcons.check_circle_filled, context.tTheme.successNormalColor),
+      TMessageVariant.warning =>
+        (TIcons.error_circle_filled, context.tTheme.warningNormalColor),
+      TMessageVariant.error =>
+        (TIcons.error_circle_filled, context.tTheme.errorNormalColor),
+    };
+    return Icon(icon, color: color);
+  }
+
+  Widget _buildLink(BuildContext context) {
+    final link = widget.link!;
+    final linkWidget = TLink(
+      child: Text(link.name),
+      colorScheme: TLinkColorScheme.primary,
+      variant: TLinkVariant.basic,
+      uri: link.uri,
+      size: TLinkSize.medium,
+      onPressed: widget.onLinkPressed,
+    );
+    if (link.color == null) {
+      return linkWidget;
+    }
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TLinkThemeData(color: link.color),
+      ),
+      child: linkWidget,
+    );
+  }
+
+  Widget _buildCloseButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        widget.onCloseButtonPressed?.call();
+        _close();
+      },
+      child: widget.closeButton ??
+          Icon(
+            TIcons.close,
+            color: context.tTheme.textColorPlaceholder,
+          ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.visible == false) {
+    if (!widget.visible) {
       return const SizedBox.shrink();
     }
-    var _leftOffset = widget.offset?[0] ??
-        (MediaQuery.of(context).size.width - totalWidth) / 2;
-
-    Widget getText(BuildContext context) {
-      if (widget.marquee == null) {
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            widget.content ?? '',
-            style: TextStyle(color: context.tTheme.textColorPrimary),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        );
-      } else {
-        final textPainter = TextPainter(
-          text: TextSpan(
-              text: widget.content ?? '',
-              style: TextStyle(color: context.tTheme.textColorPrimary)),
-          maxLines: 1,
-          textDirection: TextDirection.ltr,
-        )..layout(minWidth: 0, maxWidth: double.infinity);
-        final textWidth = textPainter.width;
-
-        final containerWidth = calculateTextWidth();
-
-        final tween = Tween<Offset>(
-          begin: Offset.zero,
-          end: Offset(-textWidth, 0),
-        );
-
-        return Align(
-            alignment: Alignment.center,
-            child: ClipRect(
-              child: SizedBox(
-                width: containerWidth,
-                child: AnimatedBuilder(
-                  animation:
-                      animationController ?? const AlwaysStoppedAnimation(0),
-                  builder: (context, child) {
-                    final offset = tween.evaluate(
-                        animationController ?? const AlwaysStoppedAnimation(0));
-                    return OverflowBox(
-                      minWidth: 0,
-                      maxWidth: double.infinity,
-                      alignment: Alignment.centerLeft,
-                      child: Transform.translate(
-                        offset: offset,
-                        child: SizedBox(
-                          child: Text(
-                            widget.content ?? '',
-                            style: TextStyle(
-                                color: context.tTheme.textColorPrimary),
-                            maxLines: 1,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ));
-      }
-    }
-
-    Widget getIcon(BuildContext context) {
-      if (widget.icon is Widget) {
-        return widget.icon;
-      } else {
-        switch (widget.variant) {
-          case TMessageVariant.info:
-            return Icon(
-              TIcons.error_circle_filled,
-              color: context.tTheme.brandNormalColor,
-            );
-          case TMessageVariant.success:
-            return Icon(
-              TIcons.check_circle_filled,
-              color: context.tTheme.successNormalColor,
-            );
-          case TMessageVariant.warning:
-            return Icon(
-              TIcons.error_circle_filled,
-              color: context.tTheme.warningNormalColor,
-            );
-          case TMessageVariant.error:
-            return Icon(
-              TIcons.error_circle_filled,
-              color: context.tTheme.errorNormalColor,
-            );
-          case null:
-            return const SizedBox.shrink();
-        }
-      }
-    }
-
-    void clickCloseButton() {
-      _closeMessage();
-      widget.onCloseBtnClick?.call();
-    }
-
-    Widget getCloseBtn(BuildContext context) {
-      if (widget.closeBtn is Widget) {
-        return GestureDetector(
-          onTap: clickCloseButton,
-          child: widget.closeBtn!,
-        );
-      } else if (widget.closeBtn == true) {
-        return GestureDetector(
-          onTap: clickCloseButton,
-          child: Icon(
-            TIcons.close,
-            color: context.tTheme.textColorPlaceholder,
-          ),
-        );
-      } else if (widget.closeBtn is String) {
-        return GestureDetector(
-          onTap: clickCloseButton,
-          child: Text(widget.closeBtn),
-        );
-      } else {
-        return const SizedBox.shrink();
-      }
-    }
-
-    void clickLink() {
-      widget.onLinkClick?.call();
-    }
-
-    Widget getLink(BuildContext context) {
-      if (widget.link is TMessageLink) {
-        final linkColor = widget.link.color;
-        final linkWidget = TLink(
-          child: Text(widget.link.name),
-          colorScheme: TLinkColorScheme.primary,
-          variant: TLinkVariant.basic,
-          uri: widget.link.uri,
-          size: TLinkSize.medium,
-          onPressed: clickLink,
-        );
-        // 自定义链接颜色通过 TLinkThemeData 注入
-        if (linkColor != null) {
-          return Align(
-            alignment: Alignment.center,
-            child: Theme(
-              data: Theme.of(context).mergeExtension(
-                TLinkThemeData(color: linkColor),
-              ),
-              child: linkWidget,
-            ),
-          );
-        }
-        return Align(alignment: Alignment.center, child: linkWidget);
-      } else if (widget.link is String) {
-        return Align(
-            alignment: Alignment.center,
-            child: GestureDetector(
-              onTap: clickLink,
-              child: Text(
-                widget.link ?? '',
-                style: TextStyle(
-                  color: context.tTheme.brandNormalColor,
-                  fontSize: 14,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ));
-      } else {
-        return const SizedBox.shrink();
-      }
-    }
-
+    final offset = _effectiveOffset;
+    final theme = _theme;
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      top: _topOffset,
-      left: _leftOffset,
+      top: _top,
+      left: offset.dx,
       child: _isVisible
           ? Material(
-              color: Colors.transparent,
-              child: Container(
-                width: totalWidth,
-                height: 48,
-                padding: const EdgeInsets.fromLTRB(16, 13, 16, 13),
-                decoration: BoxDecoration(
-                    color: context.tTheme.bgColorContainer,
+              color: theme.backgroundColor ?? context.tTheme.bgColorContainer,
+              shape: theme.shape ??
+                  RoundedRectangleBorder(
                     borderRadius:
                         BorderRadius.circular(context.tTheme.radiusDefault),
-                    boxShadow: context.tTheme.shadowsMiddle),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (widget.icon != false)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: SizedBox(
-                            width: 20,
-                            height: 22,
-                            child: getIcon(context),
-                          ),
+                  ),
+              elevation: theme.elevation ?? 6,
+              child: SizedBox(
+                width: _width,
+                height: 48,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      if (widget.showIcon) ...[
+                        SizedBox(width: 20, height: 22, child: _buildIcon(context)),
+                        const SizedBox(width: 10),
+                      ],
+                      Expanded(child: _buildText(context)),
+                      if (widget.link != null) ...[
+                        const SizedBox(width: 8),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 96),
+                          child: _buildLink(context),
                         ),
-                      ),
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: getText(context),
-                            flex: 3,
-                          ),
-                          if (widget.link != null)
-                            Container(
-                                margin: const EdgeInsets.only(left: 8),
-                                width: 40,
-                                height: 22,
-                                child: getLink(context)),
-                          if (widget.closeBtn != null)
-                            Align(
-                              alignment: Alignment.center,
-                              child: SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: getCloseBtn(context),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
+                      ],
+                      if (widget.showCloseButton || widget.closeButton != null) ...[
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: _buildCloseButton(context),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               ),
             )
@@ -502,16 +473,16 @@ class _TMessageState extends State<TMessage> with TickerProviderStateMixin {
     );
   }
 
-  double calculateTextWidth() {
-    var width = totalWidth - 32;
-    if (widget.icon != null && widget.icon != false) {
+  double _calculateTextWidth() {
+    var width = _width - 32;
+    if (widget.showIcon) {
       width -= 30;
     }
     if (widget.link != null) {
-      width -= 36;
+      width -= 104;
     }
-    if (widget.closeBtn != null) {
-      width -= 34;
+    if (widget.showCloseButton || widget.closeButton != null) {
+      width -= 30;
     }
     return width;
   }

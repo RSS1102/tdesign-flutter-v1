@@ -234,9 +234,9 @@ void main() {
   });
 
   // ============================================================
-  // 主题覆盖（TSwipeCellThemeData）
+  // 主题与交互参数
   // ============================================================
-  group('TSwipeCell 主题覆盖', () {
+  group('TSwipeCell 主题与交互参数', () {
     testWidgets('通过 TSwipeCellThemeData 设置 duration', (tester) async {
       const customDuration = Duration(milliseconds: 500);
       await tester.pumpWidget(wrapWithTheme(
@@ -249,25 +249,23 @@ void main() {
       expect(find.text('时长'), findsOneWidget);
     });
 
-    testWidgets('通过 TSwipeCellThemeData 设置 groupTag', (tester) async {
+    testWidgets('groupTag 由实例设置', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
           cell: const TCell(title: Text('分组')),
           right: buildRightPanel(),
+          groupTag: 'group1',
         ),
-        swipeTheme: const TSwipeCellThemeData(groupTag: 'group1'),
       ));
       final slidable = tester.widget<Slidable>(find.byType(Slidable));
       expect(slidable.groupTag, 'group1');
     });
 
-    testWidgets('通过 TSwipeCellThemeData 设置 dragStartBehavior', (tester) async {
+    testWidgets('dragStartBehavior 由实例设置', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
           cell: const TCell(title: Text('拖动行为')),
           right: buildRightPanel(),
-        ),
-        swipeTheme: const TSwipeCellThemeData(
           dragStartBehavior: DragStartBehavior.down,
         ),
       ));
@@ -275,7 +273,7 @@ void main() {
       expect(slidable.dragStartBehavior, DragStartBehavior.down);
     });
 
-    testWidgets('通过 TSwipeCellThemeData 设置 closeWhenOpened', (tester) async {
+    testWidgets('closeWhenOpened 由实例设置', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         Column(
           children: [
@@ -285,6 +283,8 @@ void main() {
               child: TSwipeCell(
                 cell: const TCell(title: Text('项1')),
                 right: buildRightPanel(),
+                groupTag: 'group_close',
+                closeWhenOpened: true,
               ),
             ),
             SizedBox(
@@ -293,13 +293,11 @@ void main() {
               child: TSwipeCell(
                 cell: const TCell(title: Text('项2')),
                 right: buildRightPanel(),
+                groupTag: 'group_close',
+                closeWhenOpened: true,
               ),
             ),
           ],
-        ),
-        swipeTheme: const TSwipeCellThemeData(
-          groupTag: 'group_close',
-          closeWhenOpened: true,
         ),
       ));
       expect(find.text('项1'), findsOneWidget);
@@ -425,13 +423,9 @@ void main() {
     });
 
     test('TSwipeCellThemeData merge 正确合并', () {
-      const base = TSwipeCellThemeData(
-        groupTag: 'base',
-        duration: Duration(milliseconds: 200),
-      );
+      const base = TSwipeCellThemeData(duration: Duration(milliseconds: 200));
       const other = TSwipeCellThemeData(duration: Duration(milliseconds: 500));
       final merged = base.merge(other);
-      expect(merged.groupTag, 'base');
       expect(merged.duration, const Duration(milliseconds: 500));
     });
 
@@ -466,8 +460,6 @@ void main() {
         TSwipeCell(
           cell: const TCell(title: Text('自动关闭')),
           right: buildRightPanel(),
-        ),
-        swipeTheme: const TSwipeCellThemeData(
           groupTag: 'auto_close',
           closeWhenOpened: true,
         ),
@@ -547,8 +539,8 @@ void main() {
         TSwipeCell(
           cell: const TCell(title: Text('opened1')),
           left: buildLeftPanel(),
+          opened: const [true],
         ),
-        swipeTheme: const TSwipeCellThemeData(opened: [true]),
       ));
       await tester.pumpAndSettle();
       expect(find.byType(TSwipeCell), findsOneWidget);
@@ -560,8 +552,8 @@ void main() {
         TSwipeCell(
           cell: const TCell(title: Text('opened2')),
           right: buildRightPanel(),
+          opened: const [false, true],
         ),
-        swipeTheme: const TSwipeCellThemeData(opened: [false, true]),
       ));
       await tester.pumpAndSettle();
       expect(find.byType(TSwipeCell), findsOneWidget);
@@ -575,14 +567,15 @@ void main() {
             TSwipeCell(
               cell: const TCell(title: Text('gc1')),
               right: buildRightPanel(),
+              groupTag: 'groupA',
             ),
             TSwipeCell(
               cell: const TCell(title: Text('gc2')),
               right: buildRightPanel(),
+              groupTag: 'groupA',
             ),
           ],
         ),
-        swipeTheme: const TSwipeCellThemeData(groupTag: 'groupA'),
       ));
       // 滑动 gc1 打开
       await tester.drag(find.text('gc1'), const Offset(-100, 0));
@@ -599,9 +592,9 @@ void main() {
         TSwipeCell(
           cell: const TCell(title: Text('taptest')),
           right: buildRightPanel(),
+          closeWhenTapped: true,
+          groupTag: 'tapGroup',
         ),
-        swipeTheme: const TSwipeCellThemeData(
-            closeWhenTapped: true, groupTag: 'tapGroup'),
       ));
       // 先滑动打开
       await tester.drag(find.text('taptest'), const Offset(-100, 0));
@@ -620,15 +613,17 @@ void main() {
             TSwipeCell(
               cell: const TCell(title: Text('sc1')),
               left: buildLeftPanel(),
+              closeWhenOpened: true,
+              groupTag: 'startGroup',
             ),
             TSwipeCell(
               cell: const TCell(title: Text('sc2')),
               left: buildLeftPanel(),
+              closeWhenOpened: true,
+              groupTag: 'startGroup',
             ),
           ],
         ),
-        swipeTheme: const TSwipeCellThemeData(
-            closeWhenOpened: true, groupTag: 'startGroup'),
       ));
       // 向右滑 sc1 打开 left 面板（start 方向）
       await tester.drag(find.text('sc1'), const Offset(100, 0));
@@ -651,11 +646,11 @@ void main() {
                 ? TSwipeCell(
                     cell: const TCell(title: Text('dispose')),
                     right: buildRightPanel(),
+                    groupTag: 'disposeGroup',
                   )
                 : const SizedBox();
           },
         ),
-        swipeTheme: const TSwipeCellThemeData(groupTag: 'disposeGroup'),
       ));
       // 移除 TSwipeCell（触发 dispose + _pushController del=true）
       setState(() => show = false);

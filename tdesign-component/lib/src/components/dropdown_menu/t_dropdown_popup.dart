@@ -16,7 +16,7 @@ typedef FutureCallback = Future<void> Function();
 /// 下拉菜单弹出层管理器
 ///
 /// 负责管理 Overlay 层的创建、方向计算和遮罩渲染。
-class TDropdownPopup {
+class TDropdownPopup<T> {
   TDropdownPopup({
     required this.parentContext,
     required this.child,
@@ -31,7 +31,7 @@ class TDropdownPopup {
   final BuildContext parentContext;
 
   /// 下拉内容
-  final TDropdownItem child;
+  final TDropdownItem<T> child;
 
   /// 关闭回调
   final FutureCallback handleClose;
@@ -112,7 +112,7 @@ class TDropdownPopup {
   }
 
   /// 添加并显示弹出层
-  Future<void> add([TDropdownItem? updateChild]) {
+  Future<void> add([TDropdownItem<T>? updateChild]) {
     var completer = Completer<void>();
     _directionListenable.value = direction ?? TDropdownPopupDirection.auto;
     final overlayEntry = OverlayEntry(
@@ -136,7 +136,7 @@ class TDropdownPopup {
     return completer.future;
   }
 
-  Widget _getPopup(TDropdownMenuDirection value, TDropdownItem? updateChild,
+  Widget _getPopup(TDropdownMenuDirection value, TDropdownItem<T>? updateChild,
       Completer<void> completer) {
     _init(value);
     final barrier = GestureDetector(
@@ -149,7 +149,7 @@ class TDropdownPopup {
         _getOverlay2(),
         _getOverlay3(barrier),
       ],
-      TDropdownInherited(
+      TDropdownInherited<T>(
         popupState: this,
         directionListenable: _directionListenable,
         child: TDropdownPanel(
@@ -242,8 +242,7 @@ class _PopupOverlayRoute<T> extends OverlayRoute<T> {
 
   @override
   Future<RoutePopDisposition> willPop() async {
-    await handleClose();
-    // ignore: deprecated_member_use
-    return super.willPop();
+    unawaited(handleClose());
+    return RoutePopDisposition.pop;
   }
 }

@@ -59,7 +59,7 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| animationDuration | Duration | const Duration(milliseconds: 240) | 打开/关闭动画时长。 |
+| animationDuration | Duration? | - | 打开/关闭动画时长。 |
 | backgroundColor | Color? | - | 内容区背景色，默认主题容器色。 |
 | child | Widget | - | 浮层主体内容（必填）。 |
 | closeOnOverlayClick | bool? | - | - |
@@ -152,7 +152,7 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| animationDuration | Duration | const Duration(milliseconds: 240) | 打开/关闭动画时长。 |
+| animationDuration | Duration? | - | 打开/关闭动画时长。 |
 | backgroundColor | Color? | - | 内容区背景色，默认主题容器色。 |
 | cancelBuilder | TPopupSlotBuilder? | _kPopupDefaultCancel | bottom 左侧操作槽；仅 `headerBuilder` 为内置默认时生效。 内置默认为「取消」，点击触发 `TPopupTrigger.cancel`。 |
 | child | Widget | - | 浮层主体内容（必填）。 |
@@ -190,6 +190,35 @@
 | navigatorContext | BuildContext? | - | 与 `TPopup.show` 的 `navigatorContext` 相同。 |
 | options | TPopupOptions | - | 创建时传入的配置；每次 `open` 会按 `TPopupOptions.placement` 裁剪无效字段后使用。 |
 | useRootNavigator | bool | - | 与 `TPopup.show` 的 `useRootNavigator` 相同。 |
+
+
+### TPopupThemeData
+#### 简介
+TPopup 组件级 ThemeExtension
+通过 Theme 子树注入，控制子树的默认浮层样式。
+`TPopupOptions` 的对应字段优先于 Theme Extension。
+
+#### 静态方法
+
+##### TPopupThemeData.lerpDouble
+
+返回类型：`double?`
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| a | double? | - | - |
+| b | double? | - | - |
+| t | double | - | - |
+
+#### 默认构造方法
+
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| barrierColor | Color? | - | 蒙层颜色 |
+| barrierOpacity | double? | - | 蒙层透明度系数 |
+| panelBackgroundColor | Color? | - | 内容区背景色 |
+| panelRadius | double? | - | 内容区圆角 |
+| transitionDuration | Duration? | - | 打开/关闭动画时长 |
 
 
 ### TPopupPlacement

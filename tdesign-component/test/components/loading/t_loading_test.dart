@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
-import 'package:tdesign_flutter/src/components/loading/t_point_indicator.dart';
 import 'package:tdesign_flutter/src/components/loading/t_circle_indicator.dart';
+import 'package:tdesign_flutter/src/components/loading/t_point_indicator.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TLoading V1.0 Widget 测试
 ///
@@ -130,10 +130,10 @@ void main() {
       expect(find.byType(TLoading), findsOneWidget);
     });
 
-    testWidgets('mergeExtension 覆盖 customIcon 自定义图标', (tester) async {
+    testWidgets('实例 customIcon 自定义图标', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TLoading(size: TLoadingSize.medium),
-        loadingTheme: const TLoadingThemeData(
+        const TLoading(
+          size: TLoadingSize.medium,
           customIcon: Icon(Icons.refresh, size: 24),
         ),
       ));
@@ -224,14 +224,14 @@ void main() {
 
     testWidgets('icon=null + refreshWidget 走 Row', (tester) async {
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(
-          extensions: [
-            TThemeData.defaultData(),
-            const TLoadingThemeData(refreshWidget: Text('刷新')),
-          ],
-        ),
+        theme: ThemeData(extensions: [TThemeData.defaultData()]),
         home: const Scaffold(
-          body: TLoading(size: TLoadingSize.medium, icon: null, text: '加载中'),
+          body: TLoading(
+            size: TLoadingSize.medium,
+            icon: null,
+            text: '加载中',
+            refreshWidget: Text('刷新'),
+          ),
         ),
       ));
       expect(find.text('加载中'), findsOneWidget);

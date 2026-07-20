@@ -14,15 +14,6 @@ class TToastThemeData extends ThemeExtension<TToastThemeData> {
   /// 图标颜色
   final Color? iconColor;
 
-  /// 是否拦截点击穿透
-  final bool? preventTap;
-
-  /// 默认展示时长
-  final Duration? defaultDuration;
-
-  /// 展示时长（alias for [defaultDuration]）
-  final Duration? duration;
-
   /// 圆角
   final double? borderRadius;
 
@@ -37,9 +28,6 @@ class TToastThemeData extends ThemeExtension<TToastThemeData> {
     this.textStyle,
     this.iconSize,
     this.iconColor,
-    this.preventTap,
-    this.defaultDuration,
-    this.duration,
     this.borderRadius,
     this.padding,
     this.maxWidth,
@@ -55,8 +43,6 @@ class TToastThemeData extends ThemeExtension<TToastThemeData> {
       textStyle: other.textStyle ?? textStyle,
       iconSize: other.iconSize ?? iconSize,
       iconColor: other.iconColor ?? iconColor,
-      preventTap: other.preventTap ?? preventTap,
-      defaultDuration: other.defaultDuration ?? defaultDuration,
       borderRadius: other.borderRadius ?? borderRadius,
       padding: other.padding ?? padding,
       maxWidth: other.maxWidth ?? maxWidth,
@@ -69,8 +55,6 @@ class TToastThemeData extends ThemeExtension<TToastThemeData> {
     TextStyle? textStyle,
     double? iconSize,
     Color? iconColor,
-    bool? preventTap,
-    Duration? defaultDuration,
     double? borderRadius,
     EdgeInsetsGeometry? padding,
     double? maxWidth,
@@ -80,8 +64,6 @@ class TToastThemeData extends ThemeExtension<TToastThemeData> {
       textStyle: textStyle ?? this.textStyle,
       iconSize: iconSize ?? this.iconSize,
       iconColor: iconColor ?? this.iconColor,
-      preventTap: preventTap ?? this.preventTap,
-      defaultDuration: defaultDuration ?? this.defaultDuration,
       borderRadius: borderRadius ?? this.borderRadius,
       padding: padding ?? this.padding,
       maxWidth: maxWidth ?? this.maxWidth,
@@ -98,8 +80,6 @@ class TToastThemeData extends ThemeExtension<TToastThemeData> {
       textStyle: TextStyle.lerp(textStyle, other.textStyle, t),
       iconSize: lerpDouble(iconSize, other.iconSize, t),
       iconColor: Color.lerp(iconColor, other.iconColor, t),
-      preventTap: t < 0.5 ? preventTap : other.preventTap,
-      defaultDuration: t < 0.5 ? defaultDuration : other.defaultDuration,
       borderRadius: lerpDouble(borderRadius, other.borderRadius, t),
       padding: EdgeInsetsGeometry.lerp(padding, other.padding, t),
       maxWidth: lerpDouble(maxWidth, other.maxWidth, t),

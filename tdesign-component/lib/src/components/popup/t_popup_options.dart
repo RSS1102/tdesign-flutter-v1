@@ -56,7 +56,7 @@ class TPopupOptions {
     this.overlayOpacity,
     this.modal = true,
     this.destroyOnClose = false,
-    this.animationDuration = const Duration(milliseconds: 240),
+    this.animationDuration,
     this.headerBuilder = _kPopupDefaultHeader,
     this.titleWidget,
     this.cancelBuilder = _kPopupDefaultCancel,
@@ -91,7 +91,7 @@ class TPopupOptions {
     double? overlayOpacity,
     bool modal = true,
     bool destroyOnClose = false,
-    Duration animationDuration = const Duration(milliseconds: 240),
+    Duration? animationDuration,
     VoidCallback? onOpen,
     VoidCallback? onOpened,
     VoidCallback? onClose,
@@ -143,7 +143,7 @@ class TPopupOptions {
     double? overlayOpacity,
     bool modal = true,
     bool destroyOnClose = false,
-    Duration animationDuration = const Duration(milliseconds: 240),
+    Duration? animationDuration,
     VoidCallback? onOpen,
     VoidCallback? onOpened,
     VoidCallback? onClose,
@@ -191,7 +191,7 @@ class TPopupOptions {
     double? overlayOpacity,
     bool modal = true,
     bool destroyOnClose = false,
-    Duration animationDuration = const Duration(milliseconds: 240),
+    Duration? animationDuration,
     VoidCallback? onOpen,
     VoidCallback? onOpened,
     VoidCallback? onClose,
@@ -238,7 +238,7 @@ class TPopupOptions {
     double? overlayOpacity,
     bool modal = true,
     bool destroyOnClose = false,
-    Duration animationDuration = const Duration(milliseconds: 240),
+    Duration? animationDuration,
     VoidCallback? onOpen,
     VoidCallback? onOpened,
     VoidCallback? onClose,
@@ -285,7 +285,7 @@ class TPopupOptions {
     double? overlayOpacity,
     bool modal = true,
     bool destroyOnClose = false,
-    Duration animationDuration = const Duration(milliseconds: 240),
+    Duration? animationDuration,
     VoidCallback? onOpen,
     VoidCallback? onOpened,
     VoidCallback? onClose,
@@ -374,7 +374,7 @@ class TPopupOptions {
   final bool destroyOnClose;
 
   /// 打开/关闭动画时长。
-  final Duration animationDuration;
+  final Duration? animationDuration;
 
   /// bottom 头部；仅 [TPopupPlacement.bottom] 生效。三态见类文档「Builder 三态」。
   ///

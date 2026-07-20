@@ -8,13 +8,14 @@ import '../../theme/t_spacers.dart';
 import '../../theme/t_theme.dart';
 import '../../util/list_ext.dart';
 import '../text/t_text.dart';
-import 't_action_sheet.dart';
+import 't_action_sheet_item.dart';
 import 't_action_sheet_item_widget.dart';
+import 't_action_sheet_types.dart';
 
 /// 分组类型动作面板
 ///
 /// 按项目 [TActionSheetItem.group] 字段分组展示，
-/// 每组横向滚动。通常不直接使用，由 [TActionSheet.showGroupActionSheet] 创建。
+/// 每组横向滚动。通常不直接使用，由 `TActionSheet.showGroup` 创建。
 class TActionSheetGroup extends StatelessWidget {
   /// 动作面板的项目列表
   final List<TActionSheetItem> items;

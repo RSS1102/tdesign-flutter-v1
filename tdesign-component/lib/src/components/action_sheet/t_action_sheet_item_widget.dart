@@ -6,7 +6,8 @@ import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
 import '../badge/t_badge.dart';
 import '../text/t_text.dart';
-import 't_action_sheet.dart';
+import 't_action_sheet_item.dart';
+import 't_action_sheet_types.dart';
 
 /// 动作面板单个项目组件
 ///

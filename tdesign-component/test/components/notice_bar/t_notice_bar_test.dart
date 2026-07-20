@@ -33,7 +33,7 @@ void main() {
 
     testWidgets('List<String> 内容渲染第一条', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TNoticeBar(content: ['第一条', '第二条']),
+        const TNoticeBar(items: ['第一条', '第二条']),
       ));
       expect(find.byType(TNoticeBar), findsOneWidget);
       // 非 marquee 模式下显示第一条
@@ -151,8 +151,10 @@ void main() {
   group('TNoticeBar marquee 滚动', () {
     testWidgets('marquee=true 水平方向启用 SingleChildScrollView', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TNoticeBar(content: '这是一条很长的跑马灯公告内容用于测试滚动'),
-        noticeBarTheme: const TNoticeBarThemeData(marquee: true),
+        const TNoticeBar(
+          content: '这是一条很长的跑马灯公告内容用于测试滚动',
+          marquee: true,
+        ),
       ));
       await tester.pump();
       expect(find.byType(TNoticeBar), findsOneWidget);
@@ -170,10 +172,10 @@ void main() {
     testWidgets('marquee=true 垂直方向渲染多条内容', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(
-          content: ['第一行', '第二行', '第三行'],
+          items: ['第一行', '第二行', '第三行'],
           direction: Axis.vertical,
+          marquee: true,
         ),
-        noticeBarTheme: const TNoticeBarThemeData(marquee: true),
       ));
       await tester.pump();
       expect(find.byType(TNoticeBar), findsOneWidget);
@@ -183,10 +185,10 @@ void main() {
     testWidgets('marquee=true 且 content 为 List 时垂直滚动渲染全部行', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(
-          content: ['A', 'B', 'C'],
+          items: ['A', 'B', 'C'],
           direction: Axis.vertical,
+          marquee: true,
         ),
-        noticeBarTheme: const TNoticeBarThemeData(marquee: true),
       ));
       await tester.pump();
       // 垂直 marquee 会渲染所有行 + 第一行重复
@@ -198,7 +200,7 @@ void main() {
 
   group('TNoticeBar onPressed 回调', () {
     testWidgets('点击内容区域触发 onPressed', (tester) async {
-      String? triggered;
+      TNoticeBarTapTarget? triggered;
       await tester.pumpWidget(wrapWithTheme(
         TNoticeBar(
           content: '可点击的公告',
@@ -206,11 +208,11 @@ void main() {
         ),
       ));
       await tester.tap(find.text('可点击的公告'));
-      expect(triggered, 'context');
+      expect(triggered, TNoticeBarTapTarget.content);
     });
 
     testWidgets('点击 prefixIcon 触发 onPressed', (tester) async {
-      String? triggered;
+      TNoticeBarTapTarget? triggered;
       await tester.pumpWidget(wrapWithTheme(
         TNoticeBar(
           content: '内容',
@@ -219,11 +221,11 @@ void main() {
         noticeBarTheme: const TNoticeBarThemeData(prefixIcon: Icons.info),
       ));
       await tester.tap(find.byIcon(Icons.info));
-      expect(triggered, 'prefix-icon');
+      expect(triggered, TNoticeBarTapTarget.prefix);
     });
 
     testWidgets('点击 suffixIcon 触发 onPressed', (tester) async {
-      String? triggered;
+      TNoticeBarTapTarget? triggered;
       await tester.pumpWidget(wrapWithTheme(
         TNoticeBar(
           content: '内容',
@@ -232,7 +234,7 @@ void main() {
         noticeBarTheme: const TNoticeBarThemeData(suffixIcon: Icons.close),
       ));
       await tester.tap(find.byIcon(Icons.close));
-      expect(triggered, 'suffix-icon');
+      expect(triggered, TNoticeBarTapTarget.suffix);
     });
   });
 
@@ -278,26 +280,25 @@ void main() {
     test('TNoticeBarThemeData.merge 正确合并', () {
       const base = TNoticeBarThemeData(
         variant: TNoticeBarVariant.info,
-        marquee: false,
+        height: 22,
       );
-      const override = TNoticeBarThemeData(marquee: true);
+      const override = TNoticeBarThemeData(height: 30);
       final merged = base.merge(override);
       expect(merged.variant, TNoticeBarVariant.info);
-      expect(merged.marquee, isTrue);
+      expect(merged.height, 30);
     });
 
     test('TNoticeBarThemeData.copyWith 正确合并', () {
-      const base = TNoticeBarThemeData(speed: 50);
-      final merged = base.copyWith(marquee: true);
-      expect(merged.speed, 50);
-      expect(merged.marquee, isTrue);
+      const base = TNoticeBarThemeData(height: 22);
+      final merged = base.copyWith(padding: const EdgeInsets.all(8));
+      expect(merged.height, 22);
+      expect(merged.padding, const EdgeInsets.all(8));
     });
 
     test('TNoticeBarThemeData.lerp 插值正确', () {
-      const a = TNoticeBarThemeData(speed: 50, height: 22);
-      const b = TNoticeBarThemeData(speed: 100, height: 30);
+      const a = TNoticeBarThemeData(height: 22);
+      const b = TNoticeBarThemeData(height: 30);
       final mid = a.lerp(b, 0.5);
-      expect(mid.speed, 75);
       expect(mid.height, 26);
     });
 
@@ -343,7 +344,7 @@ void main() {
 
     testWidgets('空 List 内容不崩溃', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TNoticeBar(content: <String>[]),
+        const TNoticeBar(items: <String>[]),
       ));
       expect(find.byType(TNoticeBar), findsOneWidget);
     });
@@ -358,8 +359,8 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(
           content: '这是一条很长的通知栏消息用于测试水平滚动定时器周期触发',
+          marquee: true,
         ),
-        noticeBarTheme: TNoticeBarThemeData(marquee: true),
       ));
       // _scroll 用 Timer.periodic(1秒) 无限循环，pump 5 秒让回调触发多次
       // （覆盖 if 分支 + else 分支 offset >= scrollDistance - remainder）
@@ -373,10 +374,11 @@ void main() {
       // 覆盖 _step 的 Timer.periodic 回调（137-147）
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(
-          content: ['消息一', '消息二', '消息三'],
+          items: ['消息一', '消息二', '消息三'],
           direction: Axis.vertical,
+          marquee: true,
+          interval: Duration(seconds: 1),
         ),
-        noticeBarTheme: TNoticeBarThemeData(marquee: true),
       ));
       // _step 用 Timer.periodic，pump 5 秒让回调触发多次（覆盖 step >= content.length 重置）
       await tester.pump(const Duration(seconds: 5));
@@ -389,8 +391,8 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(
           content: '短',
+          marquee: true,
         ),
-        noticeBarTheme: TNoticeBarThemeData(marquee: true),
       ));
       await tester.pump(const Duration(seconds: 2));
       await tester.pumpWidget(MaterialApp(home: Scaffold(body: Container())));
@@ -400,11 +402,11 @@ void main() {
     testWidgets('marquee + left 自定义 widget 渲染', (tester) async {
       // 覆盖 left widget 分支
       await tester.pumpWidget(wrapWithTheme(
-        TNoticeBar(
+        const TNoticeBar(
           content: '带自定义widget的长文本消息内容用于测试滚动',
-          left: const Icon(Icons.info),
+          left: Icon(Icons.info),
+          marquee: true,
         ),
-        noticeBarTheme: TNoticeBarThemeData(marquee: true),
       ));
       await tester.pump(const Duration(seconds: 2));
       await tester.pumpWidget(MaterialApp(home: Scaffold(body: Container())));
@@ -416,8 +418,8 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(
           content: '这是一条非常非常长的通知栏消息用于测试水平滚动到尽头后的重置逻辑需要足够长的文本才能触发else分支',
+          marquee: true,
         ),
-        noticeBarTheme: TNoticeBarThemeData(marquee: true),
       ));
       // pump 12 秒让 Timer.periodic 多次触发到 else 分支
       await tester.pump(const Duration(seconds: 12));
@@ -429,10 +431,11 @@ void main() {
       // 覆盖 141（_step 中 step >= content.length → _scrollController!.jumpTo(0)）
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(
-          content: ['消息一', '消息二'],
+          items: ['消息一', '消息二'],
           direction: Axis.vertical,
+          marquee: true,
+          interval: Duration(seconds: 1),
         ),
-        noticeBarTheme: TNoticeBarThemeData(marquee: true),
       ));
       // pump 10 秒让 Timer.periodic 多次触发到 step >= content.length
       await tester.pump(const Duration(seconds: 10));

@@ -5,8 +5,19 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/basic.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
+import '../../util/context_extension.dart';
+import '../button/t_button.dart';
+import '../button/t_button_types.dart';
+import '../divider/t_divider.dart';
+import '../icon/t_icon.dart';
+import '../text/t_text.dart';
+import 't_dialog.dart';
 
 /// TDialog手脚架
 class TDialogScaffold extends StatelessWidget {

@@ -8,13 +8,14 @@ import '../../util/iterable_ext.dart';
 import '../../util/list_ext.dart';
 import '../badge/t_badge.dart';
 import '../text/t_text.dart';
-import 't_action_sheet.dart';
+import 't_action_sheet_item.dart';
 import 't_action_sheet_item_widget.dart';
+import 't_action_sheet_types.dart';
 
 /// 宫格类型动作面板
 ///
 /// 以宫格布局展示可选项，支持分页和横向滚动。
-/// 通常不直接使用，由 [TActionSheet.showGridActionSheet] 创建。
+/// 通常不直接使用，由 `TActionSheet.showGrid` 创建。
 class TActionSheetGrid extends StatefulWidget {
   /// 动作面板的项目列表
   final List<TActionSheetItem> items;

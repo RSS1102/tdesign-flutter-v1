@@ -267,11 +267,11 @@ void main() {
     testWidgets('showLoading 显示加载文案', (tester) async {
       await tester.pumpWidget(wrapWithTheme());
       final context = tester.element(find.byKey(const Key('toast_host')));
-      TToast.showLoading(context: context, text: '加载中');
+      final id = TToast.showLoading(context: context, text: '加载中');
       // 仅 pump 单帧：TCircleIndicator 有无限旋转动画，pumpAndSettle 会超时
       await tester.pump();
       expect(find.text('加载中'), findsOneWidget);
-      TToast.dismissLoading();
+      TToast.dismissToast(id);
       await tester.pump();
       expect(find.text('加载中'), findsNothing);
     });
@@ -279,11 +279,11 @@ void main() {
     testWidgets('showLoadingWithoutText 仅渲染指示器无文案', (tester) async {
       await tester.pumpWidget(wrapWithTheme());
       final context = tester.element(find.byKey(const Key('toast_host')));
-      TToast.showLoadingWithoutText(context: context);
+      final id = TToast.showLoadingWithoutText(context: context);
       await tester.pump();
       // 不带文案，不应出现加载文案
       expect(find.text('加载中'), findsNothing);
-      TToast.dismissLoading();
+      TToast.dismissToast(id);
       await tester.pump();
     });
   });
@@ -320,16 +320,23 @@ void main() {
       expect(find.text('B'), findsNothing);
     });
 
-    testWidgets('dismissLoading 关闭加载 Toast', (tester) async {
+    testWidgets('按返回 id 关闭加载 Toast 不影响普通 Toast', (tester) async {
       await tester.pumpWidget(wrapWithTheme());
       final context = tester.element(find.byKey(const Key('toast_host')));
-      TToast.showLoading(context: context, text: '加载中');
+      TToast.showText(
+        '普通',
+        context: context,
+        duration: const Duration(seconds: 10),
+      );
+      final loadingId = TToast.showLoading(context: context, text: '加载中');
       // 仅 pump 单帧，避免 TCircleIndicator 无限动画导致 pumpAndSettle 超时
       await tester.pump();
       expect(find.text('加载中'), findsOneWidget);
-      TToast.dismissLoading();
+      TToast.dismissToast(loadingId);
       await tester.pump();
       expect(find.text('加载中'), findsNothing);
+      expect(find.text('普通'), findsOneWidget);
+      TToast.dismissAll();
     });
   });
 
@@ -364,4 +371,3 @@ void main() {
     });
   });
 }
-

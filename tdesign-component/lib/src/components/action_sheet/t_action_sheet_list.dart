@@ -7,13 +7,14 @@ import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
 import '../badge/t_badge.dart';
 import '../text/t_text.dart';
-import 't_action_sheet.dart';
+import 't_action_sheet_item.dart';
 import 't_action_sheet_item_widget.dart';
+import 't_action_sheet_types.dart';
 
 /// 列表类型动作面板
 ///
 /// 以列表布局展示可选项，支持描述文本。
-/// 通常不直接使用，由 [TActionSheet.showListActionSheet] 创建。
+/// 通常不直接使用，由 `TActionSheet.showList` 创建。
 class TActionSheetList extends StatelessWidget {
   /// 动作面板的项目列表
   final List<TActionSheetItem> items;
