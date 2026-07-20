@@ -51,7 +51,7 @@
 
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| operateHeight | double | - | - |
+| operateHeight | double | - | 多选模式下重置和确认操作区的固定高度。 |
 
 
 ### TDropdownItemOption

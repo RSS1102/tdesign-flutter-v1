@@ -91,5 +91,98 @@ void main() {
         expect(find.byType(TCalendar), findsOneWidget);
       }
     });
+
+    testWidgets('点击决策覆盖 single/multiple/range 分支', (tester) async {
+      Key dayKey(DateTime date) =>
+          Key('day-${date.year}-${date.month}-${date.day}');
+
+      Widget keyedCalendar({
+        required TCalendarVariant variant,
+        required List<DateTime> value,
+        required ValueChanged<List<DateTime>>? onChanged,
+      }) {
+        return wrap(TCalendar(
+          minDate: DateTime(2026, 6, 1),
+          maxDate: DateTime(2026, 7, 1),
+          anchorDate: DateTime(2026, 6, 1),
+          variant: variant,
+          value: value,
+          onChanged: onChanged,
+          cellBuilder: (context, model) => SizedBox(
+            key: dayKey(model.date),
+            child: Text('${model.date.day}'),
+          ),
+        ));
+      }
+
+      List<DateTime>? changed;
+      await tester.pumpWidget(keyedCalendar(
+        variant: TCalendarVariant.single,
+        value: [DateTime(2026, 6, 15)],
+        onChanged: (value) => changed = value,
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(dayKey(DateTime(2026, 6, 15))));
+      await tester.pumpAndSettle();
+      expect(changed, isNull);
+
+      await tester.tap(find.byKey(dayKey(DateTime(2026, 6, 16))));
+      await tester.pumpAndSettle();
+      expect(changed, [DateTime(2026, 6, 16)]);
+
+      await tester.pumpWidget(keyedCalendar(
+        variant: TCalendarVariant.multiple,
+        value: [DateTime(2026, 6, 15)],
+        onChanged: (value) => changed = value,
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(dayKey(DateTime(2026, 6, 15))));
+      await tester.pumpAndSettle();
+      expect(changed, isEmpty);
+
+      await tester.pumpWidget(keyedCalendar(
+        variant: TCalendarVariant.multiple,
+        value: [DateTime(2026, 6, 15)],
+        onChanged: (value) => changed = value,
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(dayKey(DateTime(2026, 6, 16))));
+      await tester.pumpAndSettle();
+      expect(changed, [DateTime(2026, 6, 15), DateTime(2026, 6, 16)]);
+
+      await tester.pumpWidget(keyedCalendar(
+        variant: TCalendarVariant.range,
+        value: [DateTime(2026, 6, 15)],
+        onChanged: (value) => changed = value,
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(dayKey(DateTime(2026, 6, 20))));
+      await tester.pumpAndSettle();
+      expect(changed, [DateTime(2026, 6, 15), DateTime(2026, 6, 20)]);
+
+      await tester.pumpWidget(keyedCalendar(
+        variant: TCalendarVariant.range,
+        value: [DateTime(2026, 6, 15), DateTime(2026, 6, 20)],
+        onChanged: (value) => changed = value,
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(dayKey(DateTime(2026, 6, 10))));
+      await tester.pumpAndSettle();
+      expect(changed, [DateTime(2026, 6, 10)]);
+
+      changed = null;
+      await tester.pumpWidget(keyedCalendar(
+        variant: TCalendarVariant.single,
+        value: [DateTime(2026, 6, 15)],
+        onChanged: null,
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(dayKey(DateTime(2026, 6, 16))),
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
+      expect(changed, isNull);
+    });
   });
 }

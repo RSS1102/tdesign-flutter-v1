@@ -26,7 +26,7 @@
 | PR 6 | 03-input / Form 基础能力 | Ready for PR | 当前组件域测试通过；全量套件中的源码覆盖率 98.63%，DateTimePicker 根组件、快照和 Radio Theme 已补契约测试 |
 | PR 7 | Feedback 业务组件 | Ready for PR | 05-feedback 定向 302 项测试通过、隔离覆盖率 95.28%；全量套件覆盖率 97.75%，Popover Theme 与强类型回调已闭环 |
 | PR 8 | Display / Navigation 中低风险组件 | Ready for PR | 02-navigation 最近定向测试 326 个通过、analyze 0 issues、覆盖率 97.96%；04-display 最近定向测试 350 个通过、analyze 0 issues、覆盖率 99.05%；Drawer 必须在 PR 5 后迁移 |
-| PR 9+ | picker/date-picker/dropdown/table/upload 等复杂组件 | Ready for component PR | v1 源码已完成统一验收，但迁移主仓时仍按单组件或依赖链拆分，避免复用当前大提交边界 |
+| PR 9+ | picker/date-picker/dropdown/table/upload 等复杂组件 | Ready for component PR | 复杂组件链路最近定向测试 171 个通过、analyze 0 issues、覆盖率 95.50%；已补 `TDropdownItem.operateHeight` API 注释；迁移主仓时仍按单组件或依赖链拆分 |
 | Final PR | export、索引、CI、全量验收收口 | Not Started | 等主要组件迁移完成后执行 |
 
 ## 当前类别验收快照
@@ -54,6 +54,10 @@
 | 05-feedback 隔离覆盖率 | 95.28% (2970/3117) |
 | 05-feedback 全量套件覆盖率 | 97.75% (3047/3117) |
 | 05-feedback 定向测试 | 302 个测试通过 |
+| 复杂组件链路定向测试 | 171 个测试通过 |
+| 复杂组件链路定向 analyze | 0 issues |
+| 复杂组件链路源码总覆盖率 | 95.50% (2757/2887) |
+| 复杂组件链路 API 文档 | `dropdown-menu_api.md` 的 `operateHeight` 说明已补齐；本轮 API 说明列检查无 `-` |
 | 全量 Flutter 测试 | 1856 个通过，6 个按环境条件跳过 |
 | 全组件源码覆盖率 | 98.32% (12259/12468) |
 | 全包 analyze | 0 issues |

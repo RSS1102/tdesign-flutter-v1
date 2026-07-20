@@ -56,6 +56,59 @@ void main() {
     expect(semantics.hasFlag(SemanticsFlag.isEnabled), isFalse);
   });
 
+  testWidgets('更新分支覆盖 no-op、受控值分歧和范围重建', (tester) async {
+    String? Function(DateTimeColumn column, int value) renderLabel(
+            String tag) =>
+        (column, value) => '$tag-$value';
+
+    final mode = DateTimePickerMode(dateMode: DateMode.date);
+    const value = TDateTimePickerValue(year: 2024, month: 5, day: 20);
+    await tester.pumpWidget(wrap(
+      TDateTimePicker(
+        value: value,
+        mode: mode,
+        onChanged: (_) {},
+      ),
+    ));
+    expect(find.byType(DateTimePickerWheel), findsOneWidget);
+
+    await tester.pumpWidget(wrap(
+      TDateTimePicker(
+        value: value,
+        mode: mode,
+        onChanged: (_) {},
+      ),
+    ));
+    await tester.pump();
+    expect(find.byType(DateTimePickerWheel), findsOneWidget);
+
+    const diverged = TDateTimePickerValue(year: 2025, month: 6, day: 21);
+    await tester.pumpWidget(wrap(
+      TDateTimePicker(
+        value: diverged,
+        mode: mode,
+        onChanged: (_) {},
+      ),
+    ));
+    await tester.pump();
+    expect(find.byType(DateTimePickerWheel), findsOneWidget);
+
+    await tester.pumpWidget(wrap(
+      TDateTimePicker(
+        value: diverged,
+        mode: mode,
+        start: const TDateTimePickerValue(year: 2020, month: 1, day: 1),
+        end: const TDateTimePickerValue(year: 2030, month: 12, day: 31),
+        steps: const DateTimePickerSteps(day: 2),
+        showWeek: true,
+        renderLabel: renderLabel('changed'),
+        onChanged: (_) {},
+      ),
+    ));
+    await tester.pump();
+    expect(find.byType(DateTimePickerWheel), findsOneWidget);
+  });
+
   test('值模型支持完整值、partial 值和非法输入', () {
     const complete = TDateTimePickerValue(
       year: 2024,
@@ -68,7 +121,8 @@ void main() {
     expect(complete.toDateTime(), DateTime(2024, 2, 29, 10, 20, 30));
     final fallback = DateTime(2020, 5, 6, 7, 8, 9);
     const partial = TDateTimePickerValue(year: 2024, month: 2, day: 29);
-    expect(partial.toDateTime(fallback: fallback), DateTime(2024, 2, 29, 7, 8, 9));
+    expect(
+        partial.toDateTime(fallback: fallback), DateTime(2024, 2, 29, 7, 8, 9));
     expect(() => partial.toDateTime(), throwsArgumentError);
     expect(partial.toString(), contains('year: 2024'));
     expect(partial, isNot(complete));
@@ -89,13 +143,46 @@ void main() {
     );
     expect(steps.year, 2);
     expect(steps.minute, 5);
+    expect(steps.forColumn(DateTimeColumn.year), 2);
+    expect(steps.forColumn(DateTimeColumn.month), 2);
+    expect(steps.forColumn(DateTimeColumn.day), 2);
+    expect(steps.forColumn(DateTimeColumn.hour), 2);
+    expect(steps.forColumn(DateTimeColumn.minute), 5);
+    expect(steps.forColumn(DateTimeColumn.second), 10);
+    const invalidSteps = DateTimePickerSteps(month: 0, day: -2);
+    expect(invalidSteps.forColumn(DateTimeColumn.year), 1);
+    expect(invalidSteps.forColumn(DateTimeColumn.month), 1);
+    expect(invalidSteps.forColumn(DateTimeColumn.day), 1);
+    expect(DateTimePickerMode(dateMode: DateMode.year).columns,
+        [DateTimeColumn.year]);
+    expect(DateTimePickerMode(dateMode: DateMode.month).columns,
+        [DateTimeColumn.year, DateTimeColumn.month]);
+    expect(DateTimePickerMode(timeMode: TimeMode.hour).columns,
+        [DateTimeColumn.hour]);
+    expect(DateTimePickerMode(timeMode: TimeMode.minute).columns,
+        [DateTimeColumn.hour, DateTimeColumn.minute]);
+    expect(
+      DateTimePickerMode(dateMode: DateMode.month, timeMode: TimeMode.second)
+          .columns,
+      [
+        DateTimeColumn.year,
+        DateTimeColumn.month,
+        DateTimeColumn.hour,
+        DateTimeColumn.minute,
+        DateTimeColumn.second,
+      ],
+    );
     expect(DateMode.values, contains(DateMode.date));
     expect(TimeMode.values, contains(TimeMode.second));
   });
 
   test('快照支持范围、步进、列选项和原始值规范化', () {
     final snapshot = DateTimePickerSnapshot.initial(
-      columns: const [DateTimeColumn.year, DateTimeColumn.month, DateTimeColumn.day],
+      columns: const [
+        DateTimeColumn.year,
+        DateTimeColumn.month,
+        DateTimeColumn.day
+      ],
       initial: DateTime(2024, 2, 29),
       start: DateTime(2020, 1, 1),
       end: DateTime(2030, 12, 31),
@@ -118,7 +205,8 @@ void main() {
     expect(changed.toResult().year, 2025);
     expect(snapshot.rebuildFor(columns: const [DateTimeColumn.year]).columns,
         [DateTimeColumn.year]);
-    expect(DateTimePickerSnapshot.coerceRawValues([1, 2.4], expectedLength: 2), [1, 2]);
+    expect(DateTimePickerSnapshot.coerceRawValues([1, 2.4], expectedLength: 2),
+        [1, 2]);
     expect(
       () => DateTimePickerSnapshot.coerceRawValues(['bad'], expectedLength: 1),
       throwsArgumentError,

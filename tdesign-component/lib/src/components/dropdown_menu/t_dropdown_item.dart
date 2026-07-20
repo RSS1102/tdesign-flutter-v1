@@ -106,6 +106,7 @@ class TDropdownItem<T> extends StatefulWidget {
   /// item 在非滚动菜单栏中的宽度占比
   final int tabBarFlex;
 
+  /// 多选模式下重置和确认操作区的固定高度。
   static const double operateHeight = 73;
 
   double? get minContentHeight => multiple && minHeight != null

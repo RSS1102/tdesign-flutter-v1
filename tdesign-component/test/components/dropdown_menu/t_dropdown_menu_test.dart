@@ -50,9 +50,65 @@ void main() {
   group('枚举', () {
     test('TDropdownMenuDirection 有三个值', () {
       expect(TDropdownMenuDirection.values.length, 3);
-      expect(TDropdownMenuDirection.values, contains(TDropdownMenuDirection.down));
-      expect(TDropdownMenuDirection.values, contains(TDropdownMenuDirection.up));
-      expect(TDropdownMenuDirection.values, contains(TDropdownMenuDirection.auto));
+      expect(
+          TDropdownMenuDirection.values, contains(TDropdownMenuDirection.down));
+      expect(
+          TDropdownMenuDirection.values, contains(TDropdownMenuDirection.up));
+      expect(
+          TDropdownMenuDirection.values, contains(TDropdownMenuDirection.auto));
+    });
+  });
+
+  group('TDropdownThemeData', () {
+    test('merge/copyWith/lerp 覆盖全部字段', () {
+      const base = TDropdownThemeData(
+        width: 100,
+        height: 40,
+        decoration: BoxDecoration(color: Colors.red),
+        arrowIcon: Icons.arrow_drop_down,
+        arrowColor: Colors.black,
+        tabBarAlign: MainAxisAlignment.start,
+      );
+      const override = TDropdownThemeData(
+        width: 120,
+        arrowColor: Colors.blue,
+        tabBarAlign: MainAxisAlignment.end,
+      );
+
+      expect(identical(base.merge(null), base), isTrue);
+      final merged = base.merge(override);
+      expect(merged.width, 120);
+      expect(merged.height, 40);
+      expect(merged.decoration, base.decoration);
+      expect(merged.arrowIcon, Icons.arrow_drop_down);
+      expect(merged.arrowColor, Colors.blue);
+      expect(merged.tabBarAlign, MainAxisAlignment.end);
+
+      final copied = base.copyWith(
+        width: 80,
+        height: 36,
+        decoration: const BoxDecoration(color: Colors.green),
+        arrowIcon: Icons.keyboard_arrow_up,
+        arrowColor: Colors.orange,
+        tabBarAlign: MainAxisAlignment.center,
+      );
+      expect(copied.width, 80);
+      expect(copied.height, 36);
+      expect(copied.decoration, const BoxDecoration(color: Colors.green));
+      expect(copied.arrowIcon, Icons.keyboard_arrow_up);
+      expect(copied.arrowColor, Colors.orange);
+      expect(copied.tabBarAlign, MainAxisAlignment.center);
+
+      expect(identical(base.lerp(null, 0.5), base), isTrue);
+      final early = base.lerp(override, 0.25);
+      expect(early.width, 105);
+      expect(early.decoration, base.decoration);
+      expect(early.arrowIcon, Icons.arrow_drop_down);
+      final late = base.lerp(override, 0.75);
+      expect(late.width, 115);
+      expect(late.decoration, override.decoration);
+      expect(late.arrowIcon, override.arrowIcon);
+      expect(TDropdownThemeData.lerpDouble(null, null, 0.5), isNull);
     });
   });
 
@@ -70,7 +126,8 @@ void main() {
         ),
       ));
 
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
       expect(find.text('排序'), findsOneWidget);
       expect(find.text('筛选'), findsOneWidget);
     });
@@ -91,7 +148,8 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         const TDropdownMenu(items: []),
       ));
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
     });
 
     testWidgets('direction: down 向下展开', (tester) async {
@@ -135,7 +193,8 @@ void main() {
           ),
         ),
       ));
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
     });
   });
 
@@ -418,7 +477,8 @@ void main() {
       ));
       setState(() => itemCount = 3);
       await tester.pumpAndSettle();
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
     });
 
     testWidgets('didUpdateWidget items 长度不变 early return', (tester) async {
@@ -440,7 +500,8 @@ void main() {
       ));
       setState(() => label = '菜单A2');
       await tester.pumpAndSettle();
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
     });
 
     testWidgets('didUpdateWidget builder 变化触发 _init', (tester) async {
@@ -466,7 +527,8 @@ void main() {
       ));
       setState(() => useBuilder = true);
       await tester.pumpAndSettle();
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
     });
 
     testWidgets('点击菜单打开/关闭触发 _openMenu/_closeMenu', (tester) async {
@@ -486,7 +548,8 @@ void main() {
       // 再次点击关闭
       await tester.tap(find.text('菜单1'), warnIfMissed: false);
       await tester.pumpAndSettle();
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
       expect(menuClosed, 0);
     });
 
@@ -544,7 +607,8 @@ void main() {
         ),
         dropdownTheme: const TDropdownThemeData(arrowColor: Colors.green),
       ));
-      final icon = tester.widget<Icon>(find.byIcon(TIcons.caret_down_small).first);
+      final icon =
+          tester.widget<Icon>(find.byIcon(TIcons.caret_down_small).first);
       expect(icon.color, Colors.green);
     });
 
@@ -585,7 +649,8 @@ void main() {
       );
       await (state as dynamic).closeMenu();
       await tester.pumpAndSettle();
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
       expect(closedIndex, 0);
     });
 
@@ -612,7 +677,8 @@ void main() {
       // 直接调用 closeMenu 公共方法
       await (state as dynamic).closeMenu();
       await tester.pump(const Duration(milliseconds: 300));
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
     });
 
     testWidgets('已有菜单打开时再打开另一个触发 Navigator.maybePop', (tester) async {
@@ -630,7 +696,8 @@ void main() {
       // 打开第二个菜单（第一个仍然打开 → _isOpened.contains(true)）
       await tester.tap(find.text('菜单B'));
       await tester.pumpAndSettle();
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
     });
 
     testWidgets('关闭菜单时 animation reverse 触发', (tester) async {
@@ -652,7 +719,8 @@ void main() {
       );
       await (state as dynamic).closeMenu();
       await tester.pump(const Duration(milliseconds: 300));
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
     });
 
     testWidgets('auto 方向打开并点击遮罩关闭（覆盖 popup/panel 分支）', (tester) async {
@@ -667,7 +735,8 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tapAt(const Offset(10, 10));
       await tester.pumpAndSettle();
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
     });
   });
 }
