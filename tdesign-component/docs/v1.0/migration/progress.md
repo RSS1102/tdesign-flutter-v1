@@ -22,13 +22,14 @@
 | PR 2 | `text` / `divider` / `icon` | Ready for PR | 已纳入 01-base 定向测试和 analyze；仍建议在提交前复跑单组件 docs validate |
 | PR 3 | `button` / `link` | Ready for PR | 已纳入 01-base 定向测试和 analyze；`button` 单文件覆盖率仍低于 95%，但 01-base 总覆盖率已达标 |
 | PR 4 | `fab` | Ready for PR | FAB 定向测试 68 个通过；FAB analyze 0 issues；tools FAB validate `ERROR=0, WARN=0` |
-| PR 5 | 02-input / Form 基础能力 | Not Started | 等 01-base 主仓迁移路线稳定后推进 |
-| PR 6 | Overlay / Popup / Feedback 基础设施 | Not Started | 建议在 input 基础能力后推进 |
-| PR 7 | Display / Navigation 中低风险组件 | Not Started | 可按依赖低风险组件继续拆分 |
-| PR 8+ | picker/date-picker/dropdown/select/table/upload 等复杂组件 | Not Started | 建议单组件或三段式 PR |
+| PR 5 | Overlay / Popup 基础设施 | Ready for PR | Popup 路由、Options、Handle、布局和安全区测试已覆盖；必须先于依赖 Popup 的 Drawer 迁移 |
+| PR 6 | 03-input / Form 基础能力 | Ready for PR | 当前组件域测试通过；全量套件中的源码覆盖率 98.63%，DateTimePicker 根组件、快照和 Radio Theme 已补契约测试 |
+| PR 7 | Feedback 业务组件 | Ready for PR | 05-feedback 定向 302 项测试通过、隔离覆盖率 95.28%；全量套件覆盖率 97.75%，Popover Theme 与强类型回调已闭环 |
+| PR 8 | Display / Navigation 中低风险组件 | Ready for PR | 02-navigation 覆盖率 97.96%，04-display 覆盖率 99.19%；Drawer 必须在 PR 5 后迁移 |
+| PR 9+ | picker/date-picker/dropdown/table/upload 等复杂组件 | Ready for component PR | v1 源码已完成统一验收，但迁移主仓时仍按单组件或依赖链拆分，避免复用当前大提交边界 |
 | Final PR | export、索引、CI、全量验收收口 | Not Started | 等主要组件迁移完成后执行 |
 
-## 当前 01-base 验收快照
+## 当前类别验收快照
 
 最近一次 v1 仓库验证结果：
 
@@ -40,22 +41,30 @@
 | Foundation / Theme 定向 analyze | 0 issues |
 | Foundation PR 边界 | `TThemeBuilder` 不反向依赖 `tdesign_flutter.dart` 总出口；当前组件 ThemeData 默认定义均已注入 |
 | 01-base 定向测试 + coverage | 通过 |
-| 01-base 源码总覆盖率 | 95.60% (890/931) |
+| 01-base 源码总覆盖率 | 98.21% (932/949) |
 | 01-base 定向 analyze | 0 issues |
 | FAB tools validate | `ERROR=0, WARN=0` |
+| 02-navigation 源码总覆盖率 | 97.96% (2741/2798) |
+| 03-input 源码总覆盖率 | 98.63% (3447/3495) |
+| 04-display 源码总覆盖率 | 99.19% (2092/2109) |
+| 05-feedback 隔离覆盖率 | 95.28% (2970/3117) |
+| 05-feedback 全量套件覆盖率 | 97.75% (3047/3117) |
+| 05-feedback 定向测试 | 302 个测试通过 |
+| 全量 Flutter 测试 | 1856 个通过，6 个按环境条件跳过 |
+| 全组件源码覆盖率 | 98.32% (12259/12468) |
+| 全包 analyze | 0 issues |
 
 ## 当前剩余风险
 
 | 风险 | 影响 | 建议处理 |
 | --- | --- | --- |
-| `lib/src/components/button/t_button.dart` 单文件覆盖率约 74.53% | 若主仓要求每个文件都达到 95%，PR 3 会被拦截 | 在 PR 3 前补充 Button widget 行为测试，或明确覆盖率口径为组件域总覆盖率 |
-| `lib/src/components/text/t_font_loader.dart` 单文件覆盖率约 92.31% | 若主仓要求每个文件 95%，PR 2 可能需要补测 | 补充 font loader 异常/回退路径测试 |
-| 全量组件 ThemeExtension 已由 `TThemeBuilder` 默认注入 | 让全局 Theme 可控，但部分后续组件尚未完成迁移复查 | 后续组件 PR 继续按各自文档验证字段分类和默认值 |
+| 部分内部文件低于 95%，但各组件域总覆盖率均已达标 | 若主仓要求每文件 95%，仍会增加迁移成本 | 主仓 PR 明确采用组件域总行覆盖率；对关键入口单独设置行为测试门禁 |
+| 全量组件 ThemeExtension 已由 `TThemeBuilder` 默认注入 | 全局 Theme 可控，但主仓拆分时组件 ThemeData 定义与消费可能落在不同 PR | Foundation PR 只迁纯 ThemeData 定义；消费实现与组件 PR 同步验收 |
 | 主仓 CI 与 v1 本地命令可能不完全一致 | 本地 Ready for PR 不一定等同主仓 CI 通过 | PR 0 明确主仓 CI 适配清单 |
 
 ## 下一步建议
 
 1. 先开 PR 0，提交迁移约束、验收口径和文档索引。
-2. 再开 PR 2 或 PR 1，取决于主仓是否需要先合 foundation。
-3. `button/link` 与 `fab` 分开提交，避免交互 resolve 和拖拽定位逻辑混在一个 review 中。
-4. 如果主仓要求“每文件 95% 覆盖率”，先补 `t_button.dart` 和 `t_font_loader.dart`，再提交对应 PR。
+2. PR 1 合入 Foundation / Theme / Token，再按 PR 2-4 迁移 01-base。
+3. 03-input、Overlay/Feedback、Navigation/Display 按依赖和组件边界拆分，不能直接复用 v1 仓库中的大提交。
+4. 主仓 CI 明确使用“组件域总行覆盖率 >= 95%”；关键入口另以行为测试和 API 文档检查兜底。

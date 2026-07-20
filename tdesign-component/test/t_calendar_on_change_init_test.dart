@@ -30,7 +30,7 @@ void main() {
           builder: (context) {
             return Scaffold(
               body: TCell(
-                title: '打开',
+                title: const Text('打开'),
                 onTap: () {
                   showModalBottomSheet(
                     context: context,

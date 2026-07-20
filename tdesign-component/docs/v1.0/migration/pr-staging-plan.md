@@ -120,7 +120,28 @@ FAB 同时包含定位层、拖拽、吸附、边界、child 模式和内嵌 `TB
 - props 更新后拖拽位置同步或 clamp
 - API 文档 validate 达到 `ERROR=0, WARN=0`
 
-### PR 5：02-input / Form 基础能力
+### PR 5：Overlay / Popup 基础设施
+
+**目标**：先合入弹层路由、定位和生命周期基础能力。
+
+**依赖裁决**
+
+- `drawer` 已直接依赖 `TPopup`，因此 Popup 必须早于包含 Drawer 的 Navigation PR。
+- Feedback 业务壳与 Popup 基础设施分开，避免 Toast、Dialog、Popover 的 API review 混入路由底层。
+- picker / dropdown 等复杂组件若依赖 Popup，也只能在本 PR 之后迁移。
+
+**建议范围**
+
+- popup route / handle / options / layout
+- overlay tracking 与安全区行为
+
+**验收重点**
+
+- 层级、重复打开和关闭生命周期清晰
+- 点击外部关闭、返回键、嵌套 Navigator、无障碍行为可测
+- `TPopupOptions` 与 `TPopupThemeData` 的职责边界稳定
+
+### PR 6：03-input / Form 基础能力
 
 **目标**：迁移输入类组件前，先稳定受控/非受控、禁用、只读和表单联动模型。
 
@@ -138,22 +159,22 @@ FAB 同时包含定位层、拖拽、吸附、边界、child 模式和内嵌 `TB
 - 表单校验状态和组件状态不互相覆盖
 - 不把业务组件逻辑提前塞进基础输入 PR
 
-### PR 6：Overlay / Popup / Feedback 基础设施
+### PR 7：Feedback 业务组件
 
-**目标**：先合入弹层、定位、portal 和反馈类组件依赖的底层能力。
+**目标**：在 Popup 基础能力稳定后迁移反馈类业务组件。
 
 **建议范围**
 
-- popup / overlay / portal
-- toast / message / dialog 等 feedback 基础组件
+- toast / message / dialog / popover
+- action-sheet / notice-bar / loading / refresh / swipe-cell
 
 **验收重点**
 
-- 层级和生命周期清晰
-- 点击外部关闭、键盘、无障碍行为可测
-- 与后续 picker/dropdown/select 依赖关系明确
+- ThemeExtension 只承载视觉和布局默认值
+- 命令式句柄、自动关闭、timer/controller 生命周期可测
+- 不保留旧静态入口、弱类型回调或业务状态 Theme 字段
 
-### PR 7：Display / Navigation 中低风险组件
+### PR 8：Display / Navigation 中低风险组件
 
 **建议拆分**
 
@@ -166,7 +187,7 @@ FAB 同时包含定位层、拖拽、吸附、边界、child 模式和内嵌 `TB
 - 文档和生成 API 同步
 - 覆盖率不因视觉组件较多而只保留构建测试
 
-### PR 8+：复杂业务组件按依赖链单独推进
+### PR 9+：复杂业务组件按依赖链单独推进
 
 **建议组件**
 
