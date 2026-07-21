@@ -8,15 +8,13 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// ThemeData 注入、禁用 callback、TNavBarItem、TNavBarBorder。
 void main() {
   Widget wrapWithTheme(Widget child, {TNavBarThemeData? navBarTheme}) {
-    final themeExtensions = <ThemeExtension>[
-      if (navBarTheme != null) navBarTheme,
-    ];
-    return Theme(
-      data: ThemeData(extensions: [TThemeData.defaultData()]),
-      child: MaterialApp(
-        theme: ThemeData(extensions: themeExtensions),
-        home: Scaffold(body: child),
-      ),
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (navBarTheme != null) {
+      theme = theme.mergeExtension(navBarTheme);
+    }
+    return MaterialApp(
+      theme: theme,
+      home: Scaffold(body: child),
     );
   }
 
@@ -81,6 +79,18 @@ void main() {
         const TNavBar(title: '标题', useDefaultBack: true),
       ));
       expect(find.byIcon(TIcons.chevron_left), findsOneWidget);
+    });
+
+    testWidgets('默认返回图标在完整主题下保持主文本色且不呈禁用态', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrapWithTheme(
+        const TNavBar(title: '标题', useDefaultBack: true),
+      ));
+
+      final backIcon = tester.widget<Icon>(find.byIcon(TIcons.chevron_left));
+      expect(backIcon.size, 28.0);
+      expect(backIcon.color, token.textColorPrimary);
+      expect(backIcon.color, isNot(token.textDisabledColor));
     });
 
     testWidgets('useDefaultBack 为 false 时不显示返回图标', (tester) async {
@@ -162,6 +172,28 @@ void main() {
       expect(find.text('彩色标题'), findsOneWidget);
     });
 
+    testWidgets('构造器 backIconColor 覆盖默认返回图标颜色', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TNavBar(
+          title: '标题',
+          backIconColor: Colors.red,
+        ),
+      ));
+
+      final backIcon = tester.widget<Icon>(find.byIcon(TIcons.chevron_left));
+      expect(backIcon.color, Colors.red);
+    });
+
+    testWidgets('Theme backIconColor 覆盖默认返回图标颜色', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TNavBar(title: '标题'),
+        navBarTheme: const TNavBarThemeData(backIconColor: Colors.green),
+      ));
+
+      final backIcon = tester.widget<Icon>(find.byIcon(TIcons.chevron_left));
+      expect(backIcon.color, Colors.green);
+    });
+
     testWidgets('border 边框模式', (tester) async {
       await tester.pumpWidget(wrapWithTheme(TNavBar(
         title: '边框',
@@ -237,6 +269,21 @@ void main() {
       )));
       await tester.tap(find.byIcon(TIcons.home));
       expect(called, true);
+    });
+
+    testWidgets('action: null 的操作项在完整主题下使用禁用色', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrapWithTheme(TNavBar(
+        title: '标题',
+        useDefaultBack: false,
+        actions: [
+          TNavBarItem(icon: TIcons.home, iconSize: 24),
+        ],
+      )));
+
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.home));
+      expect(icon.size, 24.0);
+      expect(icon.color, token.textDisabledColor);
     });
   });
 
