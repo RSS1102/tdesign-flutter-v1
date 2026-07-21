@@ -31,7 +31,7 @@
 | `TLink` | 链接 Widget |
 | `TLinkVariant` | 链接形态（basic / underline / icon） |
 | `TLinkSize` | 尺寸 |
-| `TLinkColorScheme` | 语义色 |
+| `TLinkColorScheme` | 语义色方案；与 Button `colorScheme` 同口径，不是 ThemeData 改名 |
 | `uri` | 跳转 URI |
 | `prefixIcon` / `suffixIcon` | 链式图标 |
 | `TLinkThemeData` | L4 默认样式 |
@@ -67,3 +67,7 @@
 | `size` | TDesign 构造器 L1（非 Material） | `TLinkSize`；默认由 `TLinkThemeData.defaultSize` 提供 |
 | `fontSize` / `iconSize` / `prefixIcon` / `suffixIcon` / 间距 | TDesign 扩展 | 链式图标布局 |
 | `uri` | TDesign 扩展（可选） | 默认链接色/下划线策略 |
+
+### colorScheme 与禁用态
+
+`colorScheme` 只表达启用态语义色（primary / default / danger / warning / success）。禁用态不继续表达语义色，统一使用 `context.tTheme.textDisabledColor`，与 Button 等基础组件的禁用文本口径一致。

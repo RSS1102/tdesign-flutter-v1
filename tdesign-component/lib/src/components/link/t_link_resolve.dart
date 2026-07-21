@@ -14,7 +14,10 @@ class TLinkResolve {
 
   /// 解析链接文本颜色
   ///
-  /// 优先级：构造器 color > Theme.color > colorScheme × disabled 映射
+  /// 优先级：构造器 color > Theme.color > colorScheme 映射。
+  ///
+  /// 禁用态统一使用全局文本禁用色，避免语义色在禁用态继续表达品牌/
+  /// 成功/警告/危险含义。
   static Color resolveColor({
     required BuildContext context,
     required TLinkColorScheme? colorScheme,
@@ -36,7 +39,7 @@ class TLinkResolve {
     final scheme = colorScheme ?? TLinkColorScheme.primary;
 
     if (isDisabled) {
-      return _disabledColor(scheme, tTheme);
+      return tTheme.textDisabledColor;
     }
     return _normalColor(scheme, tTheme);
   }
@@ -106,20 +109,6 @@ class TLinkResolve {
         tTheme.successNormalColor, // coverage:ignore-line
       TLinkColorScheme.defaultTheme =>
         tTheme.textColorPrimary, // coverage:ignore-line
-    };
-  }
-
-  /// 禁用态颜色映射
-  static Color _disabledColor(TLinkColorScheme scheme, TThemeData tTheme) {
-    return switch (scheme) {
-      TLinkColorScheme.primary => tTheme.brandDisabledColor,
-      TLinkColorScheme.danger => tTheme.errorDisabledColor,
-      TLinkColorScheme.warning =>
-        tTheme.warningDisabledColor, // coverage:ignore-line
-      TLinkColorScheme.success =>
-        tTheme.successDisabledColor, // coverage:ignore-line
-      TLinkColorScheme.defaultTheme =>
-        tTheme.textDisabledColor, // coverage:ignore-line
     };
   }
 

@@ -91,8 +91,9 @@ void main() {
       }
     });
 
-    testWidgets('resolveColor 禁用态覆盖全部 colorScheme', (tester) async {
+    testWidgets('resolveColor 禁用态统一使用 textDisabledColor', (tester) async {
       final context = await _context(tester);
+      final disabledColor = context.tTheme.textDisabledColor;
       for (final scheme in TLinkColorScheme.values) {
         final color = TLinkResolve.resolveColor(
           context: context,
@@ -100,7 +101,7 @@ void main() {
           theme: null,
           isDisabled: true,
         );
-        expect(color, isA<Color>());
+        expect(color, disabledColor);
       }
     });
 

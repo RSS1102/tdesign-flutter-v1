@@ -97,7 +97,7 @@ void main() {
       ),
     ));
 
-    await tester.tap(find.text('禁用链接'));
+    await tester.tap(find.text('禁用链接'), warnIfMissed: false);
     expect(tapped, false);
   });
 
