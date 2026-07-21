@@ -16,16 +16,14 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// - 主题覆盖（ThemeExtension）
 /// - 边界场景
 void main() {
-  /// 用 TTheme 包裹以提供基础 Token
+  /// 完整包装，注入 TDesign 全局主题。
   Widget wrapWithTheme(Widget child, {TTagThemeData? tagTheme}) {
-    final extensions = <ThemeExtension>[
-      TThemeData.defaultData(),
-      if (tagTheme != null) tagTheme,
-    ];
-    // 必须通过 MaterialApp.theme 传递 extensions，
-    // 用外层 Theme 包 MaterialApp 会被 MaterialApp 默认 ThemeData.light() 覆盖
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (tagTheme != null) {
+      theme = theme.mergeExtension(tagTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: extensions),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }

@@ -4,10 +4,16 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// 覆盖 [TSelectTag] 的选中/未选中、colorScheme、icon、size 与 onChanged 分支。
 void main() {
-  Widget wrap(Widget child) => Theme(
-        data: ThemeData(extensions: [TThemeData.defaultData()]),
-        child: MaterialApp(home: Scaffold(body: child)),
-      );
+  Widget wrap(Widget child, {TTagThemeData? tagTheme}) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (tagTheme != null) {
+      theme = theme.mergeExtension(tagTheme);
+    }
+    return MaterialApp(
+      theme: theme,
+      home: Scaffold(body: child),
+    );
+  }
 
   group('TSelectTag', () {
     testWidgets('未选中且无回调（defaultTheme）', (tester) async {
@@ -69,6 +75,27 @@ void main() {
         ),
       ));
       expect(find.byType(TSelectTag), findsOneWidget);
+
+      final token = TThemeData.defaultData();
+      final tagContainer = tester.widget<Container>(
+        find
+            .descendant(
+              of: find.byType(TSelectTag),
+              matching: find.byWidgetPredicate(
+                (widget) =>
+                    widget is Container && widget.decoration is BoxDecoration,
+              ),
+            )
+            .first,
+      );
+      final decoration = tagContainer.decoration as BoxDecoration;
+      final text = tester.widget<Text>(find.text('选中'));
+      final icon = tester.widget<Icon>(find.byIcon(Icons.check));
+
+      expect(decoration.color, token.errorNormalColor);
+      expect(text.style?.color, token.textColorAnti);
+      expect(icon.color, token.textColorAnti);
+      expect(text.style?.color, isNot(token.textDisabledColor));
     });
   });
 }
