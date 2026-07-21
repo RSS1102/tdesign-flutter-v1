@@ -79,7 +79,11 @@ class DateTimePickerLabels {
 
   @override
   int get hashCode => Object.hash(
-      Object.hashAll(unitSuffix.entries), Object.hashAll(weekLabels));
+        Object.hashAll([
+          for (final column in DateTimeColumn.values) unitSuffix[column],
+        ]),
+        Object.hashAll(weekLabels),
+      );
 }
 
 /// 包内读取 `DateTimePickerMode` 展开后的列列表。
