@@ -84,17 +84,10 @@ class _TStepperPageState extends State<TStepperPage> {
 
   @Demo(group: 'stepper')
   Widget _buildStepperWithDisableStatus(BuildContext context) {
-    return _buildRow(context, [
-      _themedStepper(
-        theme: const TStepperThemeData(variant: TStepperVariant.filled),
-        value: 1,
-        onChanged: null,
-      ),
-      _themedStepper(
-        theme: const TStepperThemeData(variant: TStepperVariant.normal),
-        value: 3,
-        onChanged: null,
-      ),
+    return _buildRow(context, const [
+      TStepper(value: 1),
+      TStepper(value: 3),
+      TStepper(value: 5),
     ]);
   }
 

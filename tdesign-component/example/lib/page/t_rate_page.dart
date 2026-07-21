@@ -41,9 +41,9 @@ class _TRatePageState extends State<TRatePage> {
 
   @Demo(group: 'rate')
   Widget _buildBasicRate(BuildContext context) {
-    return _RateDemoRow(
-      title: '基础评分',
-      child: TRate(
+    return TCell(
+      title: const Text('基础评分'),
+      note: TRate(
         value: _basicValue,
         onChanged: (value) => setState(() => _basicValue = value),
       ),
@@ -52,9 +52,9 @@ class _TRatePageState extends State<TRatePage> {
 
   @Demo(group: 'rate')
   Widget _buildHalfRate(BuildContext context) {
-    return _RateDemoRow(
-      title: '半星评分',
-      child: TRate(
+    return TCell(
+      title: const Text('半星评分'),
+      note: TRate(
         value: _halfValue,
         allowHalf: true,
         onChanged: (value) => setState(() => _halfValue = value),
@@ -64,9 +64,9 @@ class _TRatePageState extends State<TRatePage> {
 
   @Demo(group: 'rate')
   Widget _buildCustomRate(BuildContext context) {
-    return _RateDemoRow(
-      title: '自定义图标',
-      child: TRate(
+    return TCell(
+      title: const Text('自定义图标'),
+      note: TRate(
         value: _customValue,
         icon: (filled) => Icon(
           filled ? Icons.favorite : Icons.favorite_border,
@@ -83,9 +83,9 @@ class _TRatePageState extends State<TRatePage> {
       data: Theme.of(context).mergeExtension(
         const TRateThemeData(showText: true, textWidth: 64),
       ),
-      child: _RateDemoRow(
-        title: '评分文案',
-        child: TRate(
+      child: TCell(
+        title: const Text('评分文案'),
+        note: TRate(
           value: _textValue,
           texts: const ['很差', '较差', '一般', '满意', '惊喜'],
           onChanged: (value) => setState(() => _textValue = value),
@@ -96,9 +96,9 @@ class _TRatePageState extends State<TRatePage> {
 
   @Demo(group: 'rate')
   Widget _buildDisabledRate(BuildContext context) {
-    return const _RateDemoRow(
-      title: '禁用状态',
-      child: TRate(value: 3),
+    return const TCell(
+      title: Text('禁用状态'),
+      note: TRate(value: 3),
     );
   }
 
@@ -113,43 +113,9 @@ class _TRatePageState extends State<TRatePage> {
           iconGap: 4,
         ),
       ),
-      child: const _RateDemoRow(
-        title: '主题定制',
-        child: TRate(value: 4),
-      ),
-    );
-  }
-}
-
-class _RateDemoRow extends StatelessWidget {
-  const _RateDemoRow({
-    required this.title,
-    required this.child,
-  });
-
-  final String title;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final token = context.tTheme;
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(token.spacer16),
-      color: token.bgColorContainer,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: token.textColorPrimary,
-              fontSize: token.fontBodyLarge?.size,
-            ),
-          ),
-          SizedBox(height: token.spacer12),
-          child,
-        ],
+      child: const TCell(
+        title: Text('主题定制'),
+        note: TRate(value: 4),
       ),
     );
   }

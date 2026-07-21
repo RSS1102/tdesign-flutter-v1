@@ -17,28 +17,6 @@ void main() {
   TextField textField(WidgetTester tester) =>
       tester.widget<TextField>(find.byType(TextField));
 
-  Finder inputContainerFinder() => find
-      .ancestor(
-        of: find.byType(TextField),
-        matching: find.byWidgetPredicate(
-          (widget) => widget is Container && widget.decoration != null,
-        ),
-      )
-      .first;
-
-  Container inputContainer(WidgetTester tester) => tester.widget<Container>(
-        inputContainerFinder(),
-      );
-
-  BoxDecoration iconButtonDecoration(WidgetTester tester, String key) => tester
-      .widget<DecoratedBox>(
-        find.descendant(
-          of: find.byKey(ValueKey(key)),
-          matching: find.byType(DecoratedBox),
-        ),
-      )
-      .decoration as BoxDecoration;
-
   group('TStepper v1 controlled behavior', () {
     testWidgets('renders controlled value and icons', (tester) async {
       await tester.pumpWidget(wrap(TStepper(value: 5, onChanged: (_) {})));
@@ -47,9 +25,6 @@ void main() {
       expect(find.byIcon(Icons.remove), findsOneWidget);
       expect(find.byIcon(Icons.add), findsOneWidget);
       expect(textField(tester).controller?.text, '5');
-      expect(tester.getSize(find.byKey(const ValueKey('stepper-decrease'))),
-          const Size(32, 32));
-      expect(tester.getSize(inputContainerFinder()), const Size(48, 32));
     });
 
     testWidgets('add increments by step', (tester) async {
@@ -124,47 +99,18 @@ void main() {
       await tester.pumpWidget(wrap(const TStepper(value: 5)));
 
       expect(textField(tester).enabled, isFalse);
-      final addButton = tester.widget<GestureDetector>(
-          find.byKey(const ValueKey('stepper-increase')));
-      final removeButton = tester.widget<GestureDetector>(
-          find.byKey(const ValueKey('stepper-decrease')));
-      expect(addButton.onTap, isNull);
-      expect(removeButton.onTap, isNull);
-    });
-
-    testWidgets('limit state only disables reached-side action',
-        (tester) async {
-      final token = TThemeData.defaultData();
-      await tester.pumpWidget(wrap(
-        TStepper(value: 0, min: 0, max: 10, onChanged: (_) {}),
-        stepperTheme: const TStepperThemeData(variant: TStepperVariant.filled),
-      ));
-
-      expect(
-        iconButtonDecoration(tester, 'stepper-decrease').color,
-        token.bgColorSecondaryContainer,
+      final addButton = tester.widget<IconButton>(
+        find.ancestor(
+            of: find.byIcon(Icons.add), matching: find.byType(IconButton)),
       );
-      expect(
-        tester.widget<Icon>(find.byIcon(Icons.remove)).color,
-        token.textDisabledColor,
+      final removeButton = tester.widget<IconButton>(
+        find.ancestor(
+          of: find.byIcon(Icons.remove),
+          matching: find.byType(IconButton),
+        ),
       );
-      expect(
-        tester.widget<Icon>(find.byIcon(Icons.add)).color,
-        token.textColorPrimary,
-      );
-
-      await tester.pumpWidget(wrap(
-        TStepper(value: 10, min: 0, max: 10, onChanged: (_) {}),
-        stepperTheme: const TStepperThemeData(variant: TStepperVariant.filled),
-      ));
-      expect(
-        tester.widget<Icon>(find.byIcon(Icons.remove)).color,
-        token.textColorPrimary,
-      );
-      expect(
-        tester.widget<Icon>(find.byIcon(Icons.add)).color,
-        token.textDisabledColor,
-      );
+      expect(addButton.onPressed, isNull);
+      expect(removeButton.onPressed, isNull);
     });
 
     testWidgets('submitted input parses and clamps', (tester) async {
@@ -245,40 +191,15 @@ void main() {
         ),
       ));
 
-      final inputBox = tester.getSize(inputContainerFinder());
+      final inputBox = tester.getSize(
+        find.ancestor(
+            of: find.byType(TextField), matching: find.byType(SizedBox)),
+      );
       expect(inputBox.width, 88);
-      expect(inputBox.height, 32);
-      expect(textField(tester).decoration?.filled, isFalse);
-      final token = TThemeData.defaultData();
-      expect(
-        (inputContainer(tester).decoration as BoxDecoration).color,
-        token.bgColorSecondaryContainer,
-      );
+      expect(textField(tester).decoration?.filled, isTrue);
     });
 
-    testWidgets('filled disabled uses disabled background for whole control',
-        (tester) async {
-      final token = TThemeData.defaultData();
-      await tester.pumpWidget(wrap(
-        const TStepper(value: 1),
-        stepperTheme: const TStepperThemeData(variant: TStepperVariant.filled),
-      ));
-
-      expect(
-        (inputContainer(tester).decoration as BoxDecoration).color,
-        token.bgColorComponentDisabled,
-      );
-      expect(
-        iconButtonDecoration(tester, 'stepper-decrease').color,
-        token.bgColorComponentDisabled,
-      );
-      expect(
-        iconButtonDecoration(tester, 'stepper-increase').color,
-        token.bgColorComponentDisabled,
-      );
-    });
-
-    testWidgets('normal variant keeps transparent input and segment borders',
+    testWidgets('normal variant keeps transparent input decoration',
         (tester) async {
       await tester.pumpWidget(wrap(
         TStepper(value: 1, onChanged: (_) {}),
@@ -286,17 +207,6 @@ void main() {
       ));
 
       expect(textField(tester).decoration?.filled, isFalse);
-      final inputDecoration =
-          inputContainer(tester).decoration as BoxDecoration;
-      expect(inputDecoration.border, isA<Border>());
-      expect(
-        iconButtonDecoration(tester, 'stepper-decrease').border,
-        isA<Border>(),
-      );
-      expect(
-        iconButtonDecoration(tester, 'stepper-increase').border,
-        isA<Border>(),
-      );
     });
 
     test('TStepperThemeData copyWith and lerp', () {

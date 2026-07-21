@@ -175,7 +175,7 @@ void main() {
         spacing: 4,
       );
       const b = TCheckboxThemeData(
-        variant: TCheckboxVariant.check,
+        variant: TCheckboxVariant.circle,
         selectColor: Colors.blue,
         spacing: 8,
       );
@@ -184,7 +184,7 @@ void main() {
       expect(a.lerp(b, 0), same(a));
       expect(a.lerp(b, 1), same(b));
       final mid = a.lerp(b, 0.75);
-      expect(mid.variant, TCheckboxVariant.check);
+      expect(mid.variant, TCheckboxVariant.circle);
       expect(mid.spacing, 7);
     });
 

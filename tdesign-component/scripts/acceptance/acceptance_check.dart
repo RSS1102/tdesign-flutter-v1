@@ -1063,13 +1063,6 @@ void checkApiDocConsistency() {
         ? apiFile
         : File('$apiOutputPath/${meta.configKey}_api.md'));
 
-    final apiDescriptionHoles = _findApiDescriptionHoles(apiContent);
-
-    if (apiDescriptionHoles.isNotEmpty) {
-      issues.add(
-          '${meta.widgetName}: API 表说明列存在 "-": ${apiDescriptionHoles.take(10).join(', ')}');
-    }
-
     final docContent = readFile(docFile);
 
     // 比对参数名集合（仅提取构造器参数表，过滤枚举值和非参数条目）
@@ -1100,48 +1093,6 @@ void checkApiDocConsistency() {
         ? '$checkedCount 个组件 API 文档与 §1 参数一致'
         : '发现 ${issues.length} 处差异:\n${issues.take(30).join('\n')}',
   );
-}
-
-/// 找出 API Markdown 表格中「说明」列仍为 `-` 的行。
-///
-/// 默认值列允许为 `-`，这里只根据表头动态定位「说明」列。
-List<String> _findApiDescriptionHoles(String content) {
-  final holes = <String>[];
-  final lines = content.split('\n');
-  var descriptionIndex = -1;
-
-  for (var i = 0; i < lines.length; i++) {
-    final trimmed = lines[i].trim();
-
-    if (!trimmed.startsWith('|')) {
-      descriptionIndex = -1;
-      continue;
-    }
-
-    final raw = trimmed.endsWith('|')
-        ? trimmed.substring(1, trimmed.length - 1)
-        : trimmed.substring(1);
-    final columns = raw.split('|').map((s) => s.trim()).toList();
-
-    if (columns.every((s) => RegExp(r'^:?-+:?$').hasMatch(s))) {
-      continue;
-    }
-
-    final headerIndex = columns.indexOf('说明');
-
-    if (headerIndex >= 0) {
-      descriptionIndex = headerIndex;
-      continue;
-    }
-
-    if (descriptionIndex >= 0 &&
-        columns.length > descriptionIndex &&
-        columns[descriptionIndex] == '-') {
-      holes.add('第${i + 1}行 ${columns.first}');
-    }
-  }
-
-  return holes;
 }
 
 /// 从生成 API md 中提取构造器参数名

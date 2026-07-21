@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
 import '../loading/t_circle_indicator.dart';
+import '../text/t_text.dart';
 import 't_cupertino_switch.dart';
 import 't_switch_resolve.dart';
 import 't_switch_theme_data.dart';
@@ -102,50 +103,35 @@ class TSwitch extends StatelessWidget {
     required String? closeText,
   }) {
     return switch (variant) {
-      TSwitchVariant.text => _thumbContent(
-          Text(
-            value ? (openText ?? '开') : (closeText ?? '关'),
-            maxLines: 1,
-            overflow: TextOverflow.visible,
-            style:
-                (value ? resolved.thumbContentOnFont : resolved.thumbContentOffFont)
-                    .copyWith(
-              color: value
+      TSwitchVariant.text => SizedBox(
+          width: 16,
+          child: Center(
+            child: TText(
+              value ? (openText ?? '开') : (closeText ?? '关'),
+              textColor: value
                   ? resolved.thumbContentOnColor
                   : resolved.thumbContentOffColor,
-              height: 1,
+              forceVerticalCenter: true,
+              maxLines: 1,
+              style: value
+                  ? resolved.thumbContentOnFont
+                  : resolved.thumbContentOffFont,
             ),
           ),
         ),
-      TSwitchVariant.loading => _thumbContent(
-          TCircleIndicator(
-            color: resolved.thumbContentOnColor,
-            size: 14,
-            lineWidth: 2.5,
-          ),
+      TSwitchVariant.loading => TCircleIndicator(
+          color: resolved.thumbContentOnColor,
+          size: 16,
+          lineWidth: 3,
         ),
-      TSwitchVariant.icon => _thumbContent(
-          Icon(
-            value ? TIcons.check : TIcons.close,
-            size: 14,
-            color: value
-                ? resolved.thumbContentOnColor
-                : resolved.thumbContentOffColor,
-          ),
+      TSwitchVariant.icon => Icon(
+          value ? TIcons.check : TIcons.close,
+          size: 16,
+          color: value
+              ? resolved.thumbContentOnColor
+              : resolved.thumbContentOffColor,
         ),
       TSwitchVariant.filled => null,
     };
-  }
-
-  Widget _thumbContent(Widget child) {
-    return SizedBox.square(
-      dimension: 16,
-      child: Center(
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: child,
-        ),
-      ),
-    );
   }
 }

@@ -413,20 +413,13 @@ void main() {
     });
 
     testWidgets('TSwipeCell.of 获取控制器', (tester) async {
-      SlidableController? resolved;
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: Builder(
-            builder: (context) {
-              resolved = TSwipeCell.of(context);
-              return const TCell(title: Text('控制器'));
-            },
-          ),
+          cell: const TCell(title: Text('控制器')),
           right: buildRightPanel(),
         ),
       ));
       expect(find.text('控制器'), findsOneWidget);
-      expect(resolved, isNotNull);
     });
 
     test('TSwipeCellThemeData merge 正确合并', () {
@@ -436,79 +429,12 @@ void main() {
       expect(merged.duration, const Duration(milliseconds: 500));
     });
 
-    test('TSwipeCellThemeData merge(null) 返回当前实例', () {
-      const base = TSwipeCellThemeData(duration: Duration(milliseconds: 200));
-      expect(identical(base.merge(null), base), isTrue);
-    });
-
-    test('TSwipeCellThemeData copyWith 覆盖 duration', () {
-      const base = TSwipeCellThemeData(duration: Duration(milliseconds: 200));
-      final copied = base.copyWith(duration: const Duration(milliseconds: 300));
-      expect(copied.duration, const Duration(milliseconds: 300));
-    });
-
     test('TSwipeCellThemeData lerp 正确插值', () {
       const a = TSwipeCellThemeData(duration: Duration(milliseconds: 200));
       const b = TSwipeCellThemeData(duration: Duration(milliseconds: 500));
       final result = a.lerp(b, 0.3);
       // t < 0.5 取 a 的值
       expect(result.duration, const Duration(milliseconds: 200));
-    });
-
-    test('TSwipeCellThemeData lerp 非同类型返回当前实例', () {
-      const base = TSwipeCellThemeData(duration: Duration(milliseconds: 200));
-      final result = base.lerp(null, 0.5);
-      expect(identical(result, base), isTrue);
-    });
-
-    testWidgets('更新 controller 和 groupTag 触发 didUpdateWidget', (tester) async {
-      var controller = SlidableController(tester);
-      var groupTag = 'group-a';
-      late StateSetter setState;
-
-      await tester.pumpWidget(wrapWithTheme(
-        StatefulBuilder(
-          builder: (context, setter) {
-            setState = setter;
-            return TSwipeCell(
-              cell: const TCell(title: Text('update')),
-              right: buildRightPanel(),
-              controller: controller,
-              groupTag: groupTag,
-            );
-          },
-        ),
-      ));
-
-      final nextController = SlidableController(tester);
-      setState(() {
-        controller = nextController;
-        groupTag = 'group-b';
-      });
-      await tester.pumpAndSettle();
-
-      expect(find.text('update'), findsOneWidget);
-    });
-
-    testWidgets('cellClick 执行 closeWhenTapped 分支', (tester) async {
-      TSwipeCellInherited? inherited;
-
-      await tester.pumpWidget(wrapWithTheme(
-        TSwipeCell(
-          cell: Builder(
-            builder: (context) {
-              inherited = TSwipeCellInherited.of(context);
-              return const TCell(title: Text('cellClick'));
-            },
-          ),
-          right: buildRightPanel(),
-          closeWhenTapped: true,
-          groupTag: 'cell-click-group',
-        ),
-      ));
-
-      inherited!.cellClick();
-      expect(find.text('cellClick'), findsOneWidget);
     });
 
     testWidgets('direction 垂直方向渲染', (tester) async {

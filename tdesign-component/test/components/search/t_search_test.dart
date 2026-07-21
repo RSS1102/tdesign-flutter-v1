@@ -4,12 +4,13 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
   Widget wrap(Widget child, {TSearchBarThemeData? searchTheme}) {
-    final extensions = <ThemeExtension<dynamic>>[TThemeData.defaultData()];
+    final token = TThemeData.defaultData();
+    var theme = TThemeBuilder.light(token);
     if (searchTheme != null) {
-      extensions.add(searchTheme);
+      theme = theme.mergeExtension(searchTheme);
     }
     return MaterialApp(
-      theme: ThemeData(extensions: extensions),
+      theme: theme,
       home: Scaffold(body: Center(child: child)),
     );
   }
@@ -17,15 +18,17 @@ void main() {
   TextField textField(WidgetTester tester) =>
       tester.widget<TextField>(find.byType(TextField));
 
+  Finder inputContainerFinder() => find
+      .ancestor(
+        of: find.byType(TextField),
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Container && widget.decoration != null,
+        ),
+      )
+      .first;
+
   Container inputContainer(WidgetTester tester) => tester.widget<Container>(
-        find
-            .ancestor(
-              of: find.byType(TextField),
-              matching: find.byWidgetPredicate(
-                (widget) => widget is Container && widget.decoration != null,
-              ),
-            )
-            .first,
+        inputContainerFinder(),
       );
 
   group('TSearchBar v1 behavior', () {
@@ -40,21 +43,6 @@ void main() {
       expect(find.text('initial'), findsOneWidget);
       expect(textField(tester).decoration?.hintText, 'search');
       controller.dispose();
-    });
-
-    testWidgets('uses TDesign search background and collapsed input layout',
-        (tester) async {
-      await tester.pumpWidget(wrap(const TSearchBar(hintText: 'search')));
-
-      final token = TThemeData.defaultData();
-      final inputDecoration =
-          inputContainer(tester).decoration as BoxDecoration;
-      final searchIcon = tester.widget<Icon>(find.byIcon(TIcons.search));
-
-      expect(inputDecoration.color, token.bgColorSecondaryContainer);
-      expect(textField(tester).decoration?.isCollapsed, isTrue);
-      expect(textField(tester).decoration?.hintMaxLines, 1);
-      expect(searchIcon.size, 24);
     });
 
     testWidgets('initialValue initializes internal controller once',
@@ -191,6 +179,51 @@ void main() {
       expect(textField(tester).textAlign, TextAlign.center);
       expect(textField(tester).cursorHeight, 24);
       expect(find.byType(TSearchBar), findsOneWidget);
+    });
+
+    testWidgets('uses develop search field icon sizing', (tester) async {
+      await tester.pumpWidget(wrap(
+        const TSearchBar(hintText: 'theme'),
+        searchTheme: const TSearchBarThemeData(
+          variant: TSearchBarVariant.round,
+          textAlignment: TSearchBarAlignment.center,
+        ),
+      ));
+
+      final token = TThemeData.defaultData();
+      final inputDecoration =
+          inputContainer(tester).decoration as BoxDecoration;
+      final searchIcon = tester.widget<Icon>(find.byIcon(TIcons.search));
+      expect(textField(tester).textAlign, TextAlign.center);
+      expect(inputDecoration.color, token.bgColorSecondaryContainer);
+      expect(inputDecoration.borderRadius, BorderRadius.circular(28));
+      expect(searchIcon.size, 24);
+    });
+
+    testWidgets('default layout matches develop visual tokens', (tester) async {
+      await tester.pumpWidget(wrap(const TSearchBar(hintText: 'theme')));
+
+      final token = TThemeData.defaultData();
+      final inputDecoration =
+          inputContainer(tester).decoration as BoxDecoration;
+      final searchBarSize = tester.getSize(find.byType(TSearchBar));
+      final inputSize = tester.getSize(inputContainerFinder());
+      final searchIcon = tester.widget<Icon>(find.byIcon(TIcons.search));
+      final field = textField(tester);
+      final fieldDecoration = textField(tester).decoration;
+
+      expect(searchBarSize.height, 56);
+      expect(inputSize.height, 40);
+      expect(inputDecoration.color, token.bgColorSecondaryContainer);
+      expect(inputDecoration.borderRadius, BorderRadius.circular(4));
+      expect(searchIcon.size, 24);
+      expect(field.textAlignVertical, TextAlignVertical.center);
+      expect(field.style?.height, token.fontBodyLarge?.height);
+      expect(fieldDecoration?.filled, isFalse);
+      expect(fieldDecoration?.fillColor, Colors.transparent);
+      expect(fieldDecoration?.isCollapsed, isTrue);
+      expect(fieldDecoration?.hintMaxLines, 1);
+      expect(fieldDecoration?.contentPadding, EdgeInsets.zero);
     });
 
     test('TSearchBarThemeData copyWith and lerp', () {

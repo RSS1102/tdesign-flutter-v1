@@ -93,12 +93,8 @@ class _TRateState extends State<TRate> {
             behavior: HitTestBehavior.opaque,
             onTapDown: _enabled
                 ? (details) {
-                    final next =
+                    _lastInteractionValue =
                         _valueAt(details.localPosition.dx, iconSize, iconGap);
-                    if (next == null) {
-                      return;
-                    }
-                    _lastInteractionValue = next;
                     widget.onChangeStart?.call(widget.value);
                   }
                 : null,
@@ -106,9 +102,6 @@ class _TRateState extends State<TRate> {
                 ? (details) {
                     final next =
                         _valueAt(details.localPosition.dx, iconSize, iconGap);
-                    if (next == null) {
-                      return;
-                    }
                     _lastInteractionValue = next;
                     widget.onChanged?.call(next);
                     widget.onChangeEnd?.call(next);
@@ -124,9 +117,6 @@ class _TRateState extends State<TRate> {
                 ? (details) {
                     final next =
                         _valueAt(details.localPosition.dx, iconSize, iconGap);
-                    if (next == null) {
-                      return;
-                    }
                     _lastInteractionValue = next;
                     widget.onChanged?.call(next);
                   }
@@ -152,8 +142,6 @@ class _TRateState extends State<TRate> {
               width: theme?.textWidth,
               child: Text(
                 _resolveText(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 style: theme?.textStyle ??
                     TextStyle(
                       color: _enabled
@@ -205,20 +193,11 @@ class _TRateState extends State<TRate> {
     );
   }
 
-  double? _valueAt(double dx, double iconSize, double iconGap) {
+  double _valueAt(double dx, double iconSize, double iconGap) {
     final itemExtent = iconSize + iconGap;
-    final maxDx = itemExtent * widget.count - iconGap;
-    if (dx < 0) {
-      return 0;
-    }
-    if (dx >= maxDx) {
-      return widget.count.toDouble();
-    }
-    final index = (dx / itemExtent).floor().clamp(0, widget.count - 1);
-    final local = dx - index * itemExtent;
-    if (local > iconSize) {
-      return null;
-    }
+    final clamped = dx.clamp(0, itemExtent * widget.count - iconGap);
+    final index = (clamped / itemExtent).floor().clamp(0, widget.count - 1);
+    final local = clamped - index * itemExtent;
     final fraction = widget.allowHalf && local <= iconSize / 2 ? 0.5 : 1.0;
     return index + fraction;
   }

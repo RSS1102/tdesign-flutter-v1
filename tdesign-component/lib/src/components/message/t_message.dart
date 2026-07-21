@@ -7,6 +7,7 @@ import '../../theme/t_colors.dart';
 import '../../theme/t_radius.dart';
 import '../../theme/t_theme.dart';
 import '../link/t_link.dart';
+import '../link/t_link_theme_data.dart';
 import '../link/t_link_types.dart';
 import 't_message_theme_data.dart';
 
@@ -399,18 +400,14 @@ class _TMessageState extends State<TMessage>
       size: TLinkSize.medium,
       onPressed: widget.onLinkPressed,
     );
-    if (link.color == null || widget.onLinkPressed == null) {
+    if (link.color == null) {
       return linkWidget;
     }
-    return InkWell(
-      onTap: widget.onLinkPressed,
-      child: Text(
-        link.name,
-        style: TextStyle(
-          color: link.color,
-          fontSize: 14,
-        ),
+    return Theme(
+      data: Theme.of(context).mergeExtension(
+        TLinkThemeData(color: link.color),
       ),
+      child: linkWidget,
     );
   }
 

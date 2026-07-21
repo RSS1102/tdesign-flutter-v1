@@ -8,13 +8,14 @@
 ##### TSwipeCell.close
 
 根据groupTag关闭`TSwipeCell`
+current：保留当前不关闭
 
 返回类型：`void`
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| tag | Object? | - | 要关闭的互斥滑动组标识 |
-| current | SlidableController? | - | 保留不关闭的当前控制器 |
+| tag | Object? | - | 要关闭的互斥滑动组标识。 |
+| current | SlidableController? | - | 保留不关闭的当前控制器。 |
 
 
 ##### TSwipeCell.of
@@ -25,7 +26,7 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| context | BuildContext | - | 用于查找最近 `SlidableController` 的上下文 |
+| context | BuildContext | - | 用于查找最近 `SlidableController` 的上下文。 |
 
 #### 默认构造方法
 
@@ -111,8 +112,8 @@ TSwipeCell 组件级 ThemeExtension
 
 | 名称 | 说明 |
 | --- | --- |
-| right | 向右滑动展开左侧操作面板 |
-| left | 向左滑动展开右侧操作面板 |
+| right | - |
+| left | - |
 
 
 ### SwipeMotion

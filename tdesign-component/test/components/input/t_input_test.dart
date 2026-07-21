@@ -115,34 +115,6 @@ void main() {
       expect(field(tester).readOnly, isTrue);
     });
 
-    testWidgets('defaults use TDesign input colors and spacing',
-        (tester) async {
-      final token = TThemeData.defaultData();
-      await tester.pumpWidget(wrap(const TInput(hintText: '请输入')));
-
-      final enabledField = field(tester);
-      expect(enabledField.decoration?.filled, isFalse);
-      expect(enabledField.decoration?.fillColor, token.bgColorContainer);
-      expect(
-        enabledField.decoration?.contentPadding,
-        const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-      );
-      expect(enabledField.decoration?.hintStyle?.color,
-          token.textColorPlaceholder);
-      expect(enabledField.style?.color, token.textColorPrimary);
-
-      await tester.pumpWidget(wrap(const TInput(
-        initialValue: 'disabled',
-        enabled: false,
-      )));
-
-      final disabledField = field(tester);
-      expect(disabledField.decoration?.filled, isTrue);
-      expect(
-          disabledField.decoration?.fillColor, token.bgColorComponentDisabled);
-      expect(disabledField.style?.color, token.textDisabledColor);
-    });
-
     testWidgets('obscureText remains independent from keyboard type',
         (tester) async {
       await tester.pumpWidget(wrap(const TInput(

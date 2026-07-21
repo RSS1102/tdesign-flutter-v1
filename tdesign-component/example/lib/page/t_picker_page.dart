@@ -23,17 +23,6 @@ class _TPickerPageState extends State<TPickerPage> {
       TPickerOption(label: '第二项', value: 2),
     ],
   ]);
-  static const _columnsWithDisabled = TPickerColumns([
-    [
-      TPickerOption(label: '广东', value: 'gd'),
-      TPickerOption(label: '福建', value: 'fj', disabled: true),
-    ],
-    [
-      TPickerOption(label: '第一项', value: 1),
-      TPickerOption(label: '第二项', value: 2),
-      TPickerOption(label: '第三项', value: 3, disabled: true),
-    ],
-  ]);
   static const _linked = TPickerLinked([
     TPickerOption(
       label: '广东',
@@ -69,18 +58,6 @@ class _TPickerPageState extends State<TPickerPage> {
       ],
     ),
   ]);
-  static const _columnsForCustom = TPickerColumns([
-    [
-      TPickerOption(label: '苹果', value: 'apple'),
-      TPickerOption(label: '香蕉', value: 'banana'),
-      TPickerOption(label: '橙子', value: 'orange'),
-    ],
-    [
-      TPickerOption(label: '大', value: 'l'),
-      TPickerOption(label: '中', value: 'm'),
-      TPickerOption(label: '小', value: 's'),
-    ],
-  ]);
 
   List<dynamic> _columnValue = ['gd', 1];
   List<dynamic> _linkedValue = ['广东', '深圳', '南山'];
@@ -97,8 +74,6 @@ class _TPickerPageState extends State<TPickerPage> {
           ExampleItem(desc: '联动列', builder: _buildLinked),
           ExampleItem(desc: '禁用状态', builder: _buildDisabled),
           ExampleItem(desc: '主题尺寸', builder: _buildThemed),
-          ExampleItem(desc: '禁用项', builder: _buildDisabledItems),
-          ExampleItem(desc: '自定义渲染', builder: _buildCustomItemBuilder),
         ]),
       ],
     );
@@ -138,42 +113,6 @@ class _TPickerPageState extends State<TPickerPage> {
         value: _columnValue,
         onChanged: (value) => setState(() => _columnValue = value.values),
       ),
-    );
-  }
-
-  @Demo(group: 'picker')
-  Widget _buildDisabledItems(BuildContext context) {
-    return TPicker(
-      items: _columnsWithDisabled,
-      value: _columnValue,
-      onChanged: (value) => setState(() => _columnValue = value.values),
-    );
-  }
-
-  @Demo(group: 'picker')
-  Widget _buildCustomItemBuilder(BuildContext context) {
-    return TPicker(
-      items: _columnsForCustom,
-      value: const ['apple', 'm'],
-      onChanged: (_) {},
-      itemBuilder: (context, option, columnIndex, itemIndex, distance) {
-        final selected = distance < 0.5;
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              option.label,
-              style: TextStyle(
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-              ),
-            ),
-            if (selected) ...[
-              const SizedBox(width: 4),
-              const Icon(Icons.check_circle, size: 12),
-            ],
-          ],
-        );
-      },
     );
   }
 }

@@ -7,24 +7,37 @@ import 't_link_types.dart';
 
 /// Link 样式解析器
 ///
-/// 优先级链：构造器参数 > TLinkThemeData 默认项 > Token 默认值
+/// 优先级链：构造器参数 > TLinkThemeData > Token 默认值
 /// 这是唯一的样式 merge 入口，build 内禁止内联颜色/尺寸计算。
 class TLinkResolve {
   TLinkResolve._(); // coverage:ignore-line
 
   /// 解析链接文本颜色
   ///
-  /// 启用态按 [colorScheme] 语义色映射，禁用态统一使用全局文本禁用色。
+  /// 优先级：构造器 color > Theme.color > colorScheme × disabled 映射
   static Color resolveColor({
     required BuildContext context,
     required TLinkColorScheme? colorScheme,
+    required TLinkThemeData? theme,
     required bool isDisabled,
+    Color? instanceColor,
   }) {
-    final tTheme = context.tTheme;
-    if (isDisabled) {
-      return tTheme.textDisabledColor;
+    // L1：构造器参数
+    if (instanceColor != null) {
+      return instanceColor;
     }
+    // L2：Theme
+    final themeColor = theme?.color;
+    if (themeColor != null) {
+      return themeColor;
+    }
+    // L3：颜色映射
+    final tTheme = context.tTheme;
     final scheme = colorScheme ?? TLinkColorScheme.primary;
+
+    if (isDisabled) {
+      return _disabledColor(scheme, tTheme);
+    }
     return _normalColor(scheme, tTheme);
   }
 
@@ -93,6 +106,20 @@ class TLinkResolve {
         tTheme.successNormalColor, // coverage:ignore-line
       TLinkColorScheme.defaultTheme =>
         tTheme.textColorPrimary, // coverage:ignore-line
+    };
+  }
+
+  /// 禁用态颜色映射
+  static Color _disabledColor(TLinkColorScheme scheme, TThemeData tTheme) {
+    return switch (scheme) {
+      TLinkColorScheme.primary => tTheme.brandDisabledColor,
+      TLinkColorScheme.danger => tTheme.errorDisabledColor,
+      TLinkColorScheme.warning =>
+        tTheme.warningDisabledColor, // coverage:ignore-line
+      TLinkColorScheme.success =>
+        tTheme.successDisabledColor, // coverage:ignore-line
+      TLinkColorScheme.defaultTheme =>
+        tTheme.textDisabledColor, // coverage:ignore-line
     };
   }
 

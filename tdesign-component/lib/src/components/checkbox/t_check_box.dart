@@ -230,6 +230,11 @@ class TCheckbox extends StatelessWidget {
     final selected = value == true;
     final indeterminate = value == null;
     final icon = switch (variant) {
+      TCheckboxVariant.circle => indeterminate
+          ? TIcons.minus_circle_filled
+          : selected
+              ? TIcons.check_circle_filled
+              : TIcons.circle,
       TCheckboxVariant.square => indeterminate
           ? TIcons.minus_rectangle_filled
           : selected

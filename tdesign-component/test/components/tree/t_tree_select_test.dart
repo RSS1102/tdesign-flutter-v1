@@ -131,13 +131,10 @@ void main() {
       onChanged: _ignore,
     )));
     expect(find.text('Banana'), findsOneWidget);
-    expect(find.byType(SingleChildScrollView), findsNothing);
-    expect(find.byType(ListTile), findsNothing);
-    expect(find.byIcon(TIcons.check), findsOneWidget);
-    expect(
-      tester.widget<Text>(find.text('Banana')).style?.color,
-      TThemeData.defaultData().textColorPrimary,
+    final tile = tester.widget<ListTile>(
+      find.ancestor(of: find.text('Banana'), matching: find.byType(ListTile)),
     );
+    expect(tile.selected, isTrue);
 
     await tester.pumpWidget(wrap(const TTreeSelect(
       options: options,
@@ -175,10 +172,10 @@ void main() {
       value: const [],
       onChanged: (_) => changed = true,
     )));
-    final inkWell = tester.widget<InkWell>(
-      find.ancestor(of: find.text('Disabled'), matching: find.byType(InkWell)),
+    final tile = tester.widget<ListTile>(
+      find.ancestor(of: find.text('Disabled'), matching: find.byType(ListTile)),
     );
-    expect(inkWell.onTap, isNull);
+    expect(tile.onTap, isNull);
     expect(changed, isFalse);
   });
 

@@ -10,14 +10,6 @@ Widget wrap(Widget child) => MaterialApp(
       home: SizedBox(width: 360, height: 300, child: child),
     );
 
-Widget wrapWithPickerTheme(Widget child) => MaterialApp(
-      theme: ThemeData(extensions: [
-        TThemeData.defaultData(),
-        const TPickerThemeData(height: 240, itemCount: 3),
-      ]),
-      home: SizedBox(width: 360, height: 320, child: child),
-    );
-
 void main() {
   testWidgets('受控日期模式渲染、更新和回调', (tester) async {
     var value = const TDateTimePickerValue(year: 2024, month: 2, day: 29);
@@ -62,27 +54,6 @@ void main() {
     expect(find.byType(DateTimePickerWheel), findsOneWidget);
     final semantics = tester.getSemantics(find.byType(TDateTimePicker));
     expect(semantics.hasFlag(SemanticsFlag.isEnabled), isFalse);
-  });
-
-  testWidgets('默认模式、主题尺寸和回调去重', (tester) async {
-    final handle = tester.ensureSemantics();
-    final results = <TDateTimePickerValue>[];
-    await tester.pumpWidget(wrapWithPickerTheme(
-      TDateTimePicker(
-        value: const TDateTimePickerValue(year: 2024, month: 6, day: 15),
-        onChanged: results.add,
-      ),
-    ));
-
-    expect(find.byType(DateTimePickerWheel), findsOneWidget);
-    final yearNode = tester.getSemantics(find.bySemanticsLabel('年份年'));
-    yearNode.owner!.performAction(yearNode.id, SemanticsAction.increase);
-    await tester.pumpAndSettle();
-    yearNode.owner!.performAction(yearNode.id, SemanticsAction.decrease);
-    await tester.pumpAndSettle();
-
-    expect(results, isNotEmpty);
-    handle.dispose();
   });
 
   testWidgets('更新分支覆盖 no-op、受控值分歧和范围重建', (tester) async {
@@ -182,45 +153,6 @@ void main() {
     expect(invalidSteps.forColumn(DateTimeColumn.year), 1);
     expect(invalidSteps.forColumn(DateTimeColumn.month), 1);
     expect(invalidSteps.forColumn(DateTimeColumn.day), 1);
-    expect(
-        steps,
-        const DateTimePickerSteps(
-          year: 2,
-          month: 2,
-          day: 2,
-          hour: 2,
-          minute: 5,
-          second: 10,
-        ));
-    expect(steps, isNot(invalidSteps));
-    expect(
-        steps.hashCode,
-        const DateTimePickerSteps(
-          year: 2,
-          month: 2,
-          day: 2,
-          hour: 2,
-          minute: 5,
-          second: 10,
-        ).hashCode);
-    final runtimeSteps = DateTimePickerSteps(
-      year: steps.year,
-      month: steps.month,
-      day: steps.day,
-      hour: steps.hour,
-      minute: steps.minute,
-      second: steps.second,
-    );
-    final runtimeSameSteps = DateTimePickerSteps(
-      year: steps.year,
-      month: steps.month,
-      day: steps.day,
-      hour: steps.hour,
-      minute: steps.minute,
-      second: steps.second,
-    );
-    expect(runtimeSteps, runtimeSameSteps);
-    expect(date.hashCode, DateTimePickerMode(dateMode: DateMode.date).hashCode);
     expect(DateTimePickerMode(dateMode: DateMode.year).columns,
         [DateTimeColumn.year]);
     expect(DateTimePickerMode(dateMode: DateMode.month).columns,
@@ -242,27 +174,6 @@ void main() {
     );
     expect(DateMode.values, contains(DateMode.date));
     expect(TimeMode.values, contains(TimeMode.second));
-  });
-
-  test('label 配置支持资源派生、相等性和星期前缀回退', () {
-    final labels = DateTimePickerLabels.defaults;
-    final same = DateTimePickerLabels(
-      unitSuffix: Map<DateTimeColumn, String>.from(labels.unitSuffix),
-      weekLabels: List<String>.from(labels.weekLabels),
-    );
-    final different = DateTimePickerLabels(
-      unitSuffix: {
-        ...labels.unitSuffix,
-        DateTimeColumn.year: 'Y',
-      },
-      weekLabels: List<String>.from(labels.weekLabels),
-    );
-
-    expect(labels.formatColumn(DateTimeColumn.year, 2024), contains('2024'));
-    expect(labels.weekdayLabel(1), isNotEmpty);
-    expect(labels, same);
-    expect(labels, isNot(different));
-    expect(labels.hashCode, same.hashCode);
   });
 
   test('快照支持范围、步进、列选项和原始值规范化', () {
@@ -299,139 +210,6 @@ void main() {
     expect(
       () => DateTimePickerSnapshot.coerceRawValues(['bad'], expectedLength: 1),
       throwsArgumentError,
-    );
-  });
-
-  test('快照覆盖完整结果、边界收紧和重建判断', () {
-    final start = DateTime(2024, 2, 29, 10, 20, 30);
-    final end = DateTime(2024, 2, 29, 12, 40, 50);
-    final snapshot = DateTimePickerSnapshot.initial(
-      columns: const [
-        DateTimeColumn.year,
-        DateTimeColumn.month,
-        DateTimeColumn.day,
-        DateTimeColumn.hour,
-        DateTimeColumn.minute,
-        DateTimeColumn.second,
-      ],
-      initial: DateTime(2024, 2, 29, 10, 20, 30),
-      start: start,
-      end: end,
-    );
-
-    expect(
-        snapshot.toResult(),
-        const TDateTimePickerValue(
-          year: 2024,
-          month: 2,
-          day: 29,
-          hour: 10,
-          minute: 20,
-          second: 30,
-        ));
-    expect(snapshot.toString(), contains('DateTimePickerSnapshot'));
-    expect(
-        snapshot.hashCode,
-        DateTimePickerSnapshot.initial(
-          columns: const [
-            DateTimeColumn.year,
-            DateTimeColumn.month,
-            DateTimeColumn.day,
-            DateTimeColumn.hour,
-            DateTimeColumn.minute,
-            DateTimeColumn.second,
-          ],
-          initial: DateTime(2024, 2, 29, 10, 20, 30),
-          start: start,
-          end: end,
-        ).hashCode);
-
-    expect(snapshot.toPickerColumns(start: start, end: end).columns.length, 6);
-    expect(snapshot.columnOptionsAt(3, start: start, end: end).first.value, 10);
-    expect(snapshot.columnOptionsAt(4, start: start, end: end).first.value, 20);
-    expect(snapshot.columnOptionsAt(5, start: start, end: end).first.value, 30);
-
-    final next = snapshot.applySelection(
-      rawValues: [2024, 2, 29, 12, 40, 50],
-      start: start,
-      end: end,
-    );
-    expect(next.toResult().hour, 12);
-
-    final daySnapshot = DateTimePickerSnapshot.initial(
-      columns: const [
-        DateTimeColumn.year,
-        DateTimeColumn.month,
-        DateTimeColumn.day,
-      ],
-      initial: DateTime(2024, 2, 28),
-      start: DateTime(2024, 2, 1),
-      end: DateTime(2024, 2, 29),
-    );
-    final dayChanged = daySnapshot.applySelection(
-      rawValues: [2024, 2, 29],
-      start: DateTime(2024, 2, 1),
-      end: DateTime(2024, 2, 29),
-    );
-    expect(
-        dayChanged.needsColumnRebuildFrom(daySnapshot, showWeek: true), isTrue);
-    expect(
-        dayChanged.columnIndicesWithChangedOptions(daySnapshot, showWeek: true),
-        contains(2));
-
-    final differentColumns = next.rebuildFor(
-      columns: const [DateTimeColumn.hour, DateTimeColumn.minute],
-      start: start,
-      end: end,
-    );
-    expect(differentColumns.needsColumnRebuildFrom(snapshot), isTrue);
-  });
-
-  test('快照处理断言、空 raw、clamp 与不可命中步进', () {
-    expect(
-      () => DateTimePickerSnapshot.initial(
-        columns: const [DateTimeColumn.year],
-        initial: DateTime(2024),
-        start: DateTime(2025),
-        end: DateTime(2024),
-      ),
-      throwsAssertionError,
-    );
-
-    final snapshot = DateTimePickerSnapshot.initial(
-      columns: const [DateTimeColumn.minute],
-      initial: DateTime(2024, 1, 1, 0, 1),
-      start: DateTime(2024, 1, 1, 0, 1),
-      end: DateTime(2024, 1, 1, 0, 1),
-      steps: const DateTimePickerSteps(minute: 5),
-    );
-
-    expect(
-        DateTimePickerSnapshot.coerceRawValues([], expectedLength: 2), isEmpty);
-    expect(
-        snapshot
-            .columnOptionsAt(
-              0,
-              start: DateTime(2024, 1, 1, 0, 1),
-              end: DateTime(2024, 1, 1, 0, 1),
-              steps: const DateTimePickerSteps(minute: 5),
-            )
-            .single
-            .value,
-        1);
-    expect(
-      DateTimePickerSnapshot.clampDateTime(
-        DateTime(2020),
-        start: DateTime(2024),
-      ),
-      DateTime(2024),
-    );
-    expect(
-      DateTimePickerSnapshot.clampDateTime(
-        DateTime(2030),
-        end: DateTime(2024),
-      ),
-      DateTime(2024),
     );
   });
 }

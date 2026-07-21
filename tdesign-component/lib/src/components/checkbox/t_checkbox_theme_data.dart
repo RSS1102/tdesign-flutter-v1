@@ -123,6 +123,9 @@ class TCheckboxThemeData extends ThemeExtension<TCheckboxThemeData> {
 
 /// 复选框指示器的视觉变体。
 enum TCheckboxVariant {
+  /// 圆形指示器。
+  circle,
+
   /// 方形指示器。
   square,
 

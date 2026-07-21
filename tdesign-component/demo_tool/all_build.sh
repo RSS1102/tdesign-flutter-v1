@@ -15,7 +15,7 @@ flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/
 # TIcons 图标清单由 tdesign_icons 包维护，组件库仅生成 TIcon/TIconThemeData API
 flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/icon" --name TIcon,TIconThemeData --folder-name icon --output "$PARENT_DIR/example/assets/api/" --only-api
 # link
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/link" --name TLink,TLinkVariant,TLinkColorScheme,TLinkSize,TLinkThemeData --folder-name link --output "$PARENT_DIR/example/assets/api/" --only-api
+flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/link/t_link.dart" --name TLink --folder-name link --output "$PARENT_DIR/example/assets/api/" --only-api
 # text
 flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/text/t_text.dart" --name TText,TTextSpan,TTextConfiguration --folder-name text --output "$PARENT_DIR/example/assets/api/" --only-api
 
@@ -135,8 +135,8 @@ flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/sr
 flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/popup" --name TPopup,TPopupOptions,TPopupHandle,TPopupPlacement,TPopupTrigger --folder-name popup --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # refresh
 flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/refresh/t_refresh_header.dart" --name TRefreshHeader --folder-name pull-down-refresh --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
-# swipe-cell
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/swipe_cell" --name TSwipeCell,TSwipeCellPanel,TSwipeCellAction,TSwipeCellThemeData,TSwipeDirection,SwipeMotion,TSwipeCellChanged --folder-name swipe-cell --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+# swipecell
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/swipe_cell" --name TSwipeAction,TSwipeAutoClose,TSwipeCell,TSwipePanel --folder-name swipe-cell --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # toast
 flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/toast/t_toast.dart" --name TToast --folder-name toast --output "$PARENT_DIR/example/assets/api/" --only-api
 

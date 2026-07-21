@@ -20,12 +20,12 @@
 | PR 0 | 重构基础设施、验收约束、迁移说明 | Ready for PR | 本目录已新增迁移方案；仍需按主仓 CI 情况确认最终脚本入口 |
 | PR 1 | Foundation / Theme / Token | Ready for PR | `TThemeBuilder.light/dark` 已接入 M3 `ThemeData`、Material 子主题、全局组件 `ThemeExtension`；已通过专用 ThemeData barrel 隔离包总出口依赖；定向测试和 analyze 已通过 |
 | PR 2 | `text` / `divider` / `icon` | Ready for PR | 已纳入 01-base 定向测试和 analyze；仍建议在提交前复跑单组件 docs validate |
-| PR 3 | `button` / `link` | Ready for PR | 已纳入 01-base 定向测试、全量组件覆盖率和 analyze；当前无低于 95% 的组件域覆盖率项 |
+| PR 3 | `button` / `link` | Ready for PR | 已纳入 01-base 定向测试和 analyze；`button` 单文件覆盖率仍低于 95%，但 01-base 总覆盖率已达标 |
 | PR 4 | `fab` | Ready for PR | FAB 定向测试 68 个通过；FAB analyze 0 issues；tools FAB validate `ERROR=0, WARN=0` |
 | PR 5 | Overlay / Popup 基础设施 | Ready for PR | Popup 路由、Options、Handle、布局和安全区测试已覆盖；必须先于依赖 Popup 的 Drawer 迁移 |
-| PR 6 | 03-input / Form 基础能力 | Ready for PR | 当前组件域测试通过；全量套件中的源码覆盖率 98.37%，DateTimePicker 根组件、快照和 Radio Theme 已补契约测试 |
-| PR 7 | Feedback 业务组件 | Ready for PR | 05-feedback 全量套件覆盖率 98.05%，Popover Theme 与强类型回调已闭环 |
-| PR 8 | Display / Navigation 中低风险组件 | Ready for PR | 02-navigation 最近定向测试 326 个通过、analyze 0 issues、覆盖率 97.96%；04-display 全量套件覆盖率 99.19%；Drawer 必须在 PR 5 后迁移 |
+| PR 6 | 03-input / Form 基础能力 | Ready for PR | 当前组件域测试通过；全量套件中的源码覆盖率 98.63%，DateTimePicker 根组件、快照和 Radio Theme 已补契约测试 |
+| PR 7 | Feedback 业务组件 | Ready for PR | 05-feedback 定向 302 项测试通过、隔离覆盖率 95.28%；全量套件覆盖率 97.75%，Popover Theme 与强类型回调已闭环 |
+| PR 8 | Display / Navigation 中低风险组件 | Ready for PR | 02-navigation 最近定向测试 326 个通过、analyze 0 issues、覆盖率 97.96%；04-display 最近定向测试 350 个通过、analyze 0 issues、覆盖率 99.05%；Drawer 必须在 PR 5 后迁移 |
 | PR 9+ | picker/date-picker/dropdown/table/upload 等复杂组件 | Ready for component PR | 复杂组件链路最近定向测试 171 个通过、analyze 0 issues、覆盖率 95.50%；已补 `TDropdownItem.operateHeight` API 注释；迁移主仓时仍按单组件或依赖链拆分 |
 | Final PR | export、索引、CI、全量验收收口 | Not Started | 等主要组件迁移完成后执行 |
 
@@ -47,19 +47,19 @@
 | 02-navigation 定向测试 | 326 个测试通过 |
 | 02-navigation 定向 analyze | 0 issues |
 | 02-navigation 源码总覆盖率 | 97.96% (2741/2798) |
-| 03-input 源码总覆盖率 | 98.37% (3440/3497) |
+| 03-input 源码总覆盖率 | 98.63% (3447/3495) |
 | 04-display 定向测试 | 350 个测试通过 |
 | 04-display 定向 analyze | 0 issues |
-| 04-display 源码总覆盖率 | 99.19% (2092/2109) |
+| 04-display 源码总覆盖率 | 99.05% (2089/2109) |
 | 05-feedback 隔离覆盖率 | 95.28% (2970/3117) |
-| 05-feedback 全量套件覆盖率 | 98.05% (3060/3121) |
+| 05-feedback 全量套件覆盖率 | 97.75% (3047/3117) |
 | 05-feedback 定向测试 | 302 个测试通过 |
 | 复杂组件链路定向测试 | 171 个测试通过 |
 | 复杂组件链路定向 analyze | 0 issues |
 | 复杂组件链路源码总覆盖率 | 95.50% (2757/2887) |
 | 复杂组件链路 API 文档 | `dropdown-menu_api.md` 的 `operateHeight` 说明已补齐；本轮 API 说明列检查无 `-` |
-| 全量 Flutter 测试 | 1535 个通过，6 个按环境条件跳过 |
-| 全组件源码覆盖率 | 98.32% (12265/12474) |
+| 全量 Flutter 测试 | 1856 个通过，6 个按环境条件跳过 |
+| 全组件源码覆盖率 | 98.32% (12259/12468) |
 | 全包 analyze | 0 issues |
 
 ## 当前剩余风险
