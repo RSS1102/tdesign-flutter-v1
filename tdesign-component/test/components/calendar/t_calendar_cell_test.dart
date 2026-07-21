@@ -40,4 +40,28 @@ void main() {
     await tester.pump();
     expect(start.selectType, DateSelectType.centre);
   });
+
+  testWidgets('today selected cell keeps selected text color', (tester) async {
+    final today = DateTime.now();
+    final date = DateTime(today.year, today.month, today.day);
+    final notifier = DateSelectTypeNotifier(DateSelectType.selected);
+    final cell = TCalendarCellModel(
+      date: date,
+      typeNotifier: notifier,
+      isLastDayOfMonth: false,
+    );
+
+    await tester.pumpWidget(wrap(TCalendarCell(
+      cell: cell,
+      height: 48,
+      padding: 4,
+      rowIndex: 0,
+      colIndex: 0,
+      dateList: [cell],
+    )));
+
+    final text = tester.widget<Text>(find.text('${date.day}'));
+    expect(text.style?.color, TThemeData.defaultData().textColorAnti);
+    expect(text.style?.color, isNot(TThemeData.defaultData().brandNormalColor));
+  });
 }

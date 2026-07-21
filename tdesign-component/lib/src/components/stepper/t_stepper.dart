@@ -55,6 +55,10 @@ class TStepper extends StatefulWidget {
 }
 
 class _TStepperState extends State<TStepper> {
+  static const double _height = 24;
+  static const double _buttonSize = 24;
+  static const double _defaultInputWidth = 38;
+
   late final TextEditingController _textController;
   final FocusNode _focusNode = FocusNode();
 
@@ -85,7 +89,7 @@ class _TStepperState extends State<TStepper> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<TStepperThemeData>();
     final variant = theme?.variant ?? TStepperVariant.normal;
-    final inputWidth = theme?.inputWidth ?? 44.0;
+    final inputWidth = theme?.inputWidth ?? _defaultInputWidth;
     final canDecrease = !_disabled && widget.value > widget.min;
     final canIncrease = !_disabled && widget.value < widget.max;
 
@@ -100,7 +104,7 @@ class _TStepperState extends State<TStepper> {
         ),
         SizedBox(
           width: inputWidth,
-          height: 32,
+          height: _height,
           child: TextField(
             controller: _textController,
             enabled: !_disabled,
@@ -115,7 +119,7 @@ class _TStepperState extends State<TStepper> {
               color: _disabled
                   ? context.tTheme.textDisabledColor
                   : context.tTheme.textColorPrimary,
-              fontSize: context.tTheme.fontBodyMedium?.size,
+              fontSize: context.tTheme.fontBodyMedium?.size ?? 12,
             ),
             decoration: InputDecoration(
               isDense: true,
@@ -193,6 +197,8 @@ class _TStepperState extends State<TStepper> {
 }
 
 class _StepperIconButton extends StatelessWidget {
+  static const double _buttonSize = _TStepperState._buttonSize;
+
   const _StepperIconButton({
     required this.icon,
     required this.disabled,
@@ -207,27 +213,39 @@ class _StepperIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = variant == TStepperVariant.filled
-        ? disabled
-            ? context.tTheme.bgColorComponentDisabled
-            : context.tTheme.bgColorSecondaryContainer
-        : null;
+    final token = context.tTheme;
+    final backgroundColor = switch (variant) {
+      TStepperVariant.filled =>
+        disabled ? token.bgColorComponentDisabled : token.bgColorSecondaryContainer,
+      TStepperVariant.normal => null,
+    };
+    final foregroundColor =
+        disabled ? token.textDisabledColor : token.textColorPrimary;
     return SizedBox.square(
-      dimension: 32,
-      child: IconButton(
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints.tightFor(width: 32, height: 32),
-        style: IconButton.styleFrom(
-          backgroundColor: backgroundColor,
-          foregroundColor: disabled
-              ? context.tTheme.textDisabledColor
-              : context.tTheme.textColorPrimary,
-          disabledForegroundColor: context.tTheme.textDisabledColor,
+      dimension: _buttonSize,
+      child: GestureDetector(
+        key: ValueKey(
+          icon == Icons.add ? 'stepper-increase' : 'stepper-decrease',
         ),
-        iconSize: 18,
-        onPressed: disabled ? null : onPressed,
-        icon: Icon(icon),
+        behavior: HitTestBehavior.opaque,
+        onTap: disabled ? null : onPressed,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: _borderRadius(),
+          ),
+          child: Icon(icon, size: 16, color: foregroundColor),
+        ),
       ),
     );
+  }
+
+  BorderRadius? _borderRadius() {
+    if (variant == TStepperVariant.normal) {
+      return null;
+    }
+    return icon == Icons.remove
+        ? const BorderRadius.horizontal(left: Radius.circular(3))
+        : const BorderRadius.horizontal(right: Radius.circular(3));
   }
 }

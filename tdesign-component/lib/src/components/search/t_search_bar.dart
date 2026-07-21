@@ -250,6 +250,17 @@ class _TSearchBarState extends State<TSearchBar> {
                 ),
                 if (widget.needCancel && _hasFocus)
                   TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.only(left: 12),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                      foregroundColor: token.textColorPrimary,
+                      textStyle: TextStyle(
+                        fontSize: token.fontBodyLarge?.size,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                     onPressed: _handleCancel,
                     child: Text(widget.cancelText),
                   ),

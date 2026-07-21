@@ -240,10 +240,12 @@ class _TCalendarCellState extends State<TCalendarCell> {
     TCalendarStyle cellStyle,
   ) {
     final dayText = cell.date.day.toString();
-    final dayTextStyle = (_isToday ? cellStyle.todayDayStyle : null) ??
-        widget.todayDayStyle ??
-        cellStyle.dayStyle ??
-        widget.dayStyle;
+    final dayTextStyle = _isToday && cell.selectType == DateSelectType.empty
+        ? cellStyle.todayDayStyle ??
+            widget.todayDayStyle ??
+            cellStyle.dayStyle ??
+            widget.dayStyle
+        : cellStyle.dayStyle ?? widget.dayStyle;
 
     final subtitle = _buildSubtitle(context, cell, cellStyle);
 

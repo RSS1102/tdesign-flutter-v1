@@ -4,6 +4,7 @@ import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
 import '../../theme/t_colors.dart';
 import '../../theme/t_fonts.dart';
+import '../../theme/t_spacers.dart';
 import '../../theme/t_theme.dart';
 import 't_tree_select_theme_data.dart';
 
@@ -175,10 +176,13 @@ class _TTreeSelectState extends State<TTreeSelect> {
     final backgroundColor = level == 0
         ? theme?.rootBackgroundColor ?? context.tTheme.bgColorSecondaryContainer
         : theme?.backgroundColor ?? context.tTheme.bgColorContainer;
+    final itemHeight = theme?.itemHeight ?? 48;
     return Container(
       width: width,
       color: backgroundColor,
       child: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemExtent: itemHeight,
         itemCount: options.length,
         itemBuilder: (context, index) {
           final option = options[index];
@@ -213,52 +217,70 @@ class _TTreeSelectState extends State<TTreeSelect> {
     required bool isBranch,
     required TTreeSelectThemeData? theme,
   }) {
+    final token = context.tTheme;
+    final itemHeight = theme?.itemHeight ?? 48;
+    final backgroundColor = selected
+        ? theme?.selectedBackgroundColor ?? token.brandLightColor
+        : Colors.transparent;
     final defaultStyle = TextStyle(
-      color: context.tTheme.textColorPrimary,
-      fontSize: context.tTheme.fontBodyMedium?.size ?? 14,
+      color: token.textColorPrimary,
+      fontSize: token.fontBodyMedium?.size ?? 14,
     );
     final selectedStyle = defaultStyle.copyWith(
-      color: context.tTheme.brandNormalColor,
+      color: token.brandNormalColor,
       fontWeight: FontWeight.w600,
     );
+    final textStyle = option.disabled
+        ? theme?.disabledTextStyle ??
+            defaultStyle.copyWith(color: token.textDisabledColor)
+        : selected
+            ? theme?.selectedTextStyle ?? selectedStyle
+            : theme?.textStyle ?? defaultStyle;
+    final iconColor = theme?.indicatorColor ?? token.brandNormalColor;
+    final trailing = isBranch
+        ? Icon(
+            TIcons.chevron_right,
+            size: 16,
+            color: selected ? iconColor : token.textColorPlaceholder,
+          )
+        : selected
+            ? Icon(
+                TIcons.check,
+                size: 16,
+                color: iconColor,
+              )
+            : null;
     return Semantics(
       selected: selected,
       enabled: !option.disabled,
-      child: Opacity(
-        opacity: option.disabled ? 0.4 : 1,
-        child: ListTile(
+      child: Material(
+        color: backgroundColor,
+        child: InkWell(
           key: ValueKey((level, option.value)),
-          minTileHeight: theme?.itemHeight ?? 56,
-          selected: selected,
-          selectedTileColor:
-              theme?.selectedBackgroundColor ?? context.tTheme.bgColorContainer,
-          title: Text(
-            option.label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: option.disabled
-                ? theme?.disabledTextStyle ??
-                    defaultStyle.copyWith(
-                      color: context.tTheme.textDisabledColor,
-                    )
-                : selected
-                    ? theme?.selectedTextStyle ?? selectedStyle
-                    : theme?.textStyle ?? defaultStyle,
-          ),
-          trailing: isBranch
-              ? const Icon(TIcons.chevron_right)
-              : selected
-                  ? Icon(
-                      TIcons.check,
-                      color: theme?.indicatorColor ??
-                          context.tTheme.brandNormalColor,
-                    )
-                  : null,
           onTap: option.disabled
               ? null
               : () => isBranch
                   ? _openBranch(path)
                   : _toggleLeaf(List.unmodifiable(path)),
+          child: SizedBox(
+            height: itemHeight,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: token.spacer12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      option.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textStyle,
+                    ),
+                  ),
+                  if (trailing != null) trailing,
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

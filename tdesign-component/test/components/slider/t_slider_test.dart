@@ -62,6 +62,34 @@ void main() {
       expect(find.byType(DecoratedBox), findsOneWidget);
     });
 
+    testWidgets('explicit SliderTheme overrides are preserved', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(extensions: [TThemeData.defaultData()]),
+          home: Scaffold(
+            body: SliderTheme(
+              data: const SliderThemeData(
+                trackHeight: 10,
+                activeTrackColor: Colors.purple,
+                inactiveTrackColor: Colors.orange,
+              ),
+              child: const TSlider(
+                value: 0.5,
+                onChanged: _noop,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      final slider = tester.widget<Slider>(find.byType(Slider));
+      final sliderTheme = SliderTheme.of(tester.element(find.byType(Slider)));
+      expect(slider.onChanged, isNotNull);
+      expect(sliderTheme.trackHeight, 10);
+      expect(sliderTheme.activeTrackColor, Colors.purple);
+      expect(sliderTheme.inactiveTrackColor, Colors.orange);
+    });
+
     test('rejects invalid values and ranges', () {
       expect(() => TSlider(value: 2), throwsAssertionError);
       expect(() => TSlider(value: 0, min: 1, max: 1), throwsAssertionError);
@@ -154,3 +182,5 @@ void main() {
     expect(base.lerp(other, 0.5).decoration, isA<BoxDecoration>());
   });
 }
+
+void _noop(double _) {}

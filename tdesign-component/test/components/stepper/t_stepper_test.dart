@@ -99,18 +99,12 @@ void main() {
       await tester.pumpWidget(wrap(const TStepper(value: 5)));
 
       expect(textField(tester).enabled, isFalse);
-      final addButton = tester.widget<IconButton>(
-        find.ancestor(
-            of: find.byIcon(Icons.add), matching: find.byType(IconButton)),
-      );
-      final removeButton = tester.widget<IconButton>(
-        find.ancestor(
-          of: find.byIcon(Icons.remove),
-          matching: find.byType(IconButton),
-        ),
-      );
-      expect(addButton.onPressed, isNull);
-      expect(removeButton.onPressed, isNull);
+      final addButton =
+          tester.widget<GestureDetector>(find.byKey(const ValueKey('stepper-increase')));
+      final removeButton =
+          tester.widget<GestureDetector>(find.byKey(const ValueKey('stepper-decrease')));
+      expect(addButton.onTap, isNull);
+      expect(removeButton.onTap, isNull);
     });
 
     testWidgets('submitted input parses and clamps', (tester) async {

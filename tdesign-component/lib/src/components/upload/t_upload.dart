@@ -140,6 +140,7 @@ class TUpload extends StatelessWidget {
     double size,
     TUploadThemeData? theme,
   ) {
+    final fileEnabled = _enabled && file.canRemove;
     return SizedBox.square(
       dimension: size,
       child: Stack(
@@ -147,17 +148,22 @@ class TUpload extends StatelessWidget {
         children: [
           GestureDetector(
             key: ValueKey('upload-file-${file.id}'),
-            onTap:
-                _enabled && onPreview != null ? () => onPreview!(file) : null,
+            onTap: _enabled && onPreview != null ? () => onPreview!(file) : null,
             child: ClipRRect(
               borderRadius: _borderRadius(context, theme),
               child: _preview(file, theme),
             ),
           ),
+          if (!_enabled)
+            Positioned.fill(
+              child: ColoredBox(
+                color: Colors.white.withValues(alpha: 0.36),
+              ),
+            ),
           if (file.status != TUploadFileStatus.ready &&
               file.status != TUploadFileStatus.success)
             _statusOverlay(context, file, theme),
-          if (_enabled && file.canRemove)
+          if (fileEnabled)
             Positioned(
               right: 0,
               top: 0,

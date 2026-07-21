@@ -35,7 +35,6 @@ class _TCheckboxPageState extends State<TCheckboxPage> {
   List<String> _cardValue = ['b'];
   bool? _singleValue = false;
   final Map<TCheckboxVariant, bool> _variantValues = {
-    TCheckboxVariant.circle: true,
     TCheckboxVariant.square: true,
     TCheckboxVariant.check: true,
   };
@@ -62,9 +61,7 @@ class _TCheckboxPageState extends State<TCheckboxPage> {
         ExampleModule(title: '组件样式', children: [
           ExampleItem(desc: '勾选样式', builder: _variants),
           ExampleItem(desc: '勾选显示位置', builder: _positions),
-          ExampleItem(desc: '点击热区密度', builder: _density),
           ExampleItem(desc: '纵向卡片多选框', builder: _verticalCardCheckbox),
-          ExampleItem(desc: '混合内容纵向卡片', builder: _mixedCardCheckbox),
           ExampleItem(desc: '横向卡片多选框', builder: _horizontalCardCheckbox),
         ]),
       ],
@@ -160,7 +157,6 @@ class _TCheckboxPageState extends State<TCheckboxPage> {
     return Column(
       children: [
         for (final entry in const [
-          (TCheckboxVariant.circle, '圆形'),
           (TCheckboxVariant.square, '方形'),
           (TCheckboxVariant.check, '对勾'),
         ])
@@ -204,40 +200,6 @@ class _TCheckboxPageState extends State<TCheckboxPage> {
   }
 
   @Demo(group: 'checkbox')
-  Widget _density(BuildContext context) {
-    final compactTheme = CheckboxTheme.of(context).copyWith(
-      visualDensity: VisualDensity.compact,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    );
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(color: context.tTheme.componentBorderColor),
-          ),
-          child: TCheckbox(
-            value: _singleValue,
-            onChanged: (value) => setState(() => _singleValue = value),
-          ),
-        ),
-        Theme(
-          data: Theme.of(context).copyWith(checkboxTheme: compactTheme),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: context.tTheme.componentBorderColor),
-            ),
-            child: TCheckbox(
-              value: _singleValue,
-              onChanged: (value) => setState(() => _singleValue = value),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  @Demo(group: 'checkbox')
   Widget _verticalCardCheckbox(BuildContext context) {
     return TCheckboxGroup<String>(
       value: _cardValue,
@@ -254,16 +216,6 @@ class _TCheckboxPageState extends State<TCheckboxPage> {
       options: _horizontalCardOptions,
       direction: Axis.horizontal,
       columns: 3,
-      cardMode: true,
-      onChanged: (value) => setState(() => _cardValue = value),
-    );
-  }
-
-  @Demo(group: 'checkbox')
-  Widget _mixedCardCheckbox(BuildContext context) {
-    return TCheckboxGroup<String>(
-      value: _cardValue,
-      options: _options,
       cardMode: true,
       onChanged: (value) => setState(() => _cardValue = value),
     );

@@ -49,7 +49,6 @@ class _TInputViewPageState extends State<TInputViewPage> {
           title: '主题与多行',
           children: [
             ExampleItem(desc: '隐藏清除按钮', builder: _buildTheme),
-            ExampleItem(desc: '多行输入', builder: _buildMultiline),
           ],
         ),
       ],
@@ -107,9 +106,4 @@ class _TInputViewPageState extends State<TInputViewPage> {
         child: const TInput(initialValue: '无清除按钮'),
       );
 
-  @Demo(group: 'input')
-  Widget _buildMultiline(BuildContext context) => const TInput.multiline(
-        hintText: '请输入多行内容',
-        maxLength: 200,
-      );
 }
