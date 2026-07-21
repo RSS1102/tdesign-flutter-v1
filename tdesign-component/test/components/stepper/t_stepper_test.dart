@@ -17,6 +17,26 @@ void main() {
   TextField textField(WidgetTester tester) =>
       tester.widget<TextField>(find.byType(TextField));
 
+  Container inputContainer(WidgetTester tester) => tester.widget<Container>(
+        find
+            .ancestor(
+              of: find.byType(TextField),
+              matching: find.byWidgetPredicate(
+                (widget) => widget is Container && widget.decoration != null,
+              ),
+            )
+            .first,
+      );
+
+  BoxDecoration iconButtonDecoration(WidgetTester tester, String key) => tester
+      .widget<DecoratedBox>(
+        find.descendant(
+          of: find.byKey(ValueKey(key)),
+          matching: find.byType(DecoratedBox),
+        ),
+      )
+      .decoration as BoxDecoration;
+
   group('TStepper v1 controlled behavior', () {
     testWidgets('renders controlled value and icons', (tester) async {
       await tester.pumpWidget(wrap(TStepper(value: 5, onChanged: (_) {})));
@@ -99,10 +119,10 @@ void main() {
       await tester.pumpWidget(wrap(const TStepper(value: 5)));
 
       expect(textField(tester).enabled, isFalse);
-      final addButton =
-          tester.widget<GestureDetector>(find.byKey(const ValueKey('stepper-increase')));
-      final removeButton =
-          tester.widget<GestureDetector>(find.byKey(const ValueKey('stepper-decrease')));
+      final addButton = tester.widget<GestureDetector>(
+          find.byKey(const ValueKey('stepper-increase')));
+      final removeButton = tester.widget<GestureDetector>(
+          find.byKey(const ValueKey('stepper-decrease')));
       expect(addButton.onTap, isNull);
       expect(removeButton.onTap, isNull);
     });
@@ -185,15 +205,17 @@ void main() {
         ),
       ));
 
-      final inputBox = tester.getSize(
-        find.ancestor(
-            of: find.byType(TextField), matching: find.byType(SizedBox)),
-      );
+      final inputBox = tester.getSize(find.byType(TextField));
       expect(inputBox.width, 88);
-      expect(textField(tester).decoration?.filled, isTrue);
+      expect(textField(tester).decoration?.filled, isFalse);
+      final token = TThemeData.defaultData();
+      expect(
+        (inputContainer(tester).decoration as BoxDecoration).color,
+        token.bgColorSecondaryContainer,
+      );
     });
 
-    testWidgets('normal variant keeps transparent input decoration',
+    testWidgets('normal variant keeps transparent input and segment borders',
         (tester) async {
       await tester.pumpWidget(wrap(
         TStepper(value: 1, onChanged: (_) {}),
@@ -201,6 +223,17 @@ void main() {
       ));
 
       expect(textField(tester).decoration?.filled, isFalse);
+      final inputDecoration =
+          inputContainer(tester).decoration as BoxDecoration;
+      expect(inputDecoration.border, isA<Border>());
+      expect(
+        iconButtonDecoration(tester, 'stepper-decrease').border,
+        isA<Border>(),
+      );
+      expect(
+        iconButtonDecoration(tester, 'stepper-increase').border,
+        isA<Border>(),
+      );
     });
 
     test('TStepperThemeData copyWith and lerp', () {

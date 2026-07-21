@@ -92,6 +92,22 @@ void main() {
       expect(changes, [0.5, 1]);
     });
 
+    testWidgets('half selection ignores gaps between items', (tester) async {
+      final changes = <double>[];
+      await tester.pumpWidget(wrap(TRate(
+        value: 0,
+        allowHalf: true,
+        onChanged: changes.add,
+      )));
+
+      final rect = tester.getRect(find.byType(GestureDetector));
+      await tester.tapAt(Offset(rect.left + 28, rect.center.dy));
+      expect(changes, isEmpty);
+
+      await tester.tapAt(Offset(rect.left + 35, rect.center.dy));
+      expect(changes, [1.5]);
+    });
+
     testWidgets('horizontal drag reports lifecycle and clamps the value',
         (tester) async {
       final starts = <double>[];

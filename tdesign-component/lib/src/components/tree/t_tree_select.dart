@@ -141,18 +141,40 @@ class _TTreeSelectState extends State<TTreeSelect> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<TTreeSelectThemeData>();
     final columns = _visibleColumns();
+    final rightColumns = _rightColumns(columns);
     final panel = Container(
       height: theme?.height ?? 336,
       color: theme?.backgroundColor ?? context.tTheme.bgColorContainer,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (var level = 0; level < columns.length; level++)
-              _buildColumn(context, columns[level], level, theme),
-          ],
-        ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            width: theme?.rootColumnWidth ?? 106,
+            child: _buildColumn(
+              context,
+              options: columns.isEmpty ? const [] : columns.first,
+              level: 0,
+              theme: theme,
+              isRoot: true,
+              isLastVisibleColumn: rightColumns.isEmpty,
+            ),
+          ),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var index = 0; index < rightColumns.length; index++)
+                  _buildRightColumnSlot(
+                    context,
+                    column: rightColumns[index],
+                    theme: theme,
+                    isLastVisibleColumn: index == rightColumns.length - 1,
+                    hasTrailingColumn: index < rightColumns.length - 1,
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
     return Semantics(
@@ -165,20 +187,57 @@ class _TTreeSelectState extends State<TTreeSelect> {
     );
   }
 
-  Widget _buildColumn(
-    BuildContext context,
-    List<TTreeSelectOption> options,
-    int level,
-    TTreeSelectThemeData? theme,
+  List<_TreeSelectColumn> _rightColumns(
+    List<List<TTreeSelectOption>> columns,
   ) {
-    final width =
-        level == 0 ? theme?.rootColumnWidth ?? 112 : theme?.columnWidth ?? 184;
-    final backgroundColor = level == 0
+    if (columns.length <= 1) {
+      return const [];
+    }
+    final start = columns.length > 3 ? columns.length - 2 : 1;
+    return [
+      for (var level = start; level < columns.length; level++)
+        _TreeSelectColumn(level: level, options: columns[level]),
+    ];
+  }
+
+  Widget _buildRightColumnSlot(
+    BuildContext context, {
+    required _TreeSelectColumn column,
+    required TTreeSelectThemeData? theme,
+    required bool isLastVisibleColumn,
+    required bool hasTrailingColumn,
+  }) {
+    final child = _buildColumn(
+      context,
+      options: column.options,
+      level: column.level,
+      theme: theme,
+      isRoot: false,
+      isLastVisibleColumn: isLastVisibleColumn,
+    );
+    final themedWidth = theme?.columnWidth;
+    if (themedWidth != null) {
+      return SizedBox(width: themedWidth, child: child);
+    }
+    if (hasTrailingColumn) {
+      return SizedBox(width: 103, child: child);
+    }
+    return Expanded(child: child);
+  }
+
+  Widget _buildColumn(
+    BuildContext context, {
+    required List<TTreeSelectOption> options,
+    required int level,
+    required TTreeSelectThemeData? theme,
+    required bool isRoot,
+    required bool isLastVisibleColumn,
+  }) {
+    final backgroundColor = isRoot
         ? theme?.rootBackgroundColor ?? context.tTheme.bgColorSecondaryContainer
         : theme?.backgroundColor ?? context.tTheme.bgColorContainer;
-    final itemHeight = theme?.itemHeight ?? 48;
+    final itemHeight = theme?.itemHeight ?? 56;
     return Container(
-      width: width,
       color: backgroundColor,
       child: ListView.builder(
         padding: EdgeInsets.zero,
@@ -201,6 +260,8 @@ class _TTreeSelectState extends State<TTreeSelect> {
             level: level,
             selected: selected,
             isBranch: isBranch,
+            isRoot: isRoot,
+            isLastVisibleColumn: isLastVisibleColumn,
             theme: theme,
           );
         },
@@ -215,41 +276,39 @@ class _TTreeSelectState extends State<TTreeSelect> {
     required int level,
     required bool selected,
     required bool isBranch,
+    required bool isRoot,
+    required bool isLastVisibleColumn,
     required TTreeSelectThemeData? theme,
   }) {
     final token = context.tTheme;
-    final itemHeight = theme?.itemHeight ?? 48;
+    final itemHeight = theme?.itemHeight ?? 56;
+    final selectedBackgroundColor =
+        isRoot ? token.bgColorContainer : Colors.transparent;
     final backgroundColor = selected
-        ? theme?.selectedBackgroundColor ?? token.brandLightColor
+        ? theme?.selectedBackgroundColor ?? selectedBackgroundColor
         : Colors.transparent;
     final defaultStyle = TextStyle(
       color: token.textColorPrimary,
-      fontSize: token.fontBodyMedium?.size ?? 14,
+      fontSize: token.fontBodyLarge?.size ?? 16,
     );
     final selectedStyle = defaultStyle.copyWith(
       color: token.brandNormalColor,
       fontWeight: FontWeight.w600,
     );
+    final leafSelectedStyle = defaultStyle.copyWith(
+      fontWeight: FontWeight.w400,
+    );
     final textStyle = option.disabled
         ? theme?.disabledTextStyle ??
             defaultStyle.copyWith(color: token.textDisabledColor)
         : selected
-            ? theme?.selectedTextStyle ?? selectedStyle
+            ? theme?.selectedTextStyle ??
+                (isLastVisibleColumn && !isBranch
+                    ? leafSelectedStyle
+                    : selectedStyle)
             : theme?.textStyle ?? defaultStyle;
     final iconColor = theme?.indicatorColor ?? token.brandNormalColor;
-    final trailing = isBranch
-        ? Icon(
-            TIcons.chevron_right,
-            size: 16,
-            color: selected ? iconColor : token.textColorPlaceholder,
-          )
-        : selected
-            ? Icon(
-                TIcons.check,
-                size: 16,
-                color: iconColor,
-              )
-            : null;
+    final showCheck = selected && !isBranch && isLastVisibleColumn;
     return Semantics(
       selected: selected,
       enabled: !option.disabled,
@@ -264,11 +323,16 @@ class _TTreeSelectState extends State<TTreeSelect> {
                   : _toggleLeaf(List.unmodifiable(path)),
           child: SizedBox(
             height: itemHeight,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: token.spacer12),
-              child: Row(
-                children: [
-                  Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: token.spacer16,
+                      top: token.spacer16,
+                      bottom: token.spacer16,
+                      right: showCheck ? 0 : token.spacer16,
+                    ),
                     child: Text(
                       option.label,
                       maxLines: 1,
@@ -276,9 +340,14 @@ class _TTreeSelectState extends State<TTreeSelect> {
                       style: textStyle,
                     ),
                   ),
-                  if (trailing != null) trailing,
-                ],
-              ),
+                ),
+                if (showCheck)
+                  SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: Icon(TIcons.check, size: 16, color: iconColor),
+                  ),
+              ],
             ),
           ),
         ),
@@ -323,4 +392,14 @@ class _TTreeSelectState extends State<TTreeSelect> {
     }
     return true;
   }
+}
+
+class _TreeSelectColumn {
+  const _TreeSelectColumn({
+    required this.level,
+    required this.options,
+  });
+
+  final int level;
+  final List<TTreeSelectOption> options;
 }

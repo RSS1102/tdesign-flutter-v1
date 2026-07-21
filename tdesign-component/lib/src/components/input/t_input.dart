@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
 import 't_input_resolve.dart';
 import 't_input_theme_data.dart';
 
@@ -264,21 +267,31 @@ class _TInputState extends State<TInput> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<TInputThemeData>();
+    final token = context.tTheme;
     final showClearButton = theme?.showClearButton ?? true;
     final clearButton = widget.suffix == null && showClearButton && _hasText
         ? IconButton(
             tooltip: '清除',
             onPressed: widget.enabled && !widget.readOnly ? _clear : null,
             iconSize: theme?.clearIconSize ?? 20,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints.tightFor(width: 24, height: 24),
+            visualDensity: VisualDensity.compact,
+            color: widget.enabled
+                ? token.textColorPlaceholder
+                : token.textDisabledColor,
             icon: const Icon(TIcons.close_circle_filled),
           )
         : null;
     final decoration = TInputResolve.resolveDecoration(
+      context: context,
       base: widget.decoration,
       label: widget.label,
       hintText: widget.hintText,
       prefix: widget.prefix,
       suffix: widget.suffix ?? clearButton,
+      enabled: widget.enabled,
+      multiline: widget._multiline,
     );
 
     return TextField(
@@ -299,6 +312,13 @@ class _TInputState extends State<TInput> {
       textAlign: widget.textAlign,
       obscureText: widget.obscureText,
       inputFormatters: widget.inputFormatters,
+      cursorColor: token.brandNormalColor,
+      style: TextStyle(
+        color:
+            widget.enabled ? token.textColorPrimary : token.textDisabledColor,
+        fontSize: token.fontBodyLarge?.size,
+        height: token.fontBodyLarge?.height,
+      ),
       decoration: decoration,
     );
   }

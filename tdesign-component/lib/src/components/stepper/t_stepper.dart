@@ -100,11 +100,14 @@ class _TStepperState extends State<TStepper> {
           icon: Icons.remove,
           disabled: !canDecrease,
           variant: variant,
+          position: _StepperSegmentPosition.left,
           onPressed: () => _commit(widget.value - widget.step),
         ),
-        SizedBox(
+        Container(
           width: inputWidth,
           height: _height,
+          alignment: Alignment.center,
+          decoration: _inputDecoration(context, variant, _disabled),
           child: TextField(
             controller: _textController,
             enabled: !_disabled,
@@ -120,14 +123,12 @@ class _TStepperState extends State<TStepper> {
                   ? context.tTheme.textDisabledColor
                   : context.tTheme.textColorPrimary,
               fontSize: context.tTheme.fontBodyMedium?.size ?? 12,
+              height: 1,
             ),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               isDense: true,
               contentPadding: EdgeInsets.zero,
-              filled: variant == TStepperVariant.filled,
-              fillColor: _disabled
-                  ? context.tTheme.bgColorComponentDisabled
-                  : context.tTheme.bgColorSecondaryContainer,
+              filled: false,
               border: InputBorder.none,
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
@@ -155,9 +156,35 @@ class _TStepperState extends State<TStepper> {
           icon: Icons.add,
           disabled: !canIncrease,
           variant: variant,
+          position: _StepperSegmentPosition.right,
           onPressed: () => _commit(widget.value + widget.step),
         ),
       ],
+    );
+  }
+
+  BoxDecoration _inputDecoration(
+    BuildContext context,
+    TStepperVariant variant,
+    bool disabled,
+  ) {
+    final token = context.tTheme;
+    final backgroundColor = switch (variant) {
+      TStepperVariant.filled => disabled
+          ? token.bgColorComponentDisabled
+          : token.bgColorSecondaryContainer,
+      TStepperVariant.normal => null,
+    };
+    final borderSide = BorderSide(color: token.componentBorderColor);
+    final disabledBorderSide = BorderSide(color: token.componentStrokeColor);
+    return BoxDecoration(
+      color: backgroundColor,
+      border: variant == TStepperVariant.normal
+          ? Border(
+              top: disabled ? disabledBorderSide : borderSide,
+              bottom: disabled ? disabledBorderSide : borderSide,
+            )
+          : null,
     );
   }
 
@@ -196,6 +223,8 @@ class _TStepperState extends State<TStepper> {
   }
 }
 
+enum _StepperSegmentPosition { left, right }
+
 class _StepperIconButton extends StatelessWidget {
   static const double _buttonSize = _TStepperState._buttonSize;
 
@@ -203,26 +232,30 @@ class _StepperIconButton extends StatelessWidget {
     required this.icon,
     required this.disabled,
     required this.variant,
+    required this.position,
     required this.onPressed,
   });
 
   final IconData icon;
   final bool disabled;
   final TStepperVariant variant;
+  final _StepperSegmentPosition position;
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     final token = context.tTheme;
     final backgroundColor = switch (variant) {
-      TStepperVariant.filled =>
-        disabled ? token.bgColorComponentDisabled : token.bgColorSecondaryContainer,
+      TStepperVariant.filled => disabled
+          ? token.bgColorComponentDisabled
+          : token.bgColorSecondaryContainer,
       TStepperVariant.normal => null,
     };
     final foregroundColor =
         disabled ? token.textDisabledColor : token.textColorPrimary;
-    return SizedBox.square(
-      dimension: _buttonSize,
+    return SizedBox(
+      width: _buttonSize,
+      height: _buttonSize,
       child: GestureDetector(
         key: ValueKey(
           icon == Icons.add ? 'stepper-increase' : 'stepper-decrease',
@@ -233,6 +266,7 @@ class _StepperIconButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: _borderRadius(),
+            border: _border(context),
           ),
           child: Icon(icon, size: 16, color: foregroundColor),
         ),
@@ -241,11 +275,20 @@ class _StepperIconButton extends StatelessWidget {
   }
 
   BorderRadius? _borderRadius() {
-    if (variant == TStepperVariant.normal) {
-      return null;
-    }
-    return icon == Icons.remove
+    return position == _StepperSegmentPosition.left
         ? const BorderRadius.horizontal(left: Radius.circular(3))
         : const BorderRadius.horizontal(right: Radius.circular(3));
+  }
+
+  BoxBorder? _border(BuildContext context) {
+    if (variant != TStepperVariant.normal) {
+      return null;
+    }
+    final side = BorderSide(
+      color: disabled
+          ? context.tTheme.componentStrokeColor
+          : context.tTheme.componentBorderColor,
+    );
+    return Border.all(color: side.color, width: side.width);
   }
 }

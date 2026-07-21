@@ -131,11 +131,12 @@ void main() {
       onChanged: _ignore,
     )));
     expect(find.text('Banana'), findsOneWidget);
+    expect(find.byType(SingleChildScrollView), findsNothing);
     expect(find.byType(ListTile), findsNothing);
     expect(find.byIcon(TIcons.check), findsOneWidget);
     expect(
       tester.widget<Text>(find.text('Banana')).style?.color,
-      TThemeData.defaultData().brandNormalColor,
+      TThemeData.defaultData().textColorPrimary,
     );
 
     await tester.pumpWidget(wrap(const TTreeSelect(
