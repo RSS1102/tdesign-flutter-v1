@@ -362,7 +362,6 @@ class TMaterialThemeBuilder {
     return TTextThemeData(
       defaultFont: token.fontBodyLarge,
       defaultTextColor: token.textColorPrimary,
-      defaultFontFamily: token.fontFamilyMap['numberFontFamily'],
     );
   }
 

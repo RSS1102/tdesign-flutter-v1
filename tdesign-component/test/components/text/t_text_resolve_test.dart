@@ -9,15 +9,18 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// 在非 iOS 测试环境不可达，标记为已知例外。
 void main() {
   Widget wrap(Widget child) => MaterialApp(
-        theme: ThemeData(extensions: [TThemeData.defaultData()]),
+        theme: TThemeBuilder.light(TThemeData.defaultData()),
         home: Scaffold(body: child),
       );
 
-  Widget wrapWithTextTheme(Widget child, TTextThemeData textTheme) =>
-      MaterialApp(
-        theme: ThemeData(extensions: [TThemeData.defaultData(), textTheme]),
-        home: Scaffold(body: child),
-      );
+  Widget wrapWithTextTheme(Widget child, TTextThemeData textTheme) {
+    final theme =
+        TThemeBuilder.light(TThemeData.defaultData()).mergeExtension(textTheme);
+    return MaterialApp(
+      theme: theme,
+      home: Scaffold(body: child),
+    );
+  }
 
   Future<BuildContext> _ctx(WidgetTester tester) async {
     await tester.pumpWidget(wrap(const SizedBox()));
@@ -28,6 +31,15 @@ void main() {
       WidgetTester tester, TTextThemeData textTheme) async {
     await tester.pumpWidget(wrapWithTextTheme(const SizedBox(), textTheme));
     return tester.element(find.byType(SizedBox));
+  }
+
+  Future<BuildContext> _ctxWithTextThemeAndConfiguration(
+    WidgetTester tester,
+    TTextThemeData textTheme,
+    TTextConfiguration configuration,
+  ) async {
+    await tester.pumpWidget(wrapWithTextTheme(configuration, textTheme));
+    return tester.element(find.byWidget(configuration.child));
   }
 
   group('TTextResolve', () {
@@ -56,6 +68,15 @@ void main() {
       expect(style.fontSize, isNotNull);
     });
 
+    testWidgets('resolve 完整主题默认值来自 token', (tester) async {
+      final token = TThemeData.defaultData();
+      final context = await _ctx(tester);
+      final style = TTextResolve.resolve(context: context);
+      expect(style.color, token.textColorPrimary);
+      expect(style.fontSize, token.fontBodyLarge?.size);
+      expect(style.height, token.fontBodyLarge?.height);
+    });
+
     testWidgets('resolve 读取 Theme 默认字体族', (tester) async {
       final context = await _ctxWithTextTheme(
         tester,
@@ -65,6 +86,22 @@ void main() {
       );
       final style = TTextResolve.resolve(context: context);
       expect(style.fontFamily, 'ThemeFont');
+    });
+
+    testWidgets('resolve 中 globalFontFamily 优先于 Theme 默认字体族', (tester) async {
+      final child = Builder(builder: (_) => const SizedBox());
+      final context = await _ctxWithTextThemeAndConfiguration(
+        tester,
+        TTextThemeData(
+          defaultFontFamily: FontFamily(fontFamily: 'ThemeFont'),
+        ),
+        TTextConfiguration(
+          globalFontFamily: FontFamily(fontFamily: 'GlobalFont'),
+          child: child,
+        ),
+      );
+      final style = TTextResolve.resolve(context: context);
+      expect(style.fontFamily, 'GlobalFont');
     });
 
     testWidgets('resolveSpan（含 Theme 与 decoration 分支）', (tester) async {

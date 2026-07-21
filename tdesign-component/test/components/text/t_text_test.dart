@@ -7,17 +7,15 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// 覆盖样式优先级链、TTextThemeData、TTextResolve、padding 缓存、
 /// TTextSpan 一致性及全局变量删除后的行为。
 void main() {
-  /// 最小化包装，注入 TTheme
+  /// 完整包装，注入 TDesign 全局主题。
   Widget wrapWithTheme(Widget child, {TTextThemeData? textTheme}) {
-    final extensions = <ThemeExtension>[
-      if (textTheme != null) textTheme,
-    ];
-    return Theme(
-      data: ThemeData(extensions: [TThemeData.defaultData()]),
-      child: MaterialApp(
-        theme: ThemeData(extensions: extensions),
-        home: Scaffold(body: child),
-      ),
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (textTheme != null) {
+      theme = theme.mergeExtension(textTheme);
+    }
+    return MaterialApp(
+      theme: theme,
+      home: Scaffold(body: child),
     );
   }
 
@@ -30,6 +28,18 @@ void main() {
     ));
     expect(find.text('测试文本'), findsOneWidget);
     expect(find.byType(TText), findsOneWidget);
+  });
+
+  testWidgets('T01b - 完整主题下默认文本样式来自 token', (tester) async {
+    final token = TThemeData.defaultData();
+    await tester.pumpWidget(wrapWithTheme(
+      const TText('Token 文本'),
+    ));
+
+    final text = tester.widget<Text>(find.text('Token 文本'));
+    expect(text.style?.color, token.textColorPrimary);
+    expect(text.style?.fontSize, token.fontBodyLarge?.size);
+    expect(text.style?.height, token.fontBodyLarge?.height);
   });
 
   // ============================================================
@@ -181,6 +191,21 @@ void main() {
 
     final text = tester.widget<Text>(find.text('实例字体'));
     expect(text.style?.fontFamily, 'InstanceFont');
+  });
+
+  testWidgets('T05c - globalFontFamily 覆盖组件 Theme 默认字体', (tester) async {
+    await tester.pumpWidget(wrapWithTheme(
+      TTextConfiguration(
+        globalFontFamily: FontFamily(fontFamily: 'GlobalFont'),
+        child: const TText('全局优先'),
+      ),
+      textTheme: TTextThemeData(
+        defaultFontFamily: FontFamily(fontFamily: 'ThemeFont'),
+      ),
+    ));
+
+    final text = tester.widget<Text>(find.text('全局优先'));
+    expect(text.style?.fontFamily, 'GlobalFont');
   });
 
   // ============================================================

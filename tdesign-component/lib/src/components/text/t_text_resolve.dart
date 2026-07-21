@@ -226,13 +226,11 @@ class TTextResolve {
     TTextConfiguration? configuration,
     required FontWeight? resolvedFontWeight,
   }) {
-    var styleFontFamily = style?.fontFamily ??
-        fontFamily?.fontFamily ??
-        themeFontFamily?.fontFamily;
-
-    // globalFontFamily 注入。
     final globalFontFamily = configuration?.globalFontFamily;
-    styleFontFamily ??= globalFontFamily?.fontFamily;
+    final styleFontFamily = style?.fontFamily ??
+        fontFamily?.fontFamily ??
+        globalFontFamily?.fontFamily ??
+        themeFontFamily?.fontFamily;
 
     // iOS FontWeight≤w500 且无 fontFamily → 回退 PingFang SC
     if (PlatformUtil.isIOS &&
@@ -278,11 +276,11 @@ class TTextResolve {
     TTextConfiguration? configuration,
     required bool isInFontLoader,
   }) {
-    var stylePackage = package ?? fontFamily?.package ?? themePackage;
-
-    // 全局字体 package 回退
     final globalFontFamily = configuration?.globalFontFamily;
-    stylePackage ??= globalFontFamily?.package;
+    var stylePackage = package ??
+        fontFamily?.package ??
+        globalFontFamily?.package ??
+        themePackage;
 
     // 字体懒加载模式下清空 package，避免引擎查找未注册字体
     if (isInFontLoader) {
