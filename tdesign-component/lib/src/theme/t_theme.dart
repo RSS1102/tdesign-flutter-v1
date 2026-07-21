@@ -135,7 +135,7 @@ class TMaterialThemeBuilder {
       extensions: _themeExtensions(extensionData),
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colorScheme.surface,
-      iconTheme: IconThemeData(color: colorScheme.primary),
+      iconTheme: IconThemeData(color: extensionData.textColorPrimary),
       textTheme: textTheme,
       dividerTheme: DividerThemeData(
         color: extensionData.componentStrokeColor,
@@ -162,8 +162,8 @@ class TMaterialThemeBuilder {
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: extensionData.bgColorComponent,
+        filled: false,
+        fillColor: Colors.transparent,
         hintStyle: textTheme.bodyMedium?.copyWith(
           color: extensionData.textColorPlaceholder,
         ),
@@ -366,8 +366,8 @@ class TMaterialThemeBuilder {
     );
   }
 
-  TIconThemeData _iconTheme(TThemeData token) {
-    return TIconThemeData(color: token.textColorPrimary);
+  TIconThemeData _iconTheme(TThemeData _) {
+    return const TIconThemeData();
   }
 
   TDividerThemeData _dividerTheme(TThemeData token) {

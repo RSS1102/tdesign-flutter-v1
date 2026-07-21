@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 /// TInput 与 TTextarea 共用的组件级 ThemeExtension。
 ///
-/// Material 能表达的边框、颜色、内边距和文本样式由
-/// [ThemeData.inputDecorationTheme] 负责；这里只保留 TDesign 扩展默认值。
+/// Material 能表达的边框、颜色、内边距和文本样式可通过输入组件的
+/// decoration 显式传入；默认状态不继承全局填充色，避免输入区被
+/// [ThemeData.inputDecorationTheme] 污染。
 class TInputThemeData extends ThemeExtension<TInputThemeData> {
   const TInputThemeData({
     /// 是否默认显示清除按钮。

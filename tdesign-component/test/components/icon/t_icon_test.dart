@@ -7,17 +7,14 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// 覆盖基础渲染、构造器参数、TIconThemeData 子树注入、
 /// IconTheme 回退、TIcon.fromName 工厂构造。
 void main() {
-  /// 最小化包装，注入 TTheme
+  /// 完整包装，注入 TDesign 全局主题。
   Widget wrapWithTheme(Widget child, {TIconThemeData? iconTheme}) {
-    final extensions = <ThemeExtension>[
-      if (iconTheme != null) iconTheme,
-    ];
-    // 注意：必须通过 MaterialApp.theme 传递 extensions，
-    // 用外层 Theme 包 MaterialApp 会被 MaterialApp 默认 ThemeData.light() 覆盖，导致 extension 丢失。
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (iconTheme != null) {
+      theme = theme.mergeExtension(iconTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(
-        extensions: [TThemeData.defaultData(), ...extensions],
-      ),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -31,6 +28,17 @@ void main() {
     ));
     expect(find.byType(TIcon), findsOneWidget);
     expect(find.byType(Icon), findsOneWidget);
+  });
+
+  testWidgets('T01b - 完整主题下默认图标使用文本主色而非品牌色', (tester) async {
+    final token = TThemeData.defaultData();
+    await tester.pumpWidget(wrapWithTheme(
+      const TIcon(TIcons.home_filled),
+    ));
+
+    final icon = tester.widget<Icon>(find.byType(Icon));
+    expect(icon.color, token.textColorPrimary);
+    expect(icon.color, isNot(token.brandNormalColor));
   });
 
   // ============================================================
@@ -111,6 +119,19 @@ void main() {
 
     final icon = tester.widget<Icon>(find.byType(Icon));
     expect(icon.size, 28.0);
+    expect(icon.color, Colors.green);
+  });
+
+  testWidgets('T04b - 完整主题下仍尊重局部 IconTheme', (tester) async {
+    await tester.pumpWidget(wrapWithTheme(
+      const IconTheme(
+        data: IconThemeData(size: 30.0, color: Colors.green),
+        child: TIcon(TIcons.check),
+      ),
+    ));
+
+    final icon = tester.widget<Icon>(find.byType(Icon));
+    expect(icon.size, 30.0);
     expect(icon.color, Colors.green);
   });
 

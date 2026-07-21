@@ -33,17 +33,42 @@ void main() {
       expect(lightTheme.colorScheme.error, token.errorNormalColor);
       expect(
           lightTheme.textTheme.bodyLarge?.fontSize, token.fontBodyLarge?.size);
-      expect(lightTheme.iconTheme.color, token.brandNormalColor);
+      expect(lightTheme.iconTheme.color, token.textColorPrimary);
+      expect(lightTheme.inputDecorationTheme.filled, isFalse);
+      expect(lightTheme.inputDecorationTheme.fillColor, Colors.transparent);
       expect(lightTheme.extension<TButtonThemeData>(), isNotNull);
       expect(lightTheme.extension<TTextThemeData>()?.defaultFont?.size,
           token.fontBodyLarge?.size);
-      expect(lightTheme.extension<TIconThemeData>()?.color,
-          token.textColorPrimary);
+      expect(lightTheme.extension<TIconThemeData>()?.color, isNull);
       expect(lightTheme.filledButtonTheme.style?.backgroundColor?.resolve({}),
           token.brandNormalColor);
 
       expect(darkTheme.colorScheme.primary,
           (token.dark ?? token).brandNormalColor);
+    });
+
+    testWidgets('TThemeBuilder 不用全局主题污染输入和普通图标默认样式', (tester) async {
+      final token = TThemeData.defaultData();
+      InputDecorationTheme? capturedInputTheme;
+      Color? capturedIconColor;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: TThemeBuilder.light(token),
+          home: Builder(
+            builder: (context) {
+              capturedInputTheme = Theme.of(context).inputDecorationTheme;
+              capturedIconColor = IconTheme.of(context).color;
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      expect(capturedInputTheme!.filled, isFalse);
+      expect(capturedInputTheme!.fillColor, Colors.transparent);
+      expect(capturedIconColor, token.textColorPrimary);
+      expect(capturedIconColor, isNot(token.brandNormalColor));
     });
 
     test('ThemeData.mergeExtension 保留现有 Extension', () {

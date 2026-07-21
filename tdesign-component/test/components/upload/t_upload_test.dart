@@ -101,13 +101,12 @@ void main() {
   }
 
   Widget wrap(Widget child, {TUploadThemeData? uploadTheme}) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (uploadTheme != null) {
+      theme = theme.mergeExtension(uploadTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(
-        extensions: [
-          TThemeData.defaultData(),
-          if (uploadTheme != null) uploadTheme,
-        ],
-      ),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -277,6 +276,27 @@ void main() {
       await tester.pump();
       expect(find.byType(Image), findsNWidgets(2));
       expect(find.byType(ColoredBox), findsWidgets);
+    });
+
+    testWidgets('placeholder preview uses token colors under full theme',
+        (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrap(TUpload(
+        files: const [TUploadFile(id: 'empty', name: 'empty')],
+        onChanged: null,
+      )));
+
+      final placeholderBox = tester.widget<ColoredBox>(
+        find
+            .ancestor(
+              of: find.byIcon(TIcons.file),
+              matching: find.byType(ColoredBox),
+            )
+            .first,
+      );
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.file));
+      expect(placeholderBox.color, token.bgColorSecondaryContainer);
+      expect(icon.color, token.textColorPlaceholder);
     });
 
     testWidgets('theme controls dimensions, shape and status styling',

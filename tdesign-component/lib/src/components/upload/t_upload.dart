@@ -151,7 +151,7 @@ class TUpload extends StatelessWidget {
                 _enabled && onPreview != null ? () => onPreview!(file) : null,
             child: ClipRRect(
               borderRadius: _borderRadius(context, theme),
-              child: _preview(file, theme),
+              child: _preview(context, file, theme),
             ),
           ),
           if (file.status != TUploadFileStatus.ready &&
@@ -187,7 +187,11 @@ class TUpload extends StatelessWidget {
     );
   }
 
-  Widget _preview(TUploadFile file, TUploadThemeData? theme) {
+  Widget _preview(
+    BuildContext context,
+    TUploadFile file,
+    TUploadThemeData? theme,
+  ) {
     if (file.bytes != null) {
       return Image.memory(file.bytes!, fit: BoxFit.cover);
     }
@@ -195,16 +199,19 @@ class TUpload extends StatelessWidget {
       return Image.network(
         file.url!,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => _placeholder(theme),
+        errorBuilder: (_, __, ___) => _placeholder(context, theme),
       );
     }
-    return _placeholder(theme);
+    return _placeholder(context, theme);
   }
 
-  Widget _placeholder(TUploadThemeData? theme) {
+  Widget _placeholder(BuildContext context, TUploadThemeData? theme) {
     return ColoredBox(
-      color: theme?.backgroundColor ?? const Color(0xFFF3F3F3),
-      child: Icon(TIcons.file, color: theme?.foregroundColor),
+      color: theme?.backgroundColor ?? context.tTheme.bgColorSecondaryContainer,
+      child: Icon(
+        TIcons.file,
+        color: theme?.foregroundColor ?? context.tTheme.textColorPlaceholder,
+      ),
     );
   }
 
