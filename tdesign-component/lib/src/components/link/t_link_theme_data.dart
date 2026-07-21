@@ -18,9 +18,6 @@ class TLinkThemeData extends ThemeExtension<TLinkThemeData> {
   /// 未传链接 colorScheme 时的默认语义色
   final TLinkColorScheme? defaultColorScheme;
 
-  /// 链接文本颜色（覆盖 colorScheme 计算色）
-  final Color? color;
-
   /// 图标尺寸
   final double? iconSize;
 
@@ -37,7 +34,6 @@ class TLinkThemeData extends ThemeExtension<TLinkThemeData> {
     this.defaultVariant,
     this.defaultSize,
     this.defaultColorScheme,
-    this.color,
     this.iconSize,
     this.fontSize,
     this.leftGapWithIcon,
@@ -49,7 +45,6 @@ class TLinkThemeData extends ThemeExtension<TLinkThemeData> {
     TLinkVariant? defaultVariant,
     TLinkSize? defaultSize,
     TLinkColorScheme? defaultColorScheme,
-    Color? color,
     double? iconSize,
     double? fontSize,
     double? leftGapWithIcon,
@@ -59,7 +54,6 @@ class TLinkThemeData extends ThemeExtension<TLinkThemeData> {
       defaultVariant: defaultVariant ?? this.defaultVariant,
       defaultSize: defaultSize ?? this.defaultSize,
       defaultColorScheme: defaultColorScheme ?? this.defaultColorScheme,
-      color: color ?? this.color,
       iconSize: iconSize ?? this.iconSize,
       fontSize: fontSize ?? this.fontSize,
       leftGapWithIcon: leftGapWithIcon ?? this.leftGapWithIcon,
@@ -77,7 +71,6 @@ class TLinkThemeData extends ThemeExtension<TLinkThemeData> {
       defaultSize: t < 0.5 ? defaultSize : other.defaultSize,
       defaultColorScheme:
           t < 0.5 ? defaultColorScheme : other.defaultColorScheme,
-      color: Color.lerp(color, other.color, t),
       iconSize: lerpDouble(iconSize, other.iconSize, t),
       fontSize: lerpDouble(fontSize, other.fontSize, t),
       leftGapWithIcon: lerpDouble(leftGapWithIcon, other.leftGapWithIcon, t),

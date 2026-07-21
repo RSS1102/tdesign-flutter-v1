@@ -7,40 +7,24 @@ import 't_link_types.dart';
 
 /// Link 样式解析器
 ///
-/// 优先级链：构造器参数 > TLinkThemeData > Token 默认值
+/// 优先级链：构造器参数 > TLinkThemeData 默认项 > Token 默认值
 /// 这是唯一的样式 merge 入口，build 内禁止内联颜色/尺寸计算。
 class TLinkResolve {
   TLinkResolve._(); // coverage:ignore-line
 
   /// 解析链接文本颜色
   ///
-  /// 优先级：构造器 color > Theme.color > colorScheme 映射。
-  ///
-  /// 禁用态统一使用全局文本禁用色，避免语义色在禁用态继续表达品牌/
-  /// 成功/警告/危险含义。
+  /// 启用态按 [colorScheme] 语义色映射，禁用态统一使用全局文本禁用色。
   static Color resolveColor({
     required BuildContext context,
     required TLinkColorScheme? colorScheme,
-    required TLinkThemeData? theme,
     required bool isDisabled,
-    Color? instanceColor,
   }) {
-    // L1：构造器参数
-    if (instanceColor != null) {
-      return instanceColor;
-    }
-    // L2：Theme
-    final themeColor = theme?.color;
-    if (themeColor != null) {
-      return themeColor;
-    }
-    // L3：颜色映射
     final tTheme = context.tTheme;
-    final scheme = colorScheme ?? TLinkColorScheme.primary;
-
     if (isDisabled) {
       return tTheme.textDisabledColor;
     }
+    final scheme = colorScheme ?? TLinkColorScheme.primary;
     return _normalColor(scheme, tTheme);
   }
 

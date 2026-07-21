@@ -17,7 +17,7 @@
 
 ## 控制方案
 
-`onPressed` / `onTap`；**不提供** `value`。禁用：回调 `null`。
+`onPressed`；**不提供** `onTap` / `value`。禁用：回调 `null`。
 
 
 ---
@@ -57,6 +57,10 @@
 | --- | --- | --- | --- |
 | `defaultVariant` | `TLinkVariant` | 未传构造器 `variant` 时的默认形态 | `basic` |
 | `defaultSize` | `TLinkSize` | 未传构造器 `size` 时的默认尺寸 | `medium` |
+| `defaultColorScheme` | `TLinkColorScheme` | 未传构造器 `colorScheme` 时的默认语义色 | `primary` |
+| `fontSize` | `double` | 链接文本字号 | `fontLinkMedium.size` |
+| `iconSize` | `double` | 图标链接的图标尺寸 | 按 `size` 推导 |
+| `leftGapWithIcon` / `rightGapWithIcon` | `double` | 图标与文本间距 | 按 `size` 推导 |
 
 ### Material vs TDesign
 
@@ -65,9 +69,10 @@
 | `foregroundColor` / `overlayColor` | Material **`TextButtonTheme`** / InkWell | 链接色与水波纹 |
 | `variant` | TDesign 构造器 L1（非 Material） | `TLinkVariant`；默认由 `TLinkThemeData.defaultVariant` 提供 |
 | `size` | TDesign 构造器 L1（非 Material） | `TLinkSize`；默认由 `TLinkThemeData.defaultSize` 提供 |
+| `colorScheme` | TDesign 构造器 L1（非 Material） | 唯一常规颜色入口；默认由 `TLinkThemeData.defaultColorScheme` 提供 |
 | `fontSize` / `iconSize` / `prefixIcon` / `suffixIcon` / 间距 | TDesign 扩展 | 链式图标布局 |
 | `uri` | TDesign 扩展（可选） | 默认链接色/下划线策略 |
 
 ### colorScheme 与禁用态
 
-`colorScheme` 只表达启用态语义色（primary / default / danger / warning / success）。禁用态不继续表达语义色，统一使用 `context.tTheme.textDisabledColor`，与 Button 等基础组件的禁用文本口径一致。
+`colorScheme` 承接旧版 `TDLinkStyle` 的语义色职责（primary / default / danger / warning / success），不是 ThemeData 改名。Link 不提供单独 `color` 构造器或 `TLinkThemeData.color` 覆盖；全局换色应修改底层 Token。禁用态不继续表达语义色，统一使用 `context.tTheme.textDisabledColor`，与 Button 等基础组件的禁用文本口径一致。

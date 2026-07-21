@@ -15,9 +15,9 @@ class TLink extends StatelessWidget {
     this.uri,
     this.prefixIcon,
     this.suffixIcon,
-    this.variant = TLinkVariant.basic,
+    this.variant,
     this.colorScheme,
-    this.size = TLinkSize.medium,
+    this.size,
     this.onPressed,
     this.semanticLabel,
     this.tooltip,
@@ -29,14 +29,14 @@ class TLink extends StatelessWidget {
   /// 跳转 URI
   final Uri? uri;
 
-  /// 链接形态
-  final TLinkVariant variant;
+  /// 链接形态，未传时使用 Theme [TLinkThemeData.defaultVariant]
+  final TLinkVariant? variant;
 
-  /// 语义颜色方案
+  /// 语义颜色方案，未传时使用 Theme [TLinkThemeData.defaultColorScheme]
   final TLinkColorScheme? colorScheme;
 
-  /// 尺寸
-  final TLinkSize size;
+  /// 尺寸，未传时使用 Theme [TLinkThemeData.defaultSize]
+  final TLinkSize? size;
 
   /// 前置图标（仅在 [variant] 为 [TLinkVariant.icon] 时生效）
   final Widget? prefixIcon;
@@ -60,25 +60,34 @@ class TLink extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = _resolveTheme(context);
     final isDisabled = _isDisabled;
+    final effectiveVariant =
+        variant ?? theme?.defaultVariant ?? TLinkVariant.basic;
+    final effectiveSize = size ?? theme?.defaultSize ?? TLinkSize.medium;
+    final effectiveColorScheme =
+        colorScheme ?? theme?.defaultColorScheme ?? TLinkColorScheme.primary;
 
-    // resolve 颜色
     final effectiveColor = TLinkResolve.resolveColor(
       context: context,
-      colorScheme: colorScheme ?? theme?.defaultColorScheme,
-      theme: theme,
+      colorScheme: effectiveColorScheme,
       isDisabled: isDisabled,
     );
 
-    // 构建链接文本
     final text = _buildLinkText(
       context: context,
       theme: theme,
+      effectiveVariant: effectiveVariant,
+      effectiveSize: effectiveSize,
       effectiveColor: effectiveColor,
     );
 
-    // 带图标时组装 Row
-    if (variant == TLinkVariant.icon) {
-      return _buildIconRow(context, text, effectiveColor, theme);
+    if (effectiveVariant == TLinkVariant.icon) {
+      return _buildIconRow(
+        context,
+        text,
+        effectiveColor,
+        effectiveSize,
+        theme,
+      );
     }
 
     // 纯文本 / 下划线：直接返回 InkWell 包裹的文本
@@ -97,14 +106,16 @@ class TLink extends StatelessWidget {
   Widget _buildLinkText({
     required BuildContext context,
     required TLinkThemeData? theme,
+    required TLinkVariant effectiveVariant,
+    required TLinkSize effectiveSize,
     required Color effectiveColor,
   }) {
     final effectiveFontSize = TLinkResolve.resolveFontSize(
-      size: size,
+      size: effectiveSize,
       theme: theme,
     );
 
-    final hasUnderline = variant == TLinkVariant.underline;
+    final hasUnderline = effectiveVariant == TLinkVariant.underline;
 
     final defaultChild = child ?? const SizedBox.shrink();
 
@@ -145,27 +156,32 @@ class TLink extends StatelessWidget {
     BuildContext context,
     Widget text,
     Color effectiveColor,
+    TLinkSize effectiveSize,
     TLinkThemeData? theme,
   ) {
     final (leftGap, rightGap) = TLinkResolve.resolveGap(
-      size: size,
+      size: effectiveSize,
       theme: theme,
     );
 
     final effectiveIconSize = TLinkResolve.resolveIconSize(
-      size: size,
+      size: effectiveSize,
       theme: theme,
     );
 
     // 构建图标（优先用户传入，否则使用默认图标）
-    Widget? resolvedPrefix;
+    Widget resolvedPrefix;
     Widget? resolvedSuffix;
 
     final hasPrefix = prefixIcon != null;
     final hasSuffix = suffixIcon != null;
 
     if (hasPrefix) {
-      resolvedPrefix = prefixIcon;
+      resolvedPrefix = _wrapCustomIcon(
+        prefixIcon!,
+        effectiveIconSize,
+        effectiveColor,
+      );
     } else if (hasSuffix) {
       // 只有 suffix 时，prefix 使用默认链接图标
       resolvedPrefix =
@@ -178,13 +194,17 @@ class TLink extends StatelessWidget {
           _defaultIcon(context, TIcons.jump, effectiveIconSize, effectiveColor);
     }
 
-    resolvedSuffix ??= suffixIcon;
+    if (resolvedSuffix == null && suffixIcon != null) {
+      resolvedSuffix = _wrapCustomIcon(
+        suffixIcon!,
+        effectiveIconSize,
+        effectiveColor,
+      );
+    }
 
     final rowChildren = <Widget>[];
-    if (resolvedPrefix != null) {
-      rowChildren.add(resolvedPrefix);
-      rowChildren.add(SizedBox(width: leftGap));
-    }
+    rowChildren.add(resolvedPrefix);
+    rowChildren.add(SizedBox(width: leftGap));
     rowChildren.add(Flexible(child: text));
     if (resolvedSuffix != null) {
       rowChildren.add(SizedBox(width: rightGap));
@@ -213,6 +233,13 @@ class TLink extends StatelessWidget {
   Widget _defaultIcon(
       BuildContext context, IconData icon, double size, Color color) {
     return Icon(icon, size: size, color: color);
+  }
+
+  Widget _wrapCustomIcon(Widget icon, double size, Color color) {
+    return IconTheme.merge(
+      data: IconThemeData(size: size, color: color),
+      child: icon,
+    );
   }
 
   /// 获取当前上下文中的 TLinkThemeData

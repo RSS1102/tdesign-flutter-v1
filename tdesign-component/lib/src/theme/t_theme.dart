@@ -381,7 +381,6 @@ class TMaterialThemeBuilder {
 
   TLinkThemeData _linkTheme(TThemeData token) {
     return TLinkThemeData(
-      color: token.textColorLink,
       fontSize: token.fontLinkMedium?.size,
     );
   }

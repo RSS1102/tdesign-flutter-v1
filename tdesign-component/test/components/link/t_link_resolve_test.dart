@@ -84,10 +84,9 @@ void main() {
         final color = TLinkResolve.resolveColor(
           context: context,
           colorScheme: scheme,
-          theme: null,
           isDisabled: false,
         );
-        expect(color, isA<Color>());
+        expect(color, _normalColor(context, scheme));
       }
     });
 
@@ -98,36 +97,33 @@ void main() {
         final color = TLinkResolve.resolveColor(
           context: context,
           colorScheme: scheme,
-          theme: null,
           isDisabled: true,
         );
         expect(color, disabledColor);
       }
     });
 
-    testWidgets('resolveColor 优先级：instance > theme > scheme', (tester) async {
+    testWidgets('resolveColor 未传 colorScheme 时回退 primary', (tester) async {
       final context = await _context(tester);
-      // instance 优先
       expect(
         TLinkResolve.resolveColor(
           context: context,
-          colorScheme: TLinkColorScheme.primary,
-          theme: const TLinkThemeData(color: Colors.green),
-          isDisabled: false,
-          instanceColor: Colors.purple,
-        ),
-        Colors.purple,
-      );
-      // theme 次之
-      expect(
-        TLinkResolve.resolveColor(
-          context: context,
-          colorScheme: TLinkColorScheme.danger,
-          theme: const TLinkThemeData(color: Colors.green),
+          colorScheme: null,
           isDisabled: false,
         ),
-        Colors.green,
+        context.tTheme.brandNormalColor,
       );
     });
   });
+}
+
+Color _normalColor(BuildContext context, TLinkColorScheme scheme) {
+  final theme = context.tTheme;
+  return switch (scheme) {
+    TLinkColorScheme.primary => theme.brandNormalColor,
+    TLinkColorScheme.defaultTheme => theme.textColorPrimary,
+    TLinkColorScheme.danger => theme.errorNormalColor,
+    TLinkColorScheme.warning => theme.warningNormalColor,
+    TLinkColorScheme.success => theme.successNormalColor,
+  };
 }

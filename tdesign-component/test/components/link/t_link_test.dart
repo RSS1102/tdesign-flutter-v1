@@ -126,11 +126,12 @@ void main() {
         child: Text('主题色'),
         colorScheme: TLinkColorScheme.danger,
         variant: TLinkVariant.basic,
+        onPressed: _noop,
       ),
     ));
 
     final text = tester.widget<Text>(find.text('主题色'));
-    expect(text.style?.color, isNotNull);
+    expect(text.style?.color, TThemeData.defaultData().errorNormalColor);
   });
 
   // ============================================================
@@ -160,20 +161,22 @@ void main() {
   });
 
   // ============================================================
-  // T10 – 自定义颜色覆盖 colorScheme
+  // T10 – Theme defaultColorScheme 生效
   // ============================================================
-  testWidgets('T10 - 自定义颜色覆盖 colorScheme', (tester) async {
+  testWidgets('T10 - Theme defaultColorScheme 生效', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           body: Center(
             child: Theme(
               data: ThemeData().copyWith(extensions: [
-                const TLinkThemeData(color: Colors.purple),
+                const TLinkThemeData(
+                  defaultColorScheme: TLinkColorScheme.warning,
+                ),
               ]),
               child: const TLink(
-                child: Text('自定义色'),
-                colorScheme: TLinkColorScheme.primary,
+                child: Text('Theme语义色'),
+                onPressed: _noop,
               ),
             ),
           ),
@@ -181,8 +184,8 @@ void main() {
       ),
     );
 
-    final text = tester.widget<Text>(find.text('自定义色'));
-    expect(text.style?.color, Colors.purple);
+    final text = tester.widget<Text>(find.text('Theme语义色'));
+    expect(text.style?.color, TThemeData.defaultData().warningNormalColor);
   });
 
   // ============================================================
@@ -243,6 +246,7 @@ void main() {
     final text = tester.widget<Text>(find.text('Theme注入'));
     // Theme 注入的字号应生效（18 覆盖 size 默认 14）
     expect(text.style?.fontSize, 18);
+    expect(text.style?.decoration, TextDecoration.underline);
   });
 
   // ============================================================
@@ -358,3 +362,5 @@ Widget _wrap(Widget child) {
     ),
   );
 }
+
+void _noop() {}

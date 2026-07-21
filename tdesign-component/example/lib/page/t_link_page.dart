@@ -69,12 +69,17 @@ class _TLinkViewPageState extends State<TLinkViewPage> {
     return _surface(
       context,
       _linkWrap([
-        for (final scheme in TLinkColorScheme.values)
-          _buildLink(
-            label: '${_labelForColorScheme(scheme)}禁用',
-            colorScheme: scheme,
-            disabled: true,
-          ),
+        _buildLink(label: '基础禁用', disabled: true),
+        _buildLink(
+          label: '下划线禁用',
+          variant: TLinkVariant.underline,
+          disabled: true,
+        ),
+        _buildLink(
+          label: '图标禁用',
+          variant: TLinkVariant.icon,
+          disabled: true,
+        ),
       ]),
     );
   }
