@@ -14,7 +14,7 @@ typedef TBarItemAction = void Function();
 /// NavBar 组件 v1.0
 ///
 /// Material AppBar 薄包装（NavigationToolbar 实现）。
-/// - A 类禁用：操作项 `action: null`；返回 `onBack: null`。
+/// - A 类禁用：操作项 `action: null`。
 /// - L4 样式（标题颜色/字体、背景、高度、内边距等）→ [TNavBarThemeData]。
 class TNavBar extends StatefulWidget implements PreferredSizeWidget {
   const TNavBar({
@@ -62,7 +62,7 @@ class TNavBar extends StatefulWidget implements PreferredSizeWidget {
   /// 是否使用默认的返回按钮
   final bool useDefaultBack;
 
-  /// 返回事件；传入后由调用方接管返回行为，不再自动执行 Navigator.maybePop
+  /// 返回事件；默认返回按钮点击时先触发该回调，再执行 Navigator.maybePop。
   final VoidCallback? onBack;
 
   /// NavBar 下方的 Widget
@@ -213,7 +213,10 @@ class _TNavBarState extends State<TNavBar> {
       icon: TIcons.chevron_left,
       iconSize: 28.0,
       iconColor: iconColor,
-      action: widget.onBack,
+      action: () {
+        widget.onBack?.call();
+        Navigator.maybePop(context);
+      },
     ).toWidget(context);
   }
 

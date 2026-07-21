@@ -5,13 +5,12 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
   Widget wrap(Widget child, {TInputThemeData? inputTheme}) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (inputTheme != null) {
+      theme = theme.mergeExtension(inputTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(
-        extensions: [
-          TThemeData.defaultData(),
-          if (inputTheme != null) inputTheme,
-        ],
-      ),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -97,12 +96,28 @@ void main() {
       expect(textField.decoration?.labelText, 'label');
       expect(textField.decoration?.hintText, 'decoration hint');
       expect(textField.decoration?.helperText, 'helper');
+      expect(textField.decoration?.filled, isFalse);
+      expect(textField.decoration?.fillColor, Colors.transparent);
       expect(textField.maxLength, 20);
       expect(textField.autofocus, isTrue);
       expect(textField.keyboardType, TextInputType.emailAddress);
       expect(textField.textAlign, TextAlign.center);
       expect(find.byIcon(Icons.search), findsOneWidget);
       expect(find.byIcon(Icons.info), findsOneWidget);
+    });
+
+    testWidgets('explicit decoration fill is preserved', (tester) async {
+      const fillColor = Color(0xFFE5E5E5);
+      await tester.pumpWidget(wrap(const TInput(
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: fillColor,
+        ),
+      )));
+
+      final decoration = field(tester).decoration;
+      expect(decoration?.filled, isTrue);
+      expect(decoration?.fillColor, fillColor);
     });
 
     testWidgets('enabled and readOnly follow TextField semantics',

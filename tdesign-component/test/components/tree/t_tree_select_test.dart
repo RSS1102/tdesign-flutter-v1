@@ -35,13 +35,12 @@ void main() {
   ];
 
   Widget wrap(Widget child, {TTreeSelectThemeData? treeTheme}) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (treeTheme != null) {
+      theme = theme.mergeExtension(treeTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(
-        extensions: [
-          TThemeData.defaultData(),
-          if (treeTheme != null) treeTheme,
-        ],
-      ),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -131,10 +130,15 @@ void main() {
       onChanged: _ignore,
     )));
     expect(find.text('Banana'), findsOneWidget);
-    final tile = tester.widget<ListTile>(
-      find.ancestor(of: find.text('Banana'), matching: find.byType(ListTile)),
+    expect(find.byIcon(TIcons.check), findsOneWidget);
+    expect(
+      tester.widget<Text>(find.text('Fruit')).style?.color,
+      TThemeData.defaultData().brandNormalColor,
     );
-    expect(tile.selected, isTrue);
+    expect(
+      tester.widget<Text>(find.text('Banana')).style?.color,
+      TThemeData.defaultData().textColorPrimary,
+    );
 
     await tester.pumpWidget(wrap(const TTreeSelect(
       options: options,
@@ -172,10 +176,7 @@ void main() {
       value: const [],
       onChanged: (_) => changed = true,
     )));
-    final tile = tester.widget<ListTile>(
-      find.ancestor(of: find.text('Disabled'), matching: find.byType(ListTile)),
-    );
-    expect(tile.onTap, isNull);
+    await tester.tap(find.text('Disabled'));
     expect(changed, isFalse);
   });
 
@@ -206,6 +207,8 @@ void main() {
     ));
 
     expect(tester.widget<Text>(find.text('Apple')).style, selectedStyle);
+    expect(find.byIcon(TIcons.check), findsOneWidget);
+    expect(tester.widget<Icon>(find.byIcon(TIcons.check)).color, Colors.green);
     expect(
       find.byWidgetPredicate(
         (widget) => widget is Container && widget.constraints?.maxHeight == 280,

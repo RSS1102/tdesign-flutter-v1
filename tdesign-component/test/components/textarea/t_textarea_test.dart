@@ -5,11 +5,12 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
   Widget wrap(Widget child, {TInputThemeData? inputTheme}) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (inputTheme != null) {
+      theme = theme.mergeExtension(inputTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: [
-        TThemeData.defaultData(),
-        if (inputTheme != null) inputTheme,
-      ]),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -65,8 +66,25 @@ void main() {
     expect(field.textAlign, TextAlign.center);
     expect(field.decoration?.labelText, 'label');
     expect(field.decoration?.helperText, 'helper');
+    expect(field.decoration?.filled, isFalse);
+    expect(field.decoration?.fillColor, Colors.transparent);
     controller.dispose();
     focusNode.dispose();
+  });
+
+  testWidgets('TTextarea preserves explicit decoration fill', (tester) async {
+    const fillColor = Color(0xFFE5E5E5);
+    await tester.pumpWidget(wrap(const TTextarea(
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: fillColor,
+      ),
+    )));
+
+    final decoration =
+        tester.widget<TextField>(find.byType(TextField)).decoration;
+    expect(decoration?.filled, isTrue);
+    expect(decoration?.fillColor, fillColor);
   });
 
   testWidgets('TTextarea forwards submission and editing completion',

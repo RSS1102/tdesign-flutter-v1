@@ -179,6 +179,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
       width: width,
       color: backgroundColor,
       child: ListView.builder(
+        padding: EdgeInsets.zero,
         itemCount: options.length,
         itemBuilder: (context, index) {
           final option = options[index];
@@ -190,6 +191,26 @@ class _TTreeSelectState extends State<TTreeSelect> {
           final selected = isBranch
               ? level < _activePath.length && _activePath[level] == option.value
               : widget.value.any((value) => listEquals(value, path));
+          final previousSelected = level == 0 &&
+              index > 0 &&
+              _isColumnOptionSelected(
+                options[index - 1],
+                [
+                  ..._activePath.take(level),
+                  options[index - 1].value,
+                ],
+                level,
+              );
+          final nextSelected = level == 0 &&
+              index < options.length - 1 &&
+              _isColumnOptionSelected(
+                options[index + 1],
+                [
+                  ..._activePath.take(level),
+                  options[index + 1].value,
+                ],
+                level,
+              );
           return _buildOption(
             context,
             option: option,
@@ -197,11 +218,24 @@ class _TTreeSelectState extends State<TTreeSelect> {
             level: level,
             selected: selected,
             isBranch: isBranch,
+            previousSelected: previousSelected,
+            nextSelected: nextSelected,
             theme: theme,
           );
         },
       ),
     );
+  }
+
+  bool _isColumnOptionSelected(
+    TTreeSelectOption option,
+    List<Object?> path,
+    int level,
+  ) {
+    final isBranch = option.children.isNotEmpty;
+    return isBranch
+        ? level < _activePath.length && _activePath[level] == option.value
+        : widget.value.any((value) => listEquals(value, path));
   }
 
   Widget _buildOption(
@@ -211,49 +245,53 @@ class _TTreeSelectState extends State<TTreeSelect> {
     required int level,
     required bool selected,
     required bool isBranch,
+    required bool previousSelected,
+    required bool nextSelected,
     required TTreeSelectThemeData? theme,
   }) {
+    final isRoot = level == 0;
+    final itemHeight = theme?.itemHeight ?? 56;
+    final selectedBackgroundColor =
+        theme?.selectedBackgroundColor ?? context.tTheme.bgColorContainer;
+    final indicatorColor =
+        theme?.indicatorColor ?? context.tTheme.brandNormalColor;
     final defaultStyle = TextStyle(
       color: context.tTheme.textColorPrimary,
-      fontSize: context.tTheme.fontBodyMedium?.size ?? 14,
+      fontSize: context.tTheme.fontBodyLarge?.size ?? 16,
+      fontWeight: FontWeight.w400,
     );
     final selectedStyle = defaultStyle.copyWith(
       color: context.tTheme.brandNormalColor,
       fontWeight: FontWeight.w600,
     );
+    final effectiveTextStyle = option.disabled
+        ? theme?.disabledTextStyle ??
+            defaultStyle.copyWith(
+              color: context.tTheme.textDisabledColor,
+            )
+        : selected && theme?.selectedTextStyle != null
+            ? theme!.selectedTextStyle!
+            : selected && (isRoot || isBranch)
+                ? selectedStyle
+                : theme?.textStyle ?? defaultStyle;
+    final showIndicator = selected && !isBranch;
     return Semantics(
       selected: selected,
       enabled: !option.disabled,
       child: Opacity(
         opacity: option.disabled ? 0.4 : 1,
-        child: ListTile(
+        child: _TreeOptionTile(
           key: ValueKey((level, option.value)),
-          minTileHeight: theme?.itemHeight ?? 56,
+          label: option.label,
+          height: itemHeight,
+          textStyle: effectiveTextStyle,
           selected: selected,
-          selectedTileColor:
-              theme?.selectedBackgroundColor ?? context.tTheme.bgColorContainer,
-          title: Text(
-            option.label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: option.disabled
-                ? theme?.disabledTextStyle ??
-                    defaultStyle.copyWith(
-                      color: context.tTheme.textDisabledColor,
-                    )
-                : selected
-                    ? theme?.selectedTextStyle ?? selectedStyle
-                    : theme?.textStyle ?? defaultStyle,
-          ),
-          trailing: isBranch
-              ? const Icon(TIcons.chevron_right)
-              : selected
-                  ? Icon(
-                      TIcons.check,
-                      color: theme?.indicatorColor ??
-                          context.tTheme.brandNormalColor,
-                    )
-                  : null,
+          root: isRoot,
+          selectedBackgroundColor: selectedBackgroundColor,
+          indicatorColor: indicatorColor,
+          showIndicator: showIndicator,
+          previousSelected: previousSelected,
+          nextSelected: nextSelected,
           onTap: option.disabled
               ? null
               : () => isBranch
@@ -300,5 +338,161 @@ class _TTreeSelectState extends State<TTreeSelect> {
       }
     }
     return true;
+  }
+}
+
+class _TreeOptionTile extends StatelessWidget {
+  const _TreeOptionTile({
+    super.key,
+    required this.label,
+    required this.height,
+    required this.textStyle,
+    required this.selected,
+    required this.root,
+    required this.selectedBackgroundColor,
+    required this.indicatorColor,
+    required this.showIndicator,
+    required this.previousSelected,
+    required this.nextSelected,
+    required this.onTap,
+  });
+
+  final String label;
+  final double height;
+  final TextStyle textStyle;
+  final bool selected;
+  final bool root;
+  final Color selectedBackgroundColor;
+  final Color indicatorColor;
+  final bool showIndicator;
+  final bool previousSelected;
+  final bool nextSelected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final tile = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          if (selected && root)
+            Positioned.fill(
+              child: ColoredBox(color: selectedBackgroundColor),
+            ),
+          if (!selected && previousSelected)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: CustomPaint(
+                size: const Size(12, 12),
+                painter: _OutwardCornerPainter(
+                  color: selectedBackgroundColor,
+                  corner: _Corner.topRight,
+                ),
+              ),
+            ),
+          if (!selected && nextSelected)
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: CustomPaint(
+                size: const Size(12, 12),
+                painter: _OutwardCornerPainter(
+                  color: selectedBackgroundColor,
+                  corner: _Corner.bottomRight,
+                ),
+              ),
+            ),
+          SizedBox(
+            height: height,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 12),
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textStyle,
+                    ),
+                  ),
+                ),
+                if (showIndicator)
+                  SizedBox(
+                    width: 56,
+                    height: height,
+                    child: Icon(
+                      TIcons.check,
+                      size: 24,
+                      color: indicatorColor,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    return SizedBox(height: height, child: tile);
+  }
+}
+
+enum _Corner {
+  topRight,
+  bottomRight,
+}
+
+class _OutwardCornerPainter extends CustomPainter {
+  const _OutwardCornerPainter({
+    required this.color,
+    required this.corner,
+  });
+
+  final Color color;
+  final _Corner corner;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    final radius = size.width;
+    final path = Path();
+
+    switch (corner) {
+      case _Corner.topRight:
+        path
+          ..moveTo(0, 0)
+          ..lineTo(radius, 0)
+          ..lineTo(radius, radius)
+          ..arcToPoint(
+            const Offset(0, 0),
+            radius: Radius.circular(radius),
+            clockwise: false,
+          )
+          ..close();
+        break;
+      case _Corner.bottomRight:
+        path
+          ..moveTo(radius, 0)
+          ..lineTo(radius, radius)
+          ..lineTo(0, radius)
+          ..arcToPoint(
+            Offset(radius, 0),
+            radius: Radius.circular(radius),
+            clockwise: false,
+          )
+          ..close();
+        break;
+    }
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _OutwardCornerPainter oldDelegate) {
+    return oldDelegate.color != color || oldDelegate.corner != corner;
   }
 }

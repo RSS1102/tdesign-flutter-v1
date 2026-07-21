@@ -198,10 +198,9 @@ class _ExamplePageState extends State<ExamplePage> with WidgetsBindingObserver {
                 Expanded(
                   child: SafeArea(
                     top: false,
-                    child:
-                        widget.showSingleChild && widget.singleChild != null
-                            ? _singleChild()
-                            : _buildExampleList(),
+                    child: widget.showSingleChild && widget.singleChild != null
+                        ? _singleChild()
+                        : _buildExampleList(),
                   ),
                 ),
               ],
@@ -769,7 +768,7 @@ extension TStateExs on State {
   String tTitle() {
     var modelTheme =
         context.dependOnInheritedWidgetOfExactType<ExamplePageInheritedTheme>();
-    return modelTheme?.model.text ?? '';
+    return modelTheme?.model.displayText ?? '';
   }
 }
 
@@ -778,6 +777,6 @@ extension TWidgetExs on StatelessWidget {
   String tTitle(BuildContext context) {
     var modelTheme =
         context.dependOnInheritedWidgetOfExactType<ExamplePageInheritedTheme>();
-    return modelTheme?.model.text ?? '';
+    return modelTheme?.model.displayText ?? '';
   }
 }

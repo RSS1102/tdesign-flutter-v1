@@ -379,11 +379,8 @@ class TMaterialThemeBuilder {
     );
   }
 
-  TLinkThemeData _linkTheme(TThemeData token) {
-    return TLinkThemeData(
-      color: token.textColorLink,
-      fontSize: token.fontLinkMedium?.size,
-    );
+  TLinkThemeData _linkTheme(TThemeData _) {
+    return const TLinkThemeData();
   }
 
   /// 亮色 ColorScheme 映射（Token → ColorScheme）

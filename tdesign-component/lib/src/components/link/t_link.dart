@@ -15,9 +15,9 @@ class TLink extends StatelessWidget {
     this.uri,
     this.prefixIcon,
     this.suffixIcon,
-    this.variant = TLinkVariant.basic,
+    this.variant,
     this.colorScheme,
-    this.size = TLinkSize.medium,
+    this.size,
     this.onPressed,
     this.semanticLabel,
     this.tooltip,
@@ -26,17 +26,20 @@ class TLink extends StatelessWidget {
   /// 链接内容，一般是 [Text]
   final Widget? child;
 
-  /// 跳转 URI
+  /// 链接 URI。
+  ///
+  /// 该字段仅作为链接目标数据保留；组件不引入平台跳转依赖。
+  /// 如需打开链接，请在 [onPressed] 中自行处理。
   final Uri? uri;
 
-  /// 链接形态
-  final TLinkVariant variant;
+  /// 链接形态；未传时读取 [TLinkThemeData.defaultVariant]，再回退 basic。
+  final TLinkVariant? variant;
 
   /// 语义颜色方案
   final TLinkColorScheme? colorScheme;
 
-  /// 尺寸
-  final TLinkSize size;
+  /// 尺寸；未传时读取 [TLinkThemeData.defaultSize]，再回退 medium。
+  final TLinkSize? size;
 
   /// 前置图标（仅在 [variant] 为 [TLinkVariant.icon] 时生效）
   final Widget? prefixIcon;
@@ -60,6 +63,9 @@ class TLink extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = _resolveTheme(context);
     final isDisabled = _isDisabled;
+    final effectiveVariant =
+        variant ?? theme?.defaultVariant ?? TLinkVariant.basic;
+    final effectiveSize = size ?? theme?.defaultSize ?? TLinkSize.medium;
 
     // resolve 颜色
     final effectiveColor = TLinkResolve.resolveColor(
@@ -73,12 +79,14 @@ class TLink extends StatelessWidget {
     final text = _buildLinkText(
       context: context,
       theme: theme,
+      effectiveVariant: effectiveVariant,
+      effectiveSize: effectiveSize,
       effectiveColor: effectiveColor,
     );
 
     // 带图标时组装 Row
-    if (variant == TLinkVariant.icon) {
-      return _buildIconRow(context, text, effectiveColor, theme);
+    if (effectiveVariant == TLinkVariant.icon) {
+      return _buildIconRow(context, text, effectiveColor, theme, effectiveSize);
     }
 
     // 纯文本 / 下划线：直接返回 InkWell 包裹的文本
@@ -97,14 +105,16 @@ class TLink extends StatelessWidget {
   Widget _buildLinkText({
     required BuildContext context,
     required TLinkThemeData? theme,
+    required TLinkVariant effectiveVariant,
+    required TLinkSize effectiveSize,
     required Color effectiveColor,
   }) {
     final effectiveFontSize = TLinkResolve.resolveFontSize(
-      size: size,
+      size: effectiveSize,
       theme: theme,
     );
 
-    final hasUnderline = variant == TLinkVariant.underline;
+    final hasUnderline = effectiveVariant == TLinkVariant.underline;
 
     final defaultChild = child ?? const SizedBox.shrink();
 
@@ -146,14 +156,15 @@ class TLink extends StatelessWidget {
     Widget text,
     Color effectiveColor,
     TLinkThemeData? theme,
+    TLinkSize effectiveSize,
   ) {
     final (leftGap, rightGap) = TLinkResolve.resolveGap(
-      size: size,
+      size: effectiveSize,
       theme: theme,
     );
 
     final effectiveIconSize = TLinkResolve.resolveIconSize(
-      size: size,
+      size: effectiveSize,
       theme: theme,
     );
 

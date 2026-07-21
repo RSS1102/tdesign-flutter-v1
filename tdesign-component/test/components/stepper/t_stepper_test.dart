@@ -4,12 +4,12 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
   Widget wrap(Widget child, {TStepperThemeData? stepperTheme}) {
-    final extensions = <ThemeExtension<dynamic>>[TThemeData.defaultData()];
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
     if (stepperTheme != null) {
-      extensions.add(stepperTheme);
+      theme = theme.mergeExtension(stepperTheme);
     }
     return MaterialApp(
-      theme: ThemeData(extensions: extensions),
+      theme: theme,
       home: Scaffold(body: Center(child: child)),
     );
   }
@@ -197,6 +197,10 @@ void main() {
       );
       expect(inputBox.width, 88);
       expect(textField(tester).decoration?.filled, isTrue);
+      expect(
+        textField(tester).decoration?.fillColor,
+        TThemeData.defaultData().bgColorSecondaryContainer,
+      );
     });
 
     testWidgets('normal variant keeps transparent input decoration',

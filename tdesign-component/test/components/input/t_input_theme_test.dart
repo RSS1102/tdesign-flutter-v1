@@ -60,5 +60,27 @@ void main() {
     );
     expect(fallback.labelText, 'label');
     expect(fallback.hintText, 'hint');
+    expect(fallback.filled, isFalse);
+    expect(fallback.fillColor, Colors.transparent);
+  });
+
+  test('TInputResolve isolates default fill from Material input theme', () {
+    final resolved = TInputResolve.resolveDecoration();
+
+    expect(resolved.filled, isFalse);
+    expect(resolved.fillColor, Colors.transparent);
+  });
+
+  test('TInputResolve preserves explicit decoration fill', () {
+    const fillColor = Color(0xFFE5E5E5);
+    final resolved = TInputResolve.resolveDecoration(
+      base: const InputDecoration(
+        filled: true,
+        fillColor: fillColor,
+      ),
+    );
+
+    expect(resolved.filled, isTrue);
+    expect(resolved.fillColor, fillColor);
   });
 }

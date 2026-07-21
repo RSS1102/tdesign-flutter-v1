@@ -15,6 +15,8 @@ class TInputResolve {
       hintText: source.hintText ?? hintText,
       prefixIcon: source.prefixIcon ?? prefix,
       suffixIcon: source.suffixIcon ?? suffix,
+      filled: source.filled ?? false,
+      fillColor: source.fillColor ?? Colors.transparent,
     );
   }
 }

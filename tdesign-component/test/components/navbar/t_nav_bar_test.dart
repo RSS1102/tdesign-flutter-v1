@@ -107,14 +107,36 @@ void main() {
       expect(called, true);
     });
 
-    testWidgets('onBack: null 时点击不崩溃', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TNavBar(title: '标题', useDefaultBack: true, onBack: null),
+    testWidgets('onBack: null 时默认返回上一级', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        theme: TThemeBuilder.light(TThemeData.defaultData()),
+        routes: {
+          '/': (_) => Builder(
+                builder: (context) => TextButton(
+                  onPressed: () => Navigator.of(context).pushNamed('/detail'),
+                  child: const Text('open'),
+                ),
+              ),
+          '/detail': (_) => const Scaffold(
+                appBar: TNavBar(
+                  title: '标题',
+                  useDefaultBack: true,
+                  onBack: null,
+                ),
+              ),
+        },
       ));
+
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      expect(find.text('标题'), findsOneWidget);
+
       final backFinder = find.byIcon(TIcons.chevron_left);
       await tester.tap(backFinder);
-      // 无异常即通过
-      expect(find.byType(TNavBar), findsOneWidget);
+      await tester.pumpAndSettle();
+
+      expect(find.text('open'), findsOneWidget);
+      expect(find.byType(TNavBar), findsNothing);
     });
   });
 

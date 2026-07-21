@@ -190,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (model.isTodo) {
           if (_kShowTodoComponent) {
             cells.add(TCell(
-              title: Text(model.text),
+              title: Text(model.displayText),
               arrow: true,
               onTap: () {
                 Navigator.pushNamed(context, '${model.name}?showAction=1');
@@ -199,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         } else {
           cells.add(TCell(
-            title: Text(model.text),
+            title: Text(model.displayText),
             arrow: true,
             onTap: () {
               focusNode.unfocus();

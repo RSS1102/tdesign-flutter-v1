@@ -97,7 +97,7 @@ void main() {
       ),
     ));
 
-    await tester.tap(find.text('禁用链接'));
+    await tester.tap(find.text('禁用链接'), warnIfMissed: false);
     expect(tapped, false);
   });
 
@@ -231,7 +231,6 @@ void main() {
               builder: (context) {
                 return const TLink(
                   child: Text('Theme注入'),
-                  size: TLinkSize.medium,
                 );
               },
             ),
@@ -243,6 +242,7 @@ void main() {
     final text = tester.widget<Text>(find.text('Theme注入'));
     // Theme 注入的字号应生效（18 覆盖 size 默认 14）
     expect(text.style?.fontSize, 18);
+    expect(text.style?.decoration, TextDecoration.underline);
   });
 
   // ============================================================
@@ -348,6 +348,66 @@ void main() {
 
     expect(find.text('富文本'), findsOneWidget);
   });
+
+  testWidgets('T18 - full theme does not override colorScheme', (tester) async {
+    final token = TThemeData.defaultData();
+    await tester.pumpWidget(MaterialApp(
+      theme: TThemeBuilder.light(token),
+      home: const Scaffold(
+        body: Column(
+          children: [
+            TLink(
+              child: Text('主色'),
+              colorScheme: TLinkColorScheme.primary,
+              onPressed: _noop,
+            ),
+            TLink(
+              child: Text('默认色'),
+              colorScheme: TLinkColorScheme.defaultTheme,
+              onPressed: _noop,
+            ),
+            TLink(
+              child: Text('危险色'),
+              colorScheme: TLinkColorScheme.danger,
+              onPressed: _noop,
+            ),
+          ],
+        ),
+      ),
+    ));
+
+    expect(tester.widget<Text>(find.text('主色')).style?.color,
+        token.brandNormalColor);
+    expect(tester.widget<Text>(find.text('默认色')).style?.color,
+        token.textColorPrimary);
+    expect(tester.widget<Text>(find.text('危险色')).style?.color,
+        token.errorNormalColor);
+  });
+
+  testWidgets('T19 - theme defaults apply without strong global overrides',
+      (tester) async {
+    final token = TThemeData.defaultData();
+    await tester.pumpWidget(MaterialApp(
+      theme: TThemeBuilder.light(token).mergeExtension(
+        const TLinkThemeData(
+          defaultColorScheme: TLinkColorScheme.success,
+          defaultSize: TLinkSize.large,
+          defaultVariant: TLinkVariant.underline,
+        ),
+      ),
+      home: const Scaffold(
+        body: TLink(
+          child: Text('默认主题'),
+          onPressed: _noop,
+        ),
+      ),
+    ));
+
+    final text = tester.widget<Text>(find.text('默认主题'));
+    expect(text.style?.color, token.successNormalColor);
+    expect(text.style?.fontSize, 16);
+    expect(text.style?.decoration, TextDecoration.underline);
+  });
 }
 
 /// 最小化包装
@@ -358,3 +418,5 @@ Widget _wrap(Widget child) {
     ),
   );
 }
+
+void _noop() {}
