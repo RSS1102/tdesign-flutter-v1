@@ -196,6 +196,41 @@ Map<String, List<ExamplePageModel>> exampleMap = {
         pageBuilder: _wrapInheritedTheme((context) => const TTextPage())),
     */
   ],
+  // TODO: 其他组件页面待升级至 V1.0 后取消注释
+  '导航': [
+    ExamplePageModel(
+        text: 'BackTop 返回顶部 (V1.0)',
+        name: 'backtop',
+        pageBuilder: _wrapInheritedTheme((context) => const TBackTopPage())),
+    ExamplePageModel(
+        text: 'NavBar 导航栏 (V1.0)',
+        name: 'navbar',
+        pageBuilder: _wrapInheritedTheme((context) => const TNavBarPage())),
+    ExamplePageModel(
+        text: 'Tabs 选项卡 (V1.0)',
+        name: 'tabs',
+        pageBuilder: _wrapInheritedTheme((context) => const TTabsPage())),
+    ExamplePageModel(
+        text: 'TabBar 标签栏 (V1.0)',
+        name: 'tabBar',
+        pageBuilder: _wrapInheritedTheme((context) => const TTabBarPage())),
+    ExamplePageModel(
+        text: 'Drawer 抽屉 (V1.0)',
+        name: 'drawer',
+        pageBuilder: _wrapInheritedTheme((context) => const TDrawerPage())),
+    ExamplePageModel(
+        text: 'Steps 步骤条 (V1.0)',
+        name: 'steps',
+        pageBuilder: _wrapInheritedTheme((context) => const TStepsPage())),
+    ExamplePageModel(
+        text: 'Indexes 索引 (V1.0)',
+        name: 'indexes',
+        pageBuilder: _wrapInheritedTheme((context) => const TIndexesPage())),
+    ExamplePageModel(
+        text: 'SideBar 侧边栏 (V1.0)',
+        name: 'sidebar',
+        pageBuilder: _wrapInheritedTheme((context) => const TSideBarPage())),
+  ],
   '输入': [
     ExamplePageModel(
         text: 'Input 输入框 (V1.0)',
@@ -263,90 +298,6 @@ Map<String, List<ExamplePageModel>> exampleMap = {
         name: 'treeSelect',
         pageBuilder: _wrapInheritedTheme((context) => const TTreeSelectPage())),
   ],
-  // TODO: 其他组件页面待升级至 V1.0 后取消注释
-  '导航': [
-    ExamplePageModel(
-        text: 'BackTop 返回顶部 (V1.0)',
-        name: 'backtop',
-        pageBuilder: _wrapInheritedTheme((context) => const TBackTopPage())),
-    ExamplePageModel(
-        text: 'NavBar 导航栏 (V1.0)',
-        name: 'navbar',
-        pageBuilder: _wrapInheritedTheme((context) => const TNavBarPage())),
-    ExamplePageModel(
-        text: 'Tabs 选项卡 (V1.0)',
-        name: 'tabs',
-        pageBuilder: _wrapInheritedTheme((context) => const TTabsPage())),
-    ExamplePageModel(
-        text: 'TabBar 标签栏 (V1.0)',
-        name: 'tabBar',
-        pageBuilder: _wrapInheritedTheme((context) => const TTabBarPage())),
-    ExamplePageModel(
-        text: 'Drawer 抽屉 (V1.0)',
-        name: 'drawer',
-        pageBuilder: _wrapInheritedTheme((context) => const TDrawerPage())),
-    ExamplePageModel(
-        text: 'Steps 步骤条 (V1.0)',
-        name: 'steps',
-        pageBuilder: _wrapInheritedTheme((context) => const TStepsPage())),
-    ExamplePageModel(
-        text: 'Indexes 索引 (V1.0)',
-        name: 'indexes',
-        pageBuilder: _wrapInheritedTheme((context) => const TIndexesPage())),
-    ExamplePageModel(
-        text: 'SideBar 侧边栏 (V1.0)',
-        name: 'sidebar',
-        pageBuilder: _wrapInheritedTheme((context) => const TSideBarPage())),
-  ],
-  '反馈': [
-    ExamplePageModel(
-        text: 'Loading 加载 (V1.0)',
-        name: 'loading',
-        pageBuilder: _wrapInheritedTheme((context) => const TLoadingPage())),
-    ExamplePageModel(
-        text: 'Refresh 下拉刷新 (V1.0)',
-        name: 'refresh',
-        pageBuilder:
-            _wrapInheritedTheme((context) => const TPullDownRefreshPage())),
-    ExamplePageModel(
-        text: 'NoticeBar 公告栏 (V1.0)',
-        name: 'noticeBar',
-        pageBuilder: _wrapInheritedTheme((context) => const TNoticeBarPage())),
-    ExamplePageModel(
-        text: 'SwipeCell 滑动单元格 (V1.0)',
-        name: 'swipeCell',
-        pageBuilder: _wrapInheritedTheme((context) => const TSwipeCellPage())),
-    ExamplePageModel(
-        text: 'Dialog 弹窗 (V1.0)',
-        name: 'dialog',
-        pageBuilder: _wrapInheritedTheme((context) => const TDialogPage())),
-    ExamplePageModel(
-        text: 'Popup 弹出层 (V1.0)',
-        name: 'popup',
-        pageBuilder: _wrapInheritedTheme((context) => const TPopupPage())),
-    ExamplePageModel(
-        text: 'ActionSheet 动作面板 (V1.0)',
-        name: 'actionSheet',
-        pageBuilder:
-            _wrapInheritedTheme((context) => const TActionSheetPage())),
-    ExamplePageModel(
-        text: 'Message 消息通知 (V1.0)',
-        name: 'message',
-        pageBuilder: _wrapInheritedTheme((context) => const TMessagePage())),
-    ExamplePageModel(
-        text: 'Toast 轻提示 (V1.0)',
-        name: 'toast',
-        pageBuilder: _wrapInheritedTheme((context) => const TToastPage())),
-    ExamplePageModel(
-        text: 'Popover 气泡弹出 (V1.0)',
-        name: 'popover',
-        pageBuilder: _wrapInheritedTheme((context) => const TPopoverPage())),
-    ExamplePageModel(
-        text: 'DropdownMenu 下拉菜单 (V1.0)',
-        name: 'dropdownMenu',
-        pageBuilder:
-            _wrapInheritedTheme((context) => const TDropdownMenuPage())),
-  ],
   '展示': [
     ExamplePageModel(
         text: 'Image 图片 (V1.0)',
@@ -410,6 +361,55 @@ Map<String, List<ExamplePageModel>> exampleMap = {
         text: 'Table 表格 (V1.0)',
         name: 'table',
         pageBuilder: _wrapInheritedTheme((context) => const TTablePage())),
+  ],
+  '反馈': [
+    ExamplePageModel(
+        text: 'Loading 加载 (V1.0)',
+        name: 'loading',
+        pageBuilder: _wrapInheritedTheme((context) => const TLoadingPage())),
+    ExamplePageModel(
+        text: 'Refresh 下拉刷新 (V1.0)',
+        name: 'refresh',
+        pageBuilder:
+            _wrapInheritedTheme((context) => const TPullDownRefreshPage())),
+    ExamplePageModel(
+        text: 'NoticeBar 公告栏 (V1.0)',
+        name: 'noticeBar',
+        pageBuilder: _wrapInheritedTheme((context) => const TNoticeBarPage())),
+    ExamplePageModel(
+        text: 'SwipeCell 滑动单元格 (V1.0)',
+        name: 'swipeCell',
+        pageBuilder: _wrapInheritedTheme((context) => const TSwipeCellPage())),
+    ExamplePageModel(
+        text: 'Dialog 弹窗 (V1.0)',
+        name: 'dialog',
+        pageBuilder: _wrapInheritedTheme((context) => const TDialogPage())),
+    ExamplePageModel(
+        text: 'Popup 弹出层 (V1.0)',
+        name: 'popup',
+        pageBuilder: _wrapInheritedTheme((context) => const TPopupPage())),
+    ExamplePageModel(
+        text: 'ActionSheet 动作面板 (V1.0)',
+        name: 'actionSheet',
+        pageBuilder:
+            _wrapInheritedTheme((context) => const TActionSheetPage())),
+    ExamplePageModel(
+        text: 'Message 消息通知 (V1.0)',
+        name: 'message',
+        pageBuilder: _wrapInheritedTheme((context) => const TMessagePage())),
+    ExamplePageModel(
+        text: 'Toast 轻提示 (V1.0)',
+        name: 'toast',
+        pageBuilder: _wrapInheritedTheme((context) => const TToastPage())),
+    ExamplePageModel(
+        text: 'Popover 气泡弹出 (V1.0)',
+        name: 'popover',
+        pageBuilder: _wrapInheritedTheme((context) => const TPopoverPage())),
+    ExamplePageModel(
+        text: 'DropdownMenu 下拉菜单 (V1.0)',
+        name: 'dropdownMenu',
+        pageBuilder:
+            _wrapInheritedTheme((context) => const TDropdownMenuPage())),
   ],
 };
 
