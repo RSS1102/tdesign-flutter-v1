@@ -17,6 +17,17 @@ void main() {
   TextField textField(WidgetTester tester) =>
       tester.widget<TextField>(find.byType(TextField));
 
+  Container inputContainer(WidgetTester tester) => tester.widget<Container>(
+        find
+            .ancestor(
+              of: find.byType(TextField),
+              matching: find.byWidgetPredicate(
+                (widget) => widget is Container && widget.decoration != null,
+              ),
+            )
+            .first,
+      );
+
   group('TSearchBar v1 behavior', () {
     testWidgets('renders hint and controller text', (tester) async {
       final controller = TextEditingController(text: 'initial');
@@ -29,6 +40,21 @@ void main() {
       expect(find.text('initial'), findsOneWidget);
       expect(textField(tester).decoration?.hintText, 'search');
       controller.dispose();
+    });
+
+    testWidgets('uses TDesign search background and collapsed input layout',
+        (tester) async {
+      await tester.pumpWidget(wrap(const TSearchBar(hintText: 'search')));
+
+      final token = TThemeData.defaultData();
+      final inputDecoration =
+          inputContainer(tester).decoration as BoxDecoration;
+      final searchIcon = tester.widget<Icon>(find.byIcon(TIcons.search));
+
+      expect(inputDecoration.color, token.bgColorSecondaryContainer);
+      expect(textField(tester).decoration?.isCollapsed, isTrue);
+      expect(textField(tester).decoration?.hintMaxLines, 1);
+      expect(searchIcon.size, 24);
     });
 
     testWidgets('initialValue initializes internal controller once',

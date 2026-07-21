@@ -162,7 +162,6 @@ class _TSearchBarState extends State<TSearchBar> {
         const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
     final backgroundColor = theme?.backgroundColor ?? token.bgColorContainer;
     final autoHeight = theme?.autoHeight ?? false;
-    final fieldHeight = autoHeight ? null : 40.0;
     final inputDecoration = _buildDecoration(context);
     final textStyle = TextStyle(
       textBaseline: TextBaseline.ideographic,
@@ -173,40 +172,39 @@ class _TSearchBarState extends State<TSearchBar> {
     return Semantics(
       enabled: widget.enabled,
       textField: true,
-      child: AnimatedOpacity(
-        opacity: widget.enabled ? 1 : 0.6,
-        duration: const Duration(milliseconds: 150),
-        child: AbsorbPointer(
-          absorbing: !widget.enabled,
-          child: Container(
-            padding: padding,
-            height: autoHeight ? null : 56,
-            color: backgroundColor,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: fieldHeight,
-                    decoration: BoxDecoration(
-                      color: widget.enabled
-                          ? token.bgColorSecondaryContainer
-                          : token.bgColorComponentDisabled,
-                      borderRadius: BorderRadius.circular(
-                        variant == TSearchBarVariant.square ? 4 : 28,
-                      ),
+      child: AbsorbPointer(
+        absorbing: !widget.enabled,
+        child: Container(
+          padding: padding,
+          height: autoHeight ? null : 56,
+          color: backgroundColor,
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: autoHeight ? null : double.infinity,
+                  decoration: BoxDecoration(
+                    color: widget.enabled
+                        ? token.bgColorSecondaryContainer
+                        : token.bgColorComponentDisabled,
+                    borderRadius: BorderRadius.circular(
+                      variant == TSearchBarVariant.square ? 4 : 28,
                     ),
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 12),
-                        Icon(
-                          TIcons.search,
-                          size: 22,
-                          color: widget.enabled
-                              ? token.textColorPlaceholder
-                              : token.textDisabledColor,
-                        ),
-                        const SizedBox(width: 4),
-                        Expanded(
+                  ),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 12),
+                      Icon(
+                        TIcons.search,
+                        size: 24,
+                        color: widget.enabled
+                            ? token.textColorPlaceholder
+                            : token.textDisabledColor,
+                      ),
+                      const SizedBox(width: 3),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 1),
                           child: TextField(
                             controller: _controller,
                             focusNode: _focusNode,
@@ -228,44 +226,43 @@ class _TSearchBarState extends State<TSearchBar> {
                             cursorOpacityAnimates: false,
                           ),
                         ),
-                        if (_hasText)
-                          IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints.tightFor(
-                              width: 36,
-                              height: 36,
-                            ),
-                            iconSize: 21,
+                      ),
+                      const SizedBox(width: 9),
+                      if (_hasText)
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: _handleClear,
+                          child: Icon(
+                            TIcons.close_circle_filled,
+                            size: 21,
                             color: widget.enabled
                                 ? token.textColorPlaceholder
                                 : token.textDisabledColor,
-                            onPressed: _handleClear,
-                            icon: const Icon(TIcons.close_circle_filled),
-                          )
-                        else
-                          const SizedBox(width: 12),
-                      ],
-                    ),
+                          ),
+                        ),
+                      const SizedBox(width: 9),
+                    ],
                   ),
                 ),
-                if (widget.needCancel && _hasFocus)
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.only(left: 12),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: VisualDensity.compact,
-                      foregroundColor: token.textColorPrimary,
-                      textStyle: TextStyle(
+              ),
+              if (widget.needCancel && _hasFocus)
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: _handleCancel,
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 16),
+                    alignment: Alignment.center,
+                    child: Text(
+                      widget.cancelText,
+                      style: TextStyle(
                         fontSize: token.fontBodyLarge?.size,
+                        color: token.brandNormalColor,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    onPressed: _handleCancel,
-                    child: Text(widget.cancelText),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),
@@ -290,7 +287,8 @@ class _TSearchBarState extends State<TSearchBar> {
       enabledBorder: base.enabledBorder ?? InputBorder.none,
       focusedBorder: base.focusedBorder ?? InputBorder.none,
       disabledBorder: base.disabledBorder ?? InputBorder.none,
-      isCollapsed: base.isCollapsed,
+      hintMaxLines: base.hintMaxLines ?? 1,
+      isCollapsed: widget.decoration?.isCollapsed ?? true,
       contentPadding: base.contentPadding ?? EdgeInsets.zero,
     );
   }

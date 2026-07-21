@@ -55,9 +55,9 @@ class TStepper extends StatefulWidget {
 }
 
 class _TStepperState extends State<TStepper> {
-  static const double _height = 24;
-  static const double _buttonSize = 24;
-  static const double _defaultInputWidth = 38;
+  static const double _height = 32;
+  static const double _buttonSize = 32;
+  static const double _defaultInputWidth = 48;
 
   late final TextEditingController _textController;
   final FocusNode _focusNode = FocusNode();
@@ -98,7 +98,8 @@ class _TStepperState extends State<TStepper> {
       children: [
         _StepperIconButton(
           icon: Icons.remove,
-          disabled: !canDecrease,
+          actionDisabled: !canDecrease,
+          componentDisabled: _disabled,
           variant: variant,
           position: _StepperSegmentPosition.left,
           onPressed: () => _commit(widget.value - widget.step),
@@ -122,7 +123,7 @@ class _TStepperState extends State<TStepper> {
               color: _disabled
                   ? context.tTheme.textDisabledColor
                   : context.tTheme.textColorPrimary,
-              fontSize: context.tTheme.fontBodyMedium?.size ?? 12,
+              fontSize: context.tTheme.fontBodyLarge?.size ?? 14,
               height: 1,
             ),
             decoration: const InputDecoration(
@@ -154,7 +155,8 @@ class _TStepperState extends State<TStepper> {
         ),
         _StepperIconButton(
           icon: Icons.add,
-          disabled: !canIncrease,
+          actionDisabled: !canIncrease,
+          componentDisabled: _disabled,
           variant: variant,
           position: _StepperSegmentPosition.right,
           onPressed: () => _commit(widget.value + widget.step),
@@ -230,14 +232,16 @@ class _StepperIconButton extends StatelessWidget {
 
   const _StepperIconButton({
     required this.icon,
-    required this.disabled,
+    required this.actionDisabled,
+    required this.componentDisabled,
     required this.variant,
     required this.position,
     required this.onPressed,
   });
 
   final IconData icon;
-  final bool disabled;
+  final bool actionDisabled;
+  final bool componentDisabled;
   final TStepperVariant variant;
   final _StepperSegmentPosition position;
   final VoidCallback onPressed;
@@ -246,13 +250,13 @@ class _StepperIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final token = context.tTheme;
     final backgroundColor = switch (variant) {
-      TStepperVariant.filled => disabled
+      TStepperVariant.filled => componentDisabled
           ? token.bgColorComponentDisabled
           : token.bgColorSecondaryContainer,
       TStepperVariant.normal => null,
     };
     final foregroundColor =
-        disabled ? token.textDisabledColor : token.textColorPrimary;
+        actionDisabled ? token.textDisabledColor : token.textColorPrimary;
     return SizedBox(
       width: _buttonSize,
       height: _buttonSize,
@@ -261,14 +265,14 @@ class _StepperIconButton extends StatelessWidget {
           icon == Icons.add ? 'stepper-increase' : 'stepper-decrease',
         ),
         behavior: HitTestBehavior.opaque,
-        onTap: disabled ? null : onPressed,
+        onTap: actionDisabled ? null : onPressed,
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: _borderRadius(),
             border: _border(context),
           ),
-          child: Icon(icon, size: 16, color: foregroundColor),
+          child: Icon(icon, size: 18, color: foregroundColor),
         ),
       ),
     );
@@ -276,8 +280,8 @@ class _StepperIconButton extends StatelessWidget {
 
   BorderRadius? _borderRadius() {
     return position == _StepperSegmentPosition.left
-        ? const BorderRadius.horizontal(left: Radius.circular(3))
-        : const BorderRadius.horizontal(right: Radius.circular(3));
+        ? const BorderRadius.horizontal(left: Radius.circular(4))
+        : const BorderRadius.horizontal(right: Radius.circular(4));
   }
 
   BoxBorder? _border(BuildContext context) {
@@ -285,7 +289,7 @@ class _StepperIconButton extends StatelessWidget {
       return null;
     }
     final side = BorderSide(
-      color: disabled
+      color: componentDisabled
           ? context.tTheme.componentStrokeColor
           : context.tTheme.componentBorderColor,
     );
