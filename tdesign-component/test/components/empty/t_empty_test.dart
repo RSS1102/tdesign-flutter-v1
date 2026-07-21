@@ -5,10 +5,22 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// TEmpty V1.0 Widget 测试
 /// 覆盖 variant、icon、emptyText、operationText、onPressed、customOperationWidget。
 void main() {
-  Widget wrapWithTheme(Widget child) {
+  Widget wrapWithTheme(Widget child, {TEmptyThemeData? emptyTheme}) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (emptyTheme != null) {
+      theme = theme.mergeExtension(emptyTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: theme,
       home: Scaffold(body: child),
+    );
+  }
+
+  TText emptyTextWidget(WidgetTester tester, String data) {
+    return tester.widget<TText>(
+      find.byWidgetPredicate(
+        (widget) => widget is TText && widget.data == data,
+      ),
     );
   }
 
@@ -35,10 +47,13 @@ void main() {
 
   group('TEmpty icon', () {
     testWidgets('默认 icon 正常渲染', (tester) async {
+      final token = TThemeData.defaultData();
       await tester.pumpWidget(wrapWithTheme(
         const TEmpty(emptyText: '默认图标'),
       ));
-      expect(find.byType(TEmpty), findsOneWidget);
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.info_circle_filled));
+      expect(icon.size, 96);
+      expect(icon.color, token.textColorPlaceholder);
     });
 
     testWidgets('自定义 icon', (tester) async {
@@ -51,10 +66,15 @@ void main() {
 
   group('TEmpty emptyText', () {
     testWidgets('emptyText 显示文案', (tester) async {
+      final token = TThemeData.defaultData();
       await tester.pumpWidget(wrapWithTheme(
         const TEmpty(emptyText: '自定义文案'),
       ));
       expect(find.text('自定义文案'), findsOneWidget);
+      final text = emptyTextWidget(tester, '自定义文案');
+      expect(text.textColor, token.textColorPlaceholder);
+      expect(text.font, token.fontBodyMedium);
+      expect(text.fontWeight, FontWeight.w400);
     });
 
     testWidgets('emptyText 为 null 时正常渲染', (tester) async {
@@ -158,27 +178,26 @@ void main() {
 
   group('TEmpty Theme 覆盖', () {
     testWidgets('TEmptyThemeData 自定义文字颜色/字体/按钮主题', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(extensions: [
-            TThemeData.defaultData(),
-            TEmptyThemeData(
-              emptyTextColor: Colors.red,
-              emptyTextFont: Font(size: 14, lineHeight: 20),
-              operationTheme: TButtonColorScheme.primary,
-            ),
-          ]),
-          home: const Scaffold(
-            body: TEmpty(
-              variant: TEmptyVariant.operation,
-              emptyText: '主题文案',
-              operationText: '主题按钮',
-            ),
-          ),
+      final font = Font(size: 14, lineHeight: 20);
+      await tester.pumpWidget(wrapWithTheme(
+        const TEmpty(
+          variant: TEmptyVariant.operation,
+          emptyText: '主题文案',
+          operationText: '主题按钮',
         ),
-      );
-      expect(find.text('主题文案'), findsOneWidget);
-      expect(find.text('主题按钮'), findsOneWidget);
+        emptyTheme: TEmptyThemeData(
+          emptyTextColor: Colors.red,
+          emptyTextFont: font,
+          operationTheme: TButtonColorScheme.danger,
+        ),
+      ));
+
+      final text = emptyTextWidget(tester, '主题文案');
+      final button = tester.widget<TButton>(find.byType(TButton));
+      expect(text.textColor, Colors.red);
+      expect(text.font, font);
+      expect(button.size, TButtonSize.large);
+      expect(button.colorScheme, TButtonColorScheme.danger);
     });
 
     test('TEmptyThemeData copyWith and lerp', () {
