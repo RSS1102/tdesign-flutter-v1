@@ -7,6 +7,13 @@ import '../../theme/t_fonts.dart';
 import '../../theme/t_theme.dart';
 import 't_tree_select_theme_data.dart';
 
+const _kTreeSelectHeight = 336.0;
+const _kRootColumnWidth = 106.0;
+const _kIntermediateColumnWidth = 103.0;
+const _kLeafColumnMinWidth = 184.0;
+const _kItemHeight = 56.0;
+const _kOutwardCornerRadius = 9.0;
+
 /// 不可变的树形选择选项。
 @immutable
 class TTreeSelectOption {
@@ -140,19 +147,34 @@ class _TTreeSelectState extends State<TTreeSelect> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<TTreeSelectThemeData>();
     final columns = _visibleColumns();
-    final panel = Container(
-      height: theme?.height ?? 336,
-      color: theme?.backgroundColor ?? context.tTheme.bgColorContainer,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (var level = 0; level < columns.length; level++)
-              _buildColumn(context, columns[level], level, theme),
-          ],
-        ),
-      ),
+    final panel = LayoutBuilder(
+      builder: (context, constraints) {
+        final widths = _resolveColumnWidths(
+          columns.length,
+          constraints.maxWidth,
+          theme,
+        );
+        return Container(
+          height: theme?.height ?? _kTreeSelectHeight,
+          color: theme?.backgroundColor ?? context.tTheme.bgColorContainer,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var level = 0; level < columns.length; level++)
+                  _buildColumn(
+                    context,
+                    columns[level],
+                    level,
+                    widths[level],
+                    theme,
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
     return Semantics(
       enabled: _enabled,
@@ -164,14 +186,50 @@ class _TTreeSelectState extends State<TTreeSelect> {
     );
   }
 
+  List<double> _resolveColumnWidths(
+    int columnCount,
+    double availableWidth,
+    TTreeSelectThemeData? theme,
+  ) {
+    final rootWidth = theme?.rootColumnWidth ?? _kRootColumnWidth;
+    final explicitColumnWidth = theme?.columnWidth;
+    if (columnCount <= 0) {
+      return const [];
+    }
+    if (columnCount == 1) {
+      return [rootWidth];
+    }
+    if (explicitColumnWidth != null) {
+      return [
+        rootWidth,
+        for (var index = 1; index < columnCount; index++) explicitColumnWidth,
+      ];
+    }
+
+    final widths = <double>[rootWidth];
+    final intermediateCount = columnCount - 2;
+    for (var index = 0; index < intermediateCount; index++) {
+      widths.add(_kIntermediateColumnWidth);
+    }
+    final usedWidth = widths.fold<double>(0, (sum, width) => sum + width);
+    final remainingWidth = availableWidth.isFinite
+        ? availableWidth - usedWidth
+        : _kLeafColumnMinWidth;
+    widths.add(
+      remainingWidth >= _kLeafColumnMinWidth
+          ? remainingWidth
+          : _kLeafColumnMinWidth,
+    );
+    return widths;
+  }
+
   Widget _buildColumn(
     BuildContext context,
     List<TTreeSelectOption> options,
     int level,
+    double width,
     TTreeSelectThemeData? theme,
   ) {
-    final width =
-        level == 0 ? theme?.rootColumnWidth ?? 112 : theme?.columnWidth ?? 184;
     final backgroundColor = level == 0
         ? theme?.rootBackgroundColor ?? context.tTheme.bgColorSecondaryContainer
         : theme?.backgroundColor ?? context.tTheme.bgColorContainer;
@@ -250,7 +308,7 @@ class _TTreeSelectState extends State<TTreeSelect> {
     required TTreeSelectThemeData? theme,
   }) {
     final isRoot = level == 0;
-    final itemHeight = theme?.itemHeight ?? 56;
+    final itemHeight = theme?.itemHeight ?? _kItemHeight;
     final selectedBackgroundColor =
         theme?.selectedBackgroundColor ?? context.tTheme.bgColorContainer;
     final indicatorColor =
@@ -386,7 +444,10 @@ class _TreeOptionTile extends StatelessWidget {
               top: 0,
               right: 0,
               child: CustomPaint(
-                size: const Size(12, 12),
+                size: const Size(
+                  _kOutwardCornerRadius,
+                  _kOutwardCornerRadius,
+                ),
                 painter: _OutwardCornerPainter(
                   color: selectedBackgroundColor,
                   corner: _Corner.topRight,
@@ -398,7 +459,10 @@ class _TreeOptionTile extends StatelessWidget {
               right: 0,
               bottom: 0,
               child: CustomPaint(
-                size: const Size(12, 12),
+                size: const Size(
+                  _kOutwardCornerRadius,
+                  _kOutwardCornerRadius,
+                ),
                 painter: _OutwardCornerPainter(
                   color: selectedBackgroundColor,
                   corner: _Corner.bottomRight,

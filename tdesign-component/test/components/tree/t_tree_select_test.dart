@@ -151,6 +151,117 @@ void main() {
     expect(find.text('Apple'), findsNothing);
   });
 
+  testWidgets('default visual style matches develop tree select layout',
+      (tester) async {
+    final token = TThemeData.defaultData();
+    await tester.pumpWidget(wrap(const Align(
+      alignment: Alignment.topLeft,
+      child: SizedBox(
+        width: 375,
+        child: TTreeSelect(
+          options: options,
+          value: [
+            ['fruit', 'apple'],
+          ],
+          onChanged: _ignore,
+        ),
+      ),
+    )));
+
+    expect(tester.getSize(find.byType(TTreeSelect)), const Size(375, 336));
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Container &&
+            widget.constraints?.minWidth == 106 &&
+            widget.constraints?.maxWidth == 106 &&
+            widget.color == token.bgColorSecondaryContainer,
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Container &&
+            widget.constraints?.minWidth == 269 &&
+            widget.constraints?.maxWidth == 269 &&
+            widget.color == token.bgColorContainer,
+      ),
+      findsOneWidget,
+    );
+    expect(
+      tester.widget<Text>(find.text('Fruit')).style,
+      TextStyle(
+        color: token.brandNormalColor,
+        fontSize: token.fontBodyLarge?.size ?? 16,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+    expect(
+      tester.widget<Text>(find.text('Apple')).style,
+      TextStyle(
+        color: token.textColorPrimary,
+        fontSize: token.fontBodyLarge?.size ?? 16,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+    final checkIcon = tester.widget<Icon>(find.byIcon(TIcons.check));
+    expect(checkIcon.size, 24);
+    expect(checkIcon.color, token.brandNormalColor);
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is CustomPaint && widget.size == const Size(9, 9),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('deep tree keeps narrow intermediate columns and fills leaf',
+      (tester) async {
+    await tester.pumpWidget(wrap(const Align(
+      alignment: Alignment.topLeft,
+      child: SizedBox(
+        width: 375,
+        child: TTreeSelect(
+          options: options,
+          value: [
+            ['region', 'china', 'guangdong', 'shenzhen'],
+          ],
+          onChanged: _ignore,
+        ),
+      ),
+    )));
+
+    expect(find.text('Shenzhen'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Container &&
+            widget.constraints?.minWidth == 106 &&
+            widget.constraints?.maxWidth == 106,
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Container &&
+            widget.constraints?.minWidth == 103 &&
+            widget.constraints?.maxWidth == 103,
+      ),
+      findsNWidgets(2),
+    );
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Container &&
+            widget.constraints?.minWidth == 184 &&
+            widget.constraints?.maxWidth == 184,
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('does not auto-select and null onChanged disables the panel',
       (tester) async {
     await tester.pumpWidget(wrap(const TTreeSelect(
@@ -209,6 +320,26 @@ void main() {
     expect(tester.widget<Text>(find.text('Apple')).style, selectedStyle);
     expect(find.byIcon(TIcons.check), findsOneWidget);
     expect(tester.widget<Icon>(find.byIcon(TIcons.check)).color, Colors.green);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Container &&
+            widget.constraints?.minWidth == 120 &&
+            widget.constraints?.maxWidth == 120 &&
+            widget.color == Colors.grey,
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Container &&
+            widget.constraints?.minWidth == 200 &&
+            widget.constraints?.maxWidth == 200 &&
+            widget.color == Colors.white,
+      ),
+      findsOneWidget,
+    );
     expect(
       find.byWidgetPredicate(
         (widget) => widget is Container && widget.constraints?.maxHeight == 280,
