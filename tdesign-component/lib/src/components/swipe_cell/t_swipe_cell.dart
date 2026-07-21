@@ -12,7 +12,13 @@ import 't_swipe_cell_theme_data.dart';
 export 'package:flutter_slidable/flutter_slidable.dart';
 
 /// 滑动方向
-enum TSwipeDirection { right, left }
+enum TSwipeDirection {
+  /// 向右滑动展开左侧操作面板
+  right,
+
+  /// 向左滑动展开右侧操作面板
+  left,
+}
 
 /// 滑动展开状态变化回调
 typedef TSwipeCellChanged = void Function(
@@ -112,8 +118,10 @@ class TSwipeCell extends StatefulWidget {
     }
   }
 
-  /// 根据groupTag关闭[TSwipeCell]
+  /// 根据 groupTag 关闭 [TSwipeCell]。
   ///
+  /// [tag] 为要关闭的互斥滑动组标识。
+  /// [current] 为保留不关闭的当前控制器。
   static void close(
     /// 要关闭的互斥滑动组标识。
     Object? tag, {
@@ -132,7 +140,9 @@ class TSwipeCell extends StatefulWidget {
     });
   }
 
-  /// 获取上下文最近的[controller]
+  /// 获取上下文最近的 [SlidableController]。
+  ///
+  /// [context] 为用于查找最近 [SlidableController] 的上下文。
   static SlidableController? of(
     /// 用于查找最近 [SlidableController] 的上下文。
     BuildContext context,

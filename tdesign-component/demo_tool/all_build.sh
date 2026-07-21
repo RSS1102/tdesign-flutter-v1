@@ -135,8 +135,8 @@ flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/sr
 flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/popup" --name TPopup,TPopupOptions,TPopupHandle,TPopupPlacement,TPopupTrigger --folder-name popup --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # refresh
 flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/refresh/t_refresh_header.dart" --name TRefreshHeader --folder-name pull-down-refresh --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
-# swipecell
-flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/swipe_cell" --name TSwipeAction,TSwipeAutoClose,TSwipeCell,TSwipePanel --folder-name swipe-cell --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
+# swipe-cell
+flutter pub run tdesign_flutter_tools:main generate --folder "$PARENT_DIR/lib/src/components/swipe_cell" --name TSwipeCell,TSwipeCellPanel,TSwipeCellAction,TSwipeCellThemeData,TSwipeDirection,SwipeMotion,TSwipeCellChanged --folder-name swipe-cell --output "$PARENT_DIR/example/assets/api/" --only-api --get-comments
 # toast
 flutter pub run tdesign_flutter_tools:main generate --file "$PARENT_DIR/lib/src/components/toast/t_toast.dart" --name TToast --folder-name toast --output "$PARENT_DIR/example/assets/api/" --only-api
 
