@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
@@ -52,7 +52,8 @@ void main() {
     testWidgets('variant: info（默认）', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(content: '信息公告'),
-        noticeBarTheme: const TNoticeBarThemeData(variant: TNoticeBarVariant.info),
+        noticeBarTheme:
+            const TNoticeBarThemeData(variant: TNoticeBarVariant.info),
       ));
       expect(find.byType(TNoticeBar), findsOneWidget);
     });
@@ -60,7 +61,8 @@ void main() {
     testWidgets('variant: success', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(content: '成功公告'),
-        noticeBarTheme: const TNoticeBarThemeData(variant: TNoticeBarVariant.success),
+        noticeBarTheme:
+            const TNoticeBarThemeData(variant: TNoticeBarVariant.success),
       ));
       expect(find.byType(TNoticeBar), findsOneWidget);
     });
@@ -68,7 +70,8 @@ void main() {
     testWidgets('variant: warning', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(content: '警告公告'),
-        noticeBarTheme: const TNoticeBarThemeData(variant: TNoticeBarVariant.warning),
+        noticeBarTheme:
+            const TNoticeBarThemeData(variant: TNoticeBarVariant.warning),
       ));
       expect(find.byType(TNoticeBar), findsOneWidget);
     });
@@ -76,7 +79,8 @@ void main() {
     testWidgets('variant: error', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(content: '错误公告'),
-        noticeBarTheme: const TNoticeBarThemeData(variant: TNoticeBarVariant.error),
+        noticeBarTheme:
+            const TNoticeBarThemeData(variant: TNoticeBarVariant.error),
       ));
       expect(find.byType(TNoticeBar), findsOneWidget);
     });
@@ -242,7 +246,8 @@ void main() {
     testWidgets('TNoticeBarThemeData.backgroundColor 覆盖背景色', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(content: '内容'),
-        noticeBarTheme: const TNoticeBarThemeData(backgroundColor: Colors.orange),
+        noticeBarTheme:
+            const TNoticeBarThemeData(backgroundColor: Colors.orange),
       ));
       final container = tester.widget<Container>(find.byType(Container).first);
       expect(container.color, Colors.orange);
@@ -306,7 +311,8 @@ void main() {
       late BuildContext capturedContext;
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(content: '内容'),
-        noticeBarTheme: const TNoticeBarThemeData(variant: TNoticeBarVariant.warning),
+        noticeBarTheme:
+            const TNoticeBarThemeData(variant: TNoticeBarVariant.warning),
       ));
       capturedContext = tester.element(find.byType(TNoticeBar));
       const theme = TNoticeBarThemeData(variant: TNoticeBarVariant.warning);
@@ -317,6 +323,71 @@ void main() {
   });
 
   group('TNoticeBar 边界情况', () {
+    testWidgets('更新内容和滚动参数触发 didUpdateWidget 重启逻辑', (tester) async {
+      var content = '初始公告';
+      var items = const <String>[];
+      var direction = Axis.horizontal;
+      var maxLines = 1;
+      var marquee = false;
+      var speed = 50.0;
+      var interval = const Duration(seconds: 3);
+      late StateSetter setState;
+
+      await tester.pumpWidget(wrapWithTheme(
+        StatefulBuilder(
+          builder: (context, setter) {
+            setState = setter;
+            return TNoticeBar(
+              content: content,
+              items: items,
+              direction: direction,
+              maxLines: maxLines,
+              marquee: marquee,
+              speed: speed,
+              interval: interval,
+            );
+          },
+        ),
+      ));
+
+      setState(() {
+        content = '更新公告';
+      });
+      await tester.pump();
+
+      setState(() {
+        items = const ['第一条', '第二条'];
+      });
+      await tester.pump();
+
+      setState(() {
+        direction = Axis.vertical;
+      });
+      await tester.pump();
+
+      setState(() {
+        maxLines = 2;
+      });
+      await tester.pump();
+
+      setState(() {
+        marquee = true;
+      });
+      await tester.pump();
+
+      setState(() {
+        speed = 60;
+      });
+      await tester.pump();
+
+      setState(() {
+        interval = const Duration(seconds: 1);
+      });
+      await tester.pump();
+
+      expect(find.text('第一条'), findsWidgets);
+    });
+
     testWidgets('maxLines 参数影响静态文本行数', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TNoticeBar(
