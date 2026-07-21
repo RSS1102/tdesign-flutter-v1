@@ -4,6 +4,38 @@ import 'package:tdesign_flutter/src/components/drawer/t_drawer_widget.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
+  ThemeData fullTheme({TDrawerThemeData? drawerTheme}) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (drawerTheme != null) {
+      theme = theme.mergeExtension(drawerTheme);
+    }
+    return theme;
+  }
+
+  Widget wrapWithTheme(Widget child, {TDrawerThemeData? drawerTheme}) {
+    return MaterialApp(
+      theme: fullTheme(drawerTheme: drawerTheme),
+      home: Scaffold(body: child),
+    );
+  }
+
+  Container drawerContainer(WidgetTester tester, {Color? color}) {
+    return tester.widget<Container>(
+      find.byWidgetPredicate((widget) {
+        if (widget is! Container) {
+          return false;
+        }
+        if (widget.constraints?.maxHeight != double.infinity) {
+          return false;
+        }
+        if (color != null && widget.color != color) {
+          return false;
+        }
+        return true;
+      }),
+    );
+  }
+
   group('TDrawerItem', () {
     test('默认构造', () {
       final item = TDrawerItem();
@@ -104,15 +136,6 @@ void main() {
   });
 
   group('TDrawerWidget', () {
-    Widget wrapWithTheme(Widget child) {
-      return Theme(
-        data: ThemeData(extensions: [TThemeData.defaultData()]),
-        child: MaterialApp(
-          home: Scaffold(body: child),
-        ),
-      );
-    }
-
     testWidgets('使用 child 渲染自定义内容', (tester) async {
       const testKey = Key('custom-child');
       await tester.pumpWidget(wrapWithTheme(
@@ -172,6 +195,19 @@ void main() {
       expect(find.text('菜单1'), findsNothing);
     });
 
+    testWidgets('默认容器使用完整主题背景色和默认宽度', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrapWithTheme(
+        const TDrawerWidget(
+          child: SizedBox.expand(),
+        ),
+      ));
+
+      final container = drawerContainer(tester, color: token.bgColorContainer);
+      expect(container.constraints?.maxWidth, 280);
+      expect(container.color, token.bgColorContainer);
+    });
+
     testWidgets('自定义宽度', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TDrawerWidget(
@@ -186,6 +222,18 @@ void main() {
             .first,
       );
       expect(container.constraints?.maxWidth, 300);
+    });
+
+    testWidgets('构造器背景色覆盖默认主题背景色', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TDrawerWidget(
+          backgroundColor: Colors.yellow,
+          child: SizedBox.expand(),
+        ),
+      ));
+
+      final container = drawerContainer(tester, color: Colors.yellow);
+      expect(container.color, Colors.yellow);
     });
 
     testWidgets('点击列表项触发 onItemClick', (tester) async {
@@ -212,6 +260,7 @@ void main() {
     testWidgets('show 方法打开抽屉', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          theme: fullTheme(),
           home: Scaffold(
             body: Builder(
               builder: (context) {
@@ -238,6 +287,7 @@ void main() {
       TDrawerHandle? drawerHandle;
       await tester.pumpWidget(
         MaterialApp(
+          theme: fullTheme(),
           home: Scaffold(
             body: Builder(
               builder: (context) {
@@ -270,6 +320,7 @@ void main() {
       TDrawerHandle? second;
       await tester.pumpWidget(
         MaterialApp(
+          theme: fullTheme(),
           home: Scaffold(
             body: Builder(
               builder: (context) {
@@ -299,6 +350,7 @@ void main() {
       const childKey = Key('drawer-child');
       await tester.pumpWidget(
         MaterialApp(
+          theme: fullTheme(),
           home: Scaffold(
             body: Builder(
               builder: (context) {
@@ -324,13 +376,12 @@ void main() {
     testWidgets('使用 mergeExtension 子树覆盖', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(extensions: [
-            TThemeData.defaultData(),
-            const TDrawerThemeData(
+          theme: fullTheme(
+            drawerTheme: const TDrawerThemeData(
               width: 320,
               backgroundColor: Colors.yellow,
             ),
-          ]),
+          ),
           home: Scaffold(
             body: Builder(
               builder: (context) {
@@ -351,15 +402,17 @@ void main() {
       await tester.tap(find.text('打开'));
       await tester.pumpAndSettle();
       expect(find.text('菜单1'), findsOneWidget);
+      final container = drawerContainer(tester, color: Colors.yellow);
+      expect(container.constraints?.maxWidth, 320);
+      expect(container.color, Colors.yellow);
     });
 
     testWidgets('构造器参数优先级高于 Theme', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          theme: ThemeData(extensions: [
-            TThemeData.defaultData(),
-            const TDrawerThemeData(width: 320),
-          ]),
+          theme: fullTheme(
+            drawerTheme: const TDrawerThemeData(width: 320),
+          ),
           home: Scaffold(
             body: Builder(
               builder: (context) {
@@ -381,11 +434,14 @@ void main() {
       await tester.tap(find.text('打开'));
       await tester.pumpAndSettle();
       expect(find.text('菜单1'), findsOneWidget);
+      final container = drawerContainer(tester);
+      expect(container.constraints?.maxWidth, 250);
     });
 
     testWidgets('placement: left 从左侧打开', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          theme: fullTheme(),
           home: Scaffold(
             body: Builder(
               builder: (context) {
@@ -412,6 +468,7 @@ void main() {
     testWidgets('showOverlay: false 不显示遮罩', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
+          theme: fullTheme(),
           home: Scaffold(
             body: Builder(
               builder: (context) {
@@ -439,6 +496,7 @@ void main() {
       var closed = false;
       await tester.pumpWidget(
         MaterialApp(
+          theme: fullTheme(),
           home: Scaffold(
             body: Builder(
               builder: (context) {
