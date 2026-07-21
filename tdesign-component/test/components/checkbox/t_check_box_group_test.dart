@@ -6,7 +6,7 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() {
   Widget wrap(Widget child) {
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: TThemeBuilder.light(TThemeData.defaultData()),
       home: Scaffold(body: child),
     );
   }

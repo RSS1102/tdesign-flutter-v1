@@ -3,9 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
-  Widget wrap(Widget child) {
+  Widget wrap(Widget child, {TRadioThemeData? radioTheme}) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (radioTheme != null) {
+      theme = theme.mergeExtension(radioTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -15,6 +19,17 @@ void main() {
     TRadioOption(value: 'b', label: '选项 B', subTitle: '说明 B'),
     TRadioOption(value: 'c', label: '选项 C', disabled: true),
   ];
+
+  List<dynamic> radioIndicatorPainters(WidgetTester tester) {
+    return tester
+        .widgetList<CustomPaint>(find.byType(CustomPaint))
+        .map((paint) => paint.painter)
+        .where((painter) =>
+            painter != null &&
+            painter.runtimeType.toString() == '_TRadioIndicatorPainter')
+        .map((painter) => painter as dynamic)
+        .toList();
+  }
 
   group('TRadio v1 单项行为', () {
     testWidgets('按 groupValue 渲染选中态并触发 onChanged', (tester) async {
@@ -73,6 +88,84 @@ void main() {
       expect(find.text('大尺寸'), findsOneWidget);
       expect(find.text('副标题'), findsOneWidget);
       expect(find.byType(TDivider), findsOneWidget);
+    });
+  });
+
+  group('TRadio v1 视觉参数', () {
+    testWidgets('完整主题下选中指示器使用品牌色并保持 24 尺寸', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrap(TRadio<String>(
+        value: 'a',
+        groupValue: 'a',
+        title: '选项 A',
+        onChanged: (_) {},
+      )));
+
+      final indicator = tester
+          .widgetList<SizedBox>(find.byType(SizedBox))
+          .firstWhere((box) => box.width == 24.0 && box.height == 24.0);
+      final painter = radioIndicatorPainters(tester).single;
+
+      expect(indicator.width, 24.0);
+      expect(indicator.height, 24.0);
+      expect(painter.selected, isTrue);
+      expect(painter.color, token.brandNormalColor);
+    });
+
+    testWidgets('完整主题下未选、禁用和文字颜色使用对应 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrap(Column(
+        children: [
+          TRadio<String>(
+            value: 'a',
+            groupValue: 'b',
+            title: '未选',
+            onChanged: (_) {},
+          ),
+          const TRadio<String>(
+            value: 'b',
+            groupValue: 'b',
+            title: '禁用选中',
+          ),
+        ],
+      )));
+
+      final painters = radioIndicatorPainters(tester);
+      final disabledTitle = tester.widget<Text>(find.text('禁用选中'));
+
+      expect(painters[0].selected, isFalse);
+      expect(painters[0].color, token.componentBorderColor);
+      expect(painters[1].selected, isTrue);
+      expect(painters[1].color, token.brandDisabledColor);
+      expect(disabledTitle.style?.color, token.textDisabledColor);
+    });
+
+    testWidgets('Theme 视觉 token 可覆盖选中色、标题色和内容间距', (tester) async {
+      await tester.pumpWidget(wrap(
+        TRadio<String>(
+          value: 'a',
+          groupValue: 'a',
+          title: '主题单选',
+          onChanged: (_) {},
+        ),
+        radioTheme: const TRadioThemeData(
+          selectColor: Colors.red,
+          titleColor: Colors.green,
+          spacing: 12,
+        ),
+      ));
+
+      final painter = radioIndicatorPainters(tester).single;
+      final title = tester.widget<Text>(find.text('主题单选'));
+      final spacing = tester.widget<SizedBox>(
+        find.byWidgetPredicate(
+          (widget) => widget is SizedBox && widget.width == 12,
+        ),
+      );
+
+      expect(painter.color, Colors.red);
+      expect(title.style?.color, Colors.green);
+      expect(spacing.width, 12);
     });
   });
 
@@ -224,21 +317,16 @@ void main() {
         ),
       ));
 
-      await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(extensions: [
-          TThemeData.defaultData(),
-          const TRadioThemeData(
-            selectColor: Colors.red,
-            titleColor: Colors.green,
-          ),
-        ]),
-        home: Scaffold(
-          body: TRadio<String>(
-            value: 'a',
-            groupValue: 'a',
-            title: '主题',
-            onChanged: (_) {},
-          ),
+      await tester.pumpWidget(wrap(
+        TRadio<String>(
+          value: 'a',
+          groupValue: 'a',
+          title: '主题',
+          onChanged: (_) {},
+        ),
+        radioTheme: const TRadioThemeData(
+          selectColor: Colors.red,
+          titleColor: Colors.green,
         ),
       ));
 

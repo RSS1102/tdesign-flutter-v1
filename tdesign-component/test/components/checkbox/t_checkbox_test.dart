@@ -5,10 +5,14 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() {
   Widget wrap(
     Widget child, {
-    List<ThemeExtension<dynamic>> extensions = const [],
+    TCheckboxThemeData? checkboxTheme,
   }) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (checkboxTheme != null) {
+      theme = theme.mergeExtension(checkboxTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData(), ...extensions]),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -71,6 +75,70 @@ void main() {
   });
 
   group('TCheckbox v1 视觉参数', () {
+    testWidgets('完整主题下默认选中图标使用品牌色且不受全局 IconTheme 污染', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrap(TCheckbox(
+        value: true,
+        title: '复选项',
+        onChanged: (_) {},
+      )));
+
+      final icon = tester.widget<Icon>(
+        find.byIcon(TIcons.check_rectangle_filled),
+      );
+      expect(icon.size, 24.0);
+      expect(icon.color, token.brandNormalColor);
+    });
+
+    testWidgets('完整主题下启用未选、禁用选中和文字颜色使用对应 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrap(Column(
+        children: [
+          TCheckbox(value: false, title: '未选', onChanged: (_) {}),
+          const TCheckbox(value: true, title: '禁用选中'),
+        ],
+      )));
+
+      final uncheckedIcon = tester.widget<Icon>(find.byIcon(TIcons.rectangle));
+      final disabledCheckedIcon = tester.widget<Icon>(
+        find.byIcon(TIcons.check_rectangle_filled),
+      );
+      final disabledTitle = tester.widget<Text>(find.text('禁用选中'));
+
+      expect(uncheckedIcon.color, token.componentBorderColor);
+      expect(disabledCheckedIcon.color, token.brandDisabledColor);
+      expect(disabledTitle.style?.color, token.textDisabledColor);
+    });
+
+    testWidgets('Theme 视觉 token 可覆盖选中色、标题色和内容间距', (tester) async {
+      await tester.pumpWidget(wrap(
+        TCheckbox(
+          value: true,
+          title: '主题复选',
+          onChanged: (_) {},
+        ),
+        checkboxTheme: const TCheckboxThemeData(
+          selectColor: Colors.red,
+          titleColor: Colors.green,
+          spacing: 12,
+        ),
+      ));
+
+      final icon = tester.widget<Icon>(
+        find.byIcon(TIcons.check_rectangle_filled),
+      );
+      final title = tester.widget<Text>(find.text('主题复选'));
+      final spacing = tester.widget<SizedBox>(
+        find.byWidgetPredicate(
+          (widget) => widget is SizedBox && widget.width == 12,
+        ),
+      );
+
+      expect(icon.color, Colors.red);
+      expect(title.style?.color, Colors.green);
+      expect(spacing.width, 12);
+    });
+
     testWidgets('标题、副标题、分割线可渲染', (tester) async {
       await tester.pumpWidget(wrap(TCheckbox(
         value: true,
@@ -128,9 +196,9 @@ void main() {
           size: TCheckboxSize.large,
           onChanged: (_) {},
         ),
-        extensions: const [
-          TCheckboxThemeData(variant: TCheckboxVariant.check),
-        ],
+        checkboxTheme: const TCheckboxThemeData(
+          variant: TCheckboxVariant.check,
+        ),
       ));
 
       expect(find.byType(TCheckbox), findsOneWidget);
@@ -195,13 +263,11 @@ void main() {
           title: '主题',
           onChanged: (_) {},
         ),
-        extensions: const [
-          TCheckboxThemeData(
-            selectColor: Colors.red,
-            titleColor: Colors.green,
-            customSpace: EdgeInsets.all(6),
-          ),
-        ],
+        checkboxTheme: const TCheckboxThemeData(
+          selectColor: Colors.red,
+          titleColor: Colors.green,
+          customSpace: EdgeInsets.all(6),
+        ),
       ));
 
       expect(find.text('主题'), findsOneWidget);
