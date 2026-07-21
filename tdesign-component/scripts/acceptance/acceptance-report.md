@@ -1,6 +1,6 @@
 # TDesign Flutter V1.0 组件自动化验收报告
 
-> 生成时间: 2026-07-21T10:59:23.547598
+> 生成时间: 2026-07-21T11:30:05.207870
 > 验收标准: [component-acceptance-standard.md](../../docs/v1.0/guide/component-acceptance-standard.md)
 > 组件总数: 56
 
