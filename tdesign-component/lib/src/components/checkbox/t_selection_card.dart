@@ -63,7 +63,8 @@ class TSelectionCardGroupLayout extends StatelessWidget {
     required this.columns,
     required this.children,
     required this.itemHasSubtitles,
-  }) : assert(children.length == itemHasSubtitles.length);
+  })  : assert(children.length == itemHasSubtitles.length),
+        assert(columns > 0);
 
   final Axis direction;
   final int columns;

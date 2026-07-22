@@ -259,5 +259,17 @@ void main() {
         throwsAssertionError,
       );
     });
+
+    test('列数必须大于 0', () {
+      expect(
+        () => TSelectionCardGroupLayout(
+          direction: Axis.horizontal,
+          columns: 0,
+          itemHasSubtitles: const [false],
+          children: const [Text('a')],
+        ),
+        throwsAssertionError,
+      );
+    });
   });
 }
