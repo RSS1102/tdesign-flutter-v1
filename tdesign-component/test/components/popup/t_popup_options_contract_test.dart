@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart' as td;
 import 'package:tdesign_flutter/src/components/popup/t_popup.dart';
 
 void main() {
@@ -17,7 +18,8 @@ void main() {
       expect(option.normalized().placement, option.placement);
       expect(option.copyWith(), isA<TPopupOptions>());
       expect(option.copyWith(width: 120, height: 80).width, 120);
-      expect(option.copyWith(backgroundColor: Colors.red).backgroundColor, Colors.red);
+      expect(option.copyWith(backgroundColor: Colors.red).backgroundColor,
+          Colors.red);
       expect(option.copyWith(showOverlay: false).closeOnOverlayClick, isFalse);
     }
 
@@ -43,10 +45,45 @@ void main() {
       final layout = PopupLayout(placement: placement, width: 100, height: 80);
       expect(layout.alignment, isA<Alignment>());
       expect(layout.slideOffset(0.5), isA<Offset>());
-      expect(PopupLayout.safePaddingFor(placement, padding, true), isA<EdgeInsets>());
-      expect(PopupLayout.safePaddingFor(placement, padding, false), EdgeInsets.zero);
-      final positioned = layout.wrapPositioned(child: const SizedBox(), safePadding: padding);
+      expect(PopupLayout.safePaddingFor(placement, padding, true),
+          isA<EdgeInsets>());
+      expect(PopupLayout.safePaddingFor(placement, padding, false),
+          EdgeInsets.zero);
+      final positioned =
+          layout.wrapPositioned(child: const SizedBox(), safePadding: padding);
       expect(positioned, isA<Widget>());
     }
+  });
+
+  testWidgets('default bottom header actions keep single-line ellipsis',
+      (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      theme: td.TThemeBuilder.light(td.TThemeData.defaultData()),
+      home: Scaffold(
+        body: PopupHeader(
+          options: TPopupOptions.bottom(
+            child: const SizedBox(),
+            titleWidget: const Text('标题'),
+          ),
+          onCloseWithTrigger: (_) {},
+        ),
+      ),
+    ));
+
+    final cancel = tester.widget<td.TText>(
+      find.byWidgetPredicate(
+        (widget) => widget is td.TText && widget.data == '取消',
+      ),
+    );
+    final confirm = tester.widget<td.TText>(
+      find.byWidgetPredicate(
+        (widget) => widget is td.TText && widget.data == '确定',
+      ),
+    );
+
+    expect(cancel.maxLines, 1);
+    expect(cancel.overflow, TextOverflow.ellipsis);
+    expect(confirm.maxLines, 1);
+    expect(confirm.overflow, TextOverflow.ellipsis);
   });
 }

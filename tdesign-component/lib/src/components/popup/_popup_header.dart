@@ -143,6 +143,8 @@ class _DefaultHeader extends StatelessWidget {
           context.resource.cancel,
           textColor: theme.textColorSecondary,
           font: theme.fontBodyLarge,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       );
     }
@@ -161,6 +163,8 @@ class _DefaultHeader extends StatelessWidget {
           textColor: theme.brandNormalColor,
           font: theme.fontTitleMedium,
           fontWeight: FontWeight.w600,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       );
     }
