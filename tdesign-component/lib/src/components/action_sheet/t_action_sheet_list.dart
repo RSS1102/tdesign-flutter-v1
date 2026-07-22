@@ -62,13 +62,18 @@ class TActionSheetList extends StatelessWidget {
         color: context.tTheme.bgColorContainer,
       ),
       clipBehavior: Clip.antiAlias,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (subtitle != null) _buildDescription(context),
-          _buildOptionsList(context),
-          if (showCancel) _buildCancelButton(context),
-        ],
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (subtitle != null) _buildDescription(context),
+            Flexible(child: _buildOptionsList(context)),
+            if (showCancel) _buildCancelButton(context),
+          ],
+        ),
       ),
     );
   }
@@ -115,8 +120,7 @@ class TActionSheetList extends StatelessWidget {
       color: context.tTheme.bgColorContainer,
       child: ListView.builder(
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        // 禁用滚动
+        physics: const AlwaysScrollableScrollPhysics(),
         itemCount: items.length,
         padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
