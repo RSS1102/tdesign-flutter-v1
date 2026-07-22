@@ -13,7 +13,7 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// 选项分栏 right 间距、控制器 reset/updateOptions、操作区 重置/确定 按钮回调等。
 void main() {
   Widget wrap(Widget child) => MaterialApp(
-        theme: ThemeData(extensions: [TThemeData.defaultData()]),
+        theme: TThemeBuilder.light(TThemeData.defaultData()),
         home: Scaffold(body: child),
       );
 
@@ -46,7 +46,8 @@ void main() {
       await tester.tap(find.text('单选高度'));
       await tester.pumpAndSettle();
       // 触发 _getRadioList 中 min/maxHeight 的 Container+ConstrainedBox 分支
-      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu), findsOneWidget);
+      expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
+          findsOneWidget);
     });
 
     testWidgets('单选分栏预选中走 _getCheckboxList 的 selectIds[0] 与 right 间距',
@@ -167,8 +168,14 @@ void main() {
       await tester.tap(find.text('多选up'));
       await tester.pumpAndSettle();
       // 操作区在 direction=up 时渲染上边框（_getCheckboxOperate 的 up 分支）
-      expect(find.text('重置'), findsOneWidget);
-      expect(find.text('确定'), findsOneWidget);
+      final reset = tester.widget<Text>(find.text('重置'));
+      final confirm = tester.widget<Text>(find.text('确定'));
+      expect(reset.maxLines, 1);
+      expect(reset.overflow, TextOverflow.ellipsis);
+      expect(reset.softWrap, isFalse);
+      expect(confirm.maxLines, 1);
+      expect(confirm.overflow, TextOverflow.ellipsis);
+      expect(confirm.softWrap, isFalse);
     });
   });
 
@@ -209,5 +216,4 @@ void main() {
       expect(confirmed, {'1'});
     });
   });
-
 }

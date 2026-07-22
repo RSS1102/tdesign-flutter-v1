@@ -109,13 +109,11 @@ class TDropdownItem<T> extends StatefulWidget {
   /// 多选模式下重置和确认操作区的固定高度。
   static const double operateHeight = 73;
 
-  double? get minContentHeight => multiple && minHeight != null
-      ? minHeight! + operateHeight
-      : minHeight;
+  double? get minContentHeight =>
+      multiple && minHeight != null ? minHeight! + operateHeight : minHeight;
 
-  double? get maxContentHeight => multiple && maxHeight != null
-      ? maxHeight! + operateHeight
-      : maxHeight;
+  double? get maxContentHeight =>
+      multiple && maxHeight != null ? maxHeight! + operateHeight : maxHeight;
 
   /// 菜单栏展示文案
   String getLabel() {
@@ -316,8 +314,7 @@ class _TDropdownItemState<T> extends State<TDropdownItem<T>> {
                   Icons.check,
                   color: disabled
                       ? context.tTheme.textDisabledColor
-                      : source.selectedColor ??
-                          context.tTheme.brandNormalColor,
+                      : source.selectedColor ?? context.tTheme.brandNormalColor,
                 ),
             ],
           ),
@@ -348,7 +345,8 @@ class _TDropdownItemState<T> extends State<TDropdownItem<T>> {
       decoration: BoxDecoration(
         color: context.tTheme.bgColorContainer,
         border: Border(
-          top: BorderSide(color: context.tTheme.componentStrokeColor, width: .5),
+          top:
+              BorderSide(color: context.tTheme.componentStrokeColor, width: .5),
           bottom: directionListenable.value == TDropdownMenuDirection.up
               ? BorderSide(
                   color: context.tTheme.componentStrokeColor,
@@ -366,7 +364,12 @@ class _TDropdownItemState<T> extends State<TDropdownItem<T>> {
                 widget.onValuesChanged?.call(Set<T>.unmodifiable(<T>[]));
                 widget.onReset?.call();
               },
-              child: Text(context.resource.reset),
+              child: Text(
+                context.resource.reset,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+              ),
             ),
           ),
           SizedBox(width: context.tTheme.spacer16),
@@ -377,7 +380,12 @@ class _TDropdownItemState<T> extends State<TDropdownItem<T>> {
                 widget.onConfirm?.call(Set<T>.unmodifiable(widget.values));
                 unawaited(_close());
               },
-              child: Text(context.resource.confirm),
+              child: Text(
+                context.resource.confirm,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+              ),
             ),
           ),
         ],
