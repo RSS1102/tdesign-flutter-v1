@@ -34,23 +34,17 @@ void main() {
   }
 
   Positioned fabPositioned(WidgetTester tester) {
-    return tester.widget<Positioned>(
-      find.byWidgetPredicate(
-        (Widget widget) =>
-            widget is Positioned && widget.child is GestureDetector,
-      ),
-    );
+    return tester.widgetList<Positioned>(find.byType(Positioned)).last;
   }
 
   /// 用 TTheme 包裹以提供基础 Token
   Widget wrapWithTheme(Widget child, {TFabThemeData? fabTheme}) {
-    final themeExtensions = <ThemeExtension>[
-      if (fabTheme != null) fabTheme,
-    ];
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (fabTheme != null) {
+      theme = theme.mergeExtension(fabTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(
-        extensions: [TThemeData.defaultData(), ...themeExtensions],
-      ),
+      theme: theme,
       home: Scaffold(
         body: Stack(
           fit: StackFit.expand,
@@ -166,14 +160,18 @@ void main() {
   group('TFab 定位层', () {
     testWidgets('默认 right=16 bottom=32', (tester) async {
       await tester.pumpWidget(wrapWithTheme(const TFab()));
-      expect(find.byType(Positioned), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, 16);
+      expect(positioned.bottom, 32);
     });
 
     testWidgets('自定义 right/bottom', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TFab(right: 24, bottom: 48),
       ));
-      expect(find.byType(Positioned), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, 24);
+      expect(positioned.bottom, 48);
     });
 
     testWidgets('不传 draggable 时仅 Positioned 定位', (tester) async {
@@ -244,7 +242,9 @@ void main() {
         const TFab(),
         fabTheme: const TFabThemeData(defaultRight: 50, defaultBottom: 100),
       ));
-      expect(find.byType(Positioned), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, 50);
+      expect(positioned.bottom, 100);
     });
   });
 
@@ -315,23 +315,22 @@ void main() {
     testWidgets('safePadding.bottom 叠加到 bottom', (tester) async {
       // 通过 MediaQuery 注入非零安全区
       await tester.pumpWidget(
-        Theme(
-          data: ThemeData(extensions: [TThemeData.defaultData()]),
-          child: MaterialApp(
-            theme: ThemeData(extensions: const <ThemeExtension>[]),
-            home: const MediaQuery(
-              data: MediaQueryData(padding: EdgeInsets.only(bottom: 34)),
-              child: Scaffold(
-                body: Stack(
-                  fit: StackFit.expand,
-                  children: [TFab()],
-                ),
+        MaterialApp(
+          theme: TThemeBuilder.light(TThemeData.defaultData()),
+          home: const MediaQuery(
+            data: MediaQueryData(padding: EdgeInsets.only(bottom: 34)),
+            child: Scaffold(
+              body: Stack(
+                fit: StackFit.expand,
+                children: [TFab()],
               ),
             ),
           ),
         ),
       );
-      expect(find.byType(Positioned), findsOneWidget);
+      final positioned = fabPositioned(tester);
+      expect(positioned.right, 16);
+      expect(positioned.bottom, 66);
     });
   });
 
