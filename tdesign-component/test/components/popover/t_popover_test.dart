@@ -78,6 +78,72 @@ void main() {
       expect(find.text('气泡内容'), findsOneWidget);
     });
 
+    testWidgets('默认文本样式和背景色来自 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          return Center(
+            child: TPopoverWidget(
+              context: context,
+              content: '默认气泡',
+            ),
+          );
+        }),
+      ));
+      await tester.pump();
+
+      final text = tester.widget<Text>(find.text('默认气泡'));
+      expect(text.style?.color, token.textColorAnti);
+      expect(text.style?.fontSize, token.fontBodyLarge?.size);
+      expect(text.style?.height, token.fontBodyLarge?.height);
+
+      final container = tester.widget<Container>(
+        find
+            .descendant(
+              of: find.byType(TPopoverWidget),
+              matching: find.byWidgetPredicate(
+                (widget) =>
+                    widget is Container && widget.decoration is BoxDecoration,
+              ),
+            )
+            .first,
+      );
+      final decoration = container.decoration! as BoxDecoration;
+      expect(decoration.color, token.grayColor14);
+    });
+
+    testWidgets('长文本默认限制在测量宽度内并允许换行', (tester) async {
+      const longContent = '这是一段非常非常非常非常非常非常非常长的气泡内容，用于验证默认宽度不会横向无限延伸';
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          return Center(
+            child: TPopoverWidget(
+              context: context,
+              content: longContent,
+            ),
+          );
+        }),
+      ));
+      await tester.pump();
+
+      final containerFinder = find
+          .descendant(
+            of: find.byType(TPopoverWidget),
+            matching: find.byWidgetPredicate(
+              (widget) =>
+                  widget is Container && widget.decoration is BoxDecoration,
+            ),
+          )
+          .first;
+      final container = tester.widget<Container>(containerFinder);
+      final text = tester.widget<Text>(find.text(longContent));
+      expect(container.constraints?.maxWidth, lessThanOrEqualTo(300));
+      expect(tester.getSize(containerFinder).width, lessThanOrEqualTo(300));
+      expect(text.maxLines, isNull);
+      expect(text.overflow, isNull);
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('contentWidget 自定义内容渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         Builder(builder: (context) {
@@ -98,7 +164,7 @@ void main() {
 
     testWidgets('contentWidget 未指定 width/height 抛出断言', (tester) async {
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(extensions: <ThemeExtension>[TThemeData.defaultData()]),
+        theme: TThemeBuilder.light(TThemeData.defaultData()),
         home: Builder(builder: (context) {
           return TPopoverWidget(
             context: context,
@@ -289,12 +355,15 @@ void main() {
       await tester.pump();
 
       final container = tester.widget<Container>(
-        find.descendant(
-          of: find.byType(TPopoverWidget),
-          matching: find.byWidgetPredicate(
-            (widget) => widget is Container && widget.decoration is BoxDecoration,
-          ),
-        ).first,
+        find
+            .descendant(
+              of: find.byType(TPopoverWidget),
+              matching: find.byWidgetPredicate(
+                (widget) =>
+                    widget is Container && widget.decoration is BoxDecoration,
+              ),
+            )
+            .first,
       );
       final decoration = container.decoration! as BoxDecoration;
       final arrow = tester.widget<Container>(arrowContainerFinder());
@@ -334,7 +403,8 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
-    final barrier = tester.widgetList<ModalBarrier>(find.byType(ModalBarrier)).last;
+    final barrier =
+        tester.widgetList<ModalBarrier>(find.byType(ModalBarrier)).last;
     expect(barrier.color, Colors.black54);
   });
 

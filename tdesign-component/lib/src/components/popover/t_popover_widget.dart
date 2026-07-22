@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_radius.dart';
 import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
@@ -123,8 +124,7 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
       Theme.of(context).extension<TPopoverThemeData>() ??
       const TPopoverThemeData();
 
-  double get _effectiveOffset =>
-      widget.offset ?? _theme.offset ?? 4;
+  double get _effectiveOffset => widget.offset ?? _theme.offset ?? 4;
 
   bool get _effectiveShowArrow => widget.showArrow ?? _theme.showArrow ?? true;
 
@@ -136,7 +136,8 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
 
   double? get _effectiveHeight => widget.height ?? _theme.maxHeight;
 
-  BorderRadius? get _effectiveRadius => widget.radius ??
+  BorderRadius? get _effectiveRadius =>
+      widget.radius ??
       (_theme.borderRadius == null
           ? null
           : BorderRadius.circular(_theme.borderRadius!));
@@ -268,7 +269,7 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
         _backgroundColor = widget.context.tTheme.whiteColor1;
         break;
       default:
-        _color = widget.context.tTheme.whiteColor1;
+        _color = widget.context.tTheme.textColorAnti;
         _backgroundColor = widget.context.tTheme.grayColor14;
         break;
     }
@@ -349,8 +350,8 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
     var margin = EdgeInsets.only(top: _effectiveArrowSize);
     switch (widget.placement) {
       case TPopoverPlacement.topLeft:
-        margin =
-            EdgeInsets.only(top: _effectiveArrowSize, left: _effectiveArrowSize + 12);
+        margin = EdgeInsets.only(
+            top: _effectiveArrowSize, left: _effectiveArrowSize + 12);
         break;
       case TPopoverPlacement.topRight:
         margin = EdgeInsets.only(
@@ -368,8 +369,8 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
             bottom: _effectiveArrowSize, right: _effectiveArrowSize + 12);
         break;
       case TPopoverPlacement.rightTop:
-        margin =
-            EdgeInsets.only(top: _effectiveArrowSize + 6, right: _effectiveArrowSize);
+        margin = EdgeInsets.only(
+            top: _effectiveArrowSize + 6, right: _effectiveArrowSize);
         break;
       case TPopoverPlacement.right:
         margin = EdgeInsets.only(right: _effectiveArrowSize);
@@ -379,8 +380,8 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
             bottom: _effectiveArrowSize + 6, right: _effectiveArrowSize);
         break;
       case TPopoverPlacement.leftTop:
-        margin =
-            EdgeInsets.only(top: _effectiveArrowSize + 6, left: _effectiveArrowSize);
+        margin = EdgeInsets.only(
+            top: _effectiveArrowSize + 6, left: _effectiveArrowSize);
         break;
       case TPopoverPlacement.left:
         margin = EdgeInsets.only(left: _effectiveArrowSize);
@@ -408,14 +409,15 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
 
   /// 获取文本内容大小
   Size _getTextSize() {
+    final font = context.tTheme.fontBodyLarge;
     var textPainter = TextPainter(
       text: TextSpan(
         text: widget.content,
         style: TextStyle(
           color: _color,
           letterSpacing: 0,
-          fontSize: 16,
-          height: 1.5,
+          fontSize: font?.size ?? 16,
+          height: font?.height ?? 1.5,
         ),
       ),
       locale: Localizations.localeOf(context),
@@ -467,8 +469,8 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
               style: TextStyle(
                 color: _color,
                 letterSpacing: 0,
-                fontSize: 16,
-                height: 1.5,
+                fontSize: context.tTheme.fontBodyLarge?.size ?? 16,
+                height: context.tTheme.fontBodyLarge?.height ?? 1.5,
               )),
     );
   }
