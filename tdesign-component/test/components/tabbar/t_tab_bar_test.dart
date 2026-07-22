@@ -111,6 +111,20 @@ void main() {
       expect(popup.items.single.value, '更多');
       expect(popup.popUpDialogConfig?.popUpWidth, 120);
     });
+
+    testWidgets('popup menu item uses global typography and surface tokens',
+        (tester) async {
+      final token = TThemeData.defaultData();
+      await tester
+          .pumpWidget(wrapWithTheme(const TTabBarMenuItem(value: '更多')));
+
+      final text = tester.widget<Text>(find.text('更多'));
+      expect(text.style?.fontSize, token.fontBodyLarge?.size);
+
+      final container = tester.widget<Container>(find.byType(Container).first);
+      final decoration = container.decoration! as BoxDecoration;
+      expect(decoration.color, token.bgColorContainer);
+    });
   });
 
   group('TTabBar widget', () {

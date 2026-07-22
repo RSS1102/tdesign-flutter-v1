@@ -1109,7 +1109,10 @@ class TTabBarMenuItem extends StatelessWidget {
       child: itemWidget ??
           TText(
             value,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+            style: TextStyle(
+              fontSize: context.tTheme.fontBodyLarge?.size ?? 16,
+              fontWeight: FontWeight.w400,
+            ),
           ),
     );
   }
