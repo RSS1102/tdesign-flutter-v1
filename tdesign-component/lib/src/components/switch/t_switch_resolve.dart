@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_theme.dart';
 import 't_switch_theme_data.dart';
 import 't_switch_types.dart';
@@ -50,10 +51,10 @@ class TSwitchResolve {
       thumbContentOnColor: theme?.thumbContentOnColor ?? token.brandNormalColor,
       thumbContentOffColor:
           theme?.thumbContentOffColor ?? token.textDisabledColor,
-      thumbContentOnFont:
-          theme?.thumbContentOnFont ?? const TextStyle(fontSize: 14),
-      thumbContentOffFont:
-          theme?.thumbContentOffFont ?? const TextStyle(fontSize: 14),
+      thumbContentOnFont: theme?.thumbContentOnFont ??
+          TextStyle(fontSize: token.fontBodyMedium?.size ?? 14),
+      thumbContentOffFont: theme?.thumbContentOffFont ??
+          TextStyle(fontSize: token.fontBodyMedium?.size ?? 14),
     );
   }
 }

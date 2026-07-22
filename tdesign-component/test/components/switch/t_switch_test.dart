@@ -98,6 +98,21 @@ void main() {
       expect(find.text('NO'), findsOneWidget);
     });
 
+    testWidgets('text variant keeps long labels inside the thumb',
+        (tester) async {
+      await tester.pumpWidget(wrap(const TSwitch(
+        value: true,
+        variant: TSwitchVariant.text,
+        openText: 'LONG',
+        onChanged: _noop,
+      )));
+
+      expect(tester.takeException(), isNull);
+      final text = tester.widget<Text>(find.text('LONG'));
+      expect(text.maxLines, 1);
+      expect(text.overflow, TextOverflow.ellipsis);
+    });
+
     testWidgets('icon and filled variants render their expected thumb',
         (tester) async {
       await tester.pumpWidget(wrap(const TSwitch(
@@ -188,8 +203,9 @@ void main() {
       })));
 
       final defaults = TSwitchResolve.resolve(context: context);
+      final token = TThemeData.defaultData();
       expect(defaults.trackOnColor, context.tTheme.brandNormalColor);
-      expect(defaults.thumbContentOnFont.fontSize, 14);
+      expect(defaults.thumbContentOnFont.fontSize, token.fontBodyMedium?.size);
 
       final themed = TSwitchResolve.resolve(
         context: context,

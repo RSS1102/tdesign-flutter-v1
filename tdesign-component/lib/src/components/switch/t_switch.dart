@@ -113,6 +113,7 @@ class TSwitch extends StatelessWidget {
                   : resolved.thumbContentOffColor,
               forceVerticalCenter: true,
               maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: value
                   ? resolved.thumbContentOnFont
                   : resolved.thumbContentOffFont,
