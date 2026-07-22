@@ -141,6 +141,16 @@ class TMaterialThemeBuilder {
         color: extensionData.componentStrokeColor,
         thickness: 0.5,
       ),
+      badgeTheme: BadgeThemeData(
+        backgroundColor: extensionData.errorNormalColor,
+        textColor: extensionData.textColorAnti,
+        textStyle: _textStyle(extensionData.fontMarkExtraSmall)?.copyWith(
+          color: extensionData.textColorAnti,
+        ),
+        largeSize: 16,
+        smallSize: 6,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+      ),
       filledButtonTheme: FilledButtonThemeData(style: buttonStyle),
       elevatedButtonTheme: ElevatedButtonThemeData(style: buttonStyle),
       outlinedButtonTheme: OutlinedButtonThemeData(

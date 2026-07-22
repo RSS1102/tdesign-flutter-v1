@@ -3,8 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
+  ThemeData fullTheme() => TThemeBuilder.light(TThemeData.defaultData());
+
   Widget app(Widget child, {ThemeData? theme}) => MaterialApp(
-        theme: theme,
+        theme: theme ?? fullTheme(),
         home: Scaffold(body: Center(child: child)),
       );
 
@@ -43,6 +45,24 @@ void main() {
     expect(tester.widget<Badge>(find.byType(Badge)).largeSize, 12);
   });
 
+  testWidgets('default visual style is driven by TDesign tokens',
+      (tester) async {
+    final token = TThemeData.defaultData();
+    await tester.pumpWidget(app(
+      const TBadge(count: 8, child: Text('Inbox')),
+    ));
+
+    final badge = tester.widget<Badge>(find.byType(Badge));
+    expect(badge.backgroundColor, token.errorNormalColor);
+    expect(badge.textColor, token.textColorAnti);
+    expect(badge.largeSize, 16);
+    expect(badge.smallSize, 6);
+    expect(badge.padding, const EdgeInsets.symmetric(horizontal: 4));
+    expect(badge.textStyle?.fontSize, token.fontMarkExtraSmall?.size);
+    expect(badge.textStyle?.height, token.fontMarkExtraSmall?.height);
+    expect(badge.textStyle?.color, token.textColorAnti);
+  });
+
   testWidgets('onTap is the only interaction switch', (tester) async {
     var taps = 0;
     await tester.pumpWidget(app(TBadge(count: 1, onTap: () => taps++)));
@@ -67,11 +87,12 @@ void main() {
     );
     await tester.pumpWidget(app(
       const TBadge(count: 2, border: true),
-      theme: ThemeData(extensions: const [extension]),
+      theme: fullTheme().mergeExtension(extension),
     ));
 
     final box = tester.widget<DecoratedBox>(find.byType(DecoratedBox).last);
     final decoration = box.decoration as BoxDecoration;
+    expect(decoration.color, TThemeData.defaultData().errorNormalColor);
     expect(decoration.border, Border.all(color: Colors.green, width: 2));
   });
 
