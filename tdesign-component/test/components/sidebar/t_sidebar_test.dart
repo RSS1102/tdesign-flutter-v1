@@ -333,6 +333,28 @@ void main() {
       ));
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
     });
+
+    testWidgets('长标签在窄宽度下保持单行省略', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const Center(
+          child: SizedBox(
+            width: 120,
+            child: TWrapSideBarItem(
+              style: TSideBarVariant.normal,
+              label: '这是一个非常非常长的侧边栏标题',
+              value: 5,
+              disabled: false,
+              badge: TBadge(count: 9),
+            ),
+          ),
+        ),
+      ));
+
+      expect(tester.takeException(), isNull);
+      final text = tester.widget<Text>(find.text('这是一个非常非常长的侧边栏标题'));
+      expect(text.maxLines, 1);
+      expect(text.overflow, TextOverflow.ellipsis);
+    });
   });
 
   group('内部展示项映射', () {

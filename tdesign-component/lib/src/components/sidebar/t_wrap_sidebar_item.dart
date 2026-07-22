@@ -72,10 +72,11 @@ class TWrapSideBarItem extends StatelessWidget {
           color: selected
               ? selectedBgColor ?? context.tTheme.bgColorContainer
               : unSelectedBgColor ??
-                  context.tTheme.bgColorSecondaryContainer, // coverage:ignore-line
+                  context
+                      .tTheme.bgColorSecondaryContainer, // coverage:ignore-line
           borderRadius: BorderRadius.only(
-            topRight: Radius.circular(
-                topAdjacent ? context.tTheme.radiusLarge : 0),
+            topRight:
+                Radius.circular(topAdjacent ? context.tTheme.radiusLarge : 0),
             bottomRight: Radius.circular(
                 bottomAdjacent ? context.tTheme.radiusLarge : 0),
           ),
@@ -98,8 +99,8 @@ class TWrapSideBarItem extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: 56),
         child: Container(
           // height: 86,
-          decoration: BoxDecoration(
-              color: context.tTheme.bgColorSecondaryContainer),
+          decoration:
+              BoxDecoration(color: context.tTheme.bgColorSecondaryContainer),
           padding: const EdgeInsets.all(8),
           child: Container(
             decoration: BoxDecoration(
@@ -191,6 +192,8 @@ class TWrapSideBarItem extends StatelessWidget {
                 : selected
                     ? selectedColor ?? context.tTheme.brandNormalColor
                     : unSelectedColor ?? context.tTheme.textColorPrimary,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             // forceVerticalCenter: true,
           )),
 
@@ -205,7 +208,8 @@ class TWrapSideBarItem extends StatelessWidget {
                 clipBehavior: Clip.none,
                 children: [
                   badge != null
-                      ? Positioned(top: -6, child: badge!) // coverage:ignore-line
+                      ? Positioned(
+                          top: -6, child: badge!) // coverage:ignore-line
                       : Container()
                 ],
               ),
@@ -217,14 +221,20 @@ class TWrapSideBarItem extends StatelessWidget {
     );
   }
 
-  Widget renderBadge(BuildContext context) { // coverage:ignore-line
-    return SizedBox( // coverage:ignore-line
+  Widget renderBadge(BuildContext context) {
+    // coverage:ignore-line
+    return SizedBox(
+      // coverage:ignore-line
       width: 1,
       height: 40,
-      child: Stack( // coverage:ignore-line
+      child: Stack(
+        // coverage:ignore-line
         clipBehavior: Clip.none,
-        children: [ // coverage:ignore-line
-          badge != null ? Positioned(top: -6, child: badge!) : Container() // coverage:ignore-line
+        children: [
+          // coverage:ignore-line
+          badge != null
+              ? Positioned(top: -6, child: badge!)
+              : Container() // coverage:ignore-line
         ],
       ),
     );
