@@ -60,6 +60,9 @@ void main() {
       ));
       // 默认中文环境下，应显示 "顶部"
       expect(find.text('顶部'), findsOneWidget);
+      final text = tester.widget<Text>(find.text('顶部'));
+      expect(text.maxLines, 1);
+      expect(text.overflow, TextOverflow.ellipsis);
     });
 
     testWidgets('showText 为 false 时不显示文案', (tester) async {
@@ -75,6 +78,8 @@ void main() {
       ));
       expect(find.text('返回'), findsOneWidget);
       expect(find.text('顶部'), findsOneWidget);
+      expect(tester.widget<Text>(find.text('返回')).overflow, TextOverflow.ellipsis);
+      expect(tester.widget<Text>(find.text('顶部')).overflow, TextOverflow.ellipsis);
     });
   });
 

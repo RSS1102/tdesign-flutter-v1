@@ -256,7 +256,7 @@ class _TBackTopState extends State<TBackTop> {
               child: TText(
                 context.resource.top,
                 maxLines: 1,
-                overflow: TextOverflow.visible,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 10,
                   color: _fontColor,
@@ -304,6 +304,8 @@ class _TBackTopState extends State<TBackTop> {
                   children: [
                     TText(
                       context.resource.back,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         height: 1.2,
                         fontSize: 10,
@@ -313,6 +315,8 @@ class _TBackTopState extends State<TBackTop> {
                     ),
                     TText(
                       context.resource.top,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         height: 1.2,
                         fontSize: 10,
