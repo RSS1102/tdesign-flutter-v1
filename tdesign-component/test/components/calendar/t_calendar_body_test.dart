@@ -4,7 +4,7 @@ import 'package:tdesign_flutter/src/components/calendar/t_calendar_body.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 Widget wrap(Widget child) => MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: TThemeBuilder.light(TThemeData.defaultData()),
       home: SizedBox(height: 400, width: 360, child: child),
     );
 
