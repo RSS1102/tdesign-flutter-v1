@@ -8,12 +8,12 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() {
   /// 构建带主题的测试壳
   Widget wrapWithTheme(Widget child, {TDropdownThemeData? dropdownTheme}) {
-    final themeExtensions = <ThemeExtension>[
-      TThemeData.defaultData(),
-      if (dropdownTheme != null) dropdownTheme,
-    ];
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (dropdownTheme != null) {
+      theme = theme.mergeExtension(dropdownTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: themeExtensions),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -195,6 +195,38 @@ void main() {
       ));
       expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
           findsOneWidget);
+    });
+
+    testWidgets('theme controls menu bar visual contract', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TDropdownMenu(
+          items: [
+            TDropdownItem(label: '主题项', options: baseOptions()),
+          ],
+        ),
+        dropdownTheme: const TDropdownThemeData(
+          width: 220,
+          height: 56,
+          decoration: BoxDecoration(color: Colors.yellow),
+          arrowIcon: Icons.keyboard_arrow_up,
+          arrowColor: Colors.red,
+        ),
+      ));
+
+      final menuContainer = tester.widget<Container>(
+        find.ancestor(
+          of: find.text('主题项'),
+          matching: find.byWidgetPredicate(
+            (widget) => widget is Container && widget.decoration != null,
+          ),
+        ),
+      );
+      final icon = tester.widget<Icon>(find.byIcon(Icons.keyboard_arrow_up));
+
+      expect(tester.getSize(find.byType(TDropdownMenu)), const Size(220, 56));
+      expect(menuContainer.decoration, const BoxDecoration(color: Colors.yellow));
+      expect(icon.color, Colors.red);
+      expect(icon.size, 20);
     });
   });
 
