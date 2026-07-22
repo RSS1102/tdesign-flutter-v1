@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
+import '../../theme/t_colors.dart';
 import '../../theme/t_spacers.dart';
 import '../../theme/t_theme.dart';
 
@@ -136,10 +137,14 @@ class _SelectionCardMark extends StatelessWidget {
             size: const Size.square(28),
             painter: _SelectionCardMarkPainter(color),
           ),
-          const Positioned(
+          Positioned(
             top: 3,
             left: 2,
-            child: Icon(TIcons.check, size: 14, color: Colors.white),
+            child: Icon(
+              TIcons.check,
+              size: 14,
+              color: context.tTheme.textColorAnti,
+            ),
           ),
         ],
       ),

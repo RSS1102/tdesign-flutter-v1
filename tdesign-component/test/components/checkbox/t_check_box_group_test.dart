@@ -190,6 +190,23 @@ void main() {
       expect(find.byIcon(TIcons.check), findsNWidgets(2));
     });
 
+    testWidgets('选择卡片角标使用反色文本 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrap(const TSelectionCard(
+        selected: true,
+        disabled: false,
+        selectedColor: Colors.blue,
+        disabledColor: Colors.grey,
+        backgroundColor: Colors.white,
+        borderRadius: 4,
+        minHeight: 56,
+        child: Text('selected'),
+      )));
+
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.check));
+      expect(icon.color, token.textColorAnti);
+    });
+
     testWidgets('垂直布局按副标题高度和间距构建', (tester) async {
       await tester.pumpWidget(wrap(TSelectionCardGroupLayout(
         direction: Axis.vertical,
