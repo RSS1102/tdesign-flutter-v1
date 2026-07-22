@@ -374,6 +374,28 @@ void main() {
     expect(text.overflow, TextOverflow.ellipsis);
   });
 
+  testWidgets('T17c - 图标链接在窄容器中保留图标并省略长文本', (tester) async {
+    const longText = '这是一个非常非常非常长的图标链接文案用于验证不会撑坏布局';
+    await tester.pumpWidget(_wrap(
+      const SizedBox(
+        width: 120,
+        child: TLink(
+          child: Text(longText),
+          variant: TLinkVariant.icon,
+        ),
+      ),
+    ));
+
+    expect(tester.takeException(), isNull);
+    expect(find.byIcon(TIcons.link), findsOneWidget);
+    expect(find.byIcon(TIcons.jump), findsOneWidget);
+    final text = tester.widget<Text>(find.text(longText));
+    expect(text.maxLines, 1);
+    expect(text.softWrap, isFalse);
+    expect(text.overflow, TextOverflow.ellipsis);
+    expect(tester.getSize(find.byType(TLink)).width, lessThanOrEqualTo(120));
+  });
+
   // ============================================================
   // T17 – 非 Text child（DefaultTextStyle 包裹）
   // ============================================================
