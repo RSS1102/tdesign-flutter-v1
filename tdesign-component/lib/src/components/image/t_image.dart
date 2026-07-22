@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../../theme/t_colors.dart';
 import '../../theme/t_radius.dart';
 import '../../theme/t_theme.dart';
 import 't_image_theme_data.dart';
@@ -235,7 +236,7 @@ class TImage extends StatelessWidget {
 
   Widget _placeholder(BuildContext context, Widget child) {
     return ColoredBox(
-      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      color: context.tTheme.bgColorComponent,
       child: Center(child: child),
     );
   }

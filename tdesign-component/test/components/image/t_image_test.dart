@@ -59,6 +59,40 @@ void main() {
     expect(find.text('error'), findsOneWidget);
   });
 
+  testWidgets('placeholder uses TDesign token instead of Material surface',
+      (tester) async {
+    final token = TThemeData.defaultData();
+    final theme = ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.red).copyWith(
+        surfaceContainerHighest: Colors.red,
+      ),
+      extensions: [token],
+    );
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: const Scaffold(
+        body: TImage(
+          src: 'https://example.com/image.png',
+          loadingWidget: Text('loading'),
+        ),
+      ),
+    ));
+
+    final image = tester.widget<Image>(find.byType(Image));
+    final loading = image.loadingBuilder!(
+      tester.element(find.byType(Image)),
+      const Text('child'),
+      const ImageChunkEvent(cumulativeBytesLoaded: 1, expectedTotalBytes: 2),
+    );
+    await tester.pumpWidget(MaterialApp(
+      theme: theme,
+      home: Scaffold(body: loading),
+    ));
+
+    expect(tester.widget<ColoredBox>(find.byType(ColoredBox)).color,
+        token.bgColorComponent);
+  });
+
   testWidgets('completed loading returns decoded child', (tester) async {
     await tester.pumpWidget(app(const TImage(
       src: 'https://example.com/image.png',
