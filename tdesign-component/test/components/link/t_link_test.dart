@@ -54,6 +54,33 @@ void main() {
   });
 
   // ============================================================
+  // T03b – 带图标链接布局间距
+  // ============================================================
+  testWidgets('T03b - 带图标链接布局间距', (tester) async {
+    await tester.pumpWidget(_wrap(
+      const TLink(
+        child: Text('图标链接'),
+        variant: TLinkVariant.icon,
+      ),
+    ));
+
+    final prefix = find.byIcon(TIcons.link);
+    final suffix = find.byIcon(TIcons.jump);
+    final text = find.text('图标链接');
+
+    expect(tester.widget<Icon>(prefix).size, 16);
+    expect(tester.widget<Icon>(suffix).size, 16);
+    expect(
+      tester.getTopLeft(text).dx - tester.getTopRight(prefix).dx,
+      moreOrLessEquals(6.34, epsilon: 0.01),
+    );
+    expect(
+      tester.getTopLeft(suffix).dx - tester.getTopRight(text).dx,
+      moreOrLessEquals(7.0, epsilon: 0.01),
+    );
+  });
+
+  // ============================================================
   // T04 – 带前缀图标链接
   // ============================================================
   testWidgets('T04 - 带前缀图标链接', (tester) async {
