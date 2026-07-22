@@ -3,6 +3,8 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/src/components/date_time_picker/t_date_time_picker_internal.dart';
 import 'package:tdesign_flutter/src/components/date_time_picker/t_date_time_picker_wheel.dart';
+import 'package:tdesign_flutter/src/components/picker/multi_wheel_layout.dart';
+import 'package:tdesign_flutter/src/components/picker/wheel_column.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 DateTimePickerSnapshot makeSnapshot([
@@ -20,13 +22,18 @@ DateTimePickerSnapshot makeSnapshot([
     );
 
 Widget wrap(Widget child) => MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
-      home: SizedBox(height: 300, width: 360, child: child),
+      theme: TThemeBuilder.light(TThemeData.defaultData()),
+      home: Scaffold(
+        body: Center(
+          child: SizedBox(height: 300, width: 360, child: child),
+        ),
+      ),
     );
 
 void main() {
   group('DateTimePickerWheel 渲染', () {
     testWidgets('年/月/日三列渲染并暴露选项', (tester) async {
+      final token = TThemeData.defaultData();
       var changed = 0;
       await tester.pumpWidget(wrap(DateTimePickerWheel(
         snapshot: makeSnapshot(),
@@ -43,6 +50,26 @@ void main() {
       expect(find.byType(DateTimePickerWheel), findsOneWidget);
       // 年份选项可见
       expect(find.text('2024年'), findsWidgets);
+      final layout = tester.widget<MultiWheelLayout>(
+        find.byType(MultiWheelLayout),
+      );
+      expect(layout.height, 200);
+      expect(layout.itemHeight, 40);
+      final column = tester.widget<WheelColumn>(find.byType(WheelColumn).first);
+      expect(column.itemHeight, 40);
+
+      final highlight = tester.widget<Container>(_wheelHighlightFinder());
+      final decoration = highlight.decoration! as BoxDecoration;
+      expect(decoration.color, token.bgColorSecondaryContainer);
+      expect(
+          decoration.borderRadius, BorderRadius.circular(token.radiusDefault));
+      expect(tester.getSize(_wheelHighlightFinder()), const Size(328, 40));
+
+      final selectedText =
+          tester.widget<TText>(_pickerTextFinder('2024年').first);
+      expect(selectedText.style?.color, token.textColorPrimary);
+      expect(selectedText.style?.fontSize, token.fontBodyLarge?.size);
+      expect(selectedText.style?.fontWeight, FontWeight.w700);
     });
 
     testWidgets('仅时间列（时/分/秒）渲染', (tester) async {
@@ -264,4 +291,20 @@ void main() {
       handle.dispose();
     });
   });
+}
+
+Finder _pickerTextFinder(String data) {
+  return find.byWidgetPredicate(
+    (widget) => widget is TText && widget.data == data,
+  );
+}
+
+Finder _wheelHighlightFinder() {
+  return find.byWidgetPredicate(
+    (widget) =>
+        widget is Container &&
+        widget.decoration is BoxDecoration &&
+        widget.constraints?.minHeight == 40 &&
+        widget.constraints?.maxHeight == 40,
+  );
 }

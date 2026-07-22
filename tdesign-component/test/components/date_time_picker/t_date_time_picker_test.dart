@@ -6,8 +6,12 @@ import 'package:tdesign_flutter/src/components/date_time_picker/t_date_time_pick
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 Widget wrap(Widget child) => MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
-      home: SizedBox(width: 360, height: 300, child: child),
+      theme: TThemeBuilder.light(TThemeData.defaultData()),
+      home: Scaffold(
+        body: Center(
+          child: SizedBox(width: 360, height: 300, child: child),
+        ),
+      ),
     );
 
 void main() {
@@ -31,6 +35,11 @@ void main() {
     ));
     expect(find.byType(TDateTimePicker), findsOneWidget);
     expect(find.byType(DateTimePickerWheel), findsOneWidget);
+    final wheel = tester.widget<DateTimePickerWheel>(
+      find.byType(DateTimePickerWheel),
+    );
+    expect(wheel.height, 200);
+    expect(wheel.itemCount, 5);
 
     await tester.pumpWidget(wrap(
       TDateTimePicker(
