@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_theme.dart';
 import '../text/t_text.dart';
 import 't_steps.dart';
@@ -98,7 +99,7 @@ class TStepsVerticalItem extends StatelessWidget {
       style: TextStyle(
         color: stepsNumberTextColor,
         fontWeight: FontWeight.w400,
-        fontSize: 14,
+        fontSize: theme.fontBodyMedium?.size ?? 14,
       ),
     );
 
@@ -229,12 +230,11 @@ class TStepsVerticalItem extends StatelessWidget {
                                     ? FontWeight.w600
                                     : FontWeight.w400,
                                 color: stepsTitleColor,
-                                fontSize: 14,
+                                fontSize: theme.fontBodyMedium?.size ?? 14,
                                 height: 1.2,
                               ),
-                              softWrap: false,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                              overflow: TextOverflow.visible,
                             ),
                           ),
                           verticalSelect
@@ -286,7 +286,7 @@ class TStepsVerticalItem extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.w400,
               color: context.tTheme.textColorPlaceholder,
-              fontSize: 12,
+              fontSize: context.tTheme.fontBodySmall?.size ?? 12,
             ),
           ),
       ],

@@ -101,8 +101,8 @@ void main() {
       expect(find.byType(TStepsVerticalItem), findsOneWidget);
     });
 
-    testWidgets('长标题收口为单行省略，避免垂直步骤溢出', (tester) async {
-      const longTitle = '这是一个非常非常非常长的步骤标题用于验证不会溢出到布局外';
+    testWidgets('长标题在可用宽度内自动换行', (tester) async {
+      const longTitle = '这是一个非常非常非常长的步骤标题用于验证垂直步骤可以展示完整内容';
       await tester.pumpWidget(
         wrapWithTheme(
           SizedBox(
@@ -122,9 +122,10 @@ void main() {
       );
 
       final title = tester.widget<Text>(find.text(longTitle));
-      expect(title.maxLines, 1);
-      expect(title.softWrap, isFalse);
-      expect(title.overflow, TextOverflow.ellipsis);
+      expect(title.maxLines, isNull);
+      expect(title.softWrap, isTrue);
+      expect(title.overflow, TextOverflow.visible);
+      expect(tester.takeException(), isNull);
     });
   });
 }
