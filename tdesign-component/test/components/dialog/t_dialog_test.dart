@@ -238,20 +238,76 @@ void main() {
 
       final title = tester.widget<TText>(_tTextFinder('默认标题'));
       expect(title.textColor, token.textColorPrimary);
-      expect(title.fontWeight, FontWeight.w600);
-      expect(title.font?.size, 18);
-      expect(title.font?.height, 26 / 18);
+      expect(title.style?.fontWeight, FontWeight.w600);
+      expect(title.style?.fontSize, 18);
+      expect(title.style?.height, 26 / 18);
       expect(title.textAlign, TextAlign.center);
 
       final content = tester.widget<TText>(_tTextFinder('默认内容'));
       expect(content.textColor, token.textColorSecondary);
-      expect(content.font?.size, 16);
-      expect(content.font?.height, 24 / 16);
+      expect(content.style?.fontSize, 16);
+      expect(content.style?.height, 24 / 16);
       expect(content.textAlign, TextAlign.center);
 
       final closeIcon = tester.widget<Icon>(find.byIcon(TIcons.close));
       expect(closeIcon.size, 22);
       expect(closeIcon.color, token.textColorPlaceholder);
+    });
+
+    testWidgets(
+        'dialog theme extension applies title content and button styles',
+        (tester) async {
+      final dialogTheme = TDialogThemeData(
+        titleTextStyle: const TextStyle(
+          fontSize: 20,
+          height: 30 / 20,
+          fontWeight: FontWeight.w700,
+        ),
+        contentTextStyle: const TextStyle(
+          fontSize: 15,
+          height: 22 / 15,
+          fontWeight: FontWeight.w400,
+        ),
+        contentPadding: const EdgeInsets.fromLTRB(10, 20, 30, 40),
+        actionButtonStyle: TextButton.styleFrom(
+          minimumSize: const Size(88, 44),
+        ),
+      );
+
+      await tester.pumpWidget(MaterialApp(
+        theme: fullTheme().copyWith(
+          extensions: <ThemeExtension<dynamic>>[dialogTheme],
+        ),
+        home: Scaffold(
+          body: TConfirmDialog(
+            title: '主题标题',
+            content: '主题内容',
+            buttonText: '确认',
+          ),
+        ),
+      ));
+
+      final title = tester.widget<TText>(_tTextFinder('主题标题'));
+      expect(title.style, dialogTheme.titleTextStyle);
+
+      final content = tester.widget<TText>(_tTextFinder('主题内容'));
+      expect(content.style, dialogTheme.contentTextStyle);
+
+      final paddingContainer = tester.widget<Container>(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is Container &&
+              widget.padding == dialogTheme.contentPadding,
+        ),
+      );
+      expect(paddingContainer.padding, dialogTheme.contentPadding);
+
+      final dialogButton = tester.widget<TDialogButton>(
+        find.byWidgetPredicate(
+          (widget) => widget is TDialogButton && widget.buttonText == '确认',
+        ),
+      );
+      expect(dialogButton.buttonStyle, dialogTheme.actionButtonStyle);
     });
 
     testWidgets('backgroundColor 自定义背景色', (tester) async {
