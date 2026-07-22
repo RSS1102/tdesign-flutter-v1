@@ -15,10 +15,7 @@ class TWrapSideBarItem extends StatelessWidget {
     this.icon,
     this.label = '',
     this.contentPadding,
-    this.textStyle = const TextStyle(
-      fontSize: 16,
-      height: 1.5,
-    ),
+    this.textStyle,
     this.selectedTextStyle,
     this.value = -1,
     this.selected = false,

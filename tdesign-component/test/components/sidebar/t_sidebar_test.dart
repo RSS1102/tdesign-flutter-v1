@@ -293,6 +293,22 @@ void main() {
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
     });
 
+    testWidgets('默认文案样式来自全局字体 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrapWithTheme(
+        const TWrapSideBarItem(
+          style: TSideBarVariant.normal,
+          label: '默认',
+          value: 1,
+          disabled: false,
+        ),
+      ));
+
+      final text = tester.widget<Text>(find.text('默认'));
+      expect(text.style?.fontSize, token.fontBodyLarge?.size);
+      expect(text.style?.height, token.fontBodyLarge?.height);
+    });
+
     testWidgets('选中且设置 selectedTextStyle 颜色', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TWrapSideBarItem(
