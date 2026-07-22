@@ -160,6 +160,23 @@ void main() {
       expect(find.text('菜单2'), findsOneWidget);
     });
 
+    testWidgets('默认 item title 长文案保持单行省略', (tester) async {
+      const longTitle = '这是一个非常非常长的抽屉菜单标题用于验证不溢出';
+      await tester.pumpWidget(wrapWithTheme(
+        TDrawerWidget(
+          width: 120,
+          items: [
+            TDrawerItem(title: longTitle),
+          ],
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      final title = tester.widget<Text>(find.text(longTitle));
+      expect(title.maxLines, 1);
+      expect(title.overflow, TextOverflow.ellipsis);
+    });
+
     testWidgets('使用 title 渲染标题', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TDrawerWidget(

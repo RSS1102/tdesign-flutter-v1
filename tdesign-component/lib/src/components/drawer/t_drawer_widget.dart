@@ -78,7 +78,13 @@ class TDrawerWidget extends StatelessWidget {
               index,
               TCell(
                 title: item.content ??
-                    (item.title == null ? null : Text(item.title!)),
+                    (item.title == null
+                        ? null
+                        : Text(
+                            item.title!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )),
                 prefix: item.icon,
                 enableFeedback: hover ?? true,
                 onTap: () {
