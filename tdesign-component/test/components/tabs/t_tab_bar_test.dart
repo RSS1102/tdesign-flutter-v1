@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tdesign_flutter/src/components/tabs/t_horizontal_tab_bar.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
@@ -60,6 +61,59 @@ void main() {
         ));
         expect(find.byType(TTabsBar), findsOneWidget);
       }
+    });
+
+    testWidgets('default filled variant uses container background and divider',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTabsBar(
+          tabs: [
+            TTab(text: '选项1'),
+            TTab(text: '选项2'),
+            TTab(text: '选项3'),
+          ],
+          width: 240,
+          height: 56,
+        ),
+      ));
+
+      final container = tester.widget<Container>(
+        find.byWidgetPredicate(
+          (widget) => widget is Container && widget.child is THorizontalTabBar,
+        ),
+      );
+      final decoration = container.decoration! as BoxDecoration;
+      expect(decoration.color, TThemeData.defaultData().bgColorContainer);
+      expect(decoration.border, isNotNull);
+      expect(
+        (decoration.border as Border).bottom.color,
+        TThemeData.defaultData().componentStrokeColor,
+      );
+    });
+
+    testWidgets('card variant uses container background without divider',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTabsBar(
+          tabs: [
+            TTab(text: '选项1'),
+            TTab(text: '选项2'),
+            TTab(text: '选项3'),
+          ],
+          width: 240,
+          height: 56,
+          variant: TTabsBarVariant.card,
+        ),
+      ));
+
+      final container = tester.widget<Container>(
+        find.byWidgetPredicate(
+          (widget) => widget is Container && widget.child is THorizontalTabBar,
+        ),
+      );
+      final decoration = container.decoration! as BoxDecoration;
+      expect(decoration.color, TThemeData.defaultData().bgColorContainer);
+      expect(decoration.border, isNull);
     });
 
     testWidgets('onTap, custom indicator, sizing and colors render',

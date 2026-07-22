@@ -82,6 +82,22 @@ void main() {
 
       expect(find.text('字号'), findsOneWidget);
     });
+
+    testWidgets('long label stays single-line and fades overflow', (tester) async {
+      const longLabel = '这是一个非常非常非常长的标签文本用于验证不会换行和撑坏布局';
+      await tester.pumpWidget(wrapWithTheme(
+        const DefaultTabController(
+          length: 1,
+          child: TTabsBar(
+            tabs: [TTab(text: longLabel)],
+          ),
+        ),
+      ));
+
+      final text = tester.widget<Text>(find.text(longLabel));
+      expect(text.softWrap, isFalse);
+      expect(text.overflow, TextOverflow.fade);
+    });
   });
 
   group('TTabsBarThemeData', () {
