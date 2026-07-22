@@ -68,11 +68,13 @@ void main() {
         arrowIcon: Icons.arrow_drop_down,
         arrowColor: Colors.black,
         tabBarAlign: MainAxisAlignment.start,
+        overlayColor: Colors.black54,
       );
       const override = TDropdownThemeData(
         width: 120,
         arrowColor: Colors.blue,
         tabBarAlign: MainAxisAlignment.end,
+        overlayColor: Colors.purple,
       );
 
       expect(identical(base.merge(null), base), isTrue);
@@ -83,6 +85,7 @@ void main() {
       expect(merged.arrowIcon, Icons.arrow_drop_down);
       expect(merged.arrowColor, Colors.blue);
       expect(merged.tabBarAlign, MainAxisAlignment.end);
+      expect(merged.overlayColor, Colors.purple);
 
       final copied = base.copyWith(
         width: 80,
@@ -91,6 +94,7 @@ void main() {
         arrowIcon: Icons.keyboard_arrow_up,
         arrowColor: Colors.orange,
         tabBarAlign: MainAxisAlignment.center,
+        overlayColor: Colors.red,
       );
       expect(copied.width, 80);
       expect(copied.height, 36);
@@ -98,6 +102,7 @@ void main() {
       expect(copied.arrowIcon, Icons.keyboard_arrow_up);
       expect(copied.arrowColor, Colors.orange);
       expect(copied.tabBarAlign, MainAxisAlignment.center);
+      expect(copied.overlayColor, Colors.red);
 
       expect(identical(base.lerp(null, 0.5), base), isTrue);
       final early = base.lerp(override, 0.25);
@@ -108,6 +113,10 @@ void main() {
       expect(late.width, 115);
       expect(late.decoration, override.decoration);
       expect(late.arrowIcon, override.arrowIcon);
+      expect(
+        late.overlayColor,
+        Color.lerp(Colors.black54, Colors.purple, 0.75),
+      );
       expect(TDropdownThemeData.lerpDouble(null, null, 0.5), isNull);
     });
   });
@@ -769,6 +778,29 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byWidgetPredicate((widget) => widget is TDropdownMenu),
           findsOneWidget);
+    });
+
+    testWidgets('弹层遮罩颜色取自 TDropdownThemeData', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TDropdownMenu(
+          direction: TDropdownMenuDirection.down,
+          items: [TDropdownItem(label: '主题遮罩', options: baseOptions())],
+        ),
+        dropdownTheme: const TDropdownThemeData(
+          overlayColor: Colors.purple,
+        ),
+      ));
+      await tester.tap(find.text('主题遮罩'));
+      await tester.pumpAndSettle();
+
+      final overlay = tester
+          .widgetList<DecoratedBox>(find.byType(DecoratedBox))
+          .firstWhere(
+            (widget) =>
+                widget.decoration is BoxDecoration &&
+                (widget.decoration as BoxDecoration).color == Colors.purple,
+          );
+      expect((overlay.decoration as BoxDecoration).color, Colors.purple);
     });
   });
 }

@@ -268,6 +268,8 @@ class _TDropdownMenuState<T> extends State<TDropdownMenu<T>>
       handleClose: _closeMenu,
       direction: widget.direction,
       showOverlay: widget.showOverlay,
+      overlayColor:
+          Theme.of(context).extension<TDropdownThemeData>()?.overlayColor,
       closeOnClickOverlay: widget.closeOnClickOverlay,
       duration: Duration(milliseconds: (widget.duration ?? 200).toInt()),
     );

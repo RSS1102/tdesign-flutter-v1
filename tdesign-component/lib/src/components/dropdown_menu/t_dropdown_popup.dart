@@ -23,6 +23,7 @@ class TDropdownPopup<T> {
     required this.handleClose,
     this.direction = TDropdownPopupDirection.auto,
     this.showOverlay = true,
+    this.overlayColor,
     this.closeOnClickOverlay = true,
     this.duration = const Duration(milliseconds: 200),
   });
@@ -41,6 +42,9 @@ class TDropdownPopup<T> {
 
   /// 是否显示遮罩
   final bool? showOverlay;
+
+  /// 遮罩颜色
+  final Color? overlayColor;
 
   /// 点击遮罩是否关闭
   final bool? closeOnClickOverlay;
@@ -179,8 +183,9 @@ class TDropdownPopup<T> {
       child: showOverlay == true
           ? ValueListenableBuilder(
               builder: (BuildContext context, value, Widget? child) {
+                final color = overlayColor ?? Colors.black54;
                 return AnimatedContainer(
-                  color: value ? Colors.black54 : Colors.black54.withAlpha(0),
+                  color: value ? color : color.withAlpha(0),
                   duration: value ? _duration : _duration ~/ 2,
                   child: barrier,
                 );

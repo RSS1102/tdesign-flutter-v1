@@ -22,6 +22,9 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
   /// 标签栏对齐
   final MainAxisAlignment? tabBarAlign;
 
+  /// 弹出层遮罩颜色
+  final Color? overlayColor;
+
   const TDropdownThemeData({
     this.width,
     this.height,
@@ -29,6 +32,7 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
     this.arrowIcon,
     this.arrowColor,
     this.tabBarAlign,
+    this.overlayColor,
   });
 
   TDropdownThemeData merge(TDropdownThemeData? other) {
@@ -42,6 +46,7 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
       arrowIcon: other.arrowIcon ?? arrowIcon,
       arrowColor: other.arrowColor ?? arrowColor,
       tabBarAlign: other.tabBarAlign ?? tabBarAlign,
+      overlayColor: other.overlayColor ?? overlayColor,
     );
   }
 
@@ -53,6 +58,7 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
     IconData? arrowIcon,
     Color? arrowColor,
     MainAxisAlignment? tabBarAlign,
+    Color? overlayColor,
   }) {
     return TDropdownThemeData(
       width: width ?? this.width,
@@ -61,6 +67,7 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
       arrowIcon: arrowIcon ?? this.arrowIcon,
       arrowColor: arrowColor ?? this.arrowColor,
       tabBarAlign: tabBarAlign ?? this.tabBarAlign,
+      overlayColor: overlayColor ?? this.overlayColor,
     );
   }
 
@@ -76,6 +83,7 @@ class TDropdownThemeData extends ThemeExtension<TDropdownThemeData> {
       arrowIcon: t < 0.5 ? arrowIcon : other.arrowIcon,
       arrowColor: Color.lerp(arrowColor, other.arrowColor, t),
       tabBarAlign: t < 0.5 ? tabBarAlign : other.tabBarAlign,
+      overlayColor: Color.lerp(overlayColor, other.overlayColor, t),
     );
   }
 
