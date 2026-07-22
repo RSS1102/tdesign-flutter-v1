@@ -56,6 +56,7 @@ void main() {
         find.byType(TCupertinoSwitch),
       );
       expect(switchWidget.onChanged, isNull);
+      expect(switchWidget.disabledOpacity, 1);
       expect(
         find.byWidgetPredicate(
           (widget) => widget is IgnorePointer && widget.ignoring,

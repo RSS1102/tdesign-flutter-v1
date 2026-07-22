@@ -70,6 +70,9 @@ class TSwitch extends StatelessWidget {
       activeColor: resolved.trackOnColor,
       trackColor: resolved.trackOffColor,
       onChanged: enabled ? onChanged : null,
+      // TSwitch owns its disabled appearance below. Avoid multiplying it by
+      // TCupertinoSwitch's standalone disabled opacity.
+      disabledOpacity: 1,
       thumbView: _buildThumb(
         resolved: resolved,
         variant: resolvedVariant,

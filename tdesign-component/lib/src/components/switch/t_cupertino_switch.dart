@@ -68,8 +68,10 @@ class TCupertinoSwitch extends StatefulWidget {
     this.trackColor,
     this.thumbColor,
     this.thumbView,
+    this.disabledOpacity = _kTDCupertinoSwitchDisabledOpacity,
     this.dragStartBehavior = DragStartBehavior.start,
-  }) : super(key: key);
+  })  : assert(disabledOpacity >= 0 && disabledOpacity <= 1),
+        super(key: key);
 
   /// Whether this switch is on or off.
   ///
@@ -118,6 +120,12 @@ class TCupertinoSwitch extends StatefulWidget {
 
   /// The custom widget over the thumb.
   final Widget? thumbView;
+
+  /// Opacity applied while [onChanged] is null.
+  ///
+  /// The default preserves the standalone Cupertino-style disabled appearance.
+  /// Parents that supply their own disabled treatment can set this to `1`.
+  final double disabledOpacity;
 
   /// {@template flutter.cupertino.TCupertinoSwitch.dragStartBehavior}
   /// Determines the way that drag start behavior is handled.
@@ -318,8 +326,7 @@ class _TCupertinoSwitchState extends State<TCupertinoSwitch>
           ? SystemMouseCursors.click
           : MouseCursor.defer,
       child: Opacity(
-        opacity:
-            widget.onChanged == null ? _kTDCupertinoSwitchDisabledOpacity : 1.0,
+        opacity: widget.onChanged == null ? widget.disabledOpacity : 1.0,
         child: _TCupertinoSwitchRenderObjectWidget(
           value: widget.value,
           activeColor: CupertinoDynamicColor.resolve(
