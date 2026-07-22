@@ -72,9 +72,27 @@ class TRate extends StatefulWidget {
 }
 
 class _TRateState extends State<TRate> {
+  static const _halfChoiceKey = ValueKey<String>('t-rate-half-choice');
+
   double? _lastInteractionValue;
+  OverlayEntry? _halfChoiceEntry;
+  double? _pendingHalfChoiceValue;
 
   bool get _enabled => widget.onChanged != null;
+
+  @override
+  void didUpdateWidget(TRate oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.allowHalf != oldWidget.allowHalf || !_enabled) {
+      _dismissHalfChoice();
+    }
+  }
+
+  @override
+  void dispose() {
+    _dismissHalfChoice();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +122,17 @@ class _TRateState extends State<TRate> {
                         _valueAt(details.localPosition.dx, iconSize, iconGap);
                     _lastInteractionValue = next;
                     widget.onChanged?.call(next);
-                    widget.onChangeEnd?.call(next);
+                    if (widget.allowHalf) {
+                      _showHalfChoice(
+                        context,
+                        details.globalPosition,
+                        next.ceilToDouble(),
+                        iconSize,
+                      );
+                      _pendingHalfChoiceValue = next;
+                    } else {
+                      widget.onChangeEnd?.call(next);
+                    }
                   }
                 : null,
             onHorizontalDragStart: _enabled
@@ -202,6 +230,155 @@ class _TRateState extends State<TRate> {
     final local = clamped - index * itemExtent;
     final fraction = widget.allowHalf && local <= iconSize / 2 ? 0.5 : 1.0;
     return index + fraction;
+  }
+
+  void _showHalfChoice(
+    BuildContext context,
+    Offset globalPosition,
+    double wholeValue,
+    double iconSize,
+  ) {
+    _dismissHalfChoice();
+    final overlay = Overlay.of(context, rootOverlay: true);
+    final mediaQuery = MediaQuery.of(context);
+    final popupWidth = iconSize * 2 + 40;
+    final popupHeight = iconSize + 36;
+    final left = (globalPosition.dx - popupWidth / 2)
+        .clamp(8.0, mediaQuery.size.width - popupWidth - 8.0)
+        .toDouble();
+    final preferredTop = globalPosition.dy - popupHeight - 12;
+    final top = preferredTop >= mediaQuery.padding.top
+        ? preferredTop
+        : globalPosition.dy + 12;
+
+    _halfChoiceEntry = OverlayEntry(
+      builder: (overlayContext) => Stack(
+        children: [
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: _completeHalfChoice,
+            ),
+          ),
+          Positioned(
+            left: left,
+            top: top,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                key: _halfChoiceKey,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Theme.of(overlayContext).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(4),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x1F000000),
+                      blurRadius: 8,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildHalfChoiceButton(
+                      overlayContext,
+                      value: wholeValue - 0.5,
+                      iconSize: iconSize,
+                      isHalf: true,
+                    ),
+                    const SizedBox(width: 4),
+                    _buildHalfChoiceButton(
+                      overlayContext,
+                      value: wholeValue,
+                      iconSize: iconSize,
+                      isHalf: false,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    overlay.insert(_halfChoiceEntry!);
+  }
+
+  Widget _buildHalfChoiceButton(
+    BuildContext context, {
+    required double value,
+    required double iconSize,
+    required bool isHalf,
+  }) {
+    final selectedColor = context.tTheme.warningColor5;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        if (_pendingHalfChoiceValue != value) {
+          widget.onChanged?.call(value);
+        }
+        _completeHalfChoice(value);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox.square(
+              dimension: iconSize,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Icon(
+                      TIcons.star_filled,
+                      size: iconSize,
+                      color: context.tTheme.bgColorComponent,
+                    ),
+                  ),
+                  if (isHalf)
+                    ClipRect(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: 0.5,
+                        child: Icon(
+                          TIcons.star_filled,
+                          size: iconSize,
+                          color: selectedColor,
+                        ),
+                      ),
+                    )
+                  else
+                    Positioned.fill(
+                      child: Icon(
+                        TIcons.star_filled,
+                        size: iconSize,
+                        color: selectedColor,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Text(value.toStringAsFixed(1)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _dismissHalfChoice() {
+    _halfChoiceEntry?.remove();
+    _halfChoiceEntry = null;
+    _pendingHalfChoiceValue = null;
+  }
+
+  void _completeHalfChoice([double? value]) {
+    final completedValue = value ?? _pendingHalfChoiceValue;
+    _dismissHalfChoice();
+    if (completedValue != null) {
+      widget.onChangeEnd?.call(completedValue);
+    }
   }
 
   String _resolveText() {

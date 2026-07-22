@@ -41,9 +41,9 @@ class _TRatePageState extends State<TRatePage> {
 
   @Demo(group: 'rate')
   Widget _buildBasicRate(BuildContext context) {
-    return TCell(
-      title: const Text('基础评分'),
-      note: TRate(
+    return _rateCell(
+      title: '基础评分',
+      rate: TRate(
         value: _basicValue,
         onChanged: (value) => setState(() => _basicValue = value),
       ),
@@ -52,9 +52,9 @@ class _TRatePageState extends State<TRatePage> {
 
   @Demo(group: 'rate')
   Widget _buildHalfRate(BuildContext context) {
-    return TCell(
-      title: const Text('半星评分'),
-      note: Row(
+    return _rateCell(
+      title: '半星评分',
+      rate: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           TRate(
@@ -76,9 +76,9 @@ class _TRatePageState extends State<TRatePage> {
 
   @Demo(group: 'rate')
   Widget _buildCustomRate(BuildContext context) {
-    return TCell(
-      title: const Text('自定义图标'),
-      note: TRate(
+    return _rateCell(
+      title: '自定义图标',
+      rate: TRate(
         value: _customValue,
         icon: (filled) => Icon(
           filled ? Icons.favorite : Icons.favorite_border,
@@ -95,9 +95,9 @@ class _TRatePageState extends State<TRatePage> {
       data: Theme.of(context).mergeExtension(
         const TRateThemeData(showText: true, textWidth: 64),
       ),
-      child: TCell(
-        title: const Text('评分文案'),
-        note: TRate(
+      child: _rateCell(
+        title: '评分文案',
+        rate: TRate(
           value: _textValue,
           texts: const ['很差', '较差', '一般', '满意', '惊喜'],
           onChanged: (value) => setState(() => _textValue = value),
@@ -108,9 +108,9 @@ class _TRatePageState extends State<TRatePage> {
 
   @Demo(group: 'rate')
   Widget _buildDisabledRate(BuildContext context) {
-    return const TCell(
-      title: Text('禁用状态'),
-      note: TRate(value: 3),
+    return _rateCell(
+      title: '禁用状态',
+      rate: const TRate(value: 3),
     );
   }
 
@@ -125,9 +125,19 @@ class _TRatePageState extends State<TRatePage> {
           iconGap: 4,
         ),
       ),
-      child: const TCell(
-        title: Text('主题定制'),
-        note: TRate(value: 4),
+      child: _rateCell(
+        title: '主题定制',
+        rate: const TRate(value: 4),
+      ),
+    );
+  }
+
+  Widget _rateCell({required String title, required Widget rate}) {
+    return TCell(
+      title: TText(title),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: rate,
       ),
     );
   }

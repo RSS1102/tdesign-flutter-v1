@@ -18,7 +18,6 @@ import 't_tab.dart';
 import 't_tab_bar_theme_data.dart';
 
 const double _kTabHeight = 46.0;
-const double _kTextAndIconTabHeight = 72.0;
 const double _kStartOffset = 52.0;
 
 class _TabStyle extends AnimatedWidget {
@@ -355,10 +354,10 @@ class THorizontalTabBar extends StatefulWidget implements PreferredSizeWidget {
   /// text or icon.
   bool get tabHasTextAndIcon {
     for (final Widget item in tabs) {
-      if (item is PreferredSizeWidget) {
-        if (item.preferredSize.height == _kTextAndIconTabHeight) {
-          return true;
-        }
+      if (item is TTab &&
+          item.icon != null &&
+          (item.text != null || item.child != null)) {
+        return true;
       }
     }
     return false;
@@ -887,19 +886,6 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
     }
 
     final wrappedTabs = List<Widget>.generate(widget.tabs.length, (int index) {
-      const verticalAdjustment = (_kTextAndIconTabHeight - _kTabHeight) / 2.0;
-      EdgeInsetsGeometry? adjustedPadding;
-
-      final tab = widget.tabs[index];
-      if (widget.tabHasTextAndIcon && tab.preferredSize.height == _kTabHeight) {
-        if (widget.labelPadding != null || tabBarTheme.labelPadding != null) {
-          adjustedPadding = (widget.labelPadding ?? tabBarTheme.labelPadding!)
-              .add(const EdgeInsets.symmetric(vertical: verticalAdjustment));
-        } else {
-          adjustedPadding = const EdgeInsets.symmetric(
-              vertical: verticalAdjustment, horizontal: 16.0);
-        }
-      }
       // tab.size=20;
       EdgeInsetsGeometry? capsuleDefaultPadding;
       if (widget.variant == TTabsBarVariant.capsule) {
@@ -912,8 +898,7 @@ class _THorizontalTabBarState extends State<THorizontalTabBar> {
           child: Center(
             heightFactor: 1.0,
             child: Padding(
-              padding: adjustedPadding ??
-                  widget.labelPadding ??
+              padding: widget.labelPadding ??
                   capsuleDefaultPadding ??
                   tabBarTheme.labelPadding ??
                   kTabLabelPadding,

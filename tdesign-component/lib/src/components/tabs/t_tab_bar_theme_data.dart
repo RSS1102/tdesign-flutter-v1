@@ -2,8 +2,6 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import '../../theme/basic.dart';
-
 /// TabsBar 形态枚举。
 enum TTabsBarVariant {
   /// 填充样式
@@ -16,136 +14,71 @@ enum TTabsBarVariant {
   card,
 }
 
-/// Tab 尺寸枚举（保留）
-enum TTabSize {
-  /// 大尺寸
-  large,
-
-  /// 小尺寸
-  small,
-}
-
 /// TabBar 组件 ThemeExtension
 ///
-/// 管理 TTabsBar / TTab / TTabsBarView 的子树级默认样式。
+/// 管理 TTabsBar 的子树级视觉默认样式。
 class TTabsBarThemeData extends ThemeExtension<TTabsBarThemeData> {
-  // ---- TTabsBar 级 ----
-  final Decoration? decoration;
+  /// 栏背景色。
   final Color? backgroundColor;
-  final Color? indicatorColor;
-  final double? indicatorHeight;
-  final double? indicatorWidth;
-  final Color? labelColor;
-  final Color? unselectedLabelColor;
-  final bool? isScrollable;
+
+  /// 选中标签文字样式。
   final TextStyle? labelStyle;
+
+  /// 未选中标签文字样式。
   final TextStyle? unselectedLabelStyle;
-  final double? height;
-  final EdgeInsets? indicatorPadding;
+
+  /// 标签内容边距。
   final EdgeInsetsGeometry? labelPadding;
+
+  /// 默认指示器；为空时不展示。
   final Decoration? indicator;
-  final bool? showIndicator;
-  final ScrollPhysics? physics;
-  final TTabsBarVariant? variant;
+
+  /// 分割线颜色。
   final Color? dividerColor;
+
+  /// 分割线高度；小于等于 0 时不展示。
   final double? dividerHeight;
+
+  /// capsule 形态下的选中背景色。
   final Color? selectedBgColor;
+
+  /// capsule 形态下的未选中背景色。
   final Color? unSelectedBgColor;
-  final TabAlignment? tabAlignment;
-
-  // ---- TTab 级 ----
-  final EdgeInsetsGeometry? iconMargin;
-  final EdgeInsetsGeometry? textMargin;
-  final double? contentHeight;
-
-  // ---- TTabsBarView 级 ----
-  final ScrollPhysics? defaultPhysics;
 
   const TTabsBarThemeData({
-    this.decoration,
     this.backgroundColor,
-    this.indicatorColor,
-    this.indicatorHeight,
-    this.indicatorWidth,
-    this.labelColor,
-    this.unselectedLabelColor,
-    this.isScrollable,
     this.labelStyle,
     this.unselectedLabelStyle,
-    this.height,
-    this.indicatorPadding,
     this.labelPadding,
     this.indicator,
-    this.showIndicator,
-    this.physics,
-    this.variant,
     this.dividerColor,
     this.dividerHeight,
     this.selectedBgColor,
     this.unSelectedBgColor,
-    this.tabAlignment,
-    this.iconMargin,
-    this.textMargin,
-    this.contentHeight,
-    this.defaultPhysics,
   });
 
   @override
   TTabsBarThemeData copyWith({
-    Decoration? decoration,
     Color? backgroundColor,
-    Color? indicatorColor,
-    double? indicatorHeight,
-    double? indicatorWidth,
-    Color? labelColor,
-    Color? unselectedLabelColor,
-    bool? isScrollable,
     TextStyle? labelStyle,
     TextStyle? unselectedLabelStyle,
-    double? height,
-    EdgeInsets? indicatorPadding,
     EdgeInsetsGeometry? labelPadding,
     Decoration? indicator,
-    bool? showIndicator,
-    ScrollPhysics? physics,
-    TTabsBarVariant? variant,
     Color? dividerColor,
     double? dividerHeight,
     Color? selectedBgColor,
     Color? unSelectedBgColor,
-    TabAlignment? tabAlignment,
-    EdgeInsetsGeometry? iconMargin,
-    EdgeInsetsGeometry? textMargin,
-    double? contentHeight,
-    ScrollPhysics? defaultPhysics,
   }) {
     return TTabsBarThemeData(
-      decoration: decoration ?? this.decoration,
       backgroundColor: backgroundColor ?? this.backgroundColor,
-      indicatorColor: indicatorColor ?? this.indicatorColor,
-      indicatorHeight: indicatorHeight ?? this.indicatorHeight,
-      indicatorWidth: indicatorWidth ?? this.indicatorWidth,
-      labelColor: labelColor ?? this.labelColor,
-      unselectedLabelColor: unselectedLabelColor ?? this.unselectedLabelColor,
-      isScrollable: isScrollable ?? this.isScrollable,
       labelStyle: labelStyle ?? this.labelStyle,
       unselectedLabelStyle: unselectedLabelStyle ?? this.unselectedLabelStyle,
-      height: height ?? this.height,
-      indicatorPadding: indicatorPadding ?? this.indicatorPadding,
       labelPadding: labelPadding ?? this.labelPadding,
       indicator: indicator ?? this.indicator,
-      showIndicator: showIndicator ?? this.showIndicator,
-      physics: physics ?? this.physics,
-      variant: variant ?? this.variant,
       dividerColor: dividerColor ?? this.dividerColor,
       dividerHeight: dividerHeight ?? this.dividerHeight,
       selectedBgColor: selectedBgColor ?? this.selectedBgColor,
       unSelectedBgColor: unSelectedBgColor ?? this.unSelectedBgColor,
-      tabAlignment: tabAlignment ?? this.tabAlignment,
-      iconMargin: iconMargin ?? this.iconMargin,
-      textMargin: textMargin ?? this.textMargin,
-      contentHeight: contentHeight ?? this.contentHeight,
-      defaultPhysics: defaultPhysics ?? this.defaultPhysics,
     );
   }
 
@@ -155,35 +88,17 @@ class TTabsBarThemeData extends ThemeExtension<TTabsBarThemeData> {
       return this;
     }
     return TTabsBarThemeData(
-      decoration: t < 0.5 ? decoration : other.decoration,
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
-      indicatorColor: Color.lerp(indicatorColor, other.indicatorColor, t),
-      indicatorHeight: lerpDouble(indicatorHeight, other.indicatorHeight, t),
-      indicatorWidth: lerpDouble(indicatorWidth, other.indicatorWidth, t),
-      labelColor: Color.lerp(labelColor, other.labelColor, t),
-      unselectedLabelColor:
-          Color.lerp(unselectedLabelColor, other.unselectedLabelColor, t),
-      isScrollable: t < 0.5 ? isScrollable : other.isScrollable,
       labelStyle: t < 0.5 ? labelStyle : other.labelStyle,
       unselectedLabelStyle:
           t < 0.5 ? unselectedLabelStyle : other.unselectedLabelStyle,
-      height: lerpDouble(height, other.height, t),
-      indicatorPadding: t < 0.5 ? indicatorPadding : other.indicatorPadding,
       labelPadding: t < 0.5 ? labelPadding : other.labelPadding,
       indicator: t < 0.5 ? indicator : other.indicator,
-      showIndicator: t < 0.5 ? showIndicator : other.showIndicator,
-      physics: t < 0.5 ? physics : other.physics,
-      variant: t < 0.5 ? variant : other.variant,
       dividerColor: Color.lerp(dividerColor, other.dividerColor, t),
       dividerHeight: lerpDouble(dividerHeight, other.dividerHeight, t),
       selectedBgColor: Color.lerp(selectedBgColor, other.selectedBgColor, t),
       unSelectedBgColor:
           Color.lerp(unSelectedBgColor, other.unSelectedBgColor, t),
-      tabAlignment: t < 0.5 ? tabAlignment : other.tabAlignment,
-      iconMargin: t < 0.5 ? iconMargin : other.iconMargin,
-      textMargin: t < 0.5 ? textMargin : other.textMargin,
-      contentHeight: lerpDouble(contentHeight, other.contentHeight, t),
-      defaultPhysics: t < 0.5 ? defaultPhysics : other.defaultPhysics,
     );
   }
 }

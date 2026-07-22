@@ -24,7 +24,7 @@ void main() {
         child: TTabsBar(
           tabs: tabs(),
           variant: TTabsBarVariant.card,
-          showIndicator: true,
+          indicator: const TTabsBarIndicator(indicatorColor: Colors.blue),
         ),
       ),
     ));

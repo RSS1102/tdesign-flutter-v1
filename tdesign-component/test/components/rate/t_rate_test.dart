@@ -76,20 +76,50 @@ void main() {
       expect(ends, [3]);
     });
 
-    testWidgets('half selection distinguishes each side of an item',
+    testWidgets('half selection exposes half and whole choices after tap',
         (tester) async {
       final changes = <double>[];
+      final ends = <double>[];
       await tester.pumpWidget(wrap(TRate(
         value: 0,
         allowHalf: true,
         onChanged: changes.add,
+        onChangeEnd: ends.add,
       )));
 
       final rect = tester.getRect(find.byType(GestureDetector));
       await tester.tapAt(Offset(rect.left + 3, rect.center.dy));
-      await tester.tapAt(Offset(rect.left + 20, rect.center.dy));
+      await tester.pump();
+
+      expect(find.byKey(const ValueKey('t-rate-half-choice')), findsOneWidget);
+      expect(find.text('0.5'), findsOneWidget);
+      expect(find.text('1.0'), findsOneWidget);
+
+      await tester.tap(find.text('1.0'));
+      await tester.pump();
 
       expect(changes, [0.5, 1]);
+      expect(ends, [1]);
+      expect(find.byKey(const ValueKey('t-rate-half-choice')), findsNothing);
+    });
+
+    testWidgets('half choice remains visible after a controlled value update',
+        (tester) async {
+      var value = 0.0;
+      await tester.pumpWidget(wrap(StatefulBuilder(
+        builder: (context, setState) => TRate(
+          value: value,
+          allowHalf: true,
+          onChanged: (next) => setState(() => value = next),
+        ),
+      )));
+
+      final rect = tester.getRect(find.byType(GestureDetector));
+      await tester.tapAt(Offset(rect.left + 3, rect.center.dy));
+      await tester.pump();
+
+      expect(value, 0.5);
+      expect(find.byKey(const ValueKey('t-rate-half-choice')), findsOneWidget);
     });
 
     testWidgets('horizontal drag reports lifecycle and clamps the value',
@@ -143,6 +173,30 @@ void main() {
   });
 
   group('TRate content and theme', () {
+    testWidgets('text rating fits a narrow cell in vertical demo layout',
+        (tester) async {
+      await tester.pumpWidget(wrap(
+        const SizedBox(
+          width: 279,
+          child: TCell(
+            title: TText('评分文案'),
+            subtitle: Padding(
+              padding: EdgeInsets.only(top: 8),
+              child: TRate(
+                value: 3,
+                texts: ['很差', '较差', '一般', '满意', '惊喜'],
+                onChanged: _noop,
+              ),
+            ),
+          ),
+        ),
+        rateTheme: const TRateThemeData(showText: true, textWidth: 64),
+      ));
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('一般'), findsOneWidget);
+    });
+
     testWidgets('custom builder receives selected and unselected states',
         (tester) async {
       final states = <bool>[];

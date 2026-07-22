@@ -14,7 +14,7 @@ void main() {
   }
 
   group('TTab', () {
-    test('constructors keep current v1 fields', () {
+    test('constructors keep the compact content API', () {
       const textTab = TTab(text: '文本');
       expect(textTab.text, '文本');
       expect(textTab.enabled, isTrue);
@@ -23,9 +23,18 @@ void main() {
       expect(childTab.child, isA<Text>());
       expect(childTab.enabled, isFalse);
 
-      const iconTab = TTab(icon: Icon(Icons.star), size: TTabSize.large);
+      const iconTab = TTab(text: '星标', icon: Icon(Icons.star));
       expect(iconTab.icon, isA<Icon>());
-      expect(iconTab.size, TTabSize.large);
+      expect(iconTab.text, '星标');
+
+      const iconOnlyTab = TTab(icon: Icon(Icons.star));
+      expect(iconOnlyTab.icon, isA<Icon>());
+
+      expect(TTab.new, throwsAssertionError);
+      expect(
+        () => TTab(text: '文本', child: const Text('自定义')),
+        throwsAssertionError,
+      );
     });
 
     testWidgets('renders text, icon+text, badge and disabled states',
@@ -37,7 +46,11 @@ void main() {
             tabs: [
               TTab(text: '文本'),
               TTab(text: '图文', icon: Icon(Icons.home)),
-              TTab(text: '徽标', badge: TBadge(variant: TBadgeVariant.dot)),
+              TTab(
+                text: '徽标图文',
+                icon: Icon(Icons.notifications),
+                badge: TBadge(variant: TBadgeVariant.dot),
+              ),
               TTab(text: '禁用', enabled: false),
             ],
           ),
@@ -46,30 +59,52 @@ void main() {
 
       expect(find.text('文本'), findsOneWidget);
       expect(find.text('图文'), findsOneWidget);
-      expect(find.text('徽标'), findsOneWidget);
+      expect(find.text('徽标图文'), findsOneWidget);
+      expect(find.byIcon(Icons.notifications), findsOneWidget);
       expect(find.text('禁用'), findsOneWidget);
-
-      final badgeStack =
-          tester.widgetList<Stack>(find.byType(Stack)).firstWhere(
-                (stack) => stack.clipBehavior == Clip.none,
-              );
-      expect(badgeStack.clipBehavior, Clip.none);
+      expect(find.byType(TBadge), findsOneWidget);
     });
 
-    testWidgets('renders icon only and child branch', (tester) async {
+    testWidgets('keeps demo-style tab text and icon visible with a badge',
+        (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const DefaultTabController(
-          length: 2,
+          length: 1,
           child: TTabsBar(
             tabs: [
-              TTab(icon: Icon(Icons.star)),
+              TTab(
+                text: '选项1',
+                icon: Icon(Icons.apps),
+                badge: TBadge(variant: TBadgeVariant.dot),
+              ),
+            ],
+          ),
+        ),
+      ));
+
+      expect(find.text('选项1'), findsOneWidget);
+      expect(find.byIcon(Icons.apps), findsOneWidget);
+      expect(find.byType(TBadge), findsOneWidget);
+      expect(tester.getSize(find.text('选项1')).isEmpty, isFalse);
+      expect(tester.getSize(find.byIcon(Icons.apps)).isEmpty, isFalse);
+      expect(
+        tester.getRect(find.byIcon(Icons.apps)).right,
+        lessThanOrEqualTo(tester.getRect(find.text('选项1')).left),
+      );
+    });
+
+    testWidgets('renders custom child content', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const DefaultTabController(
+          length: 1,
+          child: TTabsBar(
+            tabs: [
               TTab(child: Text('子内容')),
             ],
           ),
         ),
       ));
 
-      expect(find.byIcon(Icons.star), findsOneWidget);
       expect(find.text('子内容'), findsOneWidget);
     });
 
@@ -107,26 +142,6 @@ void main() {
     });
   });
 
-  group('TTabsBarThemeData', () {
-    test('copyWith and lerp preserve v1 fields', () {
-      const data = TTabsBarThemeData(height: 48);
-      final copied = data.copyWith(
-        height: 56,
-        variant: TTabsBarVariant.card,
-        defaultPhysics: const BouncingScrollPhysics(),
-      );
-
-      expect(copied.height, 56);
-      expect(copied.variant, TTabsBarVariant.card);
-      expect(copied.defaultPhysics, isA<BouncingScrollPhysics>());
-
-      const start = TTabsBarThemeData(height: 48);
-      const end = TTabsBarThemeData(height: 56);
-      expect(start.lerp(end, 0.5).height, 52);
-      expect(start.lerp(null, 0.5), same(start));
-    });
-  });
-
   group('TTabsBarView', () {
     testWidgets('renders children with default and explicit physics',
         (tester) async {
@@ -145,7 +160,7 @@ void main() {
       expect(find.text('第一页'), findsOneWidget);
     });
 
-    testWidgets('uses theme defaultPhysics when physics is omitted',
+    testWidgets('defaults to non-scrollable physics when omitted',
         (tester) async {
       final controller = TabController(length: 2, vsync: tester);
       addTearDown(controller.dispose);
@@ -154,9 +169,6 @@ void main() {
         TTabsBarView(
           controller: controller,
           children: const [Text('第一页'), Text('第二页')],
-        ),
-        tabsBarTheme: const TTabsBarThemeData(
-          defaultPhysics: BouncingScrollPhysics(),
         ),
       ));
 

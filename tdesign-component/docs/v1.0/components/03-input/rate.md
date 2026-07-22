@@ -25,11 +25,13 @@
 | `onChangeStart` | `ValueChanged<double>?` | `null` | 开始交互时触发 |
 | `onChangeEnd` | `ValueChanged<double>?` | `null` | 结束交互时触发 |
 | `count` | `int` | `5` | 评分项数量 |
-| `allowHalf` | `bool` | `false` | 是否允许用户选择半星 |
+| `allowHalf` | `bool` | `false` | 是否允许用户选择半星；点击后展示当前星级的半星/整星选择器。 |
 | `icon` | `TRateIconBuilder?` | `null` | 自定义选中与未选中图标 |
 | `texts` | `List<String>?` | `null` | 各评分对应文案 |
 
 `TRateIconBuilder` 的签名为 `Widget Function(bool filled)`。半星由组件裁剪选中图标，builder 只需分别返回选中和未选中状态。
+
+启用 `allowHalf` 后，点击星标会先按点击位置更新受控值，再显示该星级的 `x.5` 与 `x.0` 选择器；选择器外部点击会保留首次选择并结束交互。拖动评分时直接连续更新，不显示选择器。
 
 ### 文案索引
 

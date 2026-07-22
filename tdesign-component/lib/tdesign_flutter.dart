@@ -167,9 +167,9 @@ export 'src/components/table/t_table_col.dart';
 export 'src/components/table/t_table_theme_data.dart' show TTableThemeData;
 export 'src/components/table/t_table_types.dart';
 export 'src/components/tabs/t_tab.dart';
-export 'src/components/tabs/t_tab_bar.dart';
+export 'src/components/tabs/t_tab_bar.dart' show TTabsBar, TTabsBarIndicator;
 export 'src/components/tabs/t_tab_bar_theme_data.dart'
-    show TTabsBarThemeData, TTabsBarVariant, TTabSize;
+    show TTabsBarThemeData, TTabsBarVariant;
 export 'src/components/tabs/t_tab_bar_view.dart';
 export 'src/components/tag/t_select_tag.dart';
 export 'src/components/tag/t_tag.dart';

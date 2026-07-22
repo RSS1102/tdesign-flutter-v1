@@ -60,22 +60,24 @@ class _StudyDetailState extends State with SingleTickerProviderStateMixin {
         },
         body: Column(
           children: [
-            TTabsBar(
+            Theme(
+              data: Theme.of(context).mergeExtension(
+                TTabsBarThemeData(
+                  unselectedLabelStyle:
+                      TextStyle(fontSize: 12.sp, color: Colors.red),
+                  labelStyle:
+                      TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w500),
+                ),
+              ),
+              child: TTabsBar(
                 controller: _tabController,
-                height: 44.h,
-                indicatorColor: context.tTheme.brandNormalColor,
-                // labelColor:context.tTheme.brandNormalColor,
-                unselectedLabelStyle:
-                    TextStyle(fontSize: 12.sp, color: Colors.red),
-                labelStyle:
-                    TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w500),
-                indicatorWidth: 16.w,
-                showIndicator: true,
-                tabs: _tabs
-                    .map((e) => TTab(
-                          text: '$e',
-                        ))
-                    .toList()),
+                indicator: TTabsBarIndicator(
+                  indicatorColor: context.tTheme.brandNormalColor,
+                  indicatorWidth: 16.w,
+                ),
+                tabs: _tabs.map((e) => TTab(text: '$e')).toList(),
+              ),
+            ),
             Expanded(
                 child: TTabsBarView(
                     physics: const AlwaysScrollableScrollPhysics(),

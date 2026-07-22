@@ -16,9 +16,7 @@ void main() {
         TThemeData.defaultData(),
         if (tabsBarTheme != null) tabsBarTheme,
       ]),
-      home: Scaffold(
-        body: DefaultTabController(length: length, child: child),
-      ),
+      home: Scaffold(body: DefaultTabController(length: length, child: child)),
     );
   }
 
@@ -26,164 +24,101 @@ void main() {
       List.generate(count, (index) => TTab(text: '选项${index + 1}'));
 
   group('TTabsBarThemeData', () {
-    test('copyWith covers v1 default fields', () {
+    test('copyWith and lerp retain visual fields', () {
       const theme = TTabsBarThemeData(
-        height: 48,
-        variant: TTabsBarVariant.filled,
-        defaultPhysics: BouncingScrollPhysics(),
+        backgroundColor: Colors.white,
+        dividerHeight: 1,
+        labelPadding: EdgeInsets.all(8),
       );
-      final copied = theme.copyWith(
-        height: 56,
-        variant: TTabsBarVariant.card,
-        defaultPhysics: const NeverScrollableScrollPhysics(),
-      );
+      final copied = theme.copyWith(dividerHeight: 2);
 
-      expect(copied.height, 56);
-      expect(copied.variant, TTabsBarVariant.card);
-      expect(copied.defaultPhysics, isA<NeverScrollableScrollPhysics>());
-
-      final preserved = theme.copyWith();
-      expect(preserved.height, 48);
-      expect(preserved.variant, TTabsBarVariant.filled);
-      expect(preserved.defaultPhysics, isA<BouncingScrollPhysics>());
+      expect(copied.backgroundColor, Colors.white);
+      expect(copied.dividerHeight, 2);
+      expect(copied.labelPadding, const EdgeInsets.all(8));
+      expect(theme.lerp(copied, 0.5).dividerHeight, 1.5);
     });
   });
 
   group('TTabsBar', () {
-    testWidgets('renders filled/capsule/card variants', (tester) async {
+    testWidgets('renders all supported variants', (tester) async {
       for (final variant in TTabsBarVariant.values) {
         await tester.pumpWidget(wrapWithTheme(
-          TTabsBar(
-            tabs: tabs(),
-            variant: variant,
-            showIndicator: true,
-          ),
+          TTabsBar(tabs: tabs(), variant: variant),
         ));
         expect(find.byType(TTabsBar), findsOneWidget);
       }
     });
 
-    testWidgets('default filled variant uses container background and divider',
+    testWidgets('uses the visual theme and lets decoration override it',
         (tester) async {
+      const theme = TTabsBarThemeData(
+        backgroundColor: Colors.green,
+        dividerColor: Colors.blue,
+        dividerHeight: 2,
+      );
       await tester.pumpWidget(wrapWithTheme(
-        const TTabsBar(
-          tabs: [
-            TTab(text: '选项1'),
-            TTab(text: '选项2'),
-            TTab(text: '选项3'),
-          ],
-          width: 240,
-          height: 56,
-        ),
+        TTabsBar(tabs: tabs()),
+        tabsBarTheme: theme,
       ));
 
-      final container = tester.widget<Container>(
+      final themedContainer = tester.widget<Container>(
         find.byWidgetPredicate(
           (widget) => widget is Container && widget.child is THorizontalTabBar,
         ),
       );
-      final decoration = container.decoration! as BoxDecoration;
-      expect(decoration.color, TThemeData.defaultData().bgColorContainer);
-      expect(decoration.border, isNotNull);
       expect(
-        (decoration.border as Border).bottom.color,
-        TThemeData.defaultData().componentStrokeColor,
-      );
-    });
+          (themedContainer.decoration! as BoxDecoration).color, Colors.green);
 
-    testWidgets('card variant uses container background without divider',
-        (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTabsBar(
-          tabs: [
-            TTab(text: '选项1'),
-            TTab(text: '选项2'),
-            TTab(text: '选项3'),
-          ],
-          width: 240,
-          height: 56,
-          variant: TTabsBarVariant.card,
+        TTabsBar(
+          tabs: tabs(),
+          decoration: const BoxDecoration(color: Colors.red),
         ),
+        tabsBarTheme: theme,
       ));
-
-      final container = tester.widget<Container>(
+      final overriddenContainer = tester.widget<Container>(
         find.byWidgetPredicate(
           (widget) => widget is Container && widget.child is THorizontalTabBar,
         ),
       );
-      final decoration = container.decoration! as BoxDecoration;
-      expect(decoration.color, TThemeData.defaultData().bgColorContainer);
-      expect(decoration.border, isNull);
+      expect(
+          (overriddenContainer.decoration! as BoxDecoration).color, Colors.red);
     });
 
-    testWidgets('onTap, custom indicator, sizing and colors render',
+    testWidgets('supports controller, tap callback, scrolling and indicator',
         (tester) async {
       var tapped = -1;
       await tester.pumpWidget(wrapWithTheme(
         TTabsBar(
           tabs: tabs(),
-          onTap: (index) => tapped = index,
           isScrollable: true,
-          width: 240,
-          height: 56,
-          labelColor: Colors.red,
-          unselectedLabelColor: Colors.grey,
-          indicator: const UnderlineTabIndicator(),
-          labelPadding: const EdgeInsets.symmetric(horizontal: 12),
-          physics: const BouncingScrollPhysics(),
+          indicator: const TTabsBarIndicator(indicatorColor: Colors.red),
+          onTap: (index) => tapped = index,
         ),
       ));
 
       await tester.tap(find.text('选项2'));
       await tester.pumpAndSettle();
-
       expect(tapped, 1);
-    });
-
-    testWidgets('theme extension supplies defaults', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        TTabsBar(tabs: tabs()),
-        tabsBarTheme: const TTabsBarThemeData(
-          height: 56,
-          indicatorColor: Colors.blue,
-          labelColor: Colors.green,
-          showIndicator: true,
-          dividerHeight: 0,
-          variant: TTabsBarVariant.capsule,
-        ),
-      ));
-
-      expect(find.byType(TTabsBar), findsOneWidget);
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
     });
   });
 
-  group('TTabsBar indicators', () {
-    test('create painters', () {
+  group('TTabsBarIndicator', () {
+    test('creates a painter', () {
       expect(
-        const TTabsBarIndicator(indicatorColor: Colors.red)
-            .createBoxPainter(),
+        const TTabsBarIndicator(indicatorColor: Colors.red).createBoxPainter(),
         isNotNull,
       );
-      expect(
-        const TTabsBarVerticalIndicator(indicatorColor: Colors.red)
-            .createBoxPainter(),
-        isNotNull,
-      );
-      expect(TNoneIndicator().createBoxPainter(), isNotNull);
     });
 
-    test('paint indicators on canvas', () {
+    test('paints on a canvas', () {
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(recorder);
       const config = ImageConfiguration(size: Size(100, 40));
-      final horizontalPainter =
-          const TTabsBarIndicator(indicatorColor: Colors.red).createBoxPainter();
-      final verticalPainter =
-          const TTabsBarVerticalIndicator(indicatorColor: Colors.blue)
-              .createBoxPainter();
-      horizontalPainter.paint(canvas, Offset.zero, config);
-      verticalPainter.paint(canvas, Offset.zero, config);
-      TNoneIndicator().createBoxPainter().paint(canvas, Offset.zero, config);
+      const TTabsBarIndicator(indicatorColor: Colors.red)
+          .createBoxPainter()
+          .paint(canvas, Offset.zero, config);
       recorder.endRecording();
       expect(true, isTrue);
     });
