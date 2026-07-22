@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_theme.dart';
 import 't_cell.dart';
 import 't_cell_theme_data.dart';
@@ -83,8 +84,15 @@ class TCellGroup extends StatelessWidget {
           Padding(
             padding: theme?.titlePadding ?? const EdgeInsets.all(16),
             child: DefaultTextStyle.merge(
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
               style: theme?.groupTitleStyle ??
-                  TextStyle(color: context.tTheme.textColorPrimary),
+                  TextStyle(
+                    color: context.tTheme.textColorPrimary,
+                    fontSize: context.tTheme.fontBodyMedium?.size ?? 14,
+                    height: context.tTheme.fontBodyMedium?.height,
+                  ),
               child: title!,
             ),
           ),

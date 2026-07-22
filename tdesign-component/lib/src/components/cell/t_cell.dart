@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_spacers.dart';
 import '../../theme/t_theme.dart';
 import 't_cell_theme_data.dart';
@@ -127,10 +128,15 @@ class _TCellState extends State<TCell> {
                     children: [
                       Flexible(
                         child: DefaultTextStyle.merge(
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
                           style: theme?.titleStyle ??
                               TextStyle(
                                 color: context.tTheme.textColorPrimary,
-                                fontSize: 16,
+                                fontSize:
+                                    context.tTheme.fontBodyLarge?.size ?? 16,
+                                height: context.tTheme.fontBodyLarge?.height,
                               ),
                           child: widget.title!,
                         ),
@@ -148,7 +154,11 @@ class _TCellState extends State<TCell> {
                 if (widget.subtitle != null)
                   DefaultTextStyle.merge(
                     style: theme?.subtitleStyle ??
-                        TextStyle(color: context.tTheme.textColorSecondary),
+                        TextStyle(
+                          color: context.tTheme.textColorSecondary,
+                          fontSize: context.tTheme.fontBodyMedium?.size ?? 14,
+                          height: context.tTheme.fontBodyMedium?.height,
+                        ),
                     child: widget.subtitle!,
                   ),
               ],
@@ -158,8 +168,15 @@ class _TCellState extends State<TCell> {
             SizedBox(width: context.tTheme.spacer4),
             Flexible(
               child: DefaultTextStyle.merge(
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
                 style: theme?.noteStyle ??
-                    TextStyle(color: context.tTheme.textColorPlaceholder),
+                    TextStyle(
+                      color: context.tTheme.textColorPlaceholder,
+                      fontSize: context.tTheme.fontBodyMedium?.size ?? 14,
+                      height: context.tTheme.fontBodyMedium?.height,
+                    ),
                 child: widget.note!,
               ),
             ),

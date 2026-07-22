@@ -129,6 +129,62 @@ void main() {
       ));
       expect(tester.getSize(find.byType(TCell)), const Size(800, 80));
     });
+
+    testWidgets('默认文本使用 token 字体并限制横向溢出', (tester) async {
+      const title = 'Very long title that should stay on one visual line';
+      const subtitle = 'Subtitle keeps its natural wrapping behavior';
+      const note = 'Very long note that should ellipsize';
+
+      await tester.pumpWidget(app(const SizedBox(
+        width: 180,
+        child: TCell(
+          title: Text(title),
+          subtitle: Text(subtitle),
+          note: Text(note),
+          arrow: true,
+        ),
+      )));
+
+      final titleStyle = DefaultTextStyle.of(tester.element(find.text(title)));
+      final token = TThemeData.defaultData();
+      expect(titleStyle.maxLines, 1);
+      expect(titleStyle.overflow, TextOverflow.ellipsis);
+      expect(titleStyle.softWrap, isFalse);
+      expect(titleStyle.style.fontSize, token.fontBodyLarge?.size);
+      expect(titleStyle.style.height, token.fontBodyLarge?.height);
+
+      final noteStyle = DefaultTextStyle.of(tester.element(find.text(note)));
+      expect(noteStyle.maxLines, 1);
+      expect(noteStyle.overflow, TextOverflow.ellipsis);
+      expect(noteStyle.softWrap, isFalse);
+      expect(noteStyle.style.fontSize, token.fontBodyMedium?.size);
+      expect(noteStyle.style.height, token.fontBodyMedium?.height);
+
+      final subtitleStyle =
+          DefaultTextStyle.of(tester.element(find.text(subtitle)));
+      expect(subtitleStyle.maxLines, isNull);
+      expect(subtitleStyle.style.fontSize, token.fontBodyMedium?.size);
+      expect(subtitleStyle.style.height, token.fontBodyMedium?.height);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('显式 Text 配置可覆盖默认单行限制', (tester) async {
+      const title = 'Explicitly multiline title';
+
+      await tester.pumpWidget(app(const TCell(
+        title: Text(
+          title,
+          maxLines: 2,
+          overflow: TextOverflow.clip,
+          softWrap: true,
+        ),
+      )));
+
+      final text = tester.widget<Text>(find.text(title));
+      expect(text.maxLines, 2);
+      expect(text.overflow, TextOverflow.clip);
+      expect(text.softWrap, isTrue);
+    });
   });
 
   group('TCellGroup', () {
@@ -183,6 +239,24 @@ void main() {
         ),
       ));
       expect(find.byType(Divider), findsNWidgets(2));
+    });
+
+    testWidgets('组标题默认使用 token 字体并限制横向溢出', (tester) async {
+      const title = 'Very long cell group title that should not overflow';
+
+      await tester.pumpWidget(app(const SizedBox(
+        width: 120,
+        child: TCellGroup(title: Text(title), cells: cells),
+      )));
+
+      final token = TThemeData.defaultData();
+      final titleStyle = DefaultTextStyle.of(tester.element(find.text(title)));
+      expect(titleStyle.maxLines, 1);
+      expect(titleStyle.overflow, TextOverflow.ellipsis);
+      expect(titleStyle.softWrap, isFalse);
+      expect(titleStyle.style.fontSize, token.fontBodyMedium?.size);
+      expect(titleStyle.style.height, token.fontBodyMedium?.height);
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('scrollable 使用 ListView 并占满约束', (tester) async {
