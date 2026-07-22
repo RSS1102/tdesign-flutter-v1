@@ -238,15 +238,16 @@ void main() {
 
       final title = tester.widget<TText>(_tTextFinder('默认标题'));
       expect(title.textColor, token.textColorPrimary);
-      expect(title.style?.fontWeight, FontWeight.w600);
-      expect(title.style?.fontSize, 18);
-      expect(title.style?.height, 26 / 18);
+      expect(title.style?.fontWeight, token.fontTitleLarge?.fontWeight);
+      expect(title.style?.fontSize, token.fontTitleLarge?.size);
+      expect(title.style?.height, token.fontTitleLarge?.height);
       expect(title.textAlign, TextAlign.center);
 
       final content = tester.widget<TText>(_tTextFinder('默认内容'));
       expect(content.textColor, token.textColorSecondary);
-      expect(content.style?.fontSize, 16);
-      expect(content.style?.height, 24 / 16);
+      expect(content.style?.fontWeight, token.fontBodyLarge?.fontWeight);
+      expect(content.style?.fontSize, token.fontBodyLarge?.size);
+      expect(content.style?.height, token.fontBodyLarge?.height);
       expect(content.textAlign, TextAlign.center);
 
       final closeIcon = tester.widget<Icon>(find.byIcon(TIcons.close));

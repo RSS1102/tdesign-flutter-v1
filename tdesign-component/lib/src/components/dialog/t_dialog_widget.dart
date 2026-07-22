@@ -9,6 +9,7 @@ import 'package:tdesign_icons/tdesign_icons.dart';
 
 import '../../theme/basic.dart';
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_radius.dart';
 import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
@@ -108,14 +109,15 @@ class TDialogTitle extends StatelessWidget {
     // 标题和内容不能同时为空
     final theme = Theme.of(context).extension<TDialogThemeData>();
     final titleStyle = theme?.titleTextStyle;
+    final titleFont = context.tTheme.fontTitleLarge;
     return TText(
       title,
       textColor: titleColor ?? context.tTheme.textColorPrimary,
       style: titleStyle ??
-          const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-            height: 26 / 18,
+          TextStyle(
+            fontWeight: titleFont?.fontWeight ?? FontWeight.w600,
+            fontSize: titleFont?.size ?? 18,
+            height: titleFont?.height ?? 26 / 18,
           ),
       textAlign: TextAlign.center,
     );
@@ -141,14 +143,15 @@ class TDialogContent extends StatelessWidget {
     // 标题和内容不能同时为空
     final theme = Theme.of(context).extension<TDialogThemeData>();
     final contentStyle = theme?.contentTextStyle;
+    final contentFont = context.tTheme.fontBodyLarge;
     return TText(
       content,
       textColor: contentColor ?? context.tTheme.textColorSecondary,
       style: contentStyle ??
-          const TextStyle(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            height: 24 / 16,
+          TextStyle(
+            fontWeight: contentFont?.fontWeight ?? FontWeight.w400,
+            fontSize: contentFont?.size ?? 16,
+            height: contentFont?.height ?? 24 / 16,
           ),
       textAlign: TextAlign.center,
     );
