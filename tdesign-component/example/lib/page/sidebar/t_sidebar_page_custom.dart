@@ -53,9 +53,9 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
       list.add(TSideBarItem(
         label: '选项 $i',
         value: i,
-        textStyle: TextStyle(color: context.tTheme.brandLightColor),
+        textStyle: TextStyle(color: context.tTheme.textColorPrimary),
       ));
-      pages.add(getPageDemo(i));
+      pages.add(getPageDemo(context, i));
     }
 
     list[1] = TSideBarItem(
@@ -72,14 +72,6 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
       textStyle: list[2].textStyle,
       badge: const TBadge(count: 8),
     );
-    list[1] = TSideBarItem(
-      label: list[1].label,
-      value: list[1].value,
-      icon: list[1].icon,
-      badge: list[1].badge,
-      textStyle: const TextStyle(color: Colors.green),
-    );
-
     void setCurrentValue(int value) {
       _pageController.jumpToPage(value);
       if (currentValue != value) {
@@ -104,12 +96,15 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
                     textStyle: ele.textStyle,
                     icon: ele.icon))
                 .toList(),
-            selectedTextStyle: const TextStyle(color: Colors.red),
+            selectedTextStyle: TextStyle(
+              color: context.tTheme.brandNormalColor,
+              fontWeight: FontWeight.w600,
+            ),
             onChanged: setCurrentValue,
             contentPadding:
                 const EdgeInsets.only(left: 16, top: 16, bottom: 16),
-            selectedBgColor: Colors.blue,
-            unSelectedBgColor: Colors.yellow,
+            selectedBgColor: context.tTheme.brandLightColor,
+            unSelectedBgColor: context.tTheme.bgColorSecondaryContainer,
           ),
         ),
         Expanded(
@@ -124,9 +119,9 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
     );
   }
 
-  Widget getPageDemo(int index) {
+  Widget getPageDemo(BuildContext context, int index) {
     return Container(
-      decoration: const BoxDecoration(color: Colors.blue),
+      color: context.tTheme.bgColorContainer,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

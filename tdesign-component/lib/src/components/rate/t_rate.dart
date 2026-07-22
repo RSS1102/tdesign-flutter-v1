@@ -142,6 +142,8 @@ class _TRateState extends State<TRate> {
               width: theme?.textWidth,
               child: Text(
                 _resolveText(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: theme?.textStyle ??
                     TextStyle(
                       color: _enabled

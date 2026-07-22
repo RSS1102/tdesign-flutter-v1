@@ -99,18 +99,10 @@ void main() {
       await tester.pumpWidget(wrap(const TStepper(value: 5)));
 
       expect(textField(tester).enabled, isFalse);
-      final addButton = tester.widget<IconButton>(
-        find.ancestor(
-            of: find.byIcon(Icons.add), matching: find.byType(IconButton)),
+      final disabledControls = find.byWidgetPredicate(
+        (widget) => widget is GestureDetector && widget.onTap == null,
       );
-      final removeButton = tester.widget<IconButton>(
-        find.ancestor(
-          of: find.byIcon(Icons.remove),
-          matching: find.byType(IconButton),
-        ),
-      );
-      expect(addButton.onPressed, isNull);
-      expect(removeButton.onPressed, isNull);
+      expect(disabledControls, findsNWidgets(2));
     });
 
     testWidgets('submitted input parses and clamps', (tester) async {
@@ -181,6 +173,21 @@ void main() {
   });
 
   group('TStepper theme', () {
+    testWidgets('default layout matches the 24px TDesign stepper geometry',
+        (tester) async {
+      await tester.pumpWidget(wrap(TStepper(value: 1, onChanged: (_) {})));
+
+      final inputBox = tester.getSize(
+        find.ancestor(
+          of: find.byType(TextField),
+          matching: find.byType(SizedBox),
+        ),
+      );
+      expect(inputBox, const Size(38, 24));
+      expect(tester.getSize(find.byIcon(Icons.remove)), const Size(16, 16));
+      expect(tester.getSize(find.byIcon(Icons.add)), const Size(16, 16));
+    });
+
     testWidgets('filled variant and inputWidth come from theme',
         (tester) async {
       await tester.pumpWidget(wrap(

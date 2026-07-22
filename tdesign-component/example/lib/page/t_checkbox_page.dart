@@ -35,9 +35,7 @@ class _TCheckboxPageState extends State<TCheckboxPage> {
   List<String> _cardValue = ['b'];
   bool? _singleValue = false;
   final Map<TCheckboxVariant, bool> _variantValues = {
-    TCheckboxVariant.circle: true,
     TCheckboxVariant.square: true,
-    TCheckboxVariant.check: true,
   };
   bool _leftPositionValue = true;
   bool _rightPositionValue = true;
@@ -160,9 +158,7 @@ class _TCheckboxPageState extends State<TCheckboxPage> {
     return Column(
       children: [
         for (final entry in const [
-          (TCheckboxVariant.circle, '圆形'),
           (TCheckboxVariant.square, '方形'),
-          (TCheckboxVariant.check, '对勾'),
         ])
           Theme(
             data: Theme.of(context).mergeExtension(

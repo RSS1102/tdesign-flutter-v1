@@ -54,10 +54,22 @@ class _TRatePageState extends State<TRatePage> {
   Widget _buildHalfRate(BuildContext context) {
     return TCell(
       title: const Text('半星评分'),
-      note: TRate(
-        value: _halfValue,
-        allowHalf: true,
-        onChanged: (value) => setState(() => _halfValue = value),
+      note: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TRate(
+            value: _halfValue,
+            allowHalf: true,
+            onChanged: (value) => setState(() => _halfValue = value),
+          ),
+          const SizedBox(width: 8),
+          TText(
+            _halfValue.toStringAsFixed(1),
+            textColor: context.tTheme.textColorPlaceholder,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }

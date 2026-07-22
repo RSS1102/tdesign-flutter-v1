@@ -118,10 +118,10 @@ class TWrapSideBarItem extends StatelessWidget {
       children: [
         renderIcon(context),
         Expanded(child: renderLabel(context)),
-        if (label.length > 4) renderBadge(context),
-        // SizedBox(
-        //   width: !disabled && selected ? 0 : preLineWidth,
-        // )
+        if (badge != null) ...[
+          const SizedBox(width: 4),
+          badge!,
+        ],
       ],
     );
   }
@@ -173,67 +173,17 @@ class TWrapSideBarItem extends StatelessWidget {
   }
 
   Widget renderLabel(BuildContext context) {
-    return TText.rich(
-      TextSpan(
-        children: [
-          WidgetSpan(
-              child: TText(
-            label,
-            style: selected
-                ? (selectedTextStyle ?? TextStyle(color: selectedColor))
-                : textStyle,
-            fontWeight:
-                selected && !disabled ? FontWeight.w600 : FontWeight.w400,
-            textColor: disabled
-                ? context.tTheme.textDisabledColor
-                : selected
-                    ? selectedColor ?? context.tTheme.brandNormalColor
-                    : unSelectedColor ?? context.tTheme.textColorPrimary,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            // forceVerticalCenter: true,
-          )),
-
-          /// todo label.length 长度小于则不展示，为什么？？？
-          /// 应再判断有无icon，无icon时位置够，可以展示 badge
-          if (label.length <= 4 || icon == null)
-            WidgetSpan(
-                child: SizedBox(
-              width: 1,
-              height: 16,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  badge != null
-                      ? Positioned(
-                          top: -6, child: badge!) // coverage:ignore-line
-                      : Container()
-                ],
-              ),
-            ))
-        ],
-      ),
-      softWrap: true,
+    return TText(
+      label,
       style: selectedTextStyle,
-    );
-  }
-
-  Widget renderBadge(BuildContext context) {
-    // coverage:ignore-line
-    return SizedBox(
-      // coverage:ignore-line
-      width: 1,
-      height: 40,
-      child: Stack(
-        // coverage:ignore-line
-        clipBehavior: Clip.none,
-        children: [
-          // coverage:ignore-line
-          badge != null
-              ? Positioned(top: -6, child: badge!)
-              : Container() // coverage:ignore-line
-        ],
-      ),
+      fontWeight: selected && !disabled ? FontWeight.w600 : FontWeight.w400,
+      textColor: disabled
+          ? context.tTheme.textDisabledColor
+          : selected
+              ? selectedColor ?? context.tTheme.brandNormalColor
+              : unSelectedColor ?? context.tTheme.textColorPrimary,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

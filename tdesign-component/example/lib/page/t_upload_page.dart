@@ -30,6 +30,14 @@ class _TUploadPageState extends State<TUploadPage> {
       errorText: '重新上传',
     ),
   ];
+  static const _disabledFiles = [
+    TUploadFile(
+      id: 'disabled-success',
+      name: 'disabled-success.png',
+      url: 'https://tdesign.gtimg.com/demo/images/example3.png',
+      status: TUploadFileStatus.success,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +104,7 @@ class _TUploadPageState extends State<TUploadPage> {
 
   @Demo(group: 'upload')
   Widget _buildDisabled(BuildContext context) {
-    return _section(TUpload(files: _statusFiles, maxFiles: 4));
+    return _section(TUpload(files: _disabledFiles, maxFiles: 4));
   }
 
   Widget _section(Widget child) {

@@ -48,6 +48,12 @@ void main() {
       expect(find.text('图文'), findsOneWidget);
       expect(find.text('徽标'), findsOneWidget);
       expect(find.text('禁用'), findsOneWidget);
+
+      final badgeStack =
+          tester.widgetList<Stack>(find.byType(Stack)).firstWhere(
+                (stack) => stack.clipBehavior == Clip.none,
+              );
+      expect(badgeStack.clipBehavior, Clip.none);
     });
 
     testWidgets('renders icon only and child branch', (tester) async {
@@ -83,7 +89,8 @@ void main() {
       expect(find.text('字号'), findsOneWidget);
     });
 
-    testWidgets('long label stays single-line and fades overflow', (tester) async {
+    testWidgets('long label stays single-line and fades overflow',
+        (tester) async {
       const longLabel = '这是一个非常非常非常长的标签文本用于验证不会换行和撑坏布局';
       await tester.pumpWidget(wrapWithTheme(
         const DefaultTabController(

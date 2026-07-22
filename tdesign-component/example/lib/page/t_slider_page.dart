@@ -45,28 +45,41 @@ class _TSliderPageState extends State<TSliderPage> {
   }
 
   @Demo(group: 'slider')
-  Widget _buildSingle(BuildContext context) => TSlider(
-        value: value,
-        min: 0,
-        max: 100,
-        onChanged: (next) => setState(() => value = next),
+  Widget _buildSingle(BuildContext context) => _withValueLabel(
+        context,
+        label: '当前值：${value.toStringAsFixed(0)}',
+        child: TSlider(
+          value: value,
+          min: 0,
+          max: 100,
+          onChanged: (next) => setState(() => value = next),
+        ),
       );
 
   @Demo(group: 'slider')
-  Widget _buildRange(BuildContext context) => TRangeSlider(
-        value: range,
-        min: 0,
-        max: 100,
-        onChanged: (next) => setState(() => range = next),
+  Widget _buildRange(BuildContext context) => _withValueLabel(
+        context,
+        label:
+            '当前范围：${range.start.toStringAsFixed(0)} - ${range.end.toStringAsFixed(0)}',
+        child: TRangeSlider(
+          value: range,
+          min: 0,
+          max: 100,
+          onChanged: (next) => setState(() => range = next),
+        ),
       );
 
   @Demo(group: 'slider')
-  Widget _buildDivisions(BuildContext context) => TSlider(
-        value: value,
-        min: 0,
-        max: 100,
-        divisions: 5,
-        onChanged: (next) => setState(() => value = next),
+  Widget _buildDivisions(BuildContext context) => _withValueLabel(
+        context,
+        label: '当前刻度：${value.toStringAsFixed(0)}',
+        child: TSlider(
+          value: value,
+          min: 0,
+          max: 100,
+          divisions: 5,
+          onChanged: (next) => setState(() => value = next),
+        ),
       );
 
   @Demo(group: 'slider')
@@ -108,4 +121,25 @@ class _TSliderPageState extends State<TSliderPage> {
           onChanged: (next) => setState(() => range = next),
         ),
       );
+
+  Widget _withValueLabel(
+    BuildContext context, {
+    required String label,
+    required Widget child,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        child,
+        const SizedBox(height: 8),
+        TText(
+          label,
+          textColor: context.tTheme.textColorPlaceholder,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
 }

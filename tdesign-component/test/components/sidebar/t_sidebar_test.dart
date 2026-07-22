@@ -324,7 +324,7 @@ void main() {
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
     });
 
-    testWidgets('短标签带 badge 渲染 label 内 badge', (tester) async {
+    testWidgets('短标签带 badge 保持水平布局', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TWrapSideBarItem(
           style: TSideBarVariant.normal,
@@ -335,9 +335,12 @@ void main() {
         ),
       ));
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
+      final labelCenter = tester.getCenter(find.text('短'));
+      final badgeCenter = tester.getCenter(find.byType(TBadge));
+      expect(labelCenter.dy, moreOrLessEquals(badgeCenter.dy, epsilon: 1));
     });
 
-    testWidgets('长标签带 badge 渲染 renderBadge', (tester) async {
+    testWidgets('长标签带 badge 保持水平布局', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TWrapSideBarItem(
           style: TSideBarVariant.normal,
@@ -348,6 +351,9 @@ void main() {
         ),
       ));
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
+      final labelCenter = tester.getCenter(find.text('很长很长的标签内容xxx'));
+      final badgeCenter = tester.getCenter(find.byType(TBadge));
+      expect(labelCenter.dy, moreOrLessEquals(badgeCenter.dy, epsilon: 1));
     });
 
     testWidgets('长标签在窄宽度下保持单行省略', (tester) async {

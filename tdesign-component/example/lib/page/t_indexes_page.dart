@@ -153,7 +153,7 @@ Widget _buildSimple(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: const Text('基础用法'),
+      child: const TText('基础用法'),
       size: TButtonSize.large,
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
@@ -169,7 +169,7 @@ Widget _buildSimple(BuildContext context) {
                         (element) => element['index'] == index)['children']
                     as List<String>;
                 return TCellGroup(
-                  cells: list.map((e) => TCell(title: Text(e))).toList(),
+                  cells: list.map((e) => TCell(title: TText(e))).toList(),
                 );
               },
             ),
@@ -187,7 +187,7 @@ Widget _buildOther(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: const Text('胶囊索引'),
+      child: const TText('胶囊索引'),
       size: TButtonSize.large,
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
@@ -204,7 +204,7 @@ Widget _buildOther(BuildContext context) {
                         (element) => element['index'] == index)['children']
                     as List<String>;
                 return TCellGroup(
-                  cells: list.map((e) => TCell(title: Text(e))).toList(),
+                  cells: list.map((e) => TCell(title: TText(e))).toList(),
                 );
               },
             ),
@@ -222,7 +222,7 @@ Widget _buildCustomIndexes(BuildContext context) {
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: const Text('自定义索引'),
+      child: const TText('自定义索引'),
       size: TButtonSize.large,
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
@@ -253,7 +253,7 @@ Widget _buildCustomIndexes(BuildContext context) {
                         (element) => element['index'] == index)['children']
                     as List<String>;
                 return TCellGroup(
-                  cells: list.map((e) => TCell(title: Text(e))).toList(),
+                  cells: list.map((e) => TCell(title: TText(e))).toList(),
                 );
               },
             ),

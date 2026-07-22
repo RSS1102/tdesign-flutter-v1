@@ -99,6 +99,7 @@ class TTab extends Tab {
     if (badge != null) {
       label = Stack(
         alignment: Alignment.bottomLeft,
+        clipBehavior: Clip.none,
         children: [
           Container(margin: textMargin, child: label),
           Positioned(

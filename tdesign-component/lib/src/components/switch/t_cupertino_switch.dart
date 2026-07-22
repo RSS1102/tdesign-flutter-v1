@@ -626,7 +626,13 @@ class _RenderTDCupertinoSwitch extends RenderConstrainedBox {
       _thumbPainter.paint(innerContext.canvas, thumbBounds);
     }, oldLayer: _clipRRectLayer.layer);
     if (child != null) {
-      context.paintChild(child!, Offset(thumbBounds.left + thumbMargin, 0));
+      context.paintChild(
+        child!,
+        Offset(
+          thumbBounds.left + thumbMargin,
+          thumbBounds.top + (thumbBounds.height - child!.size.height) / 2,
+        ),
+      );
     }
   }
 
