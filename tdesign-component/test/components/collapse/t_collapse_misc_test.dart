@@ -49,32 +49,30 @@ void main() {
   });
 
   group('TNonAnimatedExpandIcon', () {
-    testWidgets('深色主题下返回 white60', (tester) async {
+    testWidgets('深色主题下使用 secondary text token', (tester) async {
+      final token = TThemeData.defaultData().dark!;
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          extensions: [TThemeData.defaultData()],
-        ),
+        theme: TThemeBuilder.dark(TThemeData.defaultData()),
         home: const Scaffold(
           body: TNonAnimatedExpandIcon(
               isExpanded: false, padding: EdgeInsets.zero),
         ),
       ));
-      expect(find.byType(TNonAnimatedExpandIcon), findsOneWidget);
+      final button = tester.widget<IconButton>(find.byType(IconButton));
+      expect(button.color, token.textColorSecondary);
     });
 
-    testWidgets('浅色主题下正常渲染', (tester) async {
+    testWidgets('浅色主题下使用 secondary text token', (tester) async {
+      final token = TThemeData.defaultData();
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-          extensions: [TThemeData.defaultData()],
-        ),
+        theme: TThemeBuilder.light(token),
         home: const Scaffold(
           body: TNonAnimatedExpandIcon(
               isExpanded: true, padding: EdgeInsets.zero),
         ),
       ));
-      expect(find.byType(TNonAnimatedExpandIcon), findsOneWidget);
+      final button = tester.widget<IconButton>(find.byType(IconButton));
+      expect(button.color, token.textColorSecondary);
     });
   });
 }
