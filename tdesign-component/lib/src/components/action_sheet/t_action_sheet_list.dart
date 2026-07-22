@@ -92,10 +92,17 @@ class TActionSheetList extends StatelessWidget {
       child: Row(
         mainAxisAlignment: getMainAxisAlignment(align),
         children: [
-          TText(
-            subtitle!,
-            font: context.tTheme.fontBodyMedium,
-            textColor: context.tTheme.textColorSecondary,
+          Flexible(
+            child: TText(
+              subtitle!,
+              font: context.tTheme.fontBodyMedium,
+              textAlign: switch (align) {
+                TActionSheetAlign.left => TextAlign.left,
+                TActionSheetAlign.right => TextAlign.right,
+                TActionSheetAlign.center => TextAlign.center,
+              },
+              textColor: context.tTheme.textColorSecondary,
+            ),
           ),
         ],
       ),
@@ -122,11 +129,9 @@ class TActionSheetList extends StatelessWidget {
                     Navigator.maybePop(context); // 关闭当前页面
                   },
             child: Container(
-              height: item.subtitle == null || item.subtitle!.isEmpty
-                  ? 56
-                  : 78,
-              padding: EdgeInsets.symmetric(
-                  horizontal: context.tTheme.spacer16),
+              height: item.subtitle == null || item.subtitle!.isEmpty ? 56 : 78,
+              padding:
+                  EdgeInsets.symmetric(horizontal: context.tTheme.spacer16),
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -164,10 +169,8 @@ class TActionSheetList extends StatelessWidget {
                         item.label,
                         font: context.tTheme.fontBodyLarge,
                         textColor: item.disabled
-                            ? context.tTheme
-                                .textDisabledColor // 禁用状态下的文本颜色
-                            : context.tTheme
-                                .textColorPrimary, // 正常状态下的文本颜色
+                            ? context.tTheme.textDisabledColor // 禁用状态下的文本颜色
+                            : context.tTheme.textColorPrimary, // 正常状态下的文本颜色
                         style: item.textStyle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -180,8 +183,7 @@ class TActionSheetList extends StatelessWidget {
                       ],
                     ],
                   ),
-                  if (item.subtitle != null &&
-                      item.subtitle!.isNotEmpty) ...[
+                  if (item.subtitle != null && item.subtitle!.isNotEmpty) ...[
                     SizedBox(height: context.tTheme.spacer4),
                     Row(
                         mainAxisAlignment: getMainAxisAlignment(align),
@@ -191,8 +193,7 @@ class TActionSheetList extends StatelessWidget {
                                   font: context.tTheme.fontBodyMedium,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  textColor:
-                                      context.tTheme.textDisabledColor))
+                                  textColor: context.tTheme.textDisabledColor))
                         ])
                   ]
                 ],

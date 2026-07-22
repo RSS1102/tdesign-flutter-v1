@@ -74,9 +74,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final barrier = tester.widgetList<Container>(find.byType(Container)).firstWhere(
-            (container) => container.color == Colors.black38,
-          );
+      final barrier =
+          tester.widgetList<Container>(find.byType(Container)).firstWhere(
+                (container) => container.color == Colors.black38,
+              );
       expect(barrier.color, Colors.black38);
 
       final shell = tester
@@ -144,6 +145,29 @@ void main() {
 
       handle.close();
       await tester.pumpAndSettle();
+    });
+
+    testWidgets('列表描述长文案在窄宽度下可换行且不溢出', (tester) async {
+      const longSubtitle = '这是用于验证动作面板描述区域在窄屏下不会横向溢出的长描述文案';
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: TThemeBuilder.light(TThemeData.defaultData()),
+          home: Scaffold(
+            body: SizedBox(
+              width: 160,
+              child: TActionSheetList(
+                items: items(),
+                subtitle: longSubtitle,
+                showCancel: false,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      final textBox = tester.getRect(find.text(longSubtitle));
+      expect(textBox.width, lessThanOrEqualTo(160));
     });
 
     testWidgets('showGrid 传递分页和尺寸配置', (tester) async {
