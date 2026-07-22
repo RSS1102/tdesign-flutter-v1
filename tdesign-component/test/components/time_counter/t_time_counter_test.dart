@@ -11,9 +11,16 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// Theme 覆盖。
 void main() {
   /// 用 TTheme 包裹以提供基础 Token
-  Widget wrapWithTheme(Widget child) {
+  Widget wrapWithTheme(
+    Widget child, {
+    TTimeCounterThemeData? timeCounterTheme,
+  }) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (timeCounterTheme != null) {
+      theme = theme.mergeExtension(timeCounterTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -168,6 +175,41 @@ void main() {
       ));
       expect(find.byType(TTimeCounter), findsOneWidget);
     });
+
+    testWidgets('round variant uses token visual contract', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const Center(
+          child: TTimeCounter(
+            time: 5000,
+            variant: TTimeCounterVariant.round,
+            autoStart: false,
+          ),
+        ),
+      ));
+
+      final token = TThemeData.defaultData();
+      final timeBox = tester.widget<Container>(
+        find
+            .ancestor(
+              of: find.text('05'),
+              matching: find.byWidgetPredicate(
+                (widget) =>
+                    widget is Container && widget.decoration is BoxDecoration,
+              ),
+            )
+            .first,
+      );
+      final decoration = timeBox.decoration! as BoxDecoration;
+      final timeText = tester.widget<Text>(find.text('05'));
+      final splitText = tester.widget<Text>(find.text(':').first);
+
+      expect(tester.getSize(find.byWidget(timeBox)), const Size(24, 24));
+      expect(decoration.shape, BoxShape.circle);
+      expect(decoration.color, token.errorNormalColor);
+      expect(timeText.style?.fontSize, token.fontBodyMedium?.size);
+      expect(timeText.style?.color, token.textColorAnti);
+      expect(splitText.style?.color, token.errorNormalColor);
+    });
   });
 
   // ============================================================
@@ -176,23 +218,18 @@ void main() {
   group('TTimeCounter Theme 覆盖', () {
     testWidgets('TTimeCounterThemeData 注入后正常渲染', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(extensions: [
-            TThemeData.defaultData(),
-            const TTimeCounterThemeData(
-              size: TTimeCounterSize.large,
-              variant: TTimeCounterVariant.round,
-              showMillisecond: false,
-              splitWithUnit: false,
+        wrapWithTheme(
+          const Center(
+            child: TTimeCounter(
+              time: 5000,
+              autoStart: false,
             ),
-          ]),
-          home: const Scaffold(
-            body: Center(
-              child: TTimeCounter(
-                time: 5000,
-                autoStart: false,
-              ),
-            ),
+          ),
+          timeCounterTheme: const TTimeCounterThemeData(
+            size: TTimeCounterSize.large,
+            variant: TTimeCounterVariant.round,
+            showMillisecond: false,
+            splitWithUnit: false,
           ),
         ),
       );
