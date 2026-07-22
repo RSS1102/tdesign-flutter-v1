@@ -135,6 +135,9 @@ class TLink extends StatelessWidget {
               decorationColor: hasUnderline ? effectiveColor : null,
             ),
         semanticsLabel: semanticLabel ?? defaultChild.semanticsLabel,
+        maxLines: defaultChild.maxLines ?? 1,
+        overflow: defaultChild.overflow ?? TextOverflow.ellipsis,
+        softWrap: defaultChild.softWrap ?? false,
       );
     }
 

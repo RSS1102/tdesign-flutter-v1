@@ -393,7 +393,11 @@ class _TMessageState extends State<TMessage>
   Widget _buildLink(BuildContext context) {
     final link = widget.link!;
     final linkWidget = TLink(
-      child: Text(link.name),
+      child: Text(
+        link.name,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
       colorScheme: TLinkColorScheme.primary,
       variant: TLinkVariant.basic,
       uri: link.uri,

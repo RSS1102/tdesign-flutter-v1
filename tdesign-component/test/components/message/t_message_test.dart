@@ -82,6 +82,33 @@ void main() {
       expect(pressed, isTrue);
     });
 
+    testWidgets('长内容配合链接和关闭按钮不应溢出', (tester) async {
+      const longLink = '这是一个非常非常非常长的链接文案用于验证不会换行';
+      await tester.pumpWidget(
+        wrap(
+          TMessage(
+            content: '这是一段非常非常非常长的消息内容用于验证布局不会被撑坏',
+            duration: null,
+            showCloseButton: true,
+            link: TMessageLink(
+              name: longLink,
+              uri: Uri(path: '/detail'),
+            ),
+          ),
+        ),
+      );
+
+      final contentText = tester.widget<Text>(
+        find.text('这是一段非常非常非常长的消息内容用于验证布局不会被撑坏'),
+      );
+      final linkText = tester.widget<Text>(find.text(longLink));
+      expect(contentText.maxLines, 1);
+      expect(contentText.overflow, TextOverflow.ellipsis);
+      expect(linkText.maxLines, 1);
+      expect(linkText.overflow, TextOverflow.ellipsis);
+      expect(find.byIcon(TIcons.close), findsOneWidget);
+    });
+
     testWidgets('关闭按钮完成关闭生命周期', (tester) async {
       var pressed = false;
       var dismissed = false;

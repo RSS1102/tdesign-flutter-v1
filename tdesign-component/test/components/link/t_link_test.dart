@@ -358,6 +358,23 @@ void main() {
   });
 
   // ============================================================
+  // T17b – 长文本单行省略
+  // ============================================================
+  testWidgets('T17b - 长文本单行省略', (tester) async {
+    const longText = '这是一个非常非常非常长的链接文案用于验证不会换行和撑坏布局';
+    await tester.pumpWidget(_wrap(
+      const TLink(
+        child: Text(longText),
+      ),
+    ));
+
+    final text = tester.widget<Text>(find.text(longText));
+    expect(text.maxLines, 1);
+    expect(text.softWrap, isFalse);
+    expect(text.overflow, TextOverflow.ellipsis);
+  });
+
+  // ============================================================
   // T17 – 非 Text child（DefaultTextStyle 包裹）
   // ============================================================
   testWidgets('T17 - 非 Text child', (tester) async {
