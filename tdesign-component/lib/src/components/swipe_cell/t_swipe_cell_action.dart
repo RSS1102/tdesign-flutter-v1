@@ -78,7 +78,7 @@ class TSwipeCellAction extends StatelessWidget {
         Icon(
           icon,
           size: iconSize ?? 18,
-          color: labelStyle?.color ?? context.tTheme.textColorAnti,
+          color: iconColor ?? labelStyle?.color ?? context.tTheme.textColorAnti,
         ),
       if (icon != null && label != null) SizedBox(width: spacing ?? 2),
       if (label != null)

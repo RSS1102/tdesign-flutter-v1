@@ -17,12 +17,12 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() {
   /// 用 TTheme 包裹以提供基础 Token
   Widget wrapWithTheme(Widget child, {TSwipeCellThemeData? swipeTheme}) {
-    final extensions = <ThemeExtension>[
-      TThemeData.defaultData(),
-      if (swipeTheme != null) swipeTheme,
-    ];
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (swipeTheme != null) {
+      theme = theme.mergeExtension(swipeTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: extensions),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -393,6 +393,52 @@ void main() {
         ),
       ));
       expect(find.text('自定义按钮'), findsOneWidget);
+    });
+
+    testWidgets('visual params control action layout and color',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSwipeCellInherited(
+          controller: SlidableController(tester),
+          duration: const Duration(milliseconds: 200),
+          cellClick: () {},
+          actionClick: (_) => false,
+          child: const SizedBox(
+            width: 120,
+            height: 48,
+            child: Row(
+              children: [
+                TSwipeCellAction(
+                  label: '删除',
+                  icon: Icons.delete,
+                  backgroundColor: Colors.red,
+                  iconColor: Colors.yellow,
+                  iconSize: 24,
+                  labelStyle: TextStyle(color: Colors.green, fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ));
+
+      final background = tester.widget<Container>(
+        find.ancestor(
+          of: find.text('删除'),
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Container && widget.color == Colors.red,
+          ),
+        ),
+      );
+      final icon = tester.widget<Icon>(find.byIcon(Icons.delete));
+      final label = tester.widget<Text>(find.text('删除'));
+
+      expect(background.color, Colors.red);
+      expect(icon.size, 24);
+      expect(icon.color, Colors.yellow);
+      expect(label.style?.color, Colors.green);
+      expect(label.style?.fontSize, 15);
     });
   });
 
