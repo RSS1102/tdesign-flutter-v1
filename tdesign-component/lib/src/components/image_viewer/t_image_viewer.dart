@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_theme.dart';
 import '../swiper/t_swiper.dart';
 import '../swiper/t_swiper_types.dart';
@@ -233,7 +234,10 @@ class _TImageViewerViewState extends State<_TImageViewerView> {
             Text(
               '${_index + 1} / ${widget.images.length}',
               style: theme?.indexStyle ??
-                  TextStyle(color: context.tTheme.textColorAnti, fontSize: 10),
+                  TextStyle(
+                    color: context.tTheme.textColorAnti,
+                    fontSize: context.tTheme.fontBodyExtraSmall?.size ?? 10,
+                  ),
             ),
         ],
       ),

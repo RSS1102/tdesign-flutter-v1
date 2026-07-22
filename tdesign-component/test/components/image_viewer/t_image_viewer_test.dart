@@ -55,6 +55,20 @@ void main() {
       expect(find.text('2 / 3'), findsOneWidget);
     });
 
+    testWidgets('默认页码样式来自全局 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await open(
+        tester,
+        app(onShow: (context) {
+          TImageViewer.show(context: context, images: images);
+        }),
+      );
+
+      final index = tester.widget<Text>(find.text('1 / 3'));
+      expect(index.style?.color, token.textColorAnti);
+      expect(index.style?.fontSize, token.fontBodyExtraSmall?.size);
+    });
+
     testWidgets('关闭按钮通知并关闭 Dialog', (tester) async {
       var closed = false;
       await open(
