@@ -84,6 +84,8 @@ class TActionSheetItemWidget extends StatelessWidget {
             font: context.tTheme.fontBodySmall,
             textColor: context.tTheme.textColorPrimary,
             style: item!.textStyle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

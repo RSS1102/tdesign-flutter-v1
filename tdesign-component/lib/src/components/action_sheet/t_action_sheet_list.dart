@@ -59,7 +59,7 @@ class TActionSheetList extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius:
             BorderRadius.only(topLeft: borderRadius, topRight: borderRadius),
-        color: context.tTheme.bgColorPage,
+        color: context.tTheme.bgColorContainer,
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -169,6 +169,8 @@ class TActionSheetList extends StatelessWidget {
                             : context.tTheme
                                 .textColorPrimary, // 正常状态下的文本颜色
                         style: item.textStyle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
 
                       /// todo 徽标应位于右上角，而不是右边紧挨着，请参考宫格徽标实现

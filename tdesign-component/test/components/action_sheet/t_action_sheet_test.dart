@@ -55,6 +55,97 @@ void main() {
       expect(handle.isShowing, isFalse);
     });
 
+    testWidgets('showList 继承 popup 视觉契约并收口溢出', (tester) async {
+      final context = await pumpHost(
+        tester,
+        theme: const TActionSheetThemeData(
+          barrierColor: Colors.black38,
+          panelRadius: 10,
+        ),
+      );
+
+      const longLabel = '这里是一段非常非常非常长的动作项标题用于验证省略号';
+      final handle = TActionSheet.showList(
+        context,
+        items: [
+          TActionSheetItem(label: longLabel),
+          TActionSheetItem(label: '带描述', subtitle: '辅助说明'),
+        ],
+      );
+      await tester.pumpAndSettle();
+
+      final barrier = tester.widgetList<Container>(find.byType(Container)).firstWhere(
+            (container) => container.color == Colors.black38,
+          );
+      expect(barrier.color, Colors.black38);
+
+      final shell = tester
+          .widgetList<Container>(
+            find.ancestor(
+              of: find.byType(TActionSheetList),
+              matching: find.byType(Container),
+            ),
+          )
+          .firstWhere(
+            (container) =>
+                container.decoration is BoxDecoration &&
+                (container.decoration! as BoxDecoration).borderRadius != null,
+          );
+      final shellDecoration = shell.decoration! as BoxDecoration;
+      expect(shellDecoration.color, context.tTheme.bgColorContainer);
+      expect(
+        shellDecoration.borderRadius,
+        BorderRadius.vertical(top: Radius.circular(10)),
+      );
+
+      final listContainer = tester
+          .widgetList<Container>(
+            find.descendant(
+              of: find.byType(TActionSheetList),
+              matching: find.byType(Container),
+            ),
+          )
+          .firstWhere(
+            (container) =>
+                container.decoration is BoxDecoration &&
+                (container.decoration! as BoxDecoration).borderRadius != null,
+          );
+      expect(
+        (listContainer.decoration! as BoxDecoration).color,
+        context.tTheme.bgColorContainer,
+      );
+
+      final text = tester.widget<Text>(find.text(longLabel));
+      expect(text.maxLines, 1);
+      expect(text.overflow, TextOverflow.ellipsis);
+
+      final itemContainers = tester.widgetList<Container>(
+        find.descendant(
+          of: find.byType(TActionSheetList),
+          matching: find.byType(Container),
+        ),
+      );
+      expect(
+        itemContainers.any((container) =>
+            container.constraints?.minHeight == 56 &&
+            container.constraints?.maxHeight == 56 &&
+            container.decoration is BoxDecoration &&
+            (container.decoration! as BoxDecoration).border != null),
+        isTrue,
+      );
+      expect(
+        itemContainers.any((container) =>
+            container.constraints?.minHeight == 78 &&
+            container.constraints?.maxHeight == 78 &&
+            container.decoration is BoxDecoration &&
+            (container.decoration! as BoxDecoration).border != null),
+        isTrue,
+      );
+
+      handle.close();
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('showGrid 传递分页和尺寸配置', (tester) async {
       final context = await pumpHost(
         tester,
