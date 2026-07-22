@@ -226,7 +226,8 @@ final class TActionSheet {
           itemMinWidth: effectiveItemMinWidth,
           onCancel: onCancel,
           onChanged: onChanged,
-          useSafeArea: useSafeArea,
+          // 命令式入口由 Popup 统一避让安全区，避免 Grid 重复添加底部内边距。
+          useSafeArea: false,
         ),
       _TActionSheetLayout.group => TActionSheetGroup(
           items: items,
@@ -237,7 +238,8 @@ final class TActionSheet {
           itemMinWidth: effectiveItemMinWidth,
           onCancel: onCancel,
           onChanged: onChanged,
-          useSafeArea: useSafeArea,
+          // 命令式入口由 Popup 统一避让安全区，避免 Group 重复添加底部内边距。
+          useSafeArea: false,
         ),
     };
 

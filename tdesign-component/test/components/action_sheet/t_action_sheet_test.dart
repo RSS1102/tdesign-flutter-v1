@@ -198,6 +198,7 @@ void main() {
       expect(grid.itemHeight, 88);
       expect(grid.itemMinWidth, 72);
       expect(grid.showPagination, isTrue);
+      expect(grid.useSafeArea, isFalse);
 
       handle.close();
       await tester.pumpAndSettle();
@@ -217,6 +218,12 @@ void main() {
       expect(find.byType(TActionSheetGroup), findsOneWidget);
       expect(find.text('常用'), findsOneWidget);
       expect(find.text('危险'), findsOneWidget);
+      expect(
+        tester
+            .widget<TActionSheetGroup>(find.byType(TActionSheetGroup))
+            .useSafeArea,
+        isFalse,
+      );
 
       handle.close();
       await tester.pumpAndSettle();

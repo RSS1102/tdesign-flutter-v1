@@ -92,10 +92,17 @@ class TActionSheetGroup extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: getMainAxisAlignment(align),
                     children: [
-                      TText(
-                        k!,
-                        font: context.tTheme.fontBodyMedium,
-                        textColor: context.tTheme.textColorPlaceholder,
+                      Flexible(
+                        child: TText(
+                          k!,
+                          font: context.tTheme.fontBodyMedium,
+                          textAlign: switch (align) {
+                            TActionSheetAlign.left => TextAlign.left,
+                            TActionSheetAlign.right => TextAlign.right,
+                            TActionSheetAlign.center => TextAlign.center,
+                          },
+                          textColor: context.tTheme.textColorPlaceholder,
+                        ),
                       ),
                     ],
                   ),

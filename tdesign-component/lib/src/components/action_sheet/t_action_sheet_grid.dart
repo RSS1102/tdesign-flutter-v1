@@ -132,10 +132,17 @@ class _TActionSheetGridState extends State<TActionSheetGrid> {
       child: Row(
         mainAxisAlignment: getMainAxisAlignment(widget.align),
         children: [
-          TText(
-            widget.subtitle!,
-            font: context.tTheme.fontBodyMedium,
-            textColor: context.tTheme.textColorPlaceholder,
+          Flexible(
+            child: TText(
+              widget.subtitle!,
+              font: context.tTheme.fontBodyMedium,
+              textAlign: switch (widget.align) {
+                TActionSheetAlign.left => TextAlign.left,
+                TActionSheetAlign.right => TextAlign.right,
+                TActionSheetAlign.center => TextAlign.center,
+              },
+              textColor: context.tTheme.textColorPlaceholder,
+            ),
           ),
         ],
       ),
@@ -209,25 +216,31 @@ class _TActionSheetGridState extends State<TActionSheetGrid> {
   }) {
     // 计算每行的项目数
     final itemsPerRow = widget.count ~/ widget.rows;
-    // 获取屏幕宽度
-    final screenWidth = MediaQuery.of(context).size.width;
-    // 计算子项的宽高比
-    final childAspectRatio = screenWidth / itemsPerRow / widget.itemHeight;
     return _gridWrap(
-      GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.zero,
-        itemCount: (items ?? widget.items).length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: itemsPerRow,
-          childAspectRatio: childAspectRatio,
-        ),
-        itemBuilder: (context, index) {
-          final item = (items ?? widget.items)[index];
-          return TActionSheetItemWidget(
-            item: item,
-            index: pageIndex * widget.count + index,
-            onChanged: widget.onChanged,
+      LayoutBuilder(
+        builder: (context, constraints) {
+          final width = constraints.maxWidth.isFinite
+              ? constraints.maxWidth
+              : MediaQuery.sizeOf(context).width;
+          final childAspectRatio = width / itemsPerRow / widget.itemHeight;
+          return GridView.builder(
+            physics: (items ?? widget.items).length > widget.count
+                ? const AlwaysScrollableScrollPhysics()
+                : const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemCount: (items ?? widget.items).length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: itemsPerRow,
+              childAspectRatio: childAspectRatio,
+            ),
+            itemBuilder: (context, index) {
+              final item = (items ?? widget.items)[index];
+              return TActionSheetItemWidget(
+                item: item,
+                index: pageIndex * widget.count + index,
+                onChanged: widget.onChanged,
+              );
+            },
           );
         },
       ),
