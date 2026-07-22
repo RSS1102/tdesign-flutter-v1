@@ -335,6 +335,26 @@ void main() {
       handle.close();
       await tester.pumpAndSettle();
     });
+
+    testWidgets('多分组在小屏下可滚动且不溢出', (tester) async {
+      final context = await pumpHost(tester);
+      final handle = TActionSheet.showGroup(
+        context,
+        items: List.generate(
+          12,
+          (index) => TActionSheetItem(label: '选项 $index', group: '分组 $index'),
+        ),
+        showCancel: false,
+      );
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      final listView = tester.widget<ListView>(find.byType(ListView).first);
+      expect(listView.scrollDirection, Axis.vertical);
+      expect(listView.physics, isNot(const NeverScrollableScrollPhysics()));
+      handle.close();
+      await tester.pumpAndSettle();
+    });
   });
 
   group('TActionSheetThemeData', () {

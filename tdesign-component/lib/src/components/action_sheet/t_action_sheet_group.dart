@@ -63,6 +63,69 @@ class TActionSheetGroup extends StatelessWidget {
     final groupItems = items.groupBy((item) => item.group);
     final groupKeys = groupItems.keys
         .where((k) => k != null && groupItems[k]?.isNotEmpty == true);
+    final groupSections = groupKeys.mapIndexed((i, k) {
+      final list = groupItems[k]!;
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              context.tTheme.spacer16,
+              context.tTheme.spacer12,
+              context.tTheme.spacer16,
+              0,
+            ),
+            child: Row(
+              mainAxisAlignment: getMainAxisAlignment(align),
+              children: [
+                Flexible(
+                  child: TText(
+                    k!,
+                    font: context.tTheme.fontBodyMedium,
+                    textAlign: switch (align) {
+                      TActionSheetAlign.left => TextAlign.left,
+                      TActionSheetAlign.right => TextAlign.right,
+                      TActionSheetAlign.center => TextAlign.center,
+                    },
+                    textColor: context.tTheme.textColorPlaceholder,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: itemHeight,
+            child: ListView.builder(
+              itemCount: list.length,
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, row) {
+                return SizedBox(
+                  width: itemMinWidth,
+                  child: TActionSheetItemWidget(
+                    item: list[row],
+                    onChanged: onChanged,
+                    index: items.indexOf(list[row]),
+                  ),
+                );
+              },
+            ),
+          ),
+          if (i != groupKeys.length - 1)
+            Container(
+              decoration: BoxDecoration(
+                color: context.tTheme.fontWhColor1,
+                border: Border(
+                  top: BorderSide(
+                    color: context.tTheme.componentStrokeColor,
+                    width: 0.5,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      );
+    }).toList();
 
     return Container(
       decoration: BoxDecoration(
@@ -74,75 +137,25 @@ class TActionSheetGroup extends StatelessWidget {
       padding: useSafeArea
           ? EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom)
           : EdgeInsets.zero,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ...groupKeys.mapIndexed((i, k) {
-            final list = groupItems[k]!;
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    context.tTheme.spacer16,
-                    context.tTheme.spacer12,
-                    context.tTheme.spacer16,
-                    0,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: getMainAxisAlignment(align),
-                    children: [
-                      Flexible(
-                        child: TText(
-                          k!,
-                          font: context.tTheme.fontBodyMedium,
-                          textAlign: switch (align) {
-                            TActionSheetAlign.left => TextAlign.left,
-                            TActionSheetAlign.right => TextAlign.right,
-                            TActionSheetAlign.center => TextAlign.center,
-                          },
-                          textColor: context.tTheme.textColorPlaceholder,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: itemHeight,
-                  child: ListView.builder(
-                    itemCount: list.length,
-                    padding: EdgeInsets.zero,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, row) {
-                      return SizedBox(
-                        width: itemMinWidth,
-                        child: TActionSheetItemWidget(
-                          item: list[row],
-                          onChanged: onChanged,
-                          index: items.indexOf(list[row]),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                if (i != groupKeys.length - 1)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: context.tTheme.fontWhColor1,
-                      border: Border(
-                        top: BorderSide(
-                          color: context.tTheme.componentStrokeColor,
-                          width: 0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            );
-          }),
-          if (showCancel)
-            buildCancelButton(context, false, cancelText, onCancel),
-        ],
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                children: groupSections,
+              ),
+            ),
+            if (showCancel)
+              buildCancelButton(context, false, cancelText, onCancel),
+          ],
+        ),
       ),
     );
   }
