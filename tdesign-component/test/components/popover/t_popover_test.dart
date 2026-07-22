@@ -494,6 +494,9 @@ void main() {
           arrowSize: 10,
           minWidth: 50,
           maxHeight: 200,
+          boxShadow: [
+            BoxShadow(color: Colors.purple, blurRadius: 4),
+          ],
         ),
       ));
 
@@ -504,23 +507,53 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('主题气泡'), findsOneWidget);
+      final themedContainer = tester
+          .widgetList<Container>(find.byType(Container))
+          .firstWhere((container) {
+        final decoration = container.decoration;
+        return decoration is BoxDecoration &&
+            decoration.boxShadow?.first.color == Colors.purple;
+      });
+      expect(
+        (themedContainer.decoration! as BoxDecoration).boxShadow?.first.color,
+        Colors.purple,
+      );
     });
 
     test('TPopoverThemeData merge 合并', () {
       const base = TPopoverThemeData(
         backgroundColor: Colors.white,
         borderRadius: 4,
+        boxShadow: [BoxShadow(color: Colors.black)],
       );
       const override = TPopoverThemeData(borderRadius: 8);
       final merged = base.merge(override);
       expect(merged.backgroundColor, Colors.white);
       expect(merged.borderRadius, 8);
+      expect(merged.boxShadow, base.boxShadow);
     });
 
     test('TPopoverThemeData copyWith', () {
       const original = TPopoverThemeData(backgroundColor: Colors.white);
-      final copied = original.copyWith(backgroundColor: Colors.grey);
+      final copied = original.copyWith(
+        backgroundColor: Colors.grey,
+        boxShadow: const [BoxShadow(color: Colors.red)],
+      );
       expect(copied.backgroundColor, Colors.grey);
+      expect(copied.boxShadow?.first.color, Colors.red);
+      expect(
+        original
+            .lerp(
+              const TPopoverThemeData(
+                boxShadow: [BoxShadow(color: Colors.blue)],
+              ),
+              0.75,
+            )
+            .boxShadow
+            ?.first
+            .color,
+        Colors.blue,
+      );
     });
   });
 }

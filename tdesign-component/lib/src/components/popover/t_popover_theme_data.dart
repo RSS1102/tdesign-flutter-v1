@@ -55,6 +55,9 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
   /// 弹层与触发元素的间距
   final double? offset;
 
+  /// 气泡阴影
+  final List<BoxShadow>? boxShadow;
+
   const TPopoverThemeData({
     this.colorScheme,
     this.backgroundColor,
@@ -66,6 +69,7 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
     this.arrowSize,
     this.showArrow,
     this.offset,
+    this.boxShadow,
   });
 
   TPopoverThemeData merge(TPopoverThemeData? other) {
@@ -83,6 +87,7 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
       arrowSize: other.arrowSize ?? arrowSize,
       showArrow: other.showArrow ?? showArrow,
       offset: other.offset ?? offset,
+      boxShadow: other.boxShadow ?? boxShadow,
     );
   }
 
@@ -98,6 +103,7 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
     double? arrowSize,
     bool? showArrow,
     double? offset,
+    List<BoxShadow>? boxShadow,
   }) {
     return TPopoverThemeData(
       colorScheme: colorScheme ?? this.colorScheme,
@@ -110,6 +116,7 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
       arrowSize: arrowSize ?? this.arrowSize,
       showArrow: showArrow ?? this.showArrow,
       offset: offset ?? this.offset,
+      boxShadow: boxShadow ?? this.boxShadow,
     );
   }
 
@@ -129,6 +136,7 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
       arrowSize: lerpDouble(arrowSize, other.arrowSize, t),
       showArrow: t < 0.5 ? showArrow : other.showArrow,
       offset: lerpDouble(offset, other.offset, t),
+      boxShadow: t < 0.5 ? boxShadow : other.boxShadow,
     );
   }
 

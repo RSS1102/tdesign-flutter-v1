@@ -142,6 +142,24 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
           ? null
           : BorderRadius.circular(_theme.borderRadius!));
 
+  static const List<BoxShadow> _defaultBoxShadow = [
+    BoxShadow(
+        color: Color(0x0d000000),
+        offset: Offset(0, 6),
+        blurRadius: 30,
+        spreadRadius: 5),
+    BoxShadow(
+        color: Color(0x0a000000),
+        offset: Offset(0, 16),
+        blurRadius: 24,
+        spreadRadius: 2),
+    BoxShadow(
+        color: Color(0x14000000),
+        offset: Offset(0, 8),
+        blurRadius: 10,
+        spreadRadius: -5),
+  ];
+
   late Color _color;
 
   late Color _backgroundColor;
@@ -446,23 +464,7 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
           borderRadius: _effectiveRadius ??
               BorderRadius.circular(context.tTheme.radiusDefault),
           color: _backgroundColor,
-          boxShadow: const [
-            BoxShadow(
-                color: Color(0x0d000000),
-                offset: Offset(0, 6),
-                blurRadius: 30,
-                spreadRadius: 5),
-            BoxShadow(
-                color: Color(0x0a000000),
-                offset: Offset(0, 16),
-                blurRadius: 24,
-                spreadRadius: 2),
-            BoxShadow(
-                color: Color(0x14000000),
-                offset: Offset(0, 8),
-                blurRadius: 10,
-                spreadRadius: -5),
-          ]),
+          boxShadow: _theme.boxShadow ?? _defaultBoxShadow),
       child: widget.contentWidget != null
           ? widget.contentWidget!
           : TText(widget.content,
