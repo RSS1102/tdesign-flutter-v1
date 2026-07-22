@@ -40,6 +40,11 @@ class TTagThemeData extends ThemeExtension<TTagThemeData> {
   /// 文字溢出处理
   final TextOverflow? overflow;
 
+  /// 文字最大行数。
+  ///
+  /// 未设置时组件默认按紧凑标签语义使用单行。
+  final int? maxLines;
+
   /// 标签固定宽度
   final double? fixedWidth;
 
@@ -54,6 +59,7 @@ class TTagThemeData extends ThemeExtension<TTagThemeData> {
     this.shape,
     this.isLight,
     this.overflow,
+    this.maxLines,
     this.fixedWidth,
   });
 
@@ -69,6 +75,7 @@ class TTagThemeData extends ThemeExtension<TTagThemeData> {
     TTagShape? shape,
     bool? isLight,
     TextOverflow? overflow,
+    int? maxLines,
     double? fixedWidth,
   }) {
     return TTagThemeData(
@@ -82,6 +89,7 @@ class TTagThemeData extends ThemeExtension<TTagThemeData> {
       shape: shape ?? this.shape,
       isLight: isLight ?? this.isLight,
       overflow: overflow ?? this.overflow,
+      maxLines: maxLines ?? this.maxLines,
       fixedWidth: fixedWidth ?? this.fixedWidth,
     );
   }
@@ -103,6 +111,7 @@ class TTagThemeData extends ThemeExtension<TTagThemeData> {
       shape: t < 0.5 ? shape : other.shape,
       isLight: t < 0.5 ? isLight : other.isLight,
       overflow: t < 0.5 ? overflow : other.overflow,
+      maxLines: t < 0.5 ? maxLines : other.maxLines,
       fixedWidth: lerpDouble(fixedWidth, other.fixedWidth, t),
     );
   }

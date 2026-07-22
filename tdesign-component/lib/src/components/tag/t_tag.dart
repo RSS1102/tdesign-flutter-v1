@@ -68,6 +68,7 @@ class TTag extends StatelessWidget {
     final backgroundColor = theme?.backgroundColor;
     final font = theme?.font;
     final fontWeight = theme?.fontWeight;
+    final maxLines = theme?.maxLines ?? 1;
 
     // 计算样式颜色
     final colors = _resolveColors(
@@ -79,6 +80,7 @@ class TTag extends StatelessWidget {
       font: font ?? _getFont(context),
       fontWeight: fontWeight,
       overflow: overflow ?? TextOverflow.ellipsis,
+      maxLines: maxLines,
     );
 
     var innerIcon = _getIcon(colors.textColor);
@@ -92,7 +94,7 @@ class TTag extends StatelessWidget {
           child: innerIcon,
         ));
       }
-      children.add(child);
+      children.add(fixedWidth == null ? child : Flexible(child: child));
       if (needCloseIcon) {
         final closeIcon = Container(
           margin: const EdgeInsets.only(left: 4),
@@ -115,7 +117,7 @@ class TTag extends StatelessWidget {
     final effectivePadding = padding ?? _getPadding(isOutline ? 1.0 : 0.0);
     final result = Container(
       width: fixedWidth,
-      height: _getTagHeight(context, effectivePadding),
+      height: maxLines == 1 ? _getTagHeight(context, effectivePadding) : null,
       padding: effectivePadding,
       decoration: BoxDecoration(
           color: backgroundColor ?? colors.backgroundColor,
@@ -140,9 +142,11 @@ class TTag extends StatelessWidget {
     required Font? font,
     required FontWeight? fontWeight,
     required TextOverflow overflow,
+    required int maxLines,
   }) {
     return Text(
       text,
+      maxLines: maxLines,
       overflow: overflow,
       style: TextStyle(
         color: textColor,

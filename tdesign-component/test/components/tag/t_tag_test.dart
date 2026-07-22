@@ -326,6 +326,72 @@ void main() {
       expect(find.text('溢出处理'), findsOneWidget);
     });
 
+    testWidgets('fixedWidth long label with icons stays single-line ellipsis',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const Center(
+          child: TTag(
+            '这是一段非常非常长的标签文案',
+            icon: Icons.add,
+            needCloseIcon: true,
+          ),
+        ),
+        tagTheme: const TTagThemeData(fixedWidth: 96),
+      ));
+
+      expect(tester.takeException(), isNull);
+      final tagContainer = tester.widget<Container>(
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
+      );
+      expect(tagContainer.constraints?.maxWidth, 96);
+
+      final label = tester.widget<Text>(find.text('这是一段非常非常长的标签文案'));
+      expect(label.maxLines, 1);
+      expect(label.overflow, TextOverflow.ellipsis);
+      expect(find.byIcon(Icons.add), findsOneWidget);
+      expect(find.byIcon(TIcons.close), findsOneWidget);
+    });
+
+    testWidgets('theme maxLines allows multi-line fixed width tag',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const Center(
+          child: TTag(
+            '这是一段非常非常长的标签文案',
+            icon: Icons.add,
+            needCloseIcon: true,
+          ),
+        ),
+        tagTheme: const TTagThemeData(
+          fixedWidth: 96,
+          maxLines: 2,
+        ),
+      ));
+
+      expect(tester.takeException(), isNull);
+      final label = tester.widget<Text>(find.text('这是一段非常非常长的标签文案'));
+      expect(label.maxLines, 2);
+      expect(label.overflow, TextOverflow.ellipsis);
+
+      final tagRect = tester.getRect(
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
+      );
+      expect(tagRect.height, greaterThan(32));
+    });
+
+    test('TTagThemeData carries maxLines through copyWith and lerp', () {
+      const base = TTagThemeData(maxLines: 1);
+      const other = TTagThemeData(maxLines: 2);
+
+      expect(base.copyWith(maxLines: 3).maxLines, 3);
+      expect(base.lerp(other, 0.25).maxLines, 1);
+      expect(base.lerp(other, 0.75).maxLines, 2);
+    });
+
     testWidgets('通过 TTagThemeData 设置自定义 backgroundColor', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TTag('自定义背景'),
