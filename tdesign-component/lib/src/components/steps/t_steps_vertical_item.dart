@@ -232,8 +232,9 @@ class TStepsVerticalItem extends StatelessWidget {
                                 fontSize: 14,
                                 height: 1.2,
                               ),
-                              softWrap: true,
-                              overflow: TextOverflow.visible,
+                              softWrap: false,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           verticalSelect

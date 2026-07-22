@@ -100,5 +100,31 @@ void main() {
       );
       expect(find.byType(TStepsVerticalItem), findsOneWidget);
     });
+
+    testWidgets('长标题收口为单行省略，避免垂直步骤溢出', (tester) async {
+      const longTitle = '这是一个非常非常非常长的步骤标题用于验证不会溢出到布局外';
+      await tester.pumpWidget(
+        wrapWithTheme(
+          SizedBox(
+            width: 260,
+            child: TStepsVerticalItem(
+              data: TStepsItemData(title: longTitle),
+              index: 0,
+              stepsCount: 2,
+              activeIndex: 0,
+              status: TStepsStatus.success,
+              simple: false,
+              readOnly: false,
+              verticalSelect: true,
+            ),
+          ),
+        ),
+      );
+
+      final title = tester.widget<Text>(find.text(longTitle));
+      expect(title.maxLines, 1);
+      expect(title.softWrap, isFalse);
+      expect(title.overflow, TextOverflow.ellipsis);
+    });
   });
 }
