@@ -237,6 +237,8 @@ class TStepsHorizontalItem extends StatelessWidget {
           color: stepsTitleColor,
           fontSize: 14,
         ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
@@ -254,6 +256,8 @@ class TStepsHorizontalItem extends StatelessWidget {
               color: context.tTheme.textColorPlaceholder,
               fontSize: 12,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
     );
   }
