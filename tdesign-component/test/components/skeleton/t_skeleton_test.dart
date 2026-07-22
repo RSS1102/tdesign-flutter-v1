@@ -22,6 +22,19 @@ void main() {
     );
   }
 
+  List<Rect> skeletonBlockRects(WidgetTester tester, Color color) {
+    final blocks = find.byWidgetPredicate(
+      (widget) =>
+          widget is Container &&
+          widget.decoration is BoxDecoration &&
+          (widget.decoration! as BoxDecoration).color == color,
+    );
+    return List<Rect>.generate(
+      blocks.evaluate().length,
+      (index) => tester.getRect(blocks.at(index)),
+    );
+  }
+
   group('TSkeleton 基础渲染', () {
     testWidgets('默认 variant=text 渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(TSkeleton()));
@@ -357,6 +370,42 @@ void main() {
       ));
       await tester.pumpAndSettle();
       expect(find.byType(TSkeleton), findsOneWidget);
+    });
+
+    testWidgets('text variant 在有限宽度内保留 develop 的两行比例', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          width: 320,
+          child: TSkeleton(variant: TSkeletonVariant.text),
+        ),
+        skeletonTheme: const TSkeletonThemeData(blockColor: Colors.red),
+      ));
+      await tester.pumpAndSettle();
+
+      final rects = skeletonBlockRects(tester, Colors.red);
+      expect(rects, hasLength(3));
+      expect(rects[0].width, closeTo(72.96, 0.01));
+      expect(rects[1].width, closeTo(231.04, 0.01));
+      expect(rects[2].width, 320);
+      expect(rects[1].left - rects[0].right, 16);
+      expect(rects[2].top - rects[0].top, 32);
+    });
+
+    testWidgets('paragraph variant 在有限宽度内保留四行和末行比例', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          width: 320,
+          child: TSkeleton(variant: TSkeletonVariant.paragraph),
+        ),
+        skeletonTheme: const TSkeletonThemeData(blockColor: Colors.red),
+      ));
+      await tester.pumpAndSettle();
+
+      final rects = skeletonBlockRects(tester, Colors.red);
+      expect(rects, hasLength(4));
+      expect(rects.take(3).map((rect) => rect.width), everyElement(320));
+      expect(rects[3].width, 176);
+      expect(rects[3].top - rects[2].top, 32);
     });
 
     testWidgets('TSkeletonRowCol.visualHeight 计算正确', (tester) async {

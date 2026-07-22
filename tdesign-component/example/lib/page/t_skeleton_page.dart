@@ -85,7 +85,7 @@ class TSkeletonPage extends StatelessWidget {
               0,
             ),
             child: isFlexible
-                ? Row(children: [builder(context)])
+                ? Row(children: [Expanded(child: builder(context))])
                 : builder(context),
           );
 
@@ -134,7 +134,7 @@ class TSkeletonPage extends StatelessWidget {
           children: [
             rowColsAvatar,
             const SizedBox(width: 12),
-            rowColsContent,
+            Expanded(child: rowColsContent),
           ],
         ),
         const SizedBox(height: 16),
@@ -143,7 +143,7 @@ class TSkeletonPage extends StatelessWidget {
           children: [
             rowColsImage,
             const SizedBox(width: 12),
-            rowColsContent,
+            Expanded(child: rowColsContent),
           ],
         ),
       ],
@@ -169,32 +169,28 @@ class TSkeletonPage extends StatelessWidget {
   @Demo(group: 'skeleton')
   Widget _buildCombineSkeleton(BuildContext context) {
     Widget buildRowCols() {
-      return Flexible(
+      return Expanded(
         child: LayoutBuilder(
-          builder: (context, constraints) => Row(
-            children: [
-              TSkeleton.fromRowCol(
-                rowCol: TSkeletonRowCol(
-                  objects: [
-                    [
-                      TSkeletonRowColObj(
-                        width: constraints.maxWidth,
-                        height: constraints.maxWidth,
-                        flex: null,
-                        style: TSkeletonRowColObjStyle(
-                          borderRadius: context.tTheme.radiusExtraLarge,
-                        ),
-                      ),
-                    ],
-                    [TSkeletonRowColObj.text(width: constraints.maxWidth)],
-                    const [
-                      TSkeletonRowColObj.text(),
-                      TSkeletonRowColObj.spacer(flex: 1),
-                    ],
-                  ],
-                ),
-              ),
-            ],
+          builder: (context, constraints) => TSkeleton.fromRowCol(
+            rowCol: TSkeletonRowCol(
+              objects: [
+                [
+                  TSkeletonRowColObj(
+                    width: constraints.maxWidth,
+                    height: constraints.maxWidth,
+                    flex: null,
+                    style: TSkeletonRowColObjStyle(
+                      borderRadius: context.tTheme.radiusExtraLarge,
+                    ),
+                  ),
+                ],
+                [TSkeletonRowColObj.text(width: constraints.maxWidth)],
+                const [
+                  TSkeletonRowColObj.text(),
+                  TSkeletonRowColObj.spacer(flex: 1),
+                ],
+              ],
+            ),
           ),
         ),
       );
