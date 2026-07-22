@@ -197,6 +197,7 @@ class _TMessageState extends State<TMessage>
     with SingleTickerProviderStateMixin {
   static const double _defaultTop = 80;
   static const double _width = 343;
+  static const double _horizontalMargin = 16;
 
   late final AnimationController _animationController;
   bool _isVisible = true;
@@ -211,10 +212,16 @@ class _TMessageState extends State<TMessage>
       Theme.of(context).extension<TMessageThemeData>() ??
       const TMessageThemeData();
 
+  double get _effectiveWidth {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    return _width.clamp(0, screenWidth - _horizontalMargin * 2).toDouble();
+  }
+
   Offset get _effectiveOffset {
     final configured = widget.offset ?? _theme.defaultOffset;
     return configured ??
-        Offset((MediaQuery.sizeOf(context).width - _width) / 2, _defaultTop);
+        Offset((MediaQuery.sizeOf(context).width - _effectiveWidth) / 2,
+            _defaultTop);
   }
 
   @override
@@ -451,7 +458,7 @@ class _TMessageState extends State<TMessage>
                   ),
               elevation: theme.elevation ?? 6,
               child: SizedBox(
-                width: _width,
+                width: _effectiveWidth,
                 height: 48,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -489,7 +496,7 @@ class _TMessageState extends State<TMessage>
   }
 
   double _calculateTextWidth() {
-    var width = _width - 32;
+    var width = _effectiveWidth - 32;
     if (widget.showIcon) {
       width -= 30;
     }

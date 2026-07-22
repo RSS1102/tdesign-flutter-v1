@@ -3,13 +3,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
-  Widget wrap(Widget child, {TMessageThemeData? messageTheme}) {
+  Widget wrap(
+    Widget child, {
+    TMessageThemeData? messageTheme,
+    Size mediaSize = const Size(375, 812),
+  }) {
     return MaterialApp(
       theme: messageTheme == null
           ? TThemeBuilder.light(TThemeData.defaultData())
           : TThemeBuilder.light(TThemeData.defaultData())
               .mergeExtension(messageTheme),
-      home: Scaffold(body: Stack(children: [child])),
+      home: MediaQuery(
+        data: MediaQueryData(size: mediaSize),
+        child: Scaffold(body: Stack(children: [child])),
+      ),
     );
   }
 
@@ -107,6 +114,29 @@ void main() {
       expect(linkText.maxLines, 1);
       expect(linkText.overflow, TextOverflow.ellipsis);
       expect(find.byIcon(TIcons.close), findsOneWidget);
+    });
+
+    testWidgets('窄屏时消息宽度收口到可用区域', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const TMessage(content: '窄屏消息', duration: null),
+          mediaSize: const Size(320, 640),
+        ),
+      );
+
+      final box = tester.widget<SizedBox>(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is SizedBox &&
+              widget.height == 48 &&
+              widget.width == 288,
+        ),
+      );
+      expect(box.width, 288);
+      final positioned = tester.widget<AnimatedPositioned>(
+        find.byType(AnimatedPositioned),
+      );
+      expect(positioned.left, 16);
     });
 
     testWidgets('关闭按钮完成关闭生命周期', (tester) async {
