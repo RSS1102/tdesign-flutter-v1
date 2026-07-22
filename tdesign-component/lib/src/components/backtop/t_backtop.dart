@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_radius.dart';
 import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
@@ -258,7 +259,7 @@ class _TBackTopState extends State<TBackTop> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: context.tTheme.fontMarkExtraSmall?.size ?? 10,
                   color: _fontColor,
                   fontWeight: FontWeight.w600,
                 ),
@@ -308,7 +309,8 @@ class _TBackTopState extends State<TBackTop> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         height: 1.2,
-                        fontSize: 10,
+                        fontSize:
+                            context.tTheme.fontMarkExtraSmall?.size ?? 10,
                         color: _fontColor,
                         fontWeight: FontWeight.w600,
                       ),
@@ -319,7 +321,8 @@ class _TBackTopState extends State<TBackTop> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         height: 1.2,
-                        fontSize: 10,
+                        fontSize:
+                            context.tTheme.fontMarkExtraSmall?.size ?? 10,
                         color: _fontColor,
                         fontWeight: FontWeight.w600,
                       ),

@@ -63,6 +63,10 @@ void main() {
       final text = tester.widget<Text>(find.text('顶部'));
       expect(text.maxLines, 1);
       expect(text.overflow, TextOverflow.ellipsis);
+      expect(
+        text.style?.fontSize,
+        TThemeData.defaultData().fontMarkExtraSmall?.size,
+      );
     });
 
     testWidgets('showText 为 false 时不显示文案', (tester) async {
