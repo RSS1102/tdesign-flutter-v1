@@ -259,6 +259,56 @@ void main() {
       expect(handle.isShowing, isFalse);
       expect(closed, isTrue);
     });
+
+    testWidgets('showList 透传 useSafeArea 到底部弹层定位', (tester) async {
+      final key = GlobalKey();
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(
+            size: Size(375, 812),
+            padding: EdgeInsets.only(bottom: 34),
+          ),
+          child: MaterialApp(
+            theme: TThemeBuilder.light(TThemeData.defaultData()),
+            home: Scaffold(body: SizedBox(key: key)),
+          ),
+        ),
+      );
+      final context = key.currentContext!;
+
+      final safeHandle = TActionSheet.showList(
+        context,
+        items: items(),
+        showCancel: false,
+      );
+      await tester.pumpAndSettle();
+      final safePositioned = tester.widgetList<Positioned>(
+        find.ancestor(
+          of: find.byType(TActionSheetList),
+          matching: find.byType(Positioned),
+        ),
+      );
+      expect(safePositioned.last.bottom, 34);
+      safeHandle.close();
+      await tester.pumpAndSettle();
+
+      final unsafeHandle = TActionSheet.showList(
+        context,
+        items: items(),
+        showCancel: false,
+        useSafeArea: false,
+      );
+      await tester.pumpAndSettle();
+      final unsafePositioned = tester.widgetList<Positioned>(
+        find.ancestor(
+          of: find.byType(TActionSheetList),
+          matching: find.byType(Positioned),
+        ),
+      );
+      expect(unsafePositioned.last.bottom, 0);
+      unsafeHandle.close();
+      await tester.pumpAndSettle();
+    });
   });
 
   group('TActionSheetThemeData', () {

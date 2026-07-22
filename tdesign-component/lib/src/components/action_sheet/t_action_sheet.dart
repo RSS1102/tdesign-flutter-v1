@@ -251,7 +251,7 @@ final class TActionSheet {
         closeOnOverlayClick: showOverlay && closeOnOverlayClick,
         overlayColor: showOverlay ? theme?.barrierColor : Colors.transparent,
         radius: theme?.panelRadius,
-        useSafeArea: false,
+        useSafeArea: useSafeArea,
         onClosed: onClosed,
         child: child,
       ),
