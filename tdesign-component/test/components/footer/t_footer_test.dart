@@ -38,6 +38,27 @@ void main() {
       expect(find.byType(TFooter), findsOneWidget);
       expect(find.text(''), findsOneWidget);
     });
+
+    testWidgets('长文字在窄宽度下保持单行省略', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const Center(
+          child: SizedBox(
+            width: 120,
+            child: TFooter(
+              TFooterVariant.text,
+              text: '这是一个非常非常长的页脚文案用于验证不溢出',
+            ),
+          ),
+        ),
+      ));
+
+      final text = tester.widget<Text>(find.text('这是一个非常非常长的页脚文案用于验证不溢出'));
+      expect(text.maxLines, 1);
+      expect(text.overflow, TextOverflow.ellipsis);
+      expect(text.softWrap, isFalse);
+      expect(
+          text.style?.fontSize, TThemeData.defaultData().fontBodySmall?.size);
+    });
   });
 
   group('TFooter variant 三档', () {

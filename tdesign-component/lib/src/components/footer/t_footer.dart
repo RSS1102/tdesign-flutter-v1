@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_theme.dart';
 import '../image/t_image.dart';
 import '../link/t_link.dart';
@@ -122,8 +123,12 @@ class TFooter extends StatelessWidget {
     return Text(
       text,
       textAlign: TextAlign.center,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      softWrap: false,
       style: TextStyle(
-        fontSize: 12,
+        fontSize: context.tTheme.fontBodySmall?.size ?? 12,
+        height: context.tTheme.fontBodySmall?.height,
         color: context.tTheme.textColorPlaceholder,
       ),
     );
