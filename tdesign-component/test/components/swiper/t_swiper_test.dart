@@ -232,6 +232,18 @@ void main() {
       expect(find.text('2/3'), findsOneWidget);
     });
 
+    testWidgets('fraction 默认样式来自全局 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(app(const TSwiper(
+        pagination: TSwiperPaginationVariant.fraction,
+        children: pages,
+      )));
+
+      final text = tester.widget<Text>(find.text('1/3'));
+      expect(text.style?.color, token.textColorAnti);
+      expect(text.style?.fontSize, token.fontBodySmall?.size);
+    });
+
     testWidgets('controls 请求前后页并尊重边界', (tester) async {
       final values = <int>[];
       await tester.pumpWidget(app(TSwiper(

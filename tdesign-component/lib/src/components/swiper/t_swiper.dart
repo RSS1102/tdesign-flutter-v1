@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_radius.dart';
 import '../../theme/t_theme.dart';
 import 't_swiper_theme_data.dart';
@@ -320,7 +321,10 @@ class _TSwiperState extends State<TSwiper> {
         child: Text(
           '${widget.value + 1}/$_count',
           style: theme?.fractionStyle ??
-              const TextStyle(color: Colors.white, fontSize: 12),
+              TextStyle(
+                color: context.tTheme.textColorAnti,
+                fontSize: context.tTheme.fontBodySmall?.size ?? 12,
+              ),
         ),
       ),
     );
