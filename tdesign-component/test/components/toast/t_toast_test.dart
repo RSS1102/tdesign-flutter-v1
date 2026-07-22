@@ -12,9 +12,17 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// 避免 `runAsync` + `pumpAndSettle` 在 Windows/WSL 跨平台时序不一致导致失败。
 void main() {
   /// 用 TTheme 包裹以提供基础 Token，含可定位的 Key 节点
+  ThemeData fullTheme({TToastThemeData? toastTheme}) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (toastTheme != null) {
+      theme = theme.mergeExtension(toastTheme);
+    }
+    return theme;
+  }
+
   Widget wrapWithTheme() {
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: fullTheme(),
       home: Scaffold(
         body: Center(
           child: Builder(
@@ -39,6 +47,13 @@ void main() {
     show(context);
     await tester.pump(wait);
   }
+
+  Finder toastBoxFinder(String text) => find.ancestor(
+        of: find.text(text),
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Container && widget.decoration is BoxDecoration,
+        ),
+      );
 
   /// 辅助：推进足够时间让 Toast 自动消失（duration + dispose 延迟）。
   Future<void> waitForDismiss(WidgetTester tester) async {
@@ -179,6 +194,51 @@ void main() {
         );
       });
       expect(find.byKey(const Key('toast_host')), findsWidgets);
+
+      await waitForDismiss(tester);
+    });
+
+    testWidgets('theme controls radius, padding and width', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: fullTheme(
+            toastTheme: const TToastThemeData(
+              borderRadius: 12,
+              padding: EdgeInsets.all(6),
+              maxWidth: 240,
+            ),
+          ),
+          home: Scaffold(
+            body: Center(
+              child: Builder(
+                key: const Key('toast_host'),
+                builder: (_) => const SizedBox(),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await showToastAndPump(tester, (context) {
+        TToast.showText(
+          '主题 toast',
+          context: context,
+          duration: const Duration(milliseconds: 100),
+        );
+      });
+
+      final box = tester.widget<Container>(toastBoxFinder('主题 toast'));
+      final decoration = box.decoration! as BoxDecoration;
+      final constraints = tester
+          .widget<ConstrainedBox>(find.ancestor(
+            of: find.text('主题 toast'),
+            matching: find.byType(ConstrainedBox),
+          ))
+          .constraints;
+
+      expect(decoration.borderRadius, BorderRadius.circular(12));
+      expect(box.padding, const EdgeInsets.all(6));
+      expect(constraints.maxWidth, 240);
 
       await waitForDismiss(tester);
     });
