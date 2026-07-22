@@ -226,6 +226,26 @@ void main() {
       expect(fieldDecoration?.contentPadding, EdgeInsets.zero);
     });
 
+    testWidgets('custom decoration still keeps collapsed search layout',
+        (tester) async {
+      await tester.pumpWidget(wrap(
+        const TSearchBar(
+          hintText: 'custom',
+          decoration: InputDecoration(
+            helperText: 'helper',
+          ),
+        ),
+      ));
+
+      final fieldDecoration = textField(tester).decoration;
+      expect(fieldDecoration?.helperText, 'helper');
+      expect(fieldDecoration?.filled, isFalse);
+      expect(fieldDecoration?.fillColor, Colors.transparent);
+      expect(fieldDecoration?.isCollapsed, isTrue);
+      expect(fieldDecoration?.hintMaxLines, 1);
+      expect(fieldDecoration?.contentPadding, EdgeInsets.zero);
+    });
+
     test('TSearchBarThemeData copyWith and lerp', () {
       const base = TSearchBarThemeData(
         variant: TSearchBarVariant.square,

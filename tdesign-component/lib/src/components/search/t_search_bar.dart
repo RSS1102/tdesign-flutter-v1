@@ -320,13 +320,14 @@ class _TSearchBarState extends State<TSearchBar> {
             textBaseline: TextBaseline.ideographic,
             overflow: TextOverflow.ellipsis,
           ),
+      hintMaxLines: base.hintMaxLines ?? 1,
       border: base.border ?? InputBorder.none,
       enabledBorder: base.enabledBorder ?? InputBorder.none,
       focusedBorder: base.focusedBorder ?? InputBorder.none,
       disabledBorder: base.disabledBorder ?? InputBorder.none,
       filled: base.filled ?? false,
       fillColor: base.fillColor ?? Colors.transparent,
-      isCollapsed: base.isCollapsed,
+      isCollapsed: base.isCollapsed ?? true,
       contentPadding: base.contentPadding ?? EdgeInsets.zero,
     );
   }

@@ -13,10 +13,13 @@ class TInputResolve {
     return source.copyWith(
       labelText: source.labelText ?? label,
       hintText: source.hintText ?? hintText,
+      hintMaxLines: source.hintMaxLines ?? 1,
       prefixIcon: source.prefixIcon ?? prefix,
       suffixIcon: source.suffixIcon ?? suffix,
       filled: source.filled ?? false,
       fillColor: source.fillColor ?? Colors.transparent,
+      isCollapsed: source.isCollapsed ?? true,
+      contentPadding: source.contentPadding ?? EdgeInsets.zero,
     );
   }
 }

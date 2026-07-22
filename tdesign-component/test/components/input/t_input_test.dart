@@ -120,6 +120,32 @@ void main() {
       expect(decoration?.fillColor, fillColor);
     });
 
+    testWidgets('global inputDecorationTheme does not leak into TInput',
+        (tester) async {
+      final token = TThemeData.defaultData();
+      final theme = TThemeBuilder.light(token).copyWith(
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.red,
+          contentPadding: EdgeInsets.all(20),
+        ),
+      );
+
+      await tester.pumpWidget(MaterialApp(
+        theme: theme,
+        home: const Scaffold(
+          body: TInput(hintText: 'search'),
+        ),
+      ));
+
+      final decoration = field(tester).decoration;
+      expect(decoration?.filled, isFalse);
+      expect(decoration?.fillColor, Colors.transparent);
+      expect(decoration?.isCollapsed, isTrue);
+      expect(decoration?.contentPadding, EdgeInsets.zero);
+      expect(decoration?.hintMaxLines, 1);
+    });
+
     testWidgets('enabled and readOnly follow TextField semantics',
         (tester) async {
       await tester.pumpWidget(wrap(const TInput(
