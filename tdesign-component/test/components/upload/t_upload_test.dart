@@ -262,6 +262,40 @@ void main() {
       expect(find.byKey(const ValueKey('upload-status-success')), findsNothing);
     });
 
+    testWidgets('status overlay and remove icon use token foreground styles',
+        (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrap(TUpload(
+        files: [
+          file('progress', status: TUploadFileStatus.uploading, progress: 0.5),
+          file('error', status: TUploadFileStatus.error),
+        ],
+        maxFiles: 3,
+        onChanged: (_) {},
+      )));
+
+      final indicator = tester.widget<CircularProgressIndicator>(
+        find.byType(CircularProgressIndicator).first,
+      );
+      final refreshIcon = tester.widget<Icon>(find.byIcon(TIcons.refresh));
+      final removeIcon = tester.widget<Icon>(
+        find.descendant(
+          of: find.byKey(const ValueKey('upload-remove-error')),
+          matching: find.byType(Icon),
+        ),
+      );
+      final statusText = tester.widget<Text>(find.text('上传失败'));
+
+      expect(indicator.color, token.textColorAnti);
+      expect(refreshIcon.color, token.textColorAnti);
+      expect(removeIcon.color, token.textColorAnti);
+      expect(statusText.maxLines, 1);
+      expect(statusText.overflow, TextOverflow.ellipsis);
+      expect(statusText.style?.color, token.textColorAnti);
+      expect(statusText.style?.fontSize, token.fontBodySmall?.size);
+      expect(statusText.style?.height, token.fontBodySmall?.height);
+    });
+
     testWidgets('renders bytes, network and placeholder preview branches',
         (tester) async {
       await tester.pumpWidget(wrap(TUpload(

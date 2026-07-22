@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
 import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
 import '../../theme/t_radius.dart';
 import '../../theme/t_theme.dart';
 import 't_upload_theme_data.dart';
@@ -177,7 +178,7 @@ class TUpload extends StatelessWidget {
                   child: Icon(
                     TIcons.close,
                     size: theme?.removeIconSize ?? 14,
-                    color: Colors.white,
+                    color: context.tTheme.textColorAnti,
                   ),
                 ),
               ),
@@ -226,6 +227,7 @@ class TUpload extends StatelessWidget {
             ? '上传中'
             : '${(file.progress! * 100).round()}%'
         : file.errorText ?? '上传失败';
+    final foregroundColor = context.tTheme.textColorAnti;
     return GestureDetector(
       key: ValueKey('upload-status-${file.id}'),
       onTap: _enabled && !isUploading && onRetry != null
@@ -242,14 +244,14 @@ class TUpload extends StatelessWidget {
                 child: CircularProgressIndicator(
                   value: file.progress,
                   strokeWidth: 2,
-                  color: Colors.white,
+                  color: foregroundColor,
                 ),
               )
             else
               Icon(
                 TIcons.refresh,
                 size: theme?.statusIconSize ?? 24,
-                color: Colors.white,
+                color: foregroundColor,
               ),
             const SizedBox(height: 4),
             Text(
@@ -257,7 +259,11 @@ class TUpload extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme?.statusTextStyle ??
-                  const TextStyle(color: Colors.white, fontSize: 12),
+                  TextStyle(
+                    color: foregroundColor,
+                    fontSize: context.tTheme.fontBodySmall?.size ?? 12,
+                    height: context.tTheme.fontBodySmall?.height,
+                  ),
             ),
           ],
         ),
