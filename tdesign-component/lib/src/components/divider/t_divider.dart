@@ -181,12 +181,15 @@ class TDivider extends StatelessWidget {
     bool isDashed,
     TDividerAlign align,
   ) {
-    // 中间内容
-    final middleContent = DefaultTextStyle.merge(
-      style: effectiveTextStyle ?? const TextStyle(),
-      child: Padding(
-        padding: gapPadding,
-        child: child!,
+    // 给中间内容一个弹性宽度，避免长文案把 Row 撑出屏幕。
+    // 不限制行数，让调用方仍可使用多行内容。
+    final middleContent = Flexible(
+      child: DefaultTextStyle.merge(
+        style: effectiveTextStyle ?? const TextStyle(),
+        child: Padding(
+          padding: gapPadding,
+          child: child!,
+        ),
       ),
     );
 
