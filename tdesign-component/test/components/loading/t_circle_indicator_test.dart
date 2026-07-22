@@ -8,7 +8,7 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() {
   Widget wrapWithTheme(Widget child) {
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: TThemeBuilder.light(TThemeData.defaultData()),
       home: Scaffold(body: child),
     );
   }
@@ -20,6 +20,12 @@ void main() {
       ));
       await tester.pump();
       expect(find.byType(TCircleIndicator), findsOneWidget);
+      final indicator = tester.widget<TCircleIndicator>(
+        find.byType(TCircleIndicator),
+      );
+      expect(indicator.size, 30);
+      expect(indicator.color, Colors.blue);
+      expect(indicator.lineWidth, 4);
       // 替换空 widget 以 dispose（避免 repeat 无限循环）
       await tester.pumpWidget(MaterialApp(home: Scaffold(body: Container())));
       expect(find.byType(TCircleIndicator), findsNothing);
@@ -31,6 +37,12 @@ void main() {
       ));
       await tester.pump();
       expect(find.byType(TCircleIndicator), findsOneWidget);
+      final indicator = tester.widget<TCircleIndicator>(
+        find.byType(TCircleIndicator),
+      );
+      expect(indicator.color, isNull);
+      expect(indicator.size, 20);
+      expect(indicator.lineWidth, 3);
       await tester.pumpWidget(MaterialApp(home: Scaffold(body: Container())));
     });
 

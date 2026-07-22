@@ -10,11 +10,12 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// 覆盖 size 三档、icon 三种、text、axis 方向。
 void main() {
   Widget wrapWithTheme(Widget child, {TLoadingThemeData? loadingTheme}) {
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (loadingTheme != null) {
+      theme = theme.mergeExtension(loadingTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: [
-        TThemeData.defaultData(),
-        if (loadingTheme != null) loadingTheme,
-      ]),
+      theme: theme,
       home: Scaffold(
         backgroundColor: Colors.white,
         body: Center(child: child),
@@ -38,6 +39,12 @@ void main() {
         const TLoading(size: TLoadingSize.medium),
       ));
       expect(find.byType(TLoading), findsOneWidget);
+      final indicator = tester.widget<TCircleIndicator>(
+        find.byType(TCircleIndicator),
+      );
+      expect(indicator.size, 21);
+      expect(indicator.lineWidth, 3 * 7 / 6);
+      expect(indicator.duration, 2000);
     });
 
     testWidgets('size=large 正常渲染', (tester) async {
@@ -104,6 +111,7 @@ void main() {
       ));
       expect(find.text('横向加载'), findsOneWidget);
       expect(find.byType(TLoading), findsOneWidget);
+      expect(tester.widget<Flex>(find.byType(Flex)).direction, Axis.horizontal);
     });
 
     testWidgets('mergeExtension 覆盖 iconColor 颜色', (tester) async {
@@ -112,6 +120,10 @@ void main() {
         loadingTheme: const TLoadingThemeData(iconColor: Colors.red),
       ));
       expect(find.byType(TLoading), findsOneWidget);
+      expect(
+        tester.widget<TCircleIndicator>(find.byType(TCircleIndicator)).color,
+        Colors.red,
+      );
     });
 
     testWidgets('mergeExtension 覆盖 textColor 颜色', (tester) async {
@@ -120,6 +132,10 @@ void main() {
         loadingTheme: const TLoadingThemeData(textColor: Colors.blue),
       ));
       expect(find.text('颜色测试'), findsOneWidget);
+      expect(
+        tester.widget<TText>(_loadingTextFinder('颜色测试')).textColor,
+        Colors.blue,
+      );
     });
 
     testWidgets('mergeExtension 覆盖 duration 动画速度', (tester) async {
@@ -141,11 +157,17 @@ void main() {
     });
 
     testWidgets('未注入 Theme 时使用默认值', (tester) async {
+      final token = TThemeData.defaultData();
       await tester.pumpWidget(wrapWithTheme(
         const TLoading(size: TLoadingSize.medium, text: '默认'),
       ));
       expect(find.text('默认'), findsOneWidget);
       expect(find.byType(TLoading), findsOneWidget);
+      final text = tester.widget<TText>(_loadingTextFinder('默认'));
+      expect(text.textColor, token.textColorPrimary);
+      expect(text.font, token.fontBodyMedium);
+      expect(text.fontWeight, FontWeight.w400);
+      expect(text.textAlign, TextAlign.center);
     });
   });
 
@@ -224,7 +246,7 @@ void main() {
 
     testWidgets('icon=null + refreshWidget 走 Row', (tester) async {
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(extensions: [TThemeData.defaultData()]),
+        theme: TThemeBuilder.light(TThemeData.defaultData()),
         home: const Scaffold(
           body: TLoading(
             size: TLoadingSize.medium,
@@ -236,11 +258,13 @@ void main() {
       ));
       expect(find.text('加载中'), findsOneWidget);
       expect(find.text('刷新'), findsOneWidget);
+      expect(find.byType(Row), findsOneWidget);
     });
 
     testWidgets('icon=point + size=small 覆盖 _getPaddingSize', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TLoading(size: TLoadingSize.small, icon: TLoadingIcon.point, text: '加载中'),
+        const TLoading(
+            size: TLoadingSize.small, icon: TLoadingIcon.point, text: '加载中'),
       ));
       // point indicator 有无限动画，用 pump 而非 pumpAndSettle
       await tester.pump();
@@ -283,4 +307,10 @@ void main() {
       expect(find.byType(TCircleIndicator), findsOneWidget);
     });
   });
+}
+
+Finder _loadingTextFinder(String data) {
+  return find.byWidgetPredicate(
+    (widget) => widget is TText && widget.data == data,
+  );
 }

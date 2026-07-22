@@ -8,7 +8,7 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() {
   Widget wrapWithTheme(Widget child) {
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: TThemeBuilder.light(TThemeData.defaultData()),
       home: Scaffold(body: child),
     );
   }
@@ -67,6 +67,10 @@ void main() {
       ));
       await tester.pumpAndSettle();
       expect(find.byType(TCupertinoActivityIndicator), findsOneWidget);
+      expect(
+        tester.getSize(find.byType(TCupertinoActivityIndicator)),
+        const Size(40, 40),
+      );
     });
 
     testWidgets('activeColor 自定义', (tester) async {
@@ -76,6 +80,14 @@ void main() {
       ));
       await tester.pumpAndSettle();
       expect(find.byType(TCupertinoActivityIndicator), findsOneWidget);
+      expect(
+        tester
+            .widget<TCupertinoActivityIndicator>(
+              find.byType(TCupertinoActivityIndicator),
+            )
+            .activeColor,
+        Colors.red,
+      );
     });
 
     testWidgets('duration 变化', (tester) async {
