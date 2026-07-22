@@ -1,5 +1,6 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tdesign_flutter/src/components/loading/t_circle_indicator.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TToast V1.0 Widget 测试
@@ -130,6 +131,80 @@ void main() {
       expect(find.text('横向'), findsOneWidget);
 
       await waitForDismiss(tester);
+    });
+  });
+
+  group('TToast 默认样式契约', () {
+    testWidgets('showText 默认前景色和文本布局来自 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrapWithTheme());
+
+      await showToastAndPump(tester, (context) {
+        TToast.showText(
+          '默认文本',
+          context: context,
+          duration: const Duration(milliseconds: 100),
+        );
+      });
+
+      final text = tester.widget<Text>(find.text('默认文本'));
+      expect(text.style?.color, token.textColorAnti);
+      expect(text.style?.fontSize, token.fontBodyMedium?.size);
+      expect(text.style?.height, token.fontBodyMedium?.height);
+      expect(text.maxLines, 3);
+      expect(text.overflow, TextOverflow.ellipsis);
+
+      final box = tester.widget<Container>(toastBoxFinder('默认文本'));
+      final decoration = box.decoration! as BoxDecoration;
+      expect(decoration.color, token.fontGyColor1);
+
+      await waitForDismiss(tester);
+    });
+
+    testWidgets('showIconText 默认图标和文本前景色来自 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrapWithTheme());
+
+      await showToastAndPump(tester, (context) {
+        TToast.showIconText(
+          '默认图标',
+          icon: Icons.info,
+          context: context,
+          duration: const Duration(milliseconds: 100),
+        );
+      });
+
+      final icon = tester.widget<Icon>(find.byIcon(Icons.info));
+      final text = tester.widget<Text>(find.text('默认图标'));
+      expect(icon.color, token.textColorAnti);
+      expect(icon.size, 24);
+      expect(text.style?.color, token.textColorAnti);
+      expect(text.maxLines, 1);
+      expect(text.overflow, TextOverflow.ellipsis);
+
+      await waitForDismiss(tester);
+    });
+
+    testWidgets('showLoading 默认指示器和文本前景色来自 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrapWithTheme());
+      final context = tester.element(find.byKey(const Key('toast_host')));
+
+      final id = TToast.showLoading(context: context, text: '默认加载');
+      await tester.pump();
+
+      final indicator = tester.widget<TCircleIndicator>(
+        find.byType(TCircleIndicator),
+      );
+      final text = tester.widget<Text>(find.text('默认加载'));
+      expect(indicator.color, token.textColorAnti);
+      expect(indicator.size, 32);
+      expect(text.style?.color, token.textColorAnti);
+      expect(text.maxLines, 1);
+      expect(text.overflow, TextOverflow.ellipsis);
+
+      TToast.dismissToast(id);
+      await tester.pump();
     });
   });
 
