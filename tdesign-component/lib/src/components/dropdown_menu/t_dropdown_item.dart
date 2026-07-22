@@ -184,7 +184,11 @@ class _TDropdownItemState<T> extends State<TDropdownItem<T>> {
                           0,
                         ),
                         color: context.tTheme.bgColorContainer,
-                        child: TText(entry.key ?? context.resource.other),
+                        child: TText(
+                          entry.key ?? context.resource.other,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     Container(
                       padding: EdgeInsets.all(padding),
@@ -303,6 +307,8 @@ class _TDropdownItemState<T> extends State<TDropdownItem<T>> {
                   textColor: disabled
                       ? context.tTheme.textDisabledColor
                       : context.tTheme.textColorPrimary,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (selected)

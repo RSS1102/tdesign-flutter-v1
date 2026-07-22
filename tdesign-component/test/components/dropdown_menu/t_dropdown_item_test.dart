@@ -108,6 +108,47 @@ void main() {
       expect(find.text('分组一'), findsOneWidget);
       expect(find.text('分组二'), findsOneWidget);
     });
+
+    testWidgets('长分组标题收口为单行省略', (tester) async {
+      const longGroup = '这是一个非常非常非常长的分组标题用于验证不溢出';
+      await tester.pumpWidget(wrap(TDropdownMenu(
+        items: [
+          TDropdownItem(
+            label: '多选长分组',
+            multiple: true,
+            options: const [
+              TDropdownItemOption(value: '1', label: 'A', group: longGroup),
+            ],
+          ),
+        ],
+      )));
+      await tester.tap(find.text('多选长分组'));
+      await tester.pumpAndSettle();
+
+      final groupText = tester.widget<Text>(find.text(longGroup));
+      expect(groupText.maxLines, 1);
+      expect(groupText.overflow, TextOverflow.ellipsis);
+    });
+
+    testWidgets('长单选文本收口为单行省略', (tester) async {
+      const longLabel = '这是一个非常非常非常长的单选选项文本用于验证不溢出';
+      await tester.pumpWidget(wrap(TDropdownMenu(
+        items: [
+          TDropdownItem(
+            label: '单选长文本',
+            options: const [
+              TDropdownItemOption(value: '1', label: longLabel),
+            ],
+          ),
+        ],
+      )));
+      await tester.tap(find.text('单选长文本'));
+      await tester.pumpAndSettle();
+
+      final optionText = tester.widget<Text>(find.text(longLabel));
+      expect(optionText.maxLines, 1);
+      expect(optionText.overflow, TextOverflow.ellipsis);
+    });
   });
 
   group('TDropdownItem 多选方向=up 边框', () {
