@@ -25,8 +25,12 @@ void main() {
         ),
       ];
 
-  Widget app(Widget child, {TTableThemeData? tableTheme}) {
-    var theme = TThemeBuilder.light(TThemeData.defaultData());
+  Widget app(
+    Widget child, {
+    TTableThemeData? tableTheme,
+    ThemeData? materialTheme,
+  }) {
+    var theme = materialTheme ?? TThemeBuilder.light(TThemeData.defaultData());
     if (tableTheme != null) {
       theme = theme.mergeExtension(tableTheme);
     }
@@ -318,6 +322,40 @@ void main() {
         onSelectionChanged: (_) {},
       )));
       expect(tester.widget<Checkbox>(find.byType(Checkbox)).onChanged, isNull);
+    });
+
+    testWidgets('选择框隔离页面级 CheckboxTheme 样式污染', (tester) async {
+      final pollutedTheme =
+          TThemeBuilder.light(TThemeData.defaultData()).copyWith(
+        checkboxTheme: const CheckboxThemeData(
+          fillColor: WidgetStatePropertyAll(Colors.purple),
+          checkColor: WidgetStatePropertyAll(Colors.orange),
+          shape: CircleBorder(),
+          side: BorderSide(color: Colors.red, width: 4),
+        ),
+      );
+
+      await tester.pumpWidget(app(
+        TTable(
+          columns: columns(),
+          data: rows,
+          selectionMode: TTableSelectionMode.multiple,
+          onSelectionChanged: (_) {},
+        ),
+        materialTheme: pollutedTheme,
+      ));
+
+      final checkboxTheme =
+          tester.widgetList<CheckboxTheme>(find.byType(CheckboxTheme)).first;
+      expect(checkboxTheme.data.visualDensity, VisualDensity.compact);
+      expect(
+        checkboxTheme.data.materialTapTargetSize,
+        MaterialTapTargetSize.shrinkWrap,
+      );
+      expect(checkboxTheme.data.fillColor, isNull);
+      expect(checkboxTheme.data.checkColor, isNull);
+      expect(checkboxTheme.data.shape, isNull);
+      expect(checkboxTheme.data.side, isNull);
     });
   });
 

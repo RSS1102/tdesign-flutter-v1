@@ -389,7 +389,7 @@ class TTable<T> extends StatelessWidget {
       width: 48,
       height: double.infinity,
       child: CheckboxTheme(
-        data: CheckboxTheme.of(context).copyWith(
+        data: const CheckboxThemeData(
           visualDensity: VisualDensity.compact,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
