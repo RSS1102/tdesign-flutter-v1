@@ -59,11 +59,11 @@ class TPopoverWidget extends StatefulWidget {
     required this.context,
     this.content,
     this.contentWidget,
-    this.offset = 4,
+    this.offset,
     this.colorScheme,
     this.placement,
-    this.showArrow = true,
-    this.arrowSize = 8,
+    this.showArrow,
+    this.arrowSize,
     this.padding,
     this.width,
     this.height,
@@ -82,7 +82,7 @@ class TPopoverWidget extends StatefulWidget {
   final Widget? contentWidget;
 
   /// 偏移
-  final double offset;
+  final double? offset;
 
   /// 弹出气泡主题
   final TPopoverColorScheme? colorScheme;
@@ -94,7 +94,7 @@ class TPopoverWidget extends StatefulWidget {
   final bool? showArrow;
 
   /// 箭头大小
-  final double arrowSize;
+  final double? arrowSize;
 
   /// 内容内边距
   final EdgeInsetsGeometry? padding;
@@ -124,13 +124,11 @@ class _TPopoverWidgetState extends State<TPopoverWidget> {
       const TPopoverThemeData();
 
   double get _effectiveOffset =>
-      widget.offset == 4 ? _theme.offset ?? widget.offset : widget.offset;
+      widget.offset ?? _theme.offset ?? 4;
 
   bool get _effectiveShowArrow => widget.showArrow ?? _theme.showArrow ?? true;
 
-  double get _effectiveArrowSize => widget.arrowSize == 8
-      ? _theme.arrowSize ?? widget.arrowSize
-      : widget.arrowSize;
+  double get _effectiveArrowSize => widget.arrowSize ?? _theme.arrowSize ?? 8;
 
   EdgeInsetsGeometry? get _effectivePadding => widget.padding ?? _theme.padding;
 

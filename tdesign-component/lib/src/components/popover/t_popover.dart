@@ -14,7 +14,7 @@ class TPopover {
     Widget? contentWidget,
 
     /// 弹层与触发元素的间距。
-    double offset = 4,
+    double? offset,
 
     /// 气泡语义色。
     TPopoverColorScheme? colorScheme,
@@ -24,10 +24,10 @@ class TPopover {
     TPopoverPlacement? placement,
 
     /// 是否显示气泡箭头。
-    bool? showArrow = true,
+    bool? showArrow,
 
     /// 箭头尺寸。
-    double arrowSize = 8,
+    double? arrowSize,
 
     /// 内容内边距。
     EdgeInsetsGeometry? padding,
@@ -39,7 +39,7 @@ class TPopover {
     double? height,
 
     /// 蒙层颜色。
-    Color? overlayColor = Colors.transparent,
+    Color? overlayColor,
     TPopoverTapCallback? onTap,
     TPopoverLongPressCallback? onLongTap,
 
@@ -50,18 +50,18 @@ class TPopover {
         const TPopoverThemeData();
     return showDialog(
       barrierDismissible: closeOnClickOutside,
-      barrierColor: overlayColor ?? theme.barrierColor,
+      barrierColor: overlayColor ?? theme.barrierColor ?? Colors.transparent,
       useSafeArea: false,
       context: context,
       builder: (ctx) => TPopoverWidget(
         context: context,
         content: content,
         contentWidget: contentWidget,
-        offset: offset == 4 ? theme.offset ?? offset : offset,
+        offset: offset ?? theme.offset,
         colorScheme: colorScheme ?? theme.colorScheme,
         placement: placement,
         showArrow: showArrow ?? theme.showArrow,
-        arrowSize: arrowSize == 8 ? theme.arrowSize ?? arrowSize : arrowSize,
+        arrowSize: arrowSize ?? theme.arrowSize,
         padding: padding ?? theme.padding,
         width: width ?? theme.minWidth,
         height: height ?? theme.maxHeight,

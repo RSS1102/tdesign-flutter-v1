@@ -9,15 +9,22 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() {
   /// 构建带主题的测试壳
   Widget wrapWithTheme(Widget child, {TPopoverThemeData? popoverTheme}) {
-    final themeExtensions = <ThemeExtension>[
-      TThemeData.defaultData(),
-      if (popoverTheme != null) popoverTheme,
-    ];
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (popoverTheme != null) {
+      theme = theme.mergeExtension(popoverTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: themeExtensions),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
+
+  Finder arrowContainerFinder() => find.byWidgetPredicate(
+        (widget) =>
+            widget is Container &&
+            widget.decoration is BoxDecoration &&
+            (widget.decoration as BoxDecoration).border != null,
+      );
 
   // ============================================================
   // 枚举验证
@@ -262,6 +269,73 @@ void main() {
       await tester.pump();
       expect(find.text('圆角'), findsOneWidget);
     });
+
+    testWidgets('theme applies padding, radius and arrow size', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          return Center(
+            child: TPopoverWidget(
+              context: context,
+              content: '主题气泡',
+            ),
+          );
+        }),
+        popoverTheme: const TPopoverThemeData(
+          padding: EdgeInsets.all(10),
+          borderRadius: 20,
+          arrowSize: 16,
+        ),
+      ));
+      await tester.pump();
+
+      final container = tester.widget<Container>(
+        find.descendant(
+          of: find.byType(TPopoverWidget),
+          matching: find.byWidgetPredicate(
+            (widget) => widget is Container && widget.decoration is BoxDecoration,
+          ),
+        ).first,
+      );
+      final decoration = container.decoration! as BoxDecoration;
+      final arrow = tester.widget<Container>(arrowContainerFinder());
+
+      expect(decoration.borderRadius, BorderRadius.circular(20));
+      expect(container.padding, const EdgeInsets.all(10));
+      expect(
+        ((arrow.decoration! as BoxDecoration).border as Border?)?.bottom.width,
+        16,
+      );
+    });
+  });
+
+  testWidgets('showPopover uses theme barrierColor', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      theme: TThemeBuilder.light(TThemeData.defaultData()).mergeExtension(
+        const TPopoverThemeData(barrierColor: Colors.black54),
+      ),
+      home: Builder(builder: (context) {
+        return Scaffold(
+          body: Center(
+            child: TextButton(
+              onPressed: () {
+                TPopover.showPopover(
+                  context: context,
+                  content: '气泡',
+                  placement: TPopoverPlacement.bottom,
+                );
+              },
+              child: const Text('open'),
+            ),
+          ),
+        );
+      }),
+    ));
+
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    final barrier = tester.widgetList<ModalBarrier>(find.byType(ModalBarrier)).last;
+    expect(barrier.color, Colors.black54);
   });
 
   // ============================================================
