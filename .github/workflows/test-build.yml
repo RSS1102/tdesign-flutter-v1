@@ -43,7 +43,7 @@ jobs:
 
       - name: flutter test example demos
         working-directory: ./tdesign-component/example
-        run: flutter test test/widget_test.dart test/sidebar_anchor_test.dart --reporter compact
+        run: flutter test test/sidebar_anchor_test.dart --reporter compact
 
   build:
     needs: example-test

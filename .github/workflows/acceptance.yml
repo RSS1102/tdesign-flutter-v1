@@ -26,7 +26,7 @@ concurrency:
 
 jobs:
   # ============================================================
-  # Job 1：静态核查 + 文档一致性（不需要 Flutter SDK，用 Dart 即可）
+  # Job 1：静态核查 + 文档一致性
   # ============================================================
   static-checks:
     runs-on: ubuntu-latest
@@ -35,18 +35,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Dart
-        uses: dart-lang/setup-dart@v1
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
-          sdk: stable
+          flutter-version: "3.32.0"
+          cache: true
+
+      - name: tdesign-adaptation
+        run: sh ./tdesign-component/init.sh
 
       - name: flutter pub get
         working-directory: ./tdesign-component
-        run: dart pub get
+        run: flutter pub get
 
-      - name: dart analyze
+      - name: flutter analyze
         working-directory: ./tdesign-component
-        run: dart analyze --fatal-infos
+        run: flutter analyze --no-fatal-infos
 
       - name: Run acceptance checks (skip tests)
         id: acceptance

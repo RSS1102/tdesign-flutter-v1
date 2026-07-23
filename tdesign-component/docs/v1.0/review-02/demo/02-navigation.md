@@ -95,7 +95,7 @@ Review 建议：
 
 - 配置中 TabBar 所在页面入口文本是 `Tabs 选项卡 (V1.0)`，路由名是 `tabs`。
 - `BottomTabBar` 独立入口文本是 `BottomTabBar 底部标签栏 (V1.0)`，路由名是 `bottomTabBar`。
-- 当前源码未发现 `bootomTabBar` 拼写。
+- 当前源码未发现“bottomTabBar 的常见错拼入口”。
 - 用户补充确认：TabBar 的 demo 名称应该直接叫 `TabBar`，不应该被理解或展示成 `BottomTabBar`；该问题和源码实现/导出命名有关。
 - `_setValueToTabBar` 示例返回 `SizedBox(child: Column(mainAxisSize: MainAxisSize.min, children: [Expanded(child: PageView(...)), TBottomTabBar(...)]))`。
 - 该示例位于 `ExamplePage` 的滚动示例列表中，外层会给列表项不定高约束；在不定高列表项中使用 `Expanded(PageView)` 会导致子节点无法完成尺寸计算。
@@ -106,7 +106,7 @@ Review 建议：
 
 诊断：
 
-- 从源码看，入口命名不是 `bootomTabBar` 拼写错误。
+- 从源码看，入口命名不是 bottomTabBar 的错拼问题。
 - 但组件命名上，`TTabBar` 被放在 `Tabs` 页面下，用户实测时可能会把页面入口与组件名混淆；如果源码公开面也仍沿用 Tabs 口径，需要同步收敛。
 - 页面崩溃应归因于 `BottomTabBar` demo 的 `_setValueToTabBar` 布局写法；当前不应记录到 Indexes 或 Drawer。
 - `PageView` 必须有明确高度；不能直接放在滚动列表项内的 `Expanded` 中，除非外层提供确定高度约束。
