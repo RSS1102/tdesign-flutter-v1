@@ -13,12 +13,14 @@ on:
       - "tdesign-component/test/**"
       - "tdesign-component/scripts/acceptance/**"
       - "tdesign-component/example/lib/**"
+      - ".github/workflows/acceptance.yml"
   push:
     branches: [develop]
     paths:
       - "tdesign-component/lib/**"
       - "tdesign-component/test/**"
       - "tdesign-component/scripts/acceptance/**"
+      - ".github/workflows/acceptance.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
