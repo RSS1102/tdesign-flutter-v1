@@ -1221,9 +1221,10 @@ bool _isHeaderKeyword(String name) {
       name == '必传';
 }
 
-/// 从组件设计文档 md §1 中提取参数名
-
-/// 仅从「保留」和「新增」子表提取，跳过「迁移 / 改名」和「废弃」表（这些是旧→新映射，非实际 V1.0 参数）
+/// 从组件设计文档 md §1 的「### 构造器」表中提取参数名。
+///
+/// §1 后续还会包含 icon 行为、文案、类型、export 等说明表；这些表里的
+/// 枚举值或说明项不是构造器参数，不能纳入 API 一致性比对。
 
 Set<String> _extractSection1Params(String content) {
   final params = <String>{};
@@ -1252,31 +1253,34 @@ Set<String> _extractSection1Params(String content) {
     return params;
   }
 
-  // 追踪当前子节（### 标题），跳过「迁移」和「废弃」表
+  // 仅进入「### 构造器」子节；遇到下一个同级/更高级标题即停止。
 
-  var skipTable = false;
+  var inConstructorSection = false;
 
   for (var i = sectionStart; i < sectionEnd; i++) {
     final line = lines[i];
 
     final trimmed = line.trim();
 
-    // 检测 ### 子标题
+    if (trimmed.startsWith('### ')) {
+      if (trimmed.contains('构造器')) {
+        inConstructorSection = true;
 
-    if (trimmed.startsWith('###')) {
-      // 「迁移 / 改名」「废弃」「移除」「export」子表跳过
+        continue;
+      }
 
-      skipTable = trimmed.contains('迁移') ||
-          trimmed.contains('改名') ||
-          trimmed.contains('废弃') ||
-          trimmed.contains('移除') ||
-          trimmed.contains('export') ||
-          trimmed.contains('Export');
+      if (inConstructorSection) {
+        break;
+      }
 
       continue;
     }
 
-    if (skipTable) {
+    if (inConstructorSection && trimmed.startsWith('####')) {
+      break;
+    }
+
+    if (!inConstructorSection) {
       continue;
     }
 
