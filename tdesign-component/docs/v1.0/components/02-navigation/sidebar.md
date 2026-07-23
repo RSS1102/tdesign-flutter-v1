@@ -40,7 +40,7 @@
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
-> **P0 逃逸舱**：无。本组件不提供 `style` / `decoration` 逃逸舱（四问判定见 [theme.md §2.2](../../foundation/theme.md#22-p0-逃逸舱判定)）；单颗差异用子树 `mergeExtension` 或 L1 单项（`loading`）。
+> **P0 样式覆盖**：`style`、颜色、`contentPadding`、`height` 可直接覆盖 Theme，适用于单颗 SideBar 的局部差异；可复用默认值仍应放入 `TSideBarThemeData`。
 
 ### 1.1 构造器参数
 
@@ -49,10 +49,16 @@
 | ✏️ | `value` | `int` | L1 | — | 当前选中项；**必填**；须匹配 `children` 中某项 |
 | | `onChanged` | `ValueChanged<int>?` | L3 | — | 选中变化；与 `value` 成对；`null` 禁用整栏 |
 | | `children` | `List<TSideBarItem>` | L2 | `[]` | 侧栏项 |
+| | `style` | `TSideBarVariant?` | P0 | Theme / `normal` | `normal` 或 `outline` 形态 |
+| | `selectedColor` / `unSelectedColor` | `Color?` | P0 | Theme / Token | 选中、未选中文字色 |
+| | `selectedTextStyle` | `TextStyle?` | P0 | Theme | 选中文字样式 |
+| | `selectedBgColor` / `unSelectedBgColor` | `Color?` | P0 | Theme / Token | 选中、未选中背景色 |
+| | `contentPadding` | `EdgeInsetsGeometry?` | P0 | Theme / `EdgeInsets.all(16)` | 项内边距 |
+| | `height` | `double?` | P0 | Theme / 视口高度 | 侧栏高度 |
 | | `loading` | `bool` | L1 | `false` | **业务态**：是否展示加载 UI（→ §1.1.1） |
 | | `loadingWidget` | `Widget?` | L2 | — | 加载占位；与 `loading` 配对；保留 `*Widget` 消歧 → [api.md §2.1](../../foundation/api.md#21-l2-内容槽widget-实例-vs-builder-回调) |
 
-> 样式默认经 `Theme.of(context).extension<TSideBarThemeData>()`；**禁止**构造器 `themeData`（→ [theme.md §2.1](../../foundation/theme.md#禁止构造器-themedatav10-裁决)）。  
+> 样式默认经 `Theme.of(context).extension<TSideBarThemeData>()`；局部参数优先级高于 Theme；**禁止**构造器 `themeData`（→ [theme.md §2.1](../../foundation/theme.md#禁止构造器-themedatav10-裁决)）。
 > 构造器可选 `Key`（`super.key`）见 [api.md §1.1](../../foundation/api.md#11-flutter-keywidget-基建)；**不进上表**。
 
 #### §1.1.1 加载态
@@ -120,6 +126,8 @@ setState(() => _value = 2);
 | | `disabled` | `bool` | `false` | 单项禁用 |
 | | `textStyle` | `TextStyle?` | — | 项级文字样式（不进 Theme） |
 
+**图标与徽标**：`badge` 显示在项目右上角，不占用图标与标签的主行宽度；带 `icon` 的项目仍保留图标和单行省略标签。标签过长时以 `ellipsis` 截断。
+
 #### 其他类型
 
 | 决策 | 类型 | 说明 |
@@ -142,7 +150,7 @@ setState(() => _value = 2);
 |------|---------|
 | 单颗 / 子树 / 全局 | `mergeExtension(TSideBarThemeData(...))` |
 
-覆盖顺序：`P0`(无) **>** `P1` 组件 Theme（`TSideBarThemeData`）**>** `P3` `ThemeData` / `P4` Token（自绘无 P2 Material 子主题）。
+覆盖顺序：构造器局部覆盖 **P0** **>** `P1` 组件 Theme（`TSideBarThemeData`）**>** `P3` `ThemeData` / `P4` Token（自绘无 P2 Material 子主题）。
 
 | 决策 | 字段 | 管什么 |
 |------|------|--------|
@@ -159,8 +167,9 @@ setState(() => _value = 2);
 **进 `TSideBarThemeData`（P1，可主题化）**
 - `style`（`normal` / `outline`）· `selectedColor` / `unSelectedColor` / `selectedBgColor` / `unSelectedBgColor` · `selectedTextStyle` · `contentPadding` · `height`
 
-**不进 Theme（构造器 L1/L2/L3）**
-- `loading`（L1）· `loadingWidget`（L2）· `value`（L1）· `onChanged`（L3）· `children`（L2）· 项级 `textStyle`（L2）
+**不进 Theme（构造器 P0/L1/L2/L3）**
+- P0：`style` · `selectedColor` / `unSelectedColor` · `selectedBgColor` / `unSelectedBgColor` · `selectedTextStyle` · `contentPadding` · `height`
+- L1/L2/L3：`loading` · `loadingWidget` · `value` · `onChanged` · `children` · 项级 `textStyle`
 
 ---
 
@@ -176,8 +185,14 @@ setState(() => _value = 2);
 | 单项高度 | `56` |
 | 列表 | `ListView` · `ClampingScrollPhysics` |
 
-**必测**：受控 `value`+`onChanged`（点击触发）· 父改 `value` 同步高亮 · `onChanged: null` · `disabled` 单项 · `value` 必填不自动首项 · `loading` / `loadingWidget` · `TSideBarVariant` Theme。
+**必测**：受控 `value`+`onChanged`（点击触发）· 父改 `value` 同步高亮 · `onChanged: null` · `disabled` 单项 · `value` 必填不自动首项 · `loading` / `loadingWidget` · `TSideBarVariant` Theme · 图标与徽标共存时主行内容可见。
 
-**Example**：B 类受控示例 · 父 `setState` 切项 · 单项/整栏禁用 · Theme `style` 覆盖。
+**Example**：
+- 切页：`PageController` 由父 State 驱动，每个 `children` 项对应不同的页面标题、说明和内容。
+- 锚点：以每段**标题**的 `GlobalKey` 相对右侧滚动视口顶边确定选中项；点击项使用 `Scrollable.ensureVisible(..., alignment: 0)`。不得使用固定区块高度、固定 offset 或视口中心阈值。
+- 锚点末段：尾部空间仅补足“最后标题到末段内容底部”不足一屏的高度；最后标题置顶后不得继续将内容向上推。
+- `outline` 与带图标锚点示例复用上述锚点语义；自定义样式使用 Theme Token 的浅色背景和次级文字色，避免硬编码主题色。
+- 延迟加载：初始 `loading: true`，异步数据就绪后切换为正常列表；不得在 `build` 中重复创建延迟任务或永久保持 loading。
+- 未选中颜色：仅展示 `unSelectedColor` 的低干扰前景色覆盖，并保留实际 `children`、选中态和内容切换，不与锚点或 children 更新示例混用。
 
 > [api.md](../../foundation/api.md) · [controlled.md](../../foundation/controlled.md) · [testing.md](../../guide/testing.md)（类名与 **§1** 冲突时以 **§1** 为准）

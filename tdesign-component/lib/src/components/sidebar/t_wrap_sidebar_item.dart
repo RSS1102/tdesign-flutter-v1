@@ -113,15 +113,29 @@ class TWrapSideBarItem extends StatelessWidget {
   }
 
   Widget renderMainContent(BuildContext context) {
-    return Row(
+    final content = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         renderIcon(context),
         Expanded(child: renderLabel(context)),
-        if (badge != null) ...[
-          const SizedBox(width: 4),
-          badge!,
-        ],
+      ],
+    );
+    if (badge == null) {
+      return content;
+    }
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: content,
+        ),
+        Positioned(
+          top: -8,
+          right: -4,
+          child: badge!,
+        ),
       ],
     );
   }

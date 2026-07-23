@@ -14,7 +14,7 @@ import 't_backtop_theme_data.dart';
 /// T2 自绘组件：`GestureDetector` + `Container` 双形态（`circle` / `halfCircle`）。
 /// - 监听 [controller] 偏移控制显隐，点击默认 `controller.animateTo(0)` 后触发 [onPressed]。
 /// - A 类禁用：[onPressed] 为 `null` 时不可点击。
-/// - L4 样式（[shape] / [colorScheme] / 默认阈值等）→ [TBackTopThemeData]。
+/// - L4 样式（[shape]、颜色、默认阈值等）→ [TBackTopThemeData]。
 class TBackTop extends StatefulWidget {
   const TBackTop({
     Key? key,
@@ -23,7 +23,6 @@ class TBackTop extends StatefulWidget {
     this.showText = false,
     this.visibilityOffset,
     this.tooltip,
-    this.colorScheme,
     this.shape,
   }) : super(key: key);
 
@@ -41,9 +40,6 @@ class TBackTop extends StatefulWidget {
 
   /// 读屏 / `Tooltip` 提示；未传时可回退资源文案
   final String? tooltip;
-
-  /// 配色方案（light / dark）；未传时取 Theme `colorScheme`
-  final TBackTopColorScheme? colorScheme;
 
   /// 形状（circle / halfCircle）；未传时取 Theme `shape`
   final TBackTopShape? shape;
@@ -68,9 +64,6 @@ class _TBackTopState extends State<TBackTop> {
 
   TBackTopShape get _effectiveShape =>
       widget.shape ?? _themeData.shape ?? TBackTopShape.circle;
-
-  TBackTopColorScheme get _effectiveColorScheme =>
-      widget.colorScheme ?? _themeData.colorScheme ?? TBackTopColorScheme.light;
 
   double? get _effectiveVisibilityOffset =>
       widget.visibilityOffset ?? _themeData.defaultVisibilityOffset;
@@ -124,9 +117,6 @@ class _TBackTopState extends State<TBackTop> {
   @override
   void didUpdateWidget(covariant TBackTop oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.colorScheme != widget.colorScheme) {
-      _initColors();
-    }
     if (oldWidget.controller != widget.controller ||
         oldWidget.visibilityOffset != widget.visibilityOffset) {
       // 解除旧监听，重新绑定
@@ -144,17 +134,10 @@ class _TBackTopState extends State<TBackTop> {
   }
 
   void _initColors() {
-    final theme = context.tTheme;
-    final colorScheme = _effectiveColorScheme;
-    _bgColor = colorScheme == TBackTopColorScheme.light
-        ? theme.grayColor1
-        : theme.grayColor13;
-    _borderColor = colorScheme == TBackTopColorScheme.light
-        ? theme.grayColor4
-        : theme.grayColor9;
-    _fontColor = colorScheme == TBackTopColorScheme.light
-        ? theme.textColorPrimary
-        : theme.textColorAnti;
+    final colorScheme = Theme.of(context).colorScheme;
+    _bgColor = _themeData.backgroundColor ?? colorScheme.primaryContainer;
+    _borderColor = _themeData.borderColor ?? colorScheme.primary;
+    _fontColor = _themeData.contentColor ?? colorScheme.onPrimaryContainer;
   }
 
   void _refreshVisibility() {
@@ -309,8 +292,7 @@ class _TBackTopState extends State<TBackTop> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         height: 1.2,
-                        fontSize:
-                            context.tTheme.fontMarkExtraSmall?.size ?? 10,
+                        fontSize: context.tTheme.fontMarkExtraSmall?.size ?? 10,
                         color: _fontColor,
                         fontWeight: FontWeight.w600,
                       ),
@@ -321,8 +303,7 @@ class _TBackTopState extends State<TBackTop> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         height: 1.2,
-                        fontSize:
-                            context.tTheme.fontMarkExtraSmall?.size ?? 10,
+                        fontSize: context.tTheme.fontMarkExtraSmall?.size ?? 10,
                         color: _fontColor,
                         fontWeight: FontWeight.w600,
                       ),

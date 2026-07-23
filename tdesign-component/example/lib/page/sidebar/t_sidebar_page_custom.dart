@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
@@ -17,8 +19,10 @@ class TSideBarCustomPage extends StatefulWidget {
 }
 
 class TSideBarCustomPageState extends State<TSideBarCustomPage> {
-  var currentValue = 1;
-  final _pageController = PageController(initialPage: 1);
+  static const _sections = ['今日精选', '新鲜烘焙', '午后茶点', '轻食简餐', '限定活动', '会员心选'];
+
+  var currentValue = 0;
+  final _pageController = PageController();
 
   @override
   void dispose() {
@@ -49,29 +53,15 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
     final list = <TSideBarItem>[];
     final pages = <Widget>[];
 
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < _sections.length; i++) {
       list.add(TSideBarItem(
-        label: '选项 $i',
+        label: _sections[i],
         value: i,
-        textStyle: TextStyle(color: context.tTheme.textColorPrimary),
+        textStyle: TextStyle(color: context.tTheme.textColorSecondary),
       ));
       pages.add(getPageDemo(context, i));
     }
 
-    list[1] = TSideBarItem(
-      label: list[1].label,
-      value: list[1].value,
-      icon: list[1].icon,
-      textStyle: list[1].textStyle,
-      badge: const TBadge(variant: TBadgeVariant.dot),
-    );
-    list[2] = TSideBarItem(
-      label: list[2].label,
-      value: list[2].value,
-      icon: list[2].icon,
-      textStyle: list[2].textStyle,
-      badge: const TBadge(count: 8),
-    );
     void setCurrentValue(int value) {
       _pageController.jumpToPage(value);
       if (currentValue != value) {
@@ -84,7 +74,7 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
     return Row(
       children: [
         SizedBox(
-          width: 106,
+          width: 116,
           child: TSideBar(
             style: TSideBarVariant.normal,
             value: currentValue,
@@ -102,9 +92,10 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
             ),
             onChanged: setCurrentValue,
             contentPadding:
-                const EdgeInsets.only(left: 16, top: 16, bottom: 16),
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
             selectedBgColor: context.tTheme.brandLightColor,
-            unSelectedBgColor: context.tTheme.bgColorSecondaryContainer,
+            unSelectedBgColor: context.tTheme.bgColorContainer,
+            unSelectedColor: context.tTheme.textColorSecondary,
           ),
         ),
         Expanded(
@@ -127,7 +118,10 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 20, top: 2, right: 9),
-            child: TText('标题 $index', style: const TextStyle(fontSize: 14)),
+            child: TText(
+              _sections[index],
+              font: context.tTheme.fontTitleMedium,
+            ),
           ),
           const SizedBox(height: 16),
           displayImageList()
@@ -152,33 +146,47 @@ class TSideBarCustomPageState extends State<TSideBarCustomPage> {
   }
 
   Widget displayImageList() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18),
-      width: double.infinity,
-      child: Wrap(
-        spacing: 18,
-        runSpacing: 18,
-        alignment: WrapAlignment.spaceEvenly,
-        children: List.generate(
-          12,
-          (index) => displayImageItem('${index}最多六个字'),
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const horizontalPadding = 18.0;
+        const spacing = 12.0;
+        final contentWidth = constraints.maxWidth - horizontalPadding * 2;
+        final columnCount = max(1, ((contentWidth + spacing) / 84).floor());
+        final itemWidth =
+            (contentWidth - spacing * (columnCount - 1)) / columnCount;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
+          child: Wrap(
+            spacing: spacing,
+            runSpacing: 16,
+            children: List.generate(
+              6,
+              (index) => displayImageItem('${index}最多六个字', itemWidth),
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget displayImageItem(String title) {
+  Widget displayImageItem(String title, double width) {
     return SizedBox(
-      width: 72,
+      width: width,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const TImage(
+          TImage(
             src: 'assets/img/empty.png',
             variant: TImageVariant.roundedSquare,
+            width: min(72.0, width),
+            height: min(72.0, width),
           ),
           const SizedBox(height: 4),
-          TText(title, style: const TextStyle(fontSize: 12))
+          TText(
+            title,
+            style: const TextStyle(fontSize: 12),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );

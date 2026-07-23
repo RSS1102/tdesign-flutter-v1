@@ -13,25 +13,21 @@ enum TBackTopShape {
   halfCircle,
 }
 
-/// 返回顶部配色方案
-enum TBackTopColorScheme {
-  /// 明亮配色
-  light,
-
-  /// 暗黑配色
-  dark,
-}
-
 /// 返回顶部组件 ThemeExtension
 ///
-/// 管理 TBackTop 的子树级默认样式（形状、配色、显隐阈值、定位偏移等）。
-/// 构造器参数优先级高于 ThemeData。
+/// 管理 TBackTop 的子树级默认样式（形状、颜色、显隐阈值、定位偏移等）。
 class TBackTopThemeData extends ThemeExtension<TBackTopThemeData> {
   /// 默认形状（circle / halfCircle）
   final TBackTopShape? shape;
 
-  /// 默认配色方案（light / dark）
-  final TBackTopColorScheme? colorScheme;
+  /// 背景色；未设置时读取 [ColorScheme.primaryContainer]。
+  final Color? backgroundColor;
+
+  /// 边框色；未设置时读取 [ColorScheme.primary]。
+  final Color? borderColor;
+
+  /// 图标和文字颜色；未设置时读取 [ColorScheme.onPrimaryContainer]。
+  final Color? contentColor;
 
   /// 默认显示阈值（未传 [TBackTop.visibilityOffset] 时，滚动偏移 ≥ 此值才显示）
   final double? defaultVisibilityOffset;
@@ -47,7 +43,9 @@ class TBackTopThemeData extends ThemeExtension<TBackTopThemeData> {
 
   const TBackTopThemeData({
     this.shape,
-    this.colorScheme,
+    this.backgroundColor,
+    this.borderColor,
+    this.contentColor,
     this.defaultVisibilityOffset,
     this.defaultRight,
     this.defaultBottom,
@@ -57,7 +55,9 @@ class TBackTopThemeData extends ThemeExtension<TBackTopThemeData> {
   @override
   TBackTopThemeData copyWith({
     TBackTopShape? shape,
-    TBackTopColorScheme? colorScheme,
+    Color? backgroundColor,
+    Color? borderColor,
+    Color? contentColor,
     double? defaultVisibilityOffset,
     double? defaultRight,
     double? defaultBottom,
@@ -65,13 +65,14 @@ class TBackTopThemeData extends ThemeExtension<TBackTopThemeData> {
   }) {
     return TBackTopThemeData(
       shape: shape ?? this.shape,
-      colorScheme: colorScheme ?? this.colorScheme,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
+      borderColor: borderColor ?? this.borderColor,
+      contentColor: contentColor ?? this.contentColor,
       defaultVisibilityOffset:
           defaultVisibilityOffset ?? this.defaultVisibilityOffset,
       defaultRight: defaultRight ?? this.defaultRight,
       defaultBottom: defaultBottom ?? this.defaultBottom,
-      halfCircleRightInset:
-          halfCircleRightInset ?? this.halfCircleRightInset,
+      halfCircleRightInset: halfCircleRightInset ?? this.halfCircleRightInset,
     );
   }
 
@@ -82,9 +83,11 @@ class TBackTopThemeData extends ThemeExtension<TBackTopThemeData> {
     }
     return TBackTopThemeData(
       shape: t < 0.5 ? shape : other.shape,
-      colorScheme: t < 0.5 ? colorScheme : other.colorScheme,
-      defaultVisibilityOffset: lerpDouble(
-          defaultVisibilityOffset, other.defaultVisibilityOffset, t),
+      backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
+      borderColor: Color.lerp(borderColor, other.borderColor, t),
+      contentColor: Color.lerp(contentColor, other.contentColor, t),
+      defaultVisibilityOffset:
+          lerpDouble(defaultVisibilityOffset, other.defaultVisibilityOffset, t),
       defaultRight: lerpDouble(defaultRight, other.defaultRight, t),
       defaultBottom: lerpDouble(defaultBottom, other.defaultBottom, t),
       halfCircleRightInset:

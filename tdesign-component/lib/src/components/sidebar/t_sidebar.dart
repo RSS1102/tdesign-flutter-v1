@@ -12,6 +12,7 @@ class _SideBarItemData {
   _SideBarItemData({
     required this.value,
     required this.index,
+    required this.key,
     this.disabled,
     this.icon,
     this.label,
@@ -21,6 +22,7 @@ class _SideBarItemData {
 
   final int index;
   final int value;
+  final GlobalKey key;
   final bool? disabled;
   final IconData? icon;
   final String? label;
@@ -90,12 +92,13 @@ class TSideBar extends StatefulWidget {
 }
 
 class _TSideBarState extends State<TSideBar> {
+  static const _estimatedItemHeight = 56.0;
+
   late List<_SideBarItemData> displayChildren;
   int? currentValue;
   int? currentIndex;
   final _scrollerController = ScrollController();
-  final GlobalKey globalKey = GlobalKey();
-  final double itemHeight = 56.0;
+  final Map<int, GlobalKey> _itemKeys = {};
 
   TSideBarThemeData _resolveTheme() {
     return Theme.of(context).extension<TSideBarThemeData>() ??
@@ -127,26 +130,48 @@ class _TSideBarState extends State<TSideBar> {
     }
 
     if (needScroll && item != null) {
-      final context = globalKey.currentContext;
-      final height = context?.size?.height;
-      if (height != null && _scrollerController.hasClients) {
-        final offset = _scrollerController.offset;
-        final distance = item.index * itemHeight - offset;
-        if (distance + itemHeight > height) {
-          _scrollerController.animateTo(
-            offset + itemHeight, // coverage:ignore-line
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeIn,
-          );
-        } else if (distance < 0) {
-          _scrollerController.animateTo(
-            offset - itemHeight, // coverage:ignore-line
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeIn,
-          );
-        }
-      }
+      _scrollToItem(item);
     }
+  }
+
+  Future<void> _scrollToItem(_SideBarItemData item) async {
+    final itemContext = item.key.currentContext;
+    if (itemContext != null) {
+      await _ensureItemVisible(itemContext);
+      return;
+    }
+    if (!_scrollerController.hasClients) {
+      return;
+    }
+
+    // ListView 会延迟创建视口外条目。先按默认行高接近目标，再以实际位置校正。
+    final position = _scrollerController.position;
+    final estimatedOffset = (item.index * _estimatedItemHeight).clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    );
+    await _scrollerController.animateTo(
+      estimatedOffset,
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeInOut,
+    );
+    if (!mounted) {
+      return;
+    }
+
+    final resolvedContext = item.key.currentContext;
+    if (resolvedContext != null) {
+      await _ensureItemVisible(resolvedContext);
+    }
+  }
+
+  Future<void> _ensureItemVisible(BuildContext context) {
+    return Scrollable.ensureVisible(
+      context,
+      alignment: 0.5,
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -162,6 +187,7 @@ class _TSideBarState extends State<TSideBar> {
         .entries
         .map((entry) => _SideBarItemData(
               index: entry.key,
+              key: _itemKeys.putIfAbsent(entry.value.value, GlobalKey.new),
               disabled: entry.value.disabled,
               value: entry.value.value,
               icon: entry.value.icon,
@@ -197,14 +223,14 @@ class _TSideBarState extends State<TSideBar> {
     }
 
     final sideBar = ConstrainedBox(
-      key: globalKey,
       constraints: BoxConstraints(
         minWidth: 106,
-        maxHeight:
-            MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top,
+        maxHeight: MediaQuery.of(context).size.height -
+            MediaQuery.of(context).padding.top,
       ),
       child: SizedBox(
-        height: widget.height ?? theme.height ?? MediaQuery.of(context).size.height,
+        height:
+            widget.height ?? theme.height ?? MediaQuery.of(context).size.height,
         child: MediaQuery.removePadding(
           context: context,
           removeTop: true,
@@ -216,6 +242,7 @@ class _TSideBarState extends State<TSideBar> {
             itemBuilder: (BuildContext context, int index) {
               final ele = displayChildren[index];
               return TWrapSideBarItem(
+                key: ele.key,
                 style: effectiveStyle,
                 value: ele.value,
                 icon: ele.icon,
@@ -225,11 +252,13 @@ class _TSideBarState extends State<TSideBar> {
                 textStyle: ele.textStyle,
                 selected: currentIndex == ele.index,
                 selectedColor: widget.selectedColor ?? theme.selectedColor,
-                unSelectedColor: widget.unSelectedColor ?? theme.unSelectedColor,
+                unSelectedColor:
+                    widget.unSelectedColor ?? theme.unSelectedColor,
                 selectedTextStyle:
                     widget.selectedTextStyle ?? theme.selectedTextStyle,
                 contentPadding: widget.contentPadding ?? theme.contentPadding,
-                topAdjacent: currentIndex != null && currentIndex! + 1 == ele.index,
+                topAdjacent:
+                    currentIndex != null && currentIndex! + 1 == ele.index,
                 bottomAdjacent:
                     currentIndex != null && currentIndex! - 1 == ele.index,
                 selectedBgColor: widget.selectedBgColor ??

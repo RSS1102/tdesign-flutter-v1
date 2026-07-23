@@ -14,23 +14,6 @@ class TBackTopPage extends StatefulWidget {
 class _TBackTopPageState extends State<TBackTopPage> {
   final ScrollController controller = ScrollController();
   TBackTopShape shape = TBackTopShape.circle;
-  TBackTopColorScheme colorScheme = TBackTopColorScheme.light;
-
-  @override
-  void initState() {
-    super.initState();
-    // 根据当前亮暗主题自动适配 colorScheme
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        colorScheme = Theme.of(context).brightness == Brightness.dark
-            ? TBackTopColorScheme.dark
-            : TBackTopColorScheme.light;
-      });
-    });
-  }
 
   @override
   void dispose() {
@@ -54,7 +37,6 @@ class _TBackTopPageState extends State<TBackTopPage> {
                   bottom: 10,
                   child: TBackTop(
                     controller: controller,
-                    colorScheme: colorScheme,
                     showText: true,
                     shape: shape,
                     visibilityOffset: 100,
@@ -65,7 +47,6 @@ class _TBackTopPageState extends State<TBackTopPage> {
             )
           : TBackTop(
               controller: controller,
-              colorScheme: colorScheme,
               showText: true,
               shape: shape,
               visibilityOffset: 100,

@@ -324,23 +324,26 @@ void main() {
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
     });
 
-    testWidgets('短标签带 badge 保持水平布局', (tester) async {
+    testWidgets('带图标和 badge 时保留主行内容', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TWrapSideBarItem(
           style: TSideBarVariant.normal,
           label: '短',
           value: 3,
           disabled: false,
+          icon: Icons.star,
           badge: TBadge(count: 1),
         ),
       ));
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
-      final labelCenter = tester.getCenter(find.text('短'));
-      final badgeCenter = tester.getCenter(find.byType(TBadge));
-      expect(labelCenter.dy, moreOrLessEquals(badgeCenter.dy, epsilon: 1));
+      final icon = tester.getRect(find.byIcon(Icons.star));
+      final label = tester.getRect(find.text('短'));
+      final badge = tester.getRect(find.byType(TBadge));
+      expect(icon.right, lessThanOrEqualTo(label.left));
+      expect(badge.top, lessThan(label.top));
     });
 
-    testWidgets('长标签带 badge 保持水平布局', (tester) async {
+    testWidgets('长标签与浮层 badge 可共同渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TWrapSideBarItem(
           style: TSideBarVariant.normal,
@@ -351,9 +354,9 @@ void main() {
         ),
       ));
       expect(find.byType(TWrapSideBarItem), findsOneWidget);
-      final labelCenter = tester.getCenter(find.text('很长很长的标签内容xxx'));
-      final badgeCenter = tester.getCenter(find.byType(TBadge));
-      expect(labelCenter.dy, moreOrLessEquals(badgeCenter.dy, epsilon: 1));
+      expect(find.text('很长很长的标签内容xxx'), findsOneWidget);
+      expect(find.byType(TBadge), findsOneWidget);
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('长标签在窄宽度下保持单行省略', (tester) async {
@@ -434,8 +437,12 @@ void main() {
         ),
       ));
       setState(() => value = 10);
-      await tester.pump(const Duration(milliseconds: 150));
+      await tester.pumpAndSettle();
       expect(find.byType(TSideBar), findsOneWidget);
+      final sideBarRect = tester.getRect(find.byType(TSideBar));
+      final selectedCenter = tester.getCenter(find.text('选项11'));
+      expect(selectedCenter.dy,
+          inInclusiveRange(sideBarRect.top, sideBarRect.bottom));
     });
   });
 }

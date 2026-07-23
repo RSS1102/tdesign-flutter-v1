@@ -96,11 +96,12 @@ BackTop 默认仅图标（`showText: false`），读屏（VoiceOver / TalkBack�
 
 覆盖顺序：`P0`(无) **>** `P1` 组件 Theme（`TBackTopThemeData`）**>** `P3` `ThemeData` / `P4` Token（自绘无 P2 Material 子主题）。
 
-**配色**：不暴露 `colorScheme` / `theme` 构造器或 Theme 字段；背景/边框/文字色由 `Theme.of(context).brightness` 选 Token（亮模式灰阶浅底，暗模式灰阶深底）。
+**配色**：不提供构造器颜色字段。默认背景、边框和内容色分别读取 `Theme.of(context).colorScheme.primaryContainer`、`primary`、`onPrimaryContainer`，因此应用品牌主题会自动生效；需要局部覆盖时使用 `TBackTopThemeData`。
 
 | 决策 | 字段 | 管什么 |
 |------|------|--------|
 | 📦 | `shape` | 外形 |
+| 📦 | `backgroundColor` / `borderColor` / `contentColor` | 背景、边框、图标与文字色 |
 | ✨ | `defaultVisibilityOffset` | 显隐阈值 |
 | ✨ | `defaultRight` / `defaultBottom` | 定位 |
 | ✨ | `halfCircleRightInset` | 半圆贴边 |
@@ -110,7 +111,7 @@ BackTop 默认仅图标（`showText: false`），读屏（VoiceOver / TalkBack�
 本组件为 T2 自绘（无 Material 等价薄包装）；已确认 Material 无对应字段 → 进 Theme 者全为 TDesign 扩展（P1）。
 
 **进 `TBackTopThemeData`（P1，可主题化）**
-- `shape` · `defaultVisibilityOffset` · `defaultRight` / `defaultBottom` · `halfCircleRightInset`
+- `shape` · `backgroundColor` / `borderColor` / `contentColor` · `defaultVisibilityOffset` · `defaultRight` / `defaultBottom` · `halfCircleRightInset`
 
 **不进 Theme（构造器 L1/L2/L3）**
 - `controller`（L1）· `showText`（L2）· `onPressed`（L3）· `tooltip`（L2）

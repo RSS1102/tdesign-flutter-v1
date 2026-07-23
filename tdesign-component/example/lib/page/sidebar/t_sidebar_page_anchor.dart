@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
@@ -8,7 +10,16 @@ import '../../base/example_widget.dart';
 /// TSideBarAnchorPage演示
 ///
 class TSideBarAnchorPage extends StatefulWidget {
-  const TSideBarAnchorPage({Key? key}) : super(key: key);
+  const TSideBarAnchorPage({
+    super.key,
+    this.title = 'SideBar 锚点用法',
+    this.style = TSideBarVariant.normal,
+    this.withIcons = false,
+  });
+
+  final String title;
+  final TSideBarVariant style;
+  final bool withIcons;
 
   @override
   State<StatefulWidget> createState() {
@@ -17,41 +28,34 @@ class TSideBarAnchorPage extends StatefulWidget {
 }
 
 class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
-  var currentValue = 1;
-  var itemHeight = 278.5;
-  var titleBarHeight = 44;
-  var testButtonHeight = 80.0;
-  final _demoScroller = ScrollController(initialScrollOffset: 278.5);
-  static const threshold = 50;
-  var lock = false;
+  static const _anchorEdgeTolerance = 0.5;
+
+  var currentValue = 0;
+  final _demoScroller = ScrollController();
+  var _isProgrammaticScroll = false;
   var list = <TSideBarItem>[];
-  final pages = <Widget>[];
+  final _headerKeys = List.generate(20, (_) => GlobalKey());
+  final _contentViewportKey = GlobalKey();
+  final _lastSectionKey = GlobalKey();
+  var _trailingExtent = 0.0;
 
   @override
   void initState() {
     super.initState();
 
     _demoScroller.addListener(() {
-      if (lock) {
+      if (_isProgrammaticScroll) {
         return;
       }
-
-      var scrollTop = _demoScroller.offset;
-      var index = (scrollTop + threshold) ~/ itemHeight;
-
-      if (currentValue != index) {
-        setState(() {
-          currentValue = index;
-        });
-      }
+      _syncSelectionFromViewport();
     });
 
     for (var i = 0; i < 20; i++) {
       list.add(TSideBarItem(
         label: '选项$i',
         value: i,
+        icon: widget.withIcons ? TIcons.app : null,
       ));
-      pages.add(getAnchorDemo(i));
     }
 
     list[1] = TSideBarItem(
@@ -70,28 +74,85 @@ class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
     );
   }
 
-  Future<void> handleSidebarChange(int value) async {
-    if (currentValue == value) {
-      return;
+  void _syncSelectionFromViewport() {
+    final index = _indexForViewport();
+    if (index != currentValue && mounted) {
+      setState(() => currentValue = index);
     }
-    setState(() {
-      currentValue = value;
-    });
-
-    lock = true;
-    await _demoScroller.animateTo(
-      value.toDouble() * itemHeight,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeIn,
-    );
-    lock = false;
   }
 
-  void onChanged(int value) {
-    if (mounted) {
-      setState(() {
-        currentValue = value;
-      });
+  void _syncTrailingExtent() {
+    final viewport =
+        _contentViewportKey.currentContext?.findRenderObject() as RenderBox?;
+    final header =
+        _headerKeys.last.currentContext?.findRenderObject() as RenderBox?;
+    final section =
+        _lastSectionKey.currentContext?.findRenderObject() as RenderBox?;
+    if (viewport == null || header == null || section == null) {
+      return;
+    }
+
+    final headerTop = header.localToGlobal(Offset.zero).dy;
+    final sectionBottom =
+        section.localToGlobal(Offset.zero).dy + section.size.height;
+    final extent = max(0.0, viewport.size.height - (sectionBottom - headerTop));
+    if ((extent - _trailingExtent).abs() > _anchorEdgeTolerance && mounted) {
+      setState(() => _trailingExtent = extent);
+    }
+  }
+
+  int _indexForViewport() {
+    final viewport =
+        _contentViewportKey.currentContext?.findRenderObject() as RenderBox?;
+    if (viewport == null) {
+      return currentValue;
+    }
+
+    final viewportTop = viewport.localToGlobal(Offset.zero).dy;
+    var index = 0;
+    for (var i = 1; i < _headerKeys.length; i++) {
+      final header =
+          _headerKeys[i].currentContext?.findRenderObject() as RenderBox?;
+      if (header == null ||
+          header.localToGlobal(Offset.zero).dy >
+              viewportTop + _anchorEdgeTolerance) {
+        break;
+      }
+      index = i;
+    }
+    return index;
+  }
+
+  Future<void> _scrollToHeader(int index) async {
+    final context = _headerKeys[index].currentContext;
+    if (context == null) {
+      return;
+    }
+    await Scrollable.ensureVisible(
+      context,
+      alignment: 0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  Future<void> handleSidebarChange(int value) async {
+    if (currentValue != value) {
+      setState(() => currentValue = value);
+    }
+
+    _isProgrammaticScroll = true;
+    try {
+      await _scrollToHeader(value);
+    } finally {
+      if (mounted) {
+        _isProgrammaticScroll = false;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _syncSelectionFromViewport();
+          }
+        });
+      }
     }
   }
 
@@ -104,7 +165,7 @@ class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
   @override
   Widget build(BuildContext context) {
     return ExamplePage(
-      title: 'SideBar 锚点用法',
+      title: widget.title,
       exampleCodeGroup: 'sideBar',
       showSingleChild: true,
       singleChild: CodeWrapper(
@@ -116,15 +177,10 @@ class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
 
   @Demo(group: 'sideBar')
   Widget _buildAnchorSideBar(BuildContext context) {
-    var demoHeight = MediaQuery.of(context).size.height -
-        MediaQuery.of(context).padding.top -
-        titleBarHeight -
-        testButtonHeight;
-
     return Column(
       children: [
         Container(
-          height: testButtonHeight,
+          height: 80,
           padding: const EdgeInsets.all(16),
           child: SizedBox(
             width: double.infinity,
@@ -154,23 +210,38 @@ class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
               SizedBox(
                 width: 106,
                 child: TSideBar(
-                  style: TSideBarVariant.normal,
+                  style: widget.style,
                   value: currentValue,
+                  children: list,
                   onChanged: handleSidebarChange,
                 ),
               ),
               Expanded(
-                child: SingleChildScrollView(
-                    controller: _demoScroller,
-                    child: Container(
-                      color: context.tTheme.bgColorContainer,
-                      child: Column(
-                        children: [
-                          ...pages,
-                          Container(height: demoHeight - itemHeight)
-                        ],
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (mounted) {
+                        _syncTrailingExtent();
+                      }
+                    });
+                    return SingleChildScrollView(
+                      key: _contentViewportKey,
+                      controller: _demoScroller,
+                      child: Container(
+                        color: context.tTheme.bgColorContainer,
+                        child: Column(
+                          children: [
+                            for (var index = 0;
+                                index < _headerKeys.length;
+                                index++)
+                              getAnchorDemo(index),
+                            SizedBox(height: _trailingExtent),
+                          ],
+                        ),
                       ),
-                    )),
+                    );
+                  },
+                ),
               )
             ],
           ),
@@ -180,21 +251,27 @@ class TSideBarAnchorPageState extends State<TSideBarAnchorPage> {
   }
 
   Widget getAnchorDemo(int index) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 20, top: 15, right: 9),
-          child: TText('标题$index',
-              style: const TextStyle(
-                fontSize: 14,
-              )),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: displayImageList(),
-        ),
-      ],
+    return KeyedSubtree(
+      key: index == _headerKeys.length - 1 ? _lastSectionKey : null,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 20, top: 15, right: 9),
+            child: KeyedSubtree(
+              key: _headerKeys[index],
+              child: TText(
+                '标题$index',
+                style: const TextStyle(fontSize: 14),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: displayImageList(),
+          ),
+        ],
+      ),
     );
   }
 
