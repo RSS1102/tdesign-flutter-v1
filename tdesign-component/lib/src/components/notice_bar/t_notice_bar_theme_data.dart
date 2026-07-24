@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart' show TNoticeBar;
 import '../../theme/t_colors.dart';
 import '../../theme/t_fonts.dart';
 import '../../theme/t_theme.dart';
-import 't_notice_bar.dart' show TNoticeBar;
 
-/// 公告栏语义色（原 TNoticeBarTheme）
+/// 公告栏语义色
 enum TNoticeBarVariant {
   /// 信息（默认）
   info,
@@ -24,19 +22,9 @@ enum TNoticeBarVariant {
 /// TNoticeBar 组件级 ThemeExtension
 ///
 /// 通过 Theme 子树注入，控制子树的默认公告栏样式。
-/// 实例 TNoticeBar.themeData 优先于 Theme Extension。
 class TNoticeBarThemeData extends ThemeExtension<TNoticeBarThemeData> {
   /// 语义色变体
   final TNoticeBarVariant? variant;
-
-  /// 跑马灯效果
-  final bool? marquee;
-
-  /// 滚动速度
-  final double? speed;
-
-  /// 步进滚动间隔时间（毫秒）
-  final int? interval;
 
   /// 左侧图标
   final IconData? prefixIcon;
@@ -64,9 +52,6 @@ class TNoticeBarThemeData extends ThemeExtension<TNoticeBarThemeData> {
 
   const TNoticeBarThemeData({
     this.variant,
-    this.marquee,
-    this.speed,
-    this.interval,
     this.prefixIcon,
     this.suffixIcon,
     this.height,
@@ -78,7 +63,7 @@ class TNoticeBarThemeData extends ThemeExtension<TNoticeBarThemeData> {
   });
 
   /// 默认内边距
-  static const defaultPadding =
+  static const EdgeInsets defaultPadding =
       EdgeInsets.only(top: 13, bottom: 13, left: 16, right: 12);
 
   /// 合并两个 ThemeExtension，[other] 优先于 this
@@ -88,9 +73,6 @@ class TNoticeBarThemeData extends ThemeExtension<TNoticeBarThemeData> {
     }
     return TNoticeBarThemeData(
       variant: other.variant ?? variant,
-      marquee: other.marquee ?? marquee,
-      speed: other.speed ?? speed,
-      interval: other.interval ?? interval,
       prefixIcon: other.prefixIcon ?? prefixIcon,
       suffixIcon: other.suffixIcon ?? suffixIcon,
       height: other.height ?? height,
@@ -148,9 +130,6 @@ class TNoticeBarThemeData extends ThemeExtension<TNoticeBarThemeData> {
   @override
   TNoticeBarThemeData copyWith({
     TNoticeBarVariant? variant,
-    bool? marquee,
-    double? speed,
-    int? interval,
     IconData? prefixIcon,
     IconData? suffixIcon,
     double? height,
@@ -162,9 +141,6 @@ class TNoticeBarThemeData extends ThemeExtension<TNoticeBarThemeData> {
   }) {
     return TNoticeBarThemeData(
       variant: variant ?? this.variant,
-      marquee: marquee ?? this.marquee,
-      speed: speed ?? this.speed,
-      interval: interval ?? this.interval,
       prefixIcon: prefixIcon ?? this.prefixIcon,
       suffixIcon: suffixIcon ?? this.suffixIcon,
       height: height ?? this.height,
@@ -177,15 +153,13 @@ class TNoticeBarThemeData extends ThemeExtension<TNoticeBarThemeData> {
   }
 
   @override
-  TNoticeBarThemeData lerp(ThemeExtension<TNoticeBarThemeData>? other, double t) {
+  TNoticeBarThemeData lerp(
+      ThemeExtension<TNoticeBarThemeData>? other, double t) {
     if (other is! TNoticeBarThemeData) {
       return this;
     }
     return TNoticeBarThemeData(
       variant: t < 0.5 ? variant : other.variant,
-      marquee: t < 0.5 ? marquee : other.marquee,
-      speed: lerpDouble(speed, other.speed, t),
-      interval: t < 0.5 ? interval : other.interval,
       prefixIcon: t < 0.5 ? prefixIcon : other.prefixIcon,
       suffixIcon: t < 0.5 ? suffixIcon : other.suffixIcon,
       height: lerpDouble(height, other.height, t),
@@ -197,7 +171,16 @@ class TNoticeBarThemeData extends ThemeExtension<TNoticeBarThemeData> {
     );
   }
 
-  static double? lerpDouble(double? a, double? b, double t) {
+  static double? lerpDouble(
+    /// 起始值。
+    double? a,
+
+    /// 目标值。
+    double? b,
+
+    /// 插值进度。
+    double t,
+  ) {
     if (a == null && b == null) {
       return null;
     }

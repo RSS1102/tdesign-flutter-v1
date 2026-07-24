@@ -16,7 +16,6 @@ dependencies:
   tdesign_icons: ^0.0.4
 
   # 轮播图组件
-  flutter_swiper_null_safety: ^1.0.2
 
   # 下拉刷新组件
   easy_refresh: ^3.4.0
@@ -32,6 +31,7 @@ dev_dependencies:
   flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter
+  image_picker_platform_interface: 2.11.1
   tdesign_flutter_tools:
     git:
       url: https://github.com/TDesignOteam/tdesign-flutter-tools.git

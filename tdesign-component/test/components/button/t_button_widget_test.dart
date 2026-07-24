@@ -19,9 +19,18 @@ void main() {
     testWidgets('outline / text / ghost 变体可构建', (tester) async {
       await tester.pumpWidget(wrap(const Column(
         children: [
-          TButton(child: Text('描边'), variant: TButtonVariant.outline, onPressed: _noop),
-          TButton(child: Text('文字'), variant: TButtonVariant.text, onPressed: _noop),
-          TButton(child: Text('幽灵'), variant: TButtonVariant.ghost, onPressed: _noop),
+          TButton(
+              child: Text('描边'),
+              variant: TButtonVariant.outline,
+              onPressed: _noop),
+          TButton(
+              child: Text('文字'),
+              variant: TButtonVariant.text,
+              onPressed: _noop),
+          TButton(
+              child: Text('幽灵'),
+              variant: TButtonVariant.ghost,
+              onPressed: _noop),
         ],
       )));
       expect(find.byType(TButton, skipOffstage: false), findsNWidgets(3));

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'package:tdesign_flutter/src/components/loading/t_activity_indicator.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TCupertinoActivityIndicator 组件测试
 /// animating=true 时 repeat() 无限循环，不能用 pumpAndSettle
 void main() {
   Widget wrapWithTheme(Widget child) {
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: TThemeBuilder.light(TThemeData.defaultData()),
       home: Scaffold(body: child),
     );
   }
@@ -67,6 +67,10 @@ void main() {
       ));
       await tester.pumpAndSettle();
       expect(find.byType(TCupertinoActivityIndicator), findsOneWidget);
+      expect(
+        tester.getSize(find.byType(TCupertinoActivityIndicator)),
+        const Size(40, 40),
+      );
     });
 
     testWidgets('activeColor 自定义', (tester) async {
@@ -76,6 +80,14 @@ void main() {
       ));
       await tester.pumpAndSettle();
       expect(find.byType(TCupertinoActivityIndicator), findsOneWidget);
+      expect(
+        tester
+            .widget<TCupertinoActivityIndicator>(
+              find.byType(TCupertinoActivityIndicator),
+            )
+            .activeColor,
+        Colors.red,
+      );
     });
 
     testWidgets('duration 变化', (tester) async {

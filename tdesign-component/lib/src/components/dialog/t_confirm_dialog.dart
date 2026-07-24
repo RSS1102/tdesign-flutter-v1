@@ -5,9 +5,16 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
+import '../button/t_button.dart';
+import '../button/t_button_types.dart';
+import '../divider/t_divider.dart';
+import '../text/t_text.dart';
+import 't_dialog.dart';
+import 't_dialog_theme_data.dart';
 import 't_dialog_widget.dart';
 
 /// 只有一个按钮的弹窗控件
@@ -64,7 +71,7 @@ class TConfirmDialog extends StatelessWidget {
   final Color? buttonTextColor;
 
   /// 点击
-  final Function()? onPressed;
+  final VoidCallback? onPressed;
 
   /// 背景颜色
   final Color? backgroundColor;
@@ -84,12 +91,15 @@ class TConfirmDialog extends StatelessWidget {
   /// 自定义按钮
   final Widget? buttonWidget;
 
-  /// 按钮自定义样式属性（V1.0: 改用 ButtonStyle）
+  /// 按钮自定义样式
   final ButtonStyle? buttonStyleCustom;
 
+  /// 弹窗宽度。
   final double? width;
 
   Widget _buildButton(BuildContext context) {
+    final theme = Theme.of(context).extension<TDialogThemeData>();
+    final effectiveButtonStyle = buttonStyleCustom ?? theme?.actionButtonStyle;
     if (buttonWidget != null) {
       return buttonWidget!;
     }
@@ -105,7 +115,7 @@ class TConfirmDialog extends StatelessWidget {
             buttonVariant: TButtonVariant.text,
             buttonColorScheme: TButtonColorScheme.primary,
             height: 56,
-            buttonStyle: buttonStyleCustom,
+            buttonStyle: effectiveButtonStyle,
             onPressed: () {
               if (onPressed != null) {
                 onPressed!();
@@ -123,7 +133,7 @@ class TConfirmDialog extends StatelessWidget {
           buttonText: buttonText ?? context.resource.knew,
           buttonTextColor: buttonTextColor,
           buttonColorScheme: TButtonColorScheme.primary,
-          buttonStyle: buttonStyleCustom,
+          buttonStyle: effectiveButtonStyle,
           onPressed: () {
             if (onPressed != null) {
               onPressed!();
@@ -140,11 +150,19 @@ class TConfirmDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     // 标题和内容不能同时为空
     assert((title != null || content != null || contentWidget != null));
+    final theme = Theme.of(context).extension<TDialogThemeData>();
+    final effectiveWidth = width ?? theme?.width;
+    final effectiveBackgroundColor = backgroundColor ?? theme?.backgroundColor;
+    final effectivePadding = padding == const EdgeInsets.fromLTRB(24, 32, 24, 0)
+        ? theme?.contentPadding ?? padding
+        : padding;
+    final effectiveContentMaxHeight =
+        contentMaxHeight > 0 ? contentMaxHeight : theme?.contentMaxHeight ?? 0;
 
     return TDialogScaffold(
         showCloseButton: showCloseButton,
-        backgroundColor: backgroundColor,
-        width: width,
+        backgroundColor: effectiveBackgroundColor,
+        width: effectiveWidth,
         radius: radius,
         body: LayoutBuilder(builder: (context, constraints) {
           return Column(mainAxisSize: MainAxisSize.min, children: [
@@ -161,10 +179,10 @@ class TConfirmDialog extends StatelessWidget {
                   content: content,
                   contentColor: contentColor,
                   // 当contentMaxHeight未设置时，使用屏幕的60%作为最大高度，并允许滚动
-                  contentMaxHeight: contentMaxHeight > 0
-                      ? contentMaxHeight
+                  contentMaxHeight: effectiveContentMaxHeight > 0
+                      ? effectiveContentMaxHeight
                       : constraints.maxHeight * 0.6,
-                  padding: padding,
+                  padding: effectivePadding,
                 ),
               ),
             ),

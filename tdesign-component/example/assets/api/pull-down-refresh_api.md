@@ -7,57 +7,50 @@ TDesign刷新头部
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| backgroundColor | Color? | - | 背景颜色（L4，可经 themeData 提供） |
-| clamping | bool? | - | - |
-| completeDuration | Duration? | - | 完成延时（L4，可经 themeData 提供） |
-| enableHapticFeedback | bool | true | 开启震动反馈（保留实例，≠ 禁用） |
-| enableInfiniteRefresh | bool | false | 是否开启无限刷新（保留实例，≠ 禁用） |
-| extent | double? | 48.0 | Header容器高度（L4，可经 themeData 提供） |
-| float | bool? | false | 是否悬浮（L4，可经 themeData 提供） |
-| frictionFactor | - | - | - |
-| hapticFeedback | bool? | - | - |
-| hitOver | - | - | - |
-| horizontalFrictionFactor | - | - | - |
-| horizontalReadySpringBuilder | - | - | - |
-| horizontalSpring | - | - | - |
-| infiniteHitOver | bool? | - | - |
-| infiniteOffset | double? | - | 无限刷新偏移量（L4，可经 themeData 提供） |
+| backgroundColor | Color? | - | Header 背景颜色。 |
+| clamping | bool? | - | 是否启用越界钳制。 |
+| completeDuration | Duration? | - | 完成状态停留时长。 |
+| enableHapticFeedback | bool | true | 是否启用震动反馈。 |
+| enableInfiniteRefresh | bool | false | 是否启用无限刷新。 |
+| extent | double? | - | Header 容器高度。 |
+| float | bool? | - | 是否悬浮展示刷新头。 |
+| frictionFactor | FrictionFactor? | - | 越界滚动摩擦系数。 |
+| hapticFeedback | bool? | - | 是否启用震动反馈；为空时使用 `enableHapticFeedback`。 |
+| hitOver | bool? | - | 滚动自身到达边界时是否判定越界。 |
+| horizontalFrictionFactor | FrictionFactor? | - | 横向越界滚动摩擦系数。 |
+| horizontalReadySpringBuilder | SpringBuilder? | - | 横向 ready 状态的弹簧构建器。 |
+| horizontalSpring | SpringDescription? | - | 横向回弹弹簧配置。 |
+| infiniteHitOver | bool? | - | 无限刷新是否允许越界命中。 |
+| infiniteOffset | double? | - | 无限刷新触发偏移量。 |
 | key | Key? | - | Key |
-| listenable | - | - | - |
-| loadingIcon | TLoadingIcon? | TLoadingIcon.circle | loading样式（L4，可经 themeData 提供） |
-| maxOverOffset | - | - | - |
-| notifyWhenInvisible | - | - | - |
-| overScroll | bool? | true | 越界滚动（L4，可经 themeData 提供） |
-| position | - | - | - |
-| processedDuration | Duration? | - | - |
-| readySpringBuilder | - | - | - |
-| safeArea | - | false | - |
-| secondaryCloseTriggerOffset | - | - | - |
-| secondaryDimension | - | - | - |
-| secondaryTriggerOffset | - | - | - |
-| secondaryVelocity | - | - | - |
-| spring | - | - | - |
-| springRebound | - | - | - |
-| themeData | TRefreshThemeData? | - | 组件级主题配置，优先级高于 Theme Extension |
-| triggerDistance | double? | 48.0 | 触发刷新任务的偏移量，同`triggerOffset`（L4，可经 themeData 提供） |
-| triggerOffset | double? | - | - |
-| triggerWhenReach | - | - | - |
-| triggerWhenRelease | - | - | - |
-| triggerWhenReleaseNoWait | - | - | - |
+| listenable | IndicatorStateListenable? | - | 指示器状态监听器。 |
+| loadingIcon | TLoadingIcon? | - | 自定义 loading 图标样式。 |
+| maxOverOffset | double | double.infinity | 最大越界滚动距离。 |
+| notifyWhenInvisible | bool | false | 不可见时是否仍发送通知。 |
+| overScroll | bool? | - | 是否允许越界滚动。 |
+| position | IndicatorPosition | IndicatorPosition.above | 刷新头位置。 |
+| processedDuration | Duration? | - | 刷新完成后的处理动画时长。 |
+| readySpringBuilder | SpringBuilder? | - | ready 状态的弹簧构建器。 |
+| safeArea | bool | false | 是否计算安全区。 |
+| secondaryCloseTriggerOffset | double | kDefaultSecondaryCloseTriggerOffset | 二楼关闭触发偏移量。 |
+| secondaryDimension | double? | - | 二楼尺寸。 |
+| secondaryTriggerOffset | double? | - | 二楼触发偏移量。 |
+| secondaryVelocity | double | kDefaultSecondaryVelocity | 二楼打开速度。 |
+| spring | SpringDescription? | - | 回弹弹簧配置。 |
+| springRebound | bool | true | 弹簧是否允许回弹。 |
+| triggerDistance | double? | - | 触发刷新任务的偏移量。 |
+| triggerWhenReach | bool | false | 到达触发距离时是否立即触发。 |
+| triggerWhenRelease | bool | false | 释放时是否立即触发。 |
+| triggerWhenReleaseNoWait | bool | false | 释放时是否立即触发且不等待任务完成。 |
 
+#### 公开属性
 
-### TRefreshThemeData
-#### 简介
-TRefreshHeader 组件级 ThemeExtension，控制子树的下拉刷新默认样式。实例 `themeData` 优先于 Theme Extension。
-#### 默认构造方法
-
-| 参数 | 类型 | 默认值 | 说明 |
+| 属性 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| backgroundColor | Color? | - | 背景颜色 |
-| completeDuration | Duration? | - | 完成延时 |
-| extent | double? | - | Header容器高度 |
-| float | bool? | - | 是否悬浮 |
-| infiniteOffset | double? | - | 无限刷新偏移量 |
-| loadingIcon | TLoadingIcon? | - | loading样式 |
-| overScroll | bool? | - | 越界滚动 |
-| triggerDistance | double? | - | 触发刷新任务的偏移量 |
+| finalBackgroundColor | Color? | - | 背景颜色 |
+| finalCompleteDuration | Duration? | - | 完成延时 |
+| finalExtent | double | - | Header 容器高度 |
+| finalFloat | bool | - | 是否悬浮 |
+| finalLoadingIcon | TLoadingIcon? | - | loading 样式 |
+| finalOverScroll | bool | - | 越界滚动 |
+| finalTriggerDistance | double | - | 触发刷新任务的偏移量 |

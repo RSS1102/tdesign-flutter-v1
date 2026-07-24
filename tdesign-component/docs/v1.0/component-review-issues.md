@@ -7,6 +7,14 @@
 - 部分组件测试覆盖率不足，部分 Golden 基线需要确认后更新。
 - 本文只记录有问题的组件及问题。
 
+## 已处理
+
+- `ExamplePage.backgroundColor` 已移除 `@deprecated` 标记。
+- `TLoadingController` 已清理死态 `_context` 和无效 `print` 分支。
+- 示例层 helper 的 `print` 已收敛为 `debugPrint`。
+- `TSearchBar` / `TStepper` 的 v1.0 文档状态已同步为“已实现”。
+- `TCheckbox` / `TRadio` 的 v1.0 方案记录已按当前实现收敛，Checkbox / Radio 的卡片与禁用口径已统一。
+
 ## 01 基础组件
 
 ### TButton
@@ -77,7 +85,7 @@
 
 ### TCheckbox
 
-- 导出问题：当前入口导出 `TCheckboxStyle`，存在旧式 `*Style` 类型公开风险，需要确认是否符合 V1.0 公开面规则。
+- 已核实：当前入口公开的是 `TCheckboxVariant`，用于 Theme 变体；`TCheckboxStyle` 这一旧式导出风险在当前实现中不再存在。
 - 覆盖率问题：`32.6%`，未达到 `95%`。
 
 ### TDateTimePicker
@@ -90,7 +98,7 @@
 
 ### TInput
 
-- 导出问题：当前入口导出 `TInputCardStyle`，存在旧式 `*Style` 类型公开风险，需要确认是否符合 V1.0 公开面规则。
+- 已核实：`TInputCardStyle` 是当前 Theme 枚举，配套测试与实现都在使用，不再按旧式 `*Style` 残留记录。
 - 覆盖率问题：`85.2%`，未达到 `95%`。
 
 ### TPicker
@@ -99,7 +107,7 @@
 
 ### TRadio
 
-- 导出问题：当前入口导出 `TRadioStyle`，存在旧式 `*Style` 类型公开风险，需要确认是否符合 V1.0 公开面规则。
+- 已核实：当前实现不再导出 `TRadioStyle`，该条风险已解除。
 - 覆盖率问题：`0.0%`，测试文件未形成有效覆盖。
 
 ### TRate
@@ -108,7 +116,7 @@
 
 ### TSearchBar
 
-- 导出问题：当前入口导出 `TSearchBarStyle`，存在旧式 `*Style` 类型公开风险，需要确认是否符合 V1.0 公开面规则。
+- 已核实：当前实现不再导出 `TSearchBarStyle`，该条风险已解除。
 - 覆盖率问题：`0.0%`，测试文件未形成有效覆盖。
 
 ### TSlider

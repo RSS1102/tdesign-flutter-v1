@@ -6,7 +6,8 @@ import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
 import '../badge/t_badge.dart';
 import '../text/t_text.dart';
-import 't_action_sheet.dart';
+import 't_action_sheet_item.dart';
+import 't_action_sheet_types.dart';
 
 /// 动作面板单个项目组件
 ///
@@ -39,7 +40,7 @@ class TActionSheetItemWidget extends StatelessWidget {
       _offsetValue = ValueNotifier(const [0.0, 0.0]);
       _offsetKey = GlobalKey();
     }
-    return GestureDetector(
+    final content = GestureDetector(
       onTap: item!.disabled
           ? null
           : () {
@@ -83,9 +84,18 @@ class TActionSheetItemWidget extends StatelessWidget {
             font: context.tTheme.fontBodySmall,
             textColor: context.tTheme.textColorPrimary,
             style: item!.textStyle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
+    );
+    if (!item!.disabled) {
+      return content;
+    }
+    return Semantics(
+      enabled: false,
+      child: Opacity(opacity: 0.4, child: content),
     );
   }
 
@@ -128,9 +138,7 @@ Widget buildCancelButton(
 ) {
   return Padding(
     padding: EdgeInsets.only(
-        top: showPagination
-            ? context.tTheme.spacer16
-            : context.tTheme.spacer8),
+        top: showPagination ? context.tTheme.spacer16 : context.tTheme.spacer8),
     child: GestureDetector(
       onTap: () {
         onCancel?.call();

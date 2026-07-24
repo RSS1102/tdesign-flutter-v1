@@ -12,6 +12,9 @@ class TDrawerThemeData extends ThemeExtension<TDrawerThemeData> {
   /// 默认宽度
   final double? width;
 
+  /// 默认顶部偏移
+  final double? drawerTop;
+
   /// 默认背景颜色
   final Color? backgroundColor;
 
@@ -29,6 +32,7 @@ class TDrawerThemeData extends ThemeExtension<TDrawerThemeData> {
 
   const TDrawerThemeData({
     this.width,
+    this.drawerTop,
     this.backgroundColor,
     this.bordered,
     this.isShowLastBordered,
@@ -39,6 +43,7 @@ class TDrawerThemeData extends ThemeExtension<TDrawerThemeData> {
   @override
   TDrawerThemeData copyWith({
     double? width,
+    double? drawerTop,
     Color? backgroundColor,
     bool? bordered,
     bool? isShowLastBordered,
@@ -47,6 +52,7 @@ class TDrawerThemeData extends ThemeExtension<TDrawerThemeData> {
   }) {
     return TDrawerThemeData(
       width: width ?? this.width,
+      drawerTop: drawerTop ?? this.drawerTop,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       bordered: bordered ?? this.bordered,
       isShowLastBordered: isShowLastBordered ?? this.isShowLastBordered,
@@ -62,6 +68,7 @@ class TDrawerThemeData extends ThemeExtension<TDrawerThemeData> {
     }
     return TDrawerThemeData(
       width: lerpDouble(width, other.width, t),
+      drawerTop: lerpDouble(drawerTop, other.drawerTop, t),
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
       bordered: t < 0.5 ? bordered : other.bordered,
       isShowLastBordered:

@@ -64,10 +64,8 @@ class TFabThemeData extends ThemeExtension<TFabThemeData> {
     return TFabThemeData(
       defaultRight: lerpDouble(defaultRight, other.defaultRight, t),
       defaultBottom: lerpDouble(defaultBottom, other.defaultBottom, t),
-      defaultXBounds:
-          t < 0.5 ? defaultXBounds : other.defaultXBounds,
-      defaultYBounds:
-          t < 0.5 ? defaultYBounds : other.defaultYBounds,
+      defaultXBounds: t < 0.5 ? defaultXBounds : other.defaultXBounds,
+      defaultYBounds: t < 0.5 ? defaultYBounds : other.defaultYBounds,
       magnetAnimationDuration:
           t < 0.5 ? magnetAnimationDuration : other.magnetAnimationDuration,
       dragTapSlop: lerpDouble(dragTapSlop, other.dragTapSlop, t),

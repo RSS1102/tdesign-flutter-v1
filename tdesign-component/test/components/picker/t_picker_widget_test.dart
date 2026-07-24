@@ -3,100 +3,278 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 void main() {
-  Widget wrap(Widget child) => MaterialApp(home: Scaffold(body: child));
+  Widget wrap(Widget child, {TPickerThemeData? pickerTheme}) {
+    return MaterialApp(
+      theme: ThemeData(
+        extensions: [
+          TThemeData.defaultData(),
+          if (pickerTheme != null) pickerTheme,
+        ],
+      ),
+      home: Scaffold(body: child),
+    );
+  }
 
-  group('TPicker widget 级用例', () {
-    testWidgets('多列独立数据可构建并渲染选项', (tester) async {
+  const columns = TPickerColumns([
+    [
+      TPickerOption(label: 'A', value: 'a'),
+      TPickerOption(label: 'B', value: 'b'),
+      TPickerOption(label: 'C', value: 'c'),
+    ],
+    [
+      TPickerOption(label: 'One', value: 1),
+      TPickerOption(label: 'Two', value: 2),
+    ],
+  ]);
+
+  group('TPicker controlled behavior', () {
+    testWidgets('renders controlled values and emits a complete snapshot',
+        (tester) async {
+      TPickerValue? changed;
       await tester.pumpWidget(wrap(TPicker(
-        items: const TPickerColumns([
-          [
-            TPickerOption(label: '北京', value: 'bj'),
-            TPickerOption(label: '上海', value: 'sh'),
-          ],
-          [
-            TPickerOption(label: '朝阳', value: 'cy'),
-            TPickerOption(label: '浦东', value: 'pd'),
-          ],
-        ]),
-        onChanged: (_, __) {},
+        items: columns,
+        value: const ['b', 2],
+        onChanged: (value) => changed = value,
       )));
-      expect(find.byType(TPicker), findsOneWidget);
-      expect(find.text('北京'), findsOneWidget);
-      expect(find.text('浦东'), findsOneWidget);
+      final wheels = tester.widgetList<ListWheelScrollView>(
+        find.byType(ListWheelScrollView),
+      );
+      expect(wheels, hasLength(2));
+      expect(
+        (wheels.first.controller as FixedExtentScrollController).selectedItem,
+        1,
+      );
+
+      await tester.drag(
+        find.byType(ListWheelScrollView).first,
+        const Offset(0, -80),
+      );
+      await tester.pumpAndSettle();
+      expect(changed, isNotNull);
+      expect(changed!.values, hasLength(2));
     });
 
-    testWidgets('fromRaw 松散数据可构建', (tester) async {
-      await tester.pumpWidget(wrap(TPicker(
-        items: TPickerColumns.fromRaw(const [
-          ['A', 'B', 'C'],
-          [
-            {'label': '一', 'value': 1},
-            {'label': '二', 'value': 2},
-          ],
-        ]),
-        onChanged: (_, __) {},
-      )));
-      expect(find.byType(TPicker), findsOneWidget);
-      expect(find.text('A'), findsOneWidget);
-      expect(find.text('一'), findsOneWidget);
-    });
-
-    testWidgets('disabled 整组禁用可构建', (tester) async {
-      await tester.pumpWidget(wrap(TPicker(
-        items: const TPickerColumns([
-          [TPickerOption(label: 'X', value: 'x')],
-        ]),
-        disabled: true,
-        onChanged: (_, __) {},
-      )));
-      expect(find.byType(TPicker), findsOneWidget);
-    });
-
-    testWidgets('itemBuilder 自定义子项可构建', (tester) async {
-      await tester.pumpWidget(wrap(TPicker(
-        items: const TPickerColumns([
-          [
-            TPickerOption(label: '甲', value: 'a'),
-            TPickerOption(label: '乙', value: 'b', disabled: true),
-          ],
-        ]),
-        itemBuilder: (context, content, colIndex, index, distanceCalculator, distance) {
-          if (distance == 0) {
-            return Container(key: const Key('centerItem'), child: Text(content));
-          }
-          return null;
+    testWidgets('external value updates synchronize wheel selection',
+        (tester) async {
+      var value = <dynamic>['a', 1];
+      late StateSetter update;
+      await tester.pumpWidget(wrap(StatefulBuilder(
+        builder: (context, setState) {
+          update = setState;
+          return TPicker(
+            items: columns,
+            value: value,
+            onChanged: (next) => value = next.values,
+          );
         },
-        onChanged: (_, __) {},
       )));
-      expect(find.byKey(const Key('centerItem')), findsOneWidget);
+
+      value = ['c', 2];
+      update(() {});
+      await tester.pump();
+      final wheels = tester.widgetList<ListWheelScrollView>(
+        find.byType(ListWheelScrollView),
+      );
+      expect(
+        (wheels.first.controller as FixedExtentScrollController).selectedItem,
+        2,
+      );
     });
 
-    testWidgets('联动数据 TPickerLinked.fromRaw 可构建', (tester) async {
-      await tester.pumpWidget(wrap(TPicker(
-        items: TPickerLinked.fromRaw(const {
-          '广东': {
-            '深圳': ['南山', '福田'],
-            '广州': ['天河', '越秀'],
-          },
-          '浙江': {
-            '杭州': ['西湖', '滨江'],
-          },
-        }),
-        onChanged: (_, __) {},
+    testWidgets('onChanged null disables interaction', (tester) async {
+      await tester.pumpWidget(wrap(const TPicker(
+        items: columns,
+        value: ['a', 1],
       )));
-      expect(find.byType(TPicker), findsOneWidget);
+      expect(
+        tester
+            .widgetList<AbsorbPointer>(find.byType(AbsorbPointer))
+            .any((widget) => widget.absorbing),
+        isTrue,
+      );
+      expect(
+        tester
+            .widgetList<Opacity>(find.byType(Opacity))
+            .any((widget) => widget.opacity == 0.5),
+        isTrue,
+      );
     });
 
-    testWidgets('itemCount / height 参数可构建', (tester) async {
+    testWidgets('item builder and column scroll end remain available',
+        (tester) async {
+      var ended = false;
       await tester.pumpWidget(wrap(TPicker(
         items: const TPickerColumns([
-          [TPickerOption(label: '1', value: 1), TPickerOption(label: '2', value: 2)],
+          [
+            TPickerOption(label: 'A', value: 'a'),
+            TPickerOption(label: 'B', value: 'b', disabled: true),
+          ],
         ]),
-        height: 240,
-        itemCount: 7,
-        onChanged: (_, __) {},
+        value: const ['a'],
+        itemBuilder: (context, option, column, index, distance) {
+          return distance == 0 ? Text('selected-${option.label}') : null;
+        },
+        onColumnScrollEnd: (_, __) => ended = true,
+        onChanged: (_) {},
       )));
-      expect(find.byType(TPicker), findsOneWidget);
+      expect(find.text('selected-A'), findsOneWidget);
+      await tester.drag(
+        find.byType(ListWheelScrollView),
+        const Offset(0, -40),
+      );
+      await tester.pumpAndSettle();
+      expect(ended, isTrue);
     });
+
+    testWidgets('theme owns viewport dimensions', (tester) async {
+      await tester.pumpWidget(wrap(
+        TPicker(items: columns, value: const ['a', 1], onChanged: (_) {}),
+        pickerTheme: const TPickerThemeData(height: 240, itemCount: 3),
+      ));
+      expect(
+          find.byWidgetPredicate(
+            (widget) => widget is SizedBox && widget.height == 240,
+          ),
+          findsWidgets);
+    });
+  });
+
+  testWidgets('linked and raw data sources render', (tester) async {
+    const linked = TPickerLinked([
+      TPickerOption(
+        label: 'Guangdong',
+        value: 'Guangdong',
+        children: [
+          TPickerOption(
+            label: 'Shenzhen',
+            value: 'Shenzhen',
+            children: [
+              TPickerOption(label: 'Nanshan', value: 'Nanshan'),
+              TPickerOption(label: 'Futian', value: 'Futian'),
+            ],
+          ),
+        ],
+      ),
+      TPickerOption(
+        label: 'Zhejiang',
+        value: 'Zhejiang',
+        children: [
+          TPickerOption(
+            label: 'Hangzhou',
+            value: 'Hangzhou',
+            children: [TPickerOption(label: 'Xihu', value: 'Xihu')],
+          ),
+        ],
+      ),
+    ]);
+    await tester.pumpWidget(wrap(TPicker(
+      items: linked,
+      value: const ['Guangdong', 'Shenzhen', 'Nanshan'],
+      onChanged: (_) {},
+    )));
+    expect(find.byType(ListWheelScrollView), findsNWidgets(3));
+
+    await tester.pumpWidget(wrap(TPicker(
+      items: const TPickerColumns([
+        [
+          TPickerOption(label: 'A', value: 'A'),
+          TPickerOption(label: 'B', value: 'B'),
+        ],
+      ]),
+      value: const ['B'],
+      onChanged: (_) {},
+    )));
+    expect(find.text('B'), findsOneWidget);
+  });
+
+  testWidgets('linked selection emits a complete path for the new branch',
+      (tester) async {
+    const linked = TPickerLinked([
+      TPickerOption(
+        label: 'A',
+        value: 'a',
+        children: [
+          TPickerOption(
+            label: 'A1',
+            value: 'a1',
+            children: [TPickerOption(label: 'A11', value: 'a11')],
+          ),
+        ],
+      ),
+      TPickerOption(
+        label: 'B',
+        value: 'b',
+        children: [
+          TPickerOption(
+            label: 'B1',
+            value: 'b1',
+            children: [
+              TPickerOption(label: 'B11', value: 'b11', disabled: true),
+              TPickerOption(label: 'B12', value: 'b12'),
+            ],
+          ),
+        ],
+      ),
+    ]);
+    TPickerValue? changed;
+    await tester.pumpWidget(wrap(TPicker(
+      items: linked,
+      value: const ['a', 'a1', 'a11'],
+      onChanged: (value) => changed = value,
+    )));
+
+    await tester.drag(
+      find.byType(ListWheelScrollView).first,
+      const Offset(0, -100),
+    );
+    await tester.pumpAndSettle();
+
+    expect(changed?.values, ['b', 'b1', 'b12']);
+    expect(changed?.indexes, [1, 0, 1]);
+  });
+
+  testWidgets('invalid and short values use the first enabled item',
+      (tester) async {
+    const data = TPickerColumns([
+      [
+        TPickerOption(label: 'disabled', value: 0, disabled: true),
+        TPickerOption(label: 'enabled', value: 1),
+      ],
+      [TPickerOption(label: 'only', value: 2)],
+    ]);
+    await tester.pumpWidget(wrap(TPicker(
+      items: data,
+      value: const ['missing'],
+      onChanged: (_) {},
+    )));
+
+    final wheels = tester.widgetList<ListWheelScrollView>(
+      find.byType(ListWheelScrollView),
+    );
+    expect(
+      (wheels.first.controller as FixedExtentScrollController).selectedItem,
+      1,
+    );
+    expect(
+      (wheels.last.controller as FixedExtentScrollController).selectedItem,
+      0,
+    );
+  });
+
+  testWidgets('empty columns and empty linked roots render safely',
+      (tester) async {
+    await tester.pumpWidget(wrap(TPicker(
+      items: const TPickerColumns([[]]),
+      value: const [],
+      onChanged: (_) {},
+    )));
+    expect(find.byType(ListWheelScrollView), findsNothing);
+
+    await tester.pumpWidget(wrap(TPicker(
+      items: const TPickerLinked([]),
+      value: const [],
+      onChanged: (_) {},
+    )));
+    expect(find.byType(ListWheelScrollView), findsNothing);
   });
 }

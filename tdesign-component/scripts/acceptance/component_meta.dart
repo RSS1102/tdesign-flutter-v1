@@ -8,14 +8,19 @@
 enum ControlClass {
   /// A 类：onPressed/onTap，null=禁用（Button/Link/Cell 等）
   a,
+
   /// B/C 类：value+onChanged，onChanged:null=禁用（Switch/Slider/Rate 等）
   bc,
+
   /// D 类：controller，enabled:false/readOnly:true（Input/Textarea）
   d,
+
   /// E 类：仅 show()（Popup/Dialog/Toast）
   e,
+
   /// F 类：value+onChanged + 项级 disabled（Picker/Calendar）
   f,
+
   /// 纯展示组件，无交互禁用态（Divider/Icon/Text/Badge 等）
   display,
 }
@@ -172,9 +177,9 @@ const List<ComponentMeta> componentList = [
     dirName: 'tabbar',
     widgetName: 'TBottomTabBar',
     controlClass: ControlClass.a,
-    configKey: 'bottomTabBar',
+    configKey: 'tabBar',
     apiFolderName: 'tab-bar',
-    docPath: 'docs/v1.0/components/02-navigation/bottom-tab-bar.md',
+    docPath: 'docs/v1.0/components/02-navigation/tab-bar.md',
     isP0Golden: true,
   ),
   ComponentMeta(
@@ -264,7 +269,7 @@ const List<ComponentMeta> componentList = [
     dirName: 'search',
     widgetName: 'TSearchBar',
     controlClass: ControlClass.d,
-    configKey: 'searchBar',
+    configKey: 'search',
     apiFolderName: 'search',
     docPath: 'docs/v1.0/components/03-input/search-bar.md',
   ),

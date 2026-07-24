@@ -35,8 +35,8 @@ export 't_fab_layout.dart'
 ///
 /// // 可拖拽悬浮按钮
 /// TFab(
-///   draggable: true,
-///   magnet: true,
+///   draggable: TFabDragAxis.all,
+///   magnet: TFabMagnet.right,
 /// )
 /// ```
 class TFab extends StatelessWidget {
@@ -86,11 +86,11 @@ class TFab extends StatelessWidget {
   /// 距屏幕底部偏移（默认 32）
   final double? bottom;
 
-  /// 拖拽轴向：true/[TFabDragAxis.all] 全向，[TFabDragAxis.vertical]/[TFabDragAxis.horizontal] 单轴
-  final Object? draggable;
+  /// 拖拽轴向；null 表示不启用拖拽，[TFabDragAxis.all] 表示全向拖拽
+  final TFabDragAxis? draggable;
 
-  /// 拖拽结束吸附：[TFabMagnet.left]/[TFabMagnet.right]/true（左右均可）
-  final Object? magnet;
+  /// 拖拽结束吸附方向；null 表示不吸附
+  final TFabMagnet? magnet;
 
   /// 水平拖拽边界限制
   final TFabBounds? xBounds;
@@ -147,7 +147,13 @@ class TFab extends StatelessWidget {
 
     // 禁用时包 IgnorePointer（仅 child 模式，TButton 内部已处理禁用）
     if (isChildMode && onPressed == null) {
-      actionChild = IgnorePointer(child: actionChild);
+      actionChild = Semantics(
+        enabled: false,
+        child: Opacity(
+          opacity: 0.4,
+          child: IgnorePointer(child: actionChild),
+        ),
+      );
     }
 
     // Tooltip / Semantics

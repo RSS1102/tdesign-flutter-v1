@@ -172,15 +172,10 @@ void main() {
       expect(find.byType(TNavBar), findsOneWidget);
     });
 
-    testWidgets('TNavBarThemeData 覆盖高度', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TNavBar(title: '高度测试'),
-        navBarTheme: const TNavBarThemeData(
-          height: 64,
-        ),
-      ));
-      // preferredSize 仅反映构造器 height，Theme height 影响实际渲染高度
-      // 验证渲染的 Container 高度而非 preferredSize
+    testWidgets('TNavBar 高度通过构造器设置', (tester) async {
+      const navBar = TNavBar(title: '高度测试', height: 64);
+      await tester.pumpWidget(wrapWithTheme(navBar));
+      expect(navBar.preferredSize.height, 64);
       expect(find.byType(TNavBar), findsOneWidget);
     });
   });

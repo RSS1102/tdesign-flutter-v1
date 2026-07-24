@@ -36,6 +36,22 @@ void main() {
       expect(find.text('文字信息'), findsOneWidget);
     });
 
+    testWidgets('长中间内容在窄宽度下可换行且不溢出', (tester) async {
+      const longText = '这是用于验证分割线中间内容在窄屏下不会横向溢出的长文案';
+      await tester.pumpWidget(
+        wrapWithTheme(
+          const SizedBox(
+            width: 160,
+            child: TDivider(child: Text(longText)),
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      final textBox = tester.getRect(find.text(longText));
+      expect(textBox.width, lessThanOrEqualTo(160));
+    });
+
     testWidgets('竖线分割线', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const SizedBox(

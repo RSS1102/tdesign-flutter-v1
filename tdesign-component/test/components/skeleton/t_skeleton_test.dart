@@ -22,6 +22,19 @@ void main() {
     );
   }
 
+  List<Rect> skeletonBlockRects(WidgetTester tester, Color color) {
+    final blocks = find.byWidgetPredicate(
+      (widget) =>
+          widget is Container &&
+          widget.decoration is BoxDecoration &&
+          (widget.decoration! as BoxDecoration).color == color,
+    );
+    return List<Rect>.generate(
+      blocks.evaluate().length,
+      (index) => tester.getRect(blocks.at(index)),
+    );
+  }
+
   group('TSkeleton 基础渲染', () {
     testWidgets('默认 variant=text 渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(TSkeleton()));
@@ -259,28 +272,77 @@ void main() {
   group('TSkeleton Theme 注入', () {
     test('TSkeletonThemeData.copyWith 正确合并', () {
       const base = TSkeletonThemeData(
-        variant: TSkeletonVariant.text,
-        delay: 100,
+        blockColor: Colors.red,
+        borderRadius: 4,
       );
-      final merged = base.copyWith(animation: TSkeletonAnimation.flashed);
-      expect(merged.variant, TSkeletonVariant.text);
-      expect(merged.delay, 100);
-      expect(merged.animation, TSkeletonAnimation.flashed);
+      final merged = base.copyWith(
+        highlightColor: Colors.white,
+        rowSpacing: 12,
+      );
+      expect(merged.blockColor, Colors.red);
+      expect(merged.borderRadius, 4);
+      expect(merged.highlightColor, Colors.white);
+      expect(merged.rowSpacing, 12);
+      final all = base.copyWith(
+        blockColor: Colors.blue,
+        borderRadius: 8,
+      );
+      expect(all.blockColor, Colors.blue);
+      expect(all.borderRadius, 8);
     });
 
     test('TSkeletonThemeData.lerp 插值正确', () {
-      const a = TSkeletonThemeData(delay: 100, variant: TSkeletonVariant.text);
-      const b = TSkeletonThemeData(delay: 200, variant: TSkeletonVariant.paragraph);
+      const a = TSkeletonThemeData(
+        blockColor: Colors.black,
+        highlightColor: Colors.red,
+        borderRadius: 4,
+        rowSpacing: 8,
+      );
+      const b = TSkeletonThemeData(
+        blockColor: Colors.white,
+        highlightColor: Colors.blue,
+        borderRadius: 12,
+        rowSpacing: 16,
+      );
       final mid = a.lerp(b, 0.5);
-      expect(mid.delay, 200); // t>=0.5 取 b
-      expect(mid.variant, TSkeletonVariant.paragraph);
+      expect(mid.blockColor, isNotNull);
+      expect(mid.highlightColor, isNotNull);
+      expect(mid.borderRadius, 8);
+      expect(mid.rowSpacing, 12);
+      expect(a.lerp(null, 0.5), same(a));
+      const empty = TSkeletonThemeData();
+      expect(empty.lerp(empty, 0.5).borderRadius, isNull);
     });
 
     test('TSkeletonThemeData 默认构造所有字段为 null', () {
       const theme = TSkeletonThemeData();
-      expect(theme.variant, isNull);
-      expect(theme.animation, isNull);
-      expect(theme.delay, isNull);
+      expect(theme.blockColor, isNull);
+      expect(theme.highlightColor, isNull);
+      expect(theme.borderRadius, isNull);
+      expect(theme.rowSpacing, isNull);
+    });
+
+    testWidgets('Theme 视觉默认值进入渲染', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSkeleton(variant: TSkeletonVariant.paragraph),
+        skeletonTheme: const TSkeletonThemeData(
+          blockColor: Colors.red,
+          borderRadius: 7,
+          rowSpacing: 3,
+        ),
+      ));
+      await tester.pumpAndSettle();
+      final decorations = tester
+          .widgetList<Container>(find.byType(Container))
+          .map((container) => container.decoration)
+          .whereType<BoxDecoration>();
+      expect(decorations.any((value) => value.color == Colors.red), isTrue);
+      expect(
+        decorations.any(
+          (value) => value.borderRadius == BorderRadius.circular(7),
+        ),
+        isTrue,
+      );
     });
   });
 
@@ -310,21 +372,48 @@ void main() {
       expect(find.byType(TSkeleton), findsOneWidget);
     });
 
+    testWidgets('text variant 在有限宽度内保留 develop 的两行比例', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          width: 320,
+          child: TSkeleton(variant: TSkeletonVariant.text),
+        ),
+        skeletonTheme: const TSkeletonThemeData(blockColor: Colors.red),
+      ));
+      await tester.pumpAndSettle();
+
+      final rects = skeletonBlockRects(tester, Colors.red);
+      expect(rects, hasLength(3));
+      expect(rects[0].width, closeTo(72.96, 0.01));
+      expect(rects[1].width, closeTo(231.04, 0.01));
+      expect(rects[2].width, 320);
+      expect(rects[1].left - rects[0].right, 16);
+      expect(rects[2].top - rects[0].top, 32);
+    });
+
+    testWidgets('paragraph variant 在有限宽度内保留四行和末行比例', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        SizedBox(
+          width: 320,
+          child: TSkeleton(variant: TSkeletonVariant.paragraph),
+        ),
+        skeletonTheme: const TSkeletonThemeData(blockColor: Colors.red),
+      ));
+      await tester.pumpAndSettle();
+
+      final rects = skeletonBlockRects(tester, Colors.red);
+      expect(rects, hasLength(4));
+      expect(rects.take(3).map((rect) => rect.width), everyElement(320));
+      expect(rects[3].width, 176);
+      expect(rects[3].top - rects[2].top, 32);
+    });
+
     testWidgets('TSkeletonRowCol.visualHeight 计算正确', (tester) async {
       final rowCol = TSkeletonRowCol(objects: const [
         [TSkeletonRowColObj.text(height: 16)],
         [TSkeletonRowColObj.text(height: 16)],
       ]);
-      late BuildContext context;
-      await tester.pumpWidget(wrapWithTheme(
-        Builder(
-          builder: (ctx) {
-            context = ctx;
-            return const SizedBox.shrink();
-          },
-        ),
-      ));
-      final height = rowCol.visualHeight(context);
+      final height = rowCol.visualHeight(16);
       // 2 行 height=16 + 行间距 spacer16
       expect(height, greaterThan(16));
     });

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
+import '../badge/t_badge.dart';
+import '../text/t_text.dart';
+import 't_sidebar_theme_data.dart';
 
 class TWrapSideBarItem extends StatelessWidget {
   const TWrapSideBarItem({
@@ -10,10 +15,7 @@ class TWrapSideBarItem extends StatelessWidget {
     this.icon,
     this.label = '',
     this.contentPadding,
-    this.textStyle = const TextStyle(
-      fontSize: 16,
-      height: 1.5,
-    ),
+    this.textStyle,
     this.selectedTextStyle,
     this.value = -1,
     this.selected = false,
@@ -67,10 +69,11 @@ class TWrapSideBarItem extends StatelessWidget {
           color: selected
               ? selectedBgColor ?? context.tTheme.bgColorContainer
               : unSelectedBgColor ??
-                  context.tTheme.bgColorSecondaryContainer, // coverage:ignore-line
+                  context
+                      .tTheme.bgColorSecondaryContainer, // coverage:ignore-line
           borderRadius: BorderRadius.only(
-            topRight: Radius.circular(
-                topAdjacent ? context.tTheme.radiusLarge : 0),
+            topRight:
+                Radius.circular(topAdjacent ? context.tTheme.radiusLarge : 0),
             bottomRight: Radius.circular(
                 bottomAdjacent ? context.tTheme.radiusLarge : 0),
           ),
@@ -93,8 +96,8 @@ class TWrapSideBarItem extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: 56),
         child: Container(
           // height: 86,
-          decoration: BoxDecoration(
-              color: context.tTheme.bgColorSecondaryContainer),
+          decoration:
+              BoxDecoration(color: context.tTheme.bgColorSecondaryContainer),
           padding: const EdgeInsets.all(8),
           child: Container(
             decoration: BoxDecoration(
@@ -110,15 +113,29 @@ class TWrapSideBarItem extends StatelessWidget {
   }
 
   Widget renderMainContent(BuildContext context) {
-    return Row(
+    final content = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         renderIcon(context),
         Expanded(child: renderLabel(context)),
-        if (label.length > 4) renderBadge(context),
-        // SizedBox(
-        //   width: !disabled && selected ? 0 : preLineWidth,
-        // )
+      ],
+    );
+    if (badge == null) {
+      return content;
+    }
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: content,
+        ),
+        Positioned(
+          top: -8,
+          right: -4,
+          child: badge!,
+        ),
       ],
     );
   }
@@ -170,58 +187,17 @@ class TWrapSideBarItem extends StatelessWidget {
   }
 
   Widget renderLabel(BuildContext context) {
-    return TText.rich(
-      TextSpan(
-        children: [
-          WidgetSpan(
-              child: TText(
-            label,
-            style: selected
-                ? (selectedTextStyle ?? TextStyle(color: selectedColor))
-                : textStyle,
-            fontWeight:
-                selected && !disabled ? FontWeight.w600 : FontWeight.w400,
-            textColor: disabled
-                ? context.tTheme.textDisabledColor
-                : selected
-                    ? selectedColor ?? context.tTheme.brandNormalColor
-                    : unSelectedColor ?? context.tTheme.textColorPrimary,
-            // forceVerticalCenter: true,
-          )),
-
-          /// todo label.length 长度小于则不展示，为什么？？？
-          /// 应再判断有无icon，无icon时位置够，可以展示 badge
-          if (label.length <= 4 || icon == null)
-            WidgetSpan(
-                child: SizedBox(
-              width: 1,
-              height: 16,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  badge != null
-                      ? Positioned(top: -6, child: badge!) // coverage:ignore-line
-                      : Container()
-                ],
-              ),
-            ))
-        ],
-      ),
-      softWrap: true,
+    return TText(
+      label,
       style: selectedTextStyle,
-    );
-  }
-
-  Widget renderBadge(BuildContext context) { // coverage:ignore-line
-    return SizedBox( // coverage:ignore-line
-      width: 1,
-      height: 40,
-      child: Stack( // coverage:ignore-line
-        clipBehavior: Clip.none,
-        children: [ // coverage:ignore-line
-          badge != null ? Positioned(top: -6, child: badge!) : Container() // coverage:ignore-line
-        ],
-      ),
+      fontWeight: selected && !disabled ? FontWeight.w600 : FontWeight.w400,
+      textColor: disabled
+          ? context.tTheme.textDisabledColor
+          : selected
+              ? selectedColor ?? context.tTheme.brandNormalColor
+              : unSelectedColor ?? context.tTheme.textColorPrimary,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

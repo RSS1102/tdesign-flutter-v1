@@ -7,7 +7,9 @@ void main() {
   group('TBackTopThemeData 纯函数', () {
     const theme = TBackTopThemeData(
       shape: TBackTopShape.circle,
-      colorScheme: TBackTopColorScheme.light,
+      backgroundColor: Colors.red,
+      borderColor: Colors.redAccent,
+      contentColor: Colors.white,
       defaultVisibilityOffset: 200,
       defaultRight: 20,
       defaultBottom: 40,
@@ -22,7 +24,24 @@ void main() {
       expect(copied, isA<TBackTopThemeData>());
       expect(copied.shape, TBackTopShape.halfCircle);
       expect(copied.defaultVisibilityOffset, 300);
-      expect(copied.colorScheme, TBackTopColorScheme.light);
+      expect(copied.backgroundColor, Colors.red);
+    });
+
+    test('copyWith cover remaining fields', () {
+      final copied = theme.copyWith(
+        backgroundColor: Colors.blue,
+        borderColor: Colors.blueAccent,
+        contentColor: Colors.black,
+        defaultRight: 24,
+        defaultBottom: 36,
+        halfCircleRightInset: -12,
+      );
+      expect(copied.backgroundColor, Colors.blue);
+      expect(copied.borderColor, Colors.blueAccent);
+      expect(copied.contentColor, Colors.black);
+      expect(copied.defaultRight, 24);
+      expect(copied.defaultBottom, 36);
+      expect(copied.halfCircleRightInset, -12);
     });
 
     test('lerp 在 t=0 / 0.5 / 1 返回 TBackTopThemeData', () {
@@ -43,6 +62,26 @@ void main() {
 
     test('lerp other 非同类型时返回 this', () {
       expect(theme.lerp(null, 0.5), theme);
+    });
+
+    test('lerp cover remaining fields', () {
+      const other = TBackTopThemeData(
+        shape: TBackTopShape.halfCircle,
+        backgroundColor: Colors.blue,
+        borderColor: Colors.blueAccent,
+        contentColor: Colors.black,
+        defaultRight: 40,
+        defaultBottom: 50,
+        halfCircleRightInset: -8,
+      );
+      final lerped = theme.lerp(other, 0.5);
+      expect(lerped.backgroundColor, Color.lerp(Colors.red, Colors.blue, .5));
+      expect(lerped.borderColor,
+          Color.lerp(Colors.redAccent, Colors.blueAccent, .5));
+      expect(lerped.contentColor, Color.lerp(Colors.white, Colors.black, .5));
+      expect(lerped.defaultRight, 30);
+      expect(lerped.defaultBottom, 45);
+      expect(lerped.halfCircleRightInset, -12);
     });
   });
 }

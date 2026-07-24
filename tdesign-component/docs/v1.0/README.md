@@ -14,6 +14,11 @@ docs/
     │   ├── testing.md             #   CI、测试位置/运行/命名、Widget/Golden、发布前检查
     │   └── component-acceptance-standard.md  # 整体工作验收标准 + Theme 接入验证方法
     │
+    ├── migration/                 # 迁移回 tdesign-flutter 主仓的分批 PR 方案与进展
+    │   ├── README.md              #   目录说明和迁移原则
+    │   ├── pr-staging-plan.md     #   分阶段 PR 拆分方案
+    │   └── progress.md            #   当前进展、验收快照和风险
+    │
     ├── foundation/                # 全组件共守的设计规则（按需查阅，组件 md 只写差异）
     │   ├── api.md                 #   构造器 L1–L4、命名、禁用、export
     │   ├── controlled.md          #   受控模型、控制类 A–F
@@ -46,4 +51,5 @@ example/assets/api/                # Example API 面板（注释生成，非本�
 | **验收标准 + 验证**（整体工作验收 / Theme 接入验证 / Web 网页） | [guide/component-acceptance-standard.md](./guide/component-acceptance-standard.md) | 一·二 验收项 · §四 Theme 验证方法 · 补充项 G |
 | **组件 md 编写**（章节结构 / 发布前去重清单） | [guide/component-doc.md](./guide/component-doc.md) | §2 章节 · §8 去重清单 |
 | **注释 → API 文档生成**（tdesign_flutter_tools） | [guide/doc-generation.md](./guide/doc-generation.md) | §3 注释约束 · §6 发布前 |
+| **迁移回主仓**（分批 PR 方案 / 进展 / 风险） | [migration/README.md](./migration/README.md) | [PR 拆分](./migration/pr-staging-plan.md) · [进展](./migration/progress.md) |
 | **开发入门**（环境 / 目录 / 本地命令） | [guide/developer-guide.md](./guide/developer-guide.md) | — |

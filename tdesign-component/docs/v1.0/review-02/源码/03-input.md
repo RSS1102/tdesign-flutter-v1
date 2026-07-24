@@ -5,6 +5,10 @@
 - 本文只记录对照 v1.0 设计口径后，当前源码中仍实际存在的问题。
 - `tdesign-component/docs/v1.0/components/03-input/*` 只作为目标口径，不作为被 review 对象。
 
+## 已处理
+
+- `TCheckboxGroupController` 已从当前方案中移除，Checkbox / Radio 改为严格受控组合体方案。
+
 ## P1 必修问题
 
 ### 1. `TStepper` 的 `disabled` 语义没有完全收敛，文本输入与图标按钮的禁用条件不一致
@@ -135,34 +139,7 @@
 - 在 `didUpdateWidget` 中处理 controller 变更：先解绑旧 controller，再绑定新 controller。
 - 提交和重置前增加 `mounted` / controller 来源校验，避免销毁后继续驱动 State。
 
-### 6. `TCheckboxGroupController` 绑定 State 后没有解绑或处理 controller 切换
-
-定位：
-
-- `tdesign-component/lib/src/components/checkbox/t_check_box_group.dart:11-49`
-- `tdesign-component/lib/src/components/checkbox/t_check_box_group.dart:152-178`
-- `tdesign-component/lib/src/components/checkbox/t_check_box_group.dart:193-230`
-
-证据：
-
-- `TCheckboxGroupController` 通过 `_state` 直接持有 `TCheckboxGroupState`。
-- `initState()` 只执行 `widget.controller?._state = this`。
-- `didUpdateWidget()` 只同步 `value`，没有处理 `controller` 实例变更。
-- `TCheckboxGroupState` 未实现 `dispose()`，销毁时不会把 controller 上的 `_state` 清空。
-
-影响：
-
-- 外部 controller 在组件销毁后仍可能持有旧 State，并继续调用 `toggleAll()`、`reverseAll()`、`toggle()`。
-- controller 切换后，旧 controller 仍指向旧 State，新 controller 未被重新绑定。
-- 这会造成内存泄漏、销毁后 setState 风险，以及多个 Group 复用 controller 时状态串扰。
-
-建议：
-
-- 在 `didUpdateWidget` 中处理 controller 变更：解绑旧 controller，绑定新 controller。
-- 在 `dispose()` 中如果当前 controller 指向本 State，则清空 `_state`。
-- controller 方法调用前应避免驱动已销毁 State，必要时给 controller 增加 attach/detach 语义。
-
-### 7. `TSlider` / `TRangeSlider` 没有把 `value` clamp 到 Theme min/max，默认范围存在直接冲突
+### 6. `TSlider` / `TRangeSlider` 没有把 `value` clamp 到 Theme min/max，默认范围存在直接冲突
 
 定位：
 
@@ -191,7 +168,7 @@
 - `TRangeSlider` 默认值应与默认 Theme 范围一致，或由构造器显式要求调用方传合法值并 assert。
 - 当 Theme min/max 变化时，应重新校正内部值，并避免触发非法 RangeValues。
 
-### 8. `TUpload` 只在 `initState` 读取 `files`，且直接持有外部列表引用
+### 7. `TUpload` 只在 `initState` 读取 `files`，且直接持有外部列表引用
 
 定位：
 

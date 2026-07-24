@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
+
+import '../../theme/basic.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
+import 't_nav_bar_theme_data.dart';
 
 /// NavBar 操作项回调类型
 typedef TBarItemAction = void Function();
@@ -7,7 +14,7 @@ typedef TBarItemAction = void Function();
 /// NavBar 组件 v1.0
 ///
 /// Material AppBar 薄包装（NavigationToolbar 实现）。
-/// - A 类禁用：操作项 `action: null`；返回 `onBack: null`。
+/// - A 类禁用：操作项 `action: null`。
 /// - L4 样式（标题颜色/字体、背景、高度、内边距等）→ [TNavBarThemeData]。
 class TNavBar extends StatefulWidget implements PreferredSizeWidget {
   const TNavBar({
@@ -55,7 +62,7 @@ class TNavBar extends StatefulWidget implements PreferredSizeWidget {
   /// 是否使用默认的返回按钮
   final bool useDefaultBack;
 
-  /// 返回事件
+  /// 返回事件；默认返回按钮点击时先触发该回调，再执行 Navigator.maybePop。
   final VoidCallback? onBack;
 
   /// NavBar 下方的 Widget
@@ -84,7 +91,7 @@ class TNavBar extends StatefulWidget implements PreferredSizeWidget {
   /// 背景颜色
   final Color? backgroundColor;
 
-  /// 高度
+  /// 高度；作为 [PreferredSizeWidget.preferredSize] 的唯一高度来源
   final double? height;
 
   /// 内部填充
@@ -129,8 +136,7 @@ class _TNavBarState extends State<TNavBar> {
       _themeData.backIconColor ??
       context.tTheme.textColorPrimary;
 
-  Font? get _effectiveTitleFont =>
-      widget.titleFont ?? _themeData.titleFont;
+  Font? get _effectiveTitleFont => widget.titleFont ?? _themeData.titleFont;
 
   FontWeight? get _effectiveTitleFontWeight =>
       widget.titleFontWeight ?? _themeData.titleFontWeight;
@@ -143,7 +149,7 @@ class _TNavBarState extends State<TNavBar> {
       _themeData.backgroundColor ??
       context.tTheme.bgColorContainer;
 
-  double get _effectiveHeight => widget.height ?? _themeData.height ?? 48;
+  double get _effectiveHeight => widget.preferredSize.height;
 
   EdgeInsetsGeometry get _effectivePadding =>
       widget.padding ??
@@ -156,8 +162,7 @@ class _TNavBarState extends State<TNavBar> {
   double get _effectiveTitleMargin =>
       widget.titleMargin ?? _themeData.titleMargin ?? 16;
 
-  double get _effectiveOpacity =>
-      widget.opacity ?? _themeData.opacity ?? 1.0;
+  double get _effectiveOpacity => widget.opacity ?? _themeData.opacity ?? 1.0;
 
   bool get _effectiveUseBorderStyle =>
       widget.useBorderStyle ?? _themeData.useBorderStyle ?? false;
@@ -342,10 +347,6 @@ class TNavBarItem {
   /// 自定义组件，优先级高于 icon，可以是任意 Widget
   Widget? customWidget;
 
-  /// 图标组件，优先级高于 icon
-  @Deprecated('Use customWidget instead')
-  Widget? iconWidget;
-
   TNavBarItem({
     this.icon,
     this.iconColor,
@@ -353,25 +354,31 @@ class TNavBarItem {
     this.iconSize = 24.0,
     this.padding,
     this.customWidget,
-    @Deprecated('Use customWidget instead') this.iconWidget,
   });
 
-  Widget toWidget(BuildContext context, {bool isLeading = true}) =>
-      GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: action,
-        child: Padding(
-          padding: padding ??
-              (isLeading
-                  ? EdgeInsets.only(right: context.tTheme.spacer8)
-                  : EdgeInsets.only(left: context.tTheme.spacer8)),
-          child: customWidget ??
-              iconWidget ??
-              Icon(
-                icon,
-                size: iconSize,
-                color: iconColor,
-              ),
-        ),
-      );
+  Widget toWidget(BuildContext context, {bool isLeading = true}) {
+    final isDisabled = action == null;
+    final item = GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: action,
+      child: Padding(
+        padding: padding ??
+            (isLeading
+                ? EdgeInsets.only(right: context.tTheme.spacer8)
+                : EdgeInsets.only(left: context.tTheme.spacer8)),
+        child: customWidget ??
+            Icon(
+              icon,
+              size: iconSize,
+              color: isDisabled ? context.tTheme.textDisabledColor : iconColor,
+            ),
+      ),
+    );
+    return Semantics(
+      enabled: !isDisabled,
+      child: isDisabled && customWidget != null
+          ? Opacity(opacity: 0.4, child: item)
+          : item,
+    );
+  }
 }

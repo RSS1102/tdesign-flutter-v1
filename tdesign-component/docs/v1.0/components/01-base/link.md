@@ -9,10 +9,10 @@
 
 | 项 | v1.0 |
 |---|---|
-| 实现 | Material 动作控件薄包装（ListTile 系保留 `onTap`） |
+| 实现 | Material 动作控件薄包装（内部按 `uri` 与回调选择触发路径） |
 | Material | InkWell+Text |
 | Theme | `TLinkThemeData` |
-| 禁用 | 废弃 `state: TLinkState.disabled`。 |
+| 禁用 | 回调为 `null` 时禁用 |
 | L4 | 构造器 L4 → `TLinkThemeData` |
 
 ## 控制方案
@@ -24,46 +24,25 @@
 
 ## 1. API
 
-### 保留
+### 构造器与类型
 
 | 符号 | 说明 |
 | --- | --- |
-| TLinkVariant | 链接形态（basic / underline / icon） |
-| TLinkSize | 尺寸 |
-| uri | 跳转 URI |
-| prefixIcon / suffixIcon | 链式图标 |
-
-### 迁移 / 改名
-
-| 0.2.x | v1.0 | 原因 |
-| --- | --- | --- |
-| TLinkStyle | TLinkColorScheme | 语义色；对齐 Button `colorScheme` |
-| label | child | L2 内容 |
-| linkClick | onPressed | A 类回调 |
-| type | variant | 命名对齐 v1.0 |
-| style | colorScheme | 原 `TLinkStyle` 枚举 |
-| state | onPressed: null | 废弃 `TLinkState.disabled` |
-| color / iconSize / fontSize | TLinkThemeData | L4 → Theme |
-| leftGapWithIcon / rightGapWithIcon | TLinkThemeData | L4 → Theme |
-
-### 废弃
-
-| 符号 | 原因 |
-| --- | --- |
-| TLinkState | 禁用改用 `onPressed: null` |
-| LinkClick | → `VoidCallback?` / `ValueChanged<Uri?>? onPressed` |
-
-### 新增
-
-| 符号 | 说明 |
-| --- | --- |
-| TLinkThemeData | L4 默认样式 |
-| TLinkConfiguration | T2 组合配置（保留） |
+| `TLink` | 链接 Widget |
+| `TLinkVariant` | 链接形态（basic / underline / icon） |
+| `TLinkSize` | 尺寸 |
+| `TLinkColorScheme` | 语义色 |
+| `uri` | 跳转 URI |
+| `prefixIcon` / `suffixIcon` | 链式图标 |
+| `TLinkThemeData` | L4 默认样式 |
 
 ### export
 
-- **保留**：`TLink`、`TLinkVariant`、`TLinkSize`、`TLinkColorScheme`、`TLinkThemeData`、`TLinkConfiguration`
-- **移出**：`TLinkStyle`、`TLinkState`、`LinkClick`（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
+- `TLink`
+- `TLinkVariant`
+- `TLinkSize`
+- `TLinkColorScheme`
+- `TLinkThemeData`
 
 
 ---
@@ -84,7 +63,7 @@
 | 字段 | 来源 | 说明 |
 | --- | --- | --- |
 | `foregroundColor` / `overlayColor` | Material **`TextButtonTheme`** / InkWell | 链接色与水波纹 |
-| `variant` | TDesign 构造器 L1（非 Material） | `TLinkVariant`；默认由 `TLinkThemeData.defaultVariant` 提供；原 `type` / `TLinkType` |
+| `variant` | TDesign 构造器 L1（非 Material） | `TLinkVariant`；默认由 `TLinkThemeData.defaultVariant` 提供 |
 | `size` | TDesign 构造器 L1（非 Material） | `TLinkSize`；默认由 `TLinkThemeData.defaultSize` 提供 |
 | `fontSize` / `iconSize` / `prefixIcon` / `suffixIcon` / 间距 | TDesign 扩展 | 链式图标布局 |
 | `uri` | TDesign 扩展（可选） | 默认链接色/下划线策略 |

@@ -2,75 +2,28 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-
-import 't_badge.dart' show TBadgeVariant, TBadgeBorder, TBadge;
-
-/// 徽标组件级 ThemeExtension
-///
-/// 通过 Theme 子树注入，控制子树的默认样式。
-/// 构造器参数优先于 Theme。
+/// Material [BadgeThemeData] 未覆盖的 TDesign 徽标视觉默认值。
+@immutable
 class TBadgeThemeData extends ThemeExtension<TBadgeThemeData> {
-  /// 未传 [TBadge.variant] 时的默认徽标形态
-  final TBadgeVariant? variant;
-
-  /// 未传 TBadge.border 时的默认圆角
-  final TBadgeBorder? border;
-
-  /// 徽标背景色
-  final Color? color;
-
-  /// 徽标文字色
-  final Color? textColor;
-
-  /// 消息内容（覆盖 count 展示）
-  final String? message;
-
-  /// 角标大三角形宽
-  final double? widthLarge;
-
-  /// 角标小三角形宽
-  final double? widthSmall;
-
-  /// 角标自定义 padding
-  final EdgeInsetsGeometry? padding;
-
-  /// 值为 0 是否显示
-  final bool? showZero;
-
   const TBadgeThemeData({
-    this.variant,
-    this.border,
-    this.color,
-    this.textColor,
-    this.message,
-    this.widthLarge,
-    this.widthSmall,
-    this.padding,
-    this.showZero,
+    this.borderColor,
+    this.borderWidth,
   });
+
+  /// 开启边框时使用的颜色。
+  final Color? borderColor;
+
+  /// 开启边框时使用的宽度。
+  final double? borderWidth;
 
   @override
   TBadgeThemeData copyWith({
-    TBadgeVariant? variant,
-    TBadgeBorder? border,
-    Color? color,
-    Color? textColor,
-    String? message,
-    double? widthLarge,
-    double? widthSmall,
-    EdgeInsetsGeometry? padding,
-    bool? showZero,
+    Color? borderColor,
+    double? borderWidth,
   }) {
     return TBadgeThemeData(
-      variant: variant ?? this.variant,
-      border: border ?? this.border,
-      color: color ?? this.color,
-      textColor: textColor ?? this.textColor,
-      message: message ?? this.message,
-      widthLarge: widthLarge ?? this.widthLarge,
-      widthSmall: widthSmall ?? this.widthSmall,
-      padding: padding ?? this.padding,
-      showZero: showZero ?? this.showZero,
+      borderColor: borderColor ?? this.borderColor,
+      borderWidth: borderWidth ?? this.borderWidth,
     );
   }
 
@@ -80,15 +33,8 @@ class TBadgeThemeData extends ThemeExtension<TBadgeThemeData> {
       return this;
     }
     return TBadgeThemeData(
-      variant: t < 0.5 ? variant : other.variant,
-      border: t < 0.5 ? border : other.border,
-      color: Color.lerp(color, other.color, t),
-      textColor: Color.lerp(textColor, other.textColor, t),
-      message: t < 0.5 ? message : other.message,
-      widthLarge: lerpDouble(widthLarge, other.widthLarge, t),
-      widthSmall: lerpDouble(widthSmall, other.widthSmall, t),
-      padding: EdgeInsetsGeometry.lerp(padding, other.padding, t),
-      showZero: t < 0.5 ? showZero : other.showZero,
+      borderColor: Color.lerp(borderColor, other.borderColor, t),
+      borderWidth: lerpDouble(borderWidth, other.borderWidth, t),
     );
   }
 }

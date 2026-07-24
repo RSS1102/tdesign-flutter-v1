@@ -2,234 +2,238 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-/// TCascader / TMultiCascader V1.0 Widget 测试
-///
-/// 覆盖：默认 step 主题渲染、tab 主题（TCustomTab）、标题/副标题/关闭文案、
-/// 字母排序、initialData/initialIndexes 定位、点击展开下一级、点击叶子触发
-/// onChanged 并关闭、关闭按钮（action / onClose 分支）、showMultiCascader 弹窗。
 void main() {
-  /// 用 TTheme 包裹以提供基础 Token 与默认文案资源
-  Widget wrapWithTheme(Widget child) {
+  const options = [
+    TCascaderOption(
+      label: 'Guangdong',
+      value: 'gd',
+      children: [
+        TCascaderOption(
+          label: 'Shenzhen',
+          value: 'sz',
+          children: [
+            TCascaderOption(label: 'Nanshan', value: 'ns'),
+            TCascaderOption(label: 'Futian', value: 'ft', disabled: true),
+          ],
+        ),
+        TCascaderOption(label: 'Guangzhou', value: 'gz'),
+      ],
+    ),
+    TCascaderOption(label: 'Disabled', value: 'disabled', disabled: true),
+  ];
+
+  Widget wrap(Widget child, {TCascaderThemeData? cascaderTheme}) {
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: ThemeData(
+        extensions: [
+          TThemeData.defaultData(),
+          if (cascaderTheme != null) cascaderTheme,
+        ],
+      ),
       home: Scaffold(body: child),
     );
   }
 
-  /// 两级联数据：广东省(gd) -> 深圳市(sz)/广州市(gz)，以及 北京(bj)
-  final testData = <Map<String, dynamic>>[
-    <String, dynamic>{
-      'label': '广东省',
-      'value': 'gd',
-      'children': <Map<String, dynamic>>[
-        <String, dynamic>{'label': '深圳市', 'value': 'sz'},
-        <String, dynamic>{'label': '广州市', 'value': 'gz'},
-      ],
-    },
-    <String, dynamic>{'label': '北京', 'value': 'bj'},
-  ];
-
-  group('TMultiCascader 渲染', () {
-    testWidgets('默认 step 主题 + 标题正常渲染列表', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        data: testData,
-        cascaderHeight: 300,
-        onChanged: (_) {},
-      )));
-      await tester.pumpAndSettle();
-      expect(find.byType(TMultiCascader), findsOneWidget);
-      // 一级列表项
-      expect(find.text('广东省'), findsOneWidget);
-      expect(find.text('北京'), findsOneWidget);
-    });
-
-    testWidgets('title 渲染', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        title: '请选择地区',
-        data: testData,
-        cascaderHeight: 300,
-        onChanged: (_) {},
-      )));
-      await tester.pumpAndSettle();
-      expect(find.text('请选择地区'), findsOneWidget);
-    });
-
-    testWidgets('theme=tab 时使用 TCustomTab', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        theme: 'tab',
-        data: testData,
-        cascaderHeight: 300,
-        onChanged: (_) {},
-      )));
-      await tester.pumpAndSettle();
-      expect(find.byType(TMultiCascader), findsOneWidget);
-      expect(find.byType(TCustomTab), findsOneWidget);
-    });
-
-    testWidgets('subTitles 渲染副标题', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        data: testData,
-        subTitles: const ['请选择省份', '请选择城市'],
-        cascaderHeight: 300,
-        onChanged: (_) {},
-      )));
-      await tester.pumpAndSettle();
-      expect(find.text('请选择省份'), findsOneWidget);
-    });
-
-    testWidgets('closeText 渲染自定义关闭文案', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        data: testData,
-        closeText: '关闭',
-        cascaderHeight: 300,
-        onChanged: (_) {},
-      )));
-      await tester.pumpAndSettle();
-      expect(find.text('关闭'), findsOneWidget);
-    });
-
-    testWidgets('isLetterSort 带 segmentValue 排序渲染', (tester) async {
-      final sortedData = <Map<String, dynamic>>[
-        <String, dynamic>{
-          'label': '北京',
-          'value': 'bj',
-          'segmentValue': 'B',
-        },
-        <String, dynamic>{
-          'label': '广东',
-          'value': 'gd',
-          'segmentValue': 'G',
-          'children': <Map<String, dynamic>>[
-            <String, dynamic>{'label': '深圳', 'value': 'sz'}
-          ],
-        },
-      ];
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        data: sortedData,
-        isLetterSort: true,
-        cascaderHeight: 300,
-        onChanged: (_) {},
-      )));
-      await tester.pumpAndSettle();
-      expect(find.byType(TMultiCascader), findsOneWidget);
-      expect(find.text('北京'), findsOneWidget);
-    });
-
-    testWidgets('initialData 定位到已有值不抛异常', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        data: testData,
-        initialData: 'gd',
-        cascaderHeight: 300,
-        onChanged: (_) {},
-      )));
-      await tester.pumpAndSettle();
-      expect(find.byType(TMultiCascader), findsOneWidget);
-    });
-
-    testWidgets('initialIndexes 定位不抛异常', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        data: testData,
-        initialIndexes: const [0],
-        cascaderHeight: 300,
-        onChanged: (_) {},
-      )));
-      await tester.pumpAndSettle();
-      expect(find.byType(TMultiCascader), findsOneWidget);
-    });
-  });
-
-  group('TMultiCascader 交互', () {
-    testWidgets('点击一级项展开下一级', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        data: testData,
-        cascaderHeight: 300,
-        onChanged: (_) {},
-      )));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('广东省'));
-      await tester.pumpAndSettle();
-      // 展开后应出现下一级城市
-      expect(find.text('深圳市'), findsOneWidget);
-      expect(find.text('广州市'), findsOneWidget);
-    });
-
-    testWidgets('点击叶子节点触发 onChanged 并关闭弹窗', (tester) async {
-      var changedCount = 0;
-      var lastResult = <MultiCascaderListModel>[];
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        data: testData,
-        cascaderHeight: 300,
-        onChanged: (result) {
-          changedCount++;
-          lastResult = result;
+  group('TCascader controlled behavior', () {
+    testWidgets('selects a complete path through controlled rebuilds',
+        (tester) async {
+      var value = <Object?>[];
+      late StateSetter update;
+      await tester.pumpWidget(wrap(StatefulBuilder(
+        builder: (context, setState) {
+          update = setState;
+          return TCascader(
+            options: options,
+            value: value,
+            onChanged: (next) => setState(() => value = next),
+          );
         },
       )));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('广东省'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('深圳市'));
-      await tester.pumpAndSettle();
-      expect(changedCount, 1);
-      expect(lastResult.length, greaterThanOrEqualTo(1));
-      // 叶子选中后 Navigator.pop，组件被移除
-      expect(find.byType(TMultiCascader), findsNothing);
+      expect(find.text('Guangdong'), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('cascader-gd')));
+      await tester.pump();
+      expect(value, ['gd']);
+      expect(find.text('Shenzhen'), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('cascader-sz')));
+      await tester.pump();
+      expect(value, ['gd', 'sz']);
+      expect(find.text('Nanshan'), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('cascader-ns')));
+      await tester.pump();
+      expect(value, ['gd', 'sz', 'ns']);
+
+      value = ['gd'];
+      update(() {});
+      await tester.pump();
+      expect(find.text('Shenzhen'), findsOneWidget);
+
+      await tester.tap(find.text('Guangdong'));
+      await tester.pump();
+      expect(find.text('Disabled'), findsOneWidget);
     });
 
-    testWidgets('action 分支：点击自定义按钮触发 onConfirm', (tester) async {
-      var confirmed = false;
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        data: testData,
-        cascaderHeight: 300,
-        action: TCascaderAction(
-          text: '完成',
-          onConfirm: (_) => confirmed = true,
+    testWidgets('onChanged null disables all interaction', (tester) async {
+      await tester.pumpWidget(wrap(const TCascader(
+        options: options,
+        value: [],
+      )));
+      final cascader = find.byType(TCascader);
+      expect(
+        tester
+            .widget<AbsorbPointer>(
+              find.descendant(
+                  of: cascader, matching: find.byType(AbsorbPointer)),
+            )
+            .absorbing,
+        isTrue,
+      );
+      expect(
+        tester
+            .widget<AnimatedOpacity>(
+              find.descendant(
+                  of: cascader, matching: find.byType(AnimatedOpacity)),
+            )
+            .opacity,
+        0.5,
+      );
+    });
+
+    testWidgets('disabled option does not emit changes', (tester) async {
+      var changed = false;
+      await tester.pumpWidget(wrap(TCascader(
+        options: options,
+        value: const [],
+        onChanged: (_) => changed = true,
+      )));
+      final tile = tester.widget<ListTile>(
+        find.ancestor(
+          of: find.text('Disabled'),
+          matching: find.byType(ListTile),
         ),
-        onChanged: (_) {},
-      )));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('完成'));
-      await tester.pumpAndSettle();
-      expect(confirmed, isTrue);
+      );
+      expect(tile.enabled, isFalse);
+      await tester.tap(find.text('Disabled'), warnIfMissed: false);
+      expect(changed, isFalse);
     });
 
-    testWidgets('onClose 分支：点击关闭图标触发 onClose', (tester) async {
-      var closed = false;
-      await tester.pumpWidget(wrapWithTheme(TMultiCascader(
-        data: testData,
-        cascaderHeight: 300,
-        onClose: () => closed = true,
+    testWidgets('external invalid path safely falls back to root',
+        (tester) async {
+      await tester.pumpWidget(wrap(TCascader(
+        options: options,
+        value: const ['missing'],
         onChanged: (_) {},
       )));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(TIcons.close));
-      await tester.pumpAndSettle();
-      expect(closed, isTrue);
+      expect(find.text('Guangdong'), findsOneWidget);
     });
-  });
 
-  group('TCascader.showMultiCascader', () {
-    testWidgets('弹窗展示 TMultiCascader', (tester) async {
-      await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(extensions: [TThemeData.defaultData()]),
-        home: Builder(
-          builder: (context) => Scaffold(
-            body: ElevatedButton(
-              onPressed: () => TCascader.showMultiCascader(
-                context,
-                data: testData,
-                cascaderHeight: 300,
-                onChanged: (_) {},
-              ),
-              child: const Text('open'),
-            ),
-          ),
+    testWidgets('complete leaf path opens the leaf level', (tester) async {
+      await tester.pumpWidget(wrap(
+        TCascader(
+          options: options,
+          value: const ['gd', 'sz', 'ns'],
+          onChanged: (_) {},
+        ),
+        cascaderTheme: const TCascaderThemeData(
+          activeTextStyle: TextStyle(color: Colors.red),
         ),
       ));
-      await tester.tap(find.text('open'));
-      await tester.pumpAndSettle();
-      expect(find.byType(TMultiCascader), findsOneWidget);
-      // 弹窗内容存在
-      expect(find.text('广东省'), findsOneWidget);
+
+      final selectedTile = tester.widget<ListTile>(
+        find.byKey(const ValueKey('cascader-ns')),
+      );
+      expect(selectedTile.selected, isTrue);
+      await tester.tap(find.text('Shenzhen'));
+      await tester.pump();
+      expect(find.text('Guangzhou'), findsOneWidget);
     });
+
+    testWidgets('disabled theme style is applied', (tester) async {
+      const disabledStyle = TextStyle(color: Colors.purple);
+      await tester.pumpWidget(wrap(
+        TCascader(
+          options: options,
+          value: const [],
+          onChanged: (_) {},
+        ),
+        cascaderTheme: const TCascaderThemeData(
+          disabledTextStyle: disabledStyle,
+        ),
+      ));
+
+      expect(tester.widget<Text>(find.text('Disabled')).style, disabledStyle);
+    });
+  });
+
+  group('TCascader variants and theme', () {
+    testWidgets('step variant renders vertical navigation', (tester) async {
+      await tester.pumpWidget(wrap(TCascader(
+        options: options,
+        value: const ['gd'],
+        variant: TCascaderVariant.step,
+        onChanged: (_) {},
+      )));
+      expect(find.byType(Column), findsWidgets);
+      expect(find.text('请选择'), findsOneWidget);
+    });
+
+    testWidgets('theme controls panel and text styles', (tester) async {
+      const active = TextStyle(color: Colors.red);
+      await tester.pumpWidget(wrap(
+        TCascader(
+          options: options,
+          value: const ['gd'],
+          placeholder: 'Next',
+          onChanged: (_) {},
+        ),
+        cascaderTheme: const TCascaderThemeData(
+          height: 280,
+          backgroundColor: Colors.yellow,
+          borderRadius: 12,
+          textStyle: TextStyle(color: Colors.black),
+          activeTextStyle: active,
+          disabledTextStyle: TextStyle(color: Colors.grey),
+          navigationPadding: EdgeInsets.all(6),
+          dividerColor: Colors.blue,
+        ),
+      ));
+      expect(find.text('Next'), findsOneWidget);
+      expect(tester.widget<Text>(find.text('Next')).style, active);
+      expect(
+          find.byWidgetPredicate(
+            (widget) =>
+                widget is Container && widget.constraints?.maxHeight == 280,
+          ),
+          findsOneWidget);
+    });
+  });
+
+  test('TCascaderThemeData copyWith and lerp', () {
+    const base = TCascaderThemeData(
+      height: 300,
+      backgroundColor: Colors.white,
+      borderRadius: 4,
+      textStyle: TextStyle(fontSize: 12),
+      activeTextStyle: TextStyle(fontSize: 14),
+      disabledTextStyle: TextStyle(color: Colors.grey),
+      navigationPadding: EdgeInsets.all(4),
+      dividerColor: Colors.black,
+    );
+    const other = TCascaderThemeData(
+      height: 400,
+      backgroundColor: Colors.black,
+      borderRadius: 8,
+      textStyle: TextStyle(fontSize: 16),
+      activeTextStyle: TextStyle(fontSize: 18),
+      disabledTextStyle: TextStyle(color: Colors.white),
+      navigationPadding: EdgeInsets.all(8),
+      dividerColor: Colors.white,
+    );
+    expect(base.copyWith().height, 300);
+    expect(base.copyWith(height: 320).height, 320);
+    expect(base.lerp(null, 0.5), same(base));
+    expect(base.lerp(other, 0.5).height, 350);
   });
 }

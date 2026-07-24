@@ -19,6 +19,7 @@ import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
 import '../../util/t_toolbar_pressable.dart';
 import '../text/t_text.dart';
+import 't_popup_theme_data.dart';
 
 part '_popup_center_close.dart';
 part '_popup_header.dart';
@@ -75,8 +76,19 @@ final class TPopup {
     bool useRootNavigator = false,
   }) {
     final navContext = navigatorContext ?? context;
+    final theme = Theme.of(context).extension<TPopupThemeData>();
+    final resolvedOptions = options.copyWith(
+      radius: options.radius ?? theme?.panelRadius,
+      backgroundColor:
+          options.backgroundColor ?? theme?.panelBackgroundColor,
+      overlayColor: options.overlayColor ?? theme?.barrierColor,
+      overlayOpacity: options.overlayOpacity ?? theme?.barrierOpacity,
+      animationDuration: options.animationDuration ??
+          theme?.transitionDuration ??
+          const Duration(milliseconds: 240),
+    );
     final handle = TPopupHandle._(
-      options: options,
+      options: resolvedOptions,
       navigatorContext: navigatorContext,
       useRootNavigator: useRootNavigator,
     );

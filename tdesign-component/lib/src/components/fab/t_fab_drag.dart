@@ -66,6 +66,7 @@ class _FabDraggable extends StatefulWidget {
 }
 
 class _FabDraggableState extends State<_FabDraggable> {
+  final GlobalKey _childKey = GlobalKey();
   late double _right;
   late double _bottom;
   double _totalDisplacement = 0;
@@ -78,6 +79,20 @@ class _FabDraggableState extends State<_FabDraggable> {
   }
 
   @override
+  void didUpdateWidget(covariant _FabDraggable oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final positionChanged = oldWidget.layout.right != widget.layout.right ||
+        oldWidget.layout.bottom != widget.layout.bottom;
+    if (positionChanged) {
+      _right = widget.layout.right;
+      _bottom = widget.layout.bottom;
+      return;
+    }
+    _right = _right.clamp(_minX(), _maxX());
+    _bottom = _bottom.clamp(_minY(), _maxY());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Positioned(
       right: _right,
@@ -86,13 +101,20 @@ class _FabDraggableState extends State<_FabDraggable> {
         onPanStart: _onPanStart,
         onPanUpdate: _onPanUpdate,
         onPanEnd: _onPanEnd,
-        child: widget.child,
+        child: KeyedSubtree(
+          key: _childKey,
+          child: widget.child,
+        ),
       ),
     );
   }
 
   void _onPanStart(DragStartDetails details) {
     _totalDisplacement = 0;
+    widget.onDragStart?.call(TFabDragDetails(
+      position: Offset(_right, _bottom),
+      start: details,
+    ));
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
@@ -147,16 +169,11 @@ class _FabDraggableState extends State<_FabDraggable> {
 
   void _snapToEdge() {
     final magnet = widget.layout.magnet;
-    final width = _stackSize().width;
-    final midX = width / 2;
-    final currentLeft = width - _right;
 
-    double targetRight;
-    if (magnet == TFabMagnet.right || magnet == null) {
-      targetRight = currentLeft < midX ? _maxX() : _minX();
-    } else {
-      targetRight = currentLeft < midX ? _maxX() : _minX();
-    }
+    final targetRight = switch (magnet) {
+      TFabMagnet.left => _maxX(),
+      TFabMagnet.right || null => _minX(),
+    };
 
     final duration =
         widget.magnetAnimationDuration ?? const Duration(milliseconds: 200);
@@ -179,7 +196,7 @@ class _FabDraggableState extends State<_FabDraggable> {
   double _maxX() {
     final width = _stackSize().width;
     final bounds = widget.layout.xBounds;
-    const fabWidth = 48.0; // 默认 large 尺寸
+    final fabWidth = _fabSize().width;
     return width - (bounds?.end ?? 16) - fabWidth;
   }
 
@@ -191,9 +208,17 @@ class _FabDraggableState extends State<_FabDraggable> {
   double _maxY() {
     final height = _stackSize().height;
     final bounds = widget.layout.yBounds;
-    const fabHeight = 48.0;
+    final fabHeight = _fabSize().height;
     // 当父级是真实全屏 Stack 时，需扣除底部安全区；小容器场景安全区为 0
     final padding = MediaQuery.of(context).padding.bottom;
     return height - (bounds?.end ?? 0) - fabHeight - padding;
+  }
+
+  Size _fabSize() {
+    final renderObject = _childKey.currentContext?.findRenderObject();
+    if (renderObject is RenderBox && renderObject.hasSize) {
+      return renderObject.size;
+    }
+    return const Size(48, 48);
   }
 }

@@ -1,244 +1,274 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tdesign_flutter/src/components/checkbox/t_selection_card.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-/// TCheckboxGroup / TCheckboxGroupContainer / TCheckboxGroupController 测试
-///
-/// 覆盖控制器方法（toggle/toggleAll/reverseAll/allChecked/checked）、
-/// maxChecked 超限、容器布局（横向/纵向/卡片/多列）与各类断言分支。
 void main() {
   Widget wrap(Widget child) {
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: TThemeBuilder.light(TThemeData.defaultData()),
       home: Scaffold(body: child),
     );
   }
 
-  /// 捕获构建期抛出的 FlutterError（断言在构造期或异步上报均可能）
-  Future<void> expectFlutterError(
-      WidgetTester tester, Widget Function() buildWidget) async {
-    FlutterError? err;
-    try {
-      final widget = buildWidget();
-      await tester.pumpWidget(wrap(widget));
-      await tester.pump();
-    } catch (e) {
-      if (e is FlutterError) err = e;
-    }
-    err ??= tester.takeException() as FlutterError?;
-    expect(err, isA<FlutterError>());
-  }
+  const options = [
+    TCheckboxOption(value: 'a', label: '选项 A'),
+    TCheckboxOption(value: 'b', label: '选项 B', subTitle: '说明 B'),
+    TCheckboxOption(value: 'c', label: '选项 C', disabled: true),
+  ];
 
-  List<TCheckbox> checkboxes(List<String> ids) => ids
-      .map((id) => TCheckbox(id: id, value: false, onChanged: (_) {}))
-      .toList();
-
-  group('TCheckboxGroupController 状态控制', () {
-    testWidgets('toggle 勾选并触发 onChanged', (tester) async {
-      final c = TCheckboxGroupController();
-      List<String>? result;
-      await tester.pumpWidget(wrap(TCheckboxGroup(
-        controller: c,
-        onChanged: (ids) => result = ids,
-        child: Row(children: checkboxes(['a', 'b'])),
-      )));
-      c.toggle('a', true);
-      await tester.pump();
-      expect(c.checked('a'), isTrue);
-      expect(c.allChecked(), contains('a'));
-      expect(result, contains('a'));
-    });
-
-    testWidgets('toggleAll 全选 / 全部取消', (tester) async {
-      final c = TCheckboxGroupController();
-      await tester.pumpWidget(wrap(TCheckboxGroup(
-        controller: c,
-        child: Row(children: checkboxes(['a', 'b', 'c'])),
-      )));
-      c.toggleAll(true);
-      await tester.pump();
-      expect(c.allChecked(), unorderedEquals(['a', 'b', 'c']));
-      c.toggleAll(false);
-      await tester.pump();
-      expect(c.allChecked(), isEmpty);
-    });
-
-    testWidgets('reverseAll 反选', (tester) async {
-      final c = TCheckboxGroupController();
-      await tester.pumpWidget(wrap(TCheckboxGroup(
-        controller: c,
-        child: Row(children: checkboxes(['a', 'b'])),
-      )));
-      c.toggle('a', true);
-      await tester.pump();
-      c.reverseAll();
-      await tester.pump();
-      expect(c.checked('a'), isFalse);
-      expect(c.checked('b'), isTrue);
-    });
-
-    testWidgets('maxChecked 超限触发 onOverloadChecked', (tester) async {
-      final c = TCheckboxGroupController();
-      bool overloaded = false;
-      await tester.pumpWidget(wrap(TCheckboxGroup(
-        controller: c,
-        maxChecked: 1,
-        onOverloadChecked: () => overloaded = true,
-        child: Row(children: checkboxes(['a', 'b'])),
-      )));
-      c.toggle('a', true);
-      await tester.pump();
-      // maxChecked=1，第二次勾选应被拒绝
-      c.toggle('b', true);
-      await tester.pump();
-      expect(c.checked('b'), isFalse);
-      expect(overloaded, isTrue);
-    });
-
-    testWidgets('didUpdateWidget 同步新 value', (tester) async {
-      final c = TCheckboxGroupController();
-      await tester.pumpWidget(wrap(TCheckboxGroup(
-        controller: c,
-        value: const ['a'],
-        child: Row(children: checkboxes(['a', 'b'])),
-      )));
-      expect(c.checked('a'), isTrue);
-      await tester.pumpWidget(wrap(TCheckboxGroup(
-        controller: c,
+  group('TCheckboxGroup v1 受控行为', () {
+    testWidgets('按 value 渲染选中项并按 options 顺序回调', (tester) async {
+      List<String>? changed;
+      await tester.pumpWidget(wrap(TCheckboxGroup<String>(
         value: const ['b'],
-        child: Row(children: checkboxes(['a', 'b'])),
+        options: options,
+        onChanged: (value) => changed = value,
       )));
+
+      await tester.tap(find.text('选项 A'));
       await tester.pump();
-      expect(c.checked('b'), isTrue);
-      expect(c.checked('a'), isFalse);
+
+      expect(changed, ['a', 'b']);
+      expect(find.text('说明 B'), findsOneWidget);
+    });
+
+    testWidgets('点击已选项会移除该项', (tester) async {
+      List<String>? changed;
+      await tester.pumpWidget(wrap(TCheckboxGroup<String>(
+        value: const ['a', 'b'],
+        options: options,
+        onChanged: (value) => changed = value,
+      )));
+
+      await tester.tap(find.text('选项 A'));
+      await tester.pump();
+
+      expect(changed, ['b']);
+    });
+
+    testWidgets('onChanged 为 null 时整组禁用', (tester) async {
+      await tester.pumpWidget(wrap(const TCheckboxGroup<String>(
+        value: ['a'],
+        options: options,
+      )));
+
+      await tester.tap(find.text('选项 A'));
+      await tester.pump();
+      expect(find.text('选项 A'), findsOneWidget);
+    });
+
+    testWidgets('禁用 option 不触发回调', (tester) async {
+      List<String>? changed;
+      await tester.pumpWidget(wrap(TCheckboxGroup<String>(
+        value: const [],
+        options: options,
+        onChanged: (value) => changed = value,
+      )));
+
+      await tester.tap(find.text('选项 C'));
+      await tester.pump();
+
+      expect(changed, isNull);
+    });
+
+    testWidgets('maxSelected 超限时触发 onMaxSelected 并保持原值', (tester) async {
+      var overloaded = false;
+      List<String>? changed;
+      await tester.pumpWidget(wrap(TCheckboxGroup<String>(
+        value: const ['a'],
+        options: options,
+        maxSelected: 1,
+        onMaxSelected: () => overloaded = true,
+        onChanged: (value) => changed = value,
+      )));
+
+      await tester.tap(find.text('选项 B'));
+      await tester.pump();
+
+      expect(overloaded, isTrue);
+      expect(changed, isNull);
     });
   });
 
-  group('TCheckboxGroupContainer 布局分支', () {
-    testWidgets('direction=horizontal 横向排列', (tester) async {
-      await tester.pumpWidget(wrap(TCheckboxGroupContainer(
-        direction: Axis.horizontal,
-        directionalTdCheckboxes: checkboxes(['a', 'b']),
+  group('TCheckboxGroup v1 布局与自定义项', () {
+    testWidgets('横向多列布局可构建', (tester) async {
+      await tester.pumpWidget(wrap(const SizedBox(
+        width: 240,
+        child: TCheckboxGroup<String>(
+          value: ['a'],
+          options: options,
+          direction: Axis.horizontal,
+          columns: 2,
+        ),
       )));
-      expect(find.byType(TCheckboxGroupContainer), findsOneWidget);
+
+      expect(find.byType(TCheckboxGroup<String>), findsOneWidget);
+      expect(find.byType(Wrap), findsOneWidget);
     });
 
-    testWidgets('direction=vertical 纵向列表', (tester) async {
-      await tester.pumpWidget(wrap(TCheckboxGroupContainer(
-        direction: Axis.vertical,
-        directionalTdCheckboxes: checkboxes(['a', 'b', 'c']),
-      )));
-      expect(find.byType(TCheckboxGroupContainer), findsOneWidget);
-    });
-
-    testWidgets('cardMode=true 卡片换行布局', (tester) async {
-      await tester.pumpWidget(wrap(TCheckboxGroupContainer(
-        direction: Axis.horizontal,
+    testWidgets('cardMode 使用卡片组布局', (tester) async {
+      await tester.pumpWidget(wrap(const TCheckboxGroup<String>(
+        value: ['a'],
+        options: options,
         cardMode: true,
-        directionalTdCheckboxes: [
-          TCheckbox(id: 'a', value: false, cardMode: true, onChanged: (_) {}),
-          TCheckbox(id: 'b', value: false, cardMode: true, onChanged: (_) {}),
+      )));
+
+      expect(find.text('选项 A'), findsOneWidget);
+      expect(find.text('选项 B'), findsOneWidget);
+    });
+
+    testWidgets('itemBuilder 由 Group 接管点击和语义', (tester) async {
+      List<String>? changed;
+      await tester.pumpWidget(wrap(TCheckboxGroup<String>(
+        value: const [],
+        options: options,
+        onChanged: (value) => changed = value,
+        itemBuilder: (context, option, selected, disabled) {
+          return Text('${option.label} $selected $disabled');
+        },
+      )));
+
+      await tester.tap(find.text('选项 A false false'));
+      await tester.pump();
+
+      expect(changed, ['a']);
+    });
+
+    test('columns 必须大于 0', () {
+      expect(
+        () => TCheckboxGroup<String>(
+          value: const [],
+          options: options,
+          columns: 0,
+        ),
+        throwsAssertionError,
+      );
+    });
+  });
+
+  group('TSelectionCard 内部布局', () {
+    testWidgets('选中/禁用/未选卡片路径可构建', (tester) async {
+      await tester.pumpWidget(wrap(const Column(
+        children: [
+          TSelectionCard(
+            selected: true,
+            disabled: false,
+            selectedColor: Colors.blue,
+            disabledColor: Colors.grey,
+            backgroundColor: Colors.white,
+            borderRadius: 6,
+            minHeight: 56,
+            child: Text('selected'),
+          ),
+          TSelectionCard(
+            selected: true,
+            disabled: true,
+            selectedColor: Colors.blue,
+            disabledColor: Colors.grey,
+            backgroundColor: Colors.white,
+            borderRadius: 6,
+            minHeight: 56,
+            child: Text('disabled'),
+          ),
+          TSelectionCard(
+            selected: false,
+            disabled: false,
+            selectedColor: Colors.blue,
+            disabledColor: Colors.grey,
+            backgroundColor: Colors.white,
+            borderRadius: 6,
+            minHeight: 56,
+            child: Text('plain'),
+          ),
         ],
       )));
-      expect(find.byType(TCheckboxGroupContainer), findsOneWidget);
+
+      expect(find.text('selected'), findsOneWidget);
+      expect(find.text('disabled'), findsOneWidget);
+      expect(find.text('plain'), findsOneWidget);
+      expect(find.byIcon(TIcons.check), findsNWidgets(2));
     });
 
-    testWidgets('rowCount>1 多列布局（末行补位分支）', (tester) async {
-      await tester.pumpWidget(wrap(TCheckboxGroupContainer(
-        direction: Axis.horizontal,
-        rowCount: 3,
-        directionalTdCheckboxes: checkboxes(['a', 'b', 'c', 'd']),
+    testWidgets('选择卡片角标使用反色文本 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrap(const TSelectionCard(
+        selected: true,
+        disabled: false,
+        selectedColor: Colors.blue,
+        disabledColor: Colors.grey,
+        backgroundColor: Colors.white,
+        borderRadius: 4,
+        minHeight: 56,
+        child: Text('selected'),
       )));
-      expect(find.byType(TCheckboxGroupContainer), findsOneWidget);
+
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.check));
+      expect(icon.color, token.textColorAnti);
     });
 
-    testWidgets('passThrough + 非横向 使用裁剪装饰', (tester) async {
-      await tester.pumpWidget(wrap(TCheckboxGroupContainer(
+    testWidgets('垂直布局按副标题高度和间距构建', (tester) async {
+      await tester.pumpWidget(wrap(TSelectionCardGroupLayout(
         direction: Axis.vertical,
-        passThrough: true,
-        directionalTdCheckboxes: checkboxes(['a', 'b']),
+        columns: 1,
+        itemHasSubtitles: const [false, true],
+        children: const [
+          Text('a'),
+          Text('b'),
+        ],
       )));
-      expect(find.byType(TCheckboxGroupContainer), findsOneWidget);
+
+      expect(find.text('a'), findsOneWidget);
+      expect(find.text('b'), findsOneWidget);
     });
 
-    testWidgets('child 模式（无 direction）', (tester) async {
-      await tester.pumpWidget(wrap(TCheckboxGroupContainer(
-        child: Row(children: checkboxes(['a', 'b'])),
+    testWidgets('水平布局覆盖有/无副标题与有限宽约束', (tester) async {
+      await tester.pumpWidget(wrap(SizedBox(
+        width: 240,
+        child: Column(
+          children: [
+            TSelectionCardGroupLayout(
+              direction: Axis.horizontal,
+              columns: 2,
+              itemHasSubtitles: const [false, false],
+              children: const [Text('a'), Text('b')],
+            ),
+            TSelectionCardGroupLayout(
+              direction: Axis.horizontal,
+              columns: 2,
+              itemHasSubtitles: const [false, true],
+              children: const [Text('c'), Text('d')],
+            ),
+          ],
+        ),
       )));
-      expect(find.byType(TCheckboxGroupContainer), findsOneWidget);
-    });
-  });
 
-  group('TCheckboxGroupContainer 断言分支', () {
-    testWidgets('direction 设置但缺 directionalTdCheckboxes 抛错', (tester) async {
-      await expectFlutterError(
-        tester,
-        () => TCheckboxGroupContainer(
-          direction: Axis.horizontal,
-          directionalTdCheckboxes: null,
+      expect(find.text('a'), findsOneWidget);
+      expect(find.text('d'), findsOneWidget);
+      expect(find.byType(Wrap), findsNWidgets(2));
+    });
+
+    test('children 与 itemHasSubtitles 长度必须一致', () {
+      expect(
+        () => TSelectionCardGroupLayout(
+          direction: Axis.vertical,
+          columns: 1,
+          itemHasSubtitles: const [false],
+          children: const [Text('a'), Text('b')],
         ),
+        throwsAssertionError,
       );
     });
 
-    testWidgets('无 direction 且无 child 抛错', (tester) async {
-      await expectFlutterError(
-        tester,
-        () => TCheckboxGroupContainer(
-          direction: null,
-          child: null,
-        ),
-      );
-    });
-
-    testWidgets('横向含 subTitle 抛错', (tester) async {
-      await expectFlutterError(
-        tester,
-        () => TCheckboxGroupContainer(
+    test('列数必须大于 0', () {
+      expect(
+        () => TSelectionCardGroupLayout(
           direction: Axis.horizontal,
-          directionalTdCheckboxes: [
-            TCheckbox(id: 'a', value: false, subTitle: '副标题', onChanged: (_) {}),
-          ],
+          columns: 0,
+          itemHasSubtitles: const [false],
+          children: const [Text('a')],
         ),
-      );
-    });
-
-    testWidgets('横向标题超字数（>7）抛错', (tester) async {
-      await expectFlutterError(
-        tester,
-        () => TCheckboxGroupContainer(
-          direction: Axis.horizontal,
-          directionalTdCheckboxes: [
-            TCheckbox(
-                id: 'a', value: false, title: '一二三四五六七八', onChanged: (_) {}),
-          ],
-        ),
-      );
-    });
-
-    testWidgets('cardMode 但子项 cardMode=false 抛错', (tester) async {
-      await expectFlutterError(
-        tester,
-        () => TCheckboxGroupContainer(
-          direction: Axis.horizontal,
-          cardMode: true,
-          directionalTdCheckboxes: [
-            TCheckbox(id: 'a', value: false, cardMode: false, onChanged: (_) {}),
-          ],
-        ),
-      );
-    });
-
-    testWidgets('cardMode 横向含 subTitle 抛错', (tester) async {
-      await expectFlutterError(
-        tester,
-        () => TCheckboxGroupContainer(
-          direction: Axis.horizontal,
-          cardMode: true,
-          directionalTdCheckboxes: [
-            TCheckbox(
-                id: 'a', value: false, cardMode: true, subTitle: '副标题', onChanged: (_) {}),
-          ],
-        ),
+        throwsAssertionError,
       );
     });
   });

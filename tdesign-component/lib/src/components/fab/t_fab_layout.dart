@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart' show TFab;
 import '../button/t_button.dart';
 import '../button/t_button_theme_data.dart';
-import 't_fab.dart' show TFab;
+import '../button/t_button_types.dart';
 
 /// 拖拽轴向
-enum TFabDragAxis { all, vertical, horizontal }
+enum TFabDragAxis {
+  /// 允许水平和垂直方向拖拽
+  all,
+
+  /// 仅允许垂直方向拖拽
+  vertical,
+
+  /// 仅允许水平方向拖拽
+  horizontal,
+}
 
 /// 吸附方向
-enum TFabMagnet { left, right }
+enum TFabMagnet {
+  /// 拖拽结束后吸附到左侧边界
+  left,
+
+  /// 拖拽结束后吸附到右侧边界
+  right,
+}
 
 /// 拖拽边界限制
 class TFabBounds {
@@ -22,14 +36,23 @@ class TFabBounds {
   const TFabBounds({required this.start, required this.end});
 }
 
-/// [TFab.buttonProps] 透传类型
+/// Fab 内嵌按钮配置透传类型
 ///
 /// 字段与 [TButton] 构造参数对齐，不含 onPressed / child / icon。
 class TButtonProps {
+  /// 按钮尺寸
   final TButtonSize? size;
+
+  /// 按钮变体
   final TButtonVariant? variant;
+
+  /// 按钮配色方案
   final TButtonColorScheme? colorScheme;
+
+  /// 按钮形状
   final TButtonShape? shape;
+
+  /// P0 按钮样式覆盖
   final ButtonStyle? style;
 
   const TButtonProps({

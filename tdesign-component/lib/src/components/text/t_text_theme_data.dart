@@ -31,7 +31,6 @@ class TTextThemeData extends ThemeExtension<TTextThemeData> {
 
   /// 是否默认启用强制垂直居中
   ///
-  /// 替代 v0.2.x 的全局变量 kTextForceVerticalCenterEnable。
   /// 默认值为 false，可通过子树 mergeExtension 全局开启。
   final bool forceVerticalCenter;
 
@@ -60,14 +59,11 @@ class TTextThemeData extends ThemeExtension<TTextThemeData> {
   final TextWidthBasis? textWidthBasis;
 
   /// 默认文本高度行为（控制段落首尾行的 leading 裁剪等）
-  ///
-  /// 替代 v0.2.x 的 kTextNeedGlobalFontFamily 间接控制的部分行为，
-  /// 以及原构造器上的 textHeightBehavior 参数。
   final ui.TextHeightBehavior? textHeightBehavior;
 
   /// 默认文本缩放因子
   ///
-  /// 用于统一控制子树的字体缩放，替代全局 MediaQuery 缩放。
+  /// 用于统一控制子树的字体缩放。
   final double? textScaleFactor;
 
   const TTextThemeData({

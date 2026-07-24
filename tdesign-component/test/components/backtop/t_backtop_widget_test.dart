@@ -6,15 +6,14 @@ void main() {
   Widget wrap(Widget child) => MaterialApp(home: Scaffold(body: child));
 
   group('TBackTop widget 级用例', () {
-    testWidgets('默认（circle/light）可构建', (tester) async {
+    testWidgets('默认圆形可构建', (tester) async {
       await tester.pumpWidget(wrap(const TBackTop(onPressed: _noop)));
       expect(find.byType(TBackTop), findsOneWidget);
     });
 
-    testWidgets('halfCircle / dark / tooltip 可构建', (tester) async {
+    testWidgets('halfCircle / tooltip 可构建', (tester) async {
       await tester.pumpWidget(wrap(const TBackTop(
         shape: TBackTopShape.halfCircle,
-        colorScheme: TBackTopColorScheme.dark,
         tooltip: '回到顶部',
         onPressed: _noop,
       )));
@@ -32,15 +31,14 @@ void main() {
       expect(find.byType(TBackTop), findsOneWidget);
     });
 
-    testWidgets('dispose 重建（didUpdateWidget colorScheme 变化）', (tester) async {
-      await tester.pumpWidget(wrap(const TBackTop(
-        colorScheme: TBackTopColorScheme.light,
-        onPressed: _noop,
-      )));
-      await tester.pumpWidget(wrap(const TBackTop(
-        colorScheme: TBackTopColorScheme.dark,
-        onPressed: _noop,
-      )));
+    testWidgets('主题更新后可重建', (tester) async {
+      await tester.pumpWidget(wrap(const TBackTop(onPressed: _noop)));
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        ),
+        home: const Scaffold(body: TBackTop(onPressed: _noop)),
+      ));
       expect(find.byType(TBackTop), findsOneWidget);
     });
   });

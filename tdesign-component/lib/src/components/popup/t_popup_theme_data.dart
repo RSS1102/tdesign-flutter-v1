@@ -1,37 +1,24 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart' show TPopupOptions;
-
-import 't_popup.dart' show TPopupOptions;
-
 /// TPopup 组件级 ThemeExtension
 ///
 /// 通过 Theme 子树注入，控制子树的默认浮层样式。
-/// 实例 [TPopupOptions] 的对应字段优先于 Theme Extension。
+/// `TPopupOptions` 的对应字段优先于 Theme Extension。
 class TPopupThemeData extends ThemeExtension<TPopupThemeData> {
-  /// 蒙层颜色（对应 [TPopupOptions.overlayColor] 的默认值）
+  /// 蒙层颜色
   final Color? barrierColor;
 
-  /// 蒙层透明度系数（对应 [TPopupOptions.overlayOpacity] 的默认值）
+  /// 蒙层透明度系数
   final double? barrierOpacity;
 
-  /// 打开/关闭动画时长（对应 [TPopupOptions.animationDuration] 的默认值）
+  /// 打开/关闭动画时长
   final Duration? transitionDuration;
 
-  /// 内容区圆角（对应 [TPopupOptions.radius] 的默认值）
+  /// 内容区圆角
   final double? panelRadius;
 
-  /// 内容区背景色（对应 [TPopupOptions.backgroundColor] 的默认值）
+  /// 内容区背景色
   final Color? panelBackgroundColor;
-
-  /// 是否避让系统安全区（对应 [TPopupOptions.useSafeArea] 的默认值）
-  final bool? useSafeArea;
-
-  /// bottom 头部取消文案
-  final String? cancelText;
-
-  /// bottom 头部确认文案
-  final String? confirmText;
 
   const TPopupThemeData({
     this.barrierColor,
@@ -39,9 +26,6 @@ class TPopupThemeData extends ThemeExtension<TPopupThemeData> {
     this.transitionDuration,
     this.panelRadius,
     this.panelBackgroundColor,
-    this.useSafeArea,
-    this.cancelText,
-    this.confirmText,
   });
 
   /// 合并两个 ThemeExtension，[other] 优先于 this
@@ -55,9 +39,6 @@ class TPopupThemeData extends ThemeExtension<TPopupThemeData> {
       transitionDuration: other.transitionDuration ?? transitionDuration,
       panelRadius: other.panelRadius ?? panelRadius,
       panelBackgroundColor: other.panelBackgroundColor ?? panelBackgroundColor,
-      useSafeArea: other.useSafeArea ?? useSafeArea,
-      cancelText: other.cancelText ?? cancelText,
-      confirmText: other.confirmText ?? confirmText,
     );
   }
 
@@ -68,9 +49,6 @@ class TPopupThemeData extends ThemeExtension<TPopupThemeData> {
     Duration? transitionDuration,
     double? panelRadius,
     Color? panelBackgroundColor,
-    bool? useSafeArea,
-    String? cancelText,
-    String? confirmText,
   }) {
     return TPopupThemeData(
       barrierColor: barrierColor ?? this.barrierColor,
@@ -78,9 +56,6 @@ class TPopupThemeData extends ThemeExtension<TPopupThemeData> {
       transitionDuration: transitionDuration ?? this.transitionDuration,
       panelRadius: panelRadius ?? this.panelRadius,
       panelBackgroundColor: panelBackgroundColor ?? this.panelBackgroundColor,
-      useSafeArea: useSafeArea ?? this.useSafeArea,
-      cancelText: cancelText ?? this.cancelText,
-      confirmText: confirmText ?? this.confirmText,
     );
   }
 
@@ -97,13 +72,19 @@ class TPopupThemeData extends ThemeExtension<TPopupThemeData> {
       panelRadius: lerpDouble(panelRadius, other.panelRadius, t),
       panelBackgroundColor:
           Color.lerp(panelBackgroundColor, other.panelBackgroundColor, t),
-      useSafeArea: t < 0.5 ? useSafeArea : other.useSafeArea,
-      cancelText: t < 0.5 ? cancelText : other.cancelText,
-      confirmText: t < 0.5 ? confirmText : other.confirmText,
     );
   }
 
-  static double? lerpDouble(double? a, double? b, double t) {
+  static double? lerpDouble(
+    /// 起始值。
+    double? a,
+
+    /// 目标值。
+    double? b,
+
+    /// 插值进度。
+    double t,
+  ) {
     if (a == null && b == null) {
       return null;
     }

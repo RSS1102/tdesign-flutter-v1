@@ -2,384 +2,354 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
-/// TMessage 组件 Widget 测试
-///
-/// 覆盖 TMessageVariant 变体、duration、link、closeBtn、回调等。
 void main() {
-  /// 构建带主题的测试壳
-  Widget wrapWithTheme(Widget child, {TMessageThemeData? messageTheme}) {
-    final themeExtensions = <ThemeExtension>[
-      TThemeData.defaultData(),
-      if (messageTheme != null) messageTheme,
-    ];
+  Widget wrap(
+    Widget child, {
+    TMessageThemeData? messageTheme,
+    Size mediaSize = const Size(375, 812),
+  }) {
     return MaterialApp(
-      theme: ThemeData(extensions: themeExtensions),
-      home: Scaffold(body: Stack(children: [child])),
+      theme: messageTheme == null
+          ? TThemeBuilder.light(TThemeData.defaultData())
+          : TThemeBuilder.light(TThemeData.defaultData())
+              .mergeExtension(messageTheme),
+      home: MediaQuery(
+        data: MediaQueryData(size: mediaSize),
+        child: Scaffold(body: Stack(children: [child])),
+      ),
     );
   }
 
-  // ============================================================
-  // TMessageVariant 枚举
-  // ============================================================
-  group('TMessageVariant 枚举', () {
-    test('有四个值', () {
-      expect(TMessageVariant.values.length, 4);
-      expect(TMessageVariant.values, contains(TMessageVariant.info));
-      expect(TMessageVariant.values, contains(TMessageVariant.success));
-      expect(TMessageVariant.values, contains(TMessageVariant.warning));
-      expect(TMessageVariant.values, contains(TMessageVariant.error));
+  group('TMessage 渲染', () {
+    testWidgets('基础内容与默认图标', (tester) async {
+      await tester.pumpWidget(wrap(const TMessage(content: '消息')));
+      await tester.pump();
+      expect(find.text('消息'), findsOneWidget);
+      expect(find.byIcon(TIcons.error_circle_filled), findsOneWidget);
     });
-  });
 
-  // ============================================================
-  // TMessageLink / TMessageMarquee
-  // ============================================================
-  group('TMessageLink / TMessageMarquee', () {
-    test('TMessageLink 构造', () {
-      final link = TMessageLink(
-        name: '查看详情',
-        uri: Uri.parse('https://example.com'),
-        color: Colors.blue,
+    testWidgets('visible=false 不渲染内容', (tester) async {
+      await tester.pumpWidget(
+        wrap(const TMessage(content: '隐藏', visible: false)),
       );
-      expect(link.name, '查看详情');
-      expect(link.uri.toString(), 'https://example.com');
-      expect(link.color, Colors.blue);
+      expect(find.text('隐藏'), findsNothing);
     });
 
-    test('TMessageMarquee 默认值', () {
-      final mq = TMessageMarquee();
-      expect(mq.speed, isNull);
-      expect(mq.loop, isNull);
-      expect(mq.delay, isNull);
-    });
-
-    test('TMessageMarquee 自定义值', () {
-      final mq = TMessageMarquee(speed: 5000, loop: 1, delay: 1000);
-      expect(mq.speed, 5000);
-      expect(mq.loop, 1);
-      expect(mq.delay, 1000);
-    });
-  });
-
-  // ============================================================
-  // 基础渲染
-  // ============================================================
-  group('TMessage 基础渲染', () {
-    testWidgets('渲染消息内容', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(content: '这是一条消息'),
-      ));
-      await tester.pump();
-      expect(find.byType(TMessage), findsOneWidget);
-      expect(find.text('这是一条消息'), findsOneWidget);
-      // 冲刷 duration 自动关闭计时器，避免“Pending timers”失败
-      await tester.pump(const Duration(seconds: 5));
-    });
-
-    testWidgets('visible: false 不渲染', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(content: '隐藏消息', visible: false),
-      ));
-      await tester.pump();
-      // visible: false 返回 SizedBox.shrink
-      expect(find.text('隐藏消息'), findsNothing);
-      await tester.pump(const Duration(seconds: 5));
-    });
-
-    testWidgets('content 为 null 不崩溃', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(content: null),
-      ));
-      await tester.pump();
-      expect(find.byType(TMessage), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
-    });
-
-    testWidgets('icon: false 不显示图标', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(content: '无图标', icon: false),
-      ));
-      await tester.pump();
-      // 不应有 Icon widget（内容区的 Icon）
-      expect(find.text('无图标'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
-    });
-
-    testWidgets('icon 为自定义 Widget', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(
-          content: '自定义图标',
-          icon: Icon(Icons.star),
-        ),
-      ));
-      await tester.pump();
-      expect(find.byIcon(Icons.star), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
-    });
-  });
-
-  // ============================================================
-  // variant 变体
-  // ============================================================
-  group('TMessage variant 变体', () {
-    for (final variant in TMessageVariant.values) {
-      testWidgets('variant: $variant 渲染对应图标', (tester) async {
-        await tester.pumpWidget(wrapWithTheme(
-          TMessage(content: '${variant.name}消息', variant: variant),
-        ));
+    testWidgets('四种语义色图标均可渲染', (tester) async {
+      for (final variant in TMessageVariant.values) {
+        await tester.pumpWidget(
+          wrap(TMessage(content: variant.name, variant: variant)),
+        );
         await tester.pump();
-        expect(find.byType(TMessage), findsOneWidget);
-        expect(find.text('${variant.name}消息'), findsOneWidget);
-        await tester.pump(const Duration(seconds: 5));
-      });
-    }
-  });
+        expect(find.text(variant.name), findsOneWidget);
+      }
+    });
 
-  // ============================================================
-  // closeBtn 关闭按钮
-  // ============================================================
-  group('TMessage closeBtn', () {
-    testWidgets('closeBtn: true 显示默认关闭图标', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(content: '可关闭', closeBtn: true),
-      ));
-      await tester.pump();
-      // 应有 close 图标
+    testWidgets('可隐藏或自定义图标', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const TMessage(
+            content: '无图标',
+            showIcon: false,
+            duration: null,
+          ),
+        ),
+      );
+      expect(find.byType(Icon), findsNothing);
+
+      await tester.pumpWidget(
+        wrap(
+          const TMessage(
+            content: '自定义图标',
+            icon: Icon(Icons.star),
+            duration: null,
+          ),
+        ),
+      );
+      expect(find.byIcon(Icons.star), findsOneWidget);
+    });
+
+    testWidgets('链接配置与颜色覆盖生效', (tester) async {
+      var pressed = false;
+      await tester.pumpWidget(
+        wrap(
+          TMessage(
+            content: '带链接',
+            duration: null,
+            link: TMessageLink(
+              name: '详情',
+              uri: Uri(path: '/detail'),
+              color: Colors.red,
+            ),
+            onLinkPressed: () => pressed = true,
+          ),
+        ),
+      );
+      await tester.tap(find.text('详情'));
+      expect(pressed, isTrue);
+    });
+
+    testWidgets('长内容配合链接和关闭按钮不应溢出', (tester) async {
+      const longLink = '这是一个非常非常非常长的链接文案用于验证不会换行';
+      await tester.pumpWidget(
+        wrap(
+          TMessage(
+            content: '这是一段非常非常非常长的消息内容用于验证布局不会被撑坏',
+            duration: null,
+            showCloseButton: true,
+            link: TMessageLink(
+              name: longLink,
+              uri: Uri(path: '/detail'),
+            ),
+          ),
+        ),
+      );
+
+      final contentText = tester.widget<Text>(
+        find.text('这是一段非常非常非常长的消息内容用于验证布局不会被撑坏'),
+      );
+      final linkText = tester.widget<Text>(find.text(longLink));
+      expect(contentText.maxLines, 1);
+      expect(contentText.overflow, TextOverflow.ellipsis);
+      expect(linkText.maxLines, 1);
+      expect(linkText.overflow, TextOverflow.ellipsis);
       expect(find.byIcon(TIcons.close), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
     });
 
-    testWidgets('closeBtn 为自定义 Widget', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(
-          content: '自定义关闭',
-          closeBtn: Text('X'),
+    testWidgets('窄屏时消息宽度收口到可用区域', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const TMessage(content: '窄屏消息', duration: null),
+          mediaSize: const Size(320, 640),
         ),
-      ));
-      await tester.pump();
-      expect(find.text('X'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
+      );
+
+      final box = tester.widget<SizedBox>(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is SizedBox &&
+              widget.height == 48 &&
+              widget.width == 288,
+        ),
+      );
+      expect(box.width, 288);
+      final positioned = tester.widget<AnimatedPositioned>(
+        find.byType(AnimatedPositioned),
+      );
+      expect(positioned.left, 16);
     });
 
-    testWidgets('closeBtn 为 String', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(
-          content: '字符串关闭',
-          closeBtn: '关闭',
+    testWidgets('关闭按钮完成关闭生命周期', (tester) async {
+      var pressed = false;
+      var dismissed = false;
+      await tester.pumpWidget(
+        wrap(
+          TMessage(
+            content: '可关闭',
+            duration: null,
+            showCloseButton: true,
+            onCloseButtonPressed: () => pressed = true,
+            onDismissed: () => dismissed = true,
+          ),
         ),
-      ));
-      await tester.pump();
-      expect(find.text('关闭'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
-    });
-
-    testWidgets('点击关闭按钮触发 onCloseBtnClick', (tester) async {
-      var closed = false;
-      await tester.pumpWidget(wrapWithTheme(
-        TMessage(
-          content: '点击关闭',
-          closeBtn: true,
-          onCloseBtnClick: () => closed = true,
-        ),
-      ));
-      await tester.pump();
+      );
       await tester.tap(find.byIcon(TIcons.close));
-      await tester.pump();
-      expect(closed, isTrue);
-      await tester.pump(const Duration(seconds: 5));
-    });
-  });
-
-  // ============================================================
-  // link 链接
-  // ============================================================
-  group('TMessage link', () {
-    testWidgets('link 为 String 渲染文本', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(content: '消息', link: '详情'),
-      ));
-      await tester.pump();
-      expect(find.text('详情'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(pressed, isTrue);
+      expect(dismissed, isTrue);
+      expect(find.text('可关闭'), findsNothing);
     });
 
-    testWidgets('link 为 TMessageLink 渲染 TLink', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        TMessage(
-          content: '消息',
-          link: TMessageLink(name: '查看', uri: Uri.parse('https://test.com')),
+    testWidgets('自定义关闭按钮生效', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const TMessage(
+            content: '自定义关闭',
+            duration: null,
+            closeButton: Text('关闭'),
+          ),
         ),
-      ));
-      await tester.pump();
-      expect(find.byType(TLink), findsOneWidget);
-      expect(find.text('查看'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
+      );
+      expect(find.text('关闭'), findsOneWidget);
+      await tester.tap(find.text('关闭'));
+      await tester.pump(const Duration(milliseconds: 300));
     });
 
-    testWidgets('点击 link 触发 onLinkClick', (tester) async {
-      var clicked = false;
-      await tester.pumpWidget(wrapWithTheme(
-        TMessage(
-          content: '消息',
-          link: '点击',
-          onLinkClick: () => clicked = true,
-        ),
-      ));
-      await tester.pump();
-      await tester.tap(find.text('点击'));
-      await tester.pump();
-      expect(clicked, isTrue);
-      await tester.pump(const Duration(seconds: 5));
-    });
-  });
-
-  // ============================================================
-  // duration 计时
-  // ============================================================
-  group('TMessage duration', () {
-    testWidgets('duration 结束触发 onDurationEnd', (tester) async {
+    testWidgets('到时自动关闭并回调', (tester) async {
       var ended = false;
-      await tester.pumpWidget(wrapWithTheme(
-        TMessage(
-          content: '短消息',
-          duration: 100,
-          onDurationEnd: () => ended = true,
+      await tester.pumpWidget(
+        wrap(
+          TMessage(
+            content: '自动关闭',
+            duration: const Duration(milliseconds: 100),
+            onDurationEnd: () => ended = true,
+          ),
         ),
-      ));
-      await tester.pump();
-
-      // 等待 duration + 动画
+      );
       await tester.pump(const Duration(milliseconds: 100));
       await tester.pump(const Duration(milliseconds: 300));
-
       expect(ended, isTrue);
     });
 
-    testWidgets('duration: null 不自动关闭', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(content: '不关闭', duration: null),
-      ));
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 5));
-      // 仍然可见
-      expect(find.text('不关闭'), findsOneWidget);
-    });
-  });
-
-  // ============================================================
-  // offset 偏移
-  // ============================================================
-  group('TMessage offset', () {
-    testWidgets('自定义 offset 偏移渲染', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(
-          content: '偏移消息',
-          offset: [20, 100],
+    testWidgets('Theme 控制背景、形状、阴影与默认偏移', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const TMessage(content: '主题', duration: null),
+          messageTheme: const TMessageThemeData(
+            backgroundColor: Colors.yellow,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            elevation: 2,
+            defaultOffset: Offset(20, 40),
+          ),
         ),
-      ));
-      await tester.pump();
-      expect(find.text('偏移消息'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
-    });
-  });
-
-  // ============================================================
-  // marquee 跑马灯
-  // ============================================================
-  group('TMessage marquee', () {
-    testWidgets('marquee 配置跑马灯效果', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        TMessage(
-          content: '这是一段很长的跑马灯消息内容用于测试滚动效果',
-          marquee: TMessageMarquee(speed: 5000, loop: 0),
-        ),
-      ));
-      await tester.pump();
-      expect(find.text('这是一段很长的跑马灯消息内容用于测试滚动效果'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
-    });
-  });
-
-  // ============================================================
-  // showMessage 静态方法
-  // ============================================================
-  group('TMessage.showMessage', () {
-    testWidgets('showMessage 通过 Overlay 展示消息', (tester) async {
-      late BuildContext ctx;
-      await tester.pumpWidget(wrapWithTheme(
-        Builder(builder: (context) {
-          ctx = context;
-          return const SizedBox();
-        }),
-      ));
-
-      TMessage.showMessage(
-        context: ctx,
-        content: 'Overlay消息',
-        duration: 3000,
-      );
-      // 先 pump 一帧使消息展示（此时 duration 计时器尚未触发）
-      await tester.pump();
-      expect(find.text('Overlay消息'), findsOneWidget);
-      // 冲刷 duration 计时器，避免“Pending timers”失败
-      await tester.pump(const Duration(seconds: 5));
-    });
-
-    testWidgets('showMessage 带变体', (tester) async {
-      late BuildContext ctx;
-      await tester.pumpWidget(wrapWithTheme(
-        Builder(builder: (context) {
-          ctx = context;
-          return const SizedBox();
-        }),
-      ));
-
-      TMessage.showMessage(
-        context: ctx,
-        content: '成功消息',
-        theme: TMessageVariant.success,
       );
       await tester.pump();
-      expect(find.text('成功消息'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
+      final material = tester.widget<Material>(find.byType(Material).last);
+      expect(material.color, Colors.yellow);
+      expect(material.elevation, 2);
+      final positioned = tester.widget<AnimatedPositioned>(
+        find.byType(AnimatedPositioned),
+      );
+      expect(positioned.left, 20);
+      expect(positioned.top, 40);
     });
   });
 
-  // ============================================================
-  // 主题覆盖
-  // ============================================================
-  group('TMessage 主题覆盖', () {
-    testWidgets('TMessageThemeData 注入后正常渲染', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TMessage(content: '主题消息'),
-        messageTheme: const TMessageThemeData(
-          backgroundColor: Colors.yellow,
-          elevation: 4,
-          defaultMarquee: false,
+  group('TMessage 跑马灯', () {
+    testWidgets('单次、循环和延迟配置均可启动', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          const TMessage(
+            content: '单次跑马灯内容',
+            duration: null,
+            marquee: TMessageMarquee(
+              duration: Duration(milliseconds: 200),
+            ),
+          ),
         ),
-      ));
+      );
       await tester.pump();
-      expect(find.text('主题消息'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 5));
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(find.byType(AnimatedBuilder), findsWidgets);
+
+      await tester.pumpWidget(
+        wrap(
+          const TMessage(
+            content: '循环跑马灯内容',
+            duration: null,
+            marquee: TMessageMarquee(
+              duration: Duration(milliseconds: 200),
+              repeat: true,
+              delay: Duration(milliseconds: 50),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 50));
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is AnimatedBuilder &&
+              widget.listenable is AnimationController,
+        ),
+        findsWidgets,
+      );
+      await tester.pumpWidget(wrap(const SizedBox.shrink()));
     });
 
-    test('TMessageThemeData merge 合并', () {
-      const base = TMessageThemeData(backgroundColor: Colors.white, elevation: 2);
-      const override = TMessageThemeData(elevation: 6);
-      final merged = base.merge(override);
-      expect(merged.backgroundColor, Colors.white);
-      expect(merged.elevation, 6);
-    });
-
-    test('TMessageThemeData copyWith', () {
-      const original = TMessageThemeData(backgroundColor: Colors.white);
-      final copied = original.copyWith(backgroundColor: Colors.grey);
-      expect(copied.backgroundColor, Colors.grey);
+    testWidgets('运行期更新 marquee、duration 与 visible', (tester) async {
+      var marquee = const TMessageMarquee();
+      Duration? duration;
+      var visible = false;
+      late StateSetter setState;
+      await tester.pumpWidget(
+        wrap(
+          StatefulBuilder(
+            builder: (context, setter) {
+              setState = setter;
+              return TMessage(
+                content: '更新',
+                marquee: marquee,
+                duration: duration,
+                visible: visible,
+              );
+            },
+          ),
+        ),
+      );
+      setState(() {
+        marquee = const TMessageMarquee(
+          duration: Duration(milliseconds: 300),
+          delay: Duration(milliseconds: 10),
+        );
+        duration = const Duration(seconds: 1);
+        visible = true;
+      });
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 10));
+      expect(find.text('更新'), findsOneWidget);
+      await tester.pumpWidget(wrap(const SizedBox.shrink()));
     });
   });
 
-  // ============================================================
-  // 覆盖率补充
-  // ============================================================
-  // TMessage 覆盖率补充已移除（marquee/linkColor 测试均触发异步异常）
+  group('TMessage.show', () {
+    testWidgets('返回句柄并支持立即关闭', (tester) async {
+      final key = GlobalKey();
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: TThemeBuilder.light(TThemeData.defaultData()),
+          home: Scaffold(body: SizedBox(key: key)),
+        ),
+      );
+      final handle = TMessage.show(
+        context: key.currentContext!,
+        content: 'Overlay 消息',
+        duration: null,
+      );
+      await tester.pump();
+      expect(handle.isShowing, isTrue);
+      expect(find.text('Overlay 消息'), findsOneWidget);
+      handle.dismiss();
+      await tester.pump();
+      expect(handle.isShowing, isFalse);
+    });
+
+    testWidgets('自动关闭移除 Overlay 并透传回调', (tester) async {
+      final key = GlobalKey();
+      var ended = false;
+      var dismissed = false;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: TThemeBuilder.light(TThemeData.defaultData()),
+          home: Scaffold(body: SizedBox(key: key)),
+        ),
+      );
+      final handle = TMessage.show(
+        context: key.currentContext!,
+        content: '自动 Overlay',
+        duration: const Duration(milliseconds: 50),
+        onDurationEnd: () => ended = true,
+        onDismissed: () => dismissed = true,
+      );
+      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(handle.isShowing, isFalse);
+      expect(ended, isTrue);
+      expect(dismissed, isTrue);
+    });
+  });
+
+  test('ThemeData 纯函数', () {
+    const base = TMessageThemeData(backgroundColor: Colors.white, elevation: 1);
+    const other = TMessageThemeData(backgroundColor: Colors.black, elevation: 3);
+    expect(base.merge(null), same(base));
+    expect(base.merge(other).elevation, 3);
+    expect(base.copyWith(elevation: 2).elevation, 2);
+    expect(base.lerp(other, 0.5), isA<TMessageThemeData>());
+    expect(base.lerp(null, 0.5), same(base));
+    expect(TMessageThemeData.lerpDouble(null, null, 0.5), isNull);
+  });
 }

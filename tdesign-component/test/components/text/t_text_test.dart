@@ -7,17 +7,15 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// 覆盖样式优先级链、TTextThemeData、TTextResolve、padding 缓存、
 /// TTextSpan 一致性及全局变量删除后的行为。
 void main() {
-  /// 最小化包装，注入 TTheme
+  /// 完整包装，注入 TDesign 全局主题。
   Widget wrapWithTheme(Widget child, {TTextThemeData? textTheme}) {
-    final extensions = <ThemeExtension>[
-      if (textTheme != null) textTheme,
-    ];
-    return Theme(
-      data: ThemeData(extensions: [TThemeData.defaultData()]),
-      child: MaterialApp(
-        theme: ThemeData(extensions: extensions),
-        home: Scaffold(body: child),
-      ),
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (textTheme != null) {
+      theme = theme.mergeExtension(textTheme);
+    }
+    return MaterialApp(
+      theme: theme,
+      home: Scaffold(body: child),
     );
   }
 
@@ -30,6 +28,18 @@ void main() {
     ));
     expect(find.text('测试文本'), findsOneWidget);
     expect(find.byType(TText), findsOneWidget);
+  });
+
+  testWidgets('T01b - 完整主题下默认文本样式来自 token', (tester) async {
+    final token = TThemeData.defaultData();
+    await tester.pumpWidget(wrapWithTheme(
+      const TText('Token 文本'),
+    ));
+
+    final text = tester.widget<Text>(find.text('Token 文本'));
+    expect(text.style?.color, token.textColorPrimary);
+    expect(text.style?.fontSize, token.fontBodyLarge?.size);
+    expect(text.style?.height, token.fontBodyLarge?.height);
   });
 
   // ============================================================
@@ -64,7 +74,8 @@ void main() {
     expect(text.style?.decoration, TextDecoration.lineThrough);
   });
 
-  testWidgets('T02d - 构造器糖：forceVerticalCenter 触发 Container 包装', (tester) async {
+  testWidgets('T02d - 构造器糖：forceVerticalCenter 触发 Container 包装',
+      (tester) async {
     await tester.pumpWidget(wrapWithTheme(
       const TText('居中文本', forceVerticalCenter: true),
     ));
@@ -182,6 +193,21 @@ void main() {
     expect(text.style?.fontFamily, 'InstanceFont');
   });
 
+  testWidgets('T05c - globalFontFamily 覆盖组件 Theme 默认字体', (tester) async {
+    await tester.pumpWidget(wrapWithTheme(
+      TTextConfiguration(
+        globalFontFamily: FontFamily(fontFamily: 'GlobalFont'),
+        child: const TText('全局优先'),
+      ),
+      textTheme: TTextThemeData(
+        defaultFontFamily: FontFamily(fontFamily: 'ThemeFont'),
+      ),
+    ));
+
+    final text = tester.widget<Text>(find.text('全局优先'));
+    expect(text.style?.fontFamily, 'GlobalFont');
+  });
+
   // ============================================================
   // T06 – TTextConfiguration.updateShouldNotify
   // ============================================================
@@ -289,7 +315,9 @@ void main() {
   // ============================================================
   // T09 – forceVerticalCenter height 语义统一
   // ============================================================
-  testWidgets('T09 - forceVerticalCenter 使用统一 height（非 min(heightRate, height)）', (tester) async {
+  testWidgets(
+      'T09 - forceVerticalCenter 使用统一 height（非 min(heightRate, height)）',
+      (tester) async {
     // v1.0 修复：Container 和 TextStyle 使用相同 height
     await tester.pumpWidget(wrapWithTheme(
       TText(

@@ -41,8 +41,7 @@ class _TIconPageState extends State<TIconPage> {
                   desc: 'TIcon.fromName 通过名称:', builder: _buildFromName),
               ExampleItem(
                   desc: 'v1.0 Theme 默认 size/color:', builder: _buildThemeDemo),
-              ExampleItem(
-                  desc: '构造器优先级覆盖 Theme:', builder: _buildPriorityDemo),
+              ExampleItem(desc: '构造器优先级覆盖 Theme:', builder: _buildPriorityDemo),
             ],
           ),
           ExampleModule(
@@ -76,11 +75,13 @@ class _TIconPageState extends State<TIconPage> {
     // 构造器参数 size/color 直接生效
     return Row(
       children: [
-        TIcon(TIcons.home_filled, size: 32, color: context.tTheme.brandNormalColor),
+        TIcon(TIcons.home_filled,
+            size: 32, color: context.tTheme.brandNormalColor),
         const SizedBox(width: 16),
         TIcon(TIcons.setting, size: 28, color: context.tTheme.errorNormalColor),
         const SizedBox(width: 16),
-        TIcon(TIcons.notification, size: 24, color: context.tTheme.warningNormalColor),
+        TIcon(TIcons.notification,
+            size: 24, color: context.tTheme.warningNormalColor),
       ],
     );
   }
@@ -193,14 +194,13 @@ class _TIconPageState extends State<TIconPage> {
             child: const Wrap(
               children: [
                 TText('筛选Icon请前往TDesign官网(长按网址可复制):'),
-                SelectableText(
-                    'https://tdesign.tencent.com/icons')
+                SelectableText('https://tdesign.tencent.com/icons')
               ],
             ),
           ),
           TSearchBar(
-            action: '搜索',
-            onActionClick: (text) {
+            hintText: '搜索',
+            onSubmitted: (text) {
               setState(() {
                 iconList = [];
                 isLoading = true;
@@ -212,22 +212,24 @@ class _TIconPageState extends State<TIconPage> {
                     list.add(MapEntry(key, value));
                   }
                 });
+                if (!mounted) {
+                  return;
+                }
                 setState(() {
                   iconList = list;
                   isLoading = false;
                 });
               });
             },
-            onClearClick: (_) {
+            onClearPressed: () {
               setState(() {
                 iconList = TIcons.allIconsMap.entries.toList();
               });
-              return null;
             },
           ),
           TCell(
-            title: '显示边框',
-            noteWidget: TSwitch(
+            title: const Text('显示边框'),
+            note: TSwitch(
               value: showBorder,
               onChanged: (value) {
                 setState(() {
@@ -240,8 +242,7 @@ class _TIconPageState extends State<TIconPage> {
             if (iconList.isEmpty) {
               return Container(
                 alignment: Alignment.center,
-                child:
-                    isLoading ? const TText('加载中...') : const TText('暂无内容'),
+                child: isLoading ? const TText('加载中...') : const TText('暂无内容'),
               );
             }
 

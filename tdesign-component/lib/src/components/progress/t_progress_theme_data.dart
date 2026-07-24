@@ -2,16 +2,13 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import 't_progress.dart' show TProgressVariant, TProgressLabelPosition, TProgress;
+import 't_progress.dart' show TProgressLabelPosition;
 
 /// 进度条组件级 ThemeExtension
 ///
 /// 通过 Theme 子树注入，控制子树的默认样式。
 /// 构造器参数优先于 Theme。
 class TProgressThemeData extends ThemeExtension<TProgressThemeData> {
-  /// 未传 [TProgress.variant] 时的默认进度条形态
-  final TProgressVariant? variant;
-
   /// 进度条粗细
   final double? strokeWidth;
 
@@ -30,9 +27,6 @@ class TProgressThemeData extends ThemeExtension<TProgressThemeData> {
   /// 是否显示标签
   final bool? showLabel;
 
-  /// 自定义标签
-  final Widget? customProgressLabel;
-
   /// 自定义标签宽度
   final double? labelWidgetWidth;
 
@@ -46,14 +40,12 @@ class TProgressThemeData extends ThemeExtension<TProgressThemeData> {
   final Duration? animationDuration;
 
   const TProgressThemeData({
-    this.variant,
     this.strokeWidth,
     this.color,
     this.backgroundColor,
     this.linearBorderRadius,
     this.circleRadius,
     this.showLabel,
-    this.customProgressLabel,
     this.labelWidgetWidth,
     this.labelWidgetAlignment,
     this.progressLabelPosition,
@@ -62,31 +54,28 @@ class TProgressThemeData extends ThemeExtension<TProgressThemeData> {
 
   @override
   TProgressThemeData copyWith({
-    TProgressVariant? variant,
     double? strokeWidth,
     Color? color,
     Color? backgroundColor,
     BorderRadiusGeometry? linearBorderRadius,
     double? circleRadius,
     bool? showLabel,
-    Widget? customProgressLabel,
     double? labelWidgetWidth,
     Alignment? labelWidgetAlignment,
     TProgressLabelPosition? progressLabelPosition,
     Duration? animationDuration,
   }) {
     return TProgressThemeData(
-      variant: variant ?? this.variant,
       strokeWidth: strokeWidth ?? this.strokeWidth,
       color: color ?? this.color,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       linearBorderRadius: linearBorderRadius ?? this.linearBorderRadius,
       circleRadius: circleRadius ?? this.circleRadius,
       showLabel: showLabel ?? this.showLabel,
-      customProgressLabel: customProgressLabel ?? this.customProgressLabel,
       labelWidgetWidth: labelWidgetWidth ?? this.labelWidgetWidth,
       labelWidgetAlignment: labelWidgetAlignment ?? this.labelWidgetAlignment,
-      progressLabelPosition: progressLabelPosition ?? this.progressLabelPosition,
+      progressLabelPosition:
+          progressLabelPosition ?? this.progressLabelPosition,
       animationDuration: animationDuration ?? this.animationDuration,
     );
   }
@@ -97,20 +86,20 @@ class TProgressThemeData extends ThemeExtension<TProgressThemeData> {
       return this;
     }
     return TProgressThemeData(
-      variant: t < 0.5 ? variant : other.variant,
       strokeWidth: lerpDouble(strokeWidth, other.strokeWidth, t),
       color: Color.lerp(color, other.color, t),
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
-      linearBorderRadius:
-          BorderRadiusGeometry.lerp(linearBorderRadius, other.linearBorderRadius, t),
+      linearBorderRadius: BorderRadiusGeometry.lerp(
+          linearBorderRadius, other.linearBorderRadius, t),
       circleRadius: lerpDouble(circleRadius, other.circleRadius, t),
       showLabel: t < 0.5 ? showLabel : other.showLabel,
-      customProgressLabel: t < 0.5 ? customProgressLabel : other.customProgressLabel,
       labelWidgetWidth: lerpDouble(labelWidgetWidth, other.labelWidgetWidth, t),
-      labelWidgetAlignment: t < 0.5 ? labelWidgetAlignment : other.labelWidgetAlignment,
+      labelWidgetAlignment:
+          t < 0.5 ? labelWidgetAlignment : other.labelWidgetAlignment,
       progressLabelPosition:
           t < 0.5 ? progressLabelPosition : other.progressLabelPosition,
-      animationDuration: lerpDuration(animationDuration, other.animationDuration, t),
+      animationDuration:
+          lerpDuration(animationDuration, other.animationDuration, t),
     );
   }
 }
@@ -126,5 +115,8 @@ Duration? lerpDuration(Duration? a, Duration? b, double t) {
   if (b == null) {
     return a;
   }
-  return Duration(milliseconds: (a.inMilliseconds + (b.inMilliseconds - a.inMilliseconds) * t).round());
+  return Duration(
+      milliseconds:
+          (a.inMilliseconds + (b.inMilliseconds - a.inMilliseconds) * t)
+              .round());
 }

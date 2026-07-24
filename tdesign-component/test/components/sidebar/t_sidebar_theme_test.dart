@@ -29,6 +29,17 @@ void main() {
       expect(copied.unSelectedColor, Colors.grey);
     });
 
+    test('copyWith cover padding and backgrounds', () {
+      final copied = theme.copyWith(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+        selectedBgColor: Colors.black,
+        unSelectedBgColor: Colors.white,
+      );
+      expect(copied.contentPadding, const EdgeInsets.symmetric(horizontal: 12));
+      expect(copied.selectedBgColor, Colors.black);
+      expect(copied.unSelectedBgColor, Colors.white);
+    });
+
     test('lerp 在 t=0 / 0.5 / 1 返回 TSideBarThemeData', () {
       const other = TSideBarThemeData(
         style: TSideBarVariant.outline,
@@ -43,6 +54,18 @@ void main() {
       expect(at1, isA<TSideBarThemeData>());
       expect(atHalf.style, TSideBarVariant.outline);
       expect(at1.style, TSideBarVariant.outline);
+    });
+
+    test('lerp cover remaining fields', () {
+      const other = TSideBarThemeData(
+        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+        selectedBgColor: Colors.green,
+        unSelectedBgColor: Colors.black,
+      );
+      final lerped = theme.lerp(other, 0.5);
+      expect(lerped.contentPadding, isA<EdgeInsetsGeometry>());
+      expect(lerped.selectedBgColor, isA<Color>());
+      expect(lerped.unSelectedBgColor, isA<Color>());
     });
 
     test('lerp other 非同类型时返回 this', () {

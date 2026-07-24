@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'package:tdesign_flutter/src/components/action_sheet/t_action_sheet_list.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TActionSheetList 列表动作面板测试
 ///
@@ -29,7 +29,7 @@ void main() {
           label: '带图标',
           icon: const Icon(Icons.star),
           subtitle: '副标题内容',
-          badge: const TBadge(TBadgeVariant.bubble, count: '1'),
+          badge: const TBadge(count: 1),
         ),
         TActionSheetItem(label: '普通项'),
       ],
@@ -61,7 +61,7 @@ void main() {
   });
 
   testWidgets('点击取消按钮触发 onCancel', (tester) async {
-    bool cancelled = false;
+    var cancelled = false;
     await tester.pumpWidget(wrap(TActionSheetList(
       cancelText: '取消按钮',
       items: baseItems(),

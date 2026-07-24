@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// TPopover 语义色（原 TPopoverColorScheme）
+/// TPopover 语义色
 enum TPopoverColorScheme {
   /// 深色
   dark,
@@ -49,6 +49,15 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
   /// 箭头尺寸
   final double? arrowSize;
 
+  /// 是否显示箭头
+  final bool? showArrow;
+
+  /// 弹层与触发元素的间距
+  final double? offset;
+
+  /// 气泡阴影
+  final List<BoxShadow>? boxShadow;
+
   const TPopoverThemeData({
     this.colorScheme,
     this.backgroundColor,
@@ -58,6 +67,9 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
     this.borderRadius,
     this.barrierColor,
     this.arrowSize,
+    this.showArrow,
+    this.offset,
+    this.boxShadow,
   });
 
   TPopoverThemeData merge(TPopoverThemeData? other) {
@@ -73,6 +85,9 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
       borderRadius: other.borderRadius ?? borderRadius,
       barrierColor: other.barrierColor ?? barrierColor,
       arrowSize: other.arrowSize ?? arrowSize,
+      showArrow: other.showArrow ?? showArrow,
+      offset: other.offset ?? offset,
+      boxShadow: other.boxShadow ?? boxShadow,
     );
   }
 
@@ -86,6 +101,9 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
     double? borderRadius,
     Color? barrierColor,
     double? arrowSize,
+    bool? showArrow,
+    double? offset,
+    List<BoxShadow>? boxShadow,
   }) {
     return TPopoverThemeData(
       colorScheme: colorScheme ?? this.colorScheme,
@@ -96,6 +114,9 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
       borderRadius: borderRadius ?? this.borderRadius,
       barrierColor: barrierColor ?? this.barrierColor,
       arrowSize: arrowSize ?? this.arrowSize,
+      showArrow: showArrow ?? this.showArrow,
+      offset: offset ?? this.offset,
+      boxShadow: boxShadow ?? this.boxShadow,
     );
   }
 
@@ -113,10 +134,22 @@ class TPopoverThemeData extends ThemeExtension<TPopoverThemeData> {
       borderRadius: lerpDouble(borderRadius, other.borderRadius, t),
       barrierColor: Color.lerp(barrierColor, other.barrierColor, t),
       arrowSize: lerpDouble(arrowSize, other.arrowSize, t),
+      showArrow: t < 0.5 ? showArrow : other.showArrow,
+      offset: lerpDouble(offset, other.offset, t),
+      boxShadow: t < 0.5 ? boxShadow : other.boxShadow,
     );
   }
 
-  static double? lerpDouble(double? a, double? b, double t) {
+  static double? lerpDouble(
+    /// 起始值。
+    double? a,
+
+    /// 目标值。
+    double? b,
+
+    /// 插值进度。
+    double t,
+  ) {
     if (a == null && b == null) {
       return null;
     }

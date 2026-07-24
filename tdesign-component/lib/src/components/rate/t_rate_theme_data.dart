@@ -2,83 +2,78 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import 't_rate.dart' show PlacementEnum;
-
-/// TRate 组件级 ThemeExtension
+/// TRate 组件级 ThemeExtension。
 class TRateThemeData extends ThemeExtension<TRateThemeData> {
-  /// 是否允许半选
-  final bool? allowHalf;
+  const TRateThemeData({
+    /// 选中星标颜色。
+    this.starColor,
 
-  /// 评分图标的颜色 [选中颜色, 未选中颜色]
-  final List<Color>? color;
+    /// 未选中星标颜色。
+    this.inactiveStarColor,
 
-  /// 评分的数量
-  final int? count;
+    /// 图标尺寸。
+    this.iconSize,
 
-  /// 间距
-  final double? gap;
+    /// 图标间距。
+    this.iconGap,
 
-  /// 评分弹框位置
-  final PlacementEnum? placement;
+    /// 是否显示评分文案。
+    this.showText,
 
-  /// 是否显示辅助文字
+    /// 文案宽度。
+    this.textWidth,
+
+    /// 图标与文案间距。
+    this.textGap,
+
+    /// 文案样式。
+    this.textStyle,
+  });
+
+  /// 选中星标颜色。
+  final Color? starColor;
+
+  /// 未选中星标颜色。
+  final Color? inactiveStarColor;
+
+  /// 图标尺寸。
+  final double? iconSize;
+
+  /// 图标间距。
+  final double? iconGap;
+
+  /// 是否显示评分文案。
   final bool? showText;
 
-  /// 辅助文字宽度
+  /// 文案宽度。
   final double? textWidth;
 
-  /// 横向对齐
-  final MainAxisAlignment? mainAxisAlignment;
+  /// 图标与文案间距。
+  final double? textGap;
 
-  /// 纵向对齐
-  final CrossAxisAlignment? crossAxisAlignment;
-
-  /// 主轴尺寸
-  final MainAxisSize? mainAxisSize;
-
-  /// 图标与文字间距
-  final double? iconTextGap;
-
-  const TRateThemeData({
-    this.allowHalf,
-    this.color,
-    this.count,
-    this.gap,
-    this.placement,
-    this.showText,
-    this.textWidth,
-    this.mainAxisAlignment,
-    this.crossAxisAlignment,
-    this.mainAxisSize,
-    this.iconTextGap,
-  });
+  /// 文案样式。
+  final TextStyle? textStyle;
 
   @override
   TRateThemeData copyWith({
-    bool? allowHalf,
-    List<Color>? color,
-    int? count,
-    double? gap,
-    PlacementEnum? placement,
+    Color? starColor,
+    Color? inactiveStarColor,
+    double? iconSize,
+    double? iconGap,
     bool? showText,
     double? textWidth,
-    MainAxisAlignment? mainAxisAlignment,
-    CrossAxisAlignment? crossAxisAlignment,
-    MainAxisSize? mainAxisSize,
-    double? iconTextGap,
+    double? textGap,
+    TextStyle? textStyle,
   }) {
     return TRateThemeData(
-      allowHalf: allowHalf ?? this.allowHalf,
-      color: color ?? this.color,
-      count: count ?? this.count,
-      gap: gap ?? this.gap,
-      placement: placement ?? this.placement,
+      starColor: starColor ?? this.starColor,
+      inactiveStarColor: inactiveStarColor ?? this.inactiveStarColor,
+      iconSize: iconSize ?? this.iconSize,
+      iconGap: iconGap ?? this.iconGap,
       showText: showText ?? this.showText,
       textWidth: textWidth ?? this.textWidth,
-      mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
-      crossAxisAlignment: crossAxisAlignment ?? this.crossAxisAlignment,
-      mainAxisSize: mainAxisSize ?? this.mainAxisSize,
-      iconTextGap: iconTextGap ?? this.iconTextGap,
+      textGap: textGap ?? this.textGap,
+      textStyle: textStyle ?? this.textStyle,
     );
   }
 
@@ -88,18 +83,15 @@ class TRateThemeData extends ThemeExtension<TRateThemeData> {
       return this;
     }
     return TRateThemeData(
-      allowHalf: t < 0.5 ? allowHalf : other.allowHalf,
-      count: t < 0.5 ? count : other.count,
-      gap: lerpDouble(gap, other.gap, t),
-      placement: t < 0.5 ? placement : other.placement,
+      starColor: Color.lerp(starColor, other.starColor, t),
+      inactiveStarColor:
+          Color.lerp(inactiveStarColor, other.inactiveStarColor, t),
+      iconSize: lerpDouble(iconSize, other.iconSize, t),
+      iconGap: lerpDouble(iconGap, other.iconGap, t),
       showText: t < 0.5 ? showText : other.showText,
       textWidth: lerpDouble(textWidth, other.textWidth, t),
-      mainAxisAlignment:
-          t < 0.5 ? mainAxisAlignment : other.mainAxisAlignment,
-      crossAxisAlignment:
-          t < 0.5 ? crossAxisAlignment : other.crossAxisAlignment,
-      mainAxisSize: t < 0.5 ? mainAxisSize : other.mainAxisSize,
-      iconTextGap: lerpDouble(iconTextGap, other.iconTextGap, t),
+      textGap: lerpDouble(textGap, other.textGap, t),
+      textStyle: TextStyle.lerp(textStyle, other.textStyle, t),
     );
   }
 }

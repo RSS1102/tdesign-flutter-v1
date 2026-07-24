@@ -1,21 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
 import 't_button_resolve.dart';
-
-// ============ 枚举定义 ============
-
-/// 按钮尺寸
-enum TButtonSize { large, medium, small, extraSmall }
-
-/// 按钮变体（fill / outline / text / ghost）
-enum TButtonVariant { fill, outline, text, ghost }
-
-/// 按钮配色方案
-enum TButtonColorScheme { defaultTheme, primary, danger, light }
-
-/// 图标位置
-enum TButtonIconPosition { left, right }
+import 't_button_theme_data.dart';
+import 't_button_types.dart';
 
 // ============ TButton Widget ============
 
@@ -103,8 +92,10 @@ class _TButtonState extends State<TButton> {
   Widget build(BuildContext context) {
     // 获取 Theme
     final theme = Theme.of(context).extension<TButtonThemeData>();
-    final effectiveVariant = widget.variant ?? theme?.defaultVariant ?? TButtonVariant.fill;
-    final effectiveSize = widget.size ?? theme?.defaultSize ?? TButtonSize.medium;
+    final effectiveVariant =
+        widget.variant ?? theme?.defaultVariant ?? TButtonVariant.fill;
+    final effectiveSize =
+        widget.size ?? theme?.defaultSize ?? TButtonSize.medium;
     final hasGradient = theme?.gradient != null;
 
     // 解析 ButtonStyle
@@ -113,6 +104,7 @@ class _TButtonState extends State<TButton> {
       colorScheme: widget.colorScheme,
       size: effectiveSize,
       icon: widget.icon,
+      hasChild: widget.child != null,
       iconPosition: widget.iconPosition,
       theme: theme,
       instanceStyle: widget.style,
@@ -164,59 +156,92 @@ class _TButtonState extends State<TButton> {
     Widget button;
 
     if (gradient != null) {
-      // 渐变按钮：Material(type: transparency) + InkWell + Container(gradient)
-      final shape = theme?.effectiveShape ?? TButtonShape.rectangle;
-      final borderRadius = BorderRadius.all(Radius.circular(_borderRadiusForShape(shape)));
-
-      // 从 resolvedStyle 获取前景色（用于文本/图标）
+      // 渐变按钮保留自绘装饰层，同时复用 resolvedStyle 中的 P0/ButtonStyle 结果。
       final isDisabled = widget.onPressed == null;
       final states = <WidgetState>{if (isDisabled) WidgetState.disabled};
-      final fgColor = resolvedStyle.foregroundColor?.resolve(states);
+      final shape = resolvedStyle.shape?.resolve(states) ??
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              _borderRadiusForShape(
+                  theme?.effectiveShape ?? TButtonShape.rectangle),
+            ),
+          );
+      final side = resolvedStyle.side?.resolve(states);
+      final effectiveShape = side == null ? shape : shape.copyWith(side: side);
+      final backgroundColor = resolvedStyle.backgroundColor?.resolve(states);
+      final foregroundColor = resolvedStyle.foregroundColor?.resolve(states);
 
-      // 根据 size 计算 padding
-      final padding = _gradientPadding(effectiveSize, widget.icon != null, widget.child != null, shape);
+      final textStyle = resolvedStyle.textStyle?.resolve(states) ??
+          TextStyle(fontSize: _fontSizeForButton(effectiveSize));
+      final padding = resolvedStyle.padding?.resolve(states) ??
+          _gradientPadding(
+            effectiveSize,
+            widget.icon != null,
+            widget.child != null,
+            theme?.effectiveShape ?? TButtonShape.rectangle,
+          );
+      final minimumSize = resolvedStyle.minimumSize?.resolve(states) ??
+          Size(0, _sideLengthForSize(effectiveSize));
+      final maximumSize = resolvedStyle.maximumSize?.resolve(states);
+      final fixedSize = resolvedStyle.fixedSize?.resolve(states);
+      final elevation = resolvedStyle.elevation?.resolve(states) ?? 0;
+      final shadowColor = resolvedStyle.shadowColor?.resolve(states);
+      final surfaceTintColor = resolvedStyle.surfaceTintColor?.resolve(states);
 
       var styledContent = content;
-      if (styledContent != null && fgColor != null) {
+      if (styledContent != null) {
         styledContent = IconTheme(
-          data: IconThemeData(color: fgColor),
+          data: IconThemeData(color: foregroundColor),
           child: DefaultTextStyle(
-            style: TextStyle(color: fgColor, fontSize: _fontSizeForButton(effectiveSize)),
+            style: textStyle.copyWith(color: foregroundColor),
             child: styledContent,
           ),
         );
       }
 
-      // 最小高度约束（对齐 ElevatedButton minimumSize）
-      final minHeight = _sideLengthForSize(effectiveSize);
-      final isSquareOrCircle = shape == TButtonShape.square || shape == TButtonShape.circle;
-      final onlyIcon = widget.icon != null && widget.child == null;
-      final minWidth = (isSquareOrCircle && onlyIcon) ? minHeight : null;
-
-      button = IntrinsicWidth(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minWidth: minWidth ?? 0,
-            minHeight: minHeight,
-          ),
-          child: Container(
-            decoration: BoxDecoration(gradient: gradient, borderRadius: borderRadius),
-            clipBehavior: Clip.antiAlias,
-            child: Material(
-              type: MaterialType.transparency,
-              borderRadius: borderRadius,
-              child: InkWell(
-                borderRadius: borderRadius,
-                onTap: widget.onPressed,
-                child: Padding(
-                  padding: padding,
-                  child: styledContent,
-                ),
-              ),
+      final buttonChild = Container(
+        decoration: ShapeDecoration(
+          color: backgroundColor,
+          gradient: backgroundColor == null ? gradient : null,
+          shape: effectiveShape,
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Material(
+          type: MaterialType.transparency,
+          shape: effectiveShape,
+          clipBehavior: Clip.antiAlias,
+          elevation: elevation,
+          shadowColor: shadowColor,
+          surfaceTintColor: surfaceTintColor,
+          child: InkWell(
+            customBorder: effectiveShape,
+            overlayColor: resolvedStyle.overlayColor,
+            onTap: widget.onPressed,
+            child: Padding(
+              padding: padding,
+              child: styledContent,
             ),
           ),
         ),
       );
+
+      Widget constrainedButton = ConstrainedBox(
+        constraints: BoxConstraints(
+          minWidth: minimumSize.width,
+          minHeight: minimumSize.height,
+          maxWidth: maximumSize?.width ?? double.infinity,
+          maxHeight: maximumSize?.height ?? double.infinity,
+        ),
+        child: buttonChild,
+      );
+      if (fixedSize != null) {
+        constrainedButton = SizedBox.fromSize(
+          size: fixedSize,
+          child: constrainedButton,
+        );
+      }
+
+      button = IntrinsicWidth(child: constrainedButton);
 
       if (theme?.margin != null) {
         button = Container(margin: theme!.margin, child: button);
@@ -276,13 +301,18 @@ class _TButtonState extends State<TButton> {
     return switch (shape) {
       TButtonShape.rectangle => tTheme.radiusDefault,
       TButtonShape.round => tTheme.radiusRound, // coverage:ignore-line
-      TButtonShape.square || TButtonShape.filled || TButtonShape.circle => 0, // coverage:ignore-line
+      TButtonShape.square ||
+      TButtonShape.filled ||
+      TButtonShape.circle =>
+        0, // coverage:ignore-line
     };
   }
 
   /// 渐变模式下根据 size 计算 padding（与 _resolveSize 对齐）
-  EdgeInsets _gradientPadding(TButtonSize size, bool hasIcon, bool hasChild, TButtonShape shape) {
-    final isSquareOrCircle = shape == TButtonShape.square || shape == TButtonShape.circle;
+  EdgeInsets _gradientPadding(
+      TButtonSize size, bool hasIcon, bool hasChild, TButtonShape shape) {
+    final isSquareOrCircle =
+        shape == TButtonShape.square || shape == TButtonShape.circle;
     final onlyIcon = hasIcon && !hasChild;
 
     double padH;

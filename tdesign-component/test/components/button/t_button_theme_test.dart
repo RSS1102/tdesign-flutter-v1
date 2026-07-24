@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/src/components/button/t_button.dart';
 import 'package:tdesign_flutter/src/components/button/t_button_theme_data.dart';
+import 'package:tdesign_flutter/src/components/button/t_button_types.dart';
 
 /// TButtonThemeData 纯函数覆盖（copyWith / lerp），用于提升覆盖率。
 void main() {

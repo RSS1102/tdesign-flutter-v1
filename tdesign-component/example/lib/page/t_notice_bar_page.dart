@@ -58,10 +58,12 @@ Widget _textNoticeBar(BuildContext context) {
 Widget _scrollNoticeBar(BuildContext context) {
   return Theme(
     data: Theme.of(context).mergeExtension(
-      const TNoticeBarThemeData(marquee: true, speed: 50),
+      const TNoticeBarThemeData(),
     ),
     child: const TNoticeBar(
       content: '提示文字描述提示文字描述提示文字描述提示文字描述提示文字',
+      marquee: true,
+      speed: 50,
     ),
   );
 }
@@ -71,13 +73,13 @@ Widget _scrollIconNoticeBar(BuildContext context) {
   return Theme(
     data: Theme.of(context).mergeExtension(
       const TNoticeBarThemeData(
-        speed: 50,
         prefixIcon: TIcons.sound,
-        marquee: true,
       ),
     ),
     child: const TNoticeBar(
       content: '提示文字描述提示文字描述提示文字描述提示文字描述提示文字',
+      marquee: true,
+      speed: 50,
     ),
   );
 }
@@ -325,17 +327,17 @@ Widget _stepNoticeBar(BuildContext context) {
     data: Theme.of(context).mergeExtension(
       const TNoticeBarThemeData(
         prefixIcon: TIcons.sound,
-        marquee: true,
       ),
     ),
     child: const TNoticeBar(
-      content: [
+      items: [
         '君不见黄河之水天上来',
         '奔流到海不复回',
         '君不见',
         '这是一条很长很长的消息提醒内容测试这是一条很长很长的消息提醒内容测试'
       ],
       direction: Axis.vertical,
+      marquee: true,
     ),
   );
 }

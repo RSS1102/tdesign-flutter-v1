@@ -1,501 +1,327 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
-import 'package:tdesign_flutter/src/components/form/t_form_item.dart';
 
-/// TForm V1.0 Widget 测试
-///
-/// Form 必测：submit / reset / validate + rules 失败态。
-/// 覆盖 FormController、TFormValidation、TFormItem。
 void main() {
-  /// 用 TTheme 包裹以提供基础 Token
-  Widget wrapWithTheme(Widget child) {
+  Widget wrap(Widget child, {TFormThemeData? formTheme}) {
     return MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
-      home: Scaffold(body: child),
-    );
-  }
-
-  /// 构建一个带 FormController 的表单
-  Widget buildForm({
-    required FormController controller,
-    required Map<String, dynamic> data,
-    required Map<String, TFormValidation> rules,
-    required Function onSubmit,
-    Function? onReset,
-    List<Widget>? btnGroup,
-  }) {
-    return wrapWithTheme(
-      SizedBox(
-        height: 600,
-        child: TForm(
-          items: const [
-            TFormItem(
-              type: TFormItemType.input,
-              label: '用户名',
-              name: 'username',
-              hintText: '请输入用户名',
-            ),
-            TFormItem(
-              type: TFormItemType.input,
-              label: '密码',
-              name: 'password',
-              hintText: '请输入密码',
-            ),
-          ],
-          rules: rules,
-          data: data,
-          onSubmit: onSubmit,
-          onReset: onReset,
-          controller: controller,
-          btnGroup: btnGroup,
-          labelWidth: 80,
-        ),
-      ),
-    );
-  }
-
-  // ============================================================
-  // Form submit 提交
-  // ============================================================
-  group('TForm submit 提交', () {
-    testWidgets('controller.submit() 触发 onSubmit 回调', (tester) async {
-      final controller = FormController();
-      var submitted = false;
-      Map<String, dynamic>? submittedData;
-
-      await tester.pumpWidget(buildForm(
-        controller: controller,
-        data: {'username': '', 'password': ''},
-        rules: {},
-        onSubmit: (data, isValid) {
-          submitted = true;
-          submittedData = data;
-        },
-      ));
-
-      controller.submit();
-      await tester.pumpAndSettle();
-
-      expect(submitted, isTrue);
-      expect(submittedData, isNotNull);
-    });
-
-    testWidgets('校验通过时 isValidate=true', (tester) async {
-      final controller = FormController();
-      bool? isValid;
-
-      await tester.pumpWidget(buildForm(
-        controller: controller,
-        data: {'username': 'testuser', 'password': '123456'},
-        rules: {
-          'username': TFormValidation(
-            validate: (v) => (v == null || v.isEmpty) ? '不能为空' : null,
-            errorMessage: '用户名不能为空',
-            type: TFormItemType.input,
-          ),
-        },
-        onSubmit: (data, valid) => isValid = valid,
-      ));
-
-      controller.submit();
-      await tester.pumpAndSettle();
-      expect(isValid, isTrue);
-    });
-  });
-
-  // ============================================================
-  // Form validate 校验 + rules 失败态
-  // ============================================================
-  group('TForm validate 校验', () {
-    testWidgets('校验失败时 isValidate=false', (tester) async {
-      final controller = FormController();
-      bool? isValid;
-
-      await tester.pumpWidget(buildForm(
-        controller: controller,
-        data: {'username': '', 'password': ''},
-        rules: {
-          'username': TFormValidation(
-            validate: (v) => (v == null || v.isEmpty) ? '不能为空' : null,
-            errorMessage: '用户名不能为空',
-            type: TFormItemType.input,
-          ),
-        },
-        onSubmit: (data, valid) => isValid = valid,
-      ));
-
-      controller.submit();
-      await tester.pumpAndSettle();
-      expect(isValid, isFalse);
-    });
-
-    testWidgets('校验失败时显示错误信息', (tester) async {
-      final controller = FormController();
-
-      await tester.pumpWidget(buildForm(
-        controller: controller,
-        data: {'username': '', 'password': ''},
-        rules: {
-          'username': TFormValidation(
-            validate: (v) => (v == null || v.isEmpty) ? '不能为空' : null,
-            errorMessage: '用户名不能为空',
-            type: TFormItemType.input,
-          ),
-        },
-        onSubmit: (data, valid) {},
-      ));
-
-      controller.submit();
-      await tester.pumpAndSettle();
-      expect(find.text('用户名不能为空'), findsOneWidget);
-    });
-
-    testWidgets('多个字段校验，第一个失败即返回', (tester) async {
-      final controller = FormController();
-      bool? isValid;
-
-      await tester.pumpWidget(buildForm(
-        controller: controller,
-        data: {'username': '', 'password': ''},
-        rules: {
-          'username': TFormValidation(
-            validate: (v) => (v == null || v.isEmpty) ? '不能为空' : null,
-            errorMessage: '用户名不能为空',
-            type: TFormItemType.input,
-          ),
-          'password': TFormValidation(
-            validate: (v) => (v == null || v.isEmpty) ? '不能为空' : null,
-            errorMessage: '密码不能为空',
-            type: TFormItemType.input,
-          ),
-        },
-        onSubmit: (data, valid) => isValid = valid,
-      ));
-
-      controller.submit();
-      await tester.pumpAndSettle();
-      expect(isValid, isFalse);
-    });
-
-    testWidgets('自定义校验规则（长度限制）', (tester) async {
-      final controller = FormController();
-      bool? isValid;
-
-      await tester.pumpWidget(buildForm(
-        controller: controller,
-        data: {'username': 'ab', 'password': ''},
-        rules: {
-          'username': TFormValidation(
-            validate: (v) => (v != null && v.length < 3) ? '太短' : null,
-            errorMessage: '至少3个字符',
-            type: TFormItemType.input,
-          ),
-        },
-        onSubmit: (data, valid) => isValid = valid,
-      ));
-
-      controller.submit();
-      await tester.pumpAndSettle();
-      expect(isValid, isFalse);
-    });
-  });
-
-  // ============================================================
-  // Form reset 重置
-  // ============================================================
-  group('TForm reset 重置', () {
-    testWidgets('controller.reset() 更新表单数据', (tester) async {
-      final controller = FormController();
-
-      await tester.pumpWidget(buildForm(
-        controller: controller,
-        data: {'username': 'old', 'password': 'old'},
-        rules: {},
-        onSubmit: (data, valid) {},
-        onReset: () {},
-      ));
-
-      controller.reset({'username': 'new', 'password': 'new'});
-      await tester.pumpAndSettle();
-      // reset 后表单仍正常渲染
-      expect(find.byType(TForm), findsOneWidget);
-    });
-
-    testWidgets('reset 后表单数据更新', (tester) async {
-      final controller = FormController();
-
-      await tester.pumpWidget(buildForm(
-        controller: controller,
-        data: {'username': 'old', 'password': 'old'},
-        rules: {},
-        onSubmit: (data, valid) {},
-        onReset: () {},
-      ));
-
-      controller.reset({'username': 'reset', 'password': 'reset'});
-      await tester.pumpAndSettle();
-      expect(find.byType(TForm), findsOneWidget);
-    });
-  });
-
-  // ============================================================
-  // Form 基础渲染
-  // ============================================================
-  group('TForm 基础渲染', () {
-    testWidgets('表单渲染 TFormItem', (tester) async {
-      await tester.pumpWidget(buildForm(
-        controller: FormController(),
-        data: {'username': '', 'password': ''},
-        rules: {},
-        onSubmit: (data, valid) {},
-      ));
-
-      expect(find.byType(TForm), findsOneWidget);
-      expect(find.text('用户名'), findsOneWidget);
-      expect(find.text('密码'), findsOneWidget);
-    });
-
-    testWidgets('btnGroup 渲染按钮组', (tester) async {
-      await tester.pumpWidget(buildForm(
-        controller: FormController(),
-        data: {'username': '', 'password': ''},
-        rules: {},
-        onSubmit: (data, valid) {},
-        btnGroup: [
-          TButton(child: const Text('提交'), onPressed: () {}),
-          TButton(child: const Text('重置'), onPressed: () {}),
+      theme: ThemeData(
+        extensions: [
+          TThemeData.defaultData(),
+          if (formTheme != null) formTheme,
         ],
-      ));
+      ),
+      home: Scaffold(body: SizedBox(width: 400, child: child)),
+    );
+  }
 
-      expect(find.text('提交'), findsOneWidget);
-      expect(find.text('重置'), findsOneWidget);
+  group('TForm and TFormField', () {
+    testWidgets('valid submit returns registered controlled values',
+        (tester) async {
+      final controller = TFormController();
+      Map<String, Object?>? submitted;
+      String? saved;
+      await tester.pumpWidget(wrap(TForm(
+        controller: controller,
+        onSubmit: (values) => submitted = values,
+        child: TFormField<String>(
+          name: 'name',
+          value: 'TDesign',
+          onChanged: (_) {},
+          onSaved: (value) => saved = value,
+          validator: (value) => value!.isEmpty ? 'required' : null,
+          builder: (context, value, onChanged, errorText) => Text(value),
+        ),
+      )));
+
+      expect(controller.values, {'name': 'TDesign'});
+      expect(controller.validate(), isTrue);
+      expect(controller.submit(), isTrue);
+      expect(submitted, {'name': 'TDesign'});
+      expect(saved, 'TDesign');
     });
 
-    testWidgets('requiredMark=true 显示必填标记', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        SizedBox(
-          height: 600,
-          child: TForm(
-            items: const [
-              TFormItem(
-                type: TFormItemType.input,
-                label: '必填',
-                name: 'field',
-                requiredMark: true,
+    testWidgets('field change updates validation and submitted data',
+        (tester) async {
+      final controller = TFormController();
+      var value = '';
+      late StateSetter update;
+      await tester.pumpWidget(wrap(StatefulBuilder(
+        builder: (context, setState) {
+          update = setState;
+          return TForm(
+            controller: controller,
+            child: TFormField<String>(
+              name: 'name',
+              value: value,
+              onChanged: (next) => value = next,
+              validator: (next) => next!.isEmpty ? 'required' : null,
+              builder: (context, current, onChanged, errorText) => Column(
+                children: [
+                  Text(current),
+                  Text(errorText ?? 'valid'),
+                  TextButton(
+                    onPressed: () => onChanged!('next'),
+                    child: const Text('change'),
+                  ),
+                ],
               ),
-            ],
-            rules: const {},
-            data: const {'field': ''},
-            onSubmit: (data, valid) {},
-            requiredMark: true,
-            labelWidth: 80,
-          ),
-        ),
-      ));
-      expect(find.byType(TForm), findsOneWidget);
-    });
-
-    testWidgets('labelWidth 自定义标签宽度', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        SizedBox(
-          height: 600,
-          child: TForm(
-            items: const [
-              TFormItem(
-                type: TFormItemType.input,
-                label: '标签',
-                name: 'field',
-              ),
-            ],
-            rules: const {},
-            data: const {'field': ''},
-            onSubmit: (data, valid) {},
-            labelWidth: 100,
-          ),
-        ),
-      ));
-      expect(find.byType(TForm), findsOneWidget);
-    });
-  });
-
-  group('TFormItem 多类型渲染', () {
-    Widget buildSingle(TFormItem item,
-        {Map<String, dynamic> data = const {}}) {
-      return wrapWithTheme(
-        SizedBox(
-          height: 600,
-          child: TForm(
-            items: [item],
-            rules: const {},
-            data: data,
-            onSubmit: (d, v) {},
-            labelWidth: 80,
-          ),
-        ),
-      );
-    }
-
-    testWidgets('textarea 类型渲染', (tester) async {
-      await tester.pumpWidget(buildSingle(const TFormItem(
-        type: TFormItemType.textarea,
-        label: '备注',
-        name: 'remark',
-        child: TText('文本域内容'),
-      )));
-      expect(find.text('备注'), findsOneWidget);
-      expect(find.text('文本域内容'), findsOneWidget);
-    });
-
-    testWidgets('radios 类型渲染', (tester) async {
-      await tester.pumpWidget(buildSingle(TFormItem(
-        type: TFormItemType.radios,
-        label: '性别',
-        name: 'gender',
-        child: TRadioGroup(
-          selectId: 'm',
-          direction: Axis.horizontal,
-          directionalTdRadios: const [
-            TRadio(id: 'm', title: '男'),
-            TRadio(id: 'f', title: '女'),
-          ],
-          onRadioGroupChange: (id) {},
-        ),
-      )));
-      expect(find.text('性别'), findsOneWidget);
-      expect(find.text('男'), findsOneWidget);
-      expect(find.text('女'), findsOneWidget);
-    });
-
-    testWidgets('stepper 类型渲染', (tester) async {
-      await tester.pumpWidget(buildSingle(const TFormItem(
-        type: TFormItemType.stepper,
-        label: '数量',
-        name: 'count',
-        child: TText('步进器'),
-      )));
-      expect(find.text('数量'), findsOneWidget);
-      expect(find.text('步进器'), findsOneWidget);
-    });
-
-    testWidgets('upLoadImg 类型渲染', (tester) async {
-      await tester.pumpWidget(buildSingle(const TFormItem(
-        type: TFormItemType.upLoadImg,
-        label: '图片',
-        name: 'img',
-        child: TText('上传图片'),
-      )));
-      expect(find.text('图片'), findsOneWidget);
-      expect(find.text('上传图片'), findsOneWidget);
-    });
-
-    testWidgets('dateTimePicker 类型渲染并触发 selectFn', (tester) async {
-      var tapped = false;
-      await tester.pumpWidget(buildSingle(TFormItem(
-        type: TFormItemType.dateTimePicker,
-        label: '时间',
-        name: 'time',
-        hintText: '请选择时间',
-        selectFn: (context) => tapped = true,
-      )));
-      expect(find.text('时间'), findsOneWidget);
-      expect(find.text('请选择时间'), findsOneWidget);
-      await tester.tap(find.text('请选择时间'));
-      await tester.pump();
-      expect(tapped, isTrue);
-    });
-
-    testWidgets('cascader 类型渲染并触发 selectFn', (tester) async {
-      var tapped = false;
-      await tester.pumpWidget(buildSingle(TFormItem(
-        type: TFormItemType.cascader,
-        label: '地区',
-        name: 'area',
-        hintText: '请选择地区',
-        selectFn: (context) => tapped = true,
-      )));
-      expect(find.text('地区'), findsOneWidget);
-      expect(find.text('请选择地区'), findsOneWidget);
-      await tester.tap(find.text('请选择地区'));
-      await tester.pump();
-      expect(tapped, isTrue);
-    });
-
-    testWidgets('help 帮助信息渲染', (tester) async {
-      await tester.pumpWidget(buildSingle(const TFormItem(
-        type: TFormItemType.input,
-        label: '账号',
-        name: 'account',
-        help: '请输入登录账号',
-      )));
-      expect(find.text('请输入登录账号'), findsOneWidget);
-    });
-
-    testWidgets('labelWidget 自定义标签渲染', (tester) async {
-      await tester.pumpWidget(buildSingle(const TFormItem(
-        type: TFormItemType.input,
-        label: 'x',
-        labelWidget: Text('自定义标签'),
-        name: 'x',
-      )));
-      expect(find.text('自定义标签'), findsOneWidget);
-    });
-  });
-
-  // ============================================================
-  // 覆盖率补充
-  // ============================================================
-  group('TFormItem 覆盖率补充', () {
-    Widget wrapForm(TFormItem item,
-        {double? formLabelWidth = 80, Map<String, dynamic> data = const {}}) {
-      return MaterialApp(
-        theme: ThemeData(extensions: [TThemeData.defaultData()]),
-        home: Scaffold(
-          body: SizedBox(
-            height: 600,
-            child: TForm(
-              items: [item],
-              rules: const {},
-              data: data,
-              onSubmit: (d, v) {},
-              labelWidth: formLabelWidth,
             ),
-          ),
+          );
+        },
+      )));
+
+      expect(controller.submit(), isFalse);
+      await tester.pump();
+      expect(find.text('required'), findsOneWidget);
+
+      await tester.tap(find.text('change'));
+      expect(value, 'next');
+      expect(controller.values, {'name': 'next'});
+      update(() {});
+      await tester.pump();
+      expect(find.text('next'), findsOneWidget);
+      expect(controller.submit(), isTrue);
+    });
+
+    testWidgets('disabled field exposes no change callback', (tester) async {
+      ValueChanged<bool>? callback;
+      await tester.pumpWidget(wrap(TForm(
+        child: TFormField<bool>(
+          name: 'enabled',
+          value: false,
+          builder: (context, value, onChanged, errorText) {
+            callback = onChanged;
+            return const SizedBox();
+          },
         ),
-      );
-    }
-
-    testWidgets('labelWidth 自定义', (tester) async {
-      // 覆盖 154（widget.labelWidth != null）+ 165-166（inherited.labelWidth）
-      await tester.pumpWidget(wrapForm(const TFormItem(
-        type: TFormItemType.input,
-        label: 'lw',
-        name: 'lw',
-        labelWidth: 100,
       )));
-      expect(find.byType(TFormItem), findsOneWidget);
+      expect(callback, isNull);
     });
 
-    testWidgets('contentAlign 自定义', (tester) async {
-      // 覆盖 251-257（contentAlign）
-      await tester.pumpWidget(wrapForm(const TFormItem(
-        type: TFormItemType.input,
-        label: 'ca',
-        name: 'ca',
-        contentAlign: TextAlign.right,
+    testWidgets('showErrorMessage hides field error from builder',
+        (tester) async {
+      final key = GlobalKey<TFormState>();
+      await tester.pumpWidget(wrap(TForm(
+        key: key,
+        showErrorMessage: false,
+        child: TFormField<String>(
+          name: 'name',
+          value: '',
+          onChanged: (_) {},
+          validator: (_) => 'hidden error',
+          builder: (context, value, onChanged, errorText) =>
+              Text(errorText ?? 'hidden'),
+        ),
       )));
-      tester.takeException(); // 可能布局溢出
-      expect(find.byType(TFormItem), findsAny);
+
+      expect(key.currentState!.validate(), isFalse);
+      await tester.pump();
+      expect(find.text('hidden'), findsOneWidget);
+      expect(find.text('hidden error'), findsNothing);
+      key.currentState!.reset();
     });
 
-    testWidgets('无 labelWidth 使用默认值', (tester) async {
-      // 覆盖 174（return defaultlabelWidth）
-      await tester.pumpWidget(wrapForm(const TFormItem(
-        type: TFormItemType.input,
-        label: 'def',
-        name: 'def',
-      ), formLabelWidth: 0));
-      expect(find.byType(TFormItem), findsOneWidget);
+    testWidgets('field rename, external update and removal update registry',
+        (tester) async {
+      final controller = TFormController();
+      var name = 'old';
+      var value = 1;
+      var visible = true;
+      late StateSetter update;
+      await tester.pumpWidget(wrap(StatefulBuilder(
+        builder: (context, setState) {
+          update = setState;
+          return TForm(
+            controller: controller,
+            child: visible
+                ? TFormField<int>(
+                    name: name,
+                    value: value,
+                    onChanged: (_) {},
+                    builder: (context, value, onChanged, errorText) =>
+                        Text('$value'),
+                  )
+                : const SizedBox(),
+          );
+        },
+      )));
+      expect(controller.values, {'old': 1});
+
+      name = 'new';
+      value = 2;
+      update(() {});
+      await tester.pump();
+      expect(controller.values, {'new': 2});
+
+      visible = false;
+      update(() {});
+      await tester.pump();
+      expect(controller.values, isEmpty);
     });
+
+    testWidgets('controller detaches and reattaches when replaced',
+        (tester) async {
+      final first = TFormController();
+      final second = TFormController();
+      var controller = first;
+      late StateSetter update;
+      await tester.pumpWidget(wrap(StatefulBuilder(
+        builder: (context, setState) {
+          update = setState;
+          return TForm(controller: controller, child: const SizedBox());
+        },
+      )));
+      expect(first.validate(), isTrue);
+
+      controller = second;
+      update(() {});
+      await tester.pump();
+      expect(first.validate(), isFalse);
+      expect(second.validate(), isTrue);
+
+      await tester.pumpWidget(const SizedBox());
+      expect(second.validate(), isFalse);
+    });
+
+    testWidgets('works as a standalone FormField without TForm scope',
+        (tester) async {
+      await tester.pumpWidget(wrap(TFormField<int>(
+        name: 'count',
+        value: 1,
+        onChanged: (_) {},
+        builder: (context, value, onChanged, errorText) => Text('$value'),
+      )));
+      expect(find.text('1'), findsOneWidget);
+    });
+
+    test('unattached controller has safe empty behavior', () {
+      final controller = TFormController();
+      expect(controller.values, isEmpty);
+      expect(controller.validate(), isFalse);
+      expect(controller.submit(), isFalse);
+      controller.reset();
+    });
+  });
+
+  group('TFormItem layout', () {
+    testWidgets('horizontal layout renders label, mark, child and help',
+        (tester) async {
+      await tester.pumpWidget(wrap(
+        const TFormItem(
+          label: 'Name',
+          required: true,
+          help: 'Help',
+          extra: Icon(Icons.info),
+          child: Text('Field'),
+        ),
+        formTheme: const TFormThemeData(
+          showColon: true,
+          labelWidth: 80,
+          labelAlign: TextAlign.right,
+        ),
+      ));
+      expect(find.text('Name:'), findsOneWidget);
+      expect(find.text('*'), findsOneWidget);
+      expect(find.text('Field'), findsOneWidget);
+      expect(find.text('Help'), findsOneWidget);
+      expect(find.byIcon(Icons.info), findsOneWidget);
+      expect(find.byType(Row), findsWidgets);
+    });
+
+    testWidgets('vertical layout prefers error over help and applies theme',
+        (tester) async {
+      const errorStyle = TextStyle(color: Colors.red);
+      await tester.pumpWidget(wrap(
+        const TFormItem(
+          label: 'Name',
+          labelWidth: 120,
+          help: 'Help',
+          errorText: 'Error',
+          child: Text('Field'),
+        ),
+        formTheme: const TFormThemeData(
+          layout: TFormLayout.vertical,
+          backgroundColor: Colors.yellow,
+          itemPadding: EdgeInsets.all(12),
+          itemSpacing: 6,
+          labelGap: 10,
+          messageGap: 5,
+          errorStyle: errorStyle,
+        ),
+      ));
+      expect(find.text('Error'), findsOneWidget);
+      expect(find.text('Help'), findsNothing);
+      expect(tester.widget<Text>(find.text('Error')).style, errorStyle);
+      final container = tester.widget<Container>(find.byType(Container).first);
+      expect(container.color, Colors.yellow);
+      expect(find.byType(Column), findsWidgets);
+    });
+
+    testWidgets('label and messages are optional', (tester) async {
+      await tester.pumpWidget(wrap(const TFormItem(child: Text('Field'))));
+      expect(find.text('Field'), findsOneWidget);
+      expect(find.text('*'), findsNothing);
+    });
+  });
+
+  test('TFormThemeData copyWith and lerp', () {
+    const base = TFormThemeData(
+      showColon: true,
+      labelWidth: 80,
+      layout: TFormLayout.horizontal,
+      labelAlign: TextAlign.left,
+      labelStyle: TextStyle(fontSize: 12),
+      requiredMarkStyle: TextStyle(color: Colors.red),
+      helpStyle: TextStyle(color: Colors.grey),
+      errorStyle: TextStyle(color: Colors.red),
+      backgroundColor: Colors.white,
+      itemPadding: EdgeInsets.all(4),
+      itemSpacing: 4,
+      labelGap: 6,
+      messageGap: 2,
+    );
+    const other = TFormThemeData(
+      showColon: false,
+      labelWidth: 120,
+      layout: TFormLayout.vertical,
+      labelAlign: TextAlign.right,
+      labelStyle: TextStyle(fontSize: 16),
+      requiredMarkStyle: TextStyle(color: Colors.blue),
+      helpStyle: TextStyle(color: Colors.black),
+      errorStyle: TextStyle(color: Colors.orange),
+      backgroundColor: Colors.black,
+      itemPadding: EdgeInsets.all(8),
+      itemSpacing: 8,
+      labelGap: 10,
+      messageGap: 6,
+    );
+
+    expect(base.copyWith().labelWidth, 80);
+    expect(
+      base
+          .copyWith(
+            showColon: false,
+            labelWidth: 100,
+            layout: TFormLayout.vertical,
+            labelAlign: TextAlign.center,
+            labelStyle: const TextStyle(fontSize: 14),
+            requiredMarkStyle: const TextStyle(color: Colors.green),
+            helpStyle: const TextStyle(color: Colors.blueGrey),
+            errorStyle: const TextStyle(color: Colors.purple),
+            backgroundColor: Colors.grey,
+            itemPadding: const EdgeInsets.all(6),
+            itemSpacing: 6,
+            labelGap: 8,
+            messageGap: 4,
+          )
+          .layout,
+      TFormLayout.vertical,
+    );
+    expect(base.lerp(null, 0.5), same(base));
+    expect(base.lerp(other, 0.25).showColon, isTrue);
+    expect(base.lerp(other, 0.75).layout, TFormLayout.vertical);
+    expect(base.lerp(other, 0.5).labelWidth, 100);
+    expect(base.lerp(other, 0.5).itemSpacing, 6);
   });
 }

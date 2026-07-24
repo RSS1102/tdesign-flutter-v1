@@ -3,13 +3,22 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 import '../../base/example_widget.dart';
 import '../annotation/demo.dart';
 
-class TTagPage extends StatelessWidget {
+class TTagPage extends StatefulWidget {
   const TTagPage({Key? key}) : super(key: key);
+
+  @override
+  State<TTagPage> createState() => _TTagPageState();
+}
+
+class _TTagPageState extends State<TTagPage> {
+  bool _selected1 = false;
+  bool _selected2 = true;
+  bool _selected3 = false;
 
   @override
   Widget build(BuildContext context) {
     return ExamplePage(
-        title: tTitle(context),
+        title: tTitle(),
         desc: '用于表明主体的类目，属性或状态',
         exampleCodeGroup: 'tag',
         children: [
@@ -123,11 +132,17 @@ class TTagPage extends StatelessWidget {
                   return Container(
                     alignment: Alignment.topLeft,
                     padding: const EdgeInsets.only(left: 16),
-                    child: Wrap(spacing: 8, direction: Axis.vertical, children: [
+                    child:
+                        Wrap(spacing: 8, direction: Axis.vertical, children: [
                       CodeWrapper(builder: _buildAllSizeTags),
                     ]),
                   );
                 })
+          ]),
+          ExampleModule(title: '可选标签', children: [
+            ExampleItem(desc: '默认形态', builder: _buildSelectDefault),
+            ExampleItem(desc: '不同语义色', builder: _buildSelectColorSchemes),
+            ExampleItem(desc: '禁用状态', builder: _buildSelectDisabled),
           ]),
         ],
         test: [
@@ -161,7 +176,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildSimpleOutlineTag(BuildContext context) {
     // 描边标签：通过 TTagThemeData(isOutline: true) 子树注入
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isOutline: true)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(isOutline: true)),
       child: const TTag('标签文字'),
     );
   }
@@ -170,7 +186,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildCircleFillTag(BuildContext context) {
     // 圆弧标签：通过 TTagThemeData(shape: TTagShape.round) 子树注入
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(shape: TTagShape.round)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(shape: TTagShape.round)),
       child: const TTag('标签文字'),
     );
   }
@@ -178,7 +195,8 @@ class TTagPage extends StatelessWidget {
   @Demo(group: 'tag')
   Widget _buildCircleOutlineTag(BuildContext context) {
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(shape: TTagShape.round, isOutline: true)),
+      data: Theme.of(context).mergeExtension(
+          const TTagThemeData(shape: TTagShape.round, isOutline: true)),
       child: const TTag('标签文字'),
     );
   }
@@ -187,7 +205,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildMarkFillTag(BuildContext context) {
     // Mark 标签：左圆角右直角
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(shape: TTagShape.mark)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(shape: TTagShape.mark)),
       child: const TTag('标签文字'),
     );
   }
@@ -195,7 +214,8 @@ class TTagPage extends StatelessWidget {
   @Demo(group: 'tag')
   Widget _buildMarkOutlineTag(BuildContext context) {
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(shape: TTagShape.mark, isOutline: true)),
+      data: Theme.of(context).mergeExtension(
+          const TTagThemeData(shape: TTagShape.mark, isOutline: true)),
       child: const TTag('标签文字'),
     );
   }
@@ -209,25 +229,23 @@ class TTagPage extends StatelessWidget {
   @Demo(group: 'tag')
   Widget _buildIconOutlineTag(BuildContext context) {
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isOutline: true)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(isOutline: true)),
       child: const TTag('标签文字', icon: TIcons.discount),
     );
   }
 
   @Demo(group: 'tag')
   Widget _buildCloseFillTag(BuildContext context) {
-    // 可关闭的标签：通过 TTagThemeData(needCloseIcon: true) 注入 + onCloseTap 回调
-    return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(needCloseIcon: true)),
-      child: TTag('标签文字', onCloseTap: () {}),
-    );
+    return TTag('标签文字', needCloseIcon: true, onCloseTap: () {});
   }
 
   @Demo(group: 'tag')
   Widget _buildCloseOutlineTag(BuildContext context) {
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isOutline: true, needCloseIcon: true)),
-      child: TTag('标签文字', onCloseTap: () {}),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(isOutline: true)),
+      child: TTag('标签文字', needCloseIcon: true, onCloseTap: () {}),
     );
   }
 
@@ -252,7 +270,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildLightShowTags(BuildContext context) {
     // 浅色填充各主题
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isLight: true)),
+      data:
+          Theme.of(context).mergeExtension(const TTagThemeData(isLight: true)),
       child: const Wrap(
         spacing: 8,
         children: [
@@ -270,7 +289,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildOutlineShowTags(BuildContext context) {
     // 非浅色描边各主题
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isOutline: true)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(isOutline: true)),
       child: const Wrap(
         spacing: 8,
         children: [
@@ -288,7 +308,8 @@ class TTagPage extends StatelessWidget {
   Widget _buildLightOutlineShowTags(BuildContext context) {
     // 浅色描边各主题
     return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(isOutline: true, isLight: true)),
+      data: Theme.of(context)
+          .mergeExtension(const TTagThemeData(isOutline: true, isLight: true)),
       child: const Wrap(
         spacing: 8,
         children: [
@@ -318,20 +339,64 @@ class TTagPage extends StatelessWidget {
     );
   }
 
+  @Demo(group: 'tag')
+  Widget _buildSelectDefault(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      children: [
+        TSelectTag('标签一',
+            value: _selected1,
+            onChanged: (v) => setState(() => _selected1 = v)),
+        TSelectTag('标签二',
+            value: _selected2,
+            onChanged: (v) => setState(() => _selected2 = v)),
+        TSelectTag('标签三',
+            value: _selected3,
+            onChanged: (v) => setState(() => _selected3 = v)),
+      ],
+    );
+  }
+
+  @Demo(group: 'tag')
+  Widget _buildSelectColorSchemes(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      children: [
+        TSelectTag('主要',
+            colorScheme: TTagColorScheme.primary,
+            value: true,
+            onChanged: (_) {}),
+        TSelectTag('成功',
+            colorScheme: TTagColorScheme.success,
+            value: true,
+            onChanged: (_) {}),
+        TSelectTag('警告',
+            colorScheme: TTagColorScheme.warning,
+            value: true,
+            onChanged: (_) {}),
+        TSelectTag('危险',
+            colorScheme: TTagColorScheme.danger,
+            value: true,
+            onChanged: (_) {}),
+      ],
+    );
+  }
+
+  @Demo(group: 'tag')
+  Widget _buildSelectDisabled(BuildContext context) {
+    return const TSelectTag('禁用标签', value: false, onChanged: null);
+  }
+
   // ============ 测试 ============
 
   Widget _buildDisabledTag(BuildContext context) {
-    // 禁用状态：通过 TTagThemeData(disable: true) 注入
-    return Theme(
-      data: Theme.of(context).mergeExtension(const TTagThemeData(disable: true)),
-      child: const Wrap(
-        spacing: 8,
-        children: [
-          TTag('禁用', colorScheme: TTagColorScheme.defaultTheme),
-          TTag('禁用', colorScheme: TTagColorScheme.primary),
-          TTag('禁用', colorScheme: TTagColorScheme.danger),
-        ],
-      ),
+    return const Wrap(
+      spacing: 8,
+      children: [
+        TTag('禁用', colorScheme: TTagColorScheme.defaultTheme, enabled: false),
+        TTag('禁用', colorScheme: TTagColorScheme.primary, enabled: false),
+        TTag('禁用', colorScheme: TTagColorScheme.danger, enabled: false),
+      ],
     );
   }
 }

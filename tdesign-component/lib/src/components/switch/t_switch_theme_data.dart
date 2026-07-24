@@ -2,18 +2,16 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart' show TSwitch;
-
-import 't_switch.dart' show TSwitch;
+import 't_switch_types.dart';
 
 /// TSwitch 组件级 ThemeExtension
 ///
 /// 通过 Theme 子树注入，控制子树默认样式。
 class TSwitchThemeData extends ThemeExtension<TSwitchThemeData> {
-  /// 未传 [TSwitch.size] 时的默认尺寸
+  /// Widget 未指定尺寸时使用的默认尺寸。
   final TSwitchSize? defaultSize;
 
-  /// 未传 [TSwitch.variant] 时的默认形态
+  /// Widget 未指定形态时使用的默认形态。
   final TSwitchVariant? defaultVariant;
 
   /// 开启时轨道颜色
@@ -41,15 +39,34 @@ class TSwitchThemeData extends ThemeExtension<TSwitchThemeData> {
   final String? closeText;
 
   const TSwitchThemeData({
+    /// 默认尺寸。
     this.defaultSize,
+
+    /// 默认内容形态。
     this.defaultVariant,
+
+    /// 开启态轨道颜色。
     this.trackOnColor,
+
+    /// 关闭态轨道颜色。
     this.trackOffColor,
+
+    /// 开启态滑块内容颜色。
     this.thumbContentOnColor,
+
+    /// 关闭态滑块内容颜色。
     this.thumbContentOffColor,
+
+    /// 开启态滑块内容文本样式。
     this.thumbContentOnFont,
+
+    /// 关闭态滑块内容文本样式。
     this.thumbContentOffFont,
+
+    /// text 形态的默认开启文案。
     this.openText,
+
+    /// text 形态的默认关闭文案。
     this.closeText,
   });
 
@@ -109,9 +126,3 @@ class TSwitchThemeData extends ThemeExtension<TSwitchThemeData> {
     );
   }
 }
-
-/// 开关尺寸
-enum TSwitchSize { large, medium, small }
-
-/// 开关形态
-enum TSwitchVariant { fill, text, loading, icon }

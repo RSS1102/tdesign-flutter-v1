@@ -7,17 +7,14 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// 覆盖基础渲染、构造器参数、TIconThemeData 子树注入、
 /// IconTheme 回退、TIcon.fromName 工厂构造。
 void main() {
-  /// 最小化包装，注入 TTheme
+  /// 完整包装，注入 TDesign 全局主题。
   Widget wrapWithTheme(Widget child, {TIconThemeData? iconTheme}) {
-    final extensions = <ThemeExtension>[
-      if (iconTheme != null) iconTheme,
-    ];
-    // 注意：必须通过 MaterialApp.theme 传递 extensions，
-    // 用外层 Theme 包 MaterialApp 会被 MaterialApp 默认 ThemeData.light() 覆盖，导致 extension 丢失。
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (iconTheme != null) {
+      theme = theme.mergeExtension(iconTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(
-        extensions: [TThemeData.defaultData(), ...extensions],
-      ),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -31,6 +28,17 @@ void main() {
     ));
     expect(find.byType(TIcon), findsOneWidget);
     expect(find.byType(Icon), findsOneWidget);
+  });
+
+  testWidgets('T01b - 完整主题下默认图标使用文本主色而非品牌色', (tester) async {
+    final token = TThemeData.defaultData();
+    await tester.pumpWidget(wrapWithTheme(
+      const TIcon(TIcons.home_filled),
+    ));
+
+    final icon = tester.widget<Icon>(find.byType(Icon));
+    expect(icon.color, token.textColorPrimary);
+    expect(icon.color, isNot(token.brandNormalColor));
   });
 
   // ============================================================
@@ -114,6 +122,19 @@ void main() {
     expect(icon.color, Colors.green);
   });
 
+  testWidgets('T04b - 完整主题下仍尊重局部 IconTheme', (tester) async {
+    await tester.pumpWidget(wrapWithTheme(
+      const IconTheme(
+        data: IconThemeData(size: 30.0, color: Colors.green),
+        child: TIcon(TIcons.check),
+      ),
+    ));
+
+    final icon = tester.widget<Icon>(find.byType(Icon));
+    expect(icon.size, 30.0);
+    expect(icon.color, Colors.green);
+  });
+
   // ============================================================
   // T05 – TIcon.fromName 工厂构造
   // ============================================================
@@ -168,6 +189,30 @@ void main() {
     expect(result, equals(a));
   });
 
+  test('T06d - TIconThemeData 默认值和 copyWith 空参数', () {
+    const empty = TIconThemeData();
+    expect(empty.size, isNull);
+    expect(empty.color, isNull);
+
+    const original = TIconThemeData(size: 18, color: Colors.black);
+    final copied = original.copyWith();
+    expect(copied.size, 18);
+    expect(copied.color, Colors.black);
+  });
+
+  test('T06e - TIconThemeData.lerp 端点边界', () {
+    const a = TIconThemeData(size: 10.0, color: Colors.red);
+    const b = TIconThemeData(size: 20.0, color: Colors.blue);
+
+    final atStart = a.lerp(b, 0);
+    final atEnd = a.lerp(b, 1);
+
+    expect(atStart.size, 10.0);
+    expect(atStart.color, Color.lerp(Colors.red, Colors.blue, 0));
+    expect(atEnd.size, 20.0);
+    expect(atEnd.color, Color.lerp(Colors.red, Colors.blue, 1));
+  });
+
   // 补充用例至 ≥15
   testWidgets('T07 - mergeExtension 覆盖 defaultSize', (tester) async {
     await tester.pumpWidget(MaterialApp(
@@ -185,7 +230,9 @@ void main() {
   testWidgets('T08 - 多个 TIcon 同时渲染', (tester) async {
     await tester.pumpWidget(MaterialApp(
       theme: ThemeData(extensions: [TThemeData.defaultData()]),
-      home: const Scaffold(body: Center(child: Row(children: [
+      home: const Scaffold(
+          body: Center(
+              child: Row(children: [
         TIcon(TIcons.home),
         TIcon(TIcons.search),
         TIcon(TIcons.user),

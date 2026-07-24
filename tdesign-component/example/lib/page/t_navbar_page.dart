@@ -88,16 +88,21 @@ class TNavBarPage extends StatelessWidget {
       useDefaultBack: false,
       centerTitle: false,
       titleMargin: 0,
-      titleWidget: TSearchBar(
-        needCancel: false,
-        autoHeight: true,
-        padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-        hintText: '搜索预设文案',
-        mediumStyle: true,
-        style: TSearchBarVariant.round,
-        onChanged: (String text) {
-          print('input：$text');
-        },
+      titleWidget: Theme(
+        data: Theme.of(context).mergeExtension(
+          const TSearchBarThemeData(
+            variant: TSearchBarVariant.round,
+            padding: EdgeInsets.fromLTRB(0, 2, 0, 2),
+            autoHeight: true,
+          ),
+        ),
+        child: TSearchBar(
+          needCancel: false,
+          hintText: '搜索预设文案',
+          onChanged: (String text) {
+            print('input：$text');
+          },
+        ),
       ),
       actions: [
         TNavBarItem(icon: TIcons.home, iconSize: 24),
@@ -114,6 +119,10 @@ class TNavBarPage extends StatelessWidget {
       titleMargin: 0,
       titleWidget: const TImage(
         src: 'assets/img/t_brand.png',
+        width: 120,
+        height: 32,
+        variant: TImageVariant.fitWidth,
+        fit: BoxFit.contain,
       ),
       actions: [
         TNavBarItem(icon: TIcons.home, iconSize: 24),
@@ -171,18 +180,20 @@ class TNavBarPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: TNavBar(
+        height: 80,
         title: '返回',
         titleColor: context.tTheme.textColorPrimary,
         belowTitleWidget: SizedBox(
+          height: 36,
           child: TText(
             titleText,
-            font: Font(size: 28, lineHeight: 52),
+            font: Font(size: 28, lineHeight: 36),
             fontWeight: FontWeight.w600,
           ),
         ),
         titleFont: Font(size: 16, lineHeight: 24),
         centerTitle: false,
-        titleMargin: 0,
+        titleMargin: 8,
         useDefaultBack: false,
         leading: [
           TNavBarItem(icon: TIcons.chevron_left, iconSize: 24),

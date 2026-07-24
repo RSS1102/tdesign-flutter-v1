@@ -1,7 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/src/theme/t_theme.dart';
-import 'package:tdesign_flutter/src/theme/resource_delegate.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TTheme 基础设施纯逻辑覆盖（context 扩展 / TStyleResolver /
@@ -55,7 +55,7 @@ void main() {
 
   group('TThemeDataMergeExtension.mergeExtension', () {
     test('合并后保留指定 Extension 类型', () {
-      final base = ThemeData(colorScheme: ColorScheme.light());
+      final base = ThemeData(colorScheme: const ColorScheme.light());
       final merged = base.mergeExtension<TThemeData>(TThemeData.defaultData());
       expect(merged.extension<TThemeData>(), isNotNull);
       // 其它已有 Extension 不被覆盖
@@ -64,7 +64,8 @@ void main() {
   });
 
   group('TStyleResolver', () {
-    testWidgets('of/token/colorScheme/textTheme/materialTheme/componentExtension',
+    testWidgets(
+        'of/token/colorScheme/textTheme/materialTheme/componentExtension',
         (tester) async {
       final token = TThemeData.defaultData();
       final resolverHolder = <TStyleResolver>[];
@@ -108,12 +109,77 @@ void main() {
   });
 
   group('TMaterialThemeBuilder / TThemeBuilder', () {
+    test('Foundation 不反向依赖包总出口', () {
+      final source = File('lib/src/theme/t_theme.dart').readAsStringSync();
+      expect(source, isNot(contains('../../tdesign_flutter.dart')));
+      expect(source, contains('t_component_theme_data.dart'));
+    });
+
     test('buildLight 映射品牌色', () {
       final token = TThemeData.defaultData();
       final td = TMaterialThemeBuilder(token).buildLight();
       expect(td.colorScheme.primary, token.brandNormalColor);
       expect(td.useMaterial3, isTrue);
       expect(td.extension<TThemeData>(), isNotNull);
+    });
+
+    test('buildLight 注入当前组件 ThemeData 默认定义', () {
+      final theme = TThemeBuilder.light(TThemeData.defaultData());
+
+      expect(theme.extension<TActionSheetThemeData>(), isNotNull);
+      expect(theme.extension<TAvatarThemeData>(), isNotNull);
+      expect(theme.extension<TBackTopThemeData>(), isNotNull);
+      expect(theme.extension<TBadgeThemeData>(), isNotNull);
+      expect(theme.extension<TButtonThemeData>(), isNotNull);
+      expect(theme.extension<TCalendarThemeData>(), isNotNull);
+      expect(theme.extension<TCascaderThemeData>(), isNotNull);
+      expect(theme.extension<TCellThemeData>(), isNotNull);
+      expect(theme.extension<TCheckboxThemeData>(), isNotNull);
+      expect(theme.extension<TCollapseThemeData>(), isNotNull);
+      expect(theme.extension<TDialogThemeData>(), isNotNull);
+      expect(theme.extension<TDividerThemeData>(), isNotNull);
+      expect(theme.extension<TDrawerThemeData>(), isNotNull);
+      expect(theme.extension<TDropdownThemeData>(), isNotNull);
+      expect(theme.extension<TEmptyThemeData>(), isNotNull);
+      expect(theme.extension<TFabThemeData>(), isNotNull);
+      expect(theme.extension<TFooterThemeData>(), isNotNull);
+      expect(theme.extension<TFormThemeData>(), isNotNull);
+      expect(theme.extension<TIconThemeData>(), isNotNull);
+      expect(theme.extension<TImageThemeData>(), isNotNull);
+      expect(theme.extension<TImageViewerThemeData>(), isNotNull);
+      expect(theme.extension<TIndexesThemeData>(), isNotNull);
+      expect(theme.extension<TInputThemeData>(), isNotNull);
+      expect(theme.extension<TLinkThemeData>(), isNotNull);
+      expect(theme.extension<TLoadingThemeData>(), isNotNull);
+      expect(theme.extension<TMessageThemeData>(), isNotNull);
+      expect(theme.extension<TNavBarThemeData>(), isNotNull);
+      expect(theme.extension<TNoticeBarThemeData>(), isNotNull);
+      expect(theme.extension<TPickerThemeData>(), isNotNull);
+      expect(theme.extension<TPopoverThemeData>(), isNotNull);
+      expect(theme.extension<TPopupThemeData>(), isNotNull);
+      expect(theme.extension<TProgressThemeData>(), isNotNull);
+      expect(theme.extension<TRadioThemeData>(), isNotNull);
+      expect(theme.extension<TRateThemeData>(), isNotNull);
+      expect(theme.extension<TRefreshThemeData>(), isNotNull);
+      expect(theme.extension<TResultThemeData>(), isNotNull);
+      expect(theme.extension<TSearchBarThemeData>(), isNotNull);
+      expect(theme.extension<TSideBarThemeData>(), isNotNull);
+      expect(theme.extension<TSkeletonThemeData>(), isNotNull);
+      expect(theme.extension<TSliderThemeData>(), isNotNull);
+      expect(theme.extension<TStepperThemeData>(), isNotNull);
+      expect(theme.extension<TStepsThemeData>(), isNotNull);
+      expect(theme.extension<TSwipeCellThemeData>(), isNotNull);
+      expect(theme.extension<TSwiperThemeData>(), isNotNull);
+      expect(theme.extension<TSwitchThemeData>(), isNotNull);
+      expect(theme.extension<TTabBarThemeData>(), isNotNull);
+      expect(theme.extension<TTableThemeData>(), isNotNull);
+      expect(theme.extension<TTabsBarThemeData>(), isNotNull);
+      expect(theme.extension<TTagThemeData>(), isNotNull);
+      expect(theme.extension<TTextThemeData>(), isNotNull);
+      expect(theme.extension<TTimeCounterThemeData>(), isNotNull);
+      expect(theme.extension<TToastThemeData>(), isNotNull);
+      expect(theme.extension<TTreeSelectThemeData>(), isNotNull);
+      expect(theme.extension<TUploadThemeData>(), isNotNull);
     });
 
     test('buildDark 且 token.dark 为 null 时回退 token', () {
@@ -217,8 +283,8 @@ void main() {
     });
 
     test('fromJson 带 extraThemeData 走 parse 分支', () {
-      final theme = TThemeData.fromJson('testTheme', json,
-          extraThemeData: _TestExtra())!;
+      final theme =
+          TThemeData.fromJson('testTheme', json, extraThemeData: _TestExtra())!;
       expect(theme.extraThemeData, isA<_TestExtra>());
       expect(theme.ofExtra<_TestExtra>(), isA<_TestExtra>());
       // 类型不匹配时返回 null
@@ -237,6 +303,8 @@ void main() {
       expect(copied.ofColor('brandNormalColor'), Colors.red);
       // 未覆盖的其它颜色经 factory 仍可取
       expect(copied.ofColor('textColorAnti'), isNotNull);
+      expect(copied.light, same(copied));
+      expect(TThemeBuilder.light(copied).colorScheme.primary, Colors.red);
     });
 
     test('copyWithTThemeData 同义封装', () {

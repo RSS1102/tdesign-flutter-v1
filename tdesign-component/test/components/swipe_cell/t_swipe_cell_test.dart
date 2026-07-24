@@ -17,12 +17,12 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() {
   /// 用 TTheme 包裹以提供基础 Token
   Widget wrapWithTheme(Widget child, {TSwipeCellThemeData? swipeTheme}) {
-    final extensions = <ThemeExtension>[
-      TThemeData.defaultData(),
-      if (swipeTheme != null) swipeTheme,
-    ];
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (swipeTheme != null) {
+      theme = theme.mergeExtension(swipeTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: extensions),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -72,7 +72,7 @@ void main() {
     testWidgets('渲染 cell 内容', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TSwipeCell(
-          cell: TCell(title: '单元格'),
+          cell: TCell(title: Text('单元格')),
         ),
       ));
       expect(find.text('单元格'), findsOneWidget);
@@ -82,7 +82,7 @@ void main() {
     testWidgets('渲染右侧操作面板', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '右滑删除'),
+          cell: const TCell(title: Text('右滑删除')),
           right: buildRightPanel(),
         ),
       ));
@@ -93,7 +93,7 @@ void main() {
     testWidgets('渲染左侧操作面板', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '左滑收藏'),
+          cell: const TCell(title: Text('左滑收藏')),
           left: buildLeftPanel(),
         ),
       ));
@@ -104,7 +104,7 @@ void main() {
     testWidgets('同时渲染左右面板', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '双向滑动'),
+          cell: const TCell(title: Text('双向滑动')),
           left: buildLeftPanel(),
           right: buildRightPanel(),
         ),
@@ -121,7 +121,7 @@ void main() {
     testWidgets('enabled=false 禁用滑动', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '禁用'),
+          cell: const TCell(title: Text('禁用')),
           enabled: false,
           right: buildRightPanel(),
         ),
@@ -134,7 +134,7 @@ void main() {
     testWidgets('enabled=true（默认）启用滑动', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '启用'),
+          cell: const TCell(title: Text('启用')),
           right: buildRightPanel(),
         ),
       ));
@@ -186,7 +186,7 @@ void main() {
           width: 300,
           height: 60,
           child: TSwipeCell(
-            cell: const TCell(title: '滑动测试'),
+            cell: const TCell(title: Text('滑动测试')),
             left: buildLeftPanel(),
             onChanged: (dir, open) {
               direction = dir;
@@ -204,7 +204,8 @@ void main() {
       expect(isOpen, isTrue);
     });
 
-    testWidgets('向右滑动触发 onChanged(TSwipeDirection.right, true)', (tester) async {
+    testWidgets('向右滑动触发 onChanged(TSwipeDirection.right, true)',
+        (tester) async {
       TSwipeDirection? direction;
       bool? isOpen;
 
@@ -213,7 +214,7 @@ void main() {
           width: 300,
           height: 60,
           child: TSwipeCell(
-            cell: const TCell(title: '右滑测试'),
+            cell: const TCell(title: Text('右滑测试')),
             right: buildRightPanel(),
             onChanged: (dir, open) {
               direction = dir;
@@ -233,14 +234,14 @@ void main() {
   });
 
   // ============================================================
-  // 主题覆盖（TSwipeCellThemeData）
+  // 主题与交互参数
   // ============================================================
-  group('TSwipeCell 主题覆盖', () {
+  group('TSwipeCell 主题与交互参数', () {
     testWidgets('通过 TSwipeCellThemeData 设置 duration', (tester) async {
       const customDuration = Duration(milliseconds: 500);
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '时长'),
+          cell: const TCell(title: Text('时长')),
           right: buildRightPanel(),
         ),
         swipeTheme: const TSwipeCellThemeData(duration: customDuration),
@@ -248,25 +249,23 @@ void main() {
       expect(find.text('时长'), findsOneWidget);
     });
 
-    testWidgets('通过 TSwipeCellThemeData 设置 groupTag', (tester) async {
+    testWidgets('groupTag 由实例设置', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '分组'),
+          cell: const TCell(title: Text('分组')),
           right: buildRightPanel(),
+          groupTag: 'group1',
         ),
-        swipeTheme: const TSwipeCellThemeData(groupTag: 'group1'),
       ));
       final slidable = tester.widget<Slidable>(find.byType(Slidable));
       expect(slidable.groupTag, 'group1');
     });
 
-    testWidgets('通过 TSwipeCellThemeData 设置 dragStartBehavior', (tester) async {
+    testWidgets('dragStartBehavior 由实例设置', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '拖动行为'),
+          cell: const TCell(title: Text('拖动行为')),
           right: buildRightPanel(),
-        ),
-        swipeTheme: const TSwipeCellThemeData(
           dragStartBehavior: DragStartBehavior.down,
         ),
       ));
@@ -274,7 +273,7 @@ void main() {
       expect(slidable.dragStartBehavior, DragStartBehavior.down);
     });
 
-    testWidgets('通过 TSwipeCellThemeData 设置 closeWhenOpened', (tester) async {
+    testWidgets('closeWhenOpened 由实例设置', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         Column(
           children: [
@@ -282,23 +281,23 @@ void main() {
               width: 300,
               height: 60,
               child: TSwipeCell(
-                cell: const TCell(title: '项1'),
+                cell: const TCell(title: Text('项1')),
                 right: buildRightPanel(),
+                groupTag: 'group_close',
+                closeWhenOpened: true,
               ),
             ),
             SizedBox(
               width: 300,
               height: 60,
               child: TSwipeCell(
-                cell: const TCell(title: '项2'),
+                cell: const TCell(title: Text('项2')),
                 right: buildRightPanel(),
+                groupTag: 'group_close',
+                closeWhenOpened: true,
               ),
             ),
           ],
-        ),
-        swipeTheme: const TSwipeCellThemeData(
-          groupTag: 'group_close',
-          closeWhenOpened: true,
         ),
       ));
       expect(find.text('项1'), findsOneWidget);
@@ -382,7 +381,7 @@ void main() {
     testWidgets('自定义 builder 渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '自定义按钮'),
+          cell: const TCell(title: Text('自定义按钮')),
           right: TSwipeCellPanel(
             children: [
               TSwipeCellAction(
@@ -395,6 +394,52 @@ void main() {
       ));
       expect(find.text('自定义按钮'), findsOneWidget);
     });
+
+    testWidgets('visual params control action layout and color',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TSwipeCellInherited(
+          controller: SlidableController(tester),
+          duration: const Duration(milliseconds: 200),
+          cellClick: () {},
+          actionClick: (_) => false,
+          child: const SizedBox(
+            width: 120,
+            height: 48,
+            child: Row(
+              children: [
+                TSwipeCellAction(
+                  label: '删除',
+                  icon: Icons.delete,
+                  backgroundColor: Colors.red,
+                  iconColor: Colors.yellow,
+                  iconSize: 24,
+                  labelStyle: TextStyle(color: Colors.green, fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ));
+
+      final background = tester.widget<Container>(
+        find.ancestor(
+          of: find.text('删除'),
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is Container && widget.color == Colors.red,
+          ),
+        ),
+      );
+      final icon = tester.widget<Icon>(find.byIcon(Icons.delete));
+      final label = tester.widget<Text>(find.text('删除'));
+
+      expect(background.color, Colors.red);
+      expect(icon.size, 24);
+      expect(icon.color, Colors.yellow);
+      expect(label.style?.color, Colors.green);
+      expect(label.style?.fontSize, 15);
+    });
   });
 
   // ============================================================
@@ -404,7 +449,7 @@ void main() {
     testWidgets('TSwipeCell.close 对 null tag 不抛异常', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '无tag'),
+          cell: const TCell(title: Text('无tag')),
           right: buildRightPanel(),
         ),
       ));
@@ -416,7 +461,7 @@ void main() {
     testWidgets('TSwipeCell.of 获取控制器', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '控制器'),
+          cell: const TCell(title: Text('控制器')),
           right: buildRightPanel(),
         ),
       ));
@@ -424,13 +469,9 @@ void main() {
     });
 
     test('TSwipeCellThemeData merge 正确合并', () {
-      const base = TSwipeCellThemeData(
-        groupTag: 'base',
-        duration: Duration(milliseconds: 200),
-      );
+      const base = TSwipeCellThemeData(duration: Duration(milliseconds: 200));
       const other = TSwipeCellThemeData(duration: Duration(milliseconds: 500));
       final merged = base.merge(other);
-      expect(merged.groupTag, 'base');
       expect(merged.duration, const Duration(milliseconds: 500));
     });
 
@@ -448,7 +489,7 @@ void main() {
           width: 300,
           height: 200,
           child: TSwipeCell(
-            cell: const TCell(title: '垂直'),
+            cell: const TCell(title: Text('垂直')),
             direction: Axis.vertical,
             right: buildRightPanel(),
           ),
@@ -463,10 +504,8 @@ void main() {
     testWidgets('closeWhenOpened 打开面板触发自动关闭逻辑', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: '自动关闭'),
+          cell: const TCell(title: Text('自动关闭')),
           right: buildRightPanel(),
-        ),
-        swipeTheme: const TSwipeCellThemeData(
           groupTag: 'auto_close',
           closeWhenOpened: true,
         ),
@@ -484,7 +523,7 @@ void main() {
           width: 300,
           height: 60,
           child: TSwipeCell(
-            cell: const TCell(title: '操作'),
+            cell: const TCell(title: Text('操作')),
             right: TSwipeCellPanel(
               children: [
                 TSwipeCellAction(
@@ -511,7 +550,7 @@ void main() {
           width: 300,
           height: 60,
           child: TSwipeCell(
-            cell: const TCell(title: '确认项'),
+            cell: const TCell(title: Text('确认项')),
             right: TSwipeCellPanel(
               children: [
                 TSwipeCellAction(
@@ -544,10 +583,10 @@ void main() {
       // 覆盖 129（openStartActionPane）
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: 'opened1'),
+          cell: const TCell(title: Text('opened1')),
           left: buildLeftPanel(),
+          opened: const [true],
         ),
-        swipeTheme: const TSwipeCellThemeData(opened: [true]),
       ));
       await tester.pumpAndSettle();
       expect(find.byType(TSwipeCell), findsOneWidget);
@@ -557,10 +596,10 @@ void main() {
       // 覆盖 132（openEndActionPane）
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: 'opened2'),
+          cell: const TCell(title: Text('opened2')),
           right: buildRightPanel(),
+          opened: const [false, true],
         ),
-        swipeTheme: const TSwipeCellThemeData(opened: [false, true]),
       ));
       await tester.pumpAndSettle();
       expect(find.byType(TSwipeCell), findsOneWidget);
@@ -572,16 +611,17 @@ void main() {
         Column(
           children: [
             TSwipeCell(
-              cell: const TCell(title: 'gc1'),
+              cell: const TCell(title: Text('gc1')),
               right: buildRightPanel(),
+              groupTag: 'groupA',
             ),
             TSwipeCell(
-              cell: const TCell(title: 'gc2'),
+              cell: const TCell(title: Text('gc2')),
               right: buildRightPanel(),
+              groupTag: 'groupA',
             ),
           ],
         ),
-        swipeTheme: const TSwipeCellThemeData(groupTag: 'groupA'),
       ));
       // 滑动 gc1 打开
       await tester.drag(find.text('gc1'), const Offset(-100, 0));
@@ -596,11 +636,11 @@ void main() {
       // 覆盖 188-190（cellClick → closeWhenTapped → TSwipeCell.close）
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: 'taptest'),
+          cell: const TCell(title: Text('taptest')),
           right: buildRightPanel(),
+          closeWhenTapped: true,
+          groupTag: 'tapGroup',
         ),
-        swipeTheme: const TSwipeCellThemeData(
-            closeWhenTapped: true, groupTag: 'tapGroup'),
       ));
       // 先滑动打开
       await tester.drag(find.text('taptest'), const Offset(-100, 0));
@@ -617,17 +657,19 @@ void main() {
         Column(
           children: [
             TSwipeCell(
-              cell: const TCell(title: 'sc1'),
+              cell: const TCell(title: Text('sc1')),
               left: buildLeftPanel(),
+              closeWhenOpened: true,
+              groupTag: 'startGroup',
             ),
             TSwipeCell(
-              cell: const TCell(title: 'sc2'),
+              cell: const TCell(title: Text('sc2')),
               left: buildLeftPanel(),
+              closeWhenOpened: true,
+              groupTag: 'startGroup',
             ),
           ],
         ),
-        swipeTheme: const TSwipeCellThemeData(
-            closeWhenOpened: true, groupTag: 'startGroup'),
       ));
       // 向右滑 sc1 打开 left 面板（start 方向）
       await tester.drag(find.text('sc1'), const Offset(100, 0));
@@ -648,13 +690,13 @@ void main() {
             setState = setter;
             return show
                 ? TSwipeCell(
-                    cell: const TCell(title: 'dispose'),
+                    cell: const TCell(title: Text('dispose')),
                     right: buildRightPanel(),
+                    groupTag: 'disposeGroup',
                   )
                 : const SizedBox();
           },
         ),
-        swipeTheme: const TSwipeCellThemeData(groupTag: 'disposeGroup'),
       ));
       // 移除 TSwipeCell（触发 dispose + _pushController del=true）
       setState(() => show = false);
@@ -666,7 +708,7 @@ void main() {
       // 覆盖 86-90（_dismissalDuration/_resizeDuration）+ 109-122（DismissiblePane 构建）
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: 'dismiss'),
+          cell: const TCell(title: Text('dismiss')),
           right: TSwipeCellPanel(
             dragDismissible: true,
             dismissThreshold: 0.5,
@@ -690,7 +732,7 @@ void main() {
       // 覆盖 86-90 默认值分支（dismissalDuration/resizeDuration 为 null）
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: 'dismiss2'),
+          cell: const TCell(title: Text('dismiss2')),
           right: TSwipeCellPanel(
             dragDismissible: true,
             children: [
@@ -704,19 +746,17 @@ void main() {
       expect(find.byType(TSwipeCell), findsOneWidget);
     });
 
-    testWidgets('dragDismissible 触发 confirmDismiss + onDismissed', (tester) async {
+    testWidgets('dragDismissible 触发 confirmDismiss + onDismissed',
+        (tester) async {
       // 覆盖 114-116（confirmDismiss 闭包）+ 120-122（onDismissed 闭包）
-      var dismissed = false;
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: 'swipedis'),
+          cell: const TCell(title: Text('swipedis')),
           right: TSwipeCellPanel(
             dragDismissible: true,
             dismissThreshold: 0.3,
             confirmDismiss: (_) async => true,
-            onDismissed: (_) {
-              dismissed = true;
-            },
+            onDismissed: (_) {},
             children: [
               TSwipeCellAction(
                   label: '删除', icon: Icons.delete, onPressed: (_) {}),
@@ -732,18 +772,15 @@ void main() {
 
     testWidgets('无 confirm 的 action 点击触发 onPressed', (tester) async {
       // 覆盖 t_swipe_cell_action 75（icon != null 渲染）+ 129（onPressed?.call）
-      var pressed = false;
       await tester.pumpWidget(wrapWithTheme(
         TSwipeCell(
-          cell: const TCell(title: 'noconfirm'),
+          cell: const TCell(title: Text('noconfirm')),
           right: TSwipeCellPanel(
             children: [
               TSwipeCellAction(
                 label: '删除',
                 icon: Icons.delete,
-                onPressed: (_) {
-                  pressed = true;
-                },
+                onPressed: (_) {},
               ),
             ],
           ),
@@ -770,7 +807,7 @@ void main() {
           width: 300,
           height: 60,
           child: TSwipeCell(
-            cell: const TCell(title: 'autoclose'),
+            cell: const TCell(title: Text('autoclose')),
             right: TSwipeCellPanel(
               children: [
                 TSwipeCellAction(
@@ -797,7 +834,7 @@ void main() {
           width: 300,
           height: 60,
           child: TSwipeCell(
-            cell: const TCell(title: 'vertical'),
+            cell: const TCell(title: Text('vertical')),
             right: TSwipeCellPanel(
               children: [
                 TSwipeCellAction(
@@ -823,7 +860,7 @@ void main() {
           width: 300,
           height: 60,
           child: TSwipeCell(
-            cell: const TCell(title: 'confirmIdx'),
+            cell: const TCell(title: Text('confirmIdx')),
             right: TSwipeCellPanel(
               children: [
                 TSwipeCellAction(
@@ -854,7 +891,7 @@ void main() {
           width: 300,
           height: 60,
           child: TSwipeCell(
-            cell: const TCell(title: 'styleTest'),
+            cell: const TCell(title: Text('styleTest')),
             right: TSwipeCellPanel(
               children: [
                 TSwipeCellAction(

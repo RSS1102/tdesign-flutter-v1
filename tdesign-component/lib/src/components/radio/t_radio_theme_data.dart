@@ -6,9 +6,6 @@ import 'package:flutter/material.dart';
 ///
 /// 通过 Theme 子树注入，控制子树默认样式。
 class TRadioThemeData extends ThemeExtension<TRadioThemeData> {
-  /// 勾选样式
-  final TRadioVariant? radioStyle;
-
   /// 选择颜色
   final Color? selectColor;
 
@@ -27,46 +24,57 @@ class TRadioThemeData extends ThemeExtension<TRadioThemeData> {
   /// icon和文字的距离
   final double? spacing;
 
-  /// 选项框左侧间距
-  final double? checkBoxLeftSpace;
-
   /// 文字和非图标侧的距离
   final double? insetSpacing;
 
   const TRadioThemeData({
-    this.radioStyle,
+    /// 选中态颜色。
     this.selectColor,
+
+    /// 禁用态颜色。
     this.disableColor,
+
+    /// 主标题颜色。
     this.titleColor,
+
+    /// 副标题颜色。
     this.subTitleColor,
+
+    /// 卡片背景颜色。
     this.backgroundColor,
+
+    /// 指示器与文案间距。
     this.spacing,
-    this.checkBoxLeftSpace,
+
+    /// 文案与非指示器侧的内边距。
     this.insetSpacing,
   });
 
   @override
   TRadioThemeData copyWith({
-    TRadioVariant? radioStyle,
     Color? selectColor,
     Color? disableColor,
     Color? titleColor,
     Color? subTitleColor,
     Color? backgroundColor,
     double? spacing,
-    double? checkBoxLeftSpace,
     double? insetSpacing,
   }) {
+    final resolvedSelectColor = selectColor ?? this.selectColor;
+    final resolvedDisableColor = disableColor ?? this.disableColor;
+    final resolvedTitleColor = titleColor ?? this.titleColor;
+    final resolvedSubTitleColor = subTitleColor ?? this.subTitleColor;
+    final resolvedBackgroundColor = backgroundColor ?? this.backgroundColor;
+    final resolvedSpacing = spacing ?? this.spacing;
+    final resolvedInsetSpacing = insetSpacing ?? this.insetSpacing;
     return TRadioThemeData(
-      radioStyle: radioStyle ?? this.radioStyle,
-      selectColor: selectColor ?? this.selectColor,
-      disableColor: disableColor ?? this.disableColor,
-      titleColor: titleColor ?? this.titleColor,
-      subTitleColor: subTitleColor ?? this.subTitleColor,
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      spacing: spacing ?? this.spacing,
-      checkBoxLeftSpace: checkBoxLeftSpace ?? this.checkBoxLeftSpace,
-      insetSpacing: insetSpacing ?? this.insetSpacing,
+      selectColor: resolvedSelectColor,
+      disableColor: resolvedDisableColor,
+      titleColor: resolvedTitleColor,
+      subTitleColor: resolvedSubTitleColor,
+      backgroundColor: resolvedBackgroundColor,
+      spacing: resolvedSpacing,
+      insetSpacing: resolvedInsetSpacing,
     );
   }
 
@@ -76,20 +84,13 @@ class TRadioThemeData extends ThemeExtension<TRadioThemeData> {
       return this;
     }
     return TRadioThemeData(
-      radioStyle: t < 0.5 ? radioStyle : other.radioStyle,
       selectColor: Color.lerp(selectColor, other.selectColor, t),
       disableColor: Color.lerp(disableColor, other.disableColor, t),
       titleColor: Color.lerp(titleColor, other.titleColor, t),
       subTitleColor: Color.lerp(subTitleColor, other.subTitleColor, t),
-      backgroundColor:
-          Color.lerp(backgroundColor, other.backgroundColor, t),
+      backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
       spacing: lerpDouble(spacing, other.spacing, t),
-      checkBoxLeftSpace:
-          lerpDouble(checkBoxLeftSpace, other.checkBoxLeftSpace, t),
       insetSpacing: lerpDouble(insetSpacing, other.insetSpacing, t),
     );
   }
 }
-
-/// 单选框样式
-enum TRadioVariant { circle, square, check, hollowCircle }

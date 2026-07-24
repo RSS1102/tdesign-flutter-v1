@@ -7,7 +7,7 @@ import 't_fab_layout.dart';
 /// 纯图标 Fab 默认 shape = circle，有 text 时 shape = round。
 /// 用户可通过 [TButtonProps] 覆盖。
 class TFabDefaults {
-  TFabDefaults._();
+  TFabDefaults._(); // coverage:ignore-line
 
   /// 默认尺寸
   static const defaultSizeIndex = 0; // TButtonSize.large

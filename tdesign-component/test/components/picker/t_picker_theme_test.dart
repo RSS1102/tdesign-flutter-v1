@@ -17,6 +17,8 @@ void main() {
       expect(copied.itemCount, 7);
       // 未覆盖字段保持原值
       expect(copied.height, isNotNull);
+      expect(theme.copyWith().height, 200);
+      expect(theme.copyWith().itemCount, 5);
     });
 
     test('lerp 在 t=0 / 0.5 / 1 返回 TPickerThemeData', () {
@@ -28,8 +30,8 @@ void main() {
       expect(atHalf, isA<TPickerThemeData>());
       expect(at1, isA<TPickerThemeData>());
       // itemCount 在 t<0.5 取 this，t>=0.5 取 other
-        expect(atHalf.itemCount, 9);
-        expect(at1.itemCount, 9);
+      expect(atHalf.itemCount, 9);
+      expect(at1.itemCount, 9);
     });
 
     test('lerp other 非同类型时返回 this', () {

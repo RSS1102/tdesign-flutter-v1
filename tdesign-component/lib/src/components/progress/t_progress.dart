@@ -1,59 +1,59 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
-import './t_progress_circular.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
+import 't_progress_circular.dart';
+import 't_progress_theme_data.dart';
 
 /// 进度条形态
-enum TProgressVariant { linear, circular, micro, button }
+enum TProgressVariant {
+  /// 线性进度条。
+  linear,
+
+  /// 环形进度条。
+  circular,
+
+  /// 紧凑环形进度条。
+  micro,
+
+  /// 按钮外观的线性进度条，不提供点击行为。
+  button,
+}
 
 /// 标签位置
-enum TProgressLabelPosition { inside, left, right }
+enum TProgressLabelPosition {
+  /// 标签位于进度条内部。
+  inside,
 
-abstract class TLabelWidget extends Widget {
-  const TLabelWidget({super.key});
+  /// 标签位于进度条左侧。
+  left,
+
+  /// 标签位于进度条右侧。
+  right,
 }
 
-class TTextLabel extends Text implements TLabelWidget {
-  const TTextLabel(
-    String data, {
-    Key? key,
-    TextStyle? style,
-  }) : super(data, key: key, style: style);
-}
-
-class TIconLabel extends Icon implements TLabelWidget {
-  const TIconLabel(
-    IconData icon, {
-    Key? key,
-    double? size,
-    Color? color,
-  }) : super(icon, key: key, size: size, color: color);
-}
-
+/// 展示确定或不确定任务进度的非交互组件。
 class TProgress extends StatelessWidget {
   TProgress({
     Key? key,
     required this.variant,
     double? value,
     this.label,
-    this.onPressed,
   })  : value = _validateProgress(value),
         super(key: key);
 
   /// 进度条形态
   final TProgressVariant variant;
 
-  /// 进度值（0.0 到 1.0 之间的正数）
+  /// 进度值；确定模式限制在 0 到 1，null 表示不确定进度。
   final double? value;
 
-  /// 进度条标签
-  final TLabelWidget? label;
+  /// 进度条标签。
+  final Widget? label;
 
-  /// 点击事件
-  final VoidCallback? onPressed;
-
-  static double? _validateProgress(double? value) =>
-      value == null ? 0 : value.clamp(0.0, 1.0);
+  static double? _validateProgress(double? value) => value?.clamp(0.0, 1.0);
 
   /// 从 Theme 子树读取 L4 默认值
   TProgressThemeData? _theme(BuildContext context) =>
@@ -71,13 +71,13 @@ class TProgress extends StatelessWidget {
         theme?.linearBorderRadius ?? defaultValues.linearBorderRadius;
     final circleRadius = theme?.circleRadius ?? defaultValues.circleRadius;
     final showLabel = theme?.showLabel ?? true;
-    final customProgressLabel = theme?.customProgressLabel;
     final labelWidgetWidth = theme?.labelWidgetWidth;
     final labelWidgetAlignment = theme?.labelWidgetAlignment;
     final progressLabelPosition =
         theme?.progressLabelPosition ?? TProgressLabelPosition.inside;
-    final color = theme?.color;
-    final animationDuration = theme?.animationDuration ?? const Duration(milliseconds: 300);
+    final color = theme?.color ?? context.tTheme.brandNormalColor;
+    final animationDuration =
+        theme?.animationDuration ?? const Duration(milliseconds: 300);
 
     return _ProgressIndicator(
       value: value,
@@ -90,12 +90,9 @@ class TProgress extends StatelessWidget {
       backgroundColor: backgroundColor,
       type: variant,
       showLabel: showLabel,
-      customProgressLabel: customProgressLabel,
       labelWidgetWidth: labelWidgetWidth,
       labelWidgetAlignment: labelWidgetAlignment,
-      onPressed: onPressed,
       animationDuration: animationDuration,
-      context: context,
     );
   }
 
@@ -150,21 +147,18 @@ class _DefaultValues {
 
 class _ProgressIndicator extends StatefulWidget {
   final double? value;
-  final TLabelWidget? label;
+  final Widget? label;
   final TProgressLabelPosition progressLabelPosition;
   final double strokeWidth;
   final double circleRadius;
   final BorderRadiusGeometry linearBorderRadius;
-  final Color? color;
+  final Color color;
   final Color backgroundColor;
   final TProgressVariant type;
   final bool showLabel;
-  final Widget? customProgressLabel;
   final double? labelWidgetWidth;
   final Alignment? labelWidgetAlignment;
-  final VoidCallback? onPressed;
   final Duration animationDuration;
-  final BuildContext? context;
 
   const _ProgressIndicator({
     Key? key,
@@ -174,16 +168,13 @@ class _ProgressIndicator extends StatefulWidget {
     required this.strokeWidth,
     required this.linearBorderRadius,
     required this.circleRadius,
-    this.color,
+    required this.color,
     required this.backgroundColor,
     required this.type,
     this.showLabel = true,
-    this.customProgressLabel,
     this.labelWidgetWidth,
     this.labelWidgetAlignment,
-    this.onPressed,
     this.animationDuration = const Duration(milliseconds: 300),
-    this.context,
   }) : super(key: key);
 
   @override
@@ -200,8 +191,8 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-        vsync: this, duration: widget.animationDuration);
+    _animationController =
+        AnimationController(vsync: this, duration: widget.animationDuration);
     _updateAnimation();
     _updateEffectiveColor();
     _updateEffectiveLabel();
@@ -223,7 +214,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
   }
 
   void _updateEffectiveColor() {
-    _effectiveColor = widget.color ?? _getDefaultColor();
+    _effectiveColor = widget.color;
   }
 
   void _updateEffectiveLabel() {
@@ -233,7 +224,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
   void _updateAnimation({double? oldWidgetValue}) {
     _animation = Tween<double>(
             begin: oldWidgetValue ?? _animationController.value,
-            end: widget.value)
+            end: widget.value ?? 0)
         .animate(_animationController);
     _animationController.forward(from: 0);
   }
@@ -241,15 +232,12 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
   Widget _getDefaultLabel() {
     final showAutoText = widget.value != null;
 
-    Widget getAutoText() => showAutoText && widget.type != TProgressVariant.micro
-        ? Text('${(widget.value! * 100).round()}%')
-        : const Text('');
+    Widget getAutoText() =>
+        showAutoText && widget.type != TProgressVariant.micro
+            ? Text('${(widget.value! * 100).round()}%')
+            : const Text('');
 
     return getAutoText();
-  }
-
-  Color _getDefaultColor() {
-    return widget.context!.tTheme.brandNormalColor;
   }
 
   @override
@@ -260,6 +248,9 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.value == null) {
+      return _buildIndeterminate();
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -273,6 +264,31 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
           _buildButtonProgress()
       ],
     );
+  }
+
+  Widget _buildIndeterminate() {
+    switch (widget.type) {
+      case TProgressVariant.linear:
+      case TProgressVariant.button:
+        return LinearProgressIndicator(
+          minHeight: widget.strokeWidth,
+          color: _effectiveColor,
+          backgroundColor: widget.backgroundColor,
+          borderRadius: widget.linearBorderRadius is BorderRadius
+              ? widget.linearBorderRadius as BorderRadius
+              : null,
+        );
+      case TProgressVariant.circular:
+      case TProgressVariant.micro:
+        return SizedBox.square(
+          dimension: widget.circleRadius,
+          child: CircularProgressIndicator(
+            strokeWidth: widget.strokeWidth,
+            color: _effectiveColor,
+            backgroundColor: widget.backgroundColor,
+          ),
+        );
+    }
   }
 
   Widget _buildLinearProgress() {
@@ -295,8 +311,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
       builder: (context, child) {
         final progressWidth = _animation.value * maxWidth;
         return ClipRRect(
-            borderRadius:
-                BorderRadius.circular(context.tTheme.radiusRound),
+            borderRadius: BorderRadius.circular(context.tTheme.radiusRound),
             child: Stack(
               children: [
                 _buildBackgroundContainer(),
@@ -329,8 +344,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
                       : Alignment.centerLeft),
               constraints:
                   BoxConstraints(minWidth: widget.labelWidgetWidth ?? 0),
-              child: widget.customProgressLabel ??
-                  _buildLabelWidget(context.tTheme.textColorPrimary),
+              child: _buildLabelWidget(context.tTheme.textColorPrimary),
             ),
             SizedBox(width: context.tTheme.spacer8),
             Expanded(
@@ -494,7 +508,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
               ),
             ),
             if (widget.showLabel)
-              _buildLabelWidget(widget.context!.tTheme.textColorPrimary),
+              _buildLabelWidget(context.tTheme.textColorPrimary),
           ],
         );
       },
@@ -505,17 +519,14 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
     return AnimatedBuilder(
         animation: _animation,
         builder: (context, child) {
-          return GestureDetector(
-              onTap: widget.onPressed,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  _buildMicroOutline(),
-                  if (widget.showLabel)
-                        _buildLabelWidget(
-                            widget.context!.tTheme.textColorPrimary),
-                ],
-              ));
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              _buildMicroOutline(),
+              if (widget.showLabel)
+                _buildLabelWidget(context.tTheme.textColorPrimary),
+            ],
+          );
         });
   }
 
@@ -546,15 +557,13 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
               final progressWidth = maxWidth * _animation.value;
               return ClipRRect(
                 borderRadius: widget.linearBorderRadius,
-                child: GestureDetector(
-                    onTap: widget.onPressed,
-                    child: Stack(
-                      children: [
-                        _buildBackgroundContainer(),
-                        _buildButtonActiveContainer(progressWidth),
-                        if (widget.showLabel) _buildButtonLabel(maxWidth),
-                      ],
-                    )),
+                child: Stack(
+                  children: [
+                    _buildBackgroundContainer(),
+                    _buildButtonActiveContainer(progressWidth),
+                    if (widget.showLabel) _buildButtonLabel(maxWidth),
+                  ],
+                ),
               );
             });
       },
@@ -569,7 +578,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
         gradient: LinearGradient(
           colors: [
             _effectiveColor,
-            widget.context!.tTheme.brandDisabledColor.withValues(alpha: .5)
+            context.tTheme.brandDisabledColor.withValues(alpha: .5)
           ],
         ),
       ),
@@ -580,7 +589,7 @@ class _ProgressIndicatorState extends State<_ProgressIndicator>
     return Container(
       height: widget.strokeWidth,
       alignment: Alignment.center,
-      child: _buildLabelWidget(widget.context!.tTheme.fontWhColor1),
+      child: _buildLabelWidget(context.tTheme.fontWhColor1),
     );
   }
 }

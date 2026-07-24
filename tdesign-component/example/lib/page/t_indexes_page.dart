@@ -115,6 +115,7 @@ class TIndexesPage extends StatelessWidget {
           desc: '用于页面中信息快速检索，可以根据目录中的页码快速找到所需的内容。',
           exampleCodeGroup: 'indexes',
           navBarKey: navBarkey,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             ExampleModule(title: '组件类型', children: [
               ExampleItem(
@@ -148,20 +149,19 @@ class TIndexesPage extends StatelessWidget {
 
 @Demo(group: 'indexes')
 Widget _buildSimple(BuildContext context) {
-  final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: const Text('基础用法'),
+      child: const TText('基础用法'),
       size: TButtonSize.large,
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
       onPressed: () {
-      TPopup.show(
-        context,
-        options: TPopupOptions.right(
-            inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
+        TPopup.show(
+          context,
+          options: TPopupOptions.right(
+            inset: const TPopupRightInset(top: 0),
             child: TIndexes(
               indexList: indexList,
               builderContent: (context, index) {
@@ -169,32 +169,33 @@ Widget _buildSimple(BuildContext context) {
                         (element) => element['index'] == index)['children']
                     as List<String>;
                 return TCellGroup(
-                  cells: list.map((e) => TCell(title: e)).toList(),
+                  cells: list.map((e) => TCell(title: TText(e))).toList(),
                 );
               },
-            )),
-      );
-    },
-  ),
+            ),
+            useSafeArea: false,
+          ),
+        );
+      },
+    ),
   );
 }
 
 @Demo(group: 'indexes')
 Widget _buildOther(BuildContext context) {
-  final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: const Text('胶囊索引'),
+      child: const TText('胶囊索引'),
       size: TButtonSize.large,
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
       onPressed: () {
-      TPopup.show(
-        context,
-        options: TPopupOptions.right(
-            inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
+        TPopup.show(
+          context,
+          options: TPopupOptions.right(
+            inset: const TPopupRightInset(top: 0),
             child: TIndexes(
               indexList: indexList,
               capsuleTheme: true,
@@ -203,40 +204,48 @@ Widget _buildOther(BuildContext context) {
                         (element) => element['index'] == index)['children']
                     as List<String>;
                 return TCellGroup(
-                  cells: list.map((e) => TCell(title: e)).toList(),
+                  cells: list.map((e) => TCell(title: TText(e))).toList(),
                 );
               },
-            )),
-      );
-    },
-  ),
+            ),
+            useSafeArea: false,
+          ),
+        );
+      },
+    ),
   );
 }
 
 @Demo(group: 'indexes')
 Widget _buildCustomIndexes(BuildContext context) {
-  final renderBox = navBarkey.currentContext?.findRenderObject() as RenderBox?;
   final indexList = _list.map((item) => item['index'] as String).toList();
   return SizedBox(
     width: double.infinity,
     child: TButton(
-      child: const Text('自定义索引'),
+      child: const TText('自定义索引'),
       size: TButtonSize.large,
       colorScheme: TButtonColorScheme.primary,
       variant: TButtonVariant.outline,
       onPressed: () {
-      TPopup.show(
-        context,
-        options: TPopupOptions.right(
-            inset: TPopupRightInset(top: renderBox?.size.height ?? 0),
+        TPopup.show(
+          context,
+          options: TPopupOptions.right(
+            inset: const TPopupRightInset(top: 0),
             child: TIndexes(
               indexList: indexList,
               builderIndex: (context, index, isActive) {
-                return TText(
-                  '自定义 $index',
-                  textColor: isActive
-                      ? context.tTheme.brandNormalColor
-                      : context.tTheme.textColorPrimary,
+                return SizedBox(
+                  width: 64,
+                  height: 20,
+                  child: Center(
+                    child: TText(
+                      '自定义 $index',
+                      forceVerticalCenter: true,
+                      textColor: isActive
+                          ? context.tTheme.brandNormalColor
+                          : context.tTheme.textColorPrimary,
+                    ),
+                  ),
                 );
               },
               builderContent: (context, index) {
@@ -244,12 +253,14 @@ Widget _buildCustomIndexes(BuildContext context) {
                         (element) => element['index'] == index)['children']
                     as List<String>;
                 return TCellGroup(
-                  cells: list.map((e) => TCell(title: e)).toList(),
+                  cells: list.map((e) => TCell(title: TText(e))).toList(),
                 );
               },
-            )),
-      );
-    },
-  ),
+            ),
+            useSafeArea: false,
+          ),
+        );
+      },
+    ),
   );
 }

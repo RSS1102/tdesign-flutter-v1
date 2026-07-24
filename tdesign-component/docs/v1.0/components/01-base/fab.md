@@ -2,7 +2,7 @@
 
 > Sprint **S2** | 控制类 **A** · **Tier T2** · 源码：`lib/src/components/fab` · [guide](../guide/developer-guide.md)
 
-**读法**：新写 v1.0 → **§1**（配样式 + **§3**）；0.2.x 升级 → **§2**（跨端差异见 **§2.1**；实现见 **§4**）
+**读法**：API → **§1**；Theme → **§2**；实现与验收 → **§3**
 
 **图例** → [component-doc.md §4](../../guide/component-doc.md#4-决策图例固定-6-个不新增)（§1–§3「决策」列）
 
@@ -26,7 +26,7 @@
 | 动作层 | `icon` + `text` 或 `child` | `icon` 插槽 + `text` / `default` 插槽 |
 | 透传 | `buttonProps` | `TButtonProps?` → 内嵌 [`TButton`](./button.md) |
 
-**实现模块**（单路径 resolve，见 **§4.1**）：
+**实现模块**（单路径 resolve，见 **§3.1**）：
 
 | 文件 | 职责 |
 | --- | --- |
@@ -40,8 +40,6 @@
 ---
 
 ## 1. v1.0 定稿 API（当前规范）
-
-> 以下为 v1.0 **当前制定**的公开 API；相对 0.2.x 的变更见 §2。无图例项 = 与 0.2.x 同名同义保留。
 
 层级 → [api.md §1](../../foundation/api.md#1-构造器四层l1l4)
 
@@ -58,8 +56,8 @@
 | ✨ | `semanticLabel` | L2 | `String?` | — | 读屏标签；未传且纯图标时可回退 `tooltip` |
 | ✨ | `right` | L1 | `double?` | Theme `defaultRight`（16） | 距屏幕右侧；与 `bottom` 共同定位 |
 | ✨ | `bottom` | L1 | `double?` | Theme `defaultBottom`（32） | 距屏幕底部 |
-| ✨ | `draggable` | L1 | `bool` \| `TFabDragAxis` | `false` | `all` · `vertical` · `horizontal`；见 **§3.5** |
-| ✨ | `magnet` | L1 | `bool` \| `TFabMagnet` | `false` | 拖拽结束左右吸附：`left` · `right` |
+| ✨ | `draggable` | L1 | `TFabDragAxis?` | `null` | `all` · `vertical` · `horizontal`；见 **§2.5** |
+| ✨ | `magnet` | L1 | `TFabMagnet?` | `null` | 拖拽结束左右吸附：`left` · `right` |
 | ✨ | `xBounds` | L1 | `TFabBounds?` | Theme | 水平边界；见 **§1.4** |
 | ✨ | `yBounds` | L1 | `TFabBounds?` | Theme | 垂直边界 |
 | ✨ | `onDragStart` | L3 | `TFabDragCallback?` | — | 开始拖拽；见 **§1.3** |
@@ -71,7 +69,7 @@
 
 #### §1.2 `buttonProps` 与内嵌 `TButton`
 
-未传 `child` 时，Fab 经 **`resolveButton`（§4.1）** resolve 一颗 [`TButton`](./button.md)。
+未传 `child` 时，Fab 经 **`resolveButton`（§3.1）** resolve 一颗 [`TButton`](./button.md)。
 
 **`TButtonProps`**（Fab 侧类型）：可选 `size` · `variant` · `colorScheme` · `shape` · `style`（与 [`TButton` §1](./button.md#1-v10-定稿-api当前规范) 同名字段对齐）；**不含** `onPressed`、`child`、`icon`。
 
@@ -84,7 +82,7 @@
 | `child` 有值 | 不内嵌 `TButton`；忽略 `buttonProps`；见 **§1.2.1** |
 | `text` + `icon` | 内容糖；不由 `buttonProps` 承载 |
 
-**样式入口**：`variant` / `colorScheme` / `size` / `shape` / `style` → **`buttonProps` 或 [`TButtonThemeData`](./button.md#3-theme)**；阴影/elevation **仅**跟 `TButton`，`TFabThemeData` 不设 `elevation`。
+**样式入口**：`variant` / `colorScheme` / `size` / `shape` / `style` → **`buttonProps` 或 [`TButtonThemeData`](./button.md#2-theme)**；阴影/elevation **仅**跟 `TButton`，`TFabThemeData` 不设 `elevation`。
 
 #### §1.2.1 `child` 模式（点击与禁用）
 
@@ -130,8 +128,8 @@ class TFabDragDetails {
 | --- | --- |
 | 标准页内悬浮（推荐） | `Stack(fit: StackFit.expand)` 顶层放 `TFab(...)`；`Positioned` + `MediaQuery.padding` 安全区 |
 | 页面含 `Scaffold` | `TFab` 在 **`body` 内 `Stack` 顶层**；**不要**用 `Scaffold.floatingActionButton` |
-| 固定悬浮、不需拖拽 | `draggable: false`（默认）；仍用 `Stack` + `right`/`bottom` |
-| Demo 横排 | `Row`/`Wrap` + `draggable: false`；仅文档示例 |
+| 固定悬浮、不需拖拽 | `不传 draggable`（默认）；仍用 `Stack` + `right`/`bottom` |
+| Demo 横排 | `Row`/`Wrap` + `不传 draggable`；仅文档示例 |
 
 与 [TBackTop](../02-navigation/backtop.md) 区分：BackTop 绑定滚动回顶；Fab 为通用操作 + 可拖拽。
 
@@ -143,69 +141,29 @@ class TFabDragDetails {
 | ✨ | `TFabMagnet` | left · right | `magnet` |
 | ✨ | `TFabBounds` | `start` · `end` | `xBounds` / `yBounds` |
 | ✨ | `TFabLayout` | 见 §1.4 | 实现侧；**不** export |
-| ✨ | `TFabThemeData` | ThemeExtension | §3 |
+| ✨ | `TFabThemeData` | ThemeExtension | §2 |
 | ✨ | `TButtonProps` | 见 §1.2 | `buttonProps` |
 | ✨ | `TFabDragDetails` | `position` · `start` · `end` | 拖拽回调 |
 | | `TFabDragCallback` | `void Function(TFabDragDetails)` | `onDragStart` / `onDragEnd` |
 
 ### export
 
-| 决策 | 符号 | 说明 |
-| --- | --- | --- |
-| 🚫 | `TFabTheme`（enum） | → `buttonProps.colorScheme` / `TButtonThemeData` |
-| 🚫 | `TFabShape` / `TFabSize` | → `buttonProps` + `text` 推导 |
-| 🚫 | `TFabLayout` | 内部模型 |
-
-[附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) · 替换细节 §2
-
----
-
-## 2. 0.2.x → v1.0
-
-**未改**：`text`、`icon`（升为 `Widget?`）
-
-### ✏️ 改名
-
-| 0.2.x | v1.0 | 怎么改 |
-| --- | --- | --- |
-| `onClick` | `onPressed` | 换名 |
-| `theme` / `TFabTheme` | `buttonProps.colorScheme` | 迁入 `TButton` |
-| `shape` / `TFabShape` | `buttonProps` + `text` | circle/round 推导 |
-| `size` / `TFabSize` | `buttonProps.size` | 迁入 `TButton` |
-
-### 🗑️ 移除
-
-| 0.2.x | v1.0 | 怎么改 |
-| --- | --- | --- |
-| 自绘 `InkWell` + `Container` | 内嵌 `TButton` | §4.1 `resolveButton` |
-| 构造器直配色/阴影 | `TButtonThemeData` + `TFabThemeData` | 阴影仅 `TButton` |
-
-### ✨ 新增（对齐 mobile-vue + Flutter）
-
-| 项 | v1.0 |
+| 符号 | 说明 |
 | --- | --- |
-| `buttonProps` · 定位/拖拽系 | 见 §1 |
-| `tooltip` / `semanticLabel` | §1 构造器 |
-| `TFabBounds` / `TFabDragDetails` | §1.3 · §1.4 |
-
-#### §2.1 跨端映射速查
-
-| [mobile-vue Fab](https://tdesign.tencent.com/mobile-vue/components/fab?tab=api) | v1.0 Flutter | 备注 |
-| --- | --- | --- |
-| `text` | `text` | 保留 |
-| `icon` | `icon` | `Widget?` |
-| `buttonProps` | `TButtonProps?` | → 内嵌 `TButton` |
-| `style` | `right` + `bottom` | 具名 `double` |
-| `draggable` / `magnet` / bounds | 同名 / `TFabBounds` | |
-| `onClick` | `onPressed` | A 类 |
-| — | `tooltip` / `semanticLabel` | Flutter a11y |
-| `default` 插槽 | `child` | §1.2.1 |
+| `TFab` | 悬浮动作按钮 Widget |
+| `TButtonProps` | 内嵌 `TButton` 透传配置 |
+| `TFabDragAxis` | 拖拽轴枚举 |
+| `TFabMagnet` | 吸附方向枚举 |
+| `TFabBounds` | 拖拽边界模型 |
+| `TFabDragDetails` | 拖拽回调信息 |
+| `TFabDragCallback` | 拖拽回调类型 |
+| `TFabThemeData` | ThemeExtension |
 
 ---
 
-## 3. Theme
+## 2. Theme
 
-`TFabThemeData` = **定位层**默认；按钮样式 **仅** [`TButtonThemeData`](./button.md#3-theme) · [theme.md](../../foundation/theme.md)
+`TFabThemeData` = **定位层**默认；按钮样式 **仅** [`TButtonThemeData`](./button.md#2-theme) · [theme.md](../../foundation/theme.md)
 
 | 场景 | 配置位置 |
 | --- | --- |
@@ -214,28 +172,28 @@ class TFabDragDetails {
 
 **不**映射 `floatingActionButtonTheme`（内嵌 `TButton`，非 `FloatingActionButton`）。
 
-| 决策 | 字段 | 管什么 | 0.2.x |
-| --- | --- | --- | --- |
-| ✨ | `defaultRight` / `defaultBottom` | 默认偏移（16 / 32） | — |
-| ✨ | `defaultXBounds` / `defaultYBounds` | 默认 `TFabBounds` | — |
-| ✨ | `magnetAnimationDuration` | 吸附动画 | — |
-| ✨ | `dragTapSlop` | 点击 vs 拖拽阈值（逻辑像素） | — |
+| 决策 | 字段 | 管什么 |
+| --- | --- | --- |
+| ✨ | `defaultRight` / `defaultBottom` | 默认偏移（16 / 32） |
+| ✨ | `defaultXBounds` / `defaultYBounds` | 默认 `TFabBounds` |
+| ✨ | `magnetAnimationDuration` | 吸附动画 |
+| ✨ | `dragTapSlop` | 点击 vs 拖拽阈值（逻辑像素） |
 
-### 3.5 拖拽与吸附
+### 2.5 拖拽与吸附
 
-1. `draggable: false`：固定 `right`/`bottom`。
-2. `draggable: true` / `all`：全向；`vertical` / `horizontal` 单轴。
+1. `不传 draggable`：固定 `right`/`bottom`。
+2. `draggable: TFabDragAxis.all` / `all`：全向；`vertical` / `horizontal` 单轴。
 3. `xBounds` / `yBounds`：`TFabBounds` 限制范围。
-4. `magnet`：拖拽结束吸附；`true` 为左右均可。
+4. `magnet`：拖拽结束吸附；仅支持 `TFabMagnet.left/right`，不传则不吸附。
 5. 位移 ≤ `dragTapSlop` → `onPressed`；否则 `onDragStart` → `onDragEnd`。
 
 **resolve**：`resolveLayout`（安全区 + 偏移 + 拖拽）→ `resolveButton`（`buttonProps` > `TButtonThemeData` > Token）
 
 ---
 
-## 4. 实现约定
+## 3. 实现约定
 
-### 4.1 单路径 resolve
+### 3.1 单路径 resolve
 
 ```dart
 // t_fab_resolve.dart — 唯一 merge 入口；禁止在 build 内联 merge
@@ -245,7 +203,7 @@ Widget resolveButton(BuildContext context, TFab widget, TFabThemeData fabTheme);
 
 `resolveButton` 输出 **一颗** `TButton` 或 `child` 包裹层（§1.2.1）；**不**复制 `TButton` 的 variant/shape Theme 展开逻辑。
 
-### 4.2 与 BackTop 共用定位（后续）
+### 3.2 与 BackTop 共用定位（后续）
 
 Fab 与 [TBackTop](../02-navigation/backtop.md) 均涉及右下角偏移 + 安全区。后续可抽到 **内部 util**（不 export）：
 
@@ -255,7 +213,7 @@ Fab 与 [TBackTop](../02-navigation/backtop.md) 均涉及右下角偏移 + 安�
 
 v1.0 Fab 可先本地实现；抽 util 时 **不改变** §1 公开 API。
 
-### 4.3 测试与 Example 契约
+### 3.3 测试与 Example 契约
 
 | 必测 | 断言 |
 | --- | --- |

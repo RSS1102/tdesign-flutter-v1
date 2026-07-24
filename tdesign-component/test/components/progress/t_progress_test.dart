@@ -5,7 +5,7 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// TProgress V1.0 Widget 测试
 ///
 /// 覆盖 variant 四档（linear/circular/micro/button）、value 边界、
-/// label 位置、onPressed 回调、Theme 各字段、copyWith/lerp、边界情况。
+/// label 位置、Theme 各字段、copyWith/lerp、边界情况。
 void main() {
   /// 用 TTheme 包裹以提供基础 Token
   Widget wrapWithTheme(Widget child, {TProgressThemeData? progressTheme}) {
@@ -31,17 +31,47 @@ void main() {
       expect(find.byType(TProgress), findsOneWidget);
     });
 
-    testWidgets('value 为 null 时默认 0', (tester) async {
+    testWidgets('value 为 null 时保持 indeterminate 语义', (tester) async {
       final progress = TProgress(variant: TProgressVariant.linear);
-      expect(progress.value, 0);
+      expect(progress.value, isNull);
+      await tester.pumpWidget(wrapWithTheme(progress));
+      expect(find.byType(LinearProgressIndicator), findsOneWidget);
     });
 
     testWidgets('value 被 clamp 到 0-1 范围', (tester) async {
       final progress = TProgress(variant: TProgressVariant.linear, value: 1.5);
       expect(progress.value, 1.0);
 
-      final progress2 = TProgress(variant: TProgressVariant.linear, value: -0.5);
+      final progress2 =
+          TProgress(variant: TProgressVariant.linear, value: -0.5);
       expect(progress2.value, 0.0);
+    });
+
+    testWidgets('circular null value renders indeterminate indicator',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TProgress(variant: TProgressVariant.circular),
+      ));
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
+
+    testWidgets('value, color and label updates refresh resolved state',
+        (tester) async {
+      Widget build(double value, Color color, Widget label) => wrapWithTheme(
+            TProgress(
+              variant: TProgressVariant.circular,
+              value: value,
+              label: label,
+            ),
+            progressTheme: TProgressThemeData(color: color),
+          );
+
+      await tester.pumpWidget(build(0.2, Colors.red, const Text('old')));
+      await tester.pumpWidget(build(0.8, Colors.blue, const Text('new')));
+      await tester.pump();
+
+      expect(find.text('new'), findsOneWidget);
+      expect(find.text('old'), findsNothing);
     });
   });
 
@@ -169,14 +199,14 @@ void main() {
       expect(find.text('50%'), findsNothing);
     });
 
-    testWidgets('自定义 TTextLabel 标签', (tester) async {
+    testWidgets('自定义 Text 标签', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         SizedBox(
           width: 300,
           child: TProgress(
             variant: TProgressVariant.linear,
             value: 0.5,
-            label: const TTextLabel('自定义'),
+            label: const Text('自定义'),
           ),
         ),
       ));
@@ -184,63 +214,16 @@ void main() {
       expect(find.text('自定义'), findsWidgets);
     });
 
-    testWidgets('TIconLabel 标签渲染', (tester) async {
+    testWidgets('Icon 标签渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TProgress(
           variant: TProgressVariant.circular,
           value: 0.5,
-          label: const TIconLabel(Icons.star),
+          label: const Icon(Icons.star),
         ),
       ));
       await tester.pump();
       expect(find.byIcon(Icons.star), findsWidgets);
-    });
-  });
-
-  group('TProgress onPressed 回调', () {
-    testWidgets('micro variant 点击触发 onPressed', (tester) async {
-      var tapped = false;
-      await tester.pumpWidget(wrapWithTheme(
-        TProgress(
-          variant: TProgressVariant.micro,
-          value: 0.5,
-          onPressed: () => tapped = true,
-        ),
-      ));
-      await tester.pump();
-      await tester.tap(find.byType(TProgress));
-      await tester.pump();
-      expect(tapped, isTrue);
-    });
-
-    testWidgets('button variant 点击触发 onPressed', (tester) async {
-      var tapped = false;
-      await tester.pumpWidget(wrapWithTheme(
-        SizedBox(
-          width: 200,
-          child: TProgress(
-            variant: TProgressVariant.button,
-            value: 0.5,
-            onPressed: () => tapped = true,
-          ),
-        ),
-      ));
-      await tester.pump();
-      await tester.tap(find.byType(TProgress));
-      await tester.pump();
-      expect(tapped, isTrue);
-    });
-
-    testWidgets('onPressed 为 null 时不崩溃', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        TProgress(
-          variant: TProgressVariant.micro,
-          value: 0.5,
-          onPressed: null,
-        ),
-      ));
-      await tester.pump();
-      expect(find.byType(TProgress), findsOneWidget);
     });
   });
 
@@ -290,14 +273,17 @@ void main() {
       expect(find.byType(TProgress), findsOneWidget);
     });
 
-    testWidgets('Theme.customProgressLabel 渲染自定义标签', (tester) async {
+    testWidgets('实例 label 与 Theme 位置配合渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         SizedBox(
           width: 300,
-          child: TProgress(variant: TProgressVariant.linear, value: 0.5),
+          child: TProgress(
+            variant: TProgressVariant.linear,
+            value: 0.5,
+            label: const Text('加载中'),
+          ),
         ),
         progressTheme: const TProgressThemeData(
-          customProgressLabel: Text('加载中'),
           progressLabelPosition: TProgressLabelPosition.left,
         ),
       ));
@@ -343,20 +329,6 @@ void main() {
       expect(copied.backgroundColor, Colors.blue);
     });
 
-    test('lerp 前半段取 a 的 variant', () {
-      const a = TProgressThemeData(variant: TProgressVariant.linear);
-      const b = TProgressThemeData(variant: TProgressVariant.circular);
-      final result = a.lerp(b, 0.3);
-      expect(result.variant, TProgressVariant.linear);
-    });
-
-    test('lerp 后半段取 b 的 variant', () {
-      const a = TProgressThemeData(variant: TProgressVariant.linear);
-      const b = TProgressThemeData(variant: TProgressVariant.circular);
-      final result = a.lerp(b, 0.7);
-      expect(result.variant, TProgressVariant.circular);
-    });
-
     test('lerp 非 TProgressThemeData 返回自身', () {
       const theme = TProgressThemeData(strokeWidth: 5);
       final result = theme.lerp(null, 0.5);
@@ -371,8 +343,10 @@ void main() {
     });
 
     test('lerp animationDuration 插值', () {
-      const a = TProgressThemeData(animationDuration: Duration(milliseconds: 100));
-      const b = TProgressThemeData(animationDuration: Duration(milliseconds: 300));
+      const a =
+          TProgressThemeData(animationDuration: Duration(milliseconds: 100));
+      const b =
+          TProgressThemeData(animationDuration: Duration(milliseconds: 300));
       final result = a.lerp(b, 0.5);
       expect(result.animationDuration?.inMilliseconds, 200);
     });
@@ -386,13 +360,15 @@ void main() {
 
     test('lerp a animationDuration 为 null 返回 b 值', () {
       const a = TProgressThemeData();
-      const b = TProgressThemeData(animationDuration: Duration(milliseconds: 200));
+      const b =
+          TProgressThemeData(animationDuration: Duration(milliseconds: 200));
       final result = a.lerp(b, 0.5);
       expect(result.animationDuration?.inMilliseconds, 200);
     });
 
     test('lerp b animationDuration 为 null 返回 a 值', () {
-      const a = TProgressThemeData(animationDuration: Duration(milliseconds: 100));
+      const a =
+          TProgressThemeData(animationDuration: Duration(milliseconds: 100));
       const b = TProgressThemeData();
       final result = a.lerp(b, 0.5);
       expect(result.animationDuration?.inMilliseconds, 100);

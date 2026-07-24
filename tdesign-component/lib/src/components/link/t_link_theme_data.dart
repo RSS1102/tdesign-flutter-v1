@@ -2,20 +2,20 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-import 't_link.dart';
+import 't_link_types.dart';
 
 /// TLink 组件级 ThemeExtension
 ///
 /// 通过 Theme 子树注入，控制子树的默认形态。
 /// 构造器参数优先于 Theme。
 class TLinkThemeData extends ThemeExtension<TLinkThemeData> {
-  /// 未传 [TLink.variant] 时的默认链接形态
+  /// 未传链接 variant 时的默认链接形态
   final TLinkVariant? defaultVariant;
 
-  /// 未传 [TLink.size] 时的默认尺寸
+  /// 未传链接 size 时的默认尺寸
   final TLinkSize? defaultSize;
 
-  /// 未传 [TLink.colorScheme] 时的默认语义色
+  /// 未传链接 colorScheme 时的默认语义色
   final TLinkColorScheme? defaultColorScheme;
 
   /// 链接文本颜色（覆盖 colorScheme 计算色）
@@ -81,8 +81,7 @@ class TLinkThemeData extends ThemeExtension<TLinkThemeData> {
       iconSize: lerpDouble(iconSize, other.iconSize, t),
       fontSize: lerpDouble(fontSize, other.fontSize, t),
       leftGapWithIcon: lerpDouble(leftGapWithIcon, other.leftGapWithIcon, t),
-      rightGapWithIcon:
-          lerpDouble(rightGapWithIcon, other.rightGapWithIcon, t),
+      rightGapWithIcon: lerpDouble(rightGapWithIcon, other.rightGapWithIcon, t),
     );
   }
 }

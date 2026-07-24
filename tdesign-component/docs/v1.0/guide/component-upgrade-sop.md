@@ -143,7 +143,7 @@ ls tdesign-component/lib/src/components/{组件}/
 | `theme`（Button） | `colorScheme: T{Xxx}ColorScheme` | 语义色 |
 | `style`（枚举色） | `colorScheme` | |
 | `enable` / `disabled` | 按控制类 → §3.2 | |
-| `*Style`（如 TButtonStyle） | `T{Xxx}ThemeData` | 不 export `*Style` |
+| `*Style` 普通样式类 | `T{Xxx}ThemeData` | 不 export `*Style` |
 | `TTheme.of` | `context.tTheme`（全局 Token）/ `Theme.of(context).extension<T{Xxx}ThemeData>()`（组件 Theme） | TTheme widget 已删除 |
 | `text: '...'` / `label: '...'` | `child: Text('...')` | String → Widget? |
 | 构造器 L4（色/间距/圆角） | `T{Xxx}ThemeData` 或 P0 `style`/`decoration` 逃逸舱 | |
@@ -388,7 +388,7 @@ export 'src/components/{xxx}/t_{xxx}_theme_data.dart' show T{Xxx}ThemeData;
 // ❌ 不 export 这些
 // - *_style.dart（旧 Style 类）
 // - 内部 Widget（如 TDividerPainter、TFabDraggable）
-// - 旧普通类 Theme（如 TButtonStyle）
+// - 旧普通类 Theme
 ```
 
 新增 ThemeExtension 用 `show` 限定，避免把内部辅助类一起导出。
@@ -425,7 +425,7 @@ export 'src/components/{xxx}/t_{xxx}_theme_data.dart' show T{Xxx}ThemeData;
 （文字链 + 颜色映射表：colorScheme | 正常态 Token | 禁用态 Token）
 
 ## 5. （可选）InheritedWidget / 特殊配置
-（如 TLinkConfiguration、TFab 拖拽系统）
+（如组件内部共享上下文、TFab 拖拽系统）
 
 ## 6. Export 变更
 （一张表：符号 | v1.0 是否 export | 说明）
@@ -593,27 +593,27 @@ Theme(
 
 ### 9.1 Base 类（已完成）
 
-| 组件 | Tier | 控制类 | 样板价值 | 源码 | 升级指南 |
+| 组件 | Tier | 控制类 | 样板价值 | 源码 | v1 文档 |
 |---|---|---|---|---|---|
-| TButton | T1 包装 ElevatedButton | A | **S1 参考实现**，三件套最完整 | [button/](../../../lib/src/components/button/) | [link](../components/01-base/button-upgrade-guide.md) |
-| TLink | T1 薄包装 InkWell+Text | A | 枚举改名 + 合并的典型 | [link/](../../../lib/src/components/link/) | [link](../components/01-base/link-upgrade-guide.md) |
-| TDivider | T3 自绘 | — | 自绘组件 + Painter 抽离 | [divider/](../../../lib/src/components/divider/) | [link](../components/01-base/divider-upgrade-guide.md) |
-| TFab | T2 组合（内嵌 TButton） | A | T2 组合 + 拖拽系统 + Theme 注入 shape | [fab/](../../../lib/src/components/fab/) | [link](../components/01-base/fab-upgrade-guide.md) |
-| TText | T2 薄包装（Text 超集） | — | InheritedWidget + 缓存 + Resolve | [text/](../../../lib/src/components/text/) | [link](../components/01-base/text-upgrade-guide.md) |
-| TIcon | T2 薄包装 | — | 资源剥离 + 包依赖 + fromName | [icon/](../../../lib/src/components/icon/) | [link](../components/01-base/icon-upgrade-guide.md) |
+| TButton | T1 包装 ElevatedButton | A | **S1 参考实现**，三件套最完整 | [button/](../../../lib/src/components/button/) | [link](../components/01-base/button.md) |
+| TLink | T1 薄包装 InkWell+Text | A | 枚举改名 + 合并的典型 | [link/](../../../lib/src/components/link/) | [link](../components/01-base/link.md) |
+| TDivider | T3 自绘 | — | 自绘组件 + Painter 抽离 | [divider/](../../../lib/src/components/divider/) | [link](../components/01-base/divider.md) |
+| TFab | T2 组合（内嵌 TButton） | A | T2 组合 + 拖拽系统 + Theme 注入 shape | [fab/](../../../lib/src/components/fab/) | [link](../components/01-base/fab.md) |
+| TText | T2 薄包装（Text 超集） | — | InheritedWidget + 缓存 + Resolve | [text/](../../../lib/src/components/text/) | [link](../components/01-base/text.md) |
+| TIcon | T2 薄包装 | — | 资源剥离 + 包依赖 + fromName | [icon/](../../../lib/src/components/icon/) | [link](../components/01-base/icon.md) |
 
 ### 9.2 Navigation 类（已完成）
 
-| 组件 | 控制类 | 样板价值 | 升级指南 |
+| 组件 | 控制类 | 样板价值 | v1 定稿文档 |
 |---|---|---|---|
-| TBackTop | A | 枚举改名（shape/colorScheme）+ visibilityOffset 新增 | [link](../components/02-navigation/backtop-upgrade-guide.md) |
-| TNavBar | A | 参数对齐 AppBar（leading/actions）+ 废弃 screenAdaptation | [link](../components/02-navigation/navbar-upgrade-guide.md) |
-| TTab/TTabBar/TTabBarView | — | 枚举合并 + enable→enabled + physics 替换 bool | [link](../components/02-navigation/tab-upgrade-guide.md) |
-| TDrawer | E | contentWidget→child + show()（删除 visible） | [link](../components/02-navigation/drawer-upgrade-guide.md) |
-| TSideBar | B | defaultValue 删除 + value 新增 | [link](../components/02-navigation/sidebar-upgrade-guide.md) |
-| TBottomTabBar | B | currentIndex→value | [link](../components/02-navigation/bottom-tab-bar-upgrade-guide.md) |
-| TSteps | — | activeIndex→value（展示型） | [link](../components/02-navigation/steps-upgrade-guide.md) |
-| TIndexes | — | onChange→onChanged（通知型） | [link](../components/02-navigation/indexes-upgrade-guide.md) |
+| TBackTop | A | 回到顶部按钮 + 可见性阈值 | [link](../components/02-navigation/backtop.md) |
+| TNavBar | A | 对齐 AppBar 的 leading/actions 模型 | [link](../components/02-navigation/navbar.md) |
+| TTabBar | B | 底部栏 value/onChanged 受控模型 | [link](../components/02-navigation/tab-bar.md) |
+| TTab/TTabsBar/TTabsBarView | — | TabController 持态 + Tabs 组合结构 | [link](../components/02-navigation/tabs.md) |
+| TDrawer | E | 浮层 show 入口 + child 内容槽 | [link](../components/02-navigation/drawer.md) |
+| TSideBar | B | 侧边导航 value/onChanged 受控模型 | [link](../components/02-navigation/sidebar.md) |
+| TSteps | — | 展示型步骤条 value 视觉状态 | [link](../components/02-navigation/steps.md) |
+| TIndexes | — | 索引通知与锚点展示 | [link](../components/02-navigation/indexes.md) |
 
 ### 9.3 选样板速查
 
@@ -627,10 +627,10 @@ Theme(
 | 资源/字体剥离 | TIcon |
 | A 类 + 枚举改名 | TBackTop |
 | 参数对齐 Material 同名控件 | TNavBar |
-| B 类受控 + value/onChanged | TBottomTabBar / TSideBar |
+| B 类受控 + value/onChanged | TTabBar / TSideBar |
 | — 类通知型 / 展示型 value | TIndexes / TSteps |
-| E 类浮层 + show/visible | TDrawer |
-| 枚举值合并（多→少） | TTab（TTabBarOutlineType + TTabOutlineType → TTabBarVariant） |
+| E 类浮层 + show 入口 | TDrawer |
+| TabController 持态 + 内容联动 | TTabsBar / TTabsBarView |
 
 ---
 

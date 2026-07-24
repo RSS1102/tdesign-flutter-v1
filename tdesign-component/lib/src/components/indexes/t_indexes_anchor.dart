@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
+import '../text/t_text.dart';
 
 /// 索引锚点
 class TIndexesAnchor extends StatelessWidget {

@@ -1,102 +1,101 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
-/// 头像尺寸
-enum TAvatarSize { large, medium, small }
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
+import 't_avatar_theme_data.dart';
+import 't_avatar_types.dart';
 
-/// 头像形态
-enum TAvatarVariant { icon, normal, customText, display, operation }
-
-/// 头像形状（迁入 TAvatarThemeData，但保留枚举）
-enum TAvatarShape { circle, square }
-
-/// 用于头像显示
+/// 头像。
+///
+/// [image] 负责图片内容，[child] 负责文字、图标等自定义内容。两者同时提供时，
+/// [child] 会作为图片加载失败前的背景内容。
 class TAvatar extends StatelessWidget {
   const TAvatar({
-    Key? key,
-    this.size = TAvatarSize.medium,
-    this.variant = TAvatarVariant.normal,
-    this.text,
-    this.icon,
-    this.avatarUrl,
-    this.avatarDisplayList,
-    this.displayText,
-    this.onPressed,
-    this.defaultUrl = '',
-    this.avatarDisplayWidget,
-    this.avatarDisplayListAsset,
-    this.fit,
-  }) : super(key: key);
+    this.image,
+    this.child,
+    this.size,
+    this.variant,
+    this.fit = BoxFit.cover,
+    this.onTap,
+    super.key,
+  });
 
-  /// 头像地址
-  final String? avatarUrl;
+  /// 头像图片。
+  final ImageProvider<Object>? image;
 
-  /// 头像尺寸
-  final TAvatarSize size;
+  /// 自定义头像内容。
+  final Widget? child;
 
-  /// 头像形态
-  final TAvatarVariant variant;
+  /// 头像尺寸；未设置时依次读取 Theme 和中尺寸默认值。
+  final TAvatarSize? size;
 
-  /// 自定义文字
-  final String? text;
+  /// 头像形状；未设置时依次读取 Theme 和圆形默认值。
+  final TAvatarVariant? variant;
 
-  /// 自定义图标
-  final IconData? icon;
+  /// 图片填充方式。
+  final BoxFit fit;
 
-  /// 默认图片（本地）
-  final String defaultUrl;
+  /// 点击回调；为空时头像不创建点击行为。
+  final GestureTapCallback? onTap;
 
-  /// 带操作展示的头像列表
-  final List<String>? avatarDisplayList;
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<TAvatarThemeData>();
+    final resolvedSize = size ?? theme?.size ?? TAvatarSize.medium;
+    final resolvedVariant = variant ?? theme?.variant ?? TAvatarVariant.circle;
+    final dimension = theme?.dimension ?? _dimensionFor(resolvedSize);
+    final radius = resolvedVariant == TAvatarVariant.circle
+        ? dimension / 2
+        : theme?.squareBorderRadius ?? context.tTheme.radiusDefault;
+    final content = child ??
+        Icon(
+          TIcons.user,
+          size: theme?.iconSize ?? _iconSizeFor(resolvedSize),
+          color: theme?.foregroundColor ?? context.tTheme.brandNormalColor,
+        );
 
-  /// 带操作展示的头像列表（本地资源）
-  final List<String>? avatarDisplayListAsset;
+    final avatar = ClipRRect(
+      borderRadius: BorderRadius.circular(radius),
+      child: ColoredBox(
+        color: theme?.backgroundColor ?? context.tTheme.brandFocusColor,
+        child: SizedBox.square(
+          dimension: dimension,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Center(child: content),
+              if (image != null)
+                Image(
+                  image: image!,
+                  fit: fit,
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
 
-  /// 带操作头像自定义操作Widget
-  final Widget? avatarDisplayWidget;
-
-  /// 纯展示类型末尾文字
-  final String? displayText;
-
-  /// 操作点击事件
-  final VoidCallback? onPressed;
-
-  /// 自定义图片对齐方式
-  final BoxFit? fit;
-
-  /// 从 Theme 子树读取 L4 默认值
-  TAvatarThemeData? _theme(BuildContext context) =>
-      Theme.of(context).extension<TAvatarThemeData>();
-
-  double _getAvatarWidth(BuildContext context) {
-    double width;
-    switch (size) {
-      case TAvatarSize.large:
-        width = 64;
-        break;
-      case TAvatarSize.medium:
-        width = 48;
-        break;
-      case TAvatarSize.small:
-        width = 40;
-        break;
+    if (onTap == null) {
+      return avatar;
     }
-    final theme = _theme(context);
-    return theme?.avatarSize ?? width;
+    return GestureDetector(onTap: onTap, child: avatar);
   }
 
-  Font? _getTextFont(BuildContext context) {
+  double _dimensionFor(TAvatarSize size) {
     switch (size) {
       case TAvatarSize.large:
-        return context.tTheme.fontTitleExtraLarge;
+        return 64;
       case TAvatarSize.medium:
-        return context.tTheme.fontTitleMedium;
+        return 48;
       case TAvatarSize.small:
-        return context.tTheme.fontTitleSmall;
+        return 40;
     }
   }
 
-  double _getIconWidth() {
+  double _iconSizeFor(TAvatarSize size) {
     switch (size) {
       case TAvatarSize.large:
         return 32;
@@ -106,341 +105,79 @@ class TAvatar extends StatelessWidget {
         return 20;
     }
   }
+}
 
-  double _getAvatarRadius(BuildContext context) {
-    final theme = _theme(context);
-    final shape = theme?.shape ?? TAvatarShape.circle;
-    double r;
-    switch (shape) {
-      case TAvatarShape.circle:
-        r = _getAvatarWidth(context) / 2;
-        break;
-      case TAvatarShape.square:
-        r = context.tTheme.radiusDefault;
-        break;
-    }
-    return theme?.radius ?? r;
-  }
+/// 叠放头像组。
+///
+/// 头像组只负责布局，不解析图片来源或缓存成员状态。
+class TAvatarGroup extends StatelessWidget {
+  const TAvatarGroup({
+    required this.children,
+    this.maxCount,
+    this.overflow,
+    this.spacing,
+    super.key,
+  }) : assert(maxCount == null || maxCount > 0);
 
-  Color _resolveBackgroundColor(BuildContext context) {
-    final theme = _theme(context);
-    return theme?.backgroundColor ?? context.tTheme.brandFocusColor;
-  }
+  /// 头像列表。
+  final List<Widget> children;
 
-  double _resolveDisplayBorder(BuildContext context) {
-    final theme = _theme(context);
-    return theme?.avatarDisplayBorder ?? 2;
-  }
+  /// 最多显示的头像数量。
+  final int? maxCount;
+
+  /// 发生截断时显示在末尾的内容。
+  final Widget? overflow;
+
+  /// 相邻头像的重叠宽度。
+  final double? spacing;
 
   @override
   Widget build(BuildContext context) {
-    switch (variant) {
-      case TAvatarVariant.icon:
-        return GestureDetector(
-          child: Container(
-            width: _getAvatarWidth(context),
-            height: _getAvatarWidth(context),
-            decoration: BoxDecoration(
-              color: _resolveBackgroundColor(context),
-              borderRadius: BorderRadius.circular(_getAvatarRadius(context)),
-            ),
-            child: Center(
-                child: Icon(
-              icon ?? TIcons.user,
-              size: _getIconWidth(),
-              color: context.tTheme.brandNormalColor,
-            )),
-          ),
-          onTap: onPressed,
-        );
-      case TAvatarVariant.normal:
-        return GestureDetector(
-          child: Container(
-            width: _getAvatarWidth(context),
-            height: _getAvatarWidth(context),
-            decoration: BoxDecoration(
-                color: _resolveBackgroundColor(context),
-                borderRadius: BorderRadius.circular(_getAvatarRadius(context)),
-                image: avatarUrl != null
-                    ? DecorationImage(image: NetworkImage(avatarUrl!))
-                    : defaultUrl != ''
-                        ? DecorationImage(image: AssetImage(defaultUrl))
-                        : null),
-          ),
-          onTap: onPressed,
-        );
-      case TAvatarVariant.customText:
-        return GestureDetector(
-          child: Container(
-            width: _getAvatarWidth(context),
-            height: _getAvatarWidth(context),
-            decoration: BoxDecoration(
-              color: _resolveBackgroundColor(context) == context.tTheme.brandFocusColor
-                  ? context.tTheme.brandNormalColor
-                  : _resolveBackgroundColor(context),
-              borderRadius: BorderRadius.circular(_getAvatarRadius(context)),
-            ),
-            child: Center(
-              child: TText(
-                // text 为 null 时用空字符串兜底，避免 TText 非空断言崩溃
-                text ?? '',
-                forceVerticalCenter: true,
-                textAlign: TextAlign.center,
-                font: _getTextFont(context),
-                textColor: context.tTheme.whiteColor1,
+    if (children.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    final theme = Theme.of(context).extension<TAvatarThemeData>();
+    final count = maxCount == null
+        ? children.length
+        : maxCount!.clamp(1, children.length);
+    final visible = children.take(count).toList(growable: true);
+    if (count < children.length && overflow != null) {
+      visible.add(overflow!);
+    }
+    final dimension = theme?.dimension ?? 48;
+    final overlap = spacing ?? theme?.groupSpacing ?? 8;
+    final step = dimension - overlap;
+    final borderWidth = theme?.groupBorderWidth ?? 2;
+    final width = dimension + step * (visible.length - 1);
+
+    return SizedBox(
+      width: width,
+      height: dimension,
+      child: Stack(
+        children: [
+          for (var index = 0; index < visible.length; index++)
+            PositionedDirectional(
+              start: step * index,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: theme?.groupBorderColor ??
+                        context.tTheme.bgColorContainer,
+                    width: borderWidth,
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(borderWidth),
+                  child: SizedBox.square(
+                    dimension: dimension - borderWidth * 2,
+                    child: FittedBox(child: visible[index]),
+                  ),
+                ),
               ),
             ),
-          ),
-          onTap: onPressed,
-        );
-      case TAvatarVariant.display:
-        return buildDisplayAvatar(context);
-      case TAvatarVariant.operation:
-        return buildOperationAvatar(context);
-    }
-  }
-
-  double _getDisplayPadding() {
-    switch (size) {
-      case TAvatarSize.large:
-        return 10;
-      case TAvatarSize.medium:
-        return 8;
-      case TAvatarSize.small:
-        return 6;
-    }
-  }
-
-  Widget buildOperationAvatar(BuildContext context) {
-    var list = <Widget>[];
-    if ((avatarDisplayList == null || avatarDisplayList!.isEmpty) &&
-        (avatarDisplayListAsset == null || avatarDisplayListAsset!.isEmpty)) {
-      return Container();
-    }
-
-    var length = 0;
-    final displayBorder = _resolveDisplayBorder(context);
-    final avatarWidth = _getAvatarWidth(context);
-
-    if (avatarDisplayList != null) {
-      length = avatarDisplayList!.length;
-      for (var i = 0; i < avatarDisplayList!.length + 1; i++) {
-        var left = (avatarWidth - _getDisplayPadding()) * i;
-        if (i == avatarDisplayList!.length) {
-          list.add(Positioned(
-              left: left,
-              child: GestureDetector(
-                onTap: onPressed,
-                child: Container(
-                    child: Center(
-                      child: Icon(TIcons.user_add,
-                          size: _getIconWidth(),
-                          color: context.tTheme.brandNormalColor),
-                    ),
-                    width: avatarWidth,
-                    height: avatarWidth,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: ShapeDecoration(
-                      color: context.tTheme.brandFocusColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              avatarWidth - _getDisplayPadding()),
-                          side: BorderSide(
-                              color: Colors.transparent,
-                              width: displayBorder)),
-                    )),
-              )));
-        } else {
-          list.add(Positioned(
-              left: left,
-              child: Container(
-                  width: avatarWidth,
-                  height: avatarWidth,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              avatarWidth - _getDisplayPadding()),
-                          side: BorderSide(
-                              color: context.tTheme.bgColorContainer,
-                              width: displayBorder)),
-                      image: DecorationImage(
-                          image: NetworkImage(avatarDisplayList![i]),
-                          fit: fit ?? BoxFit.cover)))));
-        }
-      }
-    } else if (avatarDisplayListAsset != null) {
-      length = avatarDisplayListAsset!.length;
-      for (var i = 0; i < avatarDisplayListAsset!.length + 1; i++) {
-        var left = (avatarWidth - _getDisplayPadding()) * i;
-        if (i == avatarDisplayListAsset!.length) {
-          list.add(Positioned(
-              left: left,
-              child: GestureDetector(
-                onTap: onPressed,
-                child: Container(
-                    child: Center(
-                      child: avatarDisplayWidget ??
-                          Icon(TIcons.user_add,
-                              size: _getIconWidth(),
-                              color: context.tTheme.brandNormalColor),
-                    ),
-                    width: avatarWidth,
-                    height: avatarWidth,
-                    clipBehavior: Clip.hardEdge,
-                    decoration: ShapeDecoration(
-                      color: context.tTheme.brandFocusColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              avatarWidth - _getDisplayPadding()),
-                          side: BorderSide(
-                              color: context.tTheme.bgColorContainer,
-                              width: displayBorder)),
-                    )),
-              )));
-        } else {
-          list.add(Positioned(
-              left: left,
-              child: Container(
-                  width: avatarWidth,
-                  height: avatarWidth,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              avatarWidth - _getDisplayPadding()),
-                          side: BorderSide(
-                              color: context.tTheme.bgColorContainer,
-                              width: displayBorder)),
-                      image: DecorationImage(
-                          image: AssetImage(avatarDisplayListAsset![i]),
-                          fit: fit ?? BoxFit.fill)))));
-        }
-      }
-    }
-
-    return SizedBox(
-      height: avatarWidth,
-      width: avatarWidth * (length + 1) - length * _getDisplayPadding(),
-      child: Stack(children: list),
-    );
-  }
-
-  Widget buildDisplayAvatar(BuildContext context) {
-    var list = <Widget>[];
-    if ((avatarDisplayList == null || avatarDisplayList!.isEmpty) &&
-        (avatarDisplayListAsset == null || avatarDisplayListAsset!.isEmpty)) {
-      return Container();
-    }
-
-    var length = 0;
-    final displayBorder = _resolveDisplayBorder(context);
-    final avatarWidth = _getAvatarWidth(context);
-
-    if (avatarDisplayList != null) {
-      length = avatarDisplayList!.length;
-      for (var i = avatarDisplayList!.length; i >= 0; i--) {
-        var left = (avatarWidth - _getDisplayPadding()) * i;
-        if (i == avatarDisplayList!.length) {
-          list.add(Positioned(
-              left: left,
-              child: Container(
-                  child: Center(
-                    child: TText(
-                      displayText,
-                      fontWeight: FontWeight.w600,
-                      forceVerticalCenter: true,
-                      textAlign: TextAlign.center,
-                      font: _getTextFont(context),
-                      textColor: context.tTheme.brandNormalColor,
-                    ),
-                  ),
-                  width: avatarWidth,
-                  height: avatarWidth,
-                  clipBehavior: Clip.hardEdge,
-                  decoration: ShapeDecoration(
-                    color: context.tTheme.brandFocusColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            avatarWidth - _getDisplayPadding()),
-                        side: BorderSide(
-                            color: context.tTheme.bgColorContainer,
-                            width: displayBorder)),
-                  ))));
-        } else {
-          list.add(Positioned(
-              left: left,
-              child: Container(
-                  width: avatarWidth,
-                  height: avatarWidth,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              avatarWidth - _getDisplayPadding()),
-                          side: BorderSide(
-                              color: context.tTheme.bgColorContainer,
-                              width: displayBorder)),
-                      image: DecorationImage(
-                          image: NetworkImage(avatarDisplayList![i]),
-                          fit: fit ?? BoxFit.cover)))));
-        }
-      }
-    } else if (avatarDisplayListAsset != null) {
-      length = avatarDisplayListAsset!.length;
-      for (var i = avatarDisplayListAsset!.length; i >= 0; i--) {
-        var left = (avatarWidth - _getDisplayPadding()) * i;
-        if (i == avatarDisplayListAsset!.length) {
-          list.add(Positioned(
-              left: left,
-              child: Container(
-                  child: Center(
-                    child: TText(
-                      displayText,
-                      fontWeight: FontWeight.w600,
-                      forceVerticalCenter: true,
-                      textAlign: TextAlign.center,
-                      font: _getTextFont(context),
-                      textColor: context.tTheme.brandNormalColor,
-                    ),
-                  ),
-                  width: avatarWidth,
-                  height: avatarWidth,
-                  clipBehavior: Clip.hardEdge,
-                  decoration: ShapeDecoration(
-                    color: context.tTheme.brandFocusColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            avatarWidth - _getDisplayPadding()),
-                        side: BorderSide(
-                            color: context.tTheme.bgColorContainer,
-                            width: displayBorder)),
-                  ))));
-        } else {
-          list.add(Positioned(
-              left: left,
-              child: Container(
-                  width: avatarWidth,
-                  height: avatarWidth,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              avatarWidth - _getDisplayPadding()),
-                          side: BorderSide(
-                              color: context.tTheme.bgColorContainer,
-                              width: displayBorder)),
-                      image: DecorationImage(
-                          image: AssetImage(avatarDisplayListAsset![i]),
-                          fit: fit ?? BoxFit.cover)))));
-        }
-      }
-    }
-
-    return SizedBox(
-      height: avatarWidth,
-      width: avatarWidth * (length + 1) - length * _getDisplayPadding(),
-      child: Stack(children: list),
+        ],
+      ),
     );
   }
 }

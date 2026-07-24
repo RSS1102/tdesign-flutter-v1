@@ -1,93 +1,37 @@
-# TProgress — v1.0 定稿
+# TProgress
 
-> Sprint **S2** | 控制类 **—**（纯展示） | Material: ProgressIndicator
-> 源码：`lib/src/components/progress` · [guide](../guide/developer-guide.md)
+> **状态**：已实现 | **控制类**：纯展示 | **Sprint**：S2
 
----
+**源码路径**：`lib/src/components/progress`
 
 ## 架构
 
-| 项 | v1.0 |
-|---|---|
-| 实现 | Material 进度指示器薄包装（**不可交互**） |
-| Material | `LinearProgressIndicator` / `CircularProgressIndicator` |
-| Theme | `TProgressThemeData` |
-| 禁用 | 无 Widget 级禁用；纯展示 |
-| L4 | 构造器 L4 → `TProgressThemeData` |
+`TProgress` 在 Material `LinearProgressIndicator` / `CircularProgressIndicator` 之上补充 TDesign 的标签和视觉形态。组件没有点击行为，也不缓存外部业务值。
 
-## 控制方案
+- `value` 为 `null` 时展示 indeterminate 进度。
+- 非空 `value` 自动限制在 0 到 1。
+- `label` 直接接受标准 `Widget`，不引入专用包装类型。
+- `TProgressThemeData` 只承载视觉默认，不承载 Widget、回调或业务状态。
 
-控制类 **`—`**（纯展示）：`value` 表示进度 `0.0–1.0`（或 `null` 为 indeterminate），父 State 传入渲染；**无** `onChanged`（对齐 Material `ProgressIndicator`，**非** C 类 Slider）。无 `defaultValue`。
+## API
 
-→ [controlled.md](../../foundation/controlled.md)
+| 参数 | 类型 | 默认值 | 说明 |
+|---|---|---|---|
+| `variant` | `TProgressVariant` | 必填 | `linear`、`circular`、`micro` 或 `button` |
+| `value` | `double?` | `null` | 确定进度，null 表示不确定进度 |
+| `label` | `Widget?` | `null` | 自定义标签 |
 
+`button` 仅表示按钮外观的进度条，不提供点击行为。需要交互时由调用方在组件外组织 Button。
 
----
+## Theme
 
-## 1. API
+`TProgressThemeData` 包含粗细、颜色、背景色、圆角、半径、标签显隐和位置、标签布局及动画时长。所有字段都是视觉默认值。
 
-### 保留
+## Export
 
-| 符号 | 说明 |
-| --- | --- |
-| TProgressLabelPosition | 尺寸/位置枚举保留 |
-| value | 进度值 `0.0–1.0` 或 `null`（indeterminate）；父 State 传入，KEEP |
-| label | 进度文案（ KEEP） |
+公开导出 `TProgress`、`TProgressVariant`、`TProgressLabelPosition` 和 `TProgressThemeData`。内部 indicator 与 painter 不公开。
 
-### 迁移 / 改名
+## 验收
 
-| 0.2.x | v1.0 | 原因 |
-| --- | --- | --- |
-| TProgressType | variant | 命名对齐 v1.0 |
-| variant | variant | v1.0 语义形态 |
-| progressStatus | TProgressThemeData | L4 → Theme |
-| progressLabelPosition | TProgressThemeData | L4 → Theme |
-| strokeWidth | TProgressThemeData | L4 → Theme |
-| color | TProgressThemeData | L4 → Theme |
-| backgroundColor | TProgressThemeData | L4 → Theme |
-| linearBorderRadius | TProgressThemeData | L4 → Theme |
-| circleRadius | TProgressThemeData | L4 → Theme |
-| showLabel | TProgressThemeData | L4 → Theme |
-| customProgressLabel | TProgressThemeData | L4 → Theme |
-| labelWidgetWidth | TProgressThemeData | L4 → Theme |
-| labelWidgetAlignment | TProgressThemeData | L4 → Theme |
-| animationDuration | TProgressThemeData | L4 → Theme |
-
-### 🗑️ 移除
-
-| 0.2.x | 原因 |
-| --- | --- |
-| onTap | 纯展示组件（控制类 —）不应有交互回调 |
-
-### 废弃
-
-| 符号 | 原因 |
-| --- | --- |
-| TProgressStatus | 内部状态枚举，v1.0 不公开 |
-| onLongPress | REMOVE：非设计稿关键态；与 Button 一致删除 |
-| onTap | 纯展示组件（控制类 —）不应有交互回调 |
-
-### 新增
-
-_无_
-
-### export
-
-- **保留**：`TProgress`、`TProgressLabelPosition`、`TProgressThemeData`
-- **移出**：`TProgressStatus` 内部状态 enum（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
-
-
----
-
-## 2. Theme
-
-`TProgressThemeData` · Material: **ProgressIndicator** · [theme.md](../foundation/theme.md)
-
-### Material vs TDesign
-
-| 字段 | 来源 | 说明 |
-| --- | --- | --- |
-| `color` / `linearTrackColor` / `circularTrackColor` / `strokeWidth` | Material **`ProgressIndicatorTheme`** | 线型/环形轨道 |
-| `variant` | TDesign **`TProgressThemeData`** | 原 `type` / `TProgressType` |
-| `linearBorderRadius` / `circleRadius` / `showLabel` / `customProgressLabel` | TDesign 扩展 | 标签位置与圆角 |
-| `progressLabelPosition` | TDesign 扩展 | 原 `TProgressLabelPosition` 默认 |
+- 四种 variant、确定/不确定进度、边界值、标签位置和更新生命周期均有测试。
+- Progress 源码逐文件覆盖率均高于 99%。

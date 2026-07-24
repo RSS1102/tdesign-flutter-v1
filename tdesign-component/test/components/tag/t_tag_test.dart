@@ -16,16 +16,14 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// - 主题覆盖（ThemeExtension）
 /// - 边界场景
 void main() {
-  /// 用 TTheme 包裹以提供基础 Token
+  /// 完整包装，注入 TDesign 全局主题。
   Widget wrapWithTheme(Widget child, {TTagThemeData? tagTheme}) {
-    final extensions = <ThemeExtension>[
-      TThemeData.defaultData(),
-      if (tagTheme != null) tagTheme,
-    ];
-    // 必须通过 MaterialApp.theme 传递 extensions，
-    // 用外层 Theme 包 MaterialApp 会被 MaterialApp 默认 ThemeData.light() 覆盖
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (tagTheme != null) {
+      theme = theme.mergeExtension(tagTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: extensions),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
@@ -38,6 +36,24 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(const TTag('标签')));
       expect(find.text('标签'), findsOneWidget);
       expect(find.byType(TTag), findsOneWidget);
+    });
+
+    testWidgets('文字垂直居中且宽度按内容自适应', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(const TTag('居中')));
+
+      final tagContainerFinder = find.descendant(
+        of: find.byType(TTag),
+        matching: find.byWidgetPredicate(
+          (widget) => widget is Container && widget.decoration is BoxDecoration,
+        ),
+      );
+      final tagRect = tester.getRect(tagContainerFinder.first);
+      final textRect = tester.getRect(find.text('居中'));
+      final textWidget = tester.widget<Text>(find.text('居中'));
+
+      expect((tagRect.center.dy - textRect.center.dy).abs(), lessThan(1));
+      expect(tagRect.width, lessThan(120));
+      expect(textWidget.style?.height, isNull);
     });
 
     testWidgets('带图标的标签渲染', (tester) async {
@@ -170,7 +186,9 @@ void main() {
       expect(find.text('描边'), findsOneWidget);
       // 描边时 Container 应有 border
       final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
       );
       expect(container.decoration, isA<BoxDecoration>());
       final decoration = container.decoration as BoxDecoration;
@@ -195,16 +213,15 @@ void main() {
 
     testWidgets('disable 禁用状态渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('禁用'),
-        tagTheme: const TTagThemeData(disable: true),
+        const TTag('禁用', enabled: false),
       ));
       expect(find.text('禁用'), findsOneWidget);
     });
 
     testWidgets('disable + isOutline 禁用描边渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('禁用描边'),
-        tagTheme: const TTagThemeData(disable: true, isOutline: true),
+        const TTag('禁用描边', enabled: false),
+        tagTheme: const TTagThemeData(isOutline: true),
       ));
       expect(find.text('禁用描边'), findsOneWidget);
     });
@@ -216,8 +233,7 @@ void main() {
   group('TTag 关闭图标', () {
     testWidgets('needCloseIcon 显示关闭图标', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('可关闭'),
-        tagTheme: const TTagThemeData(needCloseIcon: true),
+        const TTag('可关闭', needCloseIcon: true),
       ));
       expect(find.byIcon(TIcons.close), findsOneWidget);
     });
@@ -227,9 +243,9 @@ void main() {
       await tester.pumpWidget(wrapWithTheme(
         TTag(
           '可关闭',
+          needCloseIcon: true,
           onCloseTap: () => closed = true,
         ),
-        tagTheme: const TTagThemeData(needCloseIcon: true),
       ));
 
       await tester.tap(find.byIcon(TIcons.close));
@@ -239,8 +255,7 @@ void main() {
 
     testWidgets('onCloseTap 为 null 时点击不崩溃', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('无回调'),
-        tagTheme: const TTagThemeData(needCloseIcon: true),
+        const TTag('无回调', needCloseIcon: true),
       ));
 
       await tester.tap(find.byIcon(TIcons.close), warnIfMissed: false);
@@ -250,8 +265,7 @@ void main() {
 
     testWidgets('带图标 + 关闭图标同时显示', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('组合', icon: Icons.add),
-        tagTheme: const TTagThemeData(needCloseIcon: true),
+        const TTag('组合', icon: Icons.add, needCloseIcon: true),
       ));
       expect(find.byIcon(Icons.add), findsOneWidget);
       expect(find.byIcon(TIcons.close), findsOneWidget);
@@ -276,7 +290,9 @@ void main() {
         tagTheme: const TTagThemeData(fixedWidth: 120),
       ));
       final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
       );
       expect(container.constraints?.maxWidth, 120);
     });
@@ -288,17 +304,16 @@ void main() {
         tagTheme: const TTagThemeData(padding: customPadding),
       ));
       final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
       );
       expect(container.padding, customPadding);
     });
 
     testWidgets('通过 TTagThemeData 设置自定义 iconWidget', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TTag('自定义图标'),
-        tagTheme: const TTagThemeData(
-          iconWidget: Icon(Icons.favorite, size: 14),
-        ),
+        const TTag('自定义图标', icon: Icons.favorite),
       ));
       expect(find.byIcon(Icons.favorite), findsOneWidget);
     });
@@ -311,13 +326,81 @@ void main() {
       expect(find.text('溢出处理'), findsOneWidget);
     });
 
+    testWidgets('fixedWidth long label with icons stays single-line ellipsis',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const Center(
+          child: TTag(
+            '这是一段非常非常长的标签文案',
+            icon: Icons.add,
+            needCloseIcon: true,
+          ),
+        ),
+        tagTheme: const TTagThemeData(fixedWidth: 96),
+      ));
+
+      expect(tester.takeException(), isNull);
+      final tagContainer = tester.widget<Container>(
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
+      );
+      expect(tagContainer.constraints?.maxWidth, 96);
+
+      final label = tester.widget<Text>(find.text('这是一段非常非常长的标签文案'));
+      expect(label.maxLines, 1);
+      expect(label.overflow, TextOverflow.ellipsis);
+      expect(find.byIcon(Icons.add), findsOneWidget);
+      expect(find.byIcon(TIcons.close), findsOneWidget);
+    });
+
+    testWidgets('theme maxLines allows multi-line fixed width tag',
+        (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const Center(
+          child: TTag(
+            '这是一段非常非常长的标签文案',
+            icon: Icons.add,
+            needCloseIcon: true,
+          ),
+        ),
+        tagTheme: const TTagThemeData(
+          fixedWidth: 96,
+          maxLines: 2,
+        ),
+      ));
+
+      expect(tester.takeException(), isNull);
+      final label = tester.widget<Text>(find.text('这是一段非常非常长的标签文案'));
+      expect(label.maxLines, 2);
+      expect(label.overflow, TextOverflow.ellipsis);
+
+      final tagRect = tester.getRect(
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
+      );
+      expect(tagRect.height, greaterThan(32));
+    });
+
+    test('TTagThemeData carries maxLines through copyWith and lerp', () {
+      const base = TTagThemeData(maxLines: 1);
+      const other = TTagThemeData(maxLines: 2);
+
+      expect(base.copyWith(maxLines: 3).maxLines, 3);
+      expect(base.lerp(other, 0.25).maxLines, 1);
+      expect(base.lerp(other, 0.75).maxLines, 2);
+    });
+
     testWidgets('通过 TTagThemeData 设置自定义 backgroundColor', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TTag('自定义背景'),
         tagTheme: const TTagThemeData(backgroundColor: Colors.purple),
       ));
       final container = tester.widget<Container>(
-        find.descendant(of: find.byType(TTag), matching: find.byType(Container)).first,
+        find
+            .descendant(of: find.byType(TTag), matching: find.byType(Container))
+            .first,
       );
       final decoration = container.decoration as BoxDecoration;
       expect(decoration.color, Colors.purple);
@@ -365,33 +448,37 @@ void main() {
   // ============================================================
   group('TTag widget 渲染', () {
     testWidgets('基础渲染', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TTag('标签')));
+      await tester.pumpWidget(wrapWithTheme(const TTag('标签')));
       expect(find.text('标签'), findsOneWidget);
     });
 
     testWidgets('icon 渲染', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TTag('带图标', icon: Icons.star)));
+      await tester
+          .pumpWidget(wrapWithTheme(const TTag('带图标', icon: Icons.star)));
       expect(find.byIcon(Icons.star), findsOneWidget);
     });
 
     testWidgets('size extraLarge', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TTag('大', size: TTagSize.extraLarge)));
+      await tester.pumpWidget(
+          wrapWithTheme(const TTag('大', size: TTagSize.extraLarge)));
       expect(find.text('大'), findsOneWidget);
     });
 
     testWidgets('size large', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TTag('中', size: TTagSize.large)));
+      await tester
+          .pumpWidget(wrapWithTheme(const TTag('中', size: TTagSize.large)));
       expect(find.text('中'), findsOneWidget);
     });
 
     testWidgets('size small', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(TTag('小', size: TTagSize.small)));
+      await tester
+          .pumpWidget(wrapWithTheme(const TTag('小', size: TTagSize.small)));
       expect(find.text('小'), findsOneWidget);
     });
 
     testWidgets('shape round', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('圆角'),
+        const TTag('圆角'),
         tagTheme: const TTagThemeData(shape: TTagShape.round),
       ));
       expect(find.text('圆角'), findsOneWidget);
@@ -399,7 +486,7 @@ void main() {
 
     testWidgets('shape mark', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('半圆'),
+        const TTag('半圆'),
         tagTheme: const TTagThemeData(shape: TTagShape.mark),
       ));
       expect(find.text('半圆'), findsOneWidget);
@@ -407,15 +494,14 @@ void main() {
 
     testWidgets('needCloseIcon', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('可关闭', onCloseTap: () {}),
-        tagTheme: const TTagThemeData(needCloseIcon: true),
+        TTag('可关闭', needCloseIcon: true, onCloseTap: () {}),
       ));
       expect(find.text('可关闭'), findsOneWidget);
     });
 
     testWidgets('isOutline + isLight', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('描边'),
+        const TTag('描边'),
         tagTheme: const TTagThemeData(isOutline: true, isLight: true),
       ));
       expect(find.text('描边'), findsOneWidget);
@@ -423,30 +509,28 @@ void main() {
 
     testWidgets('disable', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('禁用'),
-        tagTheme: const TTagThemeData(disable: true),
+        const TTag('禁用', enabled: false),
       ));
       expect(find.text('禁用'), findsOneWidget);
     });
 
     testWidgets('colorScheme danger', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('危险', colorScheme: TTagColorScheme.danger),
+        const TTag('危险', colorScheme: TTagColorScheme.danger),
       ));
       expect(find.text('危险'), findsOneWidget);
     });
 
     testWidgets('iconWidget 自定义', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('自定义图标'),
-        tagTheme: TTagThemeData(iconWidget: const Icon(Icons.favorite)),
+        const TTag('自定义图标', icon: Icons.favorite),
       ));
       expect(find.byIcon(Icons.favorite), findsOneWidget);
     });
 
     testWidgets('primary + isOutline', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('primary', colorScheme: TTagColorScheme.primary),
+        const TTag('primary', colorScheme: TTagColorScheme.primary),
         tagTheme: const TTagThemeData(isOutline: true),
       ));
       expect(find.text('primary'), findsOneWidget);
@@ -454,7 +538,7 @@ void main() {
 
     testWidgets('warning + isOutline', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('warning', colorScheme: TTagColorScheme.warning),
+        const TTag('warning', colorScheme: TTagColorScheme.warning),
         tagTheme: const TTagThemeData(isOutline: true),
       ));
       expect(find.text('warning'), findsOneWidget);
@@ -462,9 +546,29 @@ void main() {
 
     testWidgets('medium size + icon', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TTag('med', icon: Icons.star, size: TTagSize.medium),
+        const TTag('med', icon: Icons.star, size: TTagSize.medium),
       ));
       expect(find.byIcon(Icons.star), findsOneWidget);
+    });
+
+    testWidgets('all semantic colors resolve light variants', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        Wrap(
+          children: TTagColorScheme.values
+              .map((scheme) => TTag('$scheme', colorScheme: scheme))
+              .toList(),
+        ),
+        tagTheme: const TTagThemeData(isLight: true),
+      ));
+      expect(find.byType(TTag), findsNWidgets(TTagColorScheme.values.length));
+    });
+
+    testWidgets('success outline resolves semantic border', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TTag('success', colorScheme: TTagColorScheme.success),
+        tagTheme: const TTagThemeData(isOutline: true),
+      ));
+      expect(find.text('success'), findsOneWidget);
     });
   });
 }

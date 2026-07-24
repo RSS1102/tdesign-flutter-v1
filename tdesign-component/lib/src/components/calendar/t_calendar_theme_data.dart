@@ -4,15 +4,9 @@ import 'package:flutter/material.dart';
 
 /// TCalendar 组件级 ThemeExtension
 ///
-/// 包含日历配置（选择模式、首日）和样式默认（装饰、字体、布局参数）。
+/// 包含日历样式默认（装饰、字体、布局参数）。
 /// 样式字段通过 mergeExtension 子树覆盖，无需构造器 P0 `style` 参数。
 class TCalendarThemeData extends ThemeExtension<TCalendarThemeData> {
-  /// 日历选择模式
-  final TCalendarVariant? defaultVariant;
-
-  /// 每周第一天
-  final int? firstDayOfWeek;
-
   /// 高度
   final double? height;
 
@@ -56,8 +50,6 @@ class TCalendarThemeData extends ThemeExtension<TCalendarThemeData> {
   final Color? centreColor;
 
   const TCalendarThemeData({
-    this.defaultVariant,
-    this.firstDayOfWeek,
     this.height,
     this.decoration,
     this.weekdayStyle,
@@ -76,8 +68,6 @@ class TCalendarThemeData extends ThemeExtension<TCalendarThemeData> {
 
   @override
   TCalendarThemeData copyWith({
-    TCalendarVariant? defaultVariant,
-    int? firstDayOfWeek,
     double? height,
     BoxDecoration? decoration,
     TextStyle? weekdayStyle,
@@ -94,8 +84,6 @@ class TCalendarThemeData extends ThemeExtension<TCalendarThemeData> {
     Color? centreColor,
   }) {
     return TCalendarThemeData(
-      defaultVariant: defaultVariant ?? this.defaultVariant,
-      firstDayOfWeek: firstDayOfWeek ?? this.firstDayOfWeek,
       height: height ?? this.height,
       decoration: decoration ?? this.decoration,
       weekdayStyle: weekdayStyle ?? this.weekdayStyle,
@@ -119,15 +107,15 @@ class TCalendarThemeData extends ThemeExtension<TCalendarThemeData> {
       return this;
     }
     return TCalendarThemeData(
-      defaultVariant: t < 0.5 ? defaultVariant : other.defaultVariant,
-      firstDayOfWeek: t < 0.5 ? firstDayOfWeek : other.firstDayOfWeek,
       height: lerpDouble(height, other.height, t),
       decoration: BoxDecoration.lerp(decoration, other.decoration, t),
       weekdayStyle: TextStyle.lerp(weekdayStyle, other.weekdayStyle, t),
-      monthTitleStyle: TextStyle.lerp(monthTitleStyle, other.monthTitleStyle, t),
+      monthTitleStyle:
+          TextStyle.lerp(monthTitleStyle, other.monthTitleStyle, t),
       dayStyle: TextStyle.lerp(dayStyle, other.dayStyle, t),
       todayDayStyle: TextStyle.lerp(todayDayStyle, other.todayDayStyle, t),
-      cellDecoration: BoxDecoration.lerp(cellDecoration, other.cellDecoration, t),
+      cellDecoration:
+          BoxDecoration.lerp(cellDecoration, other.cellDecoration, t),
       subtitleStyle: TextStyle.lerp(subtitleStyle, other.subtitleStyle, t),
       cellHeight: lerpDouble(cellHeight, other.cellHeight, t),
       monthTitleHeight: lerpDouble(monthTitleHeight, other.monthTitleHeight, t),
@@ -140,4 +128,13 @@ class TCalendarThemeData extends ThemeExtension<TCalendarThemeData> {
 }
 
 /// 日历选择形态
-enum TCalendarVariant { single, multiple, range }
+enum TCalendarVariant {
+  /// 单选日期
+  single,
+
+  /// 多选日期
+  multiple,
+
+  /// 选择日期区间
+  range,
+}

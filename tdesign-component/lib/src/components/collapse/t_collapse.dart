@@ -4,35 +4,32 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
+import 't_collapse_panel.dart';
 import 't_collapse_salted_key.dart';
+import 't_collapse_theme_data.dart';
+import 't_collapse_types.dart';
 import 't_inset_divider.dart';
 import 't_nonanimated_expand_icon.dart';
 
-/// 折叠面板模式
-enum TCollapseMode {
-  /// 多开模式
-  multiple,
-
-  /// 手风琴模式（仅一个面板展开）
-  accordion,
-}
-
 /// 折叠面板列表组件，需配合 [TCollapsePanel] 使用
-class TCollapse extends StatefulWidget {
+class TCollapse<T extends Object> extends StatefulWidget {
   const TCollapse({
     required this.children,
     this.mode = TCollapseMode.multiple,
     this.onExpansionChanged,
-    this.animationDuration = kThemeAnimationDuration,
-    this.elevation = 0,
+    this.animationDuration,
+    this.elevation,
     this.value,
     this.onChanged,
     Key? key,
   }) : super(key: key);
 
   /// 折叠面板列表的子组件
-  final List<TCollapsePanel> children;
+  final List<TCollapsePanel<T>> children;
 
   /// 折叠面板模式
   final TCollapseMode mode;
@@ -42,24 +39,22 @@ class TCollapse extends StatefulWidget {
   final ExpansionPanelCallback? onExpansionChanged;
 
   /// 折叠面板列表的动画时长
-  final Duration animationDuration;
+  final Duration? animationDuration;
 
   /// 折叠面板列表的阴影
-  final double elevation;
+  final double? elevation;
 
   /// 手风琴模式下当前展开面板的 value
-  final Object? value;
+  final T? value;
 
   /// 手风琴模式下 value 变更回调
-  final ValueChanged<Object?>? onChanged;
+  final ValueChanged<T?>? onChanged;
 
   @override
-  State createState() => _TCollapseState();
+  State<TCollapse<T>> createState() => _TCollapseState<T>();
 }
 
-class _TCollapseState extends State<TCollapse> {
-  TCollapsePanel? _currentOpenPanel;
-
+class _TCollapseState<T extends Object> extends State<TCollapse<T>> {
   /// 从 Theme 子树读取 L4 默认值
   TCollapseThemeData? _theme(BuildContext context) =>
       Theme.of(context).extension<TCollapseThemeData>();
@@ -68,7 +63,7 @@ class _TCollapseState extends State<TCollapse> {
 
   bool _isCardStyle(BuildContext context) {
     final theme = _theme(context);
-    return theme?.style == 'card';
+    return theme?.variant == TCollapseVariant.card;
   }
 
   @override
@@ -83,18 +78,13 @@ class _TCollapseState extends State<TCollapse> {
         'When allowing only one panel to be open, every panel must have a value.');
     assert(_allPanelsHaveDistinctValues(),
         'When allowing only one panel to be open, every panel must have a distinct value.');
-
-    if (widget.value != null) {
-      _currentOpenPanel = _searchPanelByValue(widget.value);
-    }
   }
 
   @override
-  void didUpdateWidget(TCollapse oldWidget) {
+  void didUpdateWidget(TCollapse<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (!_isAccordion) {
-      _currentOpenPanel = null;
       return;
     }
 
@@ -102,14 +92,15 @@ class _TCollapseState extends State<TCollapse> {
         'When allowing only one panel to be open, every panel must have a value.');
     assert(_allPanelsHaveDistinctValues(),
         'When allowing only one panel to be open, every panel must have a distinct value.');
-
-    if (oldWidget.mode != TCollapseMode.accordion) {
-      _currentOpenPanel = _searchPanelByValue(widget.value);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = _theme(context);
+    final animationDuration = widget.animationDuration ??
+        theme?.animationDuration ??
+        kThemeAnimationDuration;
+    final elevation = widget.elevation ?? theme?.elevation ?? 0;
     final items = <MergeableMaterialItem>[];
 
     for (var index = 0; index < widget.children.length; index += 1) {
@@ -128,8 +119,9 @@ class _TCollapseState extends State<TCollapse> {
       final borderRadius =
           _isCardStyle(context) ? _createRadius(index) : BorderRadius.zero;
 
-      final theme = _theme(context);
-      final bgColor = child.backgroundColor ?? theme?.backgroundColor ?? context.tTheme.bgColorContainer;
+      final bgColor = child.backgroundColor ??
+          theme?.backgroundColor ??
+          context.tTheme.bgColorContainer;
 
       items.add(
         MaterialSlice(
@@ -146,7 +138,7 @@ class _TCollapseState extends State<TCollapse> {
                       children: [
                         Expanded(
                           child: AnimatedContainer(
-                            duration: widget.animationDuration,
+                            duration: animationDuration,
                             curve: Curves.fastOutSlowIn,
                             margin: EdgeInsets.zero,
                             child: ConstrainedBox(
@@ -181,7 +173,7 @@ class _TCollapseState extends State<TCollapse> {
                   crossFadeState: _isChildExpanded(index)
                       ? CrossFadeState.showSecond
                       : CrossFadeState.showFirst,
-                  duration: widget.animationDuration,
+                  duration: animationDuration,
                 ),
                 if (!isLastChild) const TInsetDivider()
               ],
@@ -195,7 +187,7 @@ class _TCollapseState extends State<TCollapse> {
 
     Widget collapse = MergeableMaterial(
       hasDividers: false,
-      elevation: widget.elevation,
+      elevation: elevation,
       children: items,
     );
 
@@ -241,7 +233,7 @@ class _TCollapseState extends State<TCollapse> {
     final child = widget.children[index];
 
     if (_isAccordion) {
-      return _currentOpenPanel?.value == child.value;
+      return widget.value == child.value;
     }
 
     return child.isExpanded;
@@ -254,27 +246,11 @@ class _TCollapseState extends State<TCollapse> {
       return;
     }
 
-    for (var childIndex = 0;
-        childIndex < widget.children.length;
-        childIndex += 1) {
-      final curChild = widget.children[childIndex];
-      if (widget.onExpansionChanged != null &&
-          childIndex != index &&
-          curChild.value == _currentOpenPanel?.value) {
-        widget.onExpansionChanged!(childIndex, false);
-      }
-    }
-
-    setState(() {
-      _currentOpenPanel = isExpanded ? null : widget.children[index];
-    });
-
-    // 手风琴受控回调
-    widget.onChanged?.call(_currentOpenPanel?.value);
+    widget.onChanged?.call(isExpanded ? null : widget.children[index].value);
   }
 
   Widget _buildTitleWidget(
-      BuildContext context, TCollapsePanel child, int index) {
+      BuildContext context, TCollapsePanel<T> child, int index) {
     final titleWidget = child.headerBuilder(context, _isChildExpanded(index));
     return ListTile(
       title: titleWidget,
@@ -282,7 +258,7 @@ class _TCollapseState extends State<TCollapse> {
   }
 
   Widget _buildExpandIconWidget(
-      BuildContext context, TCollapsePanel child, int index) {
+      BuildContext context, TCollapsePanel<T> child, int index) {
     Widget expandedIcon = Container(
       key: TCollapseSaltedKey<BuildContext, int>(context, index * 2),
       margin: const EdgeInsetsDirectional.all(0.0),
@@ -313,28 +289,18 @@ class _TCollapseState extends State<TCollapse> {
   }
 
   bool _allPanelsHaveValue() {
-    return widget.children.every((TCollapsePanel child) {
+    return widget.children.every((TCollapsePanel<T> child) {
       return child.value != null;
     });
   }
 
   bool _allPanelsHaveDistinctValues() {
-    final valueSet = <Object?>{};
-    return widget.children.every((TCollapsePanel child) {
+    final valueSet = <T?>{};
+    return widget.children.every((TCollapsePanel<T> child) {
       if (!valueSet.add(child.value)) {
         return false;
       }
       return true;
     });
-  }
-
-  TCollapsePanel? _searchPanelByValue(Object? value) {
-    for (var index = 0; index < widget.children.length; index += 1) {
-      final child = widget.children[index];
-      if (child.value == value) {
-        return child;
-      }
-    }
-    return null;
   }
 }

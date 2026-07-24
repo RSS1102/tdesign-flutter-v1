@@ -19,7 +19,6 @@ class TDrawerWidget extends StatelessWidget {
     this.items,
     this.child,
     this.title,
-    this.titleWidget,
     this.onItemClick,
     this.width = 280,
     this.style,
@@ -38,11 +37,8 @@ class TDrawerWidget extends StatelessWidget {
   /// 自定义内容，优先级高于[items]/[footer]/[title]
   final Widget? child;
 
-  /// 抽屉的标题
-  final String? title;
-
   /// 抽屉的标题组件
-  final Widget? titleWidget;
+  final Widget? title;
 
   /// 点击抽屉里的列表项触发
   final TDrawerItemClickCallback? onItemClick;
@@ -69,21 +65,28 @@ class TDrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var content = child;
     if (content == null) {
-      var cellStyle = style;
-      if (cellStyle == null) {
-        cellStyle = TCellThemeData.cellStyle(context);
-        cellStyle.leftIconColor = context.tTheme.brandNormalColor;
-      }
+      final inheritedCellTheme = Theme.of(context).extension<TCellThemeData>();
+      final cellStyle =
+          (style ?? inheritedCellTheme ?? const TCellThemeData()).copyWith(
+        groupBordered: bordered,
+        showLastDivider: isShowLastBordered,
+      );
       var cells = items
           ?.asMap()
           .map(
             (index, item) => MapEntry(
               index,
               TCell(
-                titleWidget: item.content,
-                title: item.title,
-                prefixWidget: item.icon,
-                bordered: bordered,
+                title: item.content ??
+                    (item.title == null
+                        ? null
+                        : Text(
+                            item.title!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                prefix: item.icon,
+                enableFeedback: hover ?? true,
                 onTap: () {
                   if (onItemClick == null) {
                     return;
@@ -98,13 +101,13 @@ class TDrawerWidget extends StatelessWidget {
       content = Column(
         children: [
           Expanded(
-            child: TCellGroup(
-              title: title,
-              titleWidget: titleWidget,
-              style: cellStyle,
-              scrollable: true,
-              isShowLastBordered: isShowLastBordered,
-              cells: cells ?? [],
+            child: Theme(
+              data: Theme.of(context).mergeExtension(cellStyle),
+              child: TCellGroup(
+                title: title,
+                scrollable: true,
+                cells: cells ?? [],
+              ),
             ),
           ),
           if (footer != null)

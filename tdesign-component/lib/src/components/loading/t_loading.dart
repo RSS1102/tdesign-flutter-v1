@@ -6,9 +6,15 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/basic.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
+import '../../util/context_extension.dart';
+import '../text/t_text.dart';
 import 't_activity_indicator.dart';
 import 't_circle_indicator.dart';
+import 't_loading_theme_data.dart';
 import 't_point_indicator.dart';
 
 /// Loading 尺寸
@@ -41,6 +47,8 @@ class TLoading extends StatelessWidget {
     required this.size,
     this.icon = TLoadingIcon.circle,
     this.text,
+    this.customIcon,
+    this.refreshWidget,
   }) : super(key: key);
 
   /// 尺寸
@@ -52,10 +60,16 @@ class TLoading extends StatelessWidget {
   /// 文案
   final String? text;
 
+  /// 自定义加载图标，优先于 [icon]
+  final Widget? customIcon;
+
+  /// 文案后的自定义操作内容
+  final Widget? refreshWidget;
+
   /// 获取生效的 Theme（Theme Extension > 默认值）
   ///
   /// v1.0 按文档 §2.1 裁决：样式默认只从 `Theme.of(context)` 读取，
-  /// 子树覆盖用 `mergeExtension(...)`，禁止构造器 `themeData`。
+  /// 子树覆盖使用 `Theme.of(context).mergeExtension(...)`。
   TLoadingThemeData _effectiveTheme(BuildContext context) {
     return Theme.of(context).extension<TLoadingThemeData>() ??
         const TLoadingThemeData();
@@ -72,9 +86,9 @@ class TLoading extends StatelessWidget {
     final theme = _effectiveTheme(context);
     final effectiveAxis = theme.axis ?? Axis.vertical;
     final effectiveIconColor = theme.iconColor;
-    final effectiveCustomIcon = theme.customIcon;
+    final effectiveCustomIcon = customIcon;
     final effectiveDuration = theme.duration ?? 2000;
-    final effectiveRefreshWidget = theme.refreshWidget;
+    final effectiveRefreshWidget = refreshWidget;
     final innerDuration = effectiveDuration > 0 ? effectiveDuration : 1;
 
     if (icon == null) {

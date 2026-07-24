@@ -54,6 +54,33 @@ void main() {
   });
 
   // ============================================================
+  // T03b – 带图标链接布局间距
+  // ============================================================
+  testWidgets('T03b - 带图标链接布局间距', (tester) async {
+    await tester.pumpWidget(_wrap(
+      const TLink(
+        child: Text('图标链接'),
+        variant: TLinkVariant.icon,
+      ),
+    ));
+
+    final prefix = find.byIcon(TIcons.link);
+    final suffix = find.byIcon(TIcons.jump);
+    final text = find.text('图标链接');
+
+    expect(tester.widget<Icon>(prefix).size, 16);
+    expect(tester.widget<Icon>(suffix).size, 16);
+    expect(
+      tester.getTopLeft(text).dx - tester.getTopRight(prefix).dx,
+      moreOrLessEquals(6.34, epsilon: 0.01),
+    );
+    expect(
+      tester.getTopLeft(suffix).dx - tester.getTopRight(text).dx,
+      moreOrLessEquals(7.0, epsilon: 0.01),
+    );
+  });
+
+  // ============================================================
   // T04 – 带前缀图标链接
   // ============================================================
   testWidgets('T04 - 带前缀图标链接', (tester) async {
@@ -97,7 +124,7 @@ void main() {
       ),
     ));
 
-    await tester.tap(find.text('禁用链接'));
+    await tester.tap(find.text('禁用链接'), warnIfMissed: false);
     expect(tapped, false);
   });
 
@@ -231,7 +258,6 @@ void main() {
               builder: (context) {
                 return const TLink(
                   child: Text('Theme注入'),
-                  size: TLinkSize.medium,
                 );
               },
             ),
@@ -243,6 +269,7 @@ void main() {
     final text = tester.widget<Text>(find.text('Theme注入'));
     // Theme 注入的字号应生效（18 覆盖 size 默认 14）
     expect(text.style?.fontSize, 18);
+    expect(text.style?.decoration, TextDecoration.underline);
   });
 
   // ============================================================
@@ -331,6 +358,45 @@ void main() {
   });
 
   // ============================================================
+  // T17b – 长文本单行省略
+  // ============================================================
+  testWidgets('T17b - 长文本单行省略', (tester) async {
+    const longText = '这是一个非常非常非常长的链接文案用于验证不会换行和撑坏布局';
+    await tester.pumpWidget(_wrap(
+      const TLink(
+        child: Text(longText),
+      ),
+    ));
+
+    final text = tester.widget<Text>(find.text(longText));
+    expect(text.maxLines, 1);
+    expect(text.softWrap, isFalse);
+    expect(text.overflow, TextOverflow.ellipsis);
+  });
+
+  testWidgets('T17c - 图标链接在窄容器中保留图标并省略长文本', (tester) async {
+    const longText = '这是一个非常非常非常长的图标链接文案用于验证不会撑坏布局';
+    await tester.pumpWidget(_wrap(
+      const SizedBox(
+        width: 120,
+        child: TLink(
+          child: Text(longText),
+          variant: TLinkVariant.icon,
+        ),
+      ),
+    ));
+
+    expect(tester.takeException(), isNull);
+    expect(find.byIcon(TIcons.link), findsOneWidget);
+    expect(find.byIcon(TIcons.jump), findsOneWidget);
+    final text = tester.widget<Text>(find.text(longText));
+    expect(text.maxLines, 1);
+    expect(text.softWrap, isFalse);
+    expect(text.overflow, TextOverflow.ellipsis);
+    expect(tester.getSize(find.byType(TLink)).width, lessThanOrEqualTo(120));
+  });
+
+  // ============================================================
   // T17 – 非 Text child（DefaultTextStyle 包裹）
   // ============================================================
   testWidgets('T17 - 非 Text child', (tester) async {
@@ -349,26 +415,64 @@ void main() {
     expect(find.text('富文本'), findsOneWidget);
   });
 
-  // ============================================================
-  // T18 – TLinkConfiguration 存在性
-  // ============================================================
-  testWidgets('T18 - TLinkConfiguration 存在性', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: TLinkConfiguration(
-            onTapAll: (_) {},
-            child: TLink(
-              child: const Text('配置链接'),
-              onPressed: () {},
+  testWidgets('T18 - full theme does not override colorScheme', (tester) async {
+    final token = TThemeData.defaultData();
+    await tester.pumpWidget(MaterialApp(
+      theme: TThemeBuilder.light(token),
+      home: const Scaffold(
+        body: Column(
+          children: [
+            TLink(
+              child: Text('主色'),
+              colorScheme: TLinkColorScheme.primary,
+              onPressed: _noop,
             ),
-          ),
+            TLink(
+              child: Text('默认色'),
+              colorScheme: TLinkColorScheme.defaultTheme,
+              onPressed: _noop,
+            ),
+            TLink(
+              child: Text('危险色'),
+              colorScheme: TLinkColorScheme.danger,
+              onPressed: _noop,
+            ),
+          ],
         ),
       ),
-    );
+    ));
 
-    expect(find.text('配置链接'), findsOneWidget);
-    // TLinkConfiguration 存在且不报错
+    expect(tester.widget<Text>(find.text('主色')).style?.color,
+        token.brandNormalColor);
+    expect(tester.widget<Text>(find.text('默认色')).style?.color,
+        token.textColorPrimary);
+    expect(tester.widget<Text>(find.text('危险色')).style?.color,
+        token.errorNormalColor);
+  });
+
+  testWidgets('T19 - theme defaults apply without strong global overrides',
+      (tester) async {
+    final token = TThemeData.defaultData();
+    await tester.pumpWidget(MaterialApp(
+      theme: TThemeBuilder.light(token).mergeExtension(
+        const TLinkThemeData(
+          defaultColorScheme: TLinkColorScheme.success,
+          defaultSize: TLinkSize.large,
+          defaultVariant: TLinkVariant.underline,
+        ),
+      ),
+      home: const Scaffold(
+        body: TLink(
+          child: Text('默认主题'),
+          onPressed: _noop,
+        ),
+      ),
+    ));
+
+    final text = tester.widget<Text>(find.text('默认主题'));
+    expect(text.style?.color, token.successNormalColor);
+    expect(text.style?.fontSize, 16);
+    expect(text.style?.decoration, TextDecoration.underline);
   });
 }
 
@@ -380,3 +484,5 @@ Widget _wrap(Widget child) {
     ),
   );
 }
+
+void _noop() {}

@@ -16,13 +16,14 @@ typedef FutureCallback = Future<void> Function();
 /// 下拉菜单弹出层管理器
 ///
 /// 负责管理 Overlay 层的创建、方向计算和遮罩渲染。
-class TDropdownPopup {
+class TDropdownPopup<T> {
   TDropdownPopup({
     required this.parentContext,
     required this.child,
     required this.handleClose,
     this.direction = TDropdownPopupDirection.auto,
     this.showOverlay = true,
+    this.overlayColor,
     this.closeOnClickOverlay = true,
     this.duration = const Duration(milliseconds: 200),
   });
@@ -31,7 +32,7 @@ class TDropdownPopup {
   final BuildContext parentContext;
 
   /// 下拉内容
-  final TDropdownItem child;
+  final TDropdownItem<T> child;
 
   /// 关闭回调
   final FutureCallback handleClose;
@@ -41,6 +42,9 @@ class TDropdownPopup {
 
   /// 是否显示遮罩
   final bool? showOverlay;
+
+  /// 遮罩颜色
+  final Color? overlayColor;
 
   /// 点击遮罩是否关闭
   final bool? closeOnClickOverlay;
@@ -112,7 +116,7 @@ class TDropdownPopup {
   }
 
   /// 添加并显示弹出层
-  Future<void> add([TDropdownItem? updateChild]) {
+  Future<void> add([TDropdownItem<T>? updateChild]) {
     var completer = Completer<void>();
     _directionListenable.value = direction ?? TDropdownPopupDirection.auto;
     final overlayEntry = OverlayEntry(
@@ -136,7 +140,7 @@ class TDropdownPopup {
     return completer.future;
   }
 
-  Widget _getPopup(TDropdownMenuDirection value, TDropdownItem? updateChild,
+  Widget _getPopup(TDropdownMenuDirection value, TDropdownItem<T>? updateChild,
       Completer<void> completer) {
     _init(value);
     final barrier = GestureDetector(
@@ -149,7 +153,7 @@ class TDropdownPopup {
         _getOverlay2(),
         _getOverlay3(barrier),
       ],
-      TDropdownInherited(
+      TDropdownInherited<T>(
         popupState: this,
         directionListenable: _directionListenable,
         child: TDropdownPanel(
@@ -179,8 +183,9 @@ class TDropdownPopup {
       child: showOverlay == true
           ? ValueListenableBuilder(
               builder: (BuildContext context, value, Widget? child) {
+                final color = overlayColor ?? Colors.black54;
                 return AnimatedContainer(
-                  color: value ? Colors.black54 : Colors.black54.withAlpha(0),
+                  color: value ? color : color.withAlpha(0),
                   duration: value ? _duration : _duration ~/ 2,
                   child: barrier,
                 );
@@ -242,8 +247,7 @@ class _PopupOverlayRoute<T> extends OverlayRoute<T> {
 
   @override
   Future<RoutePopDisposition> willPop() async {
-    await handleClose();
-    // ignore: deprecated_member_use
-    return super.willPop();
+    unawaited(handleClose());
+    return RoutePopDisposition.pop;
   }
 }

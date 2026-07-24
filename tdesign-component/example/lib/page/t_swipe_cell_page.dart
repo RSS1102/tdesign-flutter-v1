@@ -51,17 +51,14 @@ class TSwipeCellPage extends StatelessWidget {
         return TCellGroup(
           cells: list
               .map((e) => TCell(
-                  title: e['title'],
-                  note: e['note'],
-                  subtitle: e['description']))
+                  title: Text(e['title'] ?? ''),
+                  note: Text(e['note'] ?? ''),
+                  subtitle: Text(e['description'] ?? '')))
               .toList(),
           builder: (context, cell, index) {
             return Theme(
               data: Theme.of(context).mergeExtension(
-                TSwipeCellThemeData(
-                  slidableKey: ValueKey(list[index]['id']),
-                  groupTag: 'test',
-                ),
+                const TSwipeCellThemeData(),
               ),
               child: TSwipeCell(
                 onChanged: (direction, open) {
@@ -102,7 +99,7 @@ class TSwipeCellPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: Theme.of(context).mergeExtension(
-        const TSwipeCellThemeData(groupTag: 'test'),
+        const TSwipeCellThemeData(),
       ),
       child: TSwipeCell(
         right: TSwipeCellPanel(
@@ -118,7 +115,7 @@ class TSwipeCellPage extends StatelessWidget {
             ),
           ],
         ),
-        cell: const TCell(title: '左滑双操作', note: '辅助信息'),
+        cell: const TCell(title: Text('左滑双操作'), note: Text('辅助信息')),
       ),
     );
   }
@@ -128,7 +125,7 @@ class TSwipeCellPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: Theme.of(context).mergeExtension(
-        const TSwipeCellThemeData(groupTag: 'test'),
+        const TSwipeCellThemeData(),
       ),
       child: TSwipeCell(
         right: TSwipeCellPanel(
@@ -148,7 +145,7 @@ class TSwipeCellPage extends StatelessWidget {
             ),
           ],
         ),
-        cell: const TCell(title: '左滑三操作', note: '辅助信息'),
+        cell: const TCell(title: Text('左滑三操作'), note: Text('辅助信息')),
       ),
     );
   }
@@ -158,7 +155,7 @@ class TSwipeCellPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: Theme.of(context).mergeExtension(
-        const TSwipeCellThemeData(groupTag: 'test'),
+        const TSwipeCellThemeData(),
       ),
       child: TSwipeCell(
         left: TSwipeCellPanel(
@@ -170,7 +167,7 @@ class TSwipeCellPage extends StatelessWidget {
             ),
           ],
         ),
-        cell: const TCell(title: '右滑操作', note: '辅助信息'),
+        cell: const TCell(title: Text('右滑操作'), note: Text('辅助信息')),
       ),
     );
   }
@@ -180,7 +177,7 @@ class TSwipeCellPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: Theme.of(context).mergeExtension(
-        const TSwipeCellThemeData(groupTag: 'test'),
+        const TSwipeCellThemeData(),
       ),
       child: TSwipeCell(
         left: TSwipeCellPanel(
@@ -205,7 +202,7 @@ class TSwipeCellPage extends StatelessWidget {
             ),
           ],
         ),
-        cell: const TCell(title: '左右滑操作', note: '辅助信息'),
+        cell: const TCell(title: Text('左右滑操作'), note: Text('辅助信息')),
       ),
     );
   }
@@ -218,7 +215,7 @@ class TSwipeCellPage extends StatelessWidget {
       children: [
         Theme(
           data: Theme.of(context).mergeExtension(
-            const TSwipeCellThemeData(groupTag: 'test'),
+            const TSwipeCellThemeData(),
           ),
           child: TSwipeCell(
             right: TSwipeCellPanel(
@@ -236,13 +233,13 @@ class TSwipeCellPage extends StatelessWidget {
                 ),
               ],
             ),
-            cell: const TCell(title: '左滑操作', note: '图标+文字（横向）'),
+            cell: const TCell(title: Text('左滑操作'), note: Text('图标+文字（横向）')),
           ),
         ),
         const SizedBox(height: 16),
         Theme(
           data: Theme.of(context).mergeExtension(
-            const TSwipeCellThemeData(groupTag: 'test'),
+            const TSwipeCellThemeData(),
           ),
           child: TSwipeCell(
             right: TSwipeCellPanel(
@@ -258,13 +255,13 @@ class TSwipeCellPage extends StatelessWidget {
                 ),
               ],
             ),
-            cell: const TCell(title: '左滑操作', note: '仅图标'),
+            cell: const TCell(title: Text('左滑操作'), note: Text('仅图标')),
           ),
         ),
         const SizedBox(height: 16),
         Theme(
           data: Theme.of(context).mergeExtension(
-            const TSwipeCellThemeData(groupTag: 'test'),
+            const TSwipeCellThemeData(),
           ),
           child: TSwipeCell(
             right: TSwipeCellPanel(
@@ -287,7 +284,10 @@ class TSwipeCellPage extends StatelessWidget {
               ],
             ),
             cell: const TCell(
-                title: '左滑操作', note: '图标+文字（纵向）', subtitle: '一段很长很长的内容文字'),
+              title: Text('左滑操作'),
+              note: Text('图标+文字（纵向）'),
+              subtitle: Text('一段很长很长的内容文字'),
+            ),
           ),
         )
       ],
@@ -299,7 +299,7 @@ class TSwipeCellPage extends StatelessWidget {
     var screenWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: Theme.of(context).mergeExtension(
-        const TSwipeCellThemeData(groupTag: 'test'),
+        const TSwipeCellThemeData(),
       ),
       child: TSwipeCell(
         right: TSwipeCellPanel(
@@ -322,7 +322,7 @@ class TSwipeCellPage extends StatelessWidget {
             ),
           ],
         ),
-        cell: const TCell(title: '左滑操作', note: '二次确认'),
+        cell: const TCell(title: Text('左滑操作'), note: Text('二次确认')),
       ),
     );
   }

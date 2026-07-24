@@ -1,196 +1,45 @@
-# TBadge — v1.0 定稿
+# TBadge
 
-> **状态**：规划中 | **控制类**：A | **Sprint**：S2
-
-- [§1 v1.0 定稿 API](#1-v10-定稿-api)（新组件从零开始看这里）
-- [§2 0.2.x → v1.0](#2-02x--v10)（从旧版升级看这里）
-- [§3 Theme 主题配置](#3-theme-主题配置)
-- [§4 实现约定 · 测试与 Example 契约](#4-实现约定--测试与-example-契约)
+> **状态**：已实现 | **控制类**：A | **Sprint**：S2
 
 **源码路径**：`lib/src/components/badge`
 
----
-
 ## 架构
 
-| 项 | v1.0 |
-|---|---|
-| 实现 | Material 动作控件薄包装 |
-| Material | Badge M3 |
-| Theme | `TBadgeThemeData` |
-| 禁用 | 纯展示组件无 Widget 级禁用开关。 |
-| L4 | 构造器 L4 → **`TBadgeThemeData`** |
+`TBadge` 是 Material `Badge` 的薄包装。数量、形态、显隐和交互全部由构造器控制；组件不缓存业务状态。
 
-## 控制方案
+- `count` 使用 `int`，不接受字符串或动态值。
+- `maxCount` 只负责最终文案截断，不修改调用方数据。
+- `onTap == null` 时不创建点击行为。
+- `TBadgeThemeData` 仅补充 Material `BadgeThemeData` 未覆盖的边框颜色和宽度。
 
-控制类 **A**：`onTap`；**不提供** `value`。禁用：`onTap: null`。
+## API
 
----
+| 参数 | 类型 | 默认值 | 说明 |
+|---|---|---|---|
+| `count` | `int` | `0` | 当前数量，必须大于等于 0 |
+| `maxCount` | `int` | `99` | 最大显示数量，必须大于 0 |
+| `variant` | `TBadgeVariant` | `normal` | `normal`、`small` 或 `dot` |
+| `border` | `bool` | `false` | 是否显示对比色描边 |
+| `showZero` | `bool` | `true` | 数量为 0 时是否显示 |
+| `child` | `Widget?` | `null` | 被标记内容；为空时独立展示 |
+| `onTap` | `GestureTapCallback?` | `null` | 点击回调 |
 
-## §1 v1.0 定稿 API
+## Theme
 
-> 与 0.2.x API 对照参见 §2。无图例项 = 与 0.2.x 同名同义保留。
+优先使用 Material `BadgeThemeData` 配置背景色、文字色、尺寸、位置和 padding。`TBadgeThemeData` 仅包含：
 
-### 1.1 构造器参数
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `borderColor` | `Color?` | 描边颜色 |
+| `borderWidth` | `double?` | 描边宽度 |
 
-| 决策 | 参数 | 类型 | 层级 | 默认值 | 说明 |
-|------|------|------|------|--------|------|
-| | `count` | `int` | L2 | — | 红点数量 |
-| | `maxCount` | `int?` | L2 | — | 最大显示数量（超出显示 `99+`） |
-| ✨ | `variant` | `TBadgeVariant` | L1 | `normal` | 形态（normal / small / dot），同时控制尺寸 |
-| ✨ | `border` | `bool` | L1 | `false` | 是否显示边框 |
-| ✨ | `showZero` | `bool` | L1 | `true` | 是否显示 0 |
-| | `child` | `Widget` | L2 | — | 被包裹的内容 |
-| | `onTap` | `GestureTapCallback?` | L3 | — | 点击回调 |
+## Export
 
-> **L1** = 语义级、**L2** = 内容级、**L3** = 行为级
+公开导出 `TBadge`、`TBadgeVariant`、`TBadgeThemeData`。绘制和 resolved 类型均保持内部可见。
 
-### 1.2 类型定义
+## 验收
 
-| 决策 | 类型 | 成员 | 用于 |
-|------|------|------|------|
-| ✨ | `TBadgeVariant` | `normal` · `small` · `dot` | `variant` 参数（同时控制形态和尺寸） |
-| ✨ | `TBadgeThemeData` | ThemeExtension | §3 主题配置 |
-
-### 1.3 移除的导出符号
-
-| 决策 | 移除符号 | 替代 |
-|------|---------|------|
-| 📦 | `TBadgeType` | `variant` 参数 |
-| 🗑️ | `TBadgeSize` | `variant` 参数（同时控制形态和尺寸） |
-| 📦 | `border` (0.2.x) / `color` / `textColor` / `message` / `widthLarge` / `widthSmall` / `padding` / `showZero` (0.2.x) | `TBadgeThemeData` |
-
----
-
-## §2 0.2.x → v1.0
-
-### ✏️ 改名
-
-| 从（0.2.x） | 到（v1.0） | 怎么改 |
-|------------|-----------|--------|
-| `TBadgeType` | `variant` | 枚举化 |
-| `variant` | `variant` | v1.0 语义形态 |
-| `border` (0.2.x) | `border` | 参数保留 |
-| `color` | `TBadgeThemeData` | L4 → Theme |
-| `textColor` | `TBadgeThemeData` | L4 → Theme |
-| `message` | `TBadgeThemeData` | L4 → Theme |
-| `widthLarge` | `TBadgeThemeData` | L4 → Theme |
-| `widthSmall` | `TBadgeThemeData` | L4 → Theme |
-| `padding` | `TBadgeThemeData` | L4 → Theme |
-| `showZero` (0.2.x) | `showZero` | 参数保留 |
-
-### ✨ 新增
-
-_无_
-
-### 🔀 合并
-
-_无_
-
-### 🗑️ 移除
-
-| 从（0.2.x） | 原因 |
-|------------|------|
-| `size` | 与 `variant` 语义重叠，删除；用 `variant` 控制形态和尺寸 |
-
-### 📦 迁入 Theme
-
-| 从（0.2.x 构造器） | 到（TBadgeThemeData 字段） | 怎么改 |
-|------------------|---------------------------|--------|
-| `color` | `backgroundColor` | 见 §3 末列 |
-| `textColor` | `textColor` | 见 §3 末列 |
-| `message` | `message` | 见 §3 末列 |
-| `widthLarge` | `largeWidth` | 见 §3 末列 |
-| `widthSmall` | `smallWidth` | 见 §3 末列 |
-| `padding` | `padding` | 见 §3 末列 |
-| `showZero` (0.2.x) | `showZero` | 见 §3 末列 |
-
-> 注：Material `BadgeTheme` 的 `backgroundColor`/`textColor`/`padding`/`alignment` 由 Material 子主题处理，TDesign 扩展字段在 `TBadgeThemeData` 中。
-
-> 子组件内部使用的 `TBadge` 也需同步升级，**不借用构造器参数**。
-
----
-
-## §3 Theme 主题配置
-
-### 3.1 配置方式
-
-| 范围 | 配置方法 |
-|------|---------|
-| 单组件 | 构造器 L1 参数 |
-| 子树 | `Theme.of(context).mergeExtension(TBadgeThemeData(...))` |
-| 全应用 | `MaterialApp.theme` 扩展 `TBadgeThemeData` |
-
-### 3.2 覆盖顺序
-
-`resolve（全量合并）` **>** Token
-
-### 3.3 TBadgeThemeData 字段
-
-> TDesign 扩展字段（Material `BadgeTheme` 无对应项）：
-
-| 决策 | 字段 | 管什么 | 0.2.x 构造参数 |
-|------|------|--------|---------------|
-| 📦 | `backgroundColor` | 底色 | `color` |
-| 📦 | `textColor` | 文字色 | `textColor` |
-| 📦 | `message` | 消息文案（如 `new`） | `message` |
-| 📦 | `largeWidth` | 大尺寸宽度 | `widthLarge` |
-| 📦 | `smallWidth` | 小尺寸宽度 | `widthSmall` |
-| 📦 | `padding` | 内边距 | `padding` |
-| 📦 | `showZero` | 是否显示 0 默认值 | `showZero` |
-
----
-
-## §4 实现约定 · 测试与 Example 契约
-
-### 4.1 实现约束
-
-- **文件划分**：单一 resolve 入口
-  - `t_badge.dart` — Widget 本体
-  - `t_badge_resolve.dart` — **唯一**样式合并入口
-  - `t_badge_theme_data.dart` — `TBadgeThemeData` ThemeExtension
-
-- **底层实现**：包装 Material `Badge` M3
-
-### 4.2 必测场景
-
-> 控制类通用必测见 [testing.md](../guide/testing.md) §3，此处仅列组件专项。
-
-| 测试项 | Golden | 说明 |
-|--------|--------|------|
-| 基础渲染 | ✅ | 默认参数正常渲染 |
-| 数字红点 | ✅ | `count` 参数 |
-| 最大值 | ✅ | `maxCount` 超出显示 |
-| 形态切换 | ✅ | `variant: TBadgeVariant.dot` |
-| 点击交互 | ✅ | `onTap` 回调 |
-
-### 4.3 Example 契约
-
-- 覆盖 `count` 数字红点
-- 覆盖 `variant` 形态切换
-- 覆盖 `maxCount` 最大值
-
----
-
-### export
-
-- **保留**：`TBadge`、`TBadgeVariant`、`TBadgeThemeData`
-- **移出**：`TBadgeSize`、内部 `*Style`、绘制 helper（与 [附录 C](../../v1.0-redesign-spec.md#附录-cexport-审计表) 一致）
-
----
-
-## 2. Theme
-
-`TBadgeThemeData` · Material: **Badge M3** · [theme.md](../foundation/theme.md)
-
-### Material vs TDesign
-
-| 字段 | 来源 | 说明 |
-| --- | --- | --- |
-| `backgroundColor` / `textColor` / `padding` / `alignment` | Material **`BadgeTheme`**（或组件默认） | 徽标底色与文案 |
-| `variant` | TDesign **`TBadgeThemeData`** | 原 `TBadgeType` / `type` |
-| `border` / `largeWidth` / `smallWidth` / `showZero` / `message` | TDesign 扩展 | Material Badge 无独立 border/双宽度语义 |
-
----
-
-> **文档参考**：[api.md](../foundation/api.md) · [controlled.md](../foundation/controlled.md) · [theme.md](../foundation/theme.md) · [disabled-evolution.md](../foundation/disabled-evolution.md)
+- 三种 variant 均有行为测试。
+- `showZero`、`maxCount`、`child`、`onTap` 和边框 Theme 均有测试。
+- Badge 源码逐文件覆盖率为 100%。

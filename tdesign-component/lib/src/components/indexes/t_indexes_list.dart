@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
 import '../../util/iterable_ext.dart';
+import '../text/t_text.dart';
 import 'sticky_header/sticky_header_widget.dart';
 import 't_indexes_anchor.dart';
 
@@ -102,9 +107,13 @@ class _TIndexesListState extends State<TIndexesList> {
                       (e) {
                         final isActive = value == e;
                         if (widget.builderIndex != null) {
-                          return Container(
+                          return SizedBox(
                             key: _containerKeys[e],
-                            child: widget.builderIndex!(context, e, isActive),
+                            width: _indexSize + context.tTheme.spacer8,
+                            height: _indexSize,
+                            child: Center(
+                              child: widget.builderIndex!(context, e, isActive),
+                            ),
                           );
                         }
                         return Stack(
@@ -127,8 +136,7 @@ class _TIndexesListState extends State<TIndexesList> {
                                     child: TText(
                                       e,
                                       forceVerticalCenter: true,
-                                      font: context.tTheme
-                                          .fontTitleExtraLarge,
+                                      font: context.tTheme.fontTitleExtraLarge,
                                       textColor:
                                           context.tTheme.brandNormalColor,
                                     ),
@@ -137,29 +145,32 @@ class _TIndexesListState extends State<TIndexesList> {
                               ),
                             Container(
                               key: _containerKeys[e],
-                              padding: EdgeInsets.only(
-                                  left: context.tTheme.spacer8),
-                              child: Container(
+                              width: _indexSize + context.tTheme.spacer8,
+                              height: _indexSize,
+                              alignment: Alignment.center,
+                              child: SizedBox(
                                 width: _indexSize,
                                 height: _indexSize,
-                                decoration: isActive
-                                    ? BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                            context.tTheme.radiusCircle),
-                                        color: context.tTheme
-                                            .brandNormalColor,
-                                      )
-                                    : null,
-                                child: Center(
-                                  child: TText(
-                                    e,
-                                    forceVerticalCenter: true,
-                                    font: isActive
-                                        ? context.tTheme.fontMarkSmall
-                                        : context.tTheme.fontLinkSmall,
-                                    textColor: isActive
-                                        ? context.tTheme.textColorAnti
-                                        : context.tTheme.textColorPrimary,
+                                child: DecoratedBox(
+                                  decoration: isActive
+                                      ? BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              context.tTheme.radiusCircle),
+                                          color:
+                                              context.tTheme.brandNormalColor,
+                                        )
+                                      : const BoxDecoration(),
+                                  child: Center(
+                                    child: TText(
+                                      e,
+                                      forceVerticalCenter: true,
+                                      font: isActive
+                                          ? context.tTheme.fontMarkSmall
+                                          : context.tTheme.fontLinkSmall,
+                                      textColor: isActive
+                                          ? context.tTheme.textColorAnti
+                                          : context.tTheme.textColorPrimary,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -209,6 +220,9 @@ class _TIndexesListState extends State<TIndexesList> {
     _hideTipTimer = Timer(
       const Duration(seconds: 1),
       () {
+        if (!mounted) {
+          return;
+        }
         setState(() {
           _showTip = false;
         });

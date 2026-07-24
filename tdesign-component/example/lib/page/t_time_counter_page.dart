@@ -218,7 +218,7 @@ TTimeCounter _buildSimple(BuildContext context) {
 TTimeCounter _buildMillisecondSimple(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
-    millisecond: true,
+    showMillisecond: true,
   );
 }
 
@@ -226,7 +226,7 @@ TTimeCounter _buildMillisecondSimple(BuildContext context) {
 TTimeCounter _buildUpSimple(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
-    millisecond: true,
+    showMillisecond: true,
     direction: TTimeCounterDirection.up,
   );
 }
@@ -235,7 +235,7 @@ TTimeCounter _buildUpSimple(BuildContext context) {
 TTimeCounter _buildSquareSimple(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
-    theme: TTimeCounterVariant.square,
+    variant: TTimeCounterVariant.square,
   );
 }
 
@@ -243,7 +243,7 @@ TTimeCounter _buildSquareSimple(BuildContext context) {
 TTimeCounter _buildRoundSimple(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
-    theme: TTimeCounterVariant.round,
+    variant: TTimeCounterVariant.round,
   );
 }
 
@@ -251,7 +251,7 @@ TTimeCounter _buildRoundSimple(BuildContext context) {
 TTimeCounter _buildUnitSimple(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
-    theme: TTimeCounterVariant.square,
+    variant: TTimeCounterVariant.square,
     splitWithUnit: true,
   );
 }
@@ -293,7 +293,7 @@ TTimeCounter _buildSquareSmallSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.small,
-    theme: TTimeCounterVariant.square,
+    variant: TTimeCounterVariant.square,
   );
 }
 
@@ -302,7 +302,7 @@ TTimeCounter _buildSquareMediumSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.medium,
-    theme: TTimeCounterVariant.square,
+    variant: TTimeCounterVariant.square,
   );
 }
 
@@ -311,7 +311,7 @@ TTimeCounter _buildSquareLargeSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.large,
-    theme: TTimeCounterVariant.square,
+    variant: TTimeCounterVariant.square,
   );
 }
 
@@ -320,7 +320,7 @@ TTimeCounter _buildRoundSmallSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.small,
-    theme: TTimeCounterVariant.round,
+    variant: TTimeCounterVariant.round,
   );
 }
 
@@ -329,7 +329,7 @@ TTimeCounter _buildRoundMediumSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.medium,
-    theme: TTimeCounterVariant.round,
+    variant: TTimeCounterVariant.round,
   );
 }
 
@@ -338,7 +338,7 @@ TTimeCounter _buildRoundLargeSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.large,
-    theme: TTimeCounterVariant.round,
+    variant: TTimeCounterVariant.round,
   );
 }
 
@@ -347,7 +347,7 @@ TTimeCounter _buildUnitSmallSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.small,
-    theme: TTimeCounterVariant.square,
+    variant: TTimeCounterVariant.square,
     splitWithUnit: true,
   );
 }
@@ -357,7 +357,7 @@ TTimeCounter _buildUnitMediumSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.medium,
-    theme: TTimeCounterVariant.square,
+    variant: TTimeCounterVariant.square,
     splitWithUnit: true,
   );
 }
@@ -367,7 +367,7 @@ TTimeCounter _buildUnitLargeSize(BuildContext context) {
   return const TTimeCounter(
     time: 60 * 60 * 1000,
     size: TTimeCounterSize.large,
-    theme: TTimeCounterVariant.square,
+    variant: TTimeCounterVariant.square,
     splitWithUnit: true,
   );
 }

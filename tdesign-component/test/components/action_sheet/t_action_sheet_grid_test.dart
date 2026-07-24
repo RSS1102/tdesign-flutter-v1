@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/tdesign_flutter.dart';
 import 'package:tdesign_flutter/src/components/action_sheet/t_action_sheet_grid.dart';
+import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// TActionSheetGrid 宫格动作面板测试
 ///
@@ -31,6 +31,22 @@ void main() {
       subtitle: '请选择',
     )));
     expect(find.text('请选择'), findsOneWidget);
+  });
+
+  testWidgets('长 subtitle 在窄宽度下可换行且不溢出', (tester) async {
+    const longSubtitle = '这是用于验证宫格动作面板描述在窄屏下不会横向溢出的长文案';
+    await tester.pumpWidget(wrap(SizedBox(
+      width: 160,
+      child: TActionSheetGrid(
+        items: items(2),
+        subtitle: longSubtitle,
+        showCancel: false,
+      ),
+    )));
+
+    expect(tester.takeException(), isNull);
+    expect(
+        tester.getRect(find.text(longSubtitle)).width, lessThanOrEqualTo(160));
   });
 
   testWidgets('scrollable=true 横向滚动分支', (tester) async {
@@ -63,5 +79,19 @@ void main() {
       scrollable: false,
     )));
     expect(find.byType(TActionSheetGrid), findsOneWidget);
+  });
+
+  testWidgets('默认 grid 超出 count 时可纵向滚动', (tester) async {
+    await tester.pumpWidget(wrap(TActionSheetGrid(
+      items: items(12),
+      count: 8,
+      rows: 2,
+      showPagination: false,
+      scrollable: false,
+    )));
+
+    final grid = tester.widget<GridView>(find.byType(GridView));
+    expect(grid.physics, isNot(const NeverScrollableScrollPhysics()));
+    expect(tester.takeException(), isNull);
   });
 }

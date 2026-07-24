@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
+
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
+import '../text/t_text.dart';
+import 't_result_theme_data.dart';
 
 /// 结果形态
-enum TResultVariant { defaultTheme, success, warning, error }
+enum TResultVariant {
+  /// 默认结果状态。
+  defaultTheme,
+
+  /// 成功结果状态。
+  success,
+
+  /// 警告结果状态。
+  warning,
+
+  /// 错误结果状态。
+  error,
+}
 
 class TResult extends StatelessWidget {
   const TResult({

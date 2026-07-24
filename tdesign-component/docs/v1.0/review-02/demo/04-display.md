@@ -52,3 +52,57 @@ Review 建议：
 
 - 需要进入 demo review。
 - 操作列应改成固定宽度 + 居中排列，或者给文本加弹性与省略，避免在窄屏上直接溢出。
+
+### 3. `Tag` 和 `SelectTag` demo 被拆成两个组件入口，review 口径需要归并
+
+定位：
+
+- `tdesign-component/example/lib/config.dart:312-313`
+- `tdesign-component/example/lib/page/t_tag_page.dart`
+- `tdesign-component/example/lib/page/t_select_tag_page.dart`
+- `tdesign-component/lib/src/components/tag/t_tag.dart`
+- `tdesign-component/lib/src/components/tag/t_select_tag.dart`
+
+证据：
+
+- 展示类配置中同时存在 `Tag 标签 (V1.0)` 与 `SelectTag 可选标签 (V1.0)` 两个入口。
+- `TSelectTag` 基于 `TTag` 能力扩展可选状态，二者属于同一个标签组件族。
+- 用户补充确认：`tag` 和 `SelectTag` 为同一个组件，不应在 review 和后续修复中作为两个独立组件拆分。
+
+诊断：
+
+- 这是 demo / review 组件归类口径问题。
+- 拆成两个独立组件入口会导致文档、验收、问题归档和后续修复重复统计。
+
+Review 建议：
+
+- 需要进入 demo review。
+- 后续统一按 `Tag` 组件族记录，在同一组件页或同一 review 条目下区分普通标签和可选标签能力。
+- 如 demo 仍保留两个入口，需要在文案和文档中明确它们属于同一组件族，不作为两个独立组件验收。
+
+### 4. `Cell` 和 `CellGroup` demo 被拆成两个组件入口，review 口径需要归并
+
+定位：
+
+- `tdesign-component/example/lib/config.dart:314-315`
+- `tdesign-component/example/lib/page/t_cell_page.dart`
+- `tdesign-component/example/lib/page/t_cell_group_page.dart`
+- `tdesign-component/lib/src/components/cell/t_cell.dart`
+- `tdesign-component/lib/src/components/cell/t_cell_group.dart`
+
+证据：
+
+- 展示类配置中同时存在 `Cell 单元格 (V1.0)` 与 `CellGroup 单元格组 (V1.0)` 两个入口。
+- `TCellGroup` 是 `TCell` 的分组容器能力，二者属于同一个单元格组件族。
+- 用户补充确认：`Cell` 和 `CellGroup` 为同一个组件，不应在 review 和后续修复中作为两个独立组件拆分。
+
+诊断：
+
+- 这是 demo / review 组件归类口径问题。
+- 拆成两个独立组件入口会导致组件清单、文档页、验收范围和问题归档重复。
+
+Review 建议：
+
+- 需要进入 demo review。
+- 后续统一按 `Cell` 组件族记录，在同一组件页或同一 review 条目下区分单元格和单元格组能力。
+- 如 demo 仍保留两个入口，需要在文案和文档中明确它们属于同一组件族，不作为两个独立组件验收。

@@ -6,7 +6,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../button/t_button_types.dart';
 
 export 't_confirm_dialog.dart';
 
@@ -15,7 +15,10 @@ export 't_confirm_dialog.dart';
 /// 用于在 Dialog 层面配置按钮样式
 /// Dialog 内支持配置每个按钮的样式
 enum TDialogButtonStyle {
+  /// 常规按钮样式
   normal,
+
+  /// 文字按钮样式
   text,
 }
 
@@ -45,13 +48,13 @@ class TDialogButtonOptions {
   /// 字体粗细
   final FontWeight? fontWeight;
 
-  /// 按钮样式（V1.0: 改用 ButtonStyle 替代 TButtonStyle）
+  /// 按钮样式
   final ButtonStyle? style;
 
   /// 按钮变体类型
   final TButtonVariant? type;
 
-  /// 按钮配色方案（V1.0: 由 `theme` 改名）
+  /// 按钮配色方案
   final TButtonColorScheme? colorScheme;
 
   /// 按钮高度
@@ -59,5 +62,5 @@ class TDialogButtonOptions {
   final double? height;
 
   /// 点击操作
-  final Function()? onPressed;
+  final VoidCallback? onPressed;
 }

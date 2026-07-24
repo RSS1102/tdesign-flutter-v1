@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
+import 't_button_theme_data.dart';
+import 't_button_types.dart';
 
 /// 按钮样式解析器
 ///
@@ -10,15 +14,46 @@ class TButtonResolve {
   TButtonResolve._();
 
   /// 解析最终的 [ButtonStyle]
+  ///
+  /// [variant] 按钮形态，决定 fill / outline / text / ghost 的基础样式链路。
+  /// [colorScheme] 语义色方案；为 null 时使用默认色方案。
+  /// [size] 尺寸规格，用于推导最小尺寸、内边距和默认字号。
+  /// [icon] 图标内容；与 [hasChild]、[iconPosition] 一起决定图标间距和尺寸。
+  /// [hasChild] 是否存在文本或自定义内容，用于区分纯图标按钮与图文按钮。
+  /// [iconPosition] 图标位置，用于计算图标和内容之间的间距。
+  /// [theme] P1 组件主题，提供默认形态、色板、间距、渐变等配置。
+  /// [instanceStyle] P0 实例样式，优先级最高，会覆盖所有 resolve 结果。
+  /// [context] 当前构建上下文，用于读取 TDesign 全局 Token。
+  /// [hasGradient] 是否启用渐变背景；启用时会清理 Material 默认背景和阴影污染。
   static ButtonStyle resolve({
+    /// 按钮形态，决定 fill / outline / text / ghost 的基础样式链路。
     required TButtonVariant variant,
+
+    /// 语义色方案；为 null 时使用默认色方案。
     required TButtonColorScheme? colorScheme,
+
+    /// 尺寸规格，用于推导最小尺寸、内边距和默认字号。
     required TButtonSize size,
+
+    /// 图标内容；与 [hasChild]、[iconPosition] 一起决定图标间距和尺寸。
     required Widget? icon,
+
+    /// 是否存在文本或自定义内容，用于区分纯图标按钮与图文按钮。
+    required bool hasChild,
+
+    /// 图标位置，用于计算图标和内容之间的间距。
     required TButtonIconPosition iconPosition,
+
+    /// P1 组件主题，提供默认形态、色板、间距、渐变等配置。
     required TButtonThemeData? theme,
+
+    /// P0 实例样式，优先级最高，会覆盖所有 resolve 结果。
     required ButtonStyle? instanceStyle,
+
+    /// 当前构建上下文，用于读取 TDesign 全局 Token。
     required BuildContext context,
+
+    /// 是否启用渐变背景；启用时会清理 Material 默认背景和阴影污染。
     required bool hasGradient,
   }) {
     final tTheme = context.tTheme;
@@ -46,7 +81,7 @@ class TButtonResolve {
     final sizeStyle = _resolveSize(
       size: size,
       hasIcon: icon != null,
-      hasChild: true, // v1.0 始终有 child
+      hasChild: hasChild,
       effectiveShape: effectiveShape,
     );
 
@@ -59,7 +94,9 @@ class TButtonResolve {
 
     // 5. Theme padding 覆盖默认
     final paddingStyle = theme?.padding != null
-        ? ButtonStyle(padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(theme!.padding!))
+        ? ButtonStyle(
+            padding:
+                WidgetStatePropertyAll<EdgeInsetsGeometry>(theme!.padding!))
         : null;
 
     // 6. iconSpacing
@@ -68,18 +105,19 @@ class TButtonResolve {
 
     // 合并：P2 色板 → colorScheme → shape → size → textStyle → Theme padding → iconSpacing → P0
     var resolved = variantPalette ?? const ButtonStyle();
-    resolved = resolved.merge(colorStyle);
-    resolved = resolved.merge(shapeStyle);
-    resolved = resolved.merge(sizeStyle);
-    resolved = resolved.merge(textStyleStyle);
+    resolved = _overrideWith(resolved, colorStyle);
+    resolved = _overrideWith(resolved, shapeStyle);
+    resolved = _overrideWith(resolved, sizeStyle);
+    resolved = _overrideWith(resolved, textStyleStyle);
     if (paddingStyle != null) {
-      resolved = resolved.merge(paddingStyle);
+      resolved = _overrideWith(resolved, paddingStyle);
     }
-    resolved = resolved.merge(iconSpacingStyle);
+    resolved = _overrideWith(resolved, iconSpacingStyle);
 
     // 渐变存在时强制背景 null（触发 MaterialType.transparency），阻止 M3 默认样式污染渐变效果（在 P0 之前，允许 P0 覆盖）
     if (hasGradient) {
-      resolved = resolved.merge(
+      resolved = _overrideWith(
+        resolved,
         const ButtonStyle(
           // 设为 null 而非 Colors.transparent，确保 ButtonStyleButton 使用 MaterialType.transparency
           backgroundColor: WidgetStatePropertyAll<Color?>(null),
@@ -92,14 +130,22 @@ class TButtonResolve {
 
     // P0：实例 style 覆盖所有
     if (instanceStyle != null) {
-      resolved = resolved.merge(instanceStyle);
+      resolved = _overrideWith(resolved, instanceStyle);
     }
 
     return resolved;
   }
 
+  /// 使用 [overrideStyle] 覆盖 [base] 中同名字段。
+  static ButtonStyle _overrideWith(
+      ButtonStyle base, ButtonStyle overrideStyle) {
+    return overrideStyle.merge(base);
+  }
+
   /// 获取 variant 对应的 P2 色板
-  static ButtonStyle? _variantPalette(TButtonThemeData? theme, TButtonVariant variant) {
+
+  static ButtonStyle? _variantPalette(
+      TButtonThemeData? theme, TButtonVariant variant) {
     return switch (variant) {
       TButtonVariant.fill => theme?.filledStyle,
       TButtonVariant.outline => theme?.outlinedStyle,
@@ -209,9 +255,12 @@ class TButtonResolve {
       }),
       side: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return BorderSide(color: tTheme.componentBorderColor.withValues(alpha: 0.4), width: 1);
+          return BorderSide(
+              color: tTheme.componentBorderColor.withValues(alpha: 0.4),
+              width: 1);
         }
-        return BorderSide(color: borderColor ?? tTheme.componentBorderColor, width: 1);
+        return BorderSide(
+            color: borderColor ?? tTheme.componentBorderColor, width: 1);
       }),
       overlayColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
       surfaceTintColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
@@ -281,9 +330,8 @@ class TButtonResolve {
         return fg;
       }),
       side: WidgetStateProperty.resolveWith((states) {
-        final color = states.contains(WidgetState.disabled)
-            ? tTheme.fontWhColor4
-            : fg;
+        final color =
+            states.contains(WidgetState.disabled) ? tTheme.fontWhColor4 : fg;
         return BorderSide(color: color, width: 1);
       }),
       overlayColor: const WidgetStatePropertyAll<Color>(Colors.transparent),
@@ -363,7 +411,8 @@ class TButtonResolve {
 
     // padding：纵向按 size，横向按内容
     final padH = (isSquareOrCircle && onlyIcon) ? paddingValue : paddingValue;
-    final padV = (isSquareOrCircle && onlyIcon) ? paddingValue : _verticalPadding(size);
+    final padV =
+        (isSquareOrCircle && onlyIcon) ? paddingValue : _verticalPadding(size);
 
     return ButtonStyle(
       minimumSize: WidgetStatePropertyAll<Size>(
@@ -400,7 +449,8 @@ class TButtonResolve {
   }
 
   /// 图标与文案间距
-  static ButtonStyle _resolveIconSpacing(double spacing, TButtonIconPosition iconPosition) {
+  static ButtonStyle _resolveIconSpacing(
+      double spacing, TButtonIconPosition iconPosition) {
     // 使用 visualDensity 或通过 padding 间接控制间距
     // 此处由 TButton.build 内部 Row 的间隙控制，不写入 ButtonStyle
     return const ButtonStyle();
@@ -408,7 +458,8 @@ class TButtonResolve {
 
   // --- 辅助颜色计算 ---
 
-  static Color _disabledBackgroundColor(TButtonColorScheme scheme, TThemeData tTheme) {
+  static Color _disabledBackgroundColor(
+      TButtonColorScheme scheme, TThemeData tTheme) {
     switch (scheme) {
       case TButtonColorScheme.primary:
         return tTheme.brandDisabledColor;
@@ -421,7 +472,8 @@ class TButtonResolve {
     }
   }
 
-  static Color _pressedBackgroundColor(TButtonColorScheme scheme, TThemeData tTheme) {
+  static Color _pressedBackgroundColor(
+      TButtonColorScheme scheme, TThemeData tTheme) {
     switch (scheme) {
       case TButtonColorScheme.primary:
         return tTheme.brandClickColor;

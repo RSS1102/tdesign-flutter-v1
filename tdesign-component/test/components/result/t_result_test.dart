@@ -9,38 +9,52 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() {
   /// 用 TTheme 包裹以提供基础 Token
   Widget wrapWithTheme(Widget child, {TResultThemeData? resultTheme}) {
-    final themeExtensions = <ThemeExtension>[
-      if (resultTheme != null) resultTheme,
-    ];
-    // 注意：必须通过 MaterialApp.theme 传递 extensions，
-    // 用外层 Theme 包 MaterialApp 会被 MaterialApp 默认 ThemeData.light() 覆盖，导致 extension 丢失。
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (resultTheme != null) {
+      theme = theme.mergeExtension(resultTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(
-        extensions: [TThemeData.defaultData(), ...themeExtensions],
-      ),
+      theme: theme,
       home: Scaffold(body: child),
+    );
+  }
+
+  TText resultTextWidget(WidgetTester tester, String data) {
+    return tester.widget<TText>(
+      find.byWidgetPredicate(
+        (widget) => widget is TText && widget.data == data,
+      ),
     );
   }
 
   group('TResult 基础渲染', () {
     testWidgets('默认 variant 渲染 - info 图标', (tester) async {
+      final token = TThemeData.defaultData();
       await tester.pumpWidget(wrapWithTheme(const TResult()));
-      expect(find.byType(TResult), findsOneWidget);
-      // 默认 variant 使用 info_circle 图标
-      expect(find.byIcon(TIcons.info_circle), findsOneWidget);
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.info_circle));
+      expect(icon.size, 70);
+      expect(icon.color, token.brandNormalColor);
     });
 
     testWidgets('带 title 渲染', (tester) async {
+      final token = TThemeData.defaultData();
       await tester.pumpWidget(wrapWithTheme(const TResult(title: '操作成功')));
       expect(find.text('操作成功'), findsOneWidget);
+      final title = resultTextWidget(tester, '操作成功');
+      expect(title.textColor, token.textColorPrimary);
+      expect(title.font, token.fontTitleExtraLarge);
     });
 
     testWidgets('带 subtitle 渲染', (tester) async {
+      final token = TThemeData.defaultData();
       await tester.pumpWidget(wrapWithTheme(
         const TResult(title: '标题', subtitle: '副标题描述'),
       ));
       expect(find.text('标题'), findsOneWidget);
       expect(find.text('副标题描述'), findsOneWidget);
+      final subtitle = resultTextWidget(tester, '副标题描述');
+      expect(subtitle.textColor, token.textColorSecondary);
+      expect(subtitle.font, token.fontTitleSmall);
     });
 
     testWidgets('title 为空时不渲染标题', (tester) async {
@@ -58,25 +72,34 @@ void main() {
 
   group('TResult variant 四档', () {
     testWidgets('variant: success 显示 check_circle', (tester) async {
+      final token = TThemeData.defaultData();
       await tester.pumpWidget(wrapWithTheme(
         const TResult(variant: TResultVariant.success, title: '成功'),
       ));
-      expect(find.byIcon(TIcons.check_circle), findsOneWidget);
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.check_circle));
+      expect(icon.size, 70);
+      expect(icon.color, token.successNormalColor);
       expect(find.text('成功'), findsOneWidget);
     });
 
     testWidgets('variant: warning 显示 error_circle', (tester) async {
+      final token = TThemeData.defaultData();
       await tester.pumpWidget(wrapWithTheme(
         const TResult(variant: TResultVariant.warning, title: '警告'),
       ));
-      expect(find.byIcon(TIcons.error_circle), findsOneWidget);
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.error_circle));
+      expect(icon.size, 70);
+      expect(icon.color, token.warningNormalColor);
     });
 
     testWidgets('variant: error 显示 close_circle', (tester) async {
+      final token = TThemeData.defaultData();
       await tester.pumpWidget(wrapWithTheme(
         const TResult(variant: TResultVariant.error, title: '失败'),
       ));
-      expect(find.byIcon(TIcons.close_circle), findsOneWidget);
+      final icon = tester.widget<Icon>(find.byIcon(TIcons.close_circle));
+      expect(icon.size, 70);
+      expect(icon.color, token.errorNormalColor);
     });
 
     testWidgets('variant: defaultTheme 显示 info_circle', (tester) async {
@@ -109,7 +132,9 @@ void main() {
           titleStyle: TextStyle(fontSize: 24, color: Colors.red),
         ),
       ));
-      expect(find.text('主题样式'), findsOneWidget);
+      final title = resultTextWidget(tester, '主题样式');
+      expect(title.style?.fontSize, 24);
+      expect(title.style?.color, Colors.red);
     });
 
     testWidgets('Theme 无 titleStyle 时正常渲染', (tester) async {
@@ -122,45 +147,23 @@ void main() {
 
   group('TResultThemeData copyWith 和 lerp', () {
     test('copyWith 部分覆盖', () {
-      const theme = TResultThemeData(
-        variant: TResultVariant.success,
-        titleStyle: TextStyle(fontSize: 16),
-      );
+      const theme = TResultThemeData(titleStyle: TextStyle(fontSize: 16));
       final copied = theme.copyWith(
         titleStyle: const TextStyle(fontSize: 24),
       );
-      expect(copied.variant, TResultVariant.success);
       expect(copied.titleStyle?.fontSize, 24);
     });
 
     test('copyWith 不覆盖时保持原值', () {
-      const theme = TResultThemeData(
-        variant: TResultVariant.error,
-        titleStyle: TextStyle(color: Colors.blue),
-      );
+      const theme = TResultThemeData(titleStyle: TextStyle(color: Colors.blue));
       final copied = theme.copyWith();
-      expect(copied.variant, TResultVariant.error);
       expect(copied.titleStyle?.color, Colors.blue);
     });
 
-    test('lerp 前半段取 a 的 variant', () {
-      const a = TResultThemeData(variant: TResultVariant.success);
-      const b = TResultThemeData(variant: TResultVariant.error);
-      final result = a.lerp(b, 0.3);
-      expect(result.variant, TResultVariant.success);
-    });
-
-    test('lerp 后半段取 b 的 variant', () {
-      const a = TResultThemeData(variant: TResultVariant.success);
-      const b = TResultThemeData(variant: TResultVariant.error);
-      final result = a.lerp(b, 0.7);
-      expect(result.variant, TResultVariant.error);
-    });
-
     test('lerp 非 TResultThemeData 返回自身', () {
-      const theme = TResultThemeData(variant: TResultVariant.warning);
+      const theme = TResultThemeData(titleStyle: TextStyle(fontSize: 10));
       final result = theme.lerp(null, 0.5);
-      expect(result.variant, TResultVariant.warning);
+      expect(result, same(theme));
     });
 
     test('lerp titleStyle 插值', () {
@@ -191,11 +194,11 @@ void main() {
 
     testWidgets('构造器全部参数传入渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TResult(
+        const TResult(
           title: '标题',
           subtitle: '副标题',
           variant: TResultVariant.success,
-          icon: const Icon(Icons.check),
+          icon: Icon(Icons.check),
         ),
       ));
       expect(find.byType(TResult), findsOneWidget);

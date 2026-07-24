@@ -14,6 +14,7 @@ class TDialogPage extends StatelessWidget {
       title: tTitle(context),
       desc: '用于显示重要提示信息，用户必须点击按钮才能关闭。',
       exampleCodeGroup: 'dialog',
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
         ExampleModule(title: '组件类型', children: [
           ExampleItem(desc: '确认弹窗', builder: _buildConfirmDialog),

@@ -50,24 +50,15 @@ class _TLoadingPageState extends State<TLoadingPage> {
                 padding: const EdgeInsets.all(16),
                 child: Theme(
                   data: Theme.of(context).mergeExtension(
-                    TLoadingThemeData(
+                    const TLoadingThemeData(
                       axis: Axis.horizontal,
-                      refreshWidget: GestureDetector(
-                        child: TText(
-                          '刷新',
-                          font: context.tTheme.fontBodySmall,
-                          textColor: context.tTheme.brandNormalColor,
-                        ),
-                        onTap: () {
-                          TToast.showText('刷新', context: context);
-                        },
-                      ),
                     ),
                   ),
                   child: const TLoading(
                     icon: TLoadingIcon.circle,
                     size: TLoadingSize.small,
                     text: '加载失败',
+                    refreshWidget: Text('刷新'),
                   ),
                 ),
               );
@@ -80,23 +71,13 @@ class _TLoadingPageState extends State<TLoadingPage> {
                 padding: const EdgeInsets.all(16),
                 child: Theme(
                   data: Theme.of(context).mergeExtension(
-                    TLoadingThemeData(
-                      refreshWidget: GestureDetector(
-                        child: TText(
-                          '刷新',
-                          font: context.tTheme.fontBodySmall,
-                          textColor: context.tTheme.brandNormalColor,
-                        ),
-                        onTap: () {
-                          TToast.showText('刷新', context: context);
-                        },
-                      ),
-                    ),
+                    const TLoadingThemeData(),
                   ),
                   child: const TLoading(
                     icon: TLoadingIcon.circle,
                     size: TLoadingSize.small,
                     text: '加载失败',
+                    refreshWidget: Text('刷新'),
                   ),
                 ),
               );
@@ -270,22 +251,12 @@ class _TLoadingPageState extends State<TLoadingPage> {
         const SizedBox(width: 36),
         Theme(
           data: Theme.of(context).mergeExtension(
-            TLoadingThemeData(
-              refreshWidget: GestureDetector(
-                child: TText(
-                  '刷新',
-                  font: context.tTheme.fontBodySmall,
-                  textColor: context.tTheme.brandNormalColor,
-                ),
-                onTap: () {
-                  TToast.showText('刷新', context: context);
-                },
-              ),
-            ),
+            const TLoadingThemeData(),
           ),
           child: const TLoading(
             size: TLoadingSize.small,
             text: '加载失败',
+            refreshWidget: Text('刷新'),
           ),
         ),
       ],
@@ -356,24 +327,16 @@ class _TLoadingPageState extends State<TLoadingPage> {
           ),
         ),
         const SizedBox(height: 16),
-        Theme(
-          data: Theme.of(context).mergeExtension(
-            TSliderThemeData(
-              max: 2000,
-              min: -20,
-              divisions: 100,
-              showThumbValue: true,
-              scaleFormatter: (value) => value.toInt().toString(),
-            ),
-          ),
-          child: TSlider(
-            value: _currentSliderValue,
-            onChanged: (double value) {
-              setState(() {
-                _currentSliderValue = value;
-              });
-            },
-          ),
+        TSlider(
+          value: _currentSliderValue,
+          min: -20,
+          max: 2000,
+          divisions: 100,
+          onChanged: (double value) {
+            setState(() {
+              _currentSliderValue = value;
+            });
+          },
         )
       ],
     );

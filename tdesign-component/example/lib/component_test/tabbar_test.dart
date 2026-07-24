@@ -60,30 +60,32 @@ class _StudyDetailState extends State with SingleTickerProviderStateMixin {
         },
         body: Column(
           children: [
-            TTabBar(
+            Theme(
+              data: Theme.of(context).mergeExtension(
+                TTabsBarThemeData(
+                  unselectedLabelStyle:
+                      TextStyle(fontSize: 12.sp, color: Colors.red),
+                  labelStyle:
+                      TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w500),
+                ),
+              ),
+              child: TTabsBar(
                 controller: _tabController,
-                height: 44.h,
-                indicatorColor: context.tTheme.brandNormalColor,
-                // labelColor:context.tTheme.brandNormalColor,
-                unselectedLabelStyle: TextStyle(fontSize: 12.sp, color: Colors.red),
-                labelStyle: TextStyle(
-                    fontSize: 28.sp,
-                    fontWeight: FontWeight.w500),
-                indicatorWidth: 16.w,
-                showIndicator: true,
-                tabs: _tabs
-                    .map((e) => TTab(
-                  text: '$e',
-                ))
-                    .toList()),
+                indicator: TTabsBarIndicator(
+                  indicatorColor: context.tTheme.brandNormalColor,
+                  indicatorWidth: 16.w,
+                ),
+                tabs: _tabs.map((e) => TTab(text: '$e')).toList(),
+              ),
+            ),
             Expanded(
-                child:             TTabBarView(
+                child: TTabsBarView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     controller: _tabController,
                     children: _tabs
                         .map((e) => Center(
-                      child: Text('data$e'),
-                    ))
+                              child: Text('data$e'),
+                            ))
                         .toList()))
           ],
         ),
@@ -119,7 +121,8 @@ class _CourseItemDetail extends StatelessWidget {
                     ])),
                 child: Text(
                   '数学',
-                  style: TextStyle(color: Colors.white, fontSize: 12.sp, height: 1.h),
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 12.sp, height: 1.h),
                 ),
               ),
               SizedBox(
@@ -127,21 +130,24 @@ class _CourseItemDetail extends StatelessWidget {
               ),
               Expanded(
                   child: Text(
-                    '集合图形离开撒娇的案例三等奖集合图形离开撒娇的案例',
-                    style: TextStyle(
-                        color: context.tTheme.fontGyColor1,
-                        fontSize: 14.sp,
-                        overflow: TextOverflow.ellipsis,
-                        height: 1.5.h),
-                    maxLines: 2,
-                  ))
+                '集合图形离开撒娇的案例三等奖集合图形离开撒娇的案例',
+                style: TextStyle(
+                    color: context.tTheme.fontGyColor1,
+                    fontSize: 14.sp,
+                    overflow: TextOverflow.ellipsis,
+                    height: 1.5.h),
+                maxLines: 2,
+              ))
             ],
           ),
           Padding(
             padding: EdgeInsets.only(top: 5.h, bottom: 12.h),
             child: Text(
               '2020年8月15日开始，共20节课',
-              style: TextStyle(fontSize: 12.sp, color: context.tTheme.fontGyColor2,),
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: context.tTheme.fontGyColor2,
+              ),
             ),
           ),
           Row(

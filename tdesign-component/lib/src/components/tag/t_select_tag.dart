@@ -1,65 +1,56 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import 't_tag.dart';
+import 't_tag_theme_data.dart';
+import 't_tag_types.dart';
 
-/// 点击型标签组件，点击时内部更改自身状态
-/// 支持样式：方形/圆角/半圆/带关闭图标
-class TSelectTag extends StatefulWidget {
-  const TSelectTag( // coverage:ignore-line
+/// 严格受控的可选标签。
+class TSelectTag extends StatelessWidget {
+  const TSelectTag(
     this.text, {
-    this.colorScheme,
-    this.icon,
+    super.key,
     required this.value,
     this.onChanged,
+    this.colorScheme,
+    this.icon,
     this.size = TTagSize.medium,
-    Key? key,
-  }) : super(key: key); // coverage:ignore-line
+  });
 
-  /// 标签内容
+  /// 标签内容。
   final String text;
 
-  /// 语义色（选中时使用）
-  final TTagColorScheme? colorScheme;
-
-  /// 图标内容，可随状态改变颜色
-  final IconData? icon;
-
-  /// 是否选中
+  /// 当前选中状态。
   final bool value;
 
-  /// 选中状态变更回调；为 null 时禁用选择
+  /// 选中状态变更回调；为空时禁用交互。
   final ValueChanged<bool>? onChanged;
 
-  /// 标签大小
+  /// 选中态语义色。
+  final TTagColorScheme? colorScheme;
+
+  /// 标签图标。
+  final IconData? icon;
+
+  /// 标签尺寸。
   final TTagSize size;
 
-  @override // coverage:ignore-line
-  _TSelectTagState createState() => _TSelectTagState(); // coverage:ignore-line
-}
-
-class _TSelectTagState extends State<TSelectTag> {
-  @override // coverage:ignore-line
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).extension<TTagThemeData>(); // coverage:ignore-line
-    final effectiveColorScheme = widget.value // coverage:ignore-line
-        ? (widget.colorScheme ?? theme?.colorScheme ?? TTagColorScheme.primary) // coverage:ignore-line
+    final theme = Theme.of(context).extension<TTagThemeData>();
+    final effectiveColorScheme = value
+        ? (colorScheme ?? theme?.colorScheme ?? TTagColorScheme.primary)
         : TTagColorScheme.defaultTheme;
 
-    Widget result = TTag( // coverage:ignore-line
-      widget.text, // coverage:ignore-line
-      colorScheme: effectiveColorScheme,
-      icon: widget.icon, // coverage:ignore-line
-      size: widget.size, // coverage:ignore-line
+    return Semantics(
+      enabled: onChanged != null,
+      selected: value,
+      child: TTag(
+        text,
+        colorScheme: effectiveColorScheme,
+        icon: icon,
+        size: size,
+        onTap: onChanged == null ? null : () => onChanged!(!value),
+      ),
     );
-
-    if (widget.onChanged != null) { // coverage:ignore-line
-      result = GestureDetector( // coverage:ignore-line
-        onTap: () { // coverage:ignore-line
-          widget.onChanged!(!widget.value); // coverage:ignore-line
-        },
-        child: result,
-      );
-    }
-    return result;
   }
 }

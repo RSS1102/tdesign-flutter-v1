@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:tdesign_icons/tdesign_icons.dart' show TIcons;
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
+import '../text/t_text.dart';
+import 't_backtop_theme_data.dart';
 
 /// 返回顶部组件 v1.0
 ///
 /// T2 自绘组件：`GestureDetector` + `Container` 双形态（`circle` / `halfCircle`）。
 /// - 监听 [controller] 偏移控制显隐，点击默认 `controller.animateTo(0)` 后触发 [onPressed]。
 /// - A 类禁用：[onPressed] 为 `null` 时不可点击。
-/// - L4 样式（[shape] / [colorScheme] / 默认阈值等）→ [TBackTopThemeData]。
+/// - L4 样式（[shape]、颜色、默认阈值等）→ [TBackTopThemeData]。
 class TBackTop extends StatefulWidget {
   const TBackTop({
     Key? key,
@@ -17,7 +23,6 @@ class TBackTop extends StatefulWidget {
     this.showText = false,
     this.visibilityOffset,
     this.tooltip,
-    this.colorScheme,
     this.shape,
   }) : super(key: key);
 
@@ -36,9 +41,6 @@ class TBackTop extends StatefulWidget {
   /// 读屏 / `Tooltip` 提示；未传时可回退资源文案
   final String? tooltip;
 
-  /// 配色方案（light / dark）；未传时取 Theme `colorScheme`
-  final TBackTopColorScheme? colorScheme;
-
   /// 形状（circle / halfCircle）；未传时取 Theme `shape`
   final TBackTopShape? shape;
 
@@ -50,6 +52,7 @@ class _TBackTopState extends State<TBackTop> {
   bool _isAnimating = false;
   bool _isVisible = true;
   bool _listenerAttached = false;
+  double? _lastVisibilityOffset;
 
   Color _bgColor = Colors.transparent;
   Color _borderColor = Colors.transparent;
@@ -61,9 +64,6 @@ class _TBackTopState extends State<TBackTop> {
 
   TBackTopShape get _effectiveShape =>
       widget.shape ?? _themeData.shape ?? TBackTopShape.circle;
-
-  TBackTopColorScheme get _effectiveColorScheme =>
-      widget.colorScheme ?? _themeData.colorScheme ?? TBackTopColorScheme.light;
 
   double? get _effectiveVisibilityOffset =>
       widget.visibilityOffset ?? _themeData.defaultVisibilityOffset;
@@ -78,6 +78,7 @@ class _TBackTopState extends State<TBackTop> {
     super.didChangeDependencies();
     _initColors();
     _attachScrollListener();
+    _refreshVisibility();
   }
 
   void _attachScrollListener() {
@@ -88,6 +89,7 @@ class _TBackTopState extends State<TBackTop> {
     if (offset != null && widget.controller != null) {
       widget.controller!.addListener(_handleScroll);
       _listenerAttached = true;
+      _lastVisibilityOffset = offset;
       _updateVisibility(offset);
     }
   }
@@ -115,9 +117,6 @@ class _TBackTopState extends State<TBackTop> {
   @override
   void didUpdateWidget(covariant TBackTop oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.colorScheme != widget.colorScheme) {
-      _initColors();
-    }
     if (oldWidget.controller != widget.controller ||
         oldWidget.visibilityOffset != widget.visibilityOffset) {
       // 解除旧监听，重新绑定
@@ -125,6 +124,7 @@ class _TBackTopState extends State<TBackTop> {
       _listenerAttached = false;
       _attachScrollListener();
     }
+    _refreshVisibility();
   }
 
   @override
@@ -134,17 +134,20 @@ class _TBackTopState extends State<TBackTop> {
   }
 
   void _initColors() {
-    final theme = context.tTheme;
-    final colorScheme = _effectiveColorScheme;
-    _bgColor = colorScheme == TBackTopColorScheme.light
-        ? theme.grayColor1
-        : theme.grayColor13;
-    _borderColor = colorScheme == TBackTopColorScheme.light
-        ? theme.grayColor4
-        : theme.grayColor9;
-    _fontColor = colorScheme == TBackTopColorScheme.light
-        ? theme.textColorPrimary
-        : theme.textColorAnti;
+    final colorScheme = Theme.of(context).colorScheme;
+    _bgColor = _themeData.backgroundColor ?? colorScheme.primaryContainer;
+    _borderColor = _themeData.borderColor ?? colorScheme.primary;
+    _fontColor = _themeData.contentColor ?? colorScheme.onPrimaryContainer;
+  }
+
+  void _refreshVisibility() {
+    final offset = _effectiveVisibilityOffset;
+    if (offset != _lastVisibilityOffset) {
+      _lastVisibilityOffset = offset;
+    }
+    if (offset != null) {
+      _updateVisibility(offset);
+    }
   }
 
   String _resolveTooltip(BuildContext context) {
@@ -169,11 +172,18 @@ class _TBackTopState extends State<TBackTop> {
         : _buildHalfCircleWidget(context);
 
     // 始终包裹 Tooltip（含默认 resource 文案）以支持无障碍
-    return Tooltip(
-      message: _resolveTooltip(context),
-      child: GestureDetector(
-        onTap: isDisabled ? null : _handleTap,
-        child: child,
+    return Semantics(
+      enabled: !isDisabled,
+      child: Tooltip(
+        message: _resolveTooltip(context),
+        child: GestureDetector(
+          onTap: isDisabled ? null : _handleTap,
+          child: AnimatedOpacity(
+            opacity: isDisabled ? 0.4 : 1,
+            duration: const Duration(milliseconds: 150),
+            child: child,
+          ),
+        ),
       ),
     );
   }
@@ -187,14 +197,22 @@ class _TBackTopState extends State<TBackTop> {
     final controller = widget.controller;
     if (controller != null && controller.hasClients) {
       _isAnimating = true;
-      await controller.animateTo(
-        0,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeIn,
-      );
-      _isAnimating = false;
+      try {
+        await controller.animateTo(
+          0,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeIn,
+        );
+      } finally {
+        if (mounted) {
+          _isAnimating = false;
+        }
+      }
     }
 
+    if (!mounted) {
+      return;
+    }
     widget.onPressed?.call();
   }
 
@@ -222,9 +240,9 @@ class _TBackTopState extends State<TBackTop> {
               child: TText(
                 context.resource.top,
                 maxLines: 1,
-                overflow: TextOverflow.visible,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: context.tTheme.fontMarkExtraSmall?.size ?? 10,
                   color: _fontColor,
                   fontWeight: FontWeight.w600,
                 ),
@@ -270,18 +288,22 @@ class _TBackTopState extends State<TBackTop> {
                   children: [
                     TText(
                       context.resource.back,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         height: 1.2,
-                        fontSize: 10,
+                        fontSize: context.tTheme.fontMarkExtraSmall?.size ?? 10,
                         color: _fontColor,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     TText(
                       context.resource.top,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         height: 1.2,
-                        fontSize: 10,
+                        fontSize: context.tTheme.fontMarkExtraSmall?.size ?? 10,
                         color: _fontColor,
                         fontWeight: FontWeight.w600,
                       ),

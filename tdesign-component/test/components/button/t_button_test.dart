@@ -218,6 +218,41 @@ void main() {
       expect(find.byType(ElevatedButton), findsOneWidget);
     });
 
+    testWidgets('自定义非 Icon widget 图标保持原样', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TButton(
+          icon: SizedBox.square(
+            dimension: 11,
+            child: ColoredBox(color: Colors.red),
+          ),
+          child: Text('自定义图标'),
+          onPressed: null,
+        ),
+      ));
+
+      expect(find.text('自定义图标'), findsOneWidget);
+      expect(
+        tester.widgetList<SizedBox>(find.byType(SizedBox)).any(
+              (box) => box.width == 11 && box.height == 11,
+            ),
+        isTrue,
+      );
+    });
+
+    testWidgets('Icon 自带 size/color 时不被默认值覆盖', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TButton(
+          icon: Icon(Icons.palette, size: 31, color: Colors.orange),
+          child: Text('显式图标'),
+          onPressed: null,
+        ),
+      ));
+
+      final icon = tester.widget<Icon>(find.byIcon(Icons.palette));
+      expect(icon.size, 31);
+      expect(icon.color, Colors.orange);
+    });
+
     testWidgets('纯 icon + circle shape 渲染正确', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TButton(
@@ -325,7 +360,8 @@ void main() {
       expect(find.text('极小'), findsOneWidget);
     });
 
-    testWidgets('未传 size 且 Theme 未设 defaultSize 时 fallback 为 medium', (tester) async {
+    testWidgets('未传 size 且 Theme 未设 defaultSize 时 fallback 为 medium',
+        (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TButton(
           child: Text('默认尺寸'),
@@ -431,12 +467,142 @@ void main() {
       expect(find.byType(TButton), findsOneWidget);
       expect(find.byType(ElevatedButton), findsNothing);
       expect(find.byType(Container), findsWidgets);
-      // 验证存在带 gradient 的 BoxDecoration
+      // 验证存在带 gradient 的装饰层
       final containers = tester.widgetList<Container>(find.byType(Container));
-      final hasGradientBox = containers.any(
-        (c) => c.decoration is BoxDecoration && (c.decoration as BoxDecoration).gradient != null,
+      final hasGradientDecoration = containers.any((c) {
+        final decoration = c.decoration;
+        return (decoration is BoxDecoration && decoration.gradient != null) ||
+            (decoration is ShapeDecoration && decoration.gradient != null);
+      });
+      expect(hasGradientDecoration, isTrue);
+    });
+
+    testWidgets('渐变分支复用 P0 style 的关键字段', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        const TButton(
+          child: Text('渐变自定义'),
+          style: ButtonStyle(
+            backgroundColor: WidgetStatePropertyAll(Colors.green),
+            foregroundColor: WidgetStatePropertyAll(Colors.yellow),
+            minimumSize: WidgetStatePropertyAll<Size>(Size(120, 56)),
+            padding:
+                WidgetStatePropertyAll<EdgeInsetsGeometry>(EdgeInsets.all(30)),
+            shape: WidgetStatePropertyAll<OutlinedBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+            ),
+            side: WidgetStatePropertyAll(
+              BorderSide(color: Colors.purple, width: 2),
+            ),
+          ),
+          onPressed: null,
+        ),
+        buttonTheme: const TButtonThemeData(
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      expect(find.byType(ElevatedButton), findsNothing);
+
+      expect(
+        tester.widgetList<Padding>(find.byType(Padding)).any(
+              (p) => p.padding == const EdgeInsets.all(30),
+            ),
+        isTrue,
       );
-      expect(hasGradientBox, isTrue);
+
+      expect(
+        tester.widgetList<ConstrainedBox>(find.byType(ConstrainedBox)).any(
+              (box) =>
+                  box.constraints.minWidth == 120 &&
+                  box.constraints.minHeight == 56,
+            ),
+        isTrue,
+      );
+      expect(
+        tester.widgetList<Container>(find.byType(Container)).any((c) {
+          final decoration = c.decoration;
+          return decoration is ShapeDecoration &&
+              decoration.color == Colors.green &&
+              decoration.gradient == null &&
+              decoration.shape is RoundedRectangleBorder &&
+              (decoration.shape as RoundedRectangleBorder).side.color ==
+                  Colors.purple;
+        }),
+        isTrue,
+      );
+    });
+
+    testWidgets('渐变分支复用 fixed/max/elevation 等 P0 style 字段', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(
+          child: const Text('渐变尺寸'),
+          style: const ButtonStyle(
+            fixedSize: WidgetStatePropertyAll<Size>(Size(140, 52)),
+            maximumSize: WidgetStatePropertyAll<Size>(Size(160, 60)),
+            elevation: WidgetStatePropertyAll<double>(6),
+            shadowColor: WidgetStatePropertyAll<Color>(Colors.black),
+            surfaceTintColor: WidgetStatePropertyAll<Color>(Colors.white),
+          ),
+          onPressed: () {},
+        ),
+        buttonTheme: const TButtonThemeData(
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      expect(find.byType(ElevatedButton), findsNothing);
+      expect(
+        tester.widgetList<SizedBox>(find.byType(SizedBox)).any(
+              (box) => box.width == 140 && box.height == 52,
+            ),
+        isTrue,
+      );
+      expect(
+        tester.widgetList<ConstrainedBox>(find.byType(ConstrainedBox)).any(
+              (box) =>
+                  box.constraints.maxWidth == 160 &&
+                  box.constraints.maxHeight == 60,
+            ),
+        isTrue,
+      );
+
+      final material = tester
+          .widgetList<Material>(find.byType(Material))
+          .firstWhere((m) => m.type == MaterialType.transparency);
+      expect(material.elevation, 6);
+      expect(material.shadowColor, Colors.black);
+      expect(material.surfaceTintColor, Colors.white);
+    });
+
+    testWidgets('渐变启用态响应点击，禁用态不响应点击', (tester) async {
+      var taps = 0;
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(
+          child: const Text('渐变可点'),
+          onPressed: () => taps += 1,
+        ),
+        buttonTheme: const TButtonThemeData(
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      await tester.tap(find.text('渐变可点'));
+      expect(taps, 1);
+
+      await tester.pumpWidget(wrapWithTheme(
+        const TButton(
+          child: Text('渐变禁用'),
+          onPressed: null,
+        ),
+        buttonTheme: const TButtonThemeData(
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      await tester.tap(find.text('渐变禁用'));
+      expect(taps, 1);
     });
 
     testWidgets('渐变时背景色为透明', (tester) async {
@@ -477,6 +643,127 @@ void main() {
       // 渐变模式不使用 ElevatedButton，margin 外包 Container
       expect(find.byType(ElevatedButton), findsNothing);
       expect(find.byType(Container), findsWidgets);
+    });
+
+    testWidgets('渐变纯图标 small 和 extraSmall 默认布局可构建', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        Column(
+          children: [
+            TButton(
+              icon: const Icon(Icons.add),
+              size: TButtonSize.small,
+              onPressed: () {},
+            ),
+            TButton(
+              icon: const Icon(Icons.remove),
+              size: TButtonSize.extraSmall,
+              onPressed: () {},
+            ),
+          ],
+        ),
+        buttonTheme: const TButtonThemeData(
+          shape: TButtonShape.circle,
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      expect(find.byType(ElevatedButton), findsNothing);
+      expect(find.byIcon(Icons.add), findsOneWidget);
+      expect(find.byIcon(Icons.remove), findsOneWidget);
+    });
+
+    testWidgets('渐变无 content 分支可构建空按钮', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(onPressed: () {}),
+        buttonTheme: const TButtonThemeData(
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      expect(find.byType(TButton), findsOneWidget);
+      expect(find.byType(ElevatedButton), findsNothing);
+      expect(find.byType(InkWell), findsOneWidget);
+    });
+
+    testWidgets('渐变 round/filled/circle shape 分支可构建', (tester) async {
+      for (final shape in [
+        TButtonShape.round,
+        TButtonShape.filled,
+        TButtonShape.circle,
+      ]) {
+        await tester.pumpWidget(wrapWithTheme(
+          TButton(
+            icon: const Icon(Icons.circle),
+            onPressed: () {},
+          ),
+          buttonTheme: TButtonThemeData(
+            shape: shape,
+            gradient: const LinearGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        ));
+
+        expect(find.byType(ElevatedButton), findsNothing);
+        expect(find.byIcon(Icons.circle), findsOneWidget);
+      }
+    });
+
+    testWidgets('渐变 fallback shape/textStyle/padding/minimumSize 可执行',
+        (tester) async {
+      const nullFallbackStyle = ButtonStyle(
+        shape: WidgetStatePropertyAll<OutlinedBorder?>(null),
+        textStyle: WidgetStatePropertyAll<TextStyle?>(null),
+        padding: WidgetStatePropertyAll<EdgeInsetsGeometry?>(null),
+        minimumSize: WidgetStatePropertyAll<Size?>(null),
+      );
+
+      for (final config in [
+        (TButtonShape.rectangle, TButtonSize.large, 'rect-large'),
+        (TButtonShape.round, TButtonSize.medium, 'round-medium'),
+        (TButtonShape.filled, TButtonSize.large, 'filled-large'),
+        (TButtonShape.circle, TButtonSize.medium, 'circle-medium'),
+      ]) {
+        await tester.pumpWidget(wrapWithTheme(
+          TButton(
+            icon: const Icon(Icons.adjust),
+            child: Text(config.$3),
+            size: config.$2,
+            style: nullFallbackStyle,
+            onPressed: () {},
+          ),
+          buttonTheme: TButtonThemeData(
+            shape: config.$1,
+            gradient: const LinearGradient(colors: [Colors.red, Colors.blue]),
+          ),
+        ));
+
+        expect(find.text(config.$3), findsOneWidget);
+        expect(find.byType(ElevatedButton), findsNothing);
+      }
+    });
+
+    testWidgets('渐变 fallback 纯 icon circle padding 可执行', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        TButton(
+          icon: const Icon(Icons.adjust),
+          size: TButtonSize.medium,
+          style: const ButtonStyle(
+            padding: WidgetStatePropertyAll<EdgeInsetsGeometry?>(null),
+          ),
+          onPressed: () {},
+        ),
+        buttonTheme: const TButtonThemeData(
+          shape: TButtonShape.circle,
+          gradient: LinearGradient(colors: [Colors.red, Colors.blue]),
+        ),
+      ));
+
+      expect(find.byIcon(Icons.adjust), findsOneWidget);
+      expect(
+        tester.widgetList<Padding>(find.byType(Padding)).any(
+              (p) => p.padding == const EdgeInsets.all(10),
+            ),
+        isTrue,
+      );
     });
 
     testWidgets('无渐变时不额外包裹 Container', (tester) async {
@@ -700,8 +987,8 @@ void main() {
     });
 
     Future<void> pressAndRelease(WidgetTester tester) async {
-      final gesture = await tester.startGesture(
-          tester.getCenter(find.byType(TButton)));
+      final gesture =
+          await tester.startGesture(tester.getCenter(find.byType(TButton)));
       await tester.pump();
       await gesture.up();
       await tester.pump();
@@ -764,7 +1051,8 @@ void main() {
     testWidgets('large size', (tester) async {
       // 覆盖 317（fontSize large）+ 327（height large）
       await tester.pumpWidget(wrapWithTheme(
-        TButton(child: const Text('lg'), size: TButtonSize.large, onPressed: () {}),
+        TButton(
+            child: const Text('lg'), size: TButtonSize.large, onPressed: () {}),
       ));
       expect(find.byType(TButton), findsOneWidget);
     });
@@ -772,7 +1060,8 @@ void main() {
     testWidgets('small size', (tester) async {
       // 覆盖 268（iconSize small）+ 278-279（padding small）+ 318（fontSize medium→small）
       await tester.pumpWidget(wrapWithTheme(
-        TButton(child: const Text('sm'), size: TButtonSize.small, onPressed: () {}),
+        TButton(
+            child: const Text('sm'), size: TButtonSize.small, onPressed: () {}),
       ));
       expect(find.byType(TButton), findsOneWidget);
     });
@@ -780,7 +1069,10 @@ void main() {
     testWidgets('extraSmall size', (tester) async {
       // 覆盖 298（padding extraSmall）
       await tester.pumpWidget(wrapWithTheme(
-        TButton(child: const Text('xs'), size: TButtonSize.extraSmall, onPressed: () {}),
+        TButton(
+            child: const Text('xs'),
+            size: TButtonSize.extraSmall,
+            onPressed: () {}),
       ));
       expect(find.byType(TButton), findsOneWidget);
     });

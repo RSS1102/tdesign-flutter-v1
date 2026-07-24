@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_theme.dart';
+import 't_link_theme_data.dart';
+import 't_link_types.dart';
 
 /// Link 样式解析器
 ///
@@ -66,7 +69,8 @@ class TLinkResolve {
     if (instanceIconSize != null) {
       return instanceIconSize;
     }
-    if (theme?.iconSize != null) { // coverage:ignore-line
+    if (theme?.iconSize != null) {
+      // coverage:ignore-line
       return theme!.iconSize!; // coverage:ignore-line
     }
     return _defaultIconSize(size);
@@ -94,10 +98,14 @@ class TLinkResolve {
   static Color _normalColor(TLinkColorScheme scheme, TThemeData tTheme) {
     return switch (scheme) {
       TLinkColorScheme.primary => tTheme.brandNormalColor,
-      TLinkColorScheme.danger => tTheme.errorNormalColor, // coverage:ignore-line
-      TLinkColorScheme.warning => tTheme.warningNormalColor, // coverage:ignore-line
-      TLinkColorScheme.success => tTheme.successNormalColor, // coverage:ignore-line
-      TLinkColorScheme.defaultTheme => tTheme.textColorPrimary, // coverage:ignore-line
+      TLinkColorScheme.danger =>
+        tTheme.errorNormalColor, // coverage:ignore-line
+      TLinkColorScheme.warning =>
+        tTheme.warningNormalColor, // coverage:ignore-line
+      TLinkColorScheme.success =>
+        tTheme.successNormalColor, // coverage:ignore-line
+      TLinkColorScheme.defaultTheme =>
+        tTheme.textColorPrimary, // coverage:ignore-line
     };
   }
 
@@ -106,9 +114,12 @@ class TLinkResolve {
     return switch (scheme) {
       TLinkColorScheme.primary => tTheme.brandDisabledColor,
       TLinkColorScheme.danger => tTheme.errorDisabledColor,
-      TLinkColorScheme.warning => tTheme.warningDisabledColor, // coverage:ignore-line
-      TLinkColorScheme.success => tTheme.successDisabledColor, // coverage:ignore-line
-      TLinkColorScheme.defaultTheme => tTheme.textDisabledColor, // coverage:ignore-line
+      TLinkColorScheme.warning =>
+        tTheme.warningDisabledColor, // coverage:ignore-line
+      TLinkColorScheme.success =>
+        tTheme.successDisabledColor, // coverage:ignore-line
+      TLinkColorScheme.defaultTheme =>
+        tTheme.textDisabledColor, // coverage:ignore-line
     };
   }
 

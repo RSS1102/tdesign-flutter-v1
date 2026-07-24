@@ -11,10 +11,10 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: TCalendar(
-              type: TCalendarVariant.single,
+              variant: TCalendarVariant.single,
               minDate: DateTime(2025, 6, 1),
               maxDate: DateTime(2025, 6, 30),
-              initialValue: [DateTime(2025, 6, 15)],
+              value: [DateTime(2025, 6, 15)],
               onChanged: (_) {},
               subtitleBuilder: (context, ctx) {
                 seenDates.add(ctx.date);

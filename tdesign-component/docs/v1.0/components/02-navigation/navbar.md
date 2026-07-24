@@ -4,14 +4,13 @@
 > **源码**：`lib/src/components/navbar/` · **类名**：`TNavBar`  
 > **官网**：[Navbar 导航栏](https://tdesign.tencent.com/flutter/components/navbar) · [guide](../../guide/developer-guide.md)
 
-**读法**：新写 v1.0 → **§1**（Items + 插槽 + **§3**）；0.2.x 升级 → **§2**；落地与验收 → **§4**
+**读法**：按 **§1** 查看当前 v1 API，按 **§2** 配置主题，按 **§3** 落地测试与 Example。
 
 **图例** → [component-doc.md §4](../../guide/component-doc.md#4-决策图例固定-6-个不新增)（§1–§3「决策」列）
 
 - [§1 v1.0 定稿 API](#1-v10-定稿-api)
-- [§2 0.2.x → v1.0](#2-02x--v10)
-- [§3 Theme 主题配置](#3-theme-主题配置)
-- [§4 实现约定 · 测试与 Example 契约](#4-实现约定--测试与-example-契约)
+- [§2 Theme 主题配置](#2-theme-主题配置)
+- [§3 实现约定 · 测试与 Example 契约](#3-实现约定--测试与-example-契约)
 
 ---
 
@@ -22,7 +21,7 @@
 | 实现 | `NavigationToolbar` 薄包装 |
 | 布局 | **左 · 中 · 右**；默认布局见 **§1.1.0**；左右 Items + 插槽 |
 | 命名 | `leadingItems` / `leading` · `actionsItems` / `actions`（对称）；**Items** = `List<TNavBarItem>`，**插槽** = `Widget?` |
-| Theme | `TNavBarThemeData`（§3）；标题样式 **仅 Theme** |
+| Theme | `TNavBarThemeData`（§2）；标题样式 **仅 Theme** |
 | 禁用 | 默认返回：`onBack: null`；隐藏返回：`leadingItems: []`；Items：`TNavBarItem.action: null` |
 | L4 | → `TNavBarThemeData`；构造器不留 L4 |
 
@@ -46,11 +45,11 @@
 
 | 决策 | 参数 | 类型 | 层级 | 说明 |
 |------|------|------|------|------|
-| | `leadingItems` | `List<TNavBarItem>?` | L2 | **左 Items**（原 `leftBarItems` / 过渡 `leading` 列表） |
+| | `leadingItems` | `List<TNavBarItem>?` | L2 | 左侧标准动作项列表 |
 | ✨ | `leading` | `Widget?` | L2 | **左插槽**（自由 Widget；**非** Items 列表） |
-| 🔀 | `title` | `Widget?` | L2 | **中插槽**（合并 `String? title` + `titleWidget`） |
-| ✏️ | `belowTitle` | `Widget?` | L2 | **中插槽**扩展（原 `belowTitleWidget`） |
-| ✏️ | `actionsItems` | `List<TNavBarItem>?` | L2 | **右 Items**（原 `rightBarItems` / 过渡 `actions` 列表） |
+| 🔀 | `title` | `Widget?` | L2 | 中部标题插槽 |
+| ✏️ | `belowTitle` | `Widget?` | L2 | 标题下方扩展插槽 |
+| ✏️ | `actionsItems` | `List<TNavBarItem>?` | L2 | 右侧标准动作项列表 |
 | ✨ | `actions` | `Widget?` | L2 | **右插槽**（自由 Widget；**非** Items 列表） |
 | | `onBack` | `VoidCallback?` | L3 | 默认返回钮点击；`null` 禁用（A 类）；非 `null` 执行业务回调（需 pop 时在回调内处理） |
 
@@ -244,7 +243,7 @@ null：  │ ← │    页面标题（居中）    │ （空） │
 
 #### §1.1.4 关于 `flexibleSpace`（v1.0 不提供）
 
-栏背全宽层，**非**左/中/右槽；v1.0 不提供；0.2.x → 页面 `Stack` / `SliverAppBar`。
+栏背全宽层，**非**左/中/右槽；v1.0 不提供。
 
 #### §1.1.5 过渡实现映射
 
@@ -262,7 +261,7 @@ null：  │ ← │    页面标题（居中）    │ （空） │
 
 | 决策 | 参数 | 类型 | 默认 | 说明 |
 |------|------|------|------|------|
-| 🔀 | `icon` | `Widget?` | — | 合并 `IconData? icon` + `customWidget` |
+| 🔀 | `icon` | `Widget?` | — | 项级图标组件 |
 | | `iconColor` | `Color?` | — | 项级图标色 |
 | | `action` | `TBarItemAction?` | — | `null` 禁用 |
 | | `iconSize` | `double?` | `24` | |
@@ -273,48 +272,16 @@ null：  │ ← │    页面标题（居中）    │ （空） │
 | 类型 | 说明 |
 |------|------|
 | `TBarItemAction` | `void Function()` |
-| `TNavBarThemeData` | ThemeExtension（§3） |
+| `TNavBarThemeData` | ThemeExtension（§2） |
 
 ### 1.3 export
 
-**KEEP**：`TNavBar` · `TNavBarItem` · `TBarItemAction` · `TNavBarThemeData`。
+**公开 export**：`TNavBar` · `TNavBarItem` · `TBarItemAction` · `TNavBarThemeData`。
 
 ---
 
-## §2 0.2.x → v1.0
 
-### ✏️ 改名
-
-| 从 | 到 | 怎么改 |
-|----|-----|--------|
-| `leftBarItems` | `leadingItems` | 左 **Items** |
-| `rightBarItems` | `actionsItems` | 右 **Items** |
-| 过渡 `leading`（`List`） | `leadingItems` | 列表与插槽拆分 |
-| 过渡 `actions`（`List`） | `actionsItems` | 列表与插槽拆分 |
-| `title` / `titleWidget` | `title: Widget?` | 中 **插槽** |
-| `belowTitleWidget` | `belowTitle` | |
-| `TNavBarItem` `icon` + `customWidget` | `icon: Widget?` | |
-
-### ✨ 新增
-
-| 项 | 说明 |
-|----|------|
-| `leading` | 左 **插槽** `Widget?` |
-| `actions` | 右 **插槽** `Widget?` |
-
-### 🗑️ 移除
-
-| 从 | 替代 |
-|----|------|
-| `useDefaultBack: true` | 默认行为；左 Items 迁到 `leadingItems` 后仍接在返回后 |
-| `useDefaultBack: false` | `leadingItems: []` 且无 `leading` |
-| `centerTitle` | 默认居中 / `title` 自管 |
-| `useBorderStyle` 等 L4 构造器 | `TNavBarThemeData` |
-| `flexibleSpace` | 页面层 |
-
----
-
-## §3 Theme 主题配置
+## §2 Theme 主题配置
 
 `TNavBarThemeData` · [theme.md](../../foundation/theme.md)
 
@@ -328,8 +295,8 @@ null：  │ ← │    页面标题（居中）    │ （空） │
 
 自定义 `title` / `belowTitle` **不**走下列 resolve。
 
-| 决策 | 字段 | 默认 | 0.2.x 来源 |
-|------|------|------|-----------|
+| 决策 | 字段 | 默认 |
+|------|------|------|
 | 📦 | `titleColor` | Token | 构造器 |
 | 📦 | `titleFont` | Token | 构造器 |
 | 📦 | `titleFontFamily` | Token | 构造器 |
@@ -338,8 +305,8 @@ null：  │ ← │    页面标题（居中）    │ （空） │
 
 ### 栏身与边框
 
-| 决策 | 字段 | 0.2.x 来源 |
-|------|------|-----------|
+| 决策 | 字段 |
+|------|------|
 | 📦 | `backgroundColor` / `height` / `padding` / `backIconColor` / `opacity` | 构造器 |
 | 📦 | `useBorderStyle` / `border` / `boxShadow` | 构造器 / `TNavBarItemBorder` |
 
@@ -356,7 +323,7 @@ null：  │ ← │    页面标题（居中）    │ （空） │
 
 ---
 
-## §4 实现约定 · 测试与 Example 契约
+## §3 实现约定 · 测试与 Example 契约
 
 ### 三槽位宽度契约
 
@@ -379,4 +346,4 @@ null：  │ ← │    页面标题（居中）    │ （空） │
 
 **Example**：`leftBarItems`→`leadingItems` · `rightBarItems`→`actionsItems` · 过渡 `leading`/`actions` List→`*Items` · `titleWidget`→`title`。
 
-> [api.md](../../foundation/api.md) · [controlled.md](../../foundation/controlled.md) · [testing.md](../../guide/testing.md) · [navbar-upgrade-guide.md](./navbar-upgrade-guide.md)（类名以 **§1** 为准）
+> [api.md](../../foundation/api.md) · [controlled.md](../../foundation/controlled.md) · [testing.md](../../guide/testing.md)（类名以 **§1** 为准）

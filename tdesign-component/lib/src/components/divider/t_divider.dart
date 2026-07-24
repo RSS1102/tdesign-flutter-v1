@@ -1,13 +1,30 @@
 import 'package:flutter/material.dart';
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_theme.dart';
 import 't_divider_painter.dart';
+import 't_divider_theme_data.dart';
 
 /// 分割线布局方向
-enum TDividerLayout { horizontal, vertical }
+enum TDividerLayout {
+  /// 水平分割线
+  horizontal,
+
+  /// 垂直分割线
+  vertical,
+}
 
 /// 中间内容在线条中的位置（仅 [TDividerLayout.horizontal] 生效）
-enum TDividerAlign { left, center, right }
+enum TDividerAlign {
+  /// 内容靠左
+  left,
+
+  /// 内容居中
+  center,
+
+  /// 内容靠右
+  right,
+}
 
 /// 分割线组件
 ///
@@ -52,7 +69,7 @@ class TDivider extends StatelessWidget {
   /// 仅 [TDividerLayout.horizontal] 生效
   final bool? dashed;
 
-  /// 中间子元素（替代 0.2.x 的 text + widget 双通道）
+  /// 中间子元素
   /// 纯文案用 `child: Text('……')`
   final Widget? child;
 
@@ -66,12 +83,15 @@ class TDivider extends StatelessWidget {
     final effectiveLayout = layout ?? TDividerLayout.horizontal;
 
     // L4 值按优先级 fallback
-    final effectiveColor =
-        theme?.color ?? dividerTheme.color ?? context.tTheme.componentStrokeColor;
-    final effectiveThickness = theme?.thickness ?? dividerTheme.thickness ?? 0.5;
+    final effectiveColor = theme?.color ??
+        dividerTheme.color ??
+        context.tTheme.componentStrokeColor;
+    final effectiveThickness =
+        theme?.thickness ?? dividerTheme.thickness ?? 0.5;
     final effectiveIndent = theme?.indent;
     final effectiveEndIndent = theme?.endIndent;
-    final effectiveGapPadding = theme?.gapPadding ?? const EdgeInsets.symmetric(horizontal: 8);
+    final effectiveGapPadding =
+        theme?.gapPadding ?? const EdgeInsets.symmetric(horizontal: 8);
     final effectiveMargin = theme?.margin;
     final effectiveTextStyle = theme?.textStyle;
 
@@ -161,12 +181,15 @@ class TDivider extends StatelessWidget {
     bool isDashed,
     TDividerAlign align,
   ) {
-    // 中间内容
-    final middleContent = DefaultTextStyle.merge(
-      style: effectiveTextStyle ?? const TextStyle(),
-      child: Padding(
-        padding: gapPadding,
-        child: child!,
+    // 给中间内容一个弹性宽度，避免长文案把 Row 撑出屏幕。
+    // 不限制行数，让调用方仍可使用多行内容。
+    final middleContent = Flexible(
+      child: DefaultTextStyle.merge(
+        style: effectiveTextStyle ?? const TextStyle(),
+        child: Padding(
+          padding: gapPadding,
+          child: child!,
+        ),
       ),
     );
 

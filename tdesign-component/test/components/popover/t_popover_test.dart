@@ -9,15 +9,22 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 void main() {
   /// 构建带主题的测试壳
   Widget wrapWithTheme(Widget child, {TPopoverThemeData? popoverTheme}) {
-    final themeExtensions = <ThemeExtension>[
-      TThemeData.defaultData(),
-      if (popoverTheme != null) popoverTheme,
-    ];
+    var theme = TThemeBuilder.light(TThemeData.defaultData());
+    if (popoverTheme != null) {
+      theme = theme.mergeExtension(popoverTheme);
+    }
     return MaterialApp(
-      theme: ThemeData(extensions: themeExtensions),
+      theme: theme,
       home: Scaffold(body: child),
     );
   }
+
+  Finder arrowContainerFinder() => find.byWidgetPredicate(
+        (widget) =>
+            widget is Container &&
+            widget.decoration is BoxDecoration &&
+            (widget.decoration as BoxDecoration).border != null,
+      );
 
   // ============================================================
   // 枚举验证
@@ -71,6 +78,72 @@ void main() {
       expect(find.text('气泡内容'), findsOneWidget);
     });
 
+    testWidgets('默认文本样式和背景色来自 token', (tester) async {
+      final token = TThemeData.defaultData();
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          return Center(
+            child: TPopoverWidget(
+              context: context,
+              content: '默认气泡',
+            ),
+          );
+        }),
+      ));
+      await tester.pump();
+
+      final text = tester.widget<Text>(find.text('默认气泡'));
+      expect(text.style?.color, token.textColorAnti);
+      expect(text.style?.fontSize, token.fontBodyLarge?.size);
+      expect(text.style?.height, token.fontBodyLarge?.height);
+
+      final container = tester.widget<Container>(
+        find
+            .descendant(
+              of: find.byType(TPopoverWidget),
+              matching: find.byWidgetPredicate(
+                (widget) =>
+                    widget is Container && widget.decoration is BoxDecoration,
+              ),
+            )
+            .first,
+      );
+      final decoration = container.decoration! as BoxDecoration;
+      expect(decoration.color, token.grayColor14);
+    });
+
+    testWidgets('长文本默认限制在测量宽度内并允许换行', (tester) async {
+      const longContent = '这是一段非常非常非常非常非常非常非常长的气泡内容，用于验证默认宽度不会横向无限延伸';
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          return Center(
+            child: TPopoverWidget(
+              context: context,
+              content: longContent,
+            ),
+          );
+        }),
+      ));
+      await tester.pump();
+
+      final containerFinder = find
+          .descendant(
+            of: find.byType(TPopoverWidget),
+            matching: find.byWidgetPredicate(
+              (widget) =>
+                  widget is Container && widget.decoration is BoxDecoration,
+            ),
+          )
+          .first;
+      final container = tester.widget<Container>(containerFinder);
+      final text = tester.widget<Text>(find.text(longContent));
+      expect(container.constraints?.maxWidth, lessThanOrEqualTo(300));
+      expect(tester.getSize(containerFinder).width, lessThanOrEqualTo(300));
+      expect(text.maxLines, isNull);
+      expect(text.overflow, isNull);
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('contentWidget 自定义内容渲染', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         Builder(builder: (context) {
@@ -91,7 +164,7 @@ void main() {
 
     testWidgets('contentWidget 未指定 width/height 抛出断言', (tester) async {
       await tester.pumpWidget(MaterialApp(
-        theme: ThemeData(extensions: <ThemeExtension>[TThemeData.defaultData()]),
+        theme: TThemeBuilder.light(TThemeData.defaultData()),
         home: Builder(builder: (context) {
           return TPopoverWidget(
             context: context,
@@ -262,6 +335,77 @@ void main() {
       await tester.pump();
       expect(find.text('圆角'), findsOneWidget);
     });
+
+    testWidgets('theme applies padding, radius and arrow size', (tester) async {
+      await tester.pumpWidget(wrapWithTheme(
+        Builder(builder: (context) {
+          return Center(
+            child: TPopoverWidget(
+              context: context,
+              content: '主题气泡',
+            ),
+          );
+        }),
+        popoverTheme: const TPopoverThemeData(
+          padding: EdgeInsets.all(10),
+          borderRadius: 20,
+          arrowSize: 16,
+        ),
+      ));
+      await tester.pump();
+
+      final container = tester.widget<Container>(
+        find
+            .descendant(
+              of: find.byType(TPopoverWidget),
+              matching: find.byWidgetPredicate(
+                (widget) =>
+                    widget is Container && widget.decoration is BoxDecoration,
+              ),
+            )
+            .first,
+      );
+      final decoration = container.decoration! as BoxDecoration;
+      final arrow = tester.widget<Container>(arrowContainerFinder());
+
+      expect(decoration.borderRadius, BorderRadius.circular(20));
+      expect(container.padding, const EdgeInsets.all(10));
+      expect(
+        ((arrow.decoration! as BoxDecoration).border as Border?)?.bottom.width,
+        16,
+      );
+    });
+  });
+
+  testWidgets('showPopover uses theme barrierColor', (tester) async {
+    await tester.pumpWidget(MaterialApp(
+      theme: TThemeBuilder.light(TThemeData.defaultData()).mergeExtension(
+        const TPopoverThemeData(barrierColor: Colors.black54),
+      ),
+      home: Builder(builder: (context) {
+        return Scaffold(
+          body: Center(
+            child: TextButton(
+              onPressed: () {
+                TPopover.showPopover(
+                  context: context,
+                  content: '气泡',
+                  placement: TPopoverPlacement.bottom,
+                );
+              },
+              child: const Text('open'),
+            ),
+          ),
+        );
+      }),
+    ));
+
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+
+    final barrier =
+        tester.widgetList<ModalBarrier>(find.byType(ModalBarrier)).last;
+    expect(barrier.color, Colors.black54);
   });
 
   // ============================================================
@@ -350,6 +494,9 @@ void main() {
           arrowSize: 10,
           minWidth: 50,
           maxHeight: 200,
+          boxShadow: [
+            BoxShadow(color: Colors.purple, blurRadius: 4),
+          ],
         ),
       ));
 
@@ -360,23 +507,53 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('主题气泡'), findsOneWidget);
+      final themedContainer = tester
+          .widgetList<Container>(find.byType(Container))
+          .firstWhere((container) {
+        final decoration = container.decoration;
+        return decoration is BoxDecoration &&
+            decoration.boxShadow?.first.color == Colors.purple;
+      });
+      expect(
+        (themedContainer.decoration! as BoxDecoration).boxShadow?.first.color,
+        Colors.purple,
+      );
     });
 
     test('TPopoverThemeData merge 合并', () {
       const base = TPopoverThemeData(
         backgroundColor: Colors.white,
         borderRadius: 4,
+        boxShadow: [BoxShadow(color: Colors.black)],
       );
       const override = TPopoverThemeData(borderRadius: 8);
       final merged = base.merge(override);
       expect(merged.backgroundColor, Colors.white);
       expect(merged.borderRadius, 8);
+      expect(merged.boxShadow, base.boxShadow);
     });
 
     test('TPopoverThemeData copyWith', () {
       const original = TPopoverThemeData(backgroundColor: Colors.white);
-      final copied = original.copyWith(backgroundColor: Colors.grey);
+      final copied = original.copyWith(
+        backgroundColor: Colors.grey,
+        boxShadow: const [BoxShadow(color: Colors.red)],
+      );
       expect(copied.backgroundColor, Colors.grey);
+      expect(copied.boxShadow?.first.color, Colors.red);
+      expect(
+        original
+            .lerp(
+              const TPopoverThemeData(
+                boxShadow: [BoxShadow(color: Colors.blue)],
+              ),
+              0.75,
+            )
+            .boxShadow
+            ?.first
+            .color,
+        Colors.blue,
+      );
     });
   });
 }

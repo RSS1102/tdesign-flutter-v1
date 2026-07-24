@@ -22,15 +22,67 @@ void main() {
   });
 
   group('TFontLoaderWidget', () {
-    testWidgets('TText 设置 fontFamilyUrl 触发懒加载 Widget（不实际下载）',
-        (tester) async {
+    testWidgets('TText 设置 fontFamilyUrl 触发懒加载 Widget（不实际下载）', (tester) async {
       // fontFamily 为 null，loadFont 内部 if 为 false，跳过网络请求，仅构建
       await tester.pumpWidget(wrap(
-        const TText('加载字体',
-            fontFamilyUrl: 'http://example.com/font.ttf'),
+        const TText('加载字体', fontFamilyUrl: 'http://example.com/font.ttf'),
       ));
       // 内部回退渲染出一个 TText
       expect(find.byType(TText), findsWidgets);
+    });
+
+    testWidgets('空 fontFamilyUrl 跳过加载并保持回退渲染', (tester) async {
+      await tester.pumpWidget(wrap(
+        TFontLoaderWidget(
+          textWidget: TText(
+            '空地址',
+            fontFamily: FontFamily(fontFamily: 'NoLoadFont'),
+          ),
+          fontFamilyUrl: '',
+        ),
+      ));
+      await tester.pump();
+
+      expect(find.text('空地址'), findsOneWidget);
+      expect(
+        tester.widgetList<TText>(find.byType(TText)).any(
+              (text) => text.data == '空地址' && text.isInFontLoader,
+            ),
+        isTrue,
+      );
+    });
+
+    testWidgets('空 fontFamily 跳过加载并保持回退渲染', (tester) async {
+      await tester.pumpWidget(wrap(
+        TText(
+          '空字体名',
+          fontFamily: FontFamily(fontFamily: ''),
+          fontFamilyUrl: 'http://example.com/font.ttf',
+        ),
+      ));
+      await tester.pump();
+
+      expect(find.text('空字体名'), findsOneWidget);
+      expect(
+        tester.widgetList<TText>(find.byType(TText)).any(
+              (text) => text.data == '空字体名' && text.isInFontLoader,
+            ),
+        isTrue,
+      );
+    });
+
+    testWidgets('fontFamily + 非空 URL 进入加载失败回退分支', (tester) async {
+      await tester.pumpWidget(wrap(
+        TText(
+          '加载失败回退',
+          fontFamily: FontFamily(fontFamily: 'BadFontForTest'),
+          fontFamilyUrl: '::invalid::',
+        ),
+      ));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 10));
+
+      expect(find.text('加载失败回退'), findsOneWidget);
     });
   });
 }

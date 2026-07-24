@@ -38,6 +38,28 @@ void main() {
       expect(find.byType(TCupertinoSwitch), findsOneWidget);
     });
 
+    testWidgets('thumbView 垂直居中于滑块', (tester) async {
+      await tester.pumpWidget(wrap(
+        TCupertinoSwitch(
+          value: true,
+          onChanged: (_) {},
+          thumbView: const SizedBox(
+            width: 16,
+            height: 10,
+            child: Text('ON', textAlign: TextAlign.center),
+          ),
+        ),
+      ));
+
+      expect(
+        tester.getCenter(find.text('ON')).dy,
+        moreOrLessEquals(
+          tester.getCenter(find.byType(TCupertinoSwitch)).dy,
+          epsilon: 0.1,
+        ),
+      );
+    });
+
     testWidgets('onChanged=null 时禁用，Opacity=0.5', (tester) async {
       await tester.pumpWidget(wrap(
         const TCupertinoSwitch(value: false, onChanged: null),

@@ -4,7 +4,7 @@ import 'package:tdesign_flutter/src/components/calendar/t_calendar_body.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 Widget wrap(Widget child) => MaterialApp(
-      theme: ThemeData(extensions: [TThemeData.defaultData()]),
+      theme: TThemeBuilder.light(TThemeData.defaultData()),
       home: SizedBox(height: 400, width: 360, child: child),
     );
 
@@ -46,7 +46,7 @@ void main() {
         firstDayOfWeek: 7,
         minDate: DateTime(2024, 1, 1),
         maxDate: DateTime(2024, 12, 31),
-        initialValue: [DateTime(2024, 1, 10), DateTime(2024, 1, 15)],
+        value: [DateTime(2024, 1, 10), DateTime(2024, 1, 15)],
         builder: cellBuilder,
         bodyPadding: 8,
         monthNames: monthNames,
@@ -64,7 +64,7 @@ void main() {
         firstDayOfWeek: 7,
         minDate: DateTime(2024, 1, 1),
         maxDate: DateTime(2024, 12, 31),
-        initialValue: [DateTime(2024, 1, 10)],
+        value: [DateTime(2024, 1, 10)],
         builder: cellBuilder,
         bodyPadding: 8,
         monthNames: monthNames,
@@ -136,7 +136,7 @@ void main() {
         firstDayOfWeek: 7,
         minDate: DateTime(2024, 1, 1),
         maxDate: DateTime(2024, 12, 31),
-        initialValue: [DateTime(2024, 1, 5)],
+        value: [DateTime(2024, 1, 5)],
         builder: cellBuilder,
         bodyPadding: 8,
         monthNames: monthNames,
@@ -150,7 +150,7 @@ void main() {
         firstDayOfWeek: 7,
         minDate: DateTime(2024, 1, 1),
         maxDate: DateTime(2024, 12, 31),
-        initialValue: [DateTime(2024, 6, 5)],
+        value: [DateTime(2024, 6, 5)],
         builder: cellBuilder,
         bodyPadding: 8,
         monthNames: monthNames,
@@ -213,10 +213,9 @@ void main() {
         monthTitleHeight: 40,
         verticalGap: 4,
         animateTo: false,
-        onMonthChange: (m) => months.add(m),
+        onMonthChange: months.add,
       )));
-      await tester.fling(
-          find.byType(ListView), const Offset(0, -800), 1000);
+      await tester.fling(find.byType(ListView), const Offset(0, -800), 1000);
       await tester.pumpAndSettle();
       expect(months, isNotEmpty);
     });
@@ -230,4 +229,3 @@ void main() {
     });
   });
 }
-

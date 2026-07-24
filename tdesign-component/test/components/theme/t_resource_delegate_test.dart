@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:tdesign_flutter/tdesign_flutter.dart';
 
 /// 覆盖 [TResourceDelegate] 默认实现的全部 getter（含 @override 行）。
@@ -66,7 +66,8 @@ void main() {
       // _builder 为 null 时直接回退默认代理；使用真实 BuildContext 调用
       await tester.pumpWidget(const SizedBox());
       final context = tester.element(find.byType(SizedBox));
-      expect(TResourceManager.instance.delegate(context), isA<TResourceDelegate>());
+      expect(TResourceManager.instance.delegate(context),
+          isA<TResourceDelegate>());
     });
   });
 }

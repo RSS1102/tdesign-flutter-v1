@@ -59,14 +59,13 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.medium,
-          variant: TAvatarVariant.normal,
-          defaultUrl: 'assets/img/t_avatar_1.png',
+          image: AssetImage('assets/img/t_avatar_1.png'),
         ),
         SizedBox(width: 32),
         TAvatar(
           size: TAvatarSize.medium,
-          variant: TAvatarVariant.normal,
-          defaultUrl: 'assets/img/t_avatar_1.png',
+          variant: TAvatarVariant.square,
+          image: AssetImage('assets/img/t_avatar_1.png'),
         ),
       ],
     );
@@ -80,14 +79,13 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.medium,
-          variant: TAvatarVariant.customText,
-          text: 'A',
+          child: Text('A'),
         ),
         SizedBox(width: 32),
         TAvatar(
           size: TAvatarSize.medium,
-          variant: TAvatarVariant.customText,
-          text: 'A',
+          variant: TAvatarVariant.square,
+          child: Text('A'),
         ),
       ],
     );
@@ -99,14 +97,11 @@ class _TAvatarPageState extends State<TAvatarPage> {
     return const Row(
       // spacing: 32,
       children: [
-        TAvatar(
-          size: TAvatarSize.medium,
-          variant: TAvatarVariant.icon,
-        ),
+        TAvatar(size: TAvatarSize.medium),
         SizedBox(width: 32),
         TAvatar(
           size: TAvatarSize.medium,
-          variant: TAvatarVariant.icon,
+          variant: TAvatarVariant.square,
         ),
       ],
     );
@@ -124,10 +119,10 @@ class _TAvatarPageState extends State<TAvatarPage> {
             children: [
               TAvatar(
                 size: TAvatarSize.medium,
-                variant: TAvatarVariant.normal,
-                defaultUrl: 'assets/img/t_avatar_1.png',
+                image: AssetImage('assets/img/t_avatar_1.png'),
               ),
-              Positioned(child: TBadge(TBadgeVariant.redPoint), right: 0, top: 0)
+              Positioned(
+                  child: TBadge(variant: TBadgeVariant.dot), right: 0, top: 0)
             ],
           ),
         ),
@@ -138,11 +133,10 @@ class _TAvatarPageState extends State<TAvatarPage> {
             children: [
               TAvatar(
                 size: TAvatarSize.medium,
-                variant: TAvatarVariant.customText,
-                text: 'A',
+                child: Text('A'),
               ),
               Positioned(
-                child: TBadge(TBadgeVariant.message, count: '8'),
+                child: TBadge(count: 8),
                 right: 0,
                 top: 0,
               )
@@ -154,9 +148,9 @@ class _TAvatarPageState extends State<TAvatarPage> {
           child: Stack(
             alignment: Alignment.bottomLeft,
             children: [
-              TAvatar(size: TAvatarSize.medium, variant: TAvatarVariant.icon),
+              TAvatar(size: TAvatarSize.medium),
               Positioned(
-                child: TBadge(TBadgeVariant.message, count: '12'),
+                child: TBadge(count: 12),
                 right: 0,
                 top: 0,
               )
@@ -170,30 +164,31 @@ class _TAvatarPageState extends State<TAvatarPage> {
   /// 纯展示的头像组
   @Demo(group: 'avatar')
   Widget _buildDisplayAvatar(BuildContext context) {
-    var assetUrl = 'assets/img/t_avatar_1.png';
-    var assetUrl2 = 'assets/img/t_avatar_2.png';
-    var avatarList = [assetUrl, assetUrl2, assetUrl, assetUrl2, assetUrl];
-    return TAvatar(
-      size: TAvatarSize.medium,
-      variant: TAvatarVariant.display,
-      displayText: '+5',
-      avatarDisplayListAsset: avatarList,
+    return const TAvatarGroup(
+      maxCount: 4,
+      overflow: TAvatar(child: Text('+1')),
+      children: [
+        TAvatar(image: AssetImage('assets/img/t_avatar_1.png')),
+        TAvatar(image: AssetImage('assets/img/t_avatar_2.png')),
+        TAvatar(image: AssetImage('assets/img/t_avatar_1.png')),
+        TAvatar(image: AssetImage('assets/img/t_avatar_2.png')),
+        TAvatar(image: AssetImage('assets/img/t_avatar_1.png')),
+      ],
     );
   }
 
   /// 带操作的头像组
   @Demo(group: 'avatar')
   Widget _buildOperationAvatar(BuildContext context) {
-    var assetUrl = 'assets/img/t_avatar_1.png';
-    var assetUrl2 = 'assets/img/t_avatar_2.png';
-    var avatarList = [assetUrl, assetUrl2, assetUrl, assetUrl2, assetUrl];
-    return TAvatar(
-      size: TAvatarSize.medium,
-      variant: TAvatarVariant.operation,
-      avatarDisplayListAsset: avatarList,
-      onPressed: () {
-        TToast.showText('点击了操作', context: context);
-      },
+    return TAvatarGroup(
+      children: [
+        const TAvatar(image: AssetImage('assets/img/t_avatar_1.png')),
+        const TAvatar(image: AssetImage('assets/img/t_avatar_2.png')),
+        TAvatar(
+          child: const Icon(Icons.add),
+          onTap: () => TToast.showText('点击了操作', context: context),
+        ),
+      ],
     );
   }
 
@@ -205,20 +200,15 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.large,
-          variant: TAvatarVariant.normal,
-          defaultUrl: 'assets/img/t_avatar_1.png',
+          image: AssetImage('assets/img/t_avatar_1.png'),
         ),
         SizedBox(width: 32),
         TAvatar(
           size: TAvatarSize.large,
-          variant: TAvatarVariant.customText,
-          text: 'A',
+          child: Text('A'),
         ),
         SizedBox(width: 32),
-        TAvatar(
-          size: TAvatarSize.large,
-          variant: TAvatarVariant.icon,
-        ),
+        TAvatar(size: TAvatarSize.large),
       ],
     );
   }
@@ -231,20 +221,15 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.medium,
-          variant: TAvatarVariant.normal,
-          defaultUrl: 'assets/img/t_avatar_1.png',
+          image: AssetImage('assets/img/t_avatar_1.png'),
         ),
         SizedBox(width: 48),
         TAvatar(
           size: TAvatarSize.medium,
-          variant: TAvatarVariant.customText,
-          text: 'A',
+          child: Text('A'),
         ),
         SizedBox(width: 48),
-        TAvatar(
-          size: TAvatarSize.medium,
-          variant: TAvatarVariant.icon,
-        ),
+        TAvatar(size: TAvatarSize.medium),
       ],
     );
   }
@@ -257,20 +242,15 @@ class _TAvatarPageState extends State<TAvatarPage> {
       children: [
         TAvatar(
           size: TAvatarSize.small,
-          variant: TAvatarVariant.normal,
-          defaultUrl: 'assets/img/t_avatar_1.png',
+          image: AssetImage('assets/img/t_avatar_1.png'),
         ),
         SizedBox(width: 56),
         TAvatar(
           size: TAvatarSize.small,
-          variant: TAvatarVariant.customText,
-          text: 'A',
+          child: Text('A'),
         ),
         SizedBox(width: 56),
-        TAvatar(
-          size: TAvatarSize.small,
-          variant: TAvatarVariant.icon,
-        ),
+        TAvatar(size: TAvatarSize.small),
       ],
     );
   }

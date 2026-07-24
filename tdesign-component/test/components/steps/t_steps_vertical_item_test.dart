@@ -100,5 +100,32 @@ void main() {
       );
       expect(find.byType(TStepsVerticalItem), findsOneWidget);
     });
+
+    testWidgets('长标题在可用宽度内自动换行', (tester) async {
+      const longTitle = '这是一个非常非常非常长的步骤标题用于验证垂直步骤可以展示完整内容';
+      await tester.pumpWidget(
+        wrapWithTheme(
+          SizedBox(
+            width: 260,
+            child: TStepsVerticalItem(
+              data: TStepsItemData(title: longTitle),
+              index: 0,
+              stepsCount: 2,
+              activeIndex: 0,
+              status: TStepsStatus.success,
+              simple: false,
+              readOnly: false,
+              verticalSelect: true,
+            ),
+          ),
+        ),
+      );
+
+      final title = tester.widget<Text>(find.text(longTitle));
+      expect(title.maxLines, isNull);
+      expect(title.softWrap, isTrue);
+      expect(title.overflow, TextOverflow.visible);
+      expect(tester.takeException(), isNull);
+    });
   });
 }

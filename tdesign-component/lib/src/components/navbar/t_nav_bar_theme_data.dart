@@ -28,8 +28,8 @@ class TNavBarBorder {
 
 /// NavBar 组件 ThemeExtension
 ///
-/// 管理 TNavBar 的子树级默认样式（标题颜色/字体、背景、高度、内边距、阴影、边框等）。
-/// 构造器参数优先级高于 ThemeData。
+/// 管理 TNavBar 的子树级默认样式（标题颜色/字体、背景、内边距、阴影、边框等）。
+/// 构造器参数优先级高于 ThemeData。高度属于 PreferredSizeWidget 契约，只能通过 TNavBar.height 设置。
 class TNavBarThemeData extends ThemeExtension<TNavBarThemeData> {
   /// 标题颜色
   final Color? titleColor;
@@ -48,9 +48,6 @@ class TNavBarThemeData extends ThemeExtension<TNavBarThemeData> {
 
   /// 背景颜色
   final Color? backgroundColor;
-
-  /// 高度
-  final double? height;
 
   /// 内部填充
   final EdgeInsetsGeometry? padding;
@@ -77,7 +74,6 @@ class TNavBarThemeData extends ThemeExtension<TNavBarThemeData> {
     this.titleFontWeight,
     this.titleFontFamily,
     this.backgroundColor,
-    this.height,
     this.padding,
     this.titleMargin,
     this.opacity,
@@ -94,7 +90,6 @@ class TNavBarThemeData extends ThemeExtension<TNavBarThemeData> {
     FontWeight? titleFontWeight,
     FontFamily? titleFontFamily,
     Color? backgroundColor,
-    double? height,
     EdgeInsetsGeometry? padding,
     double? titleMargin,
     double? opacity,
@@ -109,7 +104,6 @@ class TNavBarThemeData extends ThemeExtension<TNavBarThemeData> {
       titleFontWeight: titleFontWeight ?? this.titleFontWeight,
       titleFontFamily: titleFontFamily ?? this.titleFontFamily,
       backgroundColor: backgroundColor ?? this.backgroundColor,
-      height: height ?? this.height,
       padding: padding ?? this.padding,
       titleMargin: titleMargin ?? this.titleMargin,
       opacity: opacity ?? this.opacity,
@@ -131,7 +125,6 @@ class TNavBarThemeData extends ThemeExtension<TNavBarThemeData> {
       titleFontWeight: t < 0.5 ? titleFontWeight : other.titleFontWeight,
       titleFontFamily: t < 0.5 ? titleFontFamily : other.titleFontFamily,
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t),
-      height: lerpDouble(height, other.height, t),
       padding: t < 0.5 ? padding : other.padding,
       titleMargin: lerpDouble(titleMargin, other.titleMargin, t),
       opacity: lerpDouble(opacity, other.opacity, t),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tdesign_flutter/src/components/indexes/sticky_header/sticky_header_widget.dart';
 import 'package:tdesign_flutter/src/components/indexes/sticky_header/sticky_header_render.dart';
+import 'package:tdesign_flutter/src/components/indexes/sticky_header/sticky_header_widget.dart';
 
 Widget scroll({
   Axis scrollDirection = Axis.vertical,
@@ -85,9 +85,11 @@ void main() {
       await tester.pumpWidget(scroll(
         scrollDirection: Axis.horizontal,
         slivers: [
-          SliverStickyHeader(
-            header: Container(width: 50, height: 50),
-            sliver: SliverToBoxAdapter(child: Container(width: 300, height: 50)),
+          const SliverStickyHeader(
+            header: SizedBox(width: 50, height: 50),
+            sliver: SliverToBoxAdapter(
+              child: SizedBox(width: 300, height: 50),
+            ),
           ),
         ],
       ));
@@ -213,8 +215,8 @@ void main() {
       ]));
       // header 类型变化 → removeRenderObjectChild(old header) + insert(new) → header setter dropChild
       await tester.pumpWidget(scroll(slivers: [
-        SliverStickyHeader(
-          header: SizedBox(height: 60, child: const Text('new')),
+        const SliverStickyHeader(
+          header: SizedBox(height: 60, child: Text('new')),
         ),
       ]));
       expect(find.byType(SliverStickyHeader), findsOneWidget);
@@ -292,7 +294,7 @@ void main() {
       await tester.pumpWidget(scroll(slivers: [
         SliverStickyHeader(
           overlapsContent: true,
-          header: SizedBox(height: 50),
+          header: const SizedBox(height: 50),
           sliver: SliverToBoxAdapter(
             child: GestureDetector(
               onTap: () {},
@@ -371,7 +373,7 @@ void main() {
       // 覆盖 childMainAxisPosition / childScrollOffset / hitTestChildren
       // header 用 SizedBox（无 color，hitTest 返回 false）确保 didHitHeader=false
       await tester.pumpWidget(scroll(slivers: [
-        SliverStickyHeader(
+        const SliverStickyHeader(
           overlapsContent: true,
           header: SizedBox(height: 50),
           sliver: SliverToBoxAdapter(
@@ -382,22 +384,30 @@ void main() {
       final ro = tester.renderObject(find.byType(SliverStickyHeader))
           as RenderSliverStickyHeader;
       // 覆盖 childMainAxisPosition（header 分支 + child 分支）
-      if (ro.header != null) ro.childMainAxisPosition(ro.header!);
-      if (ro.child != null) ro.childMainAxisPosition(ro.child!);
+      if (ro.header != null) {
+        ro.childMainAxisPosition(ro.header!);
+      }
+      if (ro.child != null) {
+        ro.childMainAxisPosition(ro.child!);
+      }
       // 覆盖 childScrollOffset（child 分支返回 headerLogicalExtent）
-      if (ro.child != null) ro.childScrollOffset(ro.child!);
+      if (ro.child != null) {
+        ro.childScrollOffset(ro.child!);
+      }
       // 覆盖 childScrollOffset 的 else 分支（传 header → super.childScrollOffset）
-      if (ro.header != null) ro.childScrollOffset(ro.header!);
+      if (ro.header != null) {
+        ro.childScrollOffset(ro.header!);
+      }
       // 覆盖 hitTestChildren（overlapsContent 穿透：header 不命中→评估右侧）
       final result = SliverHitTestResult();
       ro.hitTestChildren(result, mainAxisPosition: 25, crossAxisPosition: 100);
       expect(find.byType(SliverStickyHeader), findsOneWidget);
     });
 
-    testWidgets('GlobalKey 子节点迁移触发 forgetChild', (tester) async {
+    testWidgets('GlobalKey 子节点重挂载触发 forgetChild', (tester) async {
       // 覆盖 forgetChild（_header/_sliver 清理）
       // GlobalKey 在 SliverStickyHeader 的 header/sliver 上，
-      // 下一步用相同 key 在 SliverStickyHeader 之前（先 build）挂载，
+      // 下一步用相同 key 在 SliverStickyHeader 之前（先 build）重挂载，
       // → _retakeInactiveElement → parent.forgetChild（此时 _header/_sliver 仍指向旧值）
       final headerKey = GlobalKey();
       final sliverKey = GlobalKey();
@@ -414,7 +424,7 @@ void main() {
             child: Container(key: headerKey, height: 50, color: Colors.blue)),
         SliverToBoxAdapter(key: sliverKey, child: Container(height: 200)),
         SliverStickyHeader(
-          header: SizedBox(height: 60),
+          header: const SizedBox(height: 60),
           sliver: SliverToBoxAdapter(child: Container(height: 200)),
         ),
       ]));
@@ -427,14 +437,14 @@ void main() {
         (tester) async {
       // 覆盖 _StickyHeaderControllerScope.updateShouldNotify
       // 不用 key 确保 Element 复用 → InheritedWidget 重建 → updateShouldNotify
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(const MaterialApp(
         home: DefaultStickyHeaderController(
-          child: const SizedBox(child: Text('a')),
+          child: SizedBox(child: Text('a')),
         ),
       ));
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(const MaterialApp(
         home: DefaultStickyHeaderController(
-          child: const SizedBox(child: Text('b')),
+          child: SizedBox(child: Text('b')),
         ),
       ));
       expect(find.text('b'), findsOneWidget);
@@ -450,8 +460,8 @@ void main() {
             slivers: [
               SliverStickyHeader(
                 header: Container(width: 50, height: 50, color: Colors.red),
-                sliver: SliverToBoxAdapter(
-                    child: Container(width: 600, height: 50)),
+                sliver: const SliverToBoxAdapter(
+                    child: SizedBox(width: 600, height: 50)),
               ),
             ],
           ),
@@ -494,8 +504,8 @@ void main() {
             slivers: [
               SliverStickyHeader(
                 header: Container(width: 50, height: 50, color: Colors.red),
-                sliver: SliverToBoxAdapter(
-                    child: Container(width: 600, height: 50)),
+                sliver: const SliverToBoxAdapter(
+                    child: SizedBox(width: 600, height: 50)),
               ),
             ],
           ),

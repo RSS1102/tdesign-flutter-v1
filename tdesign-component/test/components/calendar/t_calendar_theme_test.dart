@@ -6,8 +6,6 @@ import 'package:tdesign_flutter/src/components/calendar/t_calendar_theme_data.da
 void main() {
   group('TCalendarThemeData 纯函数', () {
     const theme = TCalendarThemeData(
-      defaultVariant: TCalendarVariant.single,
-      firstDayOfWeek: 1,
       height: 300,
       decoration: BoxDecoration(color: Colors.white),
       weekdayStyle: TextStyle(fontSize: 12),
@@ -26,13 +24,9 @@ void main() {
 
     test('copyWith 覆盖字段', () {
       final copied = theme.copyWith(
-        defaultVariant: TCalendarVariant.range,
-        firstDayOfWeek: 0,
         height: 400,
       );
       expect(copied, isA<TCalendarThemeData>());
-      expect(copied.defaultVariant, TCalendarVariant.range);
-      expect(copied.firstDayOfWeek, 0);
       expect(copied.height, 400);
       // 未覆盖字段保持原值
       expect(copied.centreColor, Colors.green);
@@ -40,7 +34,6 @@ void main() {
 
     test('lerp 在 t=0 / 0.5 / 1 返回 TCalendarThemeData', () {
       const other = TCalendarThemeData(
-        defaultVariant: TCalendarVariant.multiple,
         height: 500,
         weekdayStyle: TextStyle(fontSize: 20),
         centreColor: Colors.purple,
@@ -51,8 +44,8 @@ void main() {
       expect(at0, isA<TCalendarThemeData>());
       expect(atHalf, isA<TCalendarThemeData>());
       expect(at1, isA<TCalendarThemeData>());
-      expect(atHalf.defaultVariant, TCalendarVariant.multiple);
-      expect(at1.defaultVariant, TCalendarVariant.multiple);
+      expect(atHalf.height, 400);
+      expect(at1.height, 500);
     });
 
     test('lerp other 非同类型时返回 this', () {

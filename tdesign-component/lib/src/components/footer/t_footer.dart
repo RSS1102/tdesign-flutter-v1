@@ -1,6 +1,11 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
+
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
+import '../image/t_image.dart';
+import '../link/t_link.dart';
+import 't_footer_theme_data.dart';
 
 /// 页脚形态
 enum TFooterVariant {
@@ -14,7 +19,7 @@ enum TFooterVariant {
   brand,
 }
 
-class TFooter extends StatefulWidget {
+class TFooter extends StatelessWidget {
   const TFooter(
     this.variant, {
     Key? key,
@@ -40,29 +45,26 @@ class TFooter extends StatefulWidget {
   final List<TLink> links;
 
   @override
-  State<TFooter> createState() => _TFooterState();
-}
-
-class _TFooterState extends State<TFooter> {
-  @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).extension<TFooterThemeData>();
     var children = <Widget>[];
 
-    switch (widget.variant) {
+    switch (variant) {
       case TFooterVariant.text:
-        children = [_renderText()];
+        children = [_renderText(context)];
         break;
       case TFooterVariant.link:
         children = [
-          if (widget.links.isNotEmpty) _renderLinks() else _renderText()
+          if (links.isNotEmpty) _renderLinks(context) else _renderText(context)
         ];
         break;
       case TFooterVariant.brand:
-        children = [if (widget.logo != null) _renderLogo() else _renderText()];
+        children = [if (logo != null) _renderLogo() else _renderText(context)];
         break;
     }
 
     return Container(
+      height: theme?.height,
       alignment: Alignment.center,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -76,15 +78,15 @@ class _TFooterState extends State<TFooter> {
       Padding(
         padding: const EdgeInsets.only(top: 4, bottom: 4),
         child: TImage(
-          src: widget.logo,
+          src: logo,
           variant: TImageVariant.fitWidth,
-          width: widget.width,
+          width: width,
         ),
       )
     ]);
   }
 
-  Widget _renderLinks() {
+  Widget _renderLinks(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -92,15 +94,14 @@ class _TFooterState extends State<TFooter> {
           padding: const EdgeInsets.only(top: 4, bottom: 4),
           child: Wrap(
             alignment: WrapAlignment.center,
-            children: List.generate(widget.links.length, (index) {
-              var link = widget.links[index];
+            children: List.generate(links.length, (index) {
+              var link = links[index];
               return Container(
-                decoration: index < (widget.links.length - 1)
+                decoration: index < (links.length - 1)
                     ? BoxDecoration(
                         border: Border(
                             right: BorderSide(
-                                color:
-                                    context.tTheme.textColorPlaceholder)))
+                                color: context.tTheme.textColorPlaceholder)))
                     : null,
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 child: link,
@@ -112,18 +113,22 @@ class _TFooterState extends State<TFooter> {
           padding: const EdgeInsets.only(bottom: 4),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Flexible(child: _renderText())]),
+              children: [Flexible(child: _renderText(context))]),
         ),
       ],
     );
   }
 
-  Widget _renderText() {
+  Widget _renderText(BuildContext context) {
     return Text(
-      widget.text,
+      text,
       textAlign: TextAlign.center,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      softWrap: false,
       style: TextStyle(
-        fontSize: 12,
+        fontSize: context.tTheme.fontBodySmall?.size ?? 12,
+        height: context.tTheme.fontBodySmall?.height,
         color: context.tTheme.textColorPlaceholder,
       ),
     );

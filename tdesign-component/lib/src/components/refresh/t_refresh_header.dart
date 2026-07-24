@@ -2,119 +2,193 @@ import 'dart:math';
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart' as physics;
 
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_theme.dart';
 import '../../util/context_extension.dart';
+import '../loading/t_loading.dart';
+import '../loading/t_loading_theme_data.dart';
+import '../text/t_text.dart';
+import 't_refresh_theme_data.dart';
 
 /// TDesign刷新头部
 /// 结合EasyRefresh类实现下拉刷新,继承自Header类，字段含义与父类一致
 class TRefreshHeader extends Header {
   TRefreshHeader({
-    TRefreshThemeData? themeData,
     this.key,
+
+    /// Header 容器高度。
     double? extent,
+
+    /// 触发刷新任务的偏移量。
     double? triggerDistance,
+
+    /// 是否启用越界钳制。
     bool? clamping,
+
+    /// 是否悬浮展示刷新头。
     bool? float,
+
+    /// 刷新完成后的处理动画时长。
     Duration? processedDuration,
+
+    /// 完成状态停留时长。
     Duration? completeDuration,
+
+    /// 是否启用震动反馈；为空时使用 [enableHapticFeedback]。
     bool? hapticFeedback,
     this.enableHapticFeedback = true,
+
+    /// 无限刷新触发偏移量。
     double? infiniteOffset,
     this.enableInfiniteRefresh = false,
+
+    /// 无限刷新是否允许越界命中。
     bool? infiniteHitOver,
+
+    /// 是否允许越界滚动。
     bool? overScroll,
+
+    /// 自定义 loading 图标样式。
     TLoadingIcon? loadingIcon,
+
+    /// Header 背景颜色。
     Color? backgroundColor,
-    super.spring,
-    super.horizontalSpring,
-    super.readySpringBuilder,
-    super.horizontalReadySpringBuilder,
-    super.springRebound,
-    super.frictionFactor,
-    super.horizontalFrictionFactor,
-    super.safeArea = false,
-    super.hitOver,
-    super.position,
-    super.secondaryTriggerOffset,
-    super.secondaryVelocity,
-    super.secondaryDimension,
-    super.secondaryCloseTriggerOffset,
-    super.notifyWhenInvisible,
-    super.listenable,
-    super.triggerWhenReach,
-    super.triggerWhenRelease,
-    super.triggerWhenReleaseNoWait,
-    super.maxOverOffset,
-  })  : finalExtent = extent ?? themeData?.extent ?? 48.0,
-        finalTriggerDistance =
-            triggerDistance ?? themeData?.triggerDistance ?? 48.0,
-        finalFloat = float ?? themeData?.float ?? false,
-        finalCompleteDuration =
-            completeDuration ?? themeData?.completeDuration,
-        finalOverScroll = overScroll ?? themeData?.overScroll ?? true,
-        finalLoadingIcon =
-            loadingIcon ?? themeData?.loadingIcon ?? TLoadingIcon.circle,
-        finalBackgroundColor = backgroundColor ?? themeData?.backgroundColor,
-        themeData = themeData,
+
+    /// 回弹弹簧配置。
+    physics.SpringDescription? spring,
+
+    /// 横向回弹弹簧配置。
+    physics.SpringDescription? horizontalSpring,
+
+    /// ready 状态的弹簧构建器。
+    SpringBuilder? readySpringBuilder,
+
+    /// 横向 ready 状态的弹簧构建器。
+    SpringBuilder? horizontalReadySpringBuilder,
+
+    /// 弹簧是否允许回弹。
+    bool springRebound = true,
+
+    /// 越界滚动摩擦系数。
+    FrictionFactor? frictionFactor,
+
+    /// 横向越界滚动摩擦系数。
+    FrictionFactor? horizontalFrictionFactor,
+
+    /// 是否计算安全区。
+    bool safeArea = false,
+
+    /// 滚动自身到达边界时是否判定越界。
+    bool? hitOver,
+
+    /// 刷新头位置。
+    IndicatorPosition position = IndicatorPosition.above,
+
+    /// 二楼触发偏移量。
+    double? secondaryTriggerOffset,
+
+    /// 二楼打开速度。
+    double secondaryVelocity = kDefaultSecondaryVelocity,
+
+    /// 二楼尺寸。
+    double? secondaryDimension,
+
+    /// 二楼关闭触发偏移量。
+    double secondaryCloseTriggerOffset = kDefaultSecondaryCloseTriggerOffset,
+
+    /// 不可见时是否仍发送通知。
+    bool notifyWhenInvisible = false,
+
+    /// 指示器状态监听器。
+    IndicatorStateListenable? listenable,
+
+    /// 到达触发距离时是否立即触发。
+    bool triggerWhenReach = false,
+
+    /// 释放时是否立即触发。
+    bool triggerWhenRelease = false,
+
+    /// 释放时是否立即触发且不等待任务完成。
+    bool triggerWhenReleaseNoWait = false,
+
+    /// 最大越界滚动距离。
+    double maxOverOffset = double.infinity,
+  })  : finalExtent = extent ?? 48.0,
+        finalTriggerDistance = triggerDistance ?? 48.0,
+        finalFloat = float ?? false,
+        finalCompleteDuration = completeDuration,
+        finalOverScroll = overScroll ?? true,
+        finalLoadingIcon = loadingIcon,
+        finalBackgroundColor = backgroundColor,
+        assert((triggerDistance ?? 48.0) > 0.0),
+        assert((extent ?? 48.0) >= 0.0, 'extent must be non-negative'),
         assert(
-            (triggerDistance ?? themeData?.triggerDistance ?? 48.0) > 0.0),
-        assert(
-            (extent ?? themeData?.extent ?? 48.0) >= 0.0,
-            'extent must be non-negative'),
-        assert(
-            (clamping ?? float ?? themeData?.float ?? false) ||
-                (triggerDistance ?? themeData?.triggerDistance ?? 48.0) >=
-                    (extent ?? themeData?.extent ?? 48.0),
+            (clamping ?? float ?? false) ||
+                (triggerDistance ?? 48.0) >= (extent ?? 48.0),
             'The refresh indicator cannot take more space in its final state '
             'than the amount initially created by overscrolling.'),
         super(
-          triggerOffset:
-              triggerDistance ?? themeData?.triggerDistance ?? 48.0,
-          clamping: clamping ?? float ?? themeData?.float ?? false,
+          triggerOffset: triggerDistance ?? 48.0,
+          clamping: clamping ?? float ?? false,
           processedDuration: processedDuration ??
               completeDuration ??
-              themeData?.completeDuration ??
               const Duration(seconds: 1),
           hapticFeedback: hapticFeedback ?? enableHapticFeedback,
-          infiniteOffset: enableInfiniteRefresh
-              ? (infiniteOffset ?? themeData?.infiniteOffset)
-              : null,
-          infiniteHitOver:
-              infiniteHitOver ?? overScroll ?? themeData?.overScroll ?? true,
+          infiniteOffset: enableInfiniteRefresh ? infiniteOffset : null,
+          infiniteHitOver: infiniteHitOver ?? overScroll ?? true,
+          spring: spring,
+          horizontalSpring: horizontalSpring,
+          readySpringBuilder: readySpringBuilder,
+          horizontalReadySpringBuilder: horizontalReadySpringBuilder,
+          springRebound: springRebound,
+          frictionFactor: frictionFactor,
+          horizontalFrictionFactor: horizontalFrictionFactor,
+          safeArea: safeArea,
+          hitOver: hitOver,
+          position: position,
+          secondaryTriggerOffset: secondaryTriggerOffset,
+          secondaryVelocity: secondaryVelocity,
+          secondaryDimension: secondaryDimension,
+          secondaryCloseTriggerOffset: secondaryCloseTriggerOffset,
+          notifyWhenInvisible: notifyWhenInvisible,
+          listenable: listenable,
+          triggerWhenReach: triggerWhenReach,
+          triggerWhenRelease: triggerWhenRelease,
+          triggerWhenReleaseNoWait: triggerWhenReleaseNoWait,
+          maxOverOffset: maxOverOffset,
         );
 
   /// Key
   final Key? key;
 
-  /// 组件级主题配置，优先级高于 Theme Extension
-  final TRefreshThemeData? themeData;
-
-  /// Header容器高度（从 themeData 或参数合并后的最终值）
+  /// Header 容器高度
   final double finalExtent;
 
-  /// 触发刷新任务的偏移量（从 themeData 或参数合并后的最终值）
+  /// 触发刷新任务的偏移量
   final double finalTriggerDistance;
 
-  /// 是否悬浮（从 themeData 或参数合并后的最终值）
+  /// 是否悬浮
   final bool finalFloat;
 
-  /// 完成延时（从 themeData 或参数合并后的最终值）
+  /// 完成延时
   final Duration? finalCompleteDuration;
 
-  /// 越界滚动（从 themeData 或参数合并后的最终值）
+  /// 越界滚动
   final bool finalOverScroll;
 
-  /// loading样式（从 themeData 或参数合并后的最终值）
-  final TLoadingIcon finalLoadingIcon;
+  /// loading 样式
+  final TLoadingIcon? finalLoadingIcon;
 
-  /// 背景颜色（从 themeData 或参数合并后的最终值）
+  /// 背景颜色
   final Color? finalBackgroundColor;
 
-  /// 开启震动反馈（保留实例，≠ 禁用）
+  /// 是否启用震动反馈。
   final bool enableHapticFeedback;
 
-  /// 是否开启无限刷新（保留实例，≠ 禁用）
+  /// 是否启用无限刷新。
   final bool enableInfiniteRefresh;
 
   @override
@@ -125,10 +199,12 @@ class TRefreshHeader extends Header {
           state.axisDirection == AxisDirection.up, // coverage:ignore-line
       'Widget cannot be horizontal',
     );
+    final theme = Theme.of(context).extension<TRefreshThemeData>();
     return TGIconHeaderWidget(
       key: key,
-      loadingIcon: finalLoadingIcon,
-      backgroundColor: finalBackgroundColor,
+      loadingIcon:
+          finalLoadingIcon ?? theme?.loadingIcon ?? TLoadingIcon.circle,
+      backgroundColor: finalBackgroundColor ?? theme?.backgroundColor,
       state: state,
       refreshIndicatorExtent: finalExtent,
     );
@@ -228,7 +304,8 @@ class TGIconHeaderWidgetState extends State<TGIconHeaderWidget>
                         ? context.resource.pullToRefresh // coverage:ignore-line
                         : _refreshState == IndicatorMode.processed ||
                                 _refreshState == IndicatorMode.done
-                            ? context.resource.completeRefresh // coverage:ignore-line
+                            ? context.resource
+                                .completeRefresh // coverage:ignore-line
                             : context.resource.releaseRefresh,
                     font: context.tTheme.fontBodyMedium,
                     textColor: context.tTheme.textColorPlaceholder,

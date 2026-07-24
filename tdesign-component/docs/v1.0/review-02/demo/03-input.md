@@ -31,6 +31,31 @@ Review 建议：
 - 输入示例里只保留必要的 `setState` 范围，避免每次输入都重建整页。
 - 验证码示例右侧图片应显式约束宽高，右侧按钮区也应收窄成稳定尺寸。
 
+### 1.1 `TTextarea` demo 也需要纳入唤起输入法卡顿排查
+
+定位：
+
+- `tdesign-component/example/lib/config.dart:203`
+- `tdesign-component/example/lib/page/t_textarea_page.dart`
+- `tdesign-component/lib/src/components/textarea/t_textarea.dart`
+
+证据：
+
+- `Textarea 多行输入 (V1.0)` 是输入类独立 demo 入口，和 `Input 输入框 (V1.0)` 同属输入框系列。
+- `TTextarea` 与 `TInput` 共用输入类主题与输入视图能力，用户实测反馈的“input，textarea 系列的唤起输入框卡顿”不应只记录到 `TInput`。
+- `review-02` 原文只明确记录了 `TInput` 页面，遗漏了 `textarea` 系列需要同口径复测。
+
+诊断：
+
+- 这是 review 记录覆盖不完整问题。
+- `TTextarea` 需要和 `TInput` 一起按真机输入法唤起、连续输入、焦点切换、清除/计数刷新做体验复核。
+
+Review 建议：
+
+- 需要补入 demo review，并和 `TInput` 卡顿问题一起处理。
+- 排查 `TTextareaPage` 是否存在过度 `setState`、controller / focusNode 生命周期、输入视图重建范围过大的问题。
+- 修复后分别记录 `TInput` 与 `TTextarea` 的 Android 真机复测结果。
+
 ### 2. `TStepper` demo 的禁用态展示与组件语义不一致，且 `disabled` 不能完全封住输入
 
 定位：
@@ -83,6 +108,14 @@ Review 建议：
 - 增加单独的 `disabled` 示例，区分“无回调禁用”和“显式禁用”两种语义。
 - 若 v1.0 设计要求 `disabled` 作为主禁用入口，组件实现也应同步收敛。
 
+### 复核补充：Stepper / Rate 的非禁用示例被误展示为禁用态
+
+复核结论：本次实际问题属于 demo，源码的 `disabled` 与 `onChanged == null` 禁用判定已在上一轮收敛。
+
+- `TStepper` 的基础、最大最小、样式和尺寸示例没有传 `onChanged`，按组件约定会整体禁用；只有“禁用状态”示例应显式传 `disabled: true`。
+- `TRate` 的大多数正常示例同样没有传 `onChanged`，实际全部落入禁用态；只有禁用状态展示应保持禁用。
+- 修复口径：正常示例传入可交互回调，禁用示例同时展示明确的 `disabled: true`。
+
 ### 4. `TCalendar` demo 自定义单元格和副标题没有沿用组件默认状态表达，选中/未选中观感偏离规范
 
 定位：
@@ -108,3 +141,16 @@ Review 建议：
 - 需要进入 demo review。
 - 自定义单元格示例应保留一组基于默认态的对照，不要把 selected / unselected / today 全部改造成完全不同的视觉语言。
 - 若要展示整格自定义，建议明确标注这是自定义渲染，不代表默认规范态。
+
+### 复核补充：Calendar cell 选中态文字与背景异常、锚点入口布局不合理
+
+复核结论：默认 `TCalendarStyle.forSelectType` 与 `develop` 实现一致，异常来自 demo 的 `cellBuilder` 覆盖了默认 cell 的状态背景和文字颜色；锚点清除操作也属于 demo 布局问题。
+
+- 自定义 cell 不再自行绘制独立背景和固定白色文字，改为复用 `TCalendarStyle.forSelectType` 的选中/未选中/今日文字样式，让 `TCalendarCell` 外层默认背景继续生效。
+- 锚点 demo 的“清除已选”移动到 Popup 右上操作槽，标题增加稳定宽度，右侧已选文案收短，减少 cell 内容挤压。
+
+### 复核补充：Upload 缺少禁用状态展示
+
+复核结论：Upload 源码已有 `onChanged == null` 的禁用约定，本次是 demo 未提供对应的禁用状态入口。
+
+- 在“组件状态”中增加“禁用状态”示例，保留上传事件回调但不传 `onChanged`，使禁用语义可直接观察。

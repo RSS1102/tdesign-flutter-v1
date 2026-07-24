@@ -34,11 +34,11 @@ void main() {
   }
 
   /// 构建一个简单的面板
-  TCollapsePanel buildPanel({
+  TCollapsePanel<String> buildPanel({
     required String title,
     required String bodyText,
     bool isExpanded = false,
-    Object? value,
+    String? value,
     TCollapseIconTextBuilder? expandIconTextBuilder,
   }) {
     return TCollapsePanel(
@@ -57,7 +57,7 @@ void main() {
           children: [buildPanel(title: '标题1', bodyText: '内容1')],
         ),
       ));
-      expect(find.byType(TCollapse), findsOneWidget);
+      expect(find.byType(TCollapse<String>), findsOneWidget);
       expect(find.text('标题1'), findsOneWidget);
     });
 
@@ -85,7 +85,7 @@ void main() {
           ],
         ),
       ));
-      expect(find.byType(TCollapse), findsOneWidget);
+      expect(find.byType(TCollapse<String>), findsOneWidget);
       expect(find.text('面板1'), findsOneWidget);
       expect(find.text('面板2'), findsOneWidget);
     });
@@ -164,29 +164,31 @@ void main() {
     });
 
     testWidgets('accordion 模式切换面板', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        TCollapse(
+      var value = 'v1';
+      await tester.pumpWidget(wrapWithTheme(StatefulBuilder(
+        builder: (context, setState) => TCollapse<String>(
           mode: TCollapseMode.accordion,
-          value: 'v1',
+          value: value,
+          onChanged: (next) => setState(() => value = next ?? ''),
           children: [
             buildPanel(title: '面板1', bodyText: '内容1', value: 'v1'),
             buildPanel(title: '面板2', bodyText: '内容2', value: 'v2'),
           ],
         ),
-      ));
-      // 初始 v1 展开
-      expect(find.text('内容1'), findsOneWidget);
+      )));
+      expect(panelCrossFadeState(tester, 0), CrossFadeState.showSecond);
+      expect(panelCrossFadeState(tester, 1), CrossFadeState.showFirst);
 
-      // 点击面板2
       await tester.tap(find.text('面板2'));
       await tester.pumpAndSettle();
 
-      // 面板1折叠，面板2展开
-      expect(find.text('内容2'), findsOneWidget);
+      expect(value, 'v2');
+      expect(panelCrossFadeState(tester, 0), CrossFadeState.showFirst);
+      expect(panelCrossFadeState(tester, 1), CrossFadeState.showSecond);
     });
 
     testWidgets('accordion 模式 onChanged 回调被调用', (tester) async {
-      Object? changedValue;
+      String? changedValue;
 
       await tester.pumpWidget(
         StatefulBuilder(
@@ -195,7 +197,7 @@ void main() {
               mode: TCollapseMode.accordion,
               value: changedValue,
               onChanged: (val) {
-                changedValue = val;
+                setState(() => changedValue = val);
               },
               children: [
                 buildPanel(title: '面板1', bodyText: '内容1', value: 'v1'),
@@ -249,9 +251,9 @@ void main() {
 
     testWidgets('backgroundColor 自定义面板背景色', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        TCollapse(
+        TCollapse<String>(
           children: [
-            TCollapsePanel(
+            TCollapsePanel<String>(
               headerBuilder: (context, expanded) => const Text('标题'),
               body: const Text('内容'),
               backgroundColor: Colors.blue.shade100,
@@ -259,7 +261,7 @@ void main() {
           ],
         ),
       ));
-      expect(find.byType(TCollapse), findsOneWidget);
+      expect(find.byType(TCollapse<String>), findsOneWidget);
     });
 
     testWidgets('多个面板初始混合展开状态', (tester) async {
@@ -284,13 +286,14 @@ void main() {
         TCollapse(
           children: [buildPanel(title: '标题', bodyText: '内容')],
         ),
-        collapseTheme: const TCollapseThemeData(style: 'card'),
+        collapseTheme: const TCollapseThemeData(variant: TCollapseVariant.card),
       ));
       // card 风格会包裹 ClipRRect
       expect(find.byType(ClipRRect), findsOneWidget);
     });
 
-    testWidgets('TCollapseThemeData.style=block（默认）无 ClipRRect', (tester) async {
+    testWidgets('TCollapseThemeData.style=block（默认）无 ClipRRect',
+        (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         TCollapse(
           children: [buildPanel(title: '标题', bodyText: '内容')],
@@ -306,31 +309,43 @@ void main() {
         ),
         collapseTheme: const TCollapseThemeData(backgroundColor: Colors.green),
       ));
-      expect(find.byType(TCollapse), findsOneWidget);
+      expect(find.byType(TCollapse<String>), findsOneWidget);
     });
 
     test('TCollapseThemeData.copyWith 正确合并', () {
-      const base = TCollapseThemeData(style: 'card', elevation: 2);
+      const base =
+          TCollapseThemeData(variant: TCollapseVariant.card, elevation: 2);
       final merged = base.copyWith(backgroundColor: Colors.red);
-      expect(merged.style, 'card');
+      expect(merged.variant, TCollapseVariant.card);
       expect(merged.elevation, 2);
       expect(merged.backgroundColor, Colors.red);
+      final all = base.copyWith(
+        variant: TCollapseVariant.block,
+        animationDuration: const Duration(milliseconds: 500),
+        elevation: 6,
+      );
+      expect(all.variant, TCollapseVariant.block);
+      expect(all.animationDuration, const Duration(milliseconds: 500));
+      expect(all.elevation, 6);
     });
 
     test('TCollapseThemeData.lerp 插值正确', () {
-      const a = TCollapseThemeData(elevation: 0, style: 'block');
-      const b = TCollapseThemeData(elevation: 4, style: 'card');
+      const a =
+          TCollapseThemeData(elevation: 0, variant: TCollapseVariant.block);
+      const b =
+          TCollapseThemeData(elevation: 4, variant: TCollapseVariant.card);
       final mid = a.lerp(b, 0.5);
       expect(mid.elevation, 4); // t<0.5 取 a，t>=0.5 取 b，0.5 取 b
+      expect(a.lerp(null, 0.5), same(a));
     });
   });
 
   group('TCollapse 边界情况', () {
     testWidgets('空 children 列表不崩溃', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TCollapse(children: []),
+        const TCollapse<String>(children: []),
       ));
-      expect(find.byType(TCollapse), findsOneWidget);
+      expect(find.byType(TCollapse<String>), findsOneWidget);
     });
 
     testWidgets('animationDuration 自定义动画时长', (tester) async {
@@ -340,7 +355,7 @@ void main() {
           children: [buildPanel(title: '标题', bodyText: '内容')],
         ),
       ));
-      expect(find.byType(TCollapse), findsOneWidget);
+      expect(find.byType(TCollapse<String>), findsOneWidget);
     });
 
     testWidgets('elevation 参数渲染', (tester) async {
@@ -350,7 +365,7 @@ void main() {
           children: [buildPanel(title: '标题', bodyText: '内容')],
         ),
       ));
-      expect(find.byType(TCollapse), findsOneWidget);
+      expect(find.byType(TCollapse<String>), findsOneWidget);
     });
 
     testWidgets('accordion 模式初始 value 为 null 时不展开任何面板', (tester) async {
@@ -386,7 +401,7 @@ void main() {
         ),
       ));
       await tester.pumpAndSettle();
-      expect(find.byType(TCollapse), findsOneWidget);
+      expect(find.byType(TCollapse<String>), findsOneWidget);
     });
 
     testWidgets('mode 从 accordion 变为 multiple', (tester) async {
@@ -411,11 +426,10 @@ void main() {
       ));
       setState(() => mode = TCollapseMode.multiple);
       await tester.pumpAndSettle();
-      expect(find.byType(TCollapse), findsOneWidget);
+      expect(find.byType(TCollapse<String>), findsOneWidget);
     });
 
-    testWidgets('accordion 切换面板触发旧面板 onExpansionChanged', (tester) async {
-      // 覆盖 262-264（面板关闭时 onExpansionChanged 回调）
+    testWidgets('accordion 只通知被点击面板并等待 value 回写', (tester) async {
       final changes = <String>[];
       await tester.pumpWidget(wrapWithTheme(
         TCollapse(
@@ -432,10 +446,11 @@ void main() {
         ),
       ));
       await tester.pumpAndSettle();
-      // 点击面板B 展开（accordion 会关闭面板A → onExpansionChanged(0, false)）
       await tester.tap(find.text('面板B'));
       await tester.pumpAndSettle();
-      expect(find.byType(TCollapse), findsOneWidget);
+      expect(changes, ['1:false']);
+      expect(panelCrossFadeState(tester, 0), CrossFadeState.showSecond);
+      expect(panelCrossFadeState(tester, 1), CrossFadeState.showFirst);
     });
   });
 }

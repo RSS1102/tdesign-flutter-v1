@@ -12,6 +12,10 @@ class TFabPage extends StatefulWidget {
 }
 
 class _TFabPageState extends State<TFabPage> {
+  void _onFabPressed() {
+    TToast.showText('点击了悬浮按钮', context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExamplePage(title: tTitle(), exampleCodeGroup: 'fab', children: [
@@ -24,9 +28,7 @@ class _TFabPageState extends State<TFabPage> {
         ExampleItem(desc: '悬浮按钮尺寸', builder: _buildSizeFab),
       ]),
       ExampleModule(title: '交互能力', children: [
-        ExampleItem(
-            desc: '可拖拽悬浮按钮（在卡片内拖动试试）',
-            builder: _buildDraggableFab),
+        ExampleItem(desc: '可拖拽悬浮按钮（在卡片内拖动试试）', builder: _buildDraggableFab),
       ]),
     ]);
   }
@@ -95,41 +97,49 @@ class _TFabPageState extends State<TFabPage> {
   @Demo(group: 'fab')
   Widget _buildPureIconFab(BuildContext context) {
     return _buildPageDemo(
-      fab: const TFab(right: 16, bottom: 16),
+      fab: TFab(right: 16, bottom: 16, onPressed: _onFabPressed),
     );
   }
 
   @Demo(group: 'fab')
   Widget _buildTextFab(BuildContext context) {
     return _buildPageDemo(
-      fab: const TFab(text: 'Floating', right: 16, bottom: 16),
+      fab: TFab(
+        text: 'Floating',
+        right: 16,
+        bottom: 16,
+        onPressed: _onFabPressed,
+      ),
     );
   }
 
   @Demo(group: 'fab')
   Widget _buildColorSchemeFab(BuildContext context) {
     return _buildRowDemo([
-      const TFab(right: 8, bottom: 8),
-      const TFab(
+      TFab(right: 8, bottom: 8, onPressed: _onFabPressed),
+      TFab(
         right: 8,
         bottom: 8,
-        buttonProps: TButtonProps(
+        buttonProps: const TButtonProps(
           colorScheme: TButtonColorScheme.defaultTheme,
         ),
+        onPressed: _onFabPressed,
       ),
-      const TFab(
+      TFab(
         right: 8,
         bottom: 8,
-        buttonProps: TButtonProps(
+        buttonProps: const TButtonProps(
           colorScheme: TButtonColorScheme.light,
         ),
+        onPressed: _onFabPressed,
       ),
-      const TFab(
+      TFab(
         right: 8,
         bottom: 8,
-        buttonProps: TButtonProps(
+        buttonProps: const TButtonProps(
           colorScheme: TButtonColorScheme.danger,
         ),
+        onPressed: _onFabPressed,
       ),
     ]);
   }
@@ -137,25 +147,29 @@ class _TFabPageState extends State<TFabPage> {
   @Demo(group: 'fab')
   Widget _buildSizeFab(BuildContext context) {
     return _buildRowDemo([
-      const TFab(
+      TFab(
         right: 8,
         bottom: 8,
-        buttonProps: TButtonProps(size: TButtonSize.large),
+        buttonProps: const TButtonProps(size: TButtonSize.large),
+        onPressed: _onFabPressed,
       ),
-      const TFab(
+      TFab(
         right: 8,
         bottom: 8,
-        buttonProps: TButtonProps(size: TButtonSize.medium),
+        buttonProps: const TButtonProps(size: TButtonSize.medium),
+        onPressed: _onFabPressed,
       ),
-      const TFab(
+      TFab(
         right: 8,
         bottom: 8,
-        buttonProps: TButtonProps(size: TButtonSize.small),
+        buttonProps: const TButtonProps(size: TButtonSize.small),
+        onPressed: _onFabPressed,
       ),
-      const TFab(
+      TFab(
         right: 8,
         bottom: 8,
-        buttonProps: TButtonProps(size: TButtonSize.extraSmall),
+        buttonProps: const TButtonProps(size: TButtonSize.extraSmall),
+        onPressed: _onFabPressed,
       ),
     ]);
   }
@@ -163,11 +177,12 @@ class _TFabPageState extends State<TFabPage> {
   @Demo(group: 'fab')
   Widget _buildDraggableFab(BuildContext context) {
     return _buildPageDemo(
-      fab: const TFab(
+      fab: TFab(
         right: 16,
         bottom: 16,
-        draggable: true,
-        magnet: true,
+        draggable: TFabDragAxis.all,
+        magnet: TFabMagnet.right,
+        onPressed: _onFabPressed,
       ),
     );
   }

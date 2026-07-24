@@ -8,7 +8,9 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
+import '../../theme/t_colors.dart';
+import '../../theme/t_theme.dart';
+import '../../util/context_extension.dart';
 
 class TCircleIndicator extends StatefulWidget {
   const TCircleIndicator({

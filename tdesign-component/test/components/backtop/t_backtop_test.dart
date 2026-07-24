@@ -5,7 +5,7 @@ import 'package:tdesign_flutter/tdesign_flutter.dart';
 /// TBackTop V1.0 Widget 测试
 ///
 /// 覆盖：默认渲染、shape 形态、showText、visibilityOffset 显隐、onPressed 回调/禁用、
-/// 回顶动画防抖、ThemeData 子树注入、colorScheme 切换、tooltip。
+/// 回顶动画防抖、ThemeData 子树注入、品牌主题、tooltip。
 void main() {
   /// 用 TTheme 包裹以提供基础 Token
   Widget wrapWithTheme(Widget child, {TBackTopThemeData? backTopTheme}) {
@@ -33,7 +33,8 @@ void main() {
         children: [
           ListView(
             controller: controller,
-            children: List.generate(20, (i) => SizedBox(height: 200, child: Text('Item $i'))),
+            children: List.generate(
+                20, (i) => SizedBox(height: 200, child: Text('Item $i'))),
           ),
           Positioned(right: 16, bottom: 32, child: child),
         ],
@@ -60,6 +61,13 @@ void main() {
       ));
       // 默认中文环境下，应显示 "顶部"
       expect(find.text('顶部'), findsOneWidget);
+      final text = tester.widget<Text>(find.text('顶部'));
+      expect(text.maxLines, 1);
+      expect(text.overflow, TextOverflow.ellipsis);
+      expect(
+        text.style?.fontSize,
+        TThemeData.defaultData().fontMarkExtraSmall?.size,
+      );
     });
 
     testWidgets('showText 为 false 时不显示文案', (tester) async {
@@ -75,17 +83,23 @@ void main() {
       ));
       expect(find.text('返回'), findsOneWidget);
       expect(find.text('顶部'), findsOneWidget);
+      expect(
+          tester.widget<Text>(find.text('返回')).overflow, TextOverflow.ellipsis);
+      expect(
+          tester.widget<Text>(find.text('顶部')).overflow, TextOverflow.ellipsis);
     });
   });
 
   group('TBackTop 禁用态 (A类)', () {
-    testWidgets('onPressed: null 时 GestureDetector onTap 为 null', (tester) async {
+    testWidgets('onPressed: null 时 GestureDetector onTap 为 null',
+        (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TBackTop(onPressed: null),
       ));
       expect(find.byType(TBackTop), findsOneWidget);
       // 禁用时 GestureDetector 仍存在（为 tooltip 服务），但 onTap 为 null
-      final gestureDetector = tester.widget<GestureDetector>(find.byType(GestureDetector));
+      final gestureDetector =
+          tester.widget<GestureDetector>(find.byType(GestureDetector));
       expect(gestureDetector.onTap, null);
     });
 
@@ -251,19 +265,50 @@ void main() {
     });
   });
 
-  group('TBackTop colorScheme', () {
-    testWidgets('light 配色方案渲染', (tester) async {
-      await tester.pumpWidget(wrapWithTheme(
-        const TBackTop(colorScheme: TBackTopColorScheme.light),
+  group('TBackTop 主题颜色', () {
+    testWidgets('全局品牌 ColorScheme 驱动默认背景和内容色', (tester) async {
+      const colorScheme = ColorScheme.light(
+        primary: Colors.red,
+        primaryContainer: Colors.redAccent,
+        onPrimaryContainer: Colors.white,
+      );
+      await tester.pumpWidget(MaterialApp(
+        theme: ThemeData(
+          colorScheme: colorScheme,
+          extensions: [TThemeData.defaultData()],
+        ),
+        home: const Scaffold(body: TBackTop(onPressed: _noop)),
       ));
-      expect(find.byType(TBackTop), findsOneWidget);
+
+      final decoration = tester
+          .widgetList<Container>(find.byType(Container))
+          .map((container) => container.decoration)
+          .whereType<BoxDecoration>()
+          .first;
+      expect(decoration.color, Colors.redAccent);
+      expect(decoration.border?.top.color, Colors.red);
+      expect(
+          tester.widget<Icon>(find.byIcon(TIcons.backtop)).color, Colors.white);
     });
 
-    testWidgets('dark 配色方案渲染', (tester) async {
+    testWidgets('组件 Theme 颜色覆盖全局品牌色', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
-        const TBackTop(colorScheme: TBackTopColorScheme.dark),
+        const TBackTop(onPressed: _noop),
+        backTopTheme: const TBackTopThemeData(
+          backgroundColor: Colors.red,
+          borderColor: Colors.redAccent,
+          contentColor: Colors.white,
+        ),
       ));
-      expect(find.byType(TBackTop), findsOneWidget);
+      final decoration = tester
+          .widgetList<Container>(find.byType(Container))
+          .map((container) => container.decoration)
+          .whereType<BoxDecoration>()
+          .first;
+      expect(decoration.color, Colors.red);
+      expect(decoration.border?.top.color, Colors.redAccent);
+      expect(
+          tester.widget<Icon>(find.byIcon(TIcons.backtop)).color, Colors.white);
     });
   });
 
@@ -290,7 +335,9 @@ void main() {
     test('默认构造全 null', () {
       const theme = TBackTopThemeData();
       expect(theme.shape, null);
-      expect(theme.colorScheme, null);
+      expect(theme.backgroundColor, null);
+      expect(theme.borderColor, null);
+      expect(theme.contentColor, null);
       expect(theme.defaultVisibilityOffset, null);
       expect(theme.defaultRight, null);
       expect(theme.defaultBottom, null);
@@ -311,11 +358,11 @@ void main() {
       const theme = TBackTopThemeData(shape: TBackTopShape.circle);
       final copied = theme.copyWith(
         shape: TBackTopShape.halfCircle,
-        colorScheme: TBackTopColorScheme.dark,
+        backgroundColor: Colors.red,
         defaultVisibilityOffset: 200,
       );
       expect(copied.shape, TBackTopShape.halfCircle);
-      expect(copied.colorScheme, TBackTopColorScheme.dark);
+      expect(copied.backgroundColor, Colors.red);
       expect(copied.defaultVisibilityOffset, 200);
     });
 
@@ -356,8 +403,7 @@ void main() {
     testWidgets('Theme 注入 shape 生效', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TBackTop(),
-        backTopTheme:
-            const TBackTopThemeData(shape: TBackTopShape.halfCircle),
+        backTopTheme: const TBackTopThemeData(shape: TBackTopShape.halfCircle),
       ));
       expect(find.byType(TBackTop), findsOneWidget);
     });
@@ -374,7 +420,8 @@ void main() {
       controller.dispose();
     });
 
-    testWidgets('构造器 visibilityOffset 覆盖 Theme defaultVisibilityOffset', (tester) async {
+    testWidgets('构造器 visibilityOffset 覆盖 Theme defaultVisibilityOffset',
+        (tester) async {
       final controller = ScrollController(initialScrollOffset: 0);
       await tester.pumpWidget(wrapScrollable(
         TBackTop(controller: controller, visibilityOffset: 50),
@@ -397,13 +444,6 @@ void main() {
     test('枚举值', () {
       expect(TBackTopShape.circle.index, 0);
       expect(TBackTopShape.halfCircle.index, 1);
-    });
-  });
-
-  group('TBackTopColorScheme 枚举', () {
-    test('枚举值', () {
-      expect(TBackTopColorScheme.light.index, 0);
-      expect(TBackTopColorScheme.dark.index, 1);
     });
   });
 
@@ -433,10 +473,10 @@ void main() {
       expect(find.byType(TBackTop), findsOneWidget);
     });
 
-    testWidgets('Theme.colorScheme 注入生效', (tester) async {
+    testWidgets('Theme 颜色字段注入生效', (tester) async {
       await tester.pumpWidget(wrapWithTheme(
         const TBackTop(),
-        backTopTheme: const TBackTopThemeData(colorScheme: TBackTopColorScheme.dark),
+        backTopTheme: const TBackTopThemeData(backgroundColor: Colors.red),
       ));
       expect(find.byType(TBackTop), findsOneWidget);
     });
@@ -454,3 +494,5 @@ void main() {
     });
   });
 }
+
+void _noop() {}

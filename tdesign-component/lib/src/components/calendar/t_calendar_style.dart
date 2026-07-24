@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../../tdesign_flutter.dart';
 
+import '../../theme/t_colors.dart';
+import '../../theme/t_fonts.dart';
+import '../../theme/t_radius.dart';
+import '../../theme/t_spacers.dart';
+import '../../theme/t_theme.dart';
+import 't_calendar_types.dart';
 
 // ---------------------------------------------------------------------------
 // TCalendarStyle — 日历样式配置
 // ---------------------------------------------------------------------------
 
-/// [TCalendar] 的样式配置，通过 TCalendar.style 传入。
-///
-/// 使用 [TCalendarStyle.generateStyle] 获取主题默认样式，
-/// 再用 [forSelectType] 按 [DateSelectType] 区分选中/区间等态下的文字与装饰。
+/// Calendar 内部样式快照。
 class TCalendarStyle {
   const TCalendarStyle({
     this.decoration,
@@ -131,8 +133,8 @@ class TCalendarStyle {
           dayStyle: defStyle.copyWith(color: context.tTheme.textColorPrimary),
           todayDayStyle:
               defStyle.copyWith(color: context.tTheme.brandNormalColor),
-          subtitleStyle: subtitleBase.copyWith(
-              color: context.tTheme.textColorPlaceholder),
+          subtitleStyle:
+              subtitleBase.copyWith(color: context.tTheme.textColorPlaceholder),
           cellDecoration: null,
         );
       case DateSelectType.disabled:
@@ -160,8 +162,8 @@ class TCalendarStyle {
         return TCalendarStyle(
           centreColor: rangeCentreColor,
           dayStyle: defStyle.copyWith(color: context.tTheme.textColorPrimary),
-          subtitleStyle: subtitleBase.copyWith(
-              color: context.tTheme.textColorPlaceholder),
+          subtitleStyle:
+              subtitleBase.copyWith(color: context.tTheme.textColorPlaceholder),
           cellDecoration: BoxDecoration(
             color: rangeCentreColor,
           ),
@@ -174,7 +176,8 @@ class TCalendarStyle {
               subtitleBase.copyWith(color: context.tTheme.textColorAnti),
           cellDecoration: BoxDecoration(
             color: context.tTheme.brandNormalColor,
-            borderRadius: BorderRadius.horizontal(left: Radius.circular(radius6)),
+            borderRadius:
+                BorderRadius.horizontal(left: Radius.circular(radius6)),
           ),
         );
       case DateSelectType.end:
@@ -185,7 +188,8 @@ class TCalendarStyle {
               subtitleBase.copyWith(color: context.tTheme.textColorAnti),
           cellDecoration: BoxDecoration(
             color: context.tTheme.brandNormalColor,
-            borderRadius: BorderRadius.horizontal(right: Radius.circular(radius6)),
+            borderRadius:
+                BorderRadius.horizontal(right: Radius.circular(radius6)),
           ),
         );
       default:

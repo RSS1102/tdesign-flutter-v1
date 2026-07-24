@@ -42,13 +42,19 @@ class TStepsItemData {
 
 /// Steps步骤条方向
 enum TStepsDirection {
+  /// 水平方向
   horizontal,
+
+  /// 垂直方向
   vertical,
 }
 
 /// steps步骤条状态
 enum TStepsStatus {
+  /// 成功状态
   success,
+
+  /// 错误状态
   error,
 }
 
@@ -57,8 +63,7 @@ class TSteps extends StatefulWidget {
   const TSteps({
     super.key,
     required this.steps,
-    this.activeIndex = 0,
-    this.value,
+    this.value = 0,
     this.direction = TStepsDirection.horizontal,
     this.status = TStepsStatus.success,
     this.simple = false,
@@ -72,11 +77,8 @@ class TSteps extends StatefulWidget {
   /// 步骤条方向
   final TStepsDirection direction;
 
-  /// 步骤条当前激活的索引（v1.0 推荐使用 [value]）
-  final int activeIndex;
-
-  /// 步骤条当前激活的索引（v1.0 新增，优先级高于 [activeIndex]）
-  final int? value;
+  /// 步骤条当前激活的索引
+  final int value;
 
   /// 步骤条状态（优先级高于 ThemeData）
   final TStepsStatus status;
@@ -109,7 +111,7 @@ class _TStepsState extends State<TSteps> {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveIndex = widget.value ?? widget.activeIndex;
+    final effectiveIndex = widget.value;
     final effectiveStatus = widget.status;
     final effectiveSimple = widget.simple;
     final effectiveReadOnly = widget.readOnly;
